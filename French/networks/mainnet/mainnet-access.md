@@ -1,0 +1,27 @@
+---
+cover: ../../.gitbook/assets/HH-Eco-Cat-Hero-Desktop-R1 (1).webp
+coverY: -625.8620689655172
+---
+
+# Comptes Principaux
+
+Pour interagir avec les différents services Hedera Mainnet tels que les comptes, les sujets, les jetons, les fichiers et les contrats intelligents, vous aurez besoin d'un compte Hedera. Votre compte Hedera contient également un solde de HBAR, qui peut être utilisé pour effectuer des paiements de frais de transaction ou des transferts vers d'autres comptes.
+
+Créez des comptes principaux gratuits en visitant l'un de ces fournisseurs de portefeuille:
+
+<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th></th><th></th><th data-hidden data-card-cover data-type="files"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><a href="https://atomicwallet.io/"><mark style="color:purple;"><strong>ATOMIC</strong></mark></a></td><td>✅ Clés privées visibles</td><td></td><td><a href="../../.gitbook/assets/Screenshot 2022-12-20 at 2.39.29 PM (1).png">Capture d'écran 2022-12-20 à 22,29 PM (1).png</a></td><td><a href="https://atomicwallet.io/">https://atomicwallet.io/</a></td></tr><tr><td align="center"><a href="https://www.bladewallet.io/"><mark style="color:purple;"><strong>BLADE</strong></mark></a></td><td><p>✅ Clés privées visibles</p><p>✅ phrase de passe compatible SDK</p></td><td></td><td><a href="../../.gitbook/assets/blade-wallet-logo.png">blade-wallet-logo.png</a></td><td><a href="https://www.bladewallet.io/">https://www.bladewallet.io/</a></td></tr><tr><td align="center"><a href="https://www.coinomi.com/en/"><mark style="color:purple;"><strong>COINOMI</strong></mark></a></td><td>✅ phrase de passe compatible SDK</td><td></td><td><a href="../../.gitbook/assets/coinomi-logo.png">coinomi-logo.png</a></td><td><a href="https://www.coinomi.com/en/">https://www.coinomi.com/fr/</a></td></tr><tr><td align="center"><a href="https://www.exodus.com/hedera-wallet-hbar"><mark style="color:purple;"><strong>EXODUS</strong></mark></a></td><td>✅ Clés privées visibles</td><td></td><td><a href="../../.gitbook/assets/Screenshot 2022-12-20 at 3.11.05 PM.png">Capture d'écran 2022-12-20 à 3.11.05 PM.png</a></td><td><a href="https://www.exodus.com/hedera-wallet-hbar">https://www.exodus.com/hedera-wallet-hbar</a></td></tr><tr><td align="center"><a href="https://guarda.com/"><mark style="color:purple;"><strong>GUARDA</strong></mark></a></td><td>✅ Clés privées visibles</td><td></td><td><a href="../../.gitbook/assets/GUARDA.png">GUARDA.png</a></td><td><a href="https://guarda.com/">https://guarda.com/</a></td></tr><tr><td align="center"><a href="https://www.hashpack.app/"><mark style="color:purple;"><strong>HASHPACK</strong></mark></a></td><td><p>✅ Clés privées visibles</p><p>✅ phrase de passe compatible SDK</p></td><td></td><td><a href="../../.gitbook/assets/HASHPACK.png">HASHPACK.png</a></td><td><a href="https://www.hashpack.app/">https://www.hashpack.app/</a></td></tr><tr><td align="center"><a href="https://www.kabila.app/"><mark style="color:purple;"><strong>KABILA</strong></mark></a></td><td><p>✅ Clés privées visibles</p><p>✅ phrase de passe compatible SDK</p></td><td></td><td><a href="../../.gitbook/assets/kabila-docs-logo.png">kabila-docs-logo.png</a></td><td><a href="https://www.kabila.app/">https://www.kabila.app/</a></td></tr><tr><td align="center"><a href="https://wallawallet.com/"><mark style="color:purple;"><strong>WALLET</strong></mark></a></td><td><p>✅ Clés privées visibles</p><p>✅ phrase de passe compatible SDK</p></td><td></td><td><a href="../../.gitbook/assets/WALLA (1).png">WALLA (1).png</a></td><td><a href="https://wallawallet.com/">https://wallawallet.com/</a></td></tr></tbody></table>
+
+| Fonctionnalités                  | Libellé                                                                                                                                                                       |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ✅ Clés privées visibles          | Vous avez accès à la clé privée associée au compte principal du portefeuille créé pour vous                                                                                   |
+| ✅ phrase de passe compatible SDK | La phrase de passe créée par le portefeuille est compatible avec les SDK et peut être utilisée pour récupérer les clés privées du compte que le portefeuille a créé pour vous |
+
+### Créer de nouveaux comptes principaux
+
+Une fois que vous avez obtenu votre compte principal à partir d'un portefeuille pris en charge, vous pouvez utiliser les SDK pour créer des comptes principaux supplémentaires.
+
+Pour cela, vous devrez pointer votre client Hedera vers mainnet (`Client.forMainnet()`)et utiliser l'API `AccountCreateTransaction` pour créer un nouveau compte. Les informations du payeur de frais de transaction (appelé `operator` dans les SDKs) doivent être définies sur le compte principal que vous avez créé à partir de l'un des portefeuilles ci-dessus (`setOperator(<mainnetAccountId, mainnetAccountPrivateKey)`).
+
+{% content-ref url="../../sdks-and-apis/sdks/accounts-and-hbar/create-an-account.md" %}
+[create-an-account.md](../../sdks-and-apis/sdks/accounts-and-hbar/create-an-account.md)
+{% endcontent-ref %}

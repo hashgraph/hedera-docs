@@ -1,0 +1,41 @@
+files:
+  - source: /getting-started/*.md
+    ignore:
+      - /getting-started/page-1
+    translation: /%language%/%original_path%/%original_file_name%
+  - source: /networks/*.md
+    translation: /%language%/%original_path%/%original_file_name%
+  - source: /core-concepts/*.md
+    ignore:
+      - /core-concepts/schedule-transaction
+    translation: /%language%/%original_path%/%original_file_name%
+  - source: /README.md
+    translation: /%language%/%original_path%/%original_file_name%
+  - source: /networks/mainnet/*.md
+    translation: /%language%/%original_path%/%original_file_name%
+  - source: /networks/mainnet/mainnet-nodes/node-requirements/*.md
+    translation: /%language%/%original_path%/%original_file_name%
+  - source: /networks/mainnet/mainnet-nodes/*.md
+    translation: /%language%/%original_path%/%original_file_name%
+  - source: /networks/mainnet/fees/*.md
+    translation: /%language%/%original_path%/%original_file_name%
+  - source: /networks/testnet/*.md
+    translation: /%language%/%original_path%/%original_file_name%
+  - source: /networks/localnet/*.md
+    translation: /%language%/%original_path%/%original_file_name%
+  - source: /core-concepts/mirror-nodes/*.md
+    translation: /%language%/%original_path%/%original_file_name%
+  - source: /core-concepts/smart-contracts/*.md
+    translation: /%language%/%original_path%/%original_file_name%
+  - source: /core-concepts/mirror-nodes/run-your-own-beta-mirror-node/*.md
+    translation: /%language%/%original_path%/%original_file_name%
+  - source: /core-concepts/hashgraph-consensus-algorithms/*.md
+    translation: /%language%/%original_path%/%original_file_name%
+  - source: /core-concepts/staking/*.md
+    translation: /%language%/%original_path%/%original_file_name%
+  - source: /core-concepts/smart-contracts/deploying-smart-contracts/*.md
+    translation: /%language%/%original_path%/%original_file_name%
+  - source: /core-concepts/accounts/*.md
+    translation: /%language%/%original_path%/%original_file_name%
+  - source: /networks/release-notes/*.md
+    translation: /%language%/%original_path%/%original_file_name%

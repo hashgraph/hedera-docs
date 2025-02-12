@@ -55,5 +55,5 @@ curl -X GET \
 
 ## Additional Resources
 
-* [**Mirror Node REST API Documentation**](../../../../sdks-and-apis/rest-api.md)
+* [**Mirror Node REST API Documentation**](../../../../sdks-and-apis/rest-api/)
 * [**JSON-RPC Methods on Hedera**](https://github.com/hashgraph/hedera-json-rpc-relay/blob/main/docs/rpc-api.md)

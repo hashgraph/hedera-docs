@@ -58,7 +58,7 @@ For example, if you create a new account using the `AccountCreateTransaction` in
 
 <summary><mark style="color:blue;"><strong>Can I host my own Hedera network explorer?</strong></mark></summary>
 
-Yes, you can! You can create your own custom Hedera network explorer using the [Mirror Node REST APIs](../sdks-and-apis/rest-api.md) or take a look at the [Hedera Mirror Node Explorer](https://github.com/hashgraph/hedera-mirror-node-explorer) open-source project.
+Yes, you can! You can create your own custom Hedera network explorer using the [Mirror Node REST APIs](../sdks-and-apis/rest-api/) or take a look at the [Hedera Mirror Node Explorer](https://github.com/hashgraph/hedera-mirror-node-explorer) open-source project.
 
 </details>
 
@@ -66,7 +66,7 @@ Yes, you can! You can create your own custom Hedera network explorer using the [
 
 <summary><mark style="color:blue;"><strong>How can I add a network explorer to this page?</strong></mark></summary>
 
-To add a network explorer to this page, refer to the [contributing guide](../support-and-community/contributing-guide/) and open an issue in the `hedera-docs` [repository](https://github.com/hashgraph/hedera-docs). Please include the following information within the issue:
+To add a network explorer to this page, refer to the [contributing guide](../support-and-community/contributing-guide.md) and open an issue in the `hedera-docs` [repository](https://github.com/hashgraph/hedera-docs). Please include the following information within the issue:
 
 * Network explorer name
 * Link to network explorer

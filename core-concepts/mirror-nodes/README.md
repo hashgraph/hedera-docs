@@ -51,8 +51,8 @@ This feature enables developers to effectively monitor HTS token activities as i
 
 Hedera provides REST APIs to easily query a mirror node that is hosted by Hedera, removing the complexity of having to run your own. Check out the mirror node REST API docs below.
 
-{% content-ref url="../../sdks-and-apis/rest-api.md" %}
-[rest-api.md](../../sdks-and-apis/rest-api.md)
+{% content-ref url="../../sdks-and-apis/rest-api/" %}
+[rest-api](../../sdks-and-apis/rest-api/)
 {% endcontent-ref %}
 
 ### Run a Mirror Node
@@ -107,7 +107,7 @@ You can configure your own Hedera Mirror Node by following the step-by-step inst
 
 <summary>How can I provide feedback or create an issue to log errors?</summary>
 
-To provide feedback or log errors, please refer to the [Contributing Guide](../../support-and-community/contributing-guide/) and submit an issue in the Hedera Docs [GitHub repository](https://github.com/hashgraph/hedera-json-rpc-relay/issues).
+To provide feedback or log errors, please refer to the [Contributing Guide](../../support-and-community/contributing-guide.md) and submit an issue in the Hedera Docs [GitHub repository](https://github.com/hashgraph/hedera-json-rpc-relay/issues).
 
 </details>
 

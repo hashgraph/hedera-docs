@@ -484,6 +484,32 @@ Update the keys set on a token. The key type is defined in the key parameter.
 | `token`   | address                                                                                                                                                                          | The Hedera token ID in Solidity format. |
 | `keys`    | [IHederaTokenService.TokenKey\[\]](https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/hedera-token-service/IHederaTokenService.sol) memory | The token key type.                     |
 
+### Airdrop Tokens
+
+### <mark style="color:purple;">`airdropTokens(tokenTransfers)`</mark>
+
+Airdrop one or more tokens to one or more accounts.
+
+<table data-header-hidden><thead><tr><th width="147"></th><th width="391"></th><th></th></tr></thead><tbody><tr><td><strong>Param</strong></td><td><strong>Type</strong></td><td><strong>Description</strong></td></tr><tr><td><code>tokenTransfers</code></td><td><a href="https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/hedera-token-service/IHederaTokenService.sol">IHederaTokenService.TokenTransferList[] </a>memory</td><td>The list of token transfers</td></tr></tbody></table>
+
+### <mark style="color:purple;">`cancelAirdrop(pendingAirdrops)`</mark>
+
+Cancels pending airdrops that have not yet been claimed.
+
+<table data-header-hidden><thead><tr><th width="217"></th><th width="251"></th><th></th></tr></thead><tbody><tr><td><strong>Param</strong></td><td><strong>Type</strong></td><td><strong>Description</strong></td></tr><tr><td><code>pendingAirdrops</code></td><td><a href="https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/hedera-token-service/IHederaTokenService.sol">IHederaTokenService.PendingAirdrop[] </a>memory</td><td>The list of pending airdrops to cancel.</td></tr></tbody></table>
+
+### <mark style="color:purple;">`claimAirdrops(pendingAirdrops)`</mark>
+
+Claims pending airdrops that were sent to the calling account.
+
+<table data-header-hidden><thead><tr><th width="210"></th><th width="392"></th><th width="237"></th></tr></thead><tbody><tr><td><strong>Param</strong></td><td><strong>Type</strong></td><td><strong>Description</strong></td></tr><tr><td><code>pendingAirdrops</code></td><td><a href="https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/hedera-token-service/IHederaTokenService.sol">IHederaTokenService.PendingAirdrop[] </a>memory</td><td>The list of pending airdrops to claim.</td></tr></tbody></table>
+
+### <mark style="color:purple;">`rejectTokens(rejectAddress, ftAddresses, nftIds)`</mark>
+
+Airdrop one or more tokens to one or more accounts.
+
+<table data-header-hidden><thead><tr><th width="269"></th><th width="313"></th><th></th></tr></thead><tbody><tr><td><strong>Param</strong></td><td><strong>Type</strong></td><td><strong>Description</strong></td></tr><tr><td><code>rejectingAddress</code></td><td>address</td><td>The address rejecting the tokens</td></tr><tr><td><code>ftAddresses</code></td><td>memory</td><td>Array of fungible token addresses to reject</td></tr><tr><td><code>nftIds</code></td><td><a href="https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/hedera-token-service/IHederaTokenService.sol">IHederaTokenService.NftId[] </a>memory</td><td>Array of NFT IDs to reject</td></tr></tbody></table>
+
 ## Gas Cost
 
 {% content-ref url="../../../networks/mainnet/fees/" %}

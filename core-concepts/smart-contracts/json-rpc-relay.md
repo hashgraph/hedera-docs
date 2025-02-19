@@ -67,6 +67,6 @@ The JSON-RPC Relay `msg.value` uses 18 decimals when it returns HBAR. The `gasPr
 
 <summary><strong>How can I contribute or log errors?</strong></summary>
 
-To contribute or log errors, please refer to the [Contributing Guide](../../support-and-community/contributing-guide.md) and submit them as issues in the [GitHub repository](https://github.com/hashgraph/hedera-json-rpc-relay/issues).
+To contribute or log errors, please refer to the [Contributing Guide](../../support-and-community/contributing-guide/) and submit them as issues in the [GitHub repository](https://github.com/hashgraph/hedera-json-rpc-relay/issues).
 
 </details>

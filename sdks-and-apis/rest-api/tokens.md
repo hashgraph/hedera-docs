@@ -8,20 +8,12 @@ The **Tokens endpoints** in the Hedera Mirror Node REST API allow developers to 
 
 The following endpoints are available for the Tokens object:
 
-| **Endpoint**                                | **Description**                                      |
-| ------------------------------------------- | ---------------------------------------------------- |
-| `GET /api/v1/tokens`                        | Retrieves a list of all tokens on the network.       |
-| `GET /api/v1/tokens/balances`               | Lists token balances across accounts.                |
-| `GET /api/v1/tokens/{id}`                   | Fetches details of a specific token by ID.           |
-| `GET /api/v1/tokens/nfts`                   | Retrieves a list of all NFTs on the network.         |
-| `GET /api/v1/tokens/nfts/{id}`              | Fetches metadata and details for a specific NFT.     |
-| `GET /api/v1/tokens/nfts/{id}/transactions` | Retrieves the transaction history of a specific NFT. |
-| `GET /api/v1/network/supply`                | Fetches the current total supply of HBAR.            |
+<table data-header-hidden><thead><tr><th width="414"></th><th></th></tr></thead><tbody><tr><td><strong>Endpoint</strong></td><td><strong>Description</strong></td></tr><tr><td><code>GET /api/v1/tokens</code></td><td>Retrieves a list of all tokens on the network.</td></tr><tr><td><code>GET /api/v1/tokens/balances</code></td><td>Lists token balances across accounts.</td></tr><tr><td><code>GET /api/v1/tokens/{id}</code></td><td>Fetches details of a specific token by ID.</td></tr><tr><td><code>GET /api/v1/tokens/nfts</code></td><td>Retrieves a list of all NFTs on the network.</td></tr><tr><td><code>GET /api/v1/tokens/nfts/{serialNumber}</code></td><td>Fetches metadata and details for a specific NFT.</td></tr><tr><td><code>GET /api/v1/tokens/nfts/{id}/transactions</code></td><td>Retrieves the transaction history of a specific NFT.</td></tr></tbody></table>
 
 ## Tokens
 
-{% swagger src="https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/tokens" method="get" %}
-[https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
+{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/tokens" method="get" %}
+[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
 {% endswagger %}
 
 #### Response Details
@@ -32,6 +24,8 @@ The following endpoints are available for the Tokens object:
 | **symbol**     | The symbol of the token                      |
 | **admin\_key** | The admin key for the token                  |
 | **type**       | The type of token (fungible or non-fungible) |
+| **decimals**   | The decimal numbers of the token             |
+| **metadata**   | The metadata of the token                    |
 
 #### Additional Examples
 
@@ -43,18 +37,20 @@ The following endpoints are available for the Tokens object:
 | `/api/v1/tokens?order=desc`                                                                  | All tokens in descending order of `token.id`     |
 | `/api/v1/tokens?limit=x`                                                                     | All tokens taking the first `x` number of tokens |
 
-{% swagger src="https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/tokens/{tokenId}/balances" method="get" %}
-[https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
+####
+
+{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/tokens/{tokenId}/balances" method="get" %}
+[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
 {% endswagger %}
 
 #### Response Details
 
-| Response Item | Description                                                   |
-| ------------- | ------------------------------------------------------------- |
-| **timestamp** | The timestamp of the recorded balances in seconds.nanoseconds |
-| **balances**  | The balance of the tokens in those accounts                   |
-| **account**   | The ID of the account that has the token balance              |
-| **balance**   | The balance of the token associated with the account          |
+| Response Item        | Description                                                   |
+| -------------------- | ------------------------------------------------------------- |
+| **timestamp**        | The timestamp of the recorded balances in seconds.nanoseconds |
+| **balances**         | The balance of the tokens in those accounts                   |
+| **account**          | The ID of the account that has the token balance              |
+| **balances.balance** | The balance of the token associated with the account          |
 
 #### Additional Examples
 
@@ -65,8 +61,8 @@ The following endpoints are available for the Tokens object:
 | `/api/v1/tokens/<token_id>/balances?account.balance=gt:1000`        | The balance for the token greater than 1000      |
 | `/api/v1/tokens/<token_id>/balances?timestamp=1566562500.040961001` | The token balances for the specified timestamp   |
 
-{% swagger src="https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/tokens/{tokenId}" method="get" %}
-[https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
+{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/tokens/{tokenId}" method="get" %}
+[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
 {% endswagger %}
 
 #### Response Details
@@ -97,8 +93,8 @@ The following endpoints are available for the Tokens object:
 | **pause\_key**            | The pause key for a token, if specified                                  |
 | **pause\_status**         | Whether or not the token is paused                                       |
 
-{% swagger src="https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/tokens/{tokenId}/nfts" method="get" %}
-[https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
+{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/tokens/{tokenId}/nfts" method="get" %}
+[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
 {% endswagger %}
 
 #### Response Details
@@ -113,8 +109,10 @@ The following endpoints are available for the Tokens object:
 | **serial\_number**      | The serial number of the NFT                          |
 | **token\_id**           | The token ID of the NFT                               |
 
-{% swagger src="https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/tokens/{tokenId}/nfts/{serialNumber}" method="get" %}
-[https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
+####
+
+{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/tokens/{tokenId}/nfts/{serialNumber}" method="get" %}
+[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
 {% endswagger %}
 
 #### Response Details
@@ -129,21 +127,17 @@ The following endpoints are available for the Tokens object:
 | **serial\_number**      | The serial number of the NFT                          |
 | **token\_id**           | The token ID of the NFT                               |
 
-{% swagger src="https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/tokens/{tokenId}/nfts/{serialNumber}/transactions" method="get" %}
-[https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
+{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/tokens/{tokenId}/nfts/{serialNumber}/transactions" method="get" %}
+[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
 {% endswagger %}
 
 #### Response Details
 
 | Response Item             | Description                       |
 | ------------------------- | --------------------------------- |
-| **created\_timestamp**    | The timestamp of the transaction  |
-| **id**                    | The timestamp of the transaction  |
+| **consensus\_timestamp**  | The timestamp of the transaction  |
 | **receiver\_account\_id** | The account that received the NFT |
 | **sender\_account\_id**   | The account that sent the NFT     |
 | **type**                  | The type of transaction           |
+| **transaction\_id**       | The ID of the transaction         |
 | **token\_id**             | The token ID of the NFT           |
-
-{% swagger src="https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/network/supply" method="get" %}
-[https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}

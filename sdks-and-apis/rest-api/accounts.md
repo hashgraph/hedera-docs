@@ -8,15 +8,17 @@ The **Account** endpoints in the Hedera Mirror Node REST API provides endpoints 
 
 The following endpoints are available for the Accounts object:
 
-| Endpoint                                            | Description                                                         |
-| --------------------------------------------------- | ------------------------------------------------------------------- |
-| `GET /api/v1/accounts`                              | Retrieves a list of accounts on the network.                        |
-| `GET /api/v1/accounts/{id}`                         | Fetches details of a specific account by ID, alias, or EVM address. |
-| `GET /api/v1/accounts/{id}/cryptoallowances`        | Retrieves crypto allowances granted by an account.                  |
-| `GET /api/v1/accounts/{id}/tokenrelationships`      | Lists token relationships for an account.                           |
-| `GET /api/v1/accounts/{id}/nfts`                    | Retrieves NFTs owned by an account.                                 |
-| `GET /api/v1/accounts/{id}/fungibletokenallowances` | Fetches fungible token allowances for an account.                   |
-| `GET /api/v1/accounts/{id}/staking/rewards`         | Gets past staking reward payouts for an account.                    |
+| Endpoint                                                            | Description                                                         |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `GET /api/v1/accounts`                                              | Retrieves a list of accounts on the network.                        |
+| `GET /api/v1/accounts/{idOrAliasOrEvmAddress}`                      | Fetches details of a specific account by ID, alias, or EVM address. |
+| `GET /api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/crypto`    | Retrieves hbar allowances granted by an account.                    |
+| `GET /api/v1/accounts/{idOrAliasOrEvmAddress}/rewards`              | Gets past staking reward payouts for an account.                    |
+| `GET /api/v1/accounts/{idOrAliasOrEvmAddress}/airdrops/outstanding` | Fetches the outstanding token airdrops for a given account.         |
+| `GET /api/v1/accounts/{idOrAliasOrEvmAddress}/airdrops/pending`     | Fetech the pending token airdrops for a given account.              |
+| `GET /api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/tokens`    | Retrieves token allowances granted by an account.                   |
+| `GET /api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/nfts`      | Retrieves nft allowances granted by an account.                     |
+| `GET /api/v1/accounts/{idOrAliasOrEvmAddress}/nfts`                 | Fetches the nfts for an account.                                    |
 
 ## Accounts <a href="#accounts" id="accounts"></a>
 
@@ -28,8 +30,10 @@ Example: 0.0.1000‌
 
 Account IDs can also take the account number as an input value. For example, for account ID 0.0.1000, the number 1000 can be specified in the request.
 
-{% swagger src="https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts" method="get" %}
-[https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
+
+
+{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts" method="get" %}
+[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
 {% endswagger %}
 
 #### Response Details <a href="#response-details" id="response-details"></a>
@@ -37,7 +41,6 @@ Account IDs can also take the account number as an input value. For example, for
 | Response Item                           | Description                                                                            |
 | --------------------------------------- | -------------------------------------------------------------------------------------- |
 | **account**                             | The ID of the account                                                                  |
-| **allowances**                          | The allowances granted to this account                                                 |
 | **alias**                               | RFC4648 no-padding base32 encoded account alias                                        |
 | **auto\_renew\_period**                 | The period in which the account will auto renew                                        |
 | **balance**                             | The timestamp and account balance of the account                                       |
@@ -79,26 +82,43 @@ Account IDs can also take the account number as an input value. For example, for
 | `/api/v1/accounts?account.publickey=2b60955bcbf0cf5e9ea880b52e5b63f664b08edf6ed 15e301049517438d61864` | Returns all account information for 2b60955bcbf0cf5e9ea880b52e5b63f664b08edf6ed15e301049517438d61864 public key |
 | `/api/v1/accounts/2?transactionType=cryptotransfer`                                                    | Returns the crypto transfer transactions for account 2.                                                         |
 
-{% swagger src="https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}" method="get" %}
-[https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
+
+
+{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}" method="get" %}
+[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
 {% endswagger %}
 
-{% swagger src="https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/crypto" method="get" %}
-[https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
+
+
+{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/crypto" method="get" %}
+[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
 {% endswagger %}
 
-{% swagger src="https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/tokens" method="get" %}
-[https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
+{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/rewards" method="get" %}
+[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
 {% endswagger %}
 
-{% swagger src="https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/nfts" method="get" %}
-[https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
+{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/tokens" method="get" %}
+[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
 {% endswagger %}
 
-{% swagger src="https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/tokens" method="get" %}
-[https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
+{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/airdrops/outstanding" method="get" %}
+[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
 {% endswagger %}
 
-{% swagger src="https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/rewards" method="get" %}
-[https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
+{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/airdrops/pending" method="get" %}
+[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
 {% endswagger %}
+
+{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/tokens" method="get" %}
+[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
+{% endswagger %}
+
+{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/nfts" method="get" %}
+[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
+{% endswagger %}
+
+{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/nfts" method="get" %}
+[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
+{% endswagger %}
+

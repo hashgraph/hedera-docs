@@ -16,6 +16,18 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **TESTNET UPDATE SCHEDULED: FEBRUARY 25, 2025**
 {% endhint %}
 
+### [Build 0.59.2](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.59.2)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* chore: (0.59) Cherry-pick misc fixes by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#18128](https://github.com/hiero-ledger/hiero-consensus-node/pull/18128)
+
+**Full Changelog**: [v0.59.1...v0.59.2](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.59.1...v0.59.2)
+
+</details>
+
 ### [Build 0.59.0](https://github.com/hashgraph/hedera-services/releases/tag/v0.59.0)
 
 <details>
@@ -49,28 +61,37 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **TESTNET UPDATE SCHEDULED: FEBRUARY 11, 2025**
 {% endhint %}
 
-### Release Highlights
-
 This release introduces several new features, improvements, and bug fixes, including:
 
-#### **HIPs**
+#### HIPs
 
 * **HIP-423 Long-Term Scheduled Transactions**:  \
-  Update to ScheduleSign throttles changed: The ScheduleSign transaction is now throttled like other transactions and can now be managed by the default throttling mechanism on the network.  ([#16958](https://github.com/hashgraph/hedera-services/issues/16958), [#16959](https://github.com/hashgraph/hedera-services/issues/16959)) This completes [HIP-423](https://hips.hedera.com/hip/hip-423).
+  Update to ScheduleSign throttles changed: The ScheduleSign transaction is now throttled like other transactions and can now be managed by the default throttling mechanism on the network.  ([#16958](https://github.com/hashgraph/hedera-services/issues/16958), [#16959](https://github.com/hashgraph/hedera-services/issues/16959)) This completes HIP-423.
 * **HIP-755 authorizeSchedule(address)**\
-  Adds functionality to the Hedera Schedule Service System contract so that a smart contract can sign a referenced scheduled transaction using its contract key, enabling automated execution of scheduled transactions directly from smart contracts. ([#16983](https://github.com/hiero-ledger/hiero-consensus-node/pull/16983)), the remaining outstanding features to complete [HIP-755](https://hips.hedera.com/hip/hip-755) will be provisioned in release .59.
+  Adds functionality to the Hedera Schedule Service System contract so that a smart contract can sign a referenced scheduled transaction using its contract key, enabling automated execution of scheduled transactions directly from smart contracts. ([#16983](https://github.com/hiero-ledger/hiero-consensus-node/pull/16983)), the remaining outstanding features to complete HIP-755 will be provisioned in release .59.
 
-#### **Other Notable Changes**
+#### Other Notable Changes
 
-* **Enabled mirror node to simulate contract calls**:\
-  The standalone transaction executor now supports custom Operations. Developers can use this feature to create and execute custom operations that are not part of the standard Hedera API.  ([#17354](https://github.com/hashgraph/hedera-services/issues/17354))
+* Enabled mirror node to simulate contract calls:\
+  The standalone transaction executor now supports custom Operations. Developers can use this feature to create and execute custom operations that are not part of the standard Hedera API.  ([#17354](https://github.com/hashgraph/hedera-services/issues/17354))\
+  \
+
 * **Enhancing Dynamic Address Book v2** NodeCreate and NodeDelete transaction signature requirements changed:&#x20;
   * The NodeCreate transaction now requires the admin key and one of the treasury account key, system admin key, or address book admin key to sign.&#x20;
-  * The NodeDelete transaction is now a non-privileged transaction and requires one of the admin key, treasury account key, system admin key, or address book admin key to sign. ([#16900](https://github.com/hashgraph/hedera-services/issues/16900), [#17021](https://github.com/hashgraph/hedera-services/issues/17021), [#16990](https://github.com/hashgraph/hedera-services/issues/16990), [#17029](https://github.com/hashgraph/hedera-services/issues/17029))
+    * The NodeDelete transaction is now a non-privileged transaction and requires one of the admin key, treasury account key, system admin key, or address book admin key to sign. ([#16900](https://github.com/hashgraph/hedera-services/issues/16900), [#17021](https://github.com/hashgraph/hedera-services/issues/17021), [#16990](https://github.com/hashgraph/hedera-services/issues/16990), [#17029](https://github.com/hashgraph/hedera-services/issues/17029))
 * **Ensuring state changes are now in block streams**:\
   Refactored out-of-band state modifications:  All out-of-band state modifications have been refactored to be done in Schemas. ([#16843](https://github.com/hashgraph/hedera-services/issues/16843))
-* **Increased CryptoGetAccountBalance throttle**:  The throttle for the CryptoGetAccountBalance query has been increased to the number of network nodes times 1,000,000 plus a buffer.  This change addresses an issue where the throttle was too low, leading to throttling errors.  ([#16850](https://github.com/hashgraph/hedera-services/issues/16850), [#16857](https://github.com/hashgraph/hedera-services/issues/16857))
-* **More Balanced and equitable cross node staking**: Staking configuration updates ensure a more equitable distribution of stake weight across the network. Staking users should always take the opportunity to review their staking configuration in order to optimize their distribution and ensure they're making the most of their staking rewards. You can always check the latest staking distributions and node balances on [Hashscan](https://hashscan.io/mainnet/staking?p=1) to learn more.
+* Increased CryptoGetAccountBalance throttle:  The throttle for the CryptoGetAccountBalance query has been increased to the number of network nodes times 1,000,000 plus a buffer.  This change addresses an issue where the throttle was too low, leading to throttling errors.  ([#16850](https://github.com/hashgraph/hedera-services/issues/16850), [#16857](https://github.com/hashgraph/hedera-services/issues/16857))
+
+### [Build 0.58.10](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.58.10)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+**Full Changelog**: [v0.58.9...v0.58.10](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.58.9...v0.58.10)
+
+</details>
 
 ### [Build 0.58.9](https://github.com/hashgraph/hedera-services/releases/tag/v0.58.9)
 

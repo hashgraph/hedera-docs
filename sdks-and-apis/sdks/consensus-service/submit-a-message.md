@@ -14,27 +14,44 @@ The **max chunks** setting defines the maximum number of chunks into which a giv
 
 The **max chunk size** refers to the maximum size (in bytes) of each individual chunk of a message. By default, the max chunk size is **1024 bytes (1 KB)**. This value can be modified using the `setChunkSize` method.
 
+**Custom Fee Payment**
+
+If a topic has custom fees enabled, users submitting messages must pay the required fee in **HBAR or HTS fungible tokens**. If `setCustomFees` is not specified in the transaction, the user would need to pay any fee associated with that topic ID. The transaction will only fail if the user does not have sufficient assets to cover the fee.
+
+**Recommendation:** To avoid unexpected fees, it is strongly recommended to use `setCustomFees` when submitting a message. This ensures that only the intended fee structure is applied, providing a safeguard against unintended charges.
+
+```java
+TopicMessageSubmitTransaction()
+   .setTopicId(<TOPIC_ID>)
+   .setMessage(<MESSAGE>)
+   .setCustomFees(<MAX_CUSTOM_FEES>) // Ensure this covers the required amount
+   .execute(client);
+```
+
 **Transaction Signing Requirements**
 
-* Anyone can submit a message to a public topic
-* The submitKey is required to sign the transaction for a private topic
+* Anyone can submit a message to a public topic.
+* The `submitKey` is required to sign the transaction for a private topic.
 
 **Transaction Fees**
 
-* Please see the transaction and query [fees](../../../networks/mainnet/fees/#transaction-and-query-fees) table for base transaction fee
-* Please use the [Hedera fee estimator](https://hedera.com/fees) to estimate your transaction fee cost
+* Each **transaction** incurs a **standard Hedera network fee** based on network resource usage.
+* If a **custom fee** is set for a topic, users submitting messages must pay this fee in **HBAR or HTS tokens**.
+* The **Fee Schedule Key** allows authorized users to update fee structures. If set, it must sign transactions modifying fees.
+* If the topic has **custom fees**, the sender must have sufficient balance to cover the fees unless they are exempt via the **Fee Exempt Key List**. It is recommended to use `setCustomFees` on the `TopicMessageSubmitTransaction` to ensure the expected fee structure is applied and avoid unexpected transaction failures due to insufficient funds.
+* Use the [Hedera Fee Estimator](https://hedera.com/fees) to estimate standard network fees.
 
 #### Methods
 
-<table><thead><tr><th width="298">Method</th><th>Type</th><th>Description</th><th>Requirement</th></tr></thead><tbody><tr><td><code>setTopicId(&#x3C;topicId>)</code></td><td>TopicId</td><td>The topic ID to submit the message to</td><td>Required</td></tr><tr><td><code>setMessage(&#x3C;message>)</code></td><td>String</td><td>The message in a String format</td><td>Optional</td></tr><tr><td><code>setMessage(&#x3C;message>)</code></td><td>byte [ ]</td><td>The message in a byte array format</td><td>Optional</td></tr><tr><td><code>setMessage(&#x3C;message>)</code></td><td>ByteString</td><td>The message in a ByteString format</td><td>Optional</td></tr><tr><td><code>setChunkSize()</code></td><td>int</td><td>The max size of individual chunk for a given message. Default: 1024 bytes</td><td>Optional</td></tr><tr><td><code>setMaxChunks()</code></td><td>int</td><td>The max number of chunks a given message can be split into. Default: 20</td><td>Optional</td></tr></tbody></table>
+<table><thead><tr><th width="298">Method</th><th width="135">Type</th><th>Description</th><th>Requirement</th></tr></thead><tbody><tr><td><code>setTopicId(&#x3C;topicId>)</code></td><td>TopicId</td><td>The topic ID to submit the message to</td><td>Required</td></tr><tr><td><code>setMessage(&#x3C;message>)</code></td><td>String</td><td>The message in a String format</td><td>Optional</td></tr><tr><td><code>setMessage(&#x3C;message>)</code></td><td>byte [ ]</td><td>The message in a byte array format</td><td>Optional</td></tr><tr><td><code>setMessage(&#x3C;message>)</code></td><td>ByteString</td><td>The message in a ByteString format</td><td>Optional</td></tr><tr><td><code>setChunkSize()</code></td><td>int</td><td>The max size of individual chunk for a given message. Default: 1024 bytes</td><td>Optional</td></tr><tr><td><code>setMaxChunks()</code></td><td>int</td><td>The max number of chunks a given message can be split into. Default: 20</td><td>Optional</td></tr><tr><td><code>setMaxCustomFees()</code></td><td>Fee[]</td><td>The maximum custom fees the sender is willing to pay</td><td>Optional</td></tr></tbody></table>
 
 {% tabs %}
 {% tab title="Java" %}
-```java
-//Create the transaction
+<pre class="language-java"><code class="lang-java">//Create the transaction
 TopicMessageSubmitTransaction transaction = new TopicMessageSubmitTransaction()
     .setTopicId(newTopicId)
-    .setMessage("hello, HCS! ");
+    .setMessage("hello, HCS! ")
+    .setMaxCustomFees(maxCustomFees); // Set max custom fees if applicable
 
 //Sign with the client operator key and submit transaction to a Hedera network, get transaction ID
 TransactionResponse txResponse = transaction.execute(client);
@@ -46,17 +63,27 @@ TransactionReceipt receipt = txResponse.getReceipt(client);
 Status transactionStatus = receipt.status;
 
 System.out.println("The transaction consensus status is " +transactionStatus);
-//v2.0.0
-```
+<strong>
+</strong><strong>//v2.0.0
+</strong></code></pre>
 {% endtab %}
 
 {% tab title="JavaScript" %}
 ```javascript
-//Create the transaction
-await new TopicMessageSubmitTransaction({
-        topicId: createReceipt.topicId,
-        message: "Hello World",
-    }).execute(client);
+// Create the transaction
+const transaction = await new TopicMessageSubmitTransaction()
+    .setTopicId(newTopicId)
+    .setMessage("Hello, HCS!")
+    .setMaxCustomFees(maxCustomFees); // Set max custom fees if applicable
+
+// Execute transaction
+const txResponse = await transaction.execute(client);
+
+// Request the receipt
+const receipt = await txResponse.getReceipt(client);
+
+// Get the transaction consensus status
+console.log("Transaction Status:", receipt.status);
 
 //v2.0.0
 ```
@@ -67,7 +94,8 @@ await new TopicMessageSubmitTransaction({
 //Create the transaction
 transaction := hedera.NewTopicSubmitTransaction().
         SetTopicID(topicID).
-        SetMessage([]byte(content))
+        SetMessage([]byte(content)).
+        SetMaxCustomFees(maxCustomFees) // Set max custom fees if applicable
 
 //Sign with the client operator private key and submit the transaction to a Hedera network
 txResponse, err := transaction.Execute(client)
@@ -85,6 +113,7 @@ if err != nil {
 transactionStatus := receipt.Status
 
 fmt.Printf("The transaction consensus status is %v\n", transactionStatus)
+
 //v2.0.0
 ```
 {% endtab %}
@@ -92,11 +121,12 @@ fmt.Printf("The transaction consensus status is %v\n", transactionStatus)
 
 ## Get transaction values
 
-| Method                    | Type       | Description                           |
-| ------------------------- | ---------- | ------------------------------------- |
-| `getTopicId()`            | TopicId    | The topic ID to submit the message to |
-| `getMessage()`            | ByteString | The message being submitted           |
-| `getAllTransactionHash()` | byte \[ ]  | The hash for each transaction         |
+| Method                    | Type       | Description                             |
+| ------------------------- | ---------- | --------------------------------------- |
+| `getTopicId()`            | TopicId    | The topic ID to submit the message to   |
+| `getMessage()`            | ByteString | The message being submitted             |
+| `getAllTransactionHash()` | byte \[ ]  | The hash for each transaction           |
+| `getMaxCustomFees()`      | Fee\[]     | The max custom fees set for the message |
 
 {% tabs %}
 {% tab title="Java" %}

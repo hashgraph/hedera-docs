@@ -4,13 +4,8 @@ A transaction that deletes a topic from the Hedera network. Once a topic is dele
 
 **Transaction Signing Requirements**
 
-* If the adminKey was set upon the creation of the topic, the adminKey is required to sign to successfully delete the topic
-* If no adminKey was set upon the creating of the topic, you cannot delete the topic and will receive an UNAUTHORIZED error
-
-**Transaction Fees**
-
-* Please see the transaction and query [fees](../../../networks/mainnet/fees/#transaction-and-query-fees) table for the base transaction fee
-* Please use the [Hedera fee estimator](https://hedera.com/fees) to estimate your transaction fee cost
+* If the adminKey was set upon the creation of the topic, the adminKey is required to sign to successfully delete the topic.
+* If no adminKey was set upon the creating of the topic, you cannot delete the topic and will receive an UNAUTHORIZED error.
 
 #### Methods
 

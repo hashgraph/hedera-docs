@@ -8,6 +8,16 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Latest Releases
 
+## [v0.124.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.124.0)
+
+The Hedera Mirror node is now the Hiero Mirror Node! The GitHub repository was migrated to the [hiero-ledger](https://github.com/hiero-ledger) organization and can now be found at [https://github.com/hiero-ledger/hiero-mirror-node](https://github.com/hiero-ledger/hiero-mirror-node). To facilitate the Hiero migration, the docs were updated to reference the new git repository and the workflows update to use the new Hiero GitHub runners. Unfortunately, since our Helm repository is located at [https://hashgraph.github.io/hedera-mirror-node/charts](https://hashgraph.github.io/hedera-mirror-node/charts) and served via GitHub Pages we could not automatically redirect all requests from Hashgraph to the Hiero repository. We're working on setting up an OCI registry and once that is available we'll ask people to start migrating away from the old Helm repository.
+
+The block stream ([HIP-1056](https://hips.hedera.com/hip/hip-1056)) saw major progress this release including the addition of a block stream poller. This poller polls the S3 bucket for newer block streams, downloads them, and verifies their contents. In addition, block stream to record stream transformers for accounts, topics, and other system transactions were completed. A number of changes were made as a result of changes upstream in the consensus nodes. This includes the previous hash now read from the block proof, the `BlockHeader` and `RoundHeader` used for block root hash calculation, and changing to use the `BlockHeader.firstTransactionConsensusTime`.
+
+The transition to the modularized EVM continues to make progress. This release saw 14 PRs closed and now down to only 4 tests not passing. The web3 web3 docs were updated to show the currently unsupported operations.
+
+Finally, our Stackgres chart was updated from 1.13 to 1.15. If you're using Stackgres, ensure Stackgres gets updated appropriately when deploying our Helm chart.
+
 ## [v0.123.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.123.0)
 
 This release saw initial support for [HIP-991](https://hips.hedera.com/hip/hip-991) topic custom fees. The design was updated to reflect the recent changes in the improvement proposal. The importer now supports ingesting topic custom fees and persisting them. It's recommended that mirror node operators update to this release before consensus nodes upgrade to v0.59. In a future release, we'll work on exposing this information via the existing APIs.

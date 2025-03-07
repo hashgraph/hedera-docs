@@ -61,7 +61,15 @@ Explore various developer tools and resources on Hedera that help make building 
 
 Whether you’re fixing bugs, enhancing features, or improving documentation, your contributions are important — let’s build something great together!
 
-Please read our [contributing guide](support-and-community/contributing-guide/contribution-guidelines/) to see how you can get involved.
+Please read our [contributing guide](https://github.com/hashgraph/.github/blob/main/CONTRIBUTING.md) to see how you can get involved.
+
+## Code of Conduct
+
+This project is governed by the [Contributor Covenant Code of Conduct](https://github.com/hashgraph/.github/blob/main/CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code of conduct.
+
+## License
+
+[Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 [^1]: This is the developer learning path for beginners and web2 developers new to web3 and Hedera.
 

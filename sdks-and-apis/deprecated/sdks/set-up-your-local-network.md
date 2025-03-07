@@ -1,19 +1,19 @@
 # Set-up Your Local Network
 
-While you are developing your application, you can use the Hedera supported networks (previewnet and testnet) to test your application against. In addition to using those networks, you have the option to set-up your own local consensus node and mirror node for testing purposes.\
+While you are developing your application, you can use the Hedera-supported networks (previewnet and testnet) to test your application against. In addition to using those networks, you have the option to set up your own local consensus node and mirror node for testing purposes.\
 \
-With your local network set-up you can:
+With your local network set up, you can:
 
 * Create and submit transactions and queries to a consensus node
 * Interact with the mirror node via REST APIs
 
-### 1. Set-up your local network
+### 1. Set up your local network
 
 Set-up your local network by following the instructions found in the [readme](https://github.com/hashgraph/hedera-local-node#docker) of the `hedera-local-node` project. This will create a Hedera network composed of one consensus node and one mirror node. The consensus node will process incoming transactions and queries. The mirror node stores the history of transactions. Both nodes are created at startup.
 
 ### 2. Configure your network
 
-Once you have your local network up and running, you will need to configure your Hedera client to point to your local network in your project of choice. Your project should have your language specific Hedera SDK as a dependency and imported into your project. You may reference the [environment set-up](broken-reference) instructions if you don't know how.
+Once you have your local network up and running, you will need to configure your Hedera client to point to your local network in your project of choice. Your project should have your language specific Hedera SDK as a dependency and imported into your project. You may reference the [environment setup](../../../getting-started/environment-setup.md) instructions if you don't know how.
 
 Your local network IP address and port will be <mark style="color:purple;">`127.0.0.1:50211`</mark> and your local mirror node IP and port will be <mark style="color:purple;">`127.0.0.1:5600`</mark>. The consensus node account ID is <mark style="color:purple;">`0.0.3`</mark>. This is the node account ID that will receive your transaction and query requests. It is recommended to store these variables in an environment or config file. These values will be hard-coded in the example for demonstration purposes.
 

@@ -290,7 +290,7 @@ client.setDefaultMaxTransactionFee(maxTransactionFee);
 
 ### Create a Transfer Transaction
 
-Create and initialize a transfer transaction (`TransaferTransaction`) by specifying the sender account, receiver account, and transfer amount. Refer to the transaction and query [fees table](https://docs.hedera.com/hedera/networks/mainnet/fees#transaction-and-query-fees) for the base transaction fee. In the code snippet below, you use the new testnet account you created in the [Get Your Testnet Account](broken-reference) guide to debit from your operator account (-3 **HBAR**) and credit accounts `0.0.200`(1 **HBAR**) and `0.0.201` (2 **HBAR**).
+Create and initialize a transfer transaction (`TransaferTransaction`) by specifying the sender account, receiver account, and transfer amount. Refer to the transaction and query [fees table](https://docs.hedera.com/hedera/networks/mainnet/fees#transaction-and-query-fees) for the base transaction fee. In the code snippet below, you use the new testnet account you created in the [Get Your Testnet Account](../../tutorials/more-tutorials/create-and-fund-your-hedera-testnet-account.md) guide to debit from your operator account (-3 **HBAR**) and credit accounts `0.0.200`(1 **HBAR**) and `0.0.201` (2 **HBAR**).
 
 {% tabs %}
 {% tab title="Java" %}

@@ -12,8 +12,8 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **MAINNET UPDATE SCHEDULED: MARCH 12, 2025**
 {% endhint %}
 
-{% hint style="info" %}
-**TESTNET UPDATE SCHEDULED: FEBRUARY 25, 2025**
+{% hint style="success" %}
+**TESTNET UPDATE SCHEDULED: MARCH 4, 2025**
 {% endhint %}
 
 ### [Build 0.59.2](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.59.2)

@@ -8,6 +8,14 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Latest Releases
 
+## [v0.125.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.125.0)
+
+[HIP-991](https://hips.hedera.com/hip/hip-991) topic custom fees support was added to our REST APIs. The `/api/v1/topics/{id}` endpoint now displays the list of custom fees associated with a topic as well as its `fee_schedule_key` and `fee_exempt_key_list`. Additionally, the `/api/v1/transactions` and `/api/v1/transactions/{id}` endpoints were updated to add the new `max_custom_fees` the payer was willing to accept.
+
+The design for [HIP-551](https://hips.hedera.com/hip/hip-551) batch transactions was completed and its tasks broken down. Look for its implementation to be completed in the near future.
+
+Support for non-zero realms is being explored starting with this release. New properties `hedera.mirror.common.realm` and `hedera.mirror.common.shard` were added to centralize the configuration of a mirror node's base realm and shard. With this came support for configuring common properties across sub-charts in Helm. So with a single Helm value property like `global.env.HEDERA_MIRROR_COMMON_REALM=0` or `global.config.hedera.mirror.common.shard=0` it can configure eight sub-charts with similar config. We will explore extracting other properties that apply to multiple modules like network to these common properties in the future.
+
 ## [v0.124.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.124.0)
 
 The Hedera Mirror node is now the Hiero Mirror Node! The GitHub repository was migrated to the [hiero-ledger](https://github.com/hiero-ledger) organization and can now be found at [https://github.com/hiero-ledger/hiero-mirror-node](https://github.com/hiero-ledger/hiero-mirror-node). To facilitate the Hiero migration, the docs were updated to reference the new git repository and the workflows update to use the new Hiero GitHub runners. Unfortunately, since our Helm repository is located at [https://hashgraph.github.io/hedera-mirror-node/charts](https://hashgraph.github.io/hedera-mirror-node/charts) and served via GitHub Pages we could not automatically redirect all requests from Hashgraph to the Hiero repository. We're working on setting up an OCI registry and once that is available we'll ask people to start migrating away from the old Helm repository.

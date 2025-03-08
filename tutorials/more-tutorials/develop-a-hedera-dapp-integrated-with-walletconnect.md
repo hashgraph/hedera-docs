@@ -6,13 +6,13 @@ description: >-
 
 # Create a Hedera DApp Integrated with WalletConnect
 
-Explore DApp development using the Mirror Node API and Hedera Token Service (HTS). Discover how to integrate HTS functionality into your DApp for seamless token management and transactions. This guide uses React, Material UI, Ethers, and TypeScript with the [Create React App (CRA) Hedera DApp template](https://github.com/hedera-dev/cra-hedera-dapp-template) integrated with walletconnect, streamlining your development process.
+Explore DApp development using the Mirror Node API and Hedera Token Service (HTS). Discover how to integrate HTS functionality into your DApp for seamless token management and transactions. This guide uses React, Material UI, Ethers, and TypeScript with the [Create React App (CRA) Hedera DApp template](https://github.com/hedera-dev/cra-hedera-dapp-template) integrated with WalletConnect, streamlining your development process.
 
 ## What you will accomplish
 
 * [ ] Query the mirror node for account token balance, token information, and Non-fungible information.
 * [ ] Query the mirror node to check if the receiver has associated with a token ID
-* [ ] Associate an HTS token with HashPack, Kabila, Blade, or MetaMask through a UI
+* [ ] Associate an HTS token with [HashPack](https://www.hashpack.app/), [Kabila](https://www.kabila.app/wallet), [Blade](http://bladewallet.io/), or [MetaMask](https://metamask.io/) through a UI
 * [ ] Transfer an HTS token through a UI
 
 <figure><img src="../../.gitbook/assets/completed-react-dapp-walletconnect.png" alt="Completed dapp user interface to transfer and associate a token."><figcaption><p>Completed DAPP User Interface</p></figcaption></figure>

@@ -144,6 +144,8 @@
       * [Run Your Own Mirror Node with Google Cloud Storage (GCS)](core-concepts/mirror-nodes/run-your-own-beta-mirror-node/run-your-own-mirror-node-gcs.md)
       * [Run Your Mirror Node with Amazon Web Services S3 (AWS)](core-concepts/mirror-nodes/run-your-own-beta-mirror-node/run-your-own-mirror-node-s3.md)
 * [Open Source Solutions and Integrations](open-source-solutions/README.md)
+  * [AI Tools for Developers](open-source-solutions/ai-tools-for-developers/README.md)
+    * [Hedera AI Agent Kit](open-source-solutions/ai-tools-for-developers/hedera-ai-agent-kit.md)
   * [Asset Tokenization Studio (ATS)](open-source-solutions/asset-tokenization-studio-ats/README.md)
     * [Web User Interface (UI)](open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui.md)
     * [Frequently Asked Questions (FAQs)](open-source-solutions/asset-tokenization-studio-ats/frequently-asked-questions-faqs.md)

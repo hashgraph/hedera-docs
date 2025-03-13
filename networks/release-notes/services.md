@@ -16,16 +16,6 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **TESTNET UPDATE SCHEDULED: MARCH 9, 2025**
 {% endhint %}
 
-### [Build 0.59.3](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.59.2)
-
-<details>
-
-<summary><strong>What's Changed</strong></summary>
-
-
-
-</details>
-
 ### [Build 0.59.2](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.59.2)
 
 <details>
@@ -102,6 +92,19 @@ This release introduces several new features, improvements, and bug fixes, inclu
 * Fail NFT airdrops that would trigger royalty fee payments.
 
 **Full Changelog**: [v0.58.11...v0.58.13](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.58.11...v0.58.13)
+
+</details>
+
+### [Build 0.58.11](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.58.11)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* Add safety checks before Besu secp256k1 native library invocations (c.f. here.
+* Ignore approval flag when de-duplicating account ids in a `TokenTransferList`.
+
+**Full Changelog**: [v0.58.10...v0.58.11](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.58.10...v0.58.11)
 
 </details>
 

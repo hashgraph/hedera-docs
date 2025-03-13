@@ -13,8 +13,18 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 {% endhint %}
 
 {% hint style="success" %}
-**TESTNET UPDATE SCHEDULED: MARCH 4, 2025**
+**TESTNET UPDATE SCHEDULED: MARCH 9, 2025**
 {% endhint %}
+
+### [Build 0.59.3](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.59.2)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+
+
+</details>
 
 ### [Build 0.59.2](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.59.2)
 
@@ -54,7 +64,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 ## Release v0.58
 
 {% hint style="success" %}
-**MAINNET UPDATE SCHEDULED: FEBRUARY 19, 2025**
+**MAINNET UPDATE SCHEDULED: MARCH 12, 2025**
 {% endhint %}
 
 {% hint style="success" %}
@@ -82,6 +92,18 @@ This release introduces several new features, improvements, and bug fixes, inclu
 * **Ensuring state changes are now in block streams**:\
   Refactored out-of-band state modifications:  All out-of-band state modifications have been refactored to be done in Schemas. ([#16843](https://github.com/hashgraph/hedera-services/issues/16843))
 * Increased CryptoGetAccountBalance throttle:  The throttle for the CryptoGetAccountBalance query has been increased to the number of network nodes times 1,000,000 plus a buffer.  This change addresses an issue where the throttle was too low, leading to throttling errors.  ([#16850](https://github.com/hashgraph/hedera-services/issues/16850), [#16857](https://github.com/hashgraph/hedera-services/issues/16857))
+
+### [Build 0.58.13](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.58.13)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* Fail NFT airdrops that would trigger royalty fee payments.
+
+**Full Changelog**: [v0.58.11...v0.58.13](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.58.11...v0.58.13)
+
+</details>
 
 ### [Build 0.58.10](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.58.10)
 

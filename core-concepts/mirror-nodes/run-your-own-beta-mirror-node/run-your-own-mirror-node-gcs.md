@@ -24,10 +24,10 @@ In this step, you will generate your Google Cloud Platform HMAC access keys. The
 
 ## 2. Clone Hedera Mirror Node Repository
 
-* Open your terminal and run the following commands to clone the `hedera-mirror-node` [repository](https://github.com/hashgraph/hedera-mirror-node) then `cd` into the `hedera-mirror-node` folder:
+* Open your terminal and run the following commands to clone the `hedera-mirror-node` [repository](https://github.com/hiero-ledger/hiero-mirror-node) then `cd` into the `hedera-mirror-node` folder:
 
 ```bash
-git clone https://github.com/hashgraph/hedera-mirror-node
+git clone https://github.com/hiero-ledger/hiero-mirror-node.git
 cd hedera-mirror-node
 ```
 

@@ -73,10 +73,10 @@ This step will teach you how to create a new IAM (_Identity and Access Managemen
 
 ## 3. Configure Mirror Node
 
-The `application.yml` file is the main configuration file for the Hedera Mirror Node. In this step, we will update the configuration file with your specific settings, such as your AWS access key, secret, and the Hedera network you want to mirror.
+The `application.yml` file is the main configuration file for the Hiero Mirror Node. In this step, we will update the configuration file with your specific settings, such as your AWS access key, secret, and the Hedera network you want to mirror.
 
 * Open the `application.yml` file in the root directory with a text editor of your choice.
-* `cd` into the `hedera-mirror-node` directory from your terminal or IDE.
+* `cd` into the `hiero-mirror-node` directory from your terminal or IDE.
 * Find the following fields and replace the placeholders with your actual AWS access key, secret key, project ID, and the network you want to mirror:
 
 | Item              | Description                              |

@@ -24,11 +24,11 @@ In this step, you will generate your Google Cloud Platform HMAC access keys. The
 
 ## 2. Clone Hedera Mirror Node Repository
 
-* Open your terminal and run the following commands to clone the `hedera-mirror-node` [repository](https://github.com/hiero-ledger/hiero-mirror-node) then `cd` into the `hedera-mirror-node` folder:
+* Open your terminal and run the following commands to clone the `hiero-mirror-node` [repository](https://github.com/hiero-ledger/hiero-mirror-node) then `cd` into the `hiero-mirror-node` folder:
 
 ```bash
 git clone https://github.com/hiero-ledger/hiero-mirror-node.git
-cd hedera-mirror-node
+cd hiero-mirror-node
 ```
 
 ## 3. Configure Mirror Node
@@ -74,7 +74,7 @@ docker compose up -d db && docker logs hedera-mirror-node-db-1 --follow
 
 ## 5. Access Your Hedera Mirror Node Data
 
-This step shows you how to access the data that your Hedera Mirror Node is collecting. The mirror node stores its data in a PostgreSQL database, and you're using Docker to connect to that database. To access the mirror node data, we'll have to enter the **`hedera-mirror-node-db-1`** container.
+This step shows you how to access the data that your Hedera Mirror Node is collecting. The mirror node stores its data in a PostgreSQL database, and you're using Docker to connect to that database. To access the mirror node data, we'll have to enter the **`hiero-mirror-node-db-1`** container.
 
 * Open a new terminal and run the following command to view the list of containers:
 
@@ -85,7 +85,7 @@ docker ps
 * Enter the following command to access the Docker container:
 
 ```bash
-docker exec -it hedera-mirror-node-db-1 bash
+docker exec -it hiero-mirror-node-db-1 bash
 ```
 
 * Enter the following command to access the database:

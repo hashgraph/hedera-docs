@@ -65,10 +65,10 @@ This step will teach you how to create a new IAM (_Identity and Access Managemen
 
 ## 2. Clone the Mirror Node Repository
 
-* Open your terminal and run the following commands to clone the mirror node [repository](https://github.com/hiero-ledger/hiero-mirror-node), then `cd` into the `hedera-mirror-node` folder:
+* Open your terminal and run the following commands to clone the mirror node [repository](https://github.com/hiero-ledger/hiero-mirror-node), then `cd` into the `hiero-mirror-node` folder:
 
 <pre class="language-bash"><code class="lang-bash"><strong>git clone https://github.com/hiero-ledger/hiero-mirror-node.git
-</strong>cd hedera-mirror-node
+</strong>cd hiero-mirror-node
 </code></pre>
 
 ## 3. Configure Mirror Node

@@ -13,8 +13,45 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 {% endhint %}
 
 {% hint style="success" %}
-**TESTNET UPDATE SCHEDULED: MARCH 9, 2025**
+**TESTNET UPDATE SCHEDULED: MARCH 18, 2025**
 {% endhint %}
+
+### [Build 0.59.5](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.59.5)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* fix: Fix candidate roster adoption logic (v59) by [@poulok](https://github.com/poulok) in [#18359](https://github.com/hiero-ledger/hiero-consensus-node/pull/18359)
+
+**Full Changelog**: [v0.59.4...v0.59.5](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.59.4...v0.59.5)
+
+</details>
+
+### [Build 0.59.4](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.59.4)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* fix: 18267: Backport the fix for 18235 to 0.59 by [@artemananiev](https://github.com/artemananiev) in [#18303](https://github.com/hiero-ledger/hiero-consensus-node/pull/18303)
+* fix: 18268: Bucket integrity check in HDHM.ReadUpdateBucketTask can be improved by [@artemananiev](https://github.com/artemananiev) in [#18272](https://github.com/hiero-ledger/hiero-consensus-node/pull/18272)
+
+**Full Changelog**: [v0.59.3...v0.59.4](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.59.3...v0.59.4)
+
+</details>
+
+### [Build 0.59.3](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.59.3)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* chore: Prohibit all airdrop royalty fees by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#18261](https://github.com/hiero-ledger/hiero-consensus-node/pull/18261)
+
+**Full Changelog**: [v0.59.2...v0.59.3](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.59.2...v0.59.3)
+
+</details>
 
 ### [Build 0.59.2](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.59.2)
 

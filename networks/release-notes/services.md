@@ -16,6 +16,36 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **TESTNET UPDATE SCHEDULED: MARCH 18, 2025**
 {% endhint %}
 
+### Release Highlights
+
+#### HIPs:
+
+#### [HIP-991](https://hips.hedera.com/hip/hip-991): Topic Fees
+
+* Description: ​HIP-991 introduces an optional fee system for submitting messages to topics on the Hedera network, aiming to enhance economic scalability and simplify operations for topic operators.
+* Benefits: Empowers topic operators with greater control over their topics, offering mechanisms to monetize and manage access. Key features include:&#x20;
+*
+  * Optional Submission Fees: Topic operators can set optional fees for message submissions, payable in HBAR or Hedera Token Service (HTS) fungible tokens.​
+  * Fee Schedule Key: A new 'Fee Schedule Key' allows operators to manage and update fee structures. This key must be set during topic creation.​
+  * Custom Fee Distribution: Collected fees can be distributed to multiple accounts, supporting both HBAR and HTS tokens.​
+  * Fee Exemptions: Operators can specify a list of keys that are exempt from fees, allowing certain users to submit messages without incurring charges.​
+
+#### [HIP-755](https://hips.hedera.com/hip/hip-755): Schedule Service System Contract signSchedule(address, bytes)
+
+* Description: This HIP introduces a Schedule Service System Contract to enhance the Hedera Smart Contract Service (HSCS) by enabling smart contracts to interact with scheduled transactions. This release includes signSchedule(address, bytes).&#x20;
+* Benefits: HIP-755 introduces a Schedule Service System Contract to enhance the Hedera Smart Contract Service by enabling smart contracts to interact with scheduled transactions. signSchedule(address, bytes) method, allows smart contracts to pass along the signature from an EOA needed for a scheduled transaction. &#x20;
+
+#### [HIP-756](https://hips.hedera.com/hip/hip-756): Scheduled Token Create/Update Transactions via Smart Contract
+
+* Description: Enables scheduling token create and update operations through smart contracts, with implementation of the scheduleNative system contract function.
+* Benefits: Expands smart contract functionality by allowing developers to schedule token operations directly from smart contracts, providing more flexibility in DApp development.
+
+#### Other Notable Changes:
+
+#### Token Airdrop Update: Prohibit Airdrops With Royalty Fees
+
+* Changes introduced to ensure that any airdrops incorporating royalty fees, whether they include fallback fees or not, are disallowed.
+
 ### [Build 0.59.5](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.59.5)
 
 <details>
@@ -110,9 +140,7 @@ This release introduces several new features, improvements, and bug fixes, inclu
 #### Other Notable Changes
 
 * Enabled mirror node to simulate contract calls:\
-  The standalone transaction executor now supports custom Operations. Developers can use this feature to create and execute custom operations that are not part of the standard Hedera API.  ([#17354](https://github.com/hashgraph/hedera-services/issues/17354))\
-  \
-
+  The standalone transaction executor now supports custom Operations. Developers can use this feature to create and execute custom operations that are not part of the standard Hedera API.  ([#17354](https://github.com/hashgraph/hedera-services/issues/17354))
 * **Enhancing Dynamic Address Book v2** NodeCreate and NodeDelete transaction signature requirements changed:&#x20;
   * The NodeCreate transaction now requires the admin key and one of the treasury account key, system admin key, or address book admin key to sign.&#x20;
     * The NodeDelete transaction is now a non-privileged transaction and requires one of the admin key, treasury account key, system admin key, or address book admin key to sign. ([#16900](https://github.com/hashgraph/hedera-services/issues/16900), [#17021](https://github.com/hashgraph/hedera-services/issues/17021), [#16990](https://github.com/hashgraph/hedera-services/issues/16990), [#17029](https://github.com/hashgraph/hedera-services/issues/17029))

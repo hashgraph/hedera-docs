@@ -29,7 +29,3 @@ With this kit, intelligent agents (such as those powered by large language model
 {% embed url="https://www.youtube.com/watch?v=NMP-99DJ0cI" %}
 {% endtab %}
 {% endtabs %}
-
-## Roadmap
-
-For details on upcoming features, check out our [ROADMAP.md](https://github.com/hedera-dev/hedera-agent-kit/blob/main/ROADMAP.md). If you’d like to tackle one of the tasks, look at the open issues on GitHub or create a new one if you don’t see what you’re looking for.

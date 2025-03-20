@@ -24,7 +24,6 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 * Description: ​HIP-991 introduces an optional fee system for submitting messages to topics on the Hedera network, aiming to enhance economic scalability and simplify operations for topic operators.
 * Benefits: Empowers topic operators with greater control over their topics, offering mechanisms to monetize and manage access. Key features include:&#x20;
-*
   * Optional Submission Fees: Topic operators can set optional fees for message submissions, payable in HBAR or Hedera Token Service (HTS) fungible tokens.​
   * Fee Schedule Key: A new 'Fee Schedule Key' allows operators to manage and update fee structures. This key must be set during topic creation.​
   * Custom Fee Distribution: Collected fees can be distributed to multiple accounts, supporting both HBAR and HTS tokens.​

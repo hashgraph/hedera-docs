@@ -1,2 +1,0 @@
-# Hedera Token Service (HTS)
-

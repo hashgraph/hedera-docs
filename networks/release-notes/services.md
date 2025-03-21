@@ -127,6 +127,8 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **TESTNET UPDATE SCHEDULED: FEBRUARY 11, 2025**
 {% endhint %}
 
+### Release Highlights
+
 This release introduces several new features, improvements, and bug fixes, including:
 
 #### HIPs

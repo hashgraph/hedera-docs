@@ -4,7 +4,7 @@ The [Hedera JSON-RPC Relay](https://github.com/hashgraph/hedera-json-rpc-relay) 
 
 ## HBAR decimal places&#x20;
 
-The Hedera JSON RPC Relay **`msg.value`** uses 18 decimals when it returns HBAR. As a result, the **`gasPrice`** value returns 18 decimal places since it is only utilized from the JSON RPC Relay. Refer to the [HBAR page](../../sdks-and-apis/sdks/hbars.md) for a list of Hedera APIs and the decimal places they return.&#x20;
+The Hedera JSON RPC Relay **`msg.value`** uses 18 decimals when it returns HBAR. As a result, the **`gasPrice`** value returns 18 decimal places since it is only utilized from the JSON RPC Relay. Refer to the [HBAR page](../../../sdks-and-apis/sdks/hbars.md) for a list of Hedera APIs and the decimal places they return.&#x20;
 
 ## Community Hosted JSON-RPC Relays
 
@@ -16,14 +16,14 @@ Anyone in the community can set up their own JSON RPC relay that applications ca
 
 **\*\***&#xD83D;&#xDEA8;_**Please note**: Hashio is For development and testing purposes only. Production use cases are strongly encouraged to use_ [_commercial-grade JSON-RPC relays_](https://docs.hedera.com/hedera/core-concepts/smart-contracts/deploying-smart-contracts/json-rpc-relay#community-hosted-json-rpc-relays) _or host their own instance of the_ [_Hedera JSON-RPC Relay_](https://github.com/hashgraph/hedera-json-rpc-relay?tab=readme-ov-file#hedera-json-rpc-relay)_._
 
-<table data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-cover data-type="files"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><strong>Hashio</strong></td><td><a href="../../.gitbook/assets/hashio-new-hashgraph.png">hashio-new-hashgraph.png</a></td><td><a href="https://www.hashgraph.com/hashio/">https://www.hashgraph.com/hashio/</a></td></tr><tr><td align="center"><strong>Arkhia</strong></td><td><a href="../../.gitbook/assets/arkhia-logo.png">arkhia-logo.png</a></td><td><a href="https://www.arkhia.io/features/#api-services">https://www.arkhia.io/features/#api-services</a></td></tr><tr><td align="center"><strong>Validation Cloud</strong></td><td><a href="../../.gitbook/assets/validation-cloud-black-logo-card.png">validation-cloud-black-logo-card.png</a></td><td><a href="https://docs.validationcloud.io/about/hedera/json-rpc-relay-api">https://docs.validationcloud.io/about/hedera/json-rpc-relay-api</a></td></tr><tr><td align="center"><strong>thirdweb</strong></td><td><a href="../../.gitbook/assets/thirdweb-logo.jpg">thirdweb-logo.jpg</a></td><td><a href="https://thirdweb.com/hedera">https://thirdweb.com/hedera</a></td></tr><tr><td align="center"><strong>QuickNode</strong></td><td><a href="../../.gitbook/assets/quicknode-logo-card-black.png">quicknode-logo-card-black.png</a></td><td><a href="https://www.quicknode.com/docs/hedera">https://www.quicknode.com/docs/hedera</a></td></tr><tr><td align="center"><strong>Run Your Own Relay</strong></td><td><a href="../../.gitbook/assets/05-Hedera-Icon-Lockup-Dark.jpg">05-Hedera-Icon-Lockup-Dark.jpg</a></td><td><a href="https://github.com/hashgraph/hedera-json-rpc-relay?tab=readme-ov-file#hedera-json-rpc-relay">https://github.com/hashgraph/hedera-json-rpc-relay?tab=readme-ov-file#hedera-json-rpc-relay</a></td></tr></tbody></table>
+<table data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-cover data-type="files"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><strong>Hashio</strong></td><td><a href="../../../.gitbook/assets/hashio-new-hashgraph.png">hashio-new-hashgraph.png</a></td><td><a href="https://www.hashgraph.com/hashio/">https://www.hashgraph.com/hashio/</a></td></tr><tr><td align="center"><strong>Arkhia</strong></td><td><a href="../../../.gitbook/assets/arkhia-logo.png">arkhia-logo.png</a></td><td><a href="https://www.arkhia.io/features/#api-services">https://www.arkhia.io/features/#api-services</a></td></tr><tr><td align="center"><strong>Validation Cloud</strong></td><td><a href="../../../.gitbook/assets/validation-cloud-black-logo-card.png">validation-cloud-black-logo-card.png</a></td><td><a href="https://docs.validationcloud.io/about/hedera/json-rpc-relay-api">https://docs.validationcloud.io/about/hedera/json-rpc-relay-api</a></td></tr><tr><td align="center"><strong>thirdweb</strong></td><td><a href="../../../.gitbook/assets/thirdweb-logo.jpg">thirdweb-logo.jpg</a></td><td><a href="https://thirdweb.com/hedera">https://thirdweb.com/hedera</a></td></tr><tr><td align="center"><strong>QuickNode</strong></td><td><a href="../../../.gitbook/assets/quicknode-logo-card-black.png">quicknode-logo-card-black.png</a></td><td><a href="https://www.quicknode.com/docs/hedera">https://www.quicknode.com/docs/hedera</a></td></tr><tr><td align="center"><strong>Run Your Own Relay</strong></td><td><a href="../../../.gitbook/assets/05-Hedera-Icon-Lockup-Dark.jpg">05-Hedera-Icon-Lockup-Dark.jpg</a></td><td><a href="https://github.com/hashgraph/hedera-json-rpc-relay?tab=readme-ov-file#hedera-json-rpc-relay">https://github.com/hashgraph/hedera-json-rpc-relay?tab=readme-ov-file#hedera-json-rpc-relay</a></td></tr></tbody></table>
 
 {% hint style="info" %}
 **Note:** If you want to add your hosted JSON-RPC relay to this list, please open an issue in the [Hedera docs GitHub repository](https://github.com/hashgraph/hedera-docs). Please visit the community-hosted websites to review any limitations specific to their instance.&#x20;
 {% endhint %}
 
-{% content-ref url="../../tutorials/more-tutorials/json-rpc-connections/" %}
-[json-rpc-connections](../../tutorials/more-tutorials/json-rpc-connections/)
+{% content-ref url="../../../tutorials/more-tutorials/json-rpc-connections/" %}
+[json-rpc-connections](../../../tutorials/more-tutorials/json-rpc-connections/)
 {% endcontent-ref %}
 
 ## FAQ
@@ -43,7 +43,7 @@ Anyone in the community can set up their own JSON RPC relay that applications ca
 
 <summary><strong>How do I connect to the Hedera Network over RPC?</strong></summary>
 
-The configuration guide to connect to the Hedera Network over RPC can be found [here](../../tutorials/more-tutorials/json-rpc-connections/).
+The configuration guide to connect to the Hedera Network over RPC can be found [here](../../../tutorials/more-tutorials/json-rpc-connections/).
 
 </details>
 
@@ -59,7 +59,7 @@ The endpoints for previewnet, testnet, and mainnet can be found on [Hashio](http
 
 <summary><strong>How does Hedera handle decimals in HBAR and gas prices?</strong></summary>
 
-The JSON-RPC Relay `msg.value` uses 18 decimals when it returns HBAR. The `gasPrice` value also returns 18 decimal places. _Check out the_ [_HBAR page_](../../sdks-and-apis/sdks/hbars.md) _for the full list of Hedera APIs and their decimal representation._&#x20;
+The JSON-RPC Relay `msg.value` uses 18 decimals when it returns HBAR. The `gasPrice` value also returns 18 decimal places. _Check out the_ [_HBAR page_](../../../sdks-and-apis/sdks/hbars.md) _for the full list of Hedera APIs and their decimal representation._&#x20;
 
 </details>
 
@@ -67,6 +67,6 @@ The JSON-RPC Relay `msg.value` uses 18 decimals when it returns HBAR. The `gasPr
 
 <summary><strong>How can I contribute or log errors?</strong></summary>
 
-To contribute or log errors, please refer to the [Contributing Guide](../../support-and-community/contributing-guide/) and submit them as issues in the [GitHub repository](https://github.com/hashgraph/hedera-json-rpc-relay/issues).
+To contribute or log errors, please refer to the [Contributing Guide](../../../support-and-community/contributing-guide.md) and submit them as issues in the [GitHub repository](https://github.com/hashgraph/hedera-json-rpc-relay/issues).
 
 </details>

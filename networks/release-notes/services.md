@@ -6,6 +6,37 @@ description: Hedera Services release information
 
 Visit the [Hedera status page](https://status.hedera.com/) for the latest versions supported on each network.
 
+## Release v0.60
+
+{% hint style="info" %}
+**MAINNET UPDATE SCHEDULED: APRIL 9, 2025**
+{% endhint %}
+
+{% hint style="info" %}
+**TESTNET UPDATE SCHEDULED: MARCH 27, 2025**
+{% endhint %}
+
+### [Build 0.60.0](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.60.0)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* feat: add feature flag for disabling precompile contracts by [@lukelee-sl](https://github.com/lukelee-sl) in [#17548](https://github.com/hiero-ledger/hiero-consensus-node/pull/17548)
+* fix: Fail cleanly on negative gas limit by [@kimbor](https://github.com/kimbor) in [#17486](https://github.com/hiero-ledger/hiero-consensus-node/pull/17486)
+* test: fix `MerkleRehashTests.failedRehash()` unit test by [@OlegMazurov](https://github.com/OlegMazurov) in [#17575](https://github.com/hiero-ledger/hiero-consensus-node/pull/17575)
+* feat: Use `decrementCounter` on `ENTITY_COUNTS` when `remove()` is called by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#17513](https://github.com/hiero-ledger/hiero-consensus-node/pull/17513)
+* feat: Implement ECDSA key support for yahcli accounts create by [@mhess-swl](https://github.com/mhess-swl) in [#17293](https://github.com/hiero-ledger/hiero-consensus-node/pull/17293)
+* feat: update `onSealConsensusRound()` to return a boolean by [@mhess-swl](https://github.com/mhess-swl) in [#17529](https://github.com/hiero-ledger/hiero-consensus-node/pull/17529)
+* fix: Reference correct `main` obj in test by [@mhess-swl](https://github.com/mhess-swl) in [#17581](https://github.com/hiero-ledger/hiero-consensus-node/pull/17581)
+* ci: Fix Check Integration Job State step to detect properly by [@rbarker-dev](https://github.com/rbarker-dev) in [#17583](https://github.com/hiero-ledger/hiero-consensus-node/pull/17583)
+* feat: add synthetic node creates to record stream at genesis by [@MiroslavGatsanoga](https://github.com/MiroslavGatsanoga) in [#17461](https://github.com/hiero-ledger/hiero-consensus-node/pull/17461)
+* fix(17537): Fix Test Flake startAtFirstFileDiscontinuityInMiddleTest by [@mxtartaglia-sl](https://github.com/mxtartaglia-sl) in [#17580](https://github.com/hiero-ledger/hiero-consensus-node/pull/17580)
+
+**Full Changelog**: [v0.59.5...v0.60.0](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.59.5...v0.60.0)
+
+</details>
+
 ## Release v0.59
 
 {% hint style="info" %}

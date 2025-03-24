@@ -39,15 +39,15 @@ Hedera provides a JSON-RPC relay, making it easy for developers to interact with
 
 ### **HTS Tokens as ERC-20/ERC-721 via Facade Contracts**
 
-Hedera provides facade contracts (per HIP-218 and HIP-376) that allow HTS-native tokens to function as ERC-20 or ERC-721 tokens. With facade contracts, developers can leverage Hedera’s efficiency while maintaining EVM compatibility. Theses enable:
+Hedera provides facade contracts (per HIP-218 and HIP-376) that allow HTS-native tokens to function as ERC-20 or ERC-721 tokens. With these contracts, developers can leverage Hedera’s efficiency while maintaining EVM compatibility.&#x20;
 
-* HTS tokens to be used in EVM wallets without modification.
-* EVM-based dApps and DeFi platforms to interact with HTS assets.
-* Seamless token transfers using standard ERC functions (`transfer()`, `approve()`, `transferFrom()`).&#x20;
+​A facade contract on Hedera acts as a built-in adapter, allowing Hedera Token Service (HTS) tokens to function seamlessly as standard ERC-20 or ERC-721 tokens within EVM-compatible (EVM) environments. This integration enables developers to interact with HTS tokens using familiar Ethereum interfaces, such as `transfer()`, `approve()`, and `transferFrom()`, without requiring modifications to existing Ethereum wallets or decentralized applications (dApps).
+
+Under the hood, when an EVM-compatible tool interacts with an HTS token's facade contract, the call is delegated to Hedera's native token service. This design ensures that HTS tokens can be managed and transacted using standard Ethereum tooling, providing a seamless developer experience. ​
+
+In summary, facade contracts provide a bridge between Hedera's native token services and the Ethereum ecosystem, enabling developers to leverage Hedera's performance benefits while maintaining compatibility with established Ethereum standards and tools.​
 
 <table><thead><tr><th width="242.2333984375">Facade Contracts</th><th>Description</th></tr></thead><tbody><tr><td><strong>IHRC904AccountFacade.sol</strong></td><td><a href="https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/hedera-account-service/IHRC904AccountFacade.sol">https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/hedera-account-service/IHRC904AccountFacade.sol</a></td></tr><tr><td><strong>IHRC906AccountFacade.sol</strong></td><td><a href="https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/hedera-account-service/IHRC906AccountFacade.sol">https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/hedera-account-service/IHRC906AccountFacade.sol</a></td></tr><tr><td><strong>IHRC755ScheduleFacade.sol</strong></td><td><a href="https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/hedera-schedule-service/IHRC755ScheduleFacade.sol">https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/hedera-schedule-service/IHRC755ScheduleFacade.sol</a></td></tr><tr><td><strong>IHRC904TokenFacade.sol</strong></td><td><a href="https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/hedera-token-service/IHRC904TokenFacade.sol">https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/hedera-token-service/IHRC904TokenFacade.sol</a></td></tr></tbody></table>
-
-_**📣 Learn more about facade contracts and how they work**_ [_**here**_](broken-reference)_**.**_&#x20;
 
 {% hint style="info" %}
 ### Token Associations

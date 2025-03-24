@@ -435,6 +435,14 @@ An account controlled by [private keys](glossary.md#private-key) that can send t
 
 ## F
 
+### Facade Contract
+
+***
+
+A facade contract on Hedera acts as a built-in adapter, allowing Hedera Token Service (HTS) tokens to function seamlessly as standard ERC-20 or ERC-721 tokens within EVM-compatible (EVM) environments. This integration enables developers to interact with HTS tokens using familiar EVM interfaces, such as `transfer()`, `approve()`, and `transferFrom()`, without requiring modifications to existing EVM wallets or decentralized applications (dApps).
+
+Under the hood, when an EVM-compatible tool interacts with an HTS token's facade contract, the call is delegated to Hedera's native token service. This design ensures that HTS tokens can be managed and transacted using standard EVM tooling, providing a seamless developer experience. ​
+
 ### Fair Order
 
 ***

@@ -2,13 +2,13 @@
 
 ## **Overview**
 
-Hedera’s JSON-RPC relay provides a familiar interface for EVM developers by supporting standard Ethereum JSON RPC methods. This compatibility means you can use popular EVM development tools (like Hardhat, Truffle, or Foundry)  and wallets (like Metamask) to interact with Hedera’s network. However, Hedera’s unique state management model affects how you retrieve historical data and verify states, requiring a shift in approach from the standard EVM workflow.
+Hiero's JSON-RPC relay provides a familiar interface for EVM developers by supporting standard Ethereum JSON RPC methods. This compatibility means you can use popular EVM development tools (like Hardhat, Truffle, or Foundry)  and wallets (like Metamask) to interact with Hedera’s network. However, Hedera’s unique state management model affects how you retrieve historical data and verify states, requiring a shift in approach from the standard EVM workflow.
 
 ***
 
 ## **Ethereum RPC API Behavior via JSON-RPC Relay**
 
-On Ethereum, methods like `eth_getBlockByNumber` return the true value of `stateRoot` that enables direct historical state verification. Hedera’s JSON-RPC relay, however, returns the root hash of an empty Merkle trie for the `stateRoot` value for compatibility. Instead of relying on it, you should query Hedera’s mirror nodes for historical states, event logs, and transaction details.
+On Ethereum, methods like `eth_getBlockByNumber` return the true value of `stateRoot` that enables direct historical state verification. Hiero's JSON-RPC relay, however, returns the root hash of an empty Merkle trie for the `stateRoot` value for compatibility. Instead of relying on it, you should query Hedera’s mirror nodes for historical states, event logs, and transaction details.
 
 #### **Example JSON-RPC Query Request:**
 
@@ -131,4 +131,4 @@ _**💡 See the full list of supported EVM tools**_ [_**here**_](https://github.
 
 * [**Supported EVM Tooling**](https://github.com/hashgraph/hedera-json-rpc-relay/tree/main/tools)
 * [**JSON-RPC Relay Docs**](https://docs.hedera.com/hedera/core-concepts/smart-contracts/json-rpc-relay)
-* [**Hedera JSON-RPC Relay Repo**](https://github.com/hashgraph/hedera-json-rpc-relay)
+* [**Hiero JSON-RPC Relay Repo**](https://github.com/hiero-ledger/hiero-json-rpc-relay)

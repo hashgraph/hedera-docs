@@ -1,14 +1,14 @@
 ---
 description: >-
-  A step-by-step guide on deploying a smart contract to Hedera testnet and
-  Hedera Local Node using Hardhat.
+  A step-by-step guide on deploying a smart contract to Hedera testnet and Hiero
+  Local Node using Hardhat.
 ---
 
-# Deploy a Smart Contract Using Hardhat and Hedera JSON-RPC Relay
+# Deploy a Smart Contract Using Hardhat and Hiero JSON-RPC Relay
 
-In this tutorial, you will walk through the step-by-step guide on deploying [smart contracts](../../support-and-community/glossary.md#smart-contract) using Hardhat and Hedera JSON-RPC Relay. [**Hardhat**](https://hardhat.org/) is a development environment for Ethereum. It consists of different components for editing, compiling, debugging, and deploying smart contracts and dApps, all working together to create a complete development environment.&#x20;
+In this tutorial, you will walk through the step-by-step guide on deploying [smart contracts](../../support-and-community/glossary.md#smart-contract) using Hardhat and Hiero JSON-RPC Relay. [**Hardhat**](https://hardhat.org/) is a development environment for the EVM. It consists of different components for editing, compiling, debugging, and deploying smart contracts and dApps, all working together to create a complete development environment.&#x20;
 
-The [**Hedera JSON-RPC Relay**](https://github.com/hashgraph/hedera-json-rpc-relay) is an implementation of Ethereum JSON-RPC APIs for Hedera and utilizes both Hedera Consensus Nodes and Mirror Nodes to support RPC queries defined in the [JSON-RPC Specification](https://playground.open-rpc.org/?schemaUrl=https://raw.githubusercontent.com/hashgraph/hedera-json-rpc-relay/main/docs/openrpc.json\&uiSchema%5BappBar%5D%5Bui:splitView%5D=false\&uiSchema%5BappBar%5D%5Bui:input%5D=false\&uiSchema%5BappBar%5D%5Bui:examplesDropdown%5D=false). The [**Hedera Local Node**](https://github.com/hashgraph/hedera-local-node) project enables developers to establish their own local network for development and testing. The local network comprises the consensus node, mirror node, JSON-RPC relay, and other Hedera products, and can be set up using the CLI tool and Docker. This setup allows you to seamlessly build and deploy smart contracts from your local environment.
+The [**Hiero JSON-RPC Relay**](https://github.com/hiero-ledger/hiero-json-rpc-relay) is an implementation of Ethereum JSON-RPC APIs for Hedera and utilizes both Hiero Consensus Nodes and Mirror Nodes to support RPC queries defined in the [JSON-RPC Specification](https://playground.open-rpc.org/?schemaUrl=https://raw.githubusercontent.com/hashgraph/hedera-json-rpc-relay/main/docs/openrpc.json\&uiSchema%5BappBar%5D%5Bui:splitView%5D=false\&uiSchema%5BappBar%5D%5Bui:input%5D=false\&uiSchema%5BappBar%5D%5Bui:examplesDropdown%5D=false). The [**Hiero Local Node**](https://github.com/hashgraph/hedera-local-node) project enables developers to establish their own local network for development and testing. The local network comprises the consensus node, mirror node, JSON-RPC relay, and other Hedera products, and can be set up using the CLI tool and Docker. This setup allows you to seamlessly build and deploy smart contracts from your local environment.
 
 By the end of this tutorial, you'll be equipped to deploy smart contracts on the Hedera Testnet or your local Hedera node, leveraging Hardhat's tools for testing, compiling, and deploying.
 
@@ -304,9 +304,9 @@ The `.env` file securely stores environment variables, such as your Hedera netwo
 
 {% tabs %}
 {% tab title="local node" %}
-**Prerequisite**: A Hedera Local Node set up and running ([setup tutorial](../local-node/how-to-set-up-a-hedera-local-node.md)).
+**Prerequisite**: A Hiero Local Node set up and running ([setup tutorial](../local-node/how-to-set-up-a-hedera-local-node.md)).
 
-**Hedera Local Node environment variables**
+**Hiero Local Node environment variables**
 
 The variables are predefined for the purposes of this tutorial.
 
@@ -625,11 +625,11 @@ _**Note:** At the top of the explorer page, remember to switch the network to **
 
 **➡** [**Project Repository**](https://github.com/hashgraph/hedera-hardhat-example-project)
 
-**➡** [**Hedera Local Node Repository**](https://github.com/hashgraph/hedera-local-node)
+**➡** [**Hiero Local Node Repository**](https://github.com/hiero-ledger/hiero-local-node)
 
-**➡** [**Hedera JSON-RPC Relay Repository**](https://github.com/hashgraph/hedera-json-rpc-relay)
+**➡** [**Hiero JSON-RPC Relay Repository**](https://github.com/hiero-ledger/hiero-json-rpc-relay)
 
-**➡** [**Hedera Local Node Setup Tutorial**](../local-node/how-to-set-up-a-hedera-local-node.md)
+**➡** [**Hiero Local Node Setup Tutorial**](../local-node/how-to-set-up-a-hedera-local-node.md)
 
 **➡**[ **Hardhat Documentation**](https://hardhat.org/hardhat-runner/docs/getting-started#overview)
 

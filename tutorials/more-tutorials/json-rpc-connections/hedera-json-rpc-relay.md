@@ -1,12 +1,12 @@
 ---
 description: >-
   How to configure a JSON-RPC endpoint that enables the communication between
-  EVM-compatible developer tools using the Hedera JSON-RPC Relay
+  EVM-compatible developer tools using the Hiero JSON-RPC Relay
 ---
 
-# Configuring Hedera JSON-RPC Relay endpoints
+# Configuring Hiero JSON-RPC Relay endpoints
 
-[Hedera JSON-RPC Relay](https://github.com/hashgraph/hedera-json-rpc-relay) is a server run by you on your own computer - decentralization for the win!
+[Hiero JSON-RPC Relay](https://github.com/hiero-ledger/hiero-json-rpc-relay) is a server run by you on your own computer - decentralization for the win!
 
 As such, it:
 
@@ -17,9 +17,9 @@ As such, it:
 
 While this combination may be considered less user-friendly, it offers the highest levels of reliability among RPC endpoints.
 
-This also makes the Hedera JSON-RPC Relay a good alternative for local development and testing; and also a potential option for contributing infrastructure to the Hedera ecosystem.
+This also makes the Hiero JSON-RPC Relay a good alternative for local development and testing; and also a potential option for contributing infrastructure to the Hedera ecosystem.
 
-To connect to Hedera networks via your own instance of Hedera JSON-RPC Relay, use this URL when initializing the wallet/ web3 provider instance:
+To connect to Hedera networks via your own instance of Hiero JSON-RPC Relay, use this URL when initializing the wallet/ web3 provider instance:
 
 {% tabs %}
 {% tab title="Hedera Mainnet" %}
@@ -57,7 +57,7 @@ To get this service running, you will need to do the following pre-requisite ste
 
 {% code overflow="wrap" %}
 ```shell
-git clone -b main --single-branch  https://github.com/hashgraph/hedera-json-rpc-relay.git
+git clone -b main --single-branch  https://github.com/hiero-ledger/hiero-json-rpc-relay.git
 ```
 {% endcode %}
 
@@ -78,7 +78,7 @@ git clone -b main --single-branch git@github.com:hashgraph/hedera-json-rpc-relay
 (2) Enter the directory that you have cloned, and install dependencies. It is recommended that you have NodeJS version `20` or later for this.
 
 ```sh
-cd hedera-json-rpc-relay
+cd hiero-json-rpc-relay
 npm install
 ```
 
@@ -98,15 +98,15 @@ Then set the following fields:
 
 {% tabs %}
 {% tab title="Hedera Mainnet" %}
-{% @github-files/github-code-block url="https://github.com/hashgraph/hedera-json-rpc-relay/blob/f9d5ebaa80/docs/examples/.env.mainnet.sample" %}
+{% @github-files/github-code-block url="https://github.com/hiero-ledger/hiero-json-rpc-relay/blob/main/docs/examples/.env.mainnet.sample" %}
 {% endtab %}
 
 {% tab title="Hedera Testnet" %}
-{% @github-files/github-code-block url="https://github.com/hashgraph/hedera-json-rpc-relay/blob/f9d5ebaa80/docs/examples/.env.testnet.sample" %}
+{% @github-files/github-code-block url="https://github.com/hiero-ledger/hiero-json-rpc-relay/blob/main/docs/examples/.env.testnet.sample" %}
 {% endtab %}
 
 {% tab title="Hedera Previewnet" %}
-{% @github-files/github-code-block url="https://github.com/hashgraph/hedera-json-rpc-relay/blob/f9d5ebaa80/docs/examples/.env.previewnet.sample" %}
+{% @github-files/github-code-block url="https://github.com/hiero-ledger/hiero-json-rpc-relay/blob/main/docs/examples/.env.previewnet.sample" %}
 {% endtab %}
 {% endtabs %}
 

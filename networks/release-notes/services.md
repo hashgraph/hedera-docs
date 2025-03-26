@@ -39,7 +39,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Release v0.59
 
-{% hint style="info" %}
+{% hint style="success" %}
 **MAINNET UPDATE SCHEDULED: MARCH 26, 2025**
 {% endhint %}
 
@@ -69,12 +69,6 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 * Description: Enables scheduling token create and update operations through smart contracts, with implementation of the scheduleNative system contract function.
 * Benefits: Expands smart contract functionality by allowing developers to schedule token operations directly from smart contracts, providing more flexibility in DApp development.
-
-#### Other Notable Changes:
-
-#### Token Airdrop Update: Prohibit Airdrops With Royalty Fees
-
-* Changes introduced to ensure that any airdrops incorporating royalty fees, whether they include fallback fees or not, are disallowed.
 
 ### [Build 0.59.5](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.59.5)
 
@@ -147,6 +141,8 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **Full Changelog**: [v0.58.9...v0.59.0](https://github.com/hashgraph/hedera-services/compare/v0.58.9...v0.59.0)
 
 </details>
+
+<figure><img src="../../.gitbook/assets/‎0.59_Performance Measurement Results_Extract.‎001.png" alt=""><figcaption></figcaption></figure>
 
 ## Release v0.58
 

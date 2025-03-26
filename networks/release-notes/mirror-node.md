@@ -8,6 +8,18 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Latest Releases
 
+## [v0.126.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.126.0)
+
+Repository: [hiero-ledger/hiero-mirror-node](https://github.com/hiero-ledger/hiero-mirror-node) · Tag: [v0.126.0](https://github.com/hiero-ledger/hiero-mirror-node/tree/v0.126.0) · Commit: [8ff0933](https://github.com/hiero-ledger/hiero-mirror-node/commit/8ff0933f946b8552ef21a05abf8f3cf48f4c96d0) · Released by: [github-actions\[bot\]](https://github.com/apps/github-actions)
+
+A large focus of this release was to support non-zero realms and shards. To that end, the gRPC API was updated to properly validate the file ID in the address book API against the configured realm and shard. The REST API now uses the `hedera.mirror.common.shard` and `hedera.mirror.common.realm` properties instead of the now deleted `hedera.mirror.rest.shard` property. This includes a change to now look up the alias and EVM address using either the user provided or configured shard and realm. The database encoding of `shard.realm.num` identifiers was tweaked to increase the number of bits to `num` from 32 to 38 bits and decrease the shard from 15 to 10 bits. This change should not impact current mirror node deployments. Balance snapshot and pending reward calculation was updated to not hardcode system accounts with `0.0`. The default operator in the acceptance tests and monitor was changed from `0.0.2` to use the configured shard and realm. Finally, the web3 API now uses the configured realm and shard as well.
+
+Integrating the modularized consensus node library into the web3 module made excellent progress. A new property `hedera.mirror.web3.evm.modularizedTrafficPercent` was added to enable a gradual rollout of the new code base. Metrics were updated to include a modularized flag so we can monitor its rollout. A number of missing singletons were implemented that the library requires. There were a large number of fixes to make the acceptance tests work against the modularized web3 as well.
+
+A number of bug fixes and improvements for [HIP-1056](https://github.com/hashgraph/hedera-improvement-proposal/pull/1056) block streams were tackled including handling the genesis block and processing contract block items.
+
+Also of note, the max age to cache the response for `/api/v1/schedule/{id}` was increased from one second to one hour for deleted or executed schedules. Finally, we switched code coverage and static analysis from Codecov and Sonar to Codacy.
+
 ## [v0.125.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.125.0)
 
 [HIP-991](https://hips.hedera.com/hip/hip-991) topic custom fees support was added to our REST APIs. The `/api/v1/topics/{id}` endpoint now displays the list of custom fees associated with a topic as well as its `fee_schedule_key` and `fee_exempt_key_list`. Additionally, the `/api/v1/transactions` and `/api/v1/transactions/{id}` endpoints were updated to add the new `max_custom_fees` the payer was willing to accept.

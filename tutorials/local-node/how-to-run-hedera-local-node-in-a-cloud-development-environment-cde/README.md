@@ -1,6 +1,6 @@
 # How to Run Hedera Local Node in a Cloud Development Environment (CDE)
 
-The [**Hedera Local Node**](https://github.com/hashgraph/hedera-local-node) project enables developers to establish their own local network for development and testing. The local network comprises the consensus node, mirror node, [JSON-RPC relay](https://github.com/hashgraph/hedera-json-rpc-relay#readme), and other Hedera services be set up without Docker and draining your computer’s resources by using .Cloud Development Environments (CDEs). CDEs allows developers to work from any device without the need to maintain static and brittle local development environments.
+The [**Hedera Local Node**](https://github.com/hashgraph/hedera-local-node) project enables developers to establish their own local network for development and testing. The local network comprises the consensus node, mirror node, [JSON-RPC relay](https://github.com/hashgraph/hedera-json-rpc-relay#readme), and other Consensus Node services be set up without Docker and draining your computer’s resources by using .Cloud Development Environments (CDEs). CDEs allows developers to work from any device without the need to maintain static and brittle local development environments.
 
 ## **Available Services**
 

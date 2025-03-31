@@ -9,7 +9,7 @@ However, transitioning to Hedera from Ethereum's EVM requires understanding key 
 This guide is for:
 
 * **EVM developers migrating to Hedera:** If you are experienced with EVM smart contracts, this guide helps you understand key differences in Hedera’s architecture, tokenomics, and tooling.
-* **Hedera-native developers adding smart contract functionality:** If you are familiar with Hedera services and now want to integrate smart contract functionality into your [dApp](../../../support-and-community/glossary.md#decentralized-application-dapp), this guide shows you how these contracts interact with Hedera’s native ecosystem.
+* **Hedera-native developers adding smart contract functionality:** If you are familiar with Consensus Node and now want to integrate smart contract functionality into your [dApp](../../../support-and-community/glossary.md#decentralized-application-dapp), this guide shows you how these contracts interact with Hedera’s native ecosystem.
 
 ## **High-Level Differences: Hedera vs. Ethereum**
 

@@ -1,6 +1,6 @@
 # SchedulableTransactionBody
 
-A schedulable transaction. Note that the global/dynamic system property scheduling.whitelist controls which transaction types may be scheduled. In Hedera Services 0.13.0, it will include only CryptoTransfer and ConsensusSubmitMessage functions.
+A schedulable transaction. Note that the global/dynamic system property scheduling.whitelist controls which transaction types may be scheduled. In Consensus Node 0.13.0, it will include only CryptoTransfer and ConsensusSubmitMessage functions.
 
 | Field                       | Type                                  | Description                                                                                                          |
 | --------------------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |

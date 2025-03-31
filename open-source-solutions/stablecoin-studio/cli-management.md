@@ -131,7 +131,7 @@ mirrors:
 
 **`rpcs`**
 
-This property specifies the RPC (Remote Procedure Call) servers available for connecting to Hedera services. RPCs are essential for querying smart contracts, among other functionalities. Similar to mirror nodes, the `selected` field indicates the default RPC to use.
+This property specifies the RPC (Remote Procedure Call) servers available for connecting to Consensus Node. RPCs are essential for querying smart contracts, among other functionalities. Similar to mirror nodes, the `selected` field indicates the default RPC to use.
 
 ```yaml
 rpcs:

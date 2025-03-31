@@ -21,7 +21,7 @@ The Hedera network offers multiple services:
 * Hedera Token Service (HTS)
 * Hedera Consensus Service (HCS)
 
-Each service defines a number of different ways you can interact with it as a developer, and these comprise the Hedera Application Programming Interfaces (HAPIs). However, HAPIs are very close to the metal, and a developer needs to handle gRPCs and protocol buffers (among other things) to work with them successfully. Thankfully there are Hedera SDKs, which abstract these low-level complexities away. These SDKs allow you to interact with the various Hedera services via APIs exposed in a variety of different programming languages.
+Each service defines a number of different ways you can interact with it as a developer, and these comprise the Hedera Application Programming Interfaces (HAPIs). However, HAPIs are very close to the metal, and a developer needs to handle gRPCs and protocol buffers (among other things) to work with them successfully. Thankfully there are Hedera SDKs, which abstract these low-level complexities away. These SDKs allow you to interact with the various Consensus Node services via APIs exposed in a variety of different programming languages.
 
 <details>
 

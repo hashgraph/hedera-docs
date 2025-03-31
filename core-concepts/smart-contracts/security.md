@@ -27,7 +27,7 @@ The old security model (pre [0.35.2](https://github.com/hashgraph/hedera-service
 
 This greatly improved user experience as contracts could combine transactions in an attempt at atomicity. For instance, a contract could associate, transfer and approve transactions on a user's behalf with one signature. While focusing on usability, this approach did not address cases in which bad actors could carry out an unsanctioned transaction on behalf of a user, e.g., [https://hedera.com/blog/analysis-remediation-of-the-precompile-attack-on-the-hedera-network](https://hedera.com/blog/analysis-remediation-of-the-precompile-attack-on-the-hedera-network)
 
-To address this, the core Hedera engineers thoroughly analyzed the Smart Contract Service and the HTS system contracts, aiming to secure the state and token assets of users and the network during Smart Contract executions. The results of this effort are the guidelines in [Hedera Services release v0.35.2](https://github.com/hashgraph/hedera-services/releases/tag/v0.35.2).
+To address this, the core Hedera engineers thoroughly analyzed the Smart Contract Service and the HTS system contracts, aiming to secure the state and token assets of users and the network during Smart Contract executions. The results of this effort are the guidelines in [Consensus Node release v0.35.2](https://github.com/hashgraph/hedera-services/releases/tag/v0.35.2).
 
 ### New model (v2) boundaries
 

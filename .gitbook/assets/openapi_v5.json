@@ -1,0 +1,1977 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Hedera Status API",
+    "description": "API for retrieving the status, components, incidents, and scheduled maintenances of the Hedera network.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://status.hedera.com/api/v2"
+    }
+  ],
+  "paths": {
+    "/status.json": {
+      "get": {
+        "summary": "Retrieve the current status of the Hedera network",
+        "description": "Fetches the overall status and health indicators of the Hedera network.",
+        "responses": {
+          "200": {
+            "description": "A JSON object containing the current status and page information.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "page": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Unique identifier for the status page."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the status page."
+                        },
+                        "url": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "URL of the status page."
+                        },
+                        "time_zone": {
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Timestamp of the last update."
+                        }
+                      }
+                    },
+                    "status": {
+                      "type": "object",
+                      "properties": {
+                        "description": {
+                          "type": "string",
+                          "description": "Description of the current status."
+                        },
+                        "indicator": {
+                          "type": "string",
+                          "description": "Indicator of the current status (e.g., major, minor)."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/summary.json": {
+      "get": {
+        "summary": "Retrieve a summary of the status page.",
+        "description": "Get a summary of the status page, including a status indicator, component statuses, unresolved incidents, and any upcoming or in-progress scheduled maintenances.",
+        "responses": {
+          "200": {
+            "description": "A JSON object containing the summary of the status page.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "page": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Unique identifier for the status page."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the status page."
+                        },
+                        "url": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "URL of the status page."
+                        },
+                        "time_zone": {
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Timestamp of the last update."
+                        }
+                      }
+                    },
+                    "status": {
+                      "type": "object",
+                      "properties": {
+                        "description": {
+                          "type": "string",
+                          "description": "Description of the current status."
+                        },
+                        "indicator": {
+                          "type": "string",
+                          "description": "Indicator of the current status (e.g., major, minor)."
+                        }
+                      }
+                    },
+                    "components": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Unique identifier for the component."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the component."
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "Current status of the component."
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Timestamp when the component was created."
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Timestamp of the last update to the component."
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "Description of the component."
+                        },
+                        "group": {
+                          "type": "boolean",
+                          "description": "Indicates if the component is a group."
+                        },
+                        "group_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "Identifier of the group this component belongs to."
+                        },
+                        "only_show_if_degraded": {
+                          "type": "boolean",
+                          "description": "Whether to show the component only if it's degraded."
+                        },
+                        "position": {
+                          "type": "integer",
+                          "description": "Position of the component in the list."
+                        },
+                        "showcase": {
+                          "type": "boolean",
+                          "description": "Indicates if the component is showcased."
+                        },
+                        "start_date": {
+                          "type": "string",
+                          "format": "date-time",
+                          "nullable": true,
+                          "description": "Start date of the component."
+                        },
+                        "page_id": {
+                          "type": "string",
+                          "description": "Identifier of the page this component belongs to."
+                        }
+                      }
+                    },
+                    "incidents": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Unique identifier for the incident."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the incident."
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "Current status of the incident."
+                        },
+                        "impact": {
+                          "type": "string",
+                          "description": "Impact level of the incident."
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Timestamp when the incident was created."
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Timestamp of the last update to the incident."
+                        },
+                        "resolved_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "nullable": true,
+                          "description": "Timestamp when the incident was resolved."
+                        },
+                        "monitoring_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "nullable": true,
+                          "description": "Timestamp when monitoring of the incident"
+                        },
+                        "incident_updates": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "incident_id": {
+                                "type": "string"
+                              },
+                              "status": {
+                                "type": "string"
+                              },
+                              "body": {
+                                "type": "string"
+                              },
+                              "created_at": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "updated_at": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "display_at": {
+                                "type": "string",
+                                "format": "date-time"
+                              }
+                            }
+                          }
+                        },
+                        "components": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "description": "Unique identifier for the component."
+                              },
+                              "name": {
+                                "type": "string",
+                                "description": "Name of the component."
+                              },
+                              "status": {
+                                "type": "string",
+                                "description": "Current status of the component."
+                              },
+                              "created_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "Timestamp when the component was created."
+                              },
+                              "updated_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "Timestamp of the last update to the component."
+                              },
+                              "description": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "Description of the component."
+                              },
+                              "group": {
+                                "type": "boolean",
+                                "description": "Indicates if the component is a group."
+                              },
+                              "group_id": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "Identifier of the group this component belongs to."
+                              },
+                              "only_show_if_degraded": {
+                                "type": "boolean",
+                                "description": "Whether to show the component only if it's degraded."
+                              },
+                              "position": {
+                                "type": "integer",
+                                "description": "Position of the component in the list."
+                              },
+                              "showcase": {
+                                "type": "boolean",
+                                "description": "Indicates if the component is showcased."
+                              },
+                              "start_date": {
+                                "type": "string",
+                                "format": "date-time",
+                                "nullable": true,
+                                "description": "Start date of the component."
+                              },
+                              "page_id": {
+                                "type": "string",
+                                "description": "Identifier of the page this component belongs to."
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "scheduled_maintenances": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "impact": {
+                          "type": "string"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "resolved_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "nullable": true
+                        },
+                        "monitoring_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "nullable": true
+                        },
+                        "scheduled_for": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "scheduled_until": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "shortlink": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "incident_updates": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "incident_id": {
+                                "type": "string"
+                              },
+                              "status": {
+                                "type": "string"
+                              },
+                              "body": {
+                                "type": "string"
+                              },
+                              "created_at": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "updated_at": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "display_at": {
+                                "type": "string",
+                                "format": "date-time"
+                              }
+                            }
+                          }
+                        },
+                        "components": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "description": "Unique identifier for the component."
+                              },
+                              "name": {
+                                "type": "string",
+                                "description": "Name of the component."
+                              },
+                              "status": {
+                                "type": "string",
+                                "description": "Current status of the component."
+                              },
+                              "created_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "Timestamp when the component was created."
+                              },
+                              "updated_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "Timestamp of the last update to the component."
+                              },
+                              "description": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "Description of the component."
+                              },
+                              "group": {
+                                "type": "boolean",
+                                "description": "Indicates if the component is a group."
+                              },
+                              "group_id": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "Identifier of the group this component belongs to."
+                              },
+                              "only_show_if_degraded": {
+                                "type": "boolean",
+                                "description": "Whether to show the component only if it's degraded."
+                              },
+                              "position": {
+                                "type": "integer",
+                                "description": "Position of the component in the list."
+                              },
+                              "showcase": {
+                                "type": "boolean",
+                                "description": "Indicates if the component is showcased."
+                              },
+                              "start_date": {
+                                "type": "string",
+                                "format": "date-time",
+                                "nullable": true,
+                                "description": "Start date of the component."
+                              },
+                              "page_id": {
+                                "type": "string",
+                                "description": "Identifier of the page this component belongs to."
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/components.json": {
+      "get": {
+        "summary": "List all components",
+        "description": "Provides detailed information about each component of the Hedera network.",
+        "responses": {
+          "200": {
+            "description": "A JSON object containing the status of all components.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "page": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Unique identifier for the status page."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the status page."
+                        },
+                        "url": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "URL of the status page."
+                        },
+                        "time_zone": {
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Timestamp of the last update."
+                        }
+                      }
+                    },
+                    "components": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Unique identifier for the component."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Name of the component."
+                          },
+                          "status": {
+                            "type": "string",
+                            "description": "Current status of the component."
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Timestamp when the component was created."
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Timestamp of the last update to the component."
+                          },
+                          "description": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Description of the component."
+                          },
+                          "group": {
+                            "type": "boolean",
+                            "description": "Indicates if the component is a group."
+                          },
+                          "group_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Identifier of the group this component belongs to."
+                          },
+                          "only_show_if_degraded": {
+                            "type": "boolean",
+                            "description": "Whether to show the component only if it's degraded."
+                          },
+                          "position": {
+                            "type": "integer",
+                            "description": "Position of the component in the list."
+                          },
+                          "showcase": {
+                            "type": "boolean",
+                            "description": "Indicates if the component is showcased."
+                          },
+                          "start_date": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true,
+                            "description": "Start date of the component."
+                          },
+                          "page_id": {
+                            "type": "string",
+                            "description": "Identifier of the page this component belongs to."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/incidents.json": {
+      "get": {
+        "summary": "Retrieve all incidents",
+        "description": "Fetches a list of all incidents, both resolved and unresolved, affecting the Hedera network.",
+        "responses": {
+          "200": {
+            "description": "A JSON object containing all incidents.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "page": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Unique identifier for the status page."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the status page."
+                        },
+                        "url": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "URL of the status page."
+                        },
+                        "time_zone": {
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Timestamp of the last update."
+                        }
+                      }
+                    },
+                    "incidents": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Unique identifier for the incident."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Name of the incident."
+                          },
+                          "status": {
+                            "type": "string",
+                            "description": "Current status of the incident."
+                          },
+                          "impact": {
+                            "type": "string",
+                            "description": "Impact level of the incident."
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Timestamp when the incident was created."
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Timestamp of the last update to the incident."
+                          },
+                          "resolved_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true,
+                            "description": "Timestamp when the incident was resolved."
+                          },
+                          "monitoring_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true,
+                            "description": "Timestamp when monitoring of the incident"
+                          },
+                          "incident_updates": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "incident_id": {
+                                  "type": "string"
+                                },
+                                "status": {
+                                  "type": "string"
+                                },
+                                "body": {
+                                  "type": "string"
+                                },
+                                "created_at": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "updated_at": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "display_at": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                }
+                              }
+                            }
+                          },
+                          "components": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "description": "Unique identifier for the component."
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "description": "Name of the component."
+                                },
+                                "status": {
+                                  "type": "string",
+                                  "description": "Current status of the component."
+                                },
+                                "created_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Timestamp when the component was created."
+                                },
+                                "updated_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Timestamp of the last update to the component."
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "description": "Description of the component."
+                                },
+                                "group": {
+                                  "type": "boolean",
+                                  "description": "Indicates if the component is a group."
+                                },
+                                "group_id": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "description": "Identifier of the group this component belongs to."
+                                },
+                                "only_show_if_degraded": {
+                                  "type": "boolean",
+                                  "description": "Whether to show the component only if it's degraded."
+                                },
+                                "position": {
+                                  "type": "integer",
+                                  "description": "Position of the component in the list."
+                                },
+                                "showcase": {
+                                  "type": "boolean",
+                                  "description": "Indicates if the component is showcased."
+                                },
+                                "start_date": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "nullable": true,
+                                  "description": "Start date of the component."
+                                },
+                                "page_id": {
+                                  "type": "string",
+                                  "description": "Identifier of the page this component belongs to."
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/incidents/unresolved.json": {
+      "get": {
+        "summary": "Retrieve unresolved incidents",
+        "description": "Provides information about all currently unresolved incidents affecting the Hedera network.",
+        "responses": {
+          "200": {
+            "description": "A JSON object containing unresolved incidents.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "page": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Unique identifier for the status page."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the status page."
+                        },
+                        "url": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "URL of the status page."
+                        },
+                        "time_zone": {
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Timestamp of the last update."
+                        }
+                      }
+                    },
+                    "incidents": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Unique identifier for the incident."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Name of the incident."
+                          },
+                          "status": {
+                            "type": "string",
+                            "description": "Current status of the incident."
+                          },
+                          "impact": {
+                            "type": "string",
+                            "description": "Impact level of the incident."
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Timestamp when the incident was created."
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Timestamp of the last update to the incident."
+                          },
+                          "resolved_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true,
+                            "description": "Timestamp when the incident was resolved."
+                          },
+                          "monitoring_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true,
+                            "description": "Timestamp when monitoring of the incident"
+                          },
+                          "incident_updates": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "incident_id": {
+                                  "type": "string"
+                                },
+                                "status": {
+                                  "type": "string"
+                                },
+                                "body": {
+                                  "type": "string"
+                                },
+                                "created_at": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "updated_at": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "display_at": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                }
+                              }
+                            }
+                          },
+                          "components": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "description": "Unique identifier for the component."
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "description": "Name of the component."
+                                },
+                                "status": {
+                                  "type": "string",
+                                  "description": "Current status of the component."
+                                },
+                                "created_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Timestamp when the component was created."
+                                },
+                                "updated_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Timestamp of the last update to the component."
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "description": "Description of the component."
+                                },
+                                "group": {
+                                  "type": "boolean",
+                                  "description": "Indicates if the component is a group."
+                                },
+                                "group_id": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "description": "Identifier of the group this component belongs to."
+                                },
+                                "only_show_if_degraded": {
+                                  "type": "boolean",
+                                  "description": "Whether to show the component only if it's degraded."
+                                },
+                                "position": {
+                                  "type": "integer",
+                                  "description": "Position of the component in the list."
+                                },
+                                "showcase": {
+                                  "type": "boolean",
+                                  "description": "Indicates if the component is showcased."
+                                },
+                                "start_date": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "nullable": true,
+                                  "description": "Start date of the component."
+                                },
+                                "page_id": {
+                                  "type": "string",
+                                  "description": "Identifier of the page this component belongs to."
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scheduled-maintenances.json": {
+      "get": {
+        "summary": "Retrieve all scheduled maintenances",
+        "description": "Fetches details about all scheduled maintenance events for the Hedera network.",
+        "responses": {
+          "200": {
+            "description": "A JSON object containing all scheduled maintenances.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "page": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Unique identifier for the status page."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the status page."
+                        },
+                        "url": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "URL of the status page."
+                        },
+                        "time_zone": {
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Timestamp of the last update."
+                        }
+                      }
+                    },
+                    "scheduled_maintenances": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "impact": {
+                            "type": "string"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "resolved_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true
+                          },
+                          "monitoring_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true
+                          },
+                          "scheduled_for": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "scheduled_until": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "shortlink": {
+                            "type": "string",
+                            "format": "uri"
+                          },
+                          "incident_updates": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "incident_id": {
+                                  "type": "string"
+                                },
+                                "status": {
+                                  "type": "string"
+                                },
+                                "body": {
+                                  "type": "string"
+                                },
+                                "created_at": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "updated_at": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "display_at": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                }
+                              }
+                            }
+                          },
+                          "components": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "description": "Unique identifier for the component."
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "description": "Name of the component."
+                                },
+                                "status": {
+                                  "type": "string",
+                                  "description": "Current status of the component."
+                                },
+                                "created_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Timestamp when the component was created."
+                                },
+                                "updated_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Timestamp of the last update to the component."
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "description": "Description of the component."
+                                },
+                                "group": {
+                                  "type": "boolean",
+                                  "description": "Indicates if the component is a group."
+                                },
+                                "group_id": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "description": "Identifier of the group this component belongs to."
+                                },
+                                "only_show_if_degraded": {
+                                  "type": "boolean",
+                                  "description": "Whether to show the component only if it's degraded."
+                                },
+                                "position": {
+                                  "type": "integer",
+                                  "description": "Position of the component in the list."
+                                },
+                                "showcase": {
+                                  "type": "boolean",
+                                  "description": "Indicates if the component is showcased."
+                                },
+                                "start_date": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "nullable": true,
+                                  "description": "Start date of the component."
+                                },
+                                "page_id": {
+                                  "type": "string",
+                                  "description": "Identifier of the page this component belongs to."
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scheduled-maintenances/upcoming.json": {
+      "get": {
+        "summary": "Retrieve upcoming scheduled maintenances",
+        "description": "Provides information about all upcoming scheduled maintenance events for the Hedera network.",
+        "responses": {
+          "200": {
+            "description": "A JSON object containing upcoming scheduled maintenances.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "page": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Unique identifier for the status page."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the status page."
+                        },
+                        "url": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "URL of the status page."
+                        },
+                        "time_zone": {
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Timestamp of the last update."
+                        }
+                      }
+                    },
+                    "scheduled_maintenances": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "impact": {
+                            "type": "string"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "resolved_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true
+                          },
+                          "monitoring_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true
+                          },
+                          "scheduled_for": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "scheduled_until": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "shortlink": {
+                            "type": "string",
+                            "format": "uri"
+                          },
+                          "incident_updates": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "incident_id": {
+                                  "type": "string"
+                                },
+                                "status": {
+                                  "type": "string"
+                                },
+                                "body": {
+                                  "type": "string"
+                                },
+                                "created_at": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "updated_at": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "display_at": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                }
+                              }
+                            }
+                          },
+                          "components": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "description": "Unique identifier for the component."
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "description": "Name of the component."
+                                },
+                                "status": {
+                                  "type": "string",
+                                  "description": "Current status of the component."
+                                },
+                                "created_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Timestamp when the component was created."
+                                },
+                                "updated_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Timestamp of the last update to the component."
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "description": "Description of the component."
+                                },
+                                "group": {
+                                  "type": "boolean",
+                                  "description": "Indicates if the component is a group."
+                                },
+                                "group_id": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "description": "Identifier of the group this component belongs to."
+                                },
+                                "only_show_if_degraded": {
+                                  "type": "boolean",
+                                  "description": "Whether to show the component only if it's degraded."
+                                },
+                                "position": {
+                                  "type": "integer",
+                                  "description": "Position of the component in the list."
+                                },
+                                "showcase": {
+                                  "type": "boolean",
+                                  "description": "Indicates if the component is showcased."
+                                },
+                                "start_date": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "nullable": true,
+                                  "description": "Start date of the component."
+                                },
+                                "page_id": {
+                                  "type": "string",
+                                  "description": "Identifier of the page this component belongs to."
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scheduled-maintenances/active.json": {
+      "get": {
+        "summary": "Retrieve active scheduled maintenances",
+        "description": "Fetches details about all currently active scheduled maintenance events for the Hedera network.",
+        "responses": {
+          "200": {
+            "description": "A JSON object containing active scheduled maintenances.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "page": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Unique identifier for the status page."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the status page."
+                        },
+                        "url": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "URL of the status page."
+                        },
+                        "time_zone": {
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Timestamp of the last update."
+                        }
+                      }
+                    },
+                    "scheduled_maintenances": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "impact": {
+                            "type": "string"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "resolved_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true
+                          },
+                          "monitoring_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true
+                          },
+                          "scheduled_for": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "scheduled_until": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "shortlink": {
+                            "type": "string",
+                            "format": "uri"
+                          },
+                          "incident_updates": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "incident_id": {
+                                  "type": "string"
+                                },
+                                "status": {
+                                  "type": "string"
+                                },
+                                "body": {
+                                  "type": "string"
+                                },
+                                "created_at": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "updated_at": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "display_at": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                }
+                              }
+                            }
+                          },
+                          "components": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "description": "Unique identifier for the component."
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "description": "Name of the component."
+                                },
+                                "status": {
+                                  "type": "string",
+                                  "description": "Current status of the component."
+                                },
+                                "created_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Timestamp when the component was created."
+                                },
+                                "updated_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Timestamp of the last update to the component."
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "description": "Description of the component."
+                                },
+                                "group": {
+                                  "type": "boolean",
+                                  "description": "Indicates if the component is a group."
+                                },
+                                "group_id": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "description": "Identifier of the group this component belongs to."
+                                },
+                                "only_show_if_degraded": {
+                                  "type": "boolean",
+                                  "description": "Whether to show the component only if it's degraded."
+                                },
+                                "position": {
+                                  "type": "integer",
+                                  "description": "Position of the component in the list."
+                                },
+                                "showcase": {
+                                  "type": "boolean",
+                                  "description": "Indicates if the component is showcased."
+                                },
+                                "start_date": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "nullable": true,
+                                  "description": "Start date of the component."
+                                },
+                                "page_id": {
+                                  "type": "string",
+                                  "description": "Identifier of the page this component belongs to."
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Page": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the status page."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the status page."
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL of the status page."
+          },
+          "time_zone": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of the last update."
+          }
+        }
+      },
+      "Status": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "Description of the current status."
+          },
+          "indicator": {
+            "type": "string",
+            "description": "Indicator of the current status (e.g., major, minor)."
+          }
+        }
+      },
+      "Components": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the component."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the component."
+          },
+          "status": {
+            "type": "string",
+            "description": "Current status of the component."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the component was created."
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of the last update to the component."
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "Description of the component."
+          },
+          "group": {
+            "type": "boolean",
+            "description": "Indicates if the component is a group."
+          },
+          "group_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "Identifier of the group this component belongs to."
+          },
+          "only_show_if_degraded": {
+            "type": "boolean",
+            "description": "Whether to show the component only if it's degraded."
+          },
+          "position": {
+            "type": "integer",
+            "description": "Position of the component in the list."
+          },
+          "showcase": {
+            "type": "boolean",
+            "description": "Indicates if the component is showcased."
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Start date of the component."
+          },
+          "page_id": {
+            "type": "string",
+            "description": "Identifier of the page this component belongs to."
+          }
+        }
+      },
+      "Incidents": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the incident."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the incident."
+          },
+          "status": {
+            "type": "string",
+            "description": "Current status of the incident."
+          },
+          "impact": {
+            "type": "string",
+            "description": "Impact level of the incident."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the incident was created."
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of the last update to the incident."
+          },
+          "resolved_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Timestamp when the incident was resolved."
+          },
+          "monitoring_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Timestamp when monitoring of the incident"
+          },
+          "incident_updates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "incident_id": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "display_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          },
+          "components": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Unique identifier for the component."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Name of the component."
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Current status of the component."
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp when the component was created."
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp of the last update to the component."
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "Description of the component."
+                },
+                "group": {
+                  "type": "boolean",
+                  "description": "Indicates if the component is a group."
+                },
+                "group_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "Identifier of the group this component belongs to."
+                },
+                "only_show_if_degraded": {
+                  "type": "boolean",
+                  "description": "Whether to show the component only if it's degraded."
+                },
+                "position": {
+                  "type": "integer",
+                  "description": "Position of the component in the list."
+                },
+                "showcase": {
+                  "type": "boolean",
+                  "description": "Indicates if the component is showcased."
+                },
+                "start_date": {
+                  "type": "string",
+                  "format": "date-time",
+                  "nullable": true,
+                  "description": "Start date of the component."
+                },
+                "page_id": {
+                  "type": "string",
+                  "description": "Identifier of the page this component belongs to."
+                }
+              }
+            }
+          }
+        }
+      },
+      "IncidentUpdate": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "incident_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "display_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ScheduledMaintenances": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "impact": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "resolved_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "monitoring_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "scheduled_for": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "scheduled_until": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "shortlink": {
+            "type": "string",
+            "format": "uri"
+          },
+          "incident_updates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "incident_id": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "display_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          },
+          "components": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Unique identifier for the component."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Name of the component."
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Current status of the component."
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp when the component was created."
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp of the last update to the component."
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "Description of the component."
+                },
+                "group": {
+                  "type": "boolean",
+                  "description": "Indicates if the component is a group."
+                },
+                "group_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "Identifier of the group this component belongs to."
+                },
+                "only_show_if_degraded": {
+                  "type": "boolean",
+                  "description": "Whether to show the component only if it's degraded."
+                },
+                "position": {
+                  "type": "integer",
+                  "description": "Position of the component in the list."
+                },
+                "showcase": {
+                  "type": "boolean",
+                  "description": "Indicates if the component is showcased."
+                },
+                "start_date": {
+                  "type": "string",
+                  "format": "date-time",
+                  "nullable": true,
+                  "description": "Start date of the component."
+                },
+                "page_id": {
+                  "type": "string",
+                  "description": "Identifier of the page this component belongs to."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -18,7 +18,7 @@ Snaps enable users to interact with new blockchains, protocols, and decentralize
 
 <summary><strong>What are the limitations for connecting MetaMask to the RPC vs the Snap?</strong></summary>
 
-The Hedera JSON RPC Relay supports only the methods defined at [Hedera JSON RPC Relay Methods](https://playground.open-rpc.org/?schemaUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fhashgraph%2Fhedera-json-rpc-relay%2Fmain%2Fdocs%2Fopenrpc.json), which are limited to Hedera Smart Contract Services. In contrast, the Hedera Wallet Snap uses the Hedera SDK to interact natively with the ledger, allowing the future support of a wider range of Hedera services like Hedera Token Service, Hedera Consensus Service, and Hedera File Service, beyond just smart contracts.
+The Hedera JSON RPC Relay supports only the methods defined at [Hedera JSON RPC Relay Methods](https://playground.open-rpc.org/?schemaUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fhashgraph%2Fhedera-json-rpc-relay%2Fmain%2Fdocs%2Fopenrpc.json), which are limited to Hedera Smart Contract Services. In contrast, the Hedera Wallet Snap uses the Hedera SDK to interact natively with the ledger, allowing the future support of a wider range of Consensus Node services like Hedera Token Service, Hedera Consensus Service, and Hedera File Service, beyond just smart contracts.
 
 </details>
 

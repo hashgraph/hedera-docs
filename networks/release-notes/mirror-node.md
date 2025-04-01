@@ -1863,7 +1863,7 @@ On the monitoring side, we enhanced our Grafana dashboards to make them compatib
 **TESTNET UPDATE COMPLETED: AUGUST 30, 2021**
 {% endhint %}
 
-This release provides compatibility with Hedera Services 0.17 including support for Non-Fungible Tokens (NFTs) and its enhancement to custom fees. For the latter, an NFT creator can set a royalty fee to be charged when fungible value is exchanged for one of their creations and the mirror node has been updated to track this new type of custom fees. Support was also added for effective payer accounts in assessed custom fees and for storing net-of-transfers in fractional fees.
+This release provides compatibility with Consensus Node 0.17 including support for Non-Fungible Tokens (NFTs) and its enhancement to custom fees. For the latter, an NFT creator can set a royalty fee to be charged when fungible value is exchanged for one of their creations and the mirror node has been updated to track this new type of custom fees. Support was also added for effective payer accounts in assessed custom fees and for storing net-of-transfers in fractional fees.
 
 The mostly unused data generator module was removed, resulting in a large increase in code coverage. Coverage has increased from 84% to 92%.
 
@@ -2081,7 +2081,7 @@ The REST API maximum and default limit was lowered from 1000 to 500. If you expl
 **TESTNET UPDATE COMPLETED: JUNE 11, 2021**
 {% endhint %}
 
-In Hedera Mirror Node v0.34.0, we started work on [designing](https://github.com/hashgraph/hedera-mirror-node/blob/master/docs/design/nft.md) support for [NFTs](https://github.com/hashgraph/hedera-improvement-proposal/blob/master/HIP/hip-17.md) that will come in a future Hedera Services release.
+In Hedera Mirror Node v0.34.0, we started work on [designing](https://github.com/hashgraph/hedera-mirror-node/blob/master/docs/design/nft.md) support for [NFTs](https://github.com/hashgraph/hedera-improvement-proposal/blob/master/HIP/hip-17.md) that will come in a future Consensus Node release.
 
 By default, the mirror node will validate that at least one-third of all nodes in the address book have signed a stream file before importing it into its database. This ensures that the main nodes have reached two-thirds consensus on the transactions in the file. For performance or verification reasons, you may want to decrease or increase this default percentage. To support this use case, we added a `hedera.mirror.importer.downloader.consensusRatio` property that controls the ratio of verified nodes (nodes used to come to consensus on the signature file hash) to the total number of nodes available.
 

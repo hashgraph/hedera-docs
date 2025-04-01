@@ -88,7 +88,7 @@
     * [Multinode Configuration](networks/localnet/multinode-configuration.md)
   * [Network Explorers and Tools](networks/community-mirror-nodes.md)
   * [Release Notes](networks/release-notes/README.md)
-    * [Hedera Services](networks/release-notes/services.md)
+    * [Consensus Node](networks/release-notes/services.md)
     * [Hedera Mirror Node](networks/release-notes/mirror-node.md)
 * [Core Concepts](core-concepts/README.md)
   * [Accounts](core-concepts/accounts/README.md)

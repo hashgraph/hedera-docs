@@ -1,6 +1,6 @@
 # NetworkGetVersionInfo
 
-Get the deployed versions of Hedera Services and the HAPI proto in semantic version format
+Get the deployed versions of Consensus Node and the HAPI proto in semantic version format
 
 #### NetworkGetVersionInfoQuery
 
@@ -16,4 +16,4 @@ Response when the client sends the node NetworkGetVersionInfoQuery
 | ----------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | `header`                | [ResponseHeader](responseheader.md)                  | Standard response from node to client, including the requested fields: cost, or state proof, or both, or neither |
 | `hapiProtoVersion`      | [SemanticVersion](../basic-types/semanticversion.md) | The Hedera API (HAPI) protobuf version recognized by the responding node                                         |
-| `hederaServicesVersion` | [SemanticVersion](../basic-types/semanticversion.md) | The version of the Hedera Services software deployed on the responding node                                      |
+| `hederaServicesVersion` | [SemanticVersion](../basic-types/semanticversion.md) | The version of the Consensus Node software deployed on the responding node                                      |

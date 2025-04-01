@@ -8,9 +8,9 @@ coverY: -154.63917525773195
 
 There are several options for friendly, language-specific access to the Hedera API and its network services.
 
-## Hedera Services Code SDKs
+## Consensus Node Code SDKs
 
-Hedera and the developer community contribute to and maintain Hedera Services Code SDKs across various languages.
+Hedera and the developer community contribute to and maintain Consensus Node Code SDKs across various languages.
 
 {% hint style="info" %}
 **Note:** The Hiero JavaScript SDK supports React Native with Expo on Android devices and Android emulators. It does not currently support React Native Bare.
@@ -24,7 +24,7 @@ Hedera and the developer community contribute to and maintain developer tools an
 
 ### Hedera Developer Playground
 
-Try the interactive [**Hedera Developer Playground**](https://portal.hedera.com/playground) to explore Hedera services, transactions, and queries and experiment with the Hedera SDKs.
+Try the interactive [**Hedera Developer Playground**](https://portal.hedera.com/playground) to explore Consensus Node services, transactions, and queries and experiment with the Hedera SDKs.
 
 {% embed url="https://www.canva.com/design/DAGcenPjdjg/tJNBCThltCIsVgG54h-bPA/view" %}
 [**Hedera Developer Playground**](https://portal.hedera.com/playground)

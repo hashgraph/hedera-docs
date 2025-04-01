@@ -8,7 +8,7 @@ Transaction A will automatically execute once it receives the minimum required s
 
 Unlike other Hedera transactions, this one allows you to queue a transaction for future execution (up to two months into the future). This feature is ideal for transactions that require multiple signatures and would benefit from being submitted on-chain.&#x20;
 
-The transaction types that can be scheduled in a schedule transaction as of Hedera Services Release 0.57 are the following:
+The transaction types that can be scheduled in a schedule transaction as of Consensus Node Release 0.57 are the following:
 
 * `TransferTransaction`
 * `TokenMintTransaction`

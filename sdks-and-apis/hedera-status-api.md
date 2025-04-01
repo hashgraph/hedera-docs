@@ -6,7 +6,7 @@ The **Hedera Status API** enables programmatic access to the current operational
 
 #### **Key Features**
 
-* **Real-time Status Updates**: Retrieve the current operational state of all Hedera services.
+* **Real-time Status Updates**: Retrieve the current operational state of all Consensus Nodes.
 * **Incident Reports**: Access detailed information about current and past incidents, including affected components and resolution status.
 * **Scheduled Maintenance**: Get advance notice and real-time updates on planned maintenance windows.
 

@@ -9,11 +9,11 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 ## Release v0.60
 
 {% hint style="info" %}
-**MAINNET UPDATE SCHEDULED: APRIL 9, 2025**
+**MAINNET UPDATE SCHEDULED: APRIL 16, 2025**
 {% endhint %}
 
-{% hint style="success" %}
-**TESTNET UPDATE SCHEDULED: MARCH 28, 2025**
+{% hint style="info" %}
+**TESTNET UPDATE SCHEDULED: April 8, 2025**
 {% endhint %}
 
 ### [Build 0.60.0](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.60.0)

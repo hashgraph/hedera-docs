@@ -11,7 +11,7 @@ The account ID is the ID of the account entity on the Hedera network. The accoun
 
 Format: **`shardNum`**`.realmNum.account`
 
-The shard number is the number of the shard the account exists in. A shard is a partition of the data received by the nodes participating in a given shard.  Today, Hedera operates in only one shard. This value will remain zero until Hedera operates in more than one shard. This value is non-negative and is 8 bytes.\
+The shard number is the number of the shard the account exists in. A shard is a partition of the data received by the nodes participating in a given shard.  Today, Hedera operates in only one shard. This value will remain zero until Hedera operates in more than one shard. This value is non-negative and is 4 bytes.\
 \
 Default: `0`
 

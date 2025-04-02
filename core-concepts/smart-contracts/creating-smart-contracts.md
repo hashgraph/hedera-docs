@@ -31,7 +31,7 @@ contract HelloHedera {
 
     function set_message(string memory message_) public {
         // only allow the owner to update the message
-        if (msg.sender != owner) return;
+        require(msg.sender == owner);
         message = message_;
     }
 
@@ -48,7 +48,7 @@ contract HelloHedera {
 
 **Automatic Token Associations**
 
-An auto association slot is one or more slots you approve that allow tokens to be sent to your contract without explicit authorization for each token type. If this property is not set, you must approve each token before it is transferred to the contract for the transfer to be successful via the `TokenAssociateTransaction` in the SDKs. Learn more about auto-token associations [here](../accounts/account-properties.md#automatic-token-associations).
+An auto association slot is one or more slots you approve that allow tokens to be sent to your contract without explicit authorization for each token type. If this property is not set, you must associate each token before it is transferred to the contract for the transfer to be successful via the `TokenAssociateTransaction` in the SDKs. Learn more about auto-token associations [here](../accounts/account-properties.md#automatic-token-associations).
 
 This functionality is exclusively accessible when configuring a `ContractCreateTransaction` API through the Hedera SDKs. If you are deploying a contract on Hedera using EVM tools such as Hardhat and the Hedera JSON RPC Relay, please note that this property cannot be configured, as EVM tools lack compatibility with Hedera's unique features.
 
@@ -67,7 +67,7 @@ You cannot set the admin key field if you deploy a contract via tools like Hardh
 
 **Max Contract Storage Size**
 
-Contracts on Hedera have  a storage size limit of 16,384,000 key value pairs (\~100MB).&#x20;
+Each contract on Hedera has a storage size limit of 16,384,000 key value pairs (\~500MB).&#x20;
 
 **Rent**
 
@@ -93,7 +93,7 @@ A smart contract is a program that is written in a language that can be interpre
 
 <summary>What programming language does Hedera support for smart contracts?</summary>
 
-Hedera supports Solidity and Vyper.
+Hedera supports the official [Ethereum Virtual Machine](https://ethereum.org/en/developers/docs/evm/) and therefore any smart contract language that conforms to standard EVM code, such as Solidity or Vyper.
 
 </details>
 

@@ -6,6 +6,72 @@ description: Consensus Node release information
 
 Visit the [Hedera status page](https://status.hedera.com/) for the latest versions supported on each network.
 
+## Release v0.61
+
+{% hint style="info" %}
+**MAINNET UPDATE SCHEDULED: MAY 14, 2025**
+{% endhint %}
+
+{% hint style="info" %}
+**TESTNET UPDATE SCHEDULED: April 22, 2025**
+{% endhint %}
+
+### [Build 0.61.1](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.1)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+### What's Changed
+
+* chore: Remove the entityCounts migration code in 0.61 ([#18500](https://github.com/hiero-ledger/hiero-consensus-node/pull/18500)) by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#18511](https://github.com/hiero-ledger/hiero-consensus-node/pull/18511)
+* refactor: cherry-pick "Use a list of signed bytes for transactions in AtomicBatchTransaction" by [@ibankov](https://github.com/ibankov) in [#18522](https://github.com/hiero-ledger/hiero-consensus-node/pull/18522)
+* fix: State changes out of order in HAPI Tests (Restart) by [@derektriley](https://github.com/derektriley) in [#18564](https://github.com/hiero-ledger/hiero-consensus-node/pull/18564)
+* fix: 18410: Bucket integrity check in HDHM.ReadUpdateBucketTask can be improved - rel/0.61 by [@imalygin](https://github.com/imalygin) in [#18505](https://github.com/hiero-ledger/hiero-consensus-node/pull/18505)
+* fix: Ensure `BlockStreamManager#endRound()` is called after dispatching by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#18562](https://github.com/hiero-ledger/hiero-consensus-node/pull/18562)
+* feat: Cherry-pick Daily Node Rewards by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#18570](https://github.com/hiero-ledger/hiero-consensus-node/pull/18570)
+* fix: Call `BlockRecordManager.endRound` after system dispatch by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#18621](https://github.com/hiero-ledger/hiero-consensus-node/pull/18621)
+* fix: Only "go back" in cons time for post-restart system work by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#18660](https://github.com/hiero-ledger/hiero-consensus-node/pull/18660)
+* chore: cherry-pick fix NPE when using records by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#18679](https://github.com/hiero-ledger/hiero-consensus-node/pull/18679)
+* chore: Cherry-pick Add metrics for active node percentage by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#18680](https://github.com/hiero-ledger/hiero-consensus-node/pull/18680)
+
+**Full Changelog**: [v0.61.0...v0.61.1](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.61.0...v0.61.1)
+
+</details>
+
+### [Build 0.61.0](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.0)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+#### Features
+
+* Dynamic peers for the sync network ([#18051](https://github.com/hiero-ledger/hiero-consensus-node/pull/18051))
+* Add JumboTransactionsConfig ([#18277](https://github.com/hiero-ledger/hiero-consensus-node/pull/18277))
+* implement exponential backoff for connections to Block Nodes ([#18055](https://github.com/hiero-ledger/hiero-consensus-node/pull/18055))
+* HIP-1028 Fungible and NFT Token Info versioning ([#18013](https://github.com/hiero-ledger/hiero-consensus-node/pull/18013))
+* add SCHEDULE\_EXPIRY\_NOT\_CONFIGURABLE validation ([#18239](https://github.com/hiero-ledger/hiero-consensus-node/pull/18239))
+* Add messages for skip and resend block to block service ([#18133](https://github.com/hiero-ledger/hiero-consensus-node/pull/18133))
+* Create a HAPI test to validate birth round migration ([#18005](https://github.com/hiero-ledger/hiero-consensus-node/pull/18005))
+* Close blocks during fatal ISS ([#17942](https://github.com/hiero-ledger/hiero-consensus-node/pull/17942))
+* HIP-1028 apply versioning to Update Token and Update Token Keys System Contracts ([#17994](https://github.com/hiero-ledger/hiero-consensus-node/pull/17994))
+* Add feature flag for CRS ([#18073](https://github.com/hiero-ledger/hiero-consensus-node/pull/18073))
+* change version to 0.61 ([#18088](https://github.com/hiero-ledger/hiero-consensus-node/pull/18088))
+* Support non-zero realms for contracts service ([#18010](https://github.com/hiero-ledger/hiero-consensus-node/pull/18010))
+* HIP-551 atomic batch transactions ([#17333](https://github.com/hiero-ledger/hiero-consensus-node/pull/17333))
+
+#### Bug Fixes
+
+* Detect ISSes when states are not produced for every round ([#18399](https://github.com/hiero-ledger/hiero-consensus-node/pull/18399))
+* remove @OrderedInIsolation from contract bdd tests ([#18400](https://github.com/hiero-ledger/hiero-consensus-node/pull/18400))
+* HIP-632 fix alias length check ([#18385](https://github.com/hiero-ledger/hiero-consensus-node/pull/18385))
+* Extended suite failure during insertRemoveAndModifyOneMillion ([#18407](https://github.com/hiero-ledger/hiero-consensus-node/pull/18407))
+* **18393** metrics not updated in PlatformWiring ([#18394](https://github.com/hiero-ledger/hiero-consensus-node/pull/18394))
+* Fix candidate roster adoption logic (v61) ([#18372](https://github.com/hiero-ledger/hiero-consensus-node/pull/18372))
+
+</details>
+
 ## Release v0.60
 
 {% hint style="info" %}

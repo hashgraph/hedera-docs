@@ -45,7 +45,7 @@ Starting with [v0.79](../../networks/release-notes/mirror-node.md#v0.79) of Hede
 * `TokenWipe`
 * `TokenBurn`
 
-This feature enables developers to effectively monitor HTS token activities as if they were smart contract tokens. An example code implementation demonstrating using ethers.js to listen to synthetic events can be found [here](https://github.com/ed-marquez/hedera-example-hts-synthetic-events-sdk-ethers).&#x20;
+This feature enables developers to effectively monitor HTS token activities as if they were smart contract tokens. An example code implementation demonstrating using ethers.js to listen to synthetic events can be found [here](https://github.com/ed-marquez/hedera-example-hts-synthetic-events-sdk-ethers).
 
 ### REST API from Hedera
 
@@ -73,7 +73,7 @@ Anyone can run a Hedera Mirror Node by downloading and configuring the software 
 
 <summary>How is data stored in a Hedera Mirror Node? Is it a specific type of database, or does it use a unique data structure?</summary>
 
-Hedera Mirror Nodes use [PostgreSQL](../../support-and-community/glossary.md#postgresql) databases to store the transaction and event data organized in a structure that mirrors the Hedera Network. Once the mirror node receives record files from Hedera Consensus nodes, the data is validated and loaded into the database.&#x20;
+Hedera Mirror Nodes use [PostgreSQL](../../support-and-community/glossary.md#postgresql) databases to store the transaction and event data organized in a structure that mirrors the Hedera Network. Once the mirror node receives record files from Hedera Consensus nodes, the data is validated and loaded into the database.
 
 </details>
 
@@ -107,7 +107,6 @@ You can configure your own Hedera Mirror Node by following the step-by-step inst
 
 <summary>How can I provide feedback or create an issue to log errors?</summary>
 
-To provide feedback or log errors, please refer to the [Contributing Guide](../../support-and-community/contributing-guide.md) and submit an issue in the Hedera Docs [GitHub repository](https://github.com/hashgraph/hedera-json-rpc-relay/issues).
+To provide feedback or log errors, please refer to the [Contributing Guide](../../support-and-community/contributing-guide/) and submit an issue in the Hedera Docs [GitHub repository](https://github.com/hashgraph/hedera-json-rpc-relay/issues).
 
 </details>
-

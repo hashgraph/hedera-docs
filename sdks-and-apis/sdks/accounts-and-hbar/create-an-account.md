@@ -53,7 +53,7 @@ If an alias is set during account creation, it becomes [immutable](../../../supp
 AccountCreateTransaction transaction = new AccountCreateTransaction()
     .setKey(ecdsaPublicKey)
     //Do NOT set an alias if you need to update/rotate keys in the future
-    .setAlias(ecdsaPublicKey.toEvmAddress()
+    .setAlias(ecdsaPublicKey.toEvmAddress())
     .setInitialBalance(new Hbar(1));
 
 //Submit the transaction to a Hedera network
@@ -73,11 +73,14 @@ System.out.println("The new account ID is " +newAccountId);
 
 {% tab title="JavaScript" %}
 ```javascript
+//Create new ECDSA key
+const ecdsaPublicKey = PrivateKey.generateECDSA().publicKey
+
 //Create the transaction
 const transaction = new AccountCreateTransaction()
     .setKey(ecdsaPublicKey)
     //Do NOT set an alias if you need to update/rotate keys in the future
-    .setAlias(ecdsaPublicKey.toEvmAddress()
+    .setAlias(ecdsaPublicKey.toEvmAddress())
     .setInitialBalance(new Hbar(1));
 
 //Sign the transaction with the client operator private key and submit to a Hedera network

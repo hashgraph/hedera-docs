@@ -78,3 +78,11 @@ The Hedera Token Service (HTS) extends beyond standard transaction fees by offer
 {% endembed %}
 
 {% embed url="https://www.youtube.com/watch?v=YnEQ6ZmBG7A" %}
+
+***
+
+## Additional Resources&#x20;
+
+* [**HTS x EVM - Part 1: How to Mint NFTs \[Tutorial\]**](broken-reference)
+* [**HTS x EVM - Part 2: KYC & Update \[Tutorial\]**](broken-reference)
+* [**HTS x EVM - Part 3: How to Pause, Freeze, Wipe, and Delete NFTs \[Tutorial\]**](broken-reference)

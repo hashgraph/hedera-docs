@@ -47,7 +47,7 @@ In this tutorial, you will be using Hedera SDK JS to interact with HSCS. Specifi
 
 ## Set up the project
 
-To follow along, enter the `hederasdkjs` directory within the [accompanying tutorial GitHub repository](https://github.com/hedera-dev/hedera-smart-contracts-workshop), which you should already have cloned in the [Intro section](../) earlier.
+To follow along, enter the `hederasdkjs` directory within the [accompanying tutorial GitHub repository](https://github.com/hedera-dev/hedera-smart-contracts-workshop), which you should already have cloned in the [Intro section](broken-reference) earlier.
 
 ```shell
 cd ./hederasdkjs
@@ -262,7 +262,7 @@ Let's edit the `deploy-sc.js` file. In this script, you'll use Hedera SDK JS to 
 
 ### Step E1: Initialise operator account
 
-This script has already been set up to read in environment variables from the `.env` file that you have set up in the [Intro section](../) of this tutorial via the `dotenv` npm package, and they are now accessible using `process.env`.
+This script has already been set up to read in environment variables from the `.env` file that you have set up in the [Intro section](broken-reference) of this tutorial via the `dotenv` npm package, and they are now accessible using `process.env`.
 
 We will use the `OPERATOR_ID` and `OPERATOR_KEY` environment variables to initialise an operator account, connect to Hedera Testnet.
 

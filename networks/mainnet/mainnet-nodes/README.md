@@ -13,12 +13,12 @@ The **address book** contains the list of consensus nodes that can submit transa
 For node status, please visit the Hedera status page [here](https://status.hedera.com).
 
 {% hint style="info" %}
-**Note:** The consensus node table below is auto-generated and no longer manually maintained. For the most up-to-date node list:
+**Note:** The consensus node table below is auto-generated and no longer manually maintained.
 
-​To ensure access to the most current list of Hedera network nodes:
-• Use the [mirror node address book REST API](https://docs.hedera.com/hedera/sdks-and-apis/rest-api/network#api-v1-network-nodes).
-• This endpoint is paginated—follow `links.next` to retrieve all nodes.
-• Alternatively, view the node list on [Hashscan](https://hashscan.io/mainnet/nodes).
+For the most up-to-date node list:
+- Use the [mirror node address book REST API](https://docs.hedera.com/hedera/sdks-and-apis/rest-api/network#api-v1-network-nodes).
+- This endpoint is paginated—follow `links.next` to retrieve all nodes.
+- Alternatively, view the node list on [Hashscan](https://hashscan.io/mainnet/nodes).
 {% endhint %}
 
 {% hint style="info" %}

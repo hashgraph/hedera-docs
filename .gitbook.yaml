@@ -17,6 +17,9 @@ redirects:
     docs/hedera-api/schedule-service: sdks-and-apis/sdks/schedule-transaction/README.md
     docs/hedera-api/schedule-service/schedulecreate: sdks-and-apis/sdks/schedule-transaction/create-a-schedule-transaction.md
     docs/hedera-api/smart-contracts: sdks-and-apis/sdks/smart-contracts/README.md
+    docs/hedera-api/readme-1-1: sdks-and-apis/sdks/smart-contracts/README.md
+    docs/hedera-api/readme-1: sdks-and-apis/sdks/file-service/README.md
+    docs/hedera-api: sdks-and-apis/sdks/README.md
     docs/hedera-api/token-service: sdks-and-apis/sdks/token-service/README.md
     docs/hedera-api/token-service/customfees/fixedfee: sdks-and-apis/sdks/readme-1/custom-token-fees.md
     docs/hedera-api/token-service/customfees/royaltyfee: sdks-and-apis/sdks/readme-1/custom-token-fees.md

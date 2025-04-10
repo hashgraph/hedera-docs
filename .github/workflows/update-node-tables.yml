@@ -1,0 +1,30 @@
+name: Update Node Tables
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  update-tables:
+    runs-on: hashgraph-docs-linux-medium
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: sudo apt-get install -y jq
+
+      - name: Run update script
+        run: ./update_node_list.sh
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add networks/mainnet/mainnet-nodes/README.md
+          git commit -m "chore: update node tables" || echo "No changes to commit"
+          git push

@@ -78,9 +78,23 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **MAINNET UPDATE SCHEDULED: APRIL 16, 2025**
 {% endhint %}
 
-{% hint style="info" %}
-**TESTNET UPDATE SCHEDULED: April 8, 2025**
+{% hint style="success" %}
+**TESTNET UPDATE SCHEDULED: April 9, 2025**
 {% endhint %}
+
+### [Build 0.60.1](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.60.1)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* fix: Update MTT Version by [@timo0](https://github.com/timo0) in [#18423](https://github.com/hiero-ledger/hiero-consensus-node/pull/18423)
+* fix: 18424 Fixed initialization of MigrationTestingToolState by [@imalygin](https://github.com/imalygin) in [#18432](https://github.com/hiero-ledger/hiero-consensus-node/pull/18432)
+* fix: 18722: Backport the fix for 18571 to release 0.60 by [@artemananiev](https://github.com/artemananiev) in [#18723](https://github.com/hiero-ledger/hiero-consensus-node/pull/18723)
+
+**Full Changelog**: [v0.60.0...v0.60.1](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.60.0...v0.60.1)
+
+</details>
 
 ### [Build 0.60.0](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.60.0)
 

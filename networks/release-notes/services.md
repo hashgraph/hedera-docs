@@ -16,6 +16,21 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **TESTNET UPDATE SCHEDULED: April 22, 2025**
 {% endhint %}
 
+### [Build 0.61.2](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.2)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* chore: (cherry-pick) Delay initializing snark keys ([#18699](https://github.com/hiero-ledger/hiero-consensus-node/pull/18699)) by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#18701](https://github.com/hiero-ledger/hiero-consensus-node/pull/18701)
+* fix: (cherry-pick) Utilize more than one thread for SSL accept handling ([#18557](https://github.com/hiero-ledger/hiero-consensus-node/pull/18557)) by [@abies](https://github.com/abies) in [#18586](https://github.com/hiero-ledger/hiero-consensus-node/pull/18586)
+* fix: 18720: Backport the fix for 18571 to release 0.61 by [@artemananiev](https://github.com/artemananiev) in [#18736](https://github.com/hiero-ledger/hiero-consensus-node/pull/18736)
+* feat: (cherry-pick) try using non-zero realm/shard by [@derektriley](https://github.com/derektriley) in [#18732](https://github.com/hiero-ledger/hiero-consensus-node/pull/18732)
+
+**Full Changelog**: [v0.61.1...v0.61.2](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.61.1...v0.61.2)
+
+</details>
+
 ### [Build 0.61.1](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.1)
 
 <details>

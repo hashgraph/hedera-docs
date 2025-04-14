@@ -78,5 +78,5 @@ contract TokenManager {
 
 ## Additional Resources
 
-* [**Access HTS Tokens Through the EVM**](https://docs.hedera.com/hedera/core-concepts/tokens/access-hts-tokens-through-the-evm)
+* [**Access HTS Tokens Through the EVM**](../../../tokens/erc-evm-compatible-tokenization.md)
 * [**HTS System Contract Functions**](https://github.com/hashgraph/hedera-smart-contracts/tree/main/contracts/system-contracts/hedera-token-service)

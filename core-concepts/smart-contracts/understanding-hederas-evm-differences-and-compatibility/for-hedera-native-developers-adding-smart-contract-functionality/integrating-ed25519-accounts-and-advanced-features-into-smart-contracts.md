@@ -92,4 +92,4 @@ Hedera’s dynamic key rotation allows you to update an account’s keys without
 ## **References**
 
 * [**HIP-632 Documentation**](https://hips.hedera.com/HIP/hip-632)
-* [**Hedera Account Service**](https://docs.hedera.com)
+* [**Hedera Account Service**](../../system-smart-contracts/hedera-account-service.md)

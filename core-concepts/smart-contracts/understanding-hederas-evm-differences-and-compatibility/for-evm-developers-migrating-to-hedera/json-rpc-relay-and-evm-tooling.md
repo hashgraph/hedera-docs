@@ -120,9 +120,9 @@ Fetches historical records of every block back to genesis. This is like one larg
 
 **Note**: Development tools usually make a lot of requests to certain endpoints, especially during contract deployment. Be aware of rate limiting when deploying multiple large contracts.
 
-**Note**: Enable [`development mode`](https://github.com/hashgraph/hedera-json-rpc-relay/blob/main/docs/dev-mode.md) to correctly assert revert messages of contract calls with `hardhat-chai-matchers`.
+**Note**: Enable [`development mode`](https://github.com/hiero-ledger/hiero-json-rpc-relay/blob/main/docs/dev-mode.md) to correctly assert revert messages of contract calls with `hardhat-chai-matchers`.
 
-_**💡 See the full list of supported EVM tools**_ [_**here**_](https://github.com/hashgraph/hedera-json-rpc-relay/tree/main/tools)_**.**_
+_**💡 See the full list of supported EVM tools**_ [_**here**_](https://github.com/hiero-ledger/hiero-json-rpc-relay/tree/main/tools)_**.**_
 {% endhint %}
 
 ***

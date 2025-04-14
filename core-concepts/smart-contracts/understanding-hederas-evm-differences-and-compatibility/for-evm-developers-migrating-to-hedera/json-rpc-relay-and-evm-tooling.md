@@ -129,6 +129,6 @@ _**💡 See the full list of supported EVM tools**_ [_**here**_](https://github.
 
 ## Additional Resources
 
-* [**Supported EVM Tooling**](https://github.com/hashgraph/hedera-json-rpc-relay/tree/main/tools)
+* [**Supported EVM Tooling**](https://github.com/hiero-ledger/hiero-json-rpc-relay/tree/main/tools)
 * [**JSON-RPC Relay Docs**](https://docs.hedera.com/hedera/core-concepts/smart-contracts/json-rpc-relay)
 * [**Hiero JSON-RPC Relay Repo**](https://github.com/hiero-ledger/hiero-json-rpc-relay)

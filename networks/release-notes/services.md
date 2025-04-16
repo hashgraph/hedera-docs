@@ -148,6 +148,10 @@ This release focuses on significant performance improvements, enhanced developer
 
 </details>
 
+### Performance Results
+
+<figure><img src="../../.gitbook/assets/‎0.60_Performance Measurement Results_Extract.‎001.png" alt=""><figcaption></figcaption></figure>
+
 ## Release v0.59
 
 {% hint style="success" %}

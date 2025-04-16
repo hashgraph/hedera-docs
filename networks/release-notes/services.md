@@ -89,13 +89,29 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Release v0.60
 
-{% hint style="info" %}
+{% hint style="success" %}
 **MAINNET UPDATE SCHEDULED: APRIL 16, 2025**
 {% endhint %}
 
 {% hint style="success" %}
 **TESTNET UPDATE SCHEDULED: April 9, 2025**
 {% endhint %}
+
+### Release Highlights
+
+This release focuses on significant performance improvements, enhanced developer tooling, and improved error handling.
+
+#### Hiero Improvement Proposals (HIPs)
+
+[HIP-1021](https://hips.hedera.com/hip/hip-1021): Improve Assignment of Auto-Renew Account ID for Topics
+
+* Full implementation of improved auto-renew account ID assignment for topics, enabling setting `autoRenewAccountId` during topic creation without an admin key.&#x20;
+* Developers benefit from simplified topic management and reduced risk of unexpected expirations.
+
+[HIP-1084](https://hips.hedera.com/hip/hip-1084): Zero Cost EthereumTransaction on Success
+
+* Full implementation of zero-cost Ethereum transactions on success, removing fees for successful `EthereumTransactions`.&#x20;
+* Significantly reduces costs for relay operators and simplifies the user experience.
 
 ### [Build 0.60.1](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.60.1)
 

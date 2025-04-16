@@ -16,6 +16,23 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **TESTNET UPDATE SCHEDULED: April 22, 2025**
 {% endhint %}
 
+### [Build 0.61.3](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.3)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* chore: (cherry-pick) Update flow-pull-request-formatting.yaml by [@derektriley](https://github.com/derektriley) in [#18792](https://github.com/hiero-ledger/hiero-consensus-node/pull/18792)
+* chore: (cherry-pick) adjust path to protobufs in 'Update Hedera Protobufs' step by [@derektriley](https://github.com/derektriley) in [#18787](https://github.com/hiero-ledger/hiero-consensus-node/pull/18787)
+* chore: (cherry-pick) remove github-committers team from codeowners by [@derektriley](https://github.com/derektriley) in [#18808](https://github.com/hiero-ledger/hiero-consensus-node/pull/18808)
+* chore: (cherry-pick) Update CODEOWNERS for tools-and-libs rename by [@derektriley](https://github.com/derektriley) in [#18788](https://github.com/hiero-ledger/hiero-consensus-node/pull/18788)
+* chore: (cherry-pick) update codeowners with new team names by [@derektriley](https://github.com/derektriley) in [#18807](https://github.com/hiero-ledger/hiero-consensus-node/pull/18807)
+* fix: Cherry-pick `transactionFee` fix for atomic batch transactions by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#18853](https://github.com/hiero-ledger/hiero-consensus-node/pull/18853)
+
+**Full Changelog**: [v0.61.2...v0.61.3](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.61.2...v0.61.3)
+
+</details>
+
 ### [Build 0.61.2](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.2)
 
 <details>

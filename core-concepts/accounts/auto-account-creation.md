@@ -6,7 +6,7 @@ The account alias can be either one of the supported types:
 
 <details>
 
-<summary>Public Key</summary>
+<summary><strong>Public Key</strong></summary>
 
 The public key alias can be an ED25519 or ECDSA secp256k1 public key type.\
 \
@@ -36,7 +36,7 @@ EDDSA ED25519 Public Key Alias Account ID:\
 
 <details>
 
-<summary>EVM Address</summary>
+<summary><strong>EVM Address</strong></summary>
 
 The EVM address alias is created by using the rightmost 20 bytes of the 32 byte `Keccak-256` hash of an `ECDSA secp256k1` public key. This calculation is in the manner described by the [Ethereum Yellow Paper](https://ethereum.github.io/yellowpaper/paper.pdf). The EVM address is not equivalent to the ECDSA public key.\
 \
@@ -75,7 +75,7 @@ The initial transfer of tokens to the alias account ID will do a few things:
 3. Once the new account is officially created, the token transfer transaction instantiated by the user will transfer the tokens to the new account.
 4. The account specified to pay for the token transfer transaction fees will also be charged the account creation transaction fees in tinybar.
 
-The above interactions introduce the concept of [parent and child transactions](../transactions-and-queries.md#nested-transactions). The parent transaction is the transaction that represents the transfer of tokens from the sender account to the destination account. The child transaction is the transaction the system initiated to create the account. This concept is important since the parent transaction record or receipt will not return the new account number ID. You must get the transaction record or receipt of the child transaction. The parent and child transactions will share the same transaction ID, except the child transaction has an added nonce value.
+The above interactions introduce the concept of [parent and child transactions](../transactions-and-queries/#nested-transactions). The parent transaction is the transaction that represents the transfer of tokens from the sender account to the destination account. The child transaction is the transaction the system initiated to create the account. This concept is important since the parent transaction record or receipt will not return the new account number ID. You must get the transaction record or receipt of the child transaction. The parent and child transactions will share the same transaction ID, except the child transaction has an added nonce value.
 
 {% hint style="info" %}
 **parent transaction**: the transaction responsible for transferring the tokens to the alias account ID destination account.
@@ -102,7 +102,7 @@ To update the hollow account into a complete account, the hollow account needs t
 
 <details>
 
-<summary>Auto-create an account using a public key alias</summary>
+<summary><strong>Auto-create an account using a public key alias</strong></summary>
 
 :black\_circle: [Java](https://github.com/hashgraph/hedera-sdk-java/blob/main/examples/src/main/java/com/hedera/hashgraph/sdk/examples/AccountAliasExample.java)\
 :black\_circle: [JavaScript](https://github.com/hashgraph/hedera-sdk-js/blob/develop/examples/account-alias.js)\
@@ -112,7 +112,7 @@ To update the hollow account into a complete account, the hollow account needs t
 
 <details>
 
-<summary>Auto-create an account using an EVM address (public address) alias</summary>
+<summary><strong>Auto-create an account using an EVM address (public address) alias</strong></summary>
 
 :black\_circle: [Java](https://github.com/hashgraph/hedera-sdk-java/blob/main/examples/src/main/java/com/hedera/hashgraph/sdk/examples/AutoCreateAccountTransferTransactionExample.java)\
 :black\_circle: [JavaScript](https://github.com/hashgraph/hedera-sdk-js/blob/develop/examples/transfer-using-evm-address.js)\

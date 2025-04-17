@@ -16,10 +16,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install dependencies
-        run: sudo apt-get install -y jq
+         run: sudo apt-get install -y jq
 
       - name: Run update script
-        run: ./update_node_tables.sh
+         run: ./update_node_tables.sh
 
       - name: Commit changes
         run: |

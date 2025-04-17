@@ -7,7 +7,7 @@ The account ID is the ID of the account entity on the Hedera network. The accoun
 
 <details>
 
-<summary>Shard Number</summary>
+<summary><strong>Shard Number</strong></summary>
 
 Format: **`shardNum`**`.realmNum.account`
 
@@ -19,7 +19,7 @@ Default: `0`
 
 <details>
 
-<summary>Realm Number</summary>
+<summary><strong>Realm Number</strong></summary>
 
 Format: `shardNum.`**`realmNum`**`.account`\
 \
@@ -74,7 +74,7 @@ The account alias public key is the public key of an ECDSA secp256k1 or ED25519 
 
 <details>
 
-<summary>Example Public Key Alias Account ID</summary>
+<summary><strong>Example Public Key Alias Account ID</strong></summary>
 
 `0.0.302d300706052b8104000a03220002d588ec1000770949ab77516c77ee729774de1c8fe058cab6d64f1b12ffc8ff07`
 
@@ -97,7 +97,7 @@ The EVM address account and the [account number alias](account-properties.md#acc
 
 <details>
 
-<summary>EVM Address Account Alias Account ID Example</summary>
+<summary><strong>EVM Address Account Alias Account ID Example</strong></summary>
 
 The shard number and realm number are set to `0` followed by the EVM address.&#x20;
 
@@ -182,7 +182,7 @@ An account can only stake to one node or one account at any given time.
 
 <details>
 
-<summary>Staked Node ID</summary>
+<summary><strong>Staked Node ID</strong></summary>
 
 An account can optionally elect to stake its HBAR to a node in the Hedera network. The staked node ID is the node an account can stake to. The full balance of the account is staked to the node. Do not confuse the node ID with the node's account ID. If you stake to the node's account ID, your account will not earn staking rewards. \
 \
@@ -201,7 +201,7 @@ Node ID: `1`\
 
 <details>
 
-<summary>Staked Account ID</summary>
+<summary><strong>Staked Account ID</strong></summary>
 
 An account can optionally elect to stake its HBAR to another account in the Hedera network. This is known as **indirect staking**. The staked account ID is the ID of the account to stake to. The full balance of the account is staked to the specified account. \
 \
@@ -217,7 +217,7 @@ Account ID: `0.0.10`
 
 <details>
 
-<summary>Decline to Earn Staking Rewards</summary>
+<summary><strong>Decline to Earn Staking Rewards</strong></summary>
 
 Accounts can decline to earn staking rewards when they stake to a node or an account. The staked account still contributes to the staking weight of the node, but does not earn rewards or is calculated as part of the payment of the rewards to the other accounts that have elected to earn rewards. By default, all staked accounts will earn rewards unless this boolean flag is set to true. This election can be changed by updating the account properties. Hedera treasury accounts enable this flag to decline earning staking rewards.\
 \
@@ -251,7 +251,7 @@ The amount charged for renewal will be charged every pre-determined period in se
 
 <details>
 
-<summary> Expiration Time</summary>
+<summary> <strong>Expiration Time</strong></summary>
 
 The effective consensus timestamp at (and after) which the entity is set to expire.
 

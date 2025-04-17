@@ -16,6 +16,40 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **TESTNET UPDATE SCHEDULED: April 22, 2025**
 {% endhint %}
 
+### [Build 0.61.3](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.3)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* chore: (cherry-pick) Update flow-pull-request-formatting.yaml by [@derektriley](https://github.com/derektriley) in [#18792](https://github.com/hiero-ledger/hiero-consensus-node/pull/18792)
+* chore: (cherry-pick) adjust path to protobufs in 'Update Hedera Protobufs' step by [@derektriley](https://github.com/derektriley) in [#18787](https://github.com/hiero-ledger/hiero-consensus-node/pull/18787)
+* chore: (cherry-pick) remove github-committers team from codeowners by [@derektriley](https://github.com/derektriley) in [#18808](https://github.com/hiero-ledger/hiero-consensus-node/pull/18808)
+* chore: (cherry-pick) Update CODEOWNERS for tools-and-libs rename by [@derektriley](https://github.com/derektriley) in [#18788](https://github.com/hiero-ledger/hiero-consensus-node/pull/18788)
+* chore: (cherry-pick) update codeowners with new team names by [@derektriley](https://github.com/derektriley) in [#18807](https://github.com/hiero-ledger/hiero-consensus-node/pull/18807)
+* fix: Cherry-pick `transactionFee` fix for atomic batch transactions by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#18853](https://github.com/hiero-ledger/hiero-consensus-node/pull/18853)
+
+
+
+**Full Changelog**: [v0.61.2...v0.61.3](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.61.2...v0.61.3)
+
+</details>
+
+### [Build 0.61.2](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.2)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* chore: (cherry-pick) Delay initializing snark keys ([#18699](https://github.com/hiero-ledger/hiero-consensus-node/pull/18699)) by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#18701](https://github.com/hiero-ledger/hiero-consensus-node/pull/18701)
+* fix: (cherry-pick) Utilize more than one thread for SSL accept handling ([#18557](https://github.com/hiero-ledger/hiero-consensus-node/pull/18557)) by [@abies](https://github.com/abies) in [#18586](https://github.com/hiero-ledger/hiero-consensus-node/pull/18586)
+* fix: 18720: Backport the fix for 18571 to release 0.61 by [@artemananiev](https://github.com/artemananiev) in [#18736](https://github.com/hiero-ledger/hiero-consensus-node/pull/18736)
+* feat: (cherry-pick) try using non-zero realm/shard by [@derektriley](https://github.com/derektriley) in [#18732](https://github.com/hiero-ledger/hiero-consensus-node/pull/18732)
+
+**Full Changelog**: [v0.61.1...v0.61.2](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.61.1...v0.61.2)
+
+</details>
+
 ### [Build 0.61.1](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.1)
 
 <details>
@@ -74,13 +108,38 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Release v0.60
 
-{% hint style="info" %}
+{% hint style="success" %}
 **MAINNET UPDATE SCHEDULED: APRIL 16, 2025**
 {% endhint %}
 
-{% hint style="info" %}
-**TESTNET UPDATE SCHEDULED: April 8, 2025**
+{% hint style="success" %}
+**TESTNET UPDATE SCHEDULED: April 9, 2025**
 {% endhint %}
+
+### Release Highlights
+
+This release focuses on significant performance improvements, enhanced developer tooling, and improved error handling.
+
+#### Hiero Improvement Proposals (HIPs)
+
+[HIP-1021](https://hips.hedera.com/hip/hip-1021): Improve Assignment of Auto-Renew Account ID for Topics
+
+* Full implementation of improved auto-renew account ID assignment for topics, enabling setting `autoRenewAccountId` during topic creation without an admin key.&#x20;
+* Developers benefit from simplified topic management and reduced risk of unexpected expirations.
+
+### [Build 0.60.1](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.60.1)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* fix: Update MTT Version by [@timo0](https://github.com/timo0) in [#18423](https://github.com/hiero-ledger/hiero-consensus-node/pull/18423)
+* fix: 18424 Fixed initialization of MigrationTestingToolState by [@imalygin](https://github.com/imalygin) in [#18432](https://github.com/hiero-ledger/hiero-consensus-node/pull/18432)
+* fix: 18722: Backport the fix for 18571 to release 0.60 by [@artemananiev](https://github.com/artemananiev) in [#18723](https://github.com/hiero-ledger/hiero-consensus-node/pull/18723)
+
+**Full Changelog**: [v0.60.0...v0.60.1](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.60.0...v0.60.1)
+
+</details>
 
 ### [Build 0.60.0](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.60.0)
 
@@ -102,6 +161,10 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **Full Changelog**: [v0.59.5...v0.60.0](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.59.5...v0.60.0)
 
 </details>
+
+### Performance Results
+
+<figure><img src="../../.gitbook/assets/‎0.60_Performance Measurement Results_Extract.‎001.png" alt=""><figcaption></figcaption></figure>
 
 ## Release v0.59
 

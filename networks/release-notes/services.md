@@ -125,11 +125,6 @@ This release focuses on significant performance improvements, enhanced developer
 * Full implementation of improved auto-renew account ID assignment for topics, enabling setting `autoRenewAccountId` during topic creation without an admin key.&#x20;
 * Developers benefit from simplified topic management and reduced risk of unexpected expirations.
 
-[HIP-1084](https://hips.hedera.com/hip/hip-1084): Zero Cost EthereumTransaction on Success
-
-* Full implementation of zero-cost Ethereum transactions on success, removing fees for successful `EthereumTransactions`.&#x20;
-* Significantly reduces costs for relay operators and simplifies the user experience.
-
 ### [Build 0.60.1](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.60.1)
 
 <details>

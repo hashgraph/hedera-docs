@@ -49,7 +49,7 @@ tableA_rows=$(jq -r '
     })
   | sort_by(.id)
   | .[]
-  | "| \(.node) | \(.id) | \(.acct) | \(.endpoints | join(", ")) | \(.thumb) |"
+  | "| \(.node) | \(.id) | **\(.acct)** | \(.endpoints | join(", ")) | \(.thumb) |"
 ' <<<"$nodes_json")
 tableA_content="${tableA_header}${tableA_rows}"
 
@@ -65,7 +65,7 @@ tableB_rows=$(jq -r '
       key:  .public_key
     })
   | .[]
-  | "| \(.acct) | \(.key) |"
+  | "| **\(.acct)** | \(.key) |"
 ' <<<"$nodes_json")
 tableB_content="${tableB_header}${tableB_rows}"
 

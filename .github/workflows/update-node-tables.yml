@@ -19,7 +19,7 @@ jobs:
         run: sudo apt-get install -y jq
 
       - name: Run update script
-        run: ./update_node_list.sh
+        run: ./update_node_tables.sh
 
       - name: Commit changes
         run: |

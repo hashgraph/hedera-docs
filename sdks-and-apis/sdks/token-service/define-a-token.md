@@ -25,8 +25,8 @@ For non-fungible tokens, the token ID represents an NFT class. Once the token is
 
 #### **Token Properties**
 
-{% content-ref url="broken-reference" %}
-[Broken link](broken-reference)
+{% content-ref url="../../../core-concepts/tokens/hedera-token-service-hts-native-tokenization/token-properties.md" %}
+[token-properties.md](../../../core-concepts/tokens/hedera-token-service-hts-native-tokenization/token-properties.md)
 {% endcontent-ref %}
 
 **Transaction Signing Requirements**

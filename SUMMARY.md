@@ -555,7 +555,7 @@
         * [Network Response Messages](sdks-and-apis/deprecated/sdks/readme-1-1/network-response-messages.md)
   * [Hedera Status API](sdks-and-apis/hedera-status-api.md)
 * [Support & Community](support-and-community/README.md)
-  * [Hedera AI Agents Hackathon](https://hedera.com/hackathon)
+  * [Hedera AI Agents Hackathon](support-and-community/hedera-ai-agents-hackathon.md)
   * [Glossary](support-and-community/glossary.md)
   * [Contributing to Hedera documentation](support-and-community/contributing-guide/README.md)
     * [Contribution Guidelines](support-and-community/contributing-guide/contribution-guidelines/README.md)

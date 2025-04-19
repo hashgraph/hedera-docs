@@ -164,7 +164,6 @@
     * [ElizaOS Plugin for Hedera](open-source-solutions/ai-tools-for-developers/elizaos-plugin-for-hedera.md)
     * [Hedera Hivemind](open-source-solutions/ai-tools-for-developers/hedera-hivemind.md)
     * [Kapa AI](open-source-solutions/ai-tools-for-developers/kapa-ai.md)
-    * [Hedera AI Agents Hackathon](https://hedera.com/hackathon)
   * [Asset Tokenization Studio (ATS)](open-source-solutions/asset-tokenization-studio-ats/README.md)
     * [Web User Interface (UI)](open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui.md)
     * [Frequently Asked Questions (FAQs)](open-source-solutions/asset-tokenization-studio-ats/frequently-asked-questions-faqs.md)

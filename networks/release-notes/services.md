@@ -12,9 +12,23 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **MAINNET UPDATE SCHEDULED: MAY 14, 2025**
 {% endhint %}
 
-{% hint style="info" %}
-**TESTNET UPDATE SCHEDULED: April 22, 2025**
+{% hint style="success" %}
+**TESTNET UPDATE SCHEDULED: April 21, 2025**
 {% endhint %}
+
+### [Build 0.61.4](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.4)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* fix: 0.61 cherry-pick: Correctly populate sysfiles with node info by [@mhess-swl](https://github.com/mhess-swl) in [#18884](https://github.com/hiero-ledger/hiero-consensus-node/pull/18884)
+* fix: 18771: Backport fixes for 18593, 18795, 18844, and 18903 to release 0.61 by [@artemananiev](https://github.com/artemananiev) in [#18799](https://github.com/hiero-ledger/hiero-consensus-node/pull/18799)
+* chore: (0.61) add fee refund mechanism, use for successful EthereumTransaction by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#18913](https://github.com/hiero-ledger/hiero-consensus-node/pull/18913)
+
+**Full Changelog**: [v0.61.3...v0.61.4](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.61.3...v0.61.4)
+
+</details>
 
 ### [Build 0.61.3](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.3)
 
@@ -28,8 +42,6 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 * chore: (cherry-pick) Update CODEOWNERS for tools-and-libs rename by [@derektriley](https://github.com/derektriley) in [#18788](https://github.com/hiero-ledger/hiero-consensus-node/pull/18788)
 * chore: (cherry-pick) update codeowners with new team names by [@derektriley](https://github.com/derektriley) in [#18807](https://github.com/hiero-ledger/hiero-consensus-node/pull/18807)
 * fix: Cherry-pick `transactionFee` fix for atomic batch transactions by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#18853](https://github.com/hiero-ledger/hiero-consensus-node/pull/18853)
-
-
 
 **Full Changelog**: [v0.61.2...v0.61.3](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.61.2...v0.61.3)
 

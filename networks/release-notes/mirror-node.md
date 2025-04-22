@@ -8,6 +8,14 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Latest Releases
 
+## [v0.127.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.127.0)
+
+This release contains important fixes to the modularized web3 project that aims to enhance the `/api/v1/contracts/call` REST API with the latest consensus node functionality. Along with various bug fixes and test improvements, we implemented the `EntityCountsSingleton` and added verification and caching of system files. There are also new metrics and dashboard improvements to improve monitoring of the modularized traffic. With these changes, we have enough confidence to begin slowly rolling out this feature to production. As of writing, previewnet is at 50% and testnet is at 10% of traffic flowing to the new modularized code path. Please test your application and let us know of any regressions you may encounter during this transition period.
+
+Support for non-zero realm saw a ton of work completed in this release. Outside the web3 module which requires an upgrade to v0.61.2 of the consensus node library to unlock full support, the rest of the codebase should be mostly compatible with non-zero realm and shards now.
+
+The alpha GraphQL API module was converted from reactive Spring WebFlux to synchronous Spring MVC. While that at first doesn't sound like an improvement, the module was also changed to use virtual threads at the same time to provide a scalable API without the complexity that reactive brings. To further harden our APIs, we now enforce JSON parsing limits in both the rest-java and web3 modules.
+
 ## [v0.126.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.126.0)
 
 Repository: [hiero-ledger/hiero-mirror-node](https://github.com/hiero-ledger/hiero-mirror-node) · Tag: [v0.126.0](https://github.com/hiero-ledger/hiero-mirror-node/tree/v0.126.0) · Commit: [8ff0933](https://github.com/hiero-ledger/hiero-mirror-node/commit/8ff0933f946b8552ef21a05abf8f3cf48f4c96d0) · Released by: [github-actions\[bot\]](https://github.com/apps/github-actions)
@@ -606,8 +614,6 @@ The `/api/v1/contracts/{id}/state` REST API shows the current state of a contrac
 {% hint style="success" %}
 **TESTNET UPDATE COMPLETED: MARCH 13, 2023**
 {% endhint %}
-
-
 
 The new `/api/v1/contracts/call` REST API as specified in [HIP-584](https://hips.hedera.com/HIP/hip-584.html) is finally ready for initial production use. This release adds support for rate limiting the API with an initial value of 100 requests per second per instance. Tags were added to the gas per second metric to indicate if the request was a call, an estimate, or resulted in an error for increased observability. Various bug fixes were also addressed.
 

@@ -139,7 +139,7 @@ function createNFT(
 {% endcode %}
 
 {% hint style="info" %}
-#### **How It Works**
+**How It Works**
 
 1. **Prepare a Royalty Fee**:\
    We define a single royalty fee in `royaltyFees[0]` to collect 1/10th (10%) of the value exchanged in any subsequent NFT transfer. If there is no fungible value in the transfer, a **fallback fee** of 1 HBAR is charged.
@@ -174,7 +174,7 @@ it("should create an NFT", async () => {
 Here, we pass `"Test NFT"`, `"TST"`, and `"Test NFT"` as arguments. We also send some HBAR (in this case, 7 HBAR) to cover the creation costs on the Hedera network. We expect the `NFTCreated` event to have a valid token address to confirm success.
 
 {% hint style="info" %}
-#### **Note**
+**Note**
 
 For most HTS [System Smart Contract](../../core-concepts/smart-contracts/system-smart-contracts/) calls, an HBAR value **is not** required to be sent in the contract call; the gas fee will cover it. However, for expensive transactions, like [Create Token Transactions](../../sdks-and-apis/sdks/token-service/define-a-token.md), the gas fee is reduced, and the transaction cost is covered by the payable amount. This is to reduce the gas consumed by the contract call.
 {% endhint %}
@@ -208,7 +208,7 @@ function mintNFT(bytes[] memory metadata) external onlyOwner {
 {% endcode %}
 
 {% hint style="info" %}
-#### **How It Works**
+**How It Works**
 
 1. **Call `mintToken`**:\
    This HTS System Contract function creates new NFT serial numbers for each entry in the `metadata` array. For example, if you pass three metadata values, you will mint three (3) unique NFTs.
@@ -263,7 +263,7 @@ function transferNFT(address receiver, uint256 serialNumber) external {
 {% endcode %}
 
 {% hint style="info" %}
-#### **How it Works**
+**How it Works**
 
 1. **Checks Token Address**:\
    Again, ensure the contract has already created the token.
@@ -396,4 +396,4 @@ Check out our GitHub repo to find the full contract and Hardhat test scripts, al
 
 * [Full Contract and Hardhat Test Scripts Repository](https://github.com/hedera-dev/hts-evm-hybrid-mint-nfts)
 
-<table data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Jake, Developer Relations Engineer</p><p><a href="https://github.com/jaycoolh">GitHub</a> | <a href="https://x.com/jaycoolh">X</a></p></td><td><a href="https://github.com/jaycoolh">https://github.com/jaycoolh</a></td></tr><tr><td align="center"><p>Editor: Michiel, Developer Relations Engineer</p><p><a href="https://github.com/michielmulders">GitHub</a> | <a href="https://www.linkedin.com/in/michielmulders/">LinkedIn</a></p></td><td><a href="https://www.linkedin.com/in/michielmulders/">https://www.linkedin.com/in/michielmulders/</a></td></tr><tr><td align="center"><p>Editor: Krystal, Technical Writer</p><p><a href="https://github.com/theekrystallee">GitHub</a> | <a href="https://x.com/theekrystallee">X</a></p></td><td><a href="https://x.com/theekrystallee">https://x.com/theekrystallee</a></td></tr></tbody></table>
+<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Jake, Developer Relations Engineer</p><p><a href="https://github.com/jaycoolh">GitHub</a> | <a href="https://x.com/jaycoolh">X</a></p></td><td><a href="https://github.com/jaycoolh">https://github.com/jaycoolh</a></td></tr><tr><td align="center"><p>Editor: Michiel, Developer Relations Engineer</p><p><a href="https://github.com/michielmulders">GitHub</a> | <a href="https://www.linkedin.com/in/michielmulders/">LinkedIn</a></p></td><td><a href="https://www.linkedin.com/in/michielmulders/">https://www.linkedin.com/in/michielmulders/</a></td></tr><tr><td align="center"><p>Editor: Krystal, Technical Writer</p><p><a href="https://github.com/theekrystallee">GitHub</a> | <a href="https://x.com/theekrystallee">X</a></p></td><td><a href="https://x.com/theekrystallee">https://x.com/theekrystallee</a></td></tr></tbody></table>

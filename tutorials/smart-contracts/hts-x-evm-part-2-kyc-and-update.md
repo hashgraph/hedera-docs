@@ -74,7 +74,7 @@ This script deploys and tests all of the functionality inside the `KYCandUpdateN
 
 #### **Function:** `createNFT(string memory name, string memory symbol, string memory memo)`
 
-**Purpose:** Deploy an HTS non-fungible token (NFT) via a Solidity contract call to `HederaTokenService.createNonFungibleToken`.&#x20;
+**Purpose:** Deploy an HTS non-fungible token (NFT) via a Solidity contract call to `HederaTokenService.createNonFungibleToken`.
 
 #### **Key Code Snippet:**
 
@@ -109,7 +109,7 @@ function createNFT(
 {% endcode %}
 
 {% hint style="info" %}
-#### **How It Works**
+**How It Works**
 
 1. **Define Token Details** – Provide `name`, `symbol`, and an optional `memo`.
 2. **Set Keys** – We generate three token keys:
@@ -237,7 +237,7 @@ it("should revoke KYC from account1 (example)", async () => {
 
 **Function:** `transferNFT(address receiver, uint256 serialNumber)`
 
-**Purpose:** Transfer an NFT from the treasury (`address(this)`) to another account. The receiving account must have KYC because this token has a KYC key.&#x20;
+**Purpose:** Transfer an NFT from the treasury (`address(this)`) to another account. The receiving account must have KYC because this token has a KYC key.
 
 #### **Key Code Snippet:**
 
@@ -416,4 +416,4 @@ Check out our GitHub repo to find the full contract and Hardhat test scripts, al
 
 * [Full Contract and Hardhat Test Scripts Repository](https://github.com/hedera-dev/hts-evm-hybrid-mint-nfts)
 
-<table data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Jake, Developer Relations Engineer</p><p><a href="https://github.com/jaycoolh">GitHub</a> | <a href="https://x.com/jaycoolh">X</a></p></td><td><a href="https://github.com/jaycoolh">https://github.com/jaycoolh</a></td></tr><tr><td align="center"><p>Editor: Michiel, Developer Relations Engineer</p><p><a href="https://github.com/michielmulders">GitHub</a> | <a href="https://www.linkedin.com/in/michielmulders/">LinkedIn</a></p></td><td><a href="https://www.linkedin.com/in/michielmulders/">https://www.linkedin.com/in/michielmulders/</a></td></tr><tr><td align="center"><p>Editor: Krystal, Technical Writer</p><p><a href="https://github.com/theekrystallee">GitHub</a> | <a href="https://x.com/theekrystallee">X</a></p></td><td><a href="https://x.com/theekrystallee">https://x.com/theekrystallee</a></td></tr></tbody></table>
+<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Jake, Developer Relations Engineer</p><p><a href="https://github.com/jaycoolh">GitHub</a> | <a href="https://x.com/jaycoolh">X</a></p></td><td><a href="https://github.com/jaycoolh">https://github.com/jaycoolh</a></td></tr><tr><td align="center"><p>Editor: Michiel, Developer Relations Engineer</p><p><a href="https://github.com/michielmulders">GitHub</a> | <a href="https://www.linkedin.com/in/michielmulders/">LinkedIn</a></p></td><td><a href="https://www.linkedin.com/in/michielmulders/">https://www.linkedin.com/in/michielmulders/</a></td></tr><tr><td align="center"><p>Editor: Krystal, Technical Writer</p><p><a href="https://github.com/theekrystallee">GitHub</a> | <a href="https://x.com/theekrystallee">X</a></p></td><td><a href="https://x.com/theekrystallee">https://x.com/theekrystallee</a></td></tr></tbody></table>

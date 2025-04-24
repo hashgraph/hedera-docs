@@ -111,3 +111,5 @@ For those interested in technical architecture, ATS utilizes factory contracts t
 This architecture allows administrators or issuers to update their digital securities without disruption and keeps the architecture more flexible, scalable, and efficient over time.
 
 <figure><picture><source srcset="../../.gitbook/assets/ats-sc-architecture-dark-mode.png" media="(prefers-color-scheme: dark)"><img src="../../.gitbook/assets/ats-sc-architecture.png" alt=""></picture><figcaption></figcaption></figure>
+
+<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th></tr></thead><tbody><tr><td align="center"><p>Editor: Krystal, Technical Writer</p><p><a href="https://github.com/theekrystallee">GitHub</a> | <a href="https://x.com/theekrystallee">X</a></p></td></tr></tbody></table>

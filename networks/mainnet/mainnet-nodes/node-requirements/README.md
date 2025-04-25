@@ -248,28 +248,28 @@ If using interface bonding, note that mutual TLS is in use, and Layer 3 Policy B
 
 The following steps outline the process for Council Members to add their consensus node to the mainnet.
 
-1. Initial contact with Council Member and node hosting entity
-   1. Identify key individuals and project managers
-   2. Establish regular deployment team meeting cadence
-2. Conveyance of technical requirements and discussion of deployment options
-3. Node platform acquisition
-   1. Hardware or virtual instance
-   2. Network connectivity
-   3. Hosting facility
-4. Configuration of the operating system on platform
-   1. Provisioning of accounts as specified
-   2. Provisioning of network access (firewall rules/access control lists)
-5. Conveyance of credentials to Hedera
-   1. Includes any special instructions for permissioned access such as VPNs
-   2. Discussion of support and escalation paths between organizations
-6. Hedera undertakes configuration review
-   1. Platform
-   2. Connectivity
-7. Deployment of Hedera consensus node software and required supporting libraries
-8. Add connection configuration for a Hedera performance testnet
-   1. Hedera executes functional, stability and performance tests for all network services
-9. Review of test results and determination of preparedness for mainnet connectivity
-   1. Review key management documentation related to Council Member's accounts including: fee account, proxy staking account, et al.
-   2. Update private keys using provided tools
-10. Schedule mainnet connection
-11. Mainnet live
+1. **Initial contact with Council Member and node hosting entity**
+   * Identify key individuals and project managers
+   * Establish regular deployment team meeting cadence
+2. **Conveyance of technical requirements and discussion of deployment options**
+3. **Node platform acquisition**
+   * Hardware or virtual instance
+   * Network connectivity
+   * Hosting facility
+4. **Configuration of the operating system on platform**
+   * Provisioning of accounts as specified
+   * Provisioning of network access (firewall rules/access control lists)
+5. **Conveyance of credentials to Hedera**
+   * Includes any special instructions for permissioned access such as VPNs
+   * Discussion of support and escalation paths between organizations
+6. **Hedera undertakes configuration review**
+   * Platform
+   * Connectivity
+7. **Deployment of Hedera consensus node software and required supporting libraries**
+8. **Add connection configuration for a Hedera performance testnet**
+   * Hedera executes functional, stability and performance tests for all network services
+9. **Review of test results and determination of preparedness for mainnet connectivity**
+   * Review key management documentation related to Council Member's accounts including: fee account, proxy staking account, et al.
+   * Update private keys using provided tools
+10. **Schedule mainnet connection**
+11. **Mainnet live**

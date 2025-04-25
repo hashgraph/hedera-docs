@@ -4,6 +4,12 @@
 
 The account ID is the ID of the account **entity** on the Hedera network. The account ID includes the **shard number**, **realm number**, and an **account** <mark style="color:purple;">`<shardNum>.<realmNum>.<account>`</mark>**.** The account ID is used to specify the account in all Hedera transactions and queries. There can be more than one account ID that can represent an account.
 
+{% hint style="success" %}
+#### Support for Arbitrary Shards & Realms
+
+The Hedera network now supports non-zero realm IDs (such as _`0.100.0`_). This is particularly important for private networks that will populate realm values. The default values for the Hedera network are `shard 0` and `realm 0`. For private networks or other implementations, shard and realm values will be different. Refer to the specific network's documentation for accurate values in your implementation.
+{% endhint %}
+
 <details>
 
 <summary><strong>Shard Number</strong></summary>
@@ -52,12 +58,6 @@ The `account` can be one of the following:\
 * A shard number must be unique across the network
 * A realm number must be unique within a shard (but may be reused in different shards)
 * An entity number must be unique within a realm (but may be reused in different realms)
-
-{% hint style="success" %}
-#### Support for Arbitrary Shards & Realms
-
-The Hedera network now supports non-zero realm IDs (such as _`0.100.0`_). This is particularly important for private networks that will populate realm values. The default values for the Hedera network are `shard 0` and `realm 0`. For private networks or other implementations, shard and realm values will be different. Refer to the specific network's documentation for accurate values in your implementation.
-{% endhint %}
 
 ### Entity Counter
 

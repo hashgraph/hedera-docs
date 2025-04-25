@@ -6,6 +6,105 @@ description: Consensus Node release information
 
 Visit the [Hedera status page](https://status.hedera.com/) for the latest versions supported on each network.
 
+## Release v0.62
+
+{% hint style="info" %}
+**MAINNET UPDATE SCHEDULED: JUNE 11, 2025**
+{% endhint %}
+
+{% hint style="info" %}
+**TESTNET UPDATE SCHEDULED: MAY 20, 2025**
+{% endhint %}
+
+### [**Build 0.62.0**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.0)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+#### Features
+
+* remove code deposit gas charge waiver ([#18797](https://github.com/hiero-ledger/hiero-consensus-node/pull/18797))
+* decouple backend throttle config from front end and add support for burst ([#18743](https://github.com/hiero-ledger/hiero-consensus-node/pull/18743))
+* Update consensus to use nGen for determining when to recalculate metadata ([#18882](https://github.com/hiero-ledger/hiero-consensus-node/pull/18882))
+* add cGen ([#18867](https://github.com/hiero-ledger/hiero-consensus-node/pull/18867))
+* HIP-1046 Extend node address book with gRPC web proxy endpoint ([#18766](https://github.com/hiero-ledger/hiero-consensus-node/pull/18766))
+* EventCreator uses nGen instead of generation ([#18737](https://github.com/hiero-ledger/hiero-consensus-node/pull/18737))
+* Otter test logging improvements ([#18850](https://github.com/hiero-ledger/hiero-consensus-node/pull/18850))
+* Add new v0.62 module and HederaEVM class ([#18535](https://github.com/hiero-ledger/hiero-consensus-node/pull/18535))
+* Modifications to `EventHeader` for Block Stream ([#18548](https://github.com/hiero-ledger/hiero-consensus-node/pull/18548))
+* Add otter test module ([#18646](https://github.com/hiero-ledger/hiero-consensus-node/pull/18646))
+* handle `ResendBlock` block node responses ([#18747](https://github.com/hiero-ledger/hiero-consensus-node/pull/18747))
+* Handle `BlockAcknowledgements` received from Block Nodes ([#18536](https://github.com/hiero-ledger/hiero-consensus-node/pull/18536))
+* 18593: Need a mechanism to repair key to path mapping from data files at startup ([#18625](https://github.com/hiero-ledger/hiero-consensus-node/pull/18625))
+* Jumbo bytes throttle ([#18389](https://github.com/hiero-ledger/hiero-consensus-node/pull/18389))
+* Use existing key to create an account ([#18611](https://github.com/hiero-ledger/hiero-consensus-node/pull/18611))
+* Remove use of generation from sync ([#18590](https://github.com/hiero-ledger/hiero-consensus-node/pull/18590))
+* move parent event descriptors ([#18524](https://github.com/hiero-ledger/hiero-consensus-node/pull/18524))
+* Long Term Schedule Transaction Support For DAB transactions ([#18539](https://github.com/hiero-ledger/hiero-consensus-node/pull/18539))
+* Implement Non-deterministic Generation ([#18506](https://github.com/hiero-ledger/hiero-consensus-node/pull/18506))
+* Stream to Block Node's immediately without waiting `BlockProof`s ([#18450](https://github.com/hiero-ledger/hiero-consensus-node/pull/18450))
+* Enhance yahcli rekey with ECDSA support ([#18515](https://github.com/hiero-ledger/hiero-consensus-node/pull/18515))
+* Implement daily node rewards ([#18441](https://github.com/hiero-ledger/hiero-consensus-node/pull/18441))
+* add HAPI verb to override the hederaFunctionality ([#18481](https://github.com/hiero-ledger/hiero-consensus-node/pull/18481))
+* Increase the buffer size of ethereumCall gRPC endpoint ([#18321](https://github.com/hiero-ledger/hiero-consensus-node/pull/18321))
+* Add ingest workflow jumbo checks ([#18312](https://github.com/hiero-ledger/hiero-consensus-node/pull/18312))
+* try using non-zero realm/shard ([#18092](https://github.com/hiero-ledger/hiero-consensus-node/pull/18092))
+
+#### Bug Fixes
+
+* 18903: Tighten HDHM repair checks ([#18906](https://github.com/hiero-ledger/hiero-consensus-node/pull/18906))
+* detach FCQueue copy when serializing ([#18863](https://github.com/hiero-ledger/hiero-consensus-node/pull/18863))
+* Fix failing test in crypto-base ([#18888](https://github.com/hiero-ledger/hiero-consensus-node/pull/18888))
+* fix copy paste error in TipsetEventCreatorTests ([#18876](https://github.com/hiero-ledger/hiero-consensus-node/pull/18876))
+* disable GasCalculationIntegrityTest test suite ([#18868](https://github.com/hiero-ledger/hiero-consensus-node/pull/18868))
+* 18844: HDHM repair mechanism should not be enabled for snapshots ([#18859](https://github.com/hiero-ledger/hiero-consensus-node/pull/18859))
+* 18856: ReconnectHashLeafFlusher uses a wrong config ([#18857](https://github.com/hiero-ledger/hiero-consensus-node/pull/18857))
+* NPE in HalfDiskHashMap ([#18854](https://github.com/hiero-ledger/hiero-consensus-node/pull/18854))
+* Remove unused injections and fix tests ([#18651](https://github.com/hiero-ledger/hiero-consensus-node/pull/18651))
+* Fix `transactionFee` in batch transactions ([#18835](https://github.com/hiero-ledger/hiero-consensus-node/pull/18835))
+* Correctly populate sysfiles with node info ([#18834](https://github.com/hiero-ledger/hiero-consensus-node/pull/18834))
+* Revalidate collector token association on transfer ([#18674](https://github.com/hiero-ledger/hiero-consensus-node/pull/18674))
+* Fix the NPE in DefaultIssDetector.handleCatastrophic ([#18830](https://github.com/hiero-ledger/hiero-consensus-node/pull/18830))
+* flaky `completedHollowAccountOperationsFuzzing` test ([#18816](https://github.com/hiero-ledger/hiero-consensus-node/pull/18816))
+* Fix flakiness in HIP-1064 tests ([#18822](https://github.com/hiero-ledger/hiero-consensus-node/pull/18822))
+* 18813: VirtualMapLargeReconnectTest.multipleAbortedReconnectsCanSucceed is unstable ([#18814](https://github.com/hiero-ledger/hiero-consensus-node/pull/18814))
+* Use getIfUsable() in ApproveAllowanceValidator ([#18580](https://github.com/hiero-ledger/hiero-consensus-node/pull/18580))
+* add auto-renew check for negative values ([#18765](https://github.com/hiero-ledger/hiero-consensus-node/pull/18765))
+* 18795: HDHM repair mechanism can be improved to clean stale buckets ([#18796](https://github.com/hiero-ledger/hiero-consensus-node/pull/18796))
+* Only allow creation of accounts that match the configured shard/realm ([#18806](https://github.com/hiero-ledger/hiero-consensus-node/pull/18806))
+* Move sort before `filterLikelyDuplicates` ([#18802](https://github.com/hiero-ledger/hiero-consensus-node/pull/18802))
+* adding validation for deleted token on unpause ([#18671](https://github.com/hiero-ledger/hiero-consensus-node/pull/18671))
+* Update flow-pull-request-formatting.yaml ([#18790](https://github.com/hiero-ledger/hiero-consensus-node/pull/18790))
+* 18658: ReconnectNodeRemover.setPathInformation() may cause OOM ([#18708](https://github.com/hiero-ledger/hiero-consensus-node/pull/18708))
+* Remove mono logic returning the wrong response code ([#18698](https://github.com/hiero-ledger/hiero-consensus-node/pull/18698))
+* 1280 hip 1056 block item with failed contract create result contains a contract ([#18728](https://github.com/hiero-ledger/hiero-consensus-node/pull/18728))
+* Improved error handling for airdrops with multiple senders ([#18604](https://github.com/hiero-ledger/hiero-consensus-node/pull/18604))
+* Use getIfUsable() when validate custom fees ([#18576](https://github.com/hiero-ledger/hiero-consensus-node/pull/18576))
+* Fix TokenCreateTransaction TCK issues ([#18577](https://github.com/hiero-ledger/hiero-consensus-node/pull/18577))
+* Add guard around LATEST\_XTS\_PASS\_TAG ([#18687](https://github.com/hiero-ledger/hiero-consensus-node/pull/18687))
+* Also archive config.txt as part of network archiving process ([#18427](https://github.com/hiero-ledger/hiero-consensus-node/pull/18427))
+* Add back sorting of sync events ([#18657](https://github.com/hiero-ledger/hiero-consensus-node/pull/18657))
+* memory leak in HalfDiskHashMap.endWriting() ([#18659](https://github.com/hiero-ledger/hiero-consensus-node/pull/18659))
+* Call `endRound` after dispatch ([#18620](https://github.com/hiero-ledger/hiero-consensus-node/pull/18620))
+* Only "go back" in cons time for post-restart system work ([#18654](https://github.com/hiero-ledger/hiero-consensus-node/pull/18654))
+* **18561** Threads outlive the SequentialTaskScheduler created during test ([#18391](https://github.com/hiero-ledger/hiero-consensus-node/pull/18391))
+* airdrop TCK issues fixes ([#18582](https://github.com/hiero-ledger/hiero-consensus-node/pull/18582))
+* 18571: Current path range should be respected when path to hash and path to KV indices are restored ([#18592](https://github.com/hiero-ledger/hiero-consensus-node/pull/18592))
+* contract get bytecode query to return the redirect code for hts token addresses ([#18464](https://github.com/hiero-ledger/hiero-consensus-node/pull/18464)) ([#18563](https://github.com/hiero-ledger/hiero-consensus-node/pull/18563))
+* Fix flaky PcesFile tests ([#18474](https://github.com/hiero-ledger/hiero-consensus-node/pull/18474))
+* Utilize more than one thread for SSL accept handling ([#18557](https://github.com/hiero-ledger/hiero-consensus-node/pull/18557))
+* Ensure `BlockStreamManager#endRound()` is called after dispatching system txns ([#18554](https://github.com/hiero-ledger/hiero-consensus-node/pull/18554))
+* **17180** EventCreator ignores HealthMonitor update when squelching enabled ([#18387](https://github.com/hiero-ledger/hiero-consensus-node/pull/18387))
+* Import sentinel key from hapi utils ([#18512](https://github.com/hiero-ledger/hiero-consensus-node/pull/18512))
+* compile fix ([#18510](https://github.com/hiero-ledger/hiero-consensus-node/pull/18510))
+* Should reject a FILE\_UPDATE to 0.0.123 with an invalid throttle definition ([#18417](https://github.com/hiero-ledger/hiero-consensus-node/pull/18417))
+* 18410: Bucket integrity check in HDHM.ReadUpdateBucketTask can be improved ([#18411](https://github.com/hiero-ledger/hiero-consensus-node/pull/18411))
+* HIP-1028 cleanup and versioning for GetTokenKey ([#18304](https://github.com/hiero-ledger/hiero-consensus-node/pull/18304))
+* update reference to `unhex` method ([#18470](https://github.com/hiero-ledger/hiero-consensus-node/pull/18470))
+
+</details>
+
 ## Release v0.61
 
 {% hint style="info" %}

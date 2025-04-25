@@ -2,8 +2,13 @@
 
 ## Account ID
 
-The account ID is the ID of the account entity on the Hedera network. The account ID includes the **shard number**, **realm number**, and an **account** <mark style="color:purple;">`<shardNum>.<realmNum>.<account>`</mark>**.** The account ID is used to specify the account in all Hedera transactions and queries. There can be more than one account ID that can represent an account.\
+The account ID is the ID of the account **entity** on the Hedera network. The account ID includes the **shard number**, **realm number**, and an **account** <mark style="color:purple;">`<shardNum>.<realmNum>.<account>`</mark>**.** The account ID is used to specify the account in all Hedera transactions and queries. There can be more than one account ID that can represent an account.
 
+{% hint style="success" %}
+#### Support for Arbitrary Shards & Realms
+
+The Hedera network now supports non-zero realm IDs (such as _`0.100.0`_). This is particularly important for private networks that will populate realm values. The default values for the Hedera network are `shard 0` and `realm 0`. For private networks or other implementations, shard and realm values will be different. Refer to the specific network's documentation for accurate values in your implementation.
+{% endhint %}
 
 <details>
 
@@ -13,7 +18,7 @@ Format: **`shardNum`**`.realmNum.account`
 
 The shard number is the number of the shard the account exists in. A shard is a partition of the data received by the nodes participating in a given shard.  Today, Hedera operates in only one shard. This value will remain zero until Hedera operates in more than one shard. This value is non-negative and is 4 bytes.\
 \
-Default: `0`
+Default Hedera Mainnet: `0`
 
 </details>
 
@@ -21,11 +26,11 @@ Default: `0`
 
 <summary><strong>Realm Number</strong></summary>
 
-Format: `shardNum.`**`realmNum`**`.account`\
-\
-The realm number is the number of the realm the account exists within a given shard. Today, Hedera operates in only one realm. This value will remain zero until Hedera operates in more than one shard. This value is non-negative and is 8 bytes. The account can only belong to precisely one realm. The realm ID can be reused in other shards. \
-\
-Default: `0`
+Format: `shardNum.`**`realNum`**`.account`
+
+The realm number is the number of the realm the account exists within a given shard. Today, Hedera operates in only one realm. This value will remain zero until Hedera operates in more than one shard. This value is non-negative and is `8` bytes. The account can only belong to precisely one realm. The realm ID can be reused in other shards.&#x20;
+
+Default for Hedera Mainnet: `0`
 
 </details>
 
@@ -33,7 +38,7 @@ Default: `0`
 
 <summary><strong>Account</strong></summary>
 
-Format: `shardNum.realmNum.`**`account`**
+Format: `shardNum.realNum.`**`account`**
 
 The `account` can be one of the following:\
 \
@@ -41,6 +46,22 @@ The `account` can be one of the following:\
 :black\_circle: [Account Alias](account-properties.md#account-alias)
 
 </details>
+
+#### Examples of Valid Account IDs
+
+* `0.0.123` - Account 123 in `realm 0` of `shard 0` (traditional format)
+* `0.100.456` - Account 456 in `realm 100` of `shard 0` (non-zero realm ID)
+* `1.0.789` - Account 789 in `realm 0` of `shard 1` (future support for non-zero shard ID)
+
+### ID Requirements
+
+* A shard number must be unique across the network
+* A realm number must be unique within a shard (but may be reused in different shards)
+* An entity number must be unique within a realm (but may be reused in different realms)
+
+### Entity Counter
+
+Each realm maintains a single counter for assigning entity numbers. This ensures that if there is a file with ID `0.1.2`, then there won't be an account or smart contract instance with ID `0.1.2` in the same realm.
 
 ### **Account Number**
 
@@ -66,7 +87,7 @@ This format is only acceptable when specified in the `TransferTransaction`, `Acc
 
 The  `alias` can be one of the following alias types:
 
-<table data-view="cards"><thead><tr><th></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td>               Public Key</td><td><a href="account-properties.md#public-key-account-alias">#public-key-account-alias</a></td></tr><tr><td>             EVM Address</td><td><a href="account-properties.md#public-key-account-alias">#public-key-account-alias</a></td></tr></tbody></table>
+<table data-card-size="large" data-view="cards"><thead><tr><th></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td>               Public Key</td><td><a href="account-properties.md#public-key-account-alias">#public-key-account-alias</a></td></tr><tr><td>             EVM Address</td><td><a href="account-properties.md#public-key-account-alias">#public-key-account-alias</a></td></tr></tbody></table>
 
 #### Public Key Account Alias
 
@@ -115,6 +136,42 @@ EVM Address Account Alias Account ID: \
 </details>
 
 Reference Hedera Improvement Proposal: [HIP-583](https://hips.hedera.com/hip/hip-583)
+
+## Auto Renewals & **Expiration**
+
+{% hint style="warning" %}
+Auto-renewals and expiration (rent) are currently not enabled.
+{% endhint %}
+
+Like the other Hedera entities, accounts take up network storage. To cover the cost of storing an account, a renewal fee will be charged for the storage utilized on the network. This feature is not enabled on the network today; however, in the future, when it is enabled, the account must have sufficient funds to pay for the renewal fees.&#x20;
+
+The amount charged for renewal will be charged every pre-determined period in seconds. The interval of time the account will be charged is the auto-renew period. The system will automatically charge the account renewal fees. If the account does not have an HBAR balance, it will be suspended for one week before it is deleted from the ledger. You can renew an account during the suspension period.
+
+<details>
+
+<summary> <strong>Expiration Time</strong></summary>
+
+The effective consensus timestamp at (and after) which the entity is set to expire.
+
+</details>
+
+<details>
+
+<summary><strong>Auto Renew Account</strong></summary>
+
+The auto-renewal account is the account that will be charged for the auto-renewal fee when the account expires. By default, the auto-renewal account is the account itself. The auto-renewal account can be updated to another account by the account owner. The auto-renewal account must sign the transaction to update the auto-renewal account.
+
+</details>
+
+<details>
+
+<summary><strong>Auto Renew Period</strong></summary>
+
+The interval at which this account will be charged the auto renewal fees. The maximum auto renew period for an account is be limited to 3 months (8000001 sec seconds). The minimum auto renew period is 30 days. The auto renew period is mutable and can be updated at any time. If there are insufficient funds, then it extends as long as possible. If it is empty when it expires, then it is deleted.
+
+</details>
+
+Reference: [HIP-16](https://hips.hedera.com/hip/hip-16)
 
 ## Account Memo
 
@@ -224,6 +281,20 @@ Accounts can decline to earn staking rewards when they stake to a node or an acc
 Default: `true` (all accounts accept earning staking rewards if the account is staked)
 
 </details>
+
+{% hint style="success" %}
+#### Daily Rewards for Active Nodes
+
+Hedera now guarantees minimum daily rewards for active nodes on the network. Key features include:
+
+* **Active Node Definition**: Nodes that create a "judge" in a significant fraction of rounds during a staking period
+* **Minimum Guaranteed Rewards**: Active nodes receive a minimum daily reward amount, configurable by the network
+* **Opt-Out Option**: Node operators can decline rewards by setting the `declineReward` flag to true
+
+For node operators: To opt out of receiving rewards, use the `setDeclineReward(true)` method when creating or updating your node.
+
+_**Reference:**_ [_**HIP-1064**_](https://hips.hedera.com/hip/hip-1064)
+{% endhint %}
 
 ### Staking Information
 

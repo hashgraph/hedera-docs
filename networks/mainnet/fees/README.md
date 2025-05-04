@@ -30,7 +30,7 @@ All fees are subject to change. The fees below reflect a base price for the tran
 
 ### Cryptocurrency Service
 
-<table><thead><tr><th width="482">Operations</th><th>USD ($)</th></tr></thead><tbody><tr><td>CryptoCreate</td><td>$0.05</td></tr><tr><td>CryptoAccountAutoRenew</td><td>$0.00022</td></tr><tr><td>CryptoDeleteAllowance</td><td>$0.05</td></tr><tr><td>CryptoApproveAllowance</td><td>$0.05</td></tr><tr><td>CryptoUpdate</td><td>$0.00022</td></tr><tr><td>CryptoTransfer</td><td>$0.0001</td></tr><tr><td>CryptoTransfer (custom fees)</td><td>$0.002</td></tr><tr><td>CryptoDelete</td><td>$0.005</td></tr><tr><td>CryptoGetAccountRecords</td><td>$0.0001</td></tr><tr><td>CryptoGetAccountBalance</td><td>$0.00</td></tr><tr><td>CryptoGetInfo</td><td>$0.0001</td></tr><tr><td>CryptoGetStakers</td><td>$0.0001</td></tr></tbody></table>
+<table><thead><tr><th width="482">Operations</th><th>USD ($)</th></tr></thead><tbody><tr><td>CryptoCreate</td><td>$0.05</td></tr><tr><td>CryptoAccountAutoRenew</td><td>$0.00022</td></tr><tr><td>CryptoDeleteAllowance</td><td>$0.05</td></tr><tr><td>CryptoApproveAllowance</td><td>$0.05</td></tr><tr><td>CryptoAddLiveHash</td><td>$0.10</td></tr><tr><td>CryptoDeleteLiveHash</td><td>$0.005</td></tr><tr><td>CryptoGetLiveHash</td><td>$0.0001</td></tr><tr><td>CryptoUpdate</td><td>$0.00022</td></tr><tr><td>CryptoTransfer</td><td>$0.0001</td></tr><tr><td>CryptoTransfer (custom fees)</td><td>$0.002</td></tr><tr><td>CryptoDelete</td><td>$0.005</td></tr><tr><td>CryptoGetAccountRecords</td><td>$0.0001</td></tr><tr><td>CryptoGetAccountBalance</td><td>$0.00</td></tr><tr><td>CryptoGetInfo</td><td>$0.0001</td></tr><tr><td>CryptoGetStakers</td><td>$0.0001</td></tr></tbody></table>
 
 ### Consensus Service
 
@@ -50,7 +50,7 @@ All fees are subject to change. The fees below reflect a base price for the tran
 
 ### Smart Contract Service
 
-<table><thead><tr><th width="493">Operations</th><th>USD ($)</th></tr></thead><tbody><tr><td>ContractCreate</td><td>$1.0</td></tr><tr><td>ContractUpdate</td><td>$0.026</td></tr><tr><td>ContractDelete</td><td>$0.007</td></tr><tr><td>ContractCall</td><td>$0.05</td></tr><tr><td>ContractCallLocal</td><td>$0.001</td></tr><tr><td>ContractGetByteCode</td><td>$0.05</td></tr><tr><td>GetBySolidityID</td><td>$0.0001</td></tr><tr><td>ContractGetInfo</td><td>$0.0001</td></tr><tr><td>ContractGetRecords</td><td>$0.0001</td></tr><tr><td>ContractAutoRenew</td><td>$0.026</td></tr></tbody></table>
+<table><thead><tr><th width="493">Operations</th><th>USD ($)</th></tr></thead><tbody><tr><td>ContractCreate</td><td>$1.00</td></tr><tr><td>ContractUpdate</td><td>$0.026</td></tr><tr><td>ContractDelete</td><td>$0.007</td></tr><tr><td>ContractCall</td><td>$0.05</td></tr><tr><td>ContractCallLocal</td><td>$0.001</td></tr><tr><td>ContractGetByteCode</td><td>$0.05</td></tr><tr><td>GetBySolidityID</td><td>$0.0001</td></tr><tr><td>ContractGetInfo</td><td>$0.0001</td></tr><tr><td>ContractGetRecords</td><td>$0.0001</td></tr><tr><td>ContractAutoRenew</td><td>$0.026</td></tr></tbody></table>
 
 ### Node Service
 
@@ -58,4 +58,4 @@ All fees are subject to change. The fees below reflect a base price for the tran
 
 ### Miscellaneous
 
-<table><thead><tr><th width="497">Operations</th><th>USD ($)</th></tr></thead><tbody><tr><td>EthereumTransaction</td><td>$0.0001</td></tr><tr><td>PrngTransaction</td><td>$0.001</td></tr><tr><td>GetVersion</td><td>$0.0001</td></tr><tr><td>GetByKey</td><td>$0.0001</td></tr><tr><td>TransactionGetReceipt</td><td>$0.0000</td></tr><tr><td>TransactionGetRecord</td><td>$0.0001</td></tr></tbody></table>
+<table><thead><tr><th width="497">Operations</th><th>USD ($)</th></tr></thead><tbody><tr><td>BatchTransaction (<a href="https://hips.hedera.com/hip/hip-551">HIP-551</a>)</td><td>$0.001</td></tr><tr><td>EthereumTransaction</td><td>$0.0001</td></tr><tr><td>PrngTransaction</td><td>$0.001</td></tr><tr><td>GetVersionInfo</td><td>$0.0001</td></tr><tr><td>GetByKey</td><td>$0.0001</td></tr><tr><td>TransactionGetReceipt</td><td>$0.0000</td></tr><tr><td>TransactionGetRecord</td><td>$0.0001</td></tr><tr><td>SystemDelete</td><td>$0.00</td></tr><tr><td>SystemUndelete</td><td>$0.00</td></tr><tr><td></td><td></td></tr></tbody></table>

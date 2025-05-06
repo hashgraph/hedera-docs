@@ -469,7 +469,6 @@
       * [UncheckedSubmit](sdks-and-apis/hedera-api/miscellaneous/uncheckedsubmit.md)
   * [Hedera Status API](sdks-and-apis/hedera-status-api.md)
 * [Support & Community](support-and-community/README.md)
-  * [Hedera AI Agents Hackathon](support-and-community/hedera-ai-agents-hackathon.md)
   * [Glossary](support-and-community/glossary.md)
   * [Contributing to Hedera documentation](support-and-community/contributing-guide/README.md)
     * [Contribution Guidelines](support-and-community/contributing-guide/contribution-guidelines/README.md)

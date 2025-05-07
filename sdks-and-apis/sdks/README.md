@@ -26,9 +26,7 @@ Hedera and the developer community contribute to and maintain developer tools an
 
 Try the interactive [**Hedera Developer Playground**](https://portal.hedera.com/playground) to explore Consensus Node services, transactions, and queries and experiment with the Hedera SDKs.
 
-{% embed url="https://www.canva.com/design/DAGcenPjdjg/tJNBCThltCIsVgG54h-bPA/view" %}
-[**Hedera Developer Playground**](https://portal.hedera.com/playground)
-{% endembed %}
+{% include "../../.gitbook/includes/hedera-developer-playground.md" %}
 
 ### Additional Language Support
 

@@ -56,6 +56,10 @@ Standard transactions are individual operations submitted to the network, such a
 
 Batch transactions allow multiple operations (HAPI calls) to be executed atomically as a single network transaction, ensuring that all operations either succeed together or fail together (upholding ACID properties). Batch transactions consist of:
 
+{% hint style="danger" %}
+**Note**: Jumbo `EthereumTransaction` (released in [**v0.62**](https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.62) for [**HIP-1086**](https://github.com/hiero-ledger/hiero-improvement-proposals/pull/1086)) _**will NOT be supported in batch transactions**_. Since this limitation is currently _**not supported**_ by the network, developers _must avoid including jumbo transactions in batches_ to prevent unexpected behaviors. \*_This limitation may be lifted in a future release._&#x20;
+{% endhint %}
+
 #### **Outer Batch Transaction ID**
 
 * This is the container transaction that follows the standard transaction ID format (`accountID@validStartTime`).

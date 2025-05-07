@@ -15,6 +15,4 @@ The [Hedera Developer Playground](https://portal.hedera.com/playground) is an in
 
 ### Try it and start experimenting now!
 
-{% embed url="https://www.canva.com/design/DAGcenPjdjg/tJNBCThltCIsVgG54h-bPA/view" %}
-[**Hedera Developer Playground**](https://portal.hedera.com/playground)
-{% endembed %}
+{% include "../.gitbook/includes/hedera-developer-playground.md" %}

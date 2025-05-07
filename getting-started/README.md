@@ -4,11 +4,7 @@ This Getting Started series equips you with the essentials to build on the Heder
 
 Each tutorial walks you through the full transaction lifecycle, from creating, signing, and executing transactions with a consensus node to verifying data via a mirror node and viewing transactions in a [Hedera network explorer](../networks/community-mirror-nodes.md).&#x20;
 
-{% hint style="info" %}
-ℹ️ _**Try the**_ [_**Hedera Developer Playground**_](https://portal.hedera.com/playground) _**to explore services, transactions, and queries on your own using the Hedera SDKs.**_
-
-<img src="../.gitbook/assets/hedera-dev-playground.png" alt="" data-size="original">
-{% endhint %}
+{% include "../.gitbook/includes/try-the-hedera-developer....md" %}
 
 ## Create Your Testnet Account and Set Up Your Environment
 

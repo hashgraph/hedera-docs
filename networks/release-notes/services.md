@@ -132,6 +132,30 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **TESTNET UPDATE SCHEDULED: April 24, 2025**
 {% endhint %}
 
+### [Build 0.61.6](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.6)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* chore: Config changes for batch transactions by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#19127](https://github.com/hiero-ledger/hiero-consensus-node/pull/19127)
+
+**Full Changelog**: [v0.61.5...v0.61.6](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.61.5...v0.61.6)
+
+</details>
+
+### [Build 0.61.5](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.5)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* chore: Disable Batch Transactions by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#19114](https://github.com/hiero-ledger/hiero-consensus-node/pull/19114)
+
+**Full Changelog**: [v0.61.4...v0.61.5](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.61.4...v0.61.5)
+
+</details>
+
 ### [Build 0.61.4](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.4)
 
 <details>

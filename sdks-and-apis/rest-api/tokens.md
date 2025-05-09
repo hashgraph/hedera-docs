@@ -12,9 +12,9 @@ The following endpoints are available for the Tokens object:
 
 ## Tokens
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/tokens" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/tokens" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
 #### Response Details
 
@@ -39,9 +39,9 @@ The following endpoints are available for the Tokens object:
 
 ####
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/tokens/{tokenId}/balances" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/tokens/{tokenId}/balances" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
 #### Response Details
 
@@ -61,9 +61,9 @@ The following endpoints are available for the Tokens object:
 | `/api/v1/tokens/<token_id>/balances?account.balance=gt:1000`        | The balance for the token greater than 1000      |
 | `/api/v1/tokens/<token_id>/balances?timestamp=1566562500.040961001` | The token balances for the specified timestamp   |
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/tokens/{tokenId}" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/tokens/{tokenId}" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
 #### Response Details
 
@@ -93,9 +93,9 @@ The following endpoints are available for the Tokens object:
 | **pause\_key**            | The pause key for a token, if specified                                  |
 | **pause\_status**         | Whether or not the token is paused                                       |
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/tokens/{tokenId}/nfts" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/tokens/{tokenId}/nfts" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
 #### Response Details
 
@@ -111,9 +111,9 @@ The following endpoints are available for the Tokens object:
 
 ####
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/tokens/{tokenId}/nfts/{serialNumber}" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/tokens/{tokenId}/nfts/{serialNumber}" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
 #### Response Details
 
@@ -127,9 +127,9 @@ The following endpoints are available for the Tokens object:
 | **serial\_number**      | The serial number of the NFT                          |
 | **token\_id**           | The token ID of the NFT                               |
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/tokens/{tokenId}/nfts/{serialNumber}/transactions" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/tokens/{tokenId}/nfts/{serialNumber}/transactions" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
 #### Response Details
 

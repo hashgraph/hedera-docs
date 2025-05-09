@@ -15,9 +15,9 @@ The following endpoints are available for the Scheduled Transactions object:
 
 ## Schedule Transactions
 
-{% openapi src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/schedules" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endopenapi %}
+{% openapi-operation spec="mainnet" path="/api/v1/schedules" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
 #### Response Details <a href="#response-details-1" id="response-details-1"></a>
 
@@ -41,9 +41,9 @@ The following endpoints are available for the Scheduled Transactions object:
 | **wait\_for\_expiry**              | Whether or not the schedule transaction specified a specific time to expire by                                                                                                                                                                                                                              |
 | **links.next**                     | Hyperlink to the next page of results                                                                                                                                                                                                                                                                       |
 
-{% openapi src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/schedules/{scheduleId}" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endopenapi %}
+{% openapi-operation spec="mainnet" path="/api/v1/schedules/{scheduleId}" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
 #### Response Details <a href="#response-details-1" id="response-details-1"></a>
 

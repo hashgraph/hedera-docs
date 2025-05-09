@@ -17,9 +17,9 @@ The following endpoints are available for the Topics object:
 
 ## Topics
 
-{% openapi src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/topics/{topicId}/messages" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endopenapi %}
+{% openapi-operation spec="mainnet" path="/api/v1/topics/{topicId}/messages" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
 #### Response Details
 
@@ -32,11 +32,10 @@ The following endpoints are available for the Topics object:
 | **running\_hash**        | The new running hash of the topic that received the message                          |
 | **sequence\_number**     | The sequence number of the message relative to all other messages for the same topic |
 
-{% openapi src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/topics/{topicId}/messages/{sequenceNumber}" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endopenapi %}
+{% openapi-operation spec="mainnet" path="/api/v1/topics/{topicId}/messages/{sequenceNumber}" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
-{% openapi src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/topics/messages/{timestamp}" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endopenapi %}
-
+{% openapi-operation spec="mainnet" path="/api/v1/topics/messages/{timestamp}" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}

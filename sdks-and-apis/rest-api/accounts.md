@@ -32,9 +32,9 @@ Account IDs can also take the account number as an input value. For example, for
 
 
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/accounts" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
 #### Response Details <a href="#response-details" id="response-details"></a>
 
@@ -84,41 +84,41 @@ Account IDs can also take the account number as an input value. For example, for
 
 
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/accounts/{idOrAliasOrEvmAddress}" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
 
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/crypto" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/crypto" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/rewards" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/rewards" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/tokens" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/tokens" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/airdrops/outstanding" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/airdrops/outstanding" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/airdrops/pending" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/airdrops/pending" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/tokens" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/tokens" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/nfts" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/nfts" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/nfts" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/accounts/{idOrAliasOrEvmAddress}/nfts" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 

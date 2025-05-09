@@ -2,7 +2,7 @@
 
 ### Get Started with Staking
 
-The Hedera Governing Council (via the Coin Committee) votes on the maximum reward rate. The maximum reward can change over time and is not a fixed value. For the latest reward rate, check out the "[Nodes](https://hashscan.io/mainnet/nodes)" page in HashScan. The actual reward rate will vary depending on how many HBAR are staked for rewards, but the rate will not exceed the cap. In the future, when nodes are down or inactive the staked account will not be eligible to earn rewards.
+The Hedera Council (via the Coin Committee) votes on the maximum reward rate. The maximum reward can change over time and is not a fixed value. For the latest reward rate, check out the "[Nodes](https://hashscan.io/mainnet/nodes)" page in HashScan. The actual reward rate will vary depending on how many HBAR are staked for rewards, but the rate will not exceed the cap. In the future, when nodes are down or inactive the staked account will not be eligible to earn rewards.
 
 To view network nodes, their current stake, and reward rate, please visit [HashScan.io](https://hashscan.io/mainnet/nodes).
 

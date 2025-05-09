@@ -8,7 +8,7 @@ The Hedera public ledger uses a [proof-of-stake](../../support-and-community/glo
 
 <summary>What is staking in Hedera?</summary>
 
-Staking is the process of participating in a [proof-of-stake](../../support-and-community/glossary.md#proof-of-stake-pos) system to validate transactions and earn rewards. When staked, coins are locked but can be unlocked for trading. Staking allows participants (stakeholders) to earn rewards on their holdings, typically in tokens or coins.&#x20;
+Staking is the process of participating in a [proof-of-stake](../../support-and-community/glossary.md#proof-of-stake-pos) system to validate transactions and earn rewards. When staked, coins are locked but can be unlocked for trading. Staking allows participants (stakeholders) to earn rewards on their holdings, typically in tokens or coins.
 
 </details>
 
@@ -24,7 +24,7 @@ No, there is no lock-up period when accounts are staked to a node. The staked ac
 
 <summary>How are staking rewards calculated?</summary>
 
-The staking reward rate is determined by the Hedera Governing Council and updated on the mainnet. Learn more about staking rewards [here](staking.md).
+The staking reward rate is determined by the Hedera Council and updated on the mainnet. Learn more about staking rewards [here](staking.md).
 
 </details>
 

@@ -17,13 +17,13 @@ The following endpoints are available for the Network activity object:
 
 The **transaction** object represents the transactions processed on the Hedera network. You can retrieve this to view the transaction metadata information including transaction id, timestamp, transaction fee, transfer list, etc. If a transaction was submitted to multiple nodes, the successful transaction and duplicate transaction(s) will be returned as separate entries in the response with the same transaction ID. Duplicate transactions will still be assessed [network fees](https://www.hedera.com/fees).
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/transactions" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/transactions" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/transactions/{transactionId}" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/transactions/{transactionId}" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
 #### Response Details <a href="#response-details-2" id="response-details-2"></a>
 

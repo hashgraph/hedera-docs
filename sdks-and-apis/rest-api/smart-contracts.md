@@ -25,9 +25,9 @@ The following endpoints are available for the Smart Contracts object:
 
 ## Smart Contracts
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/contracts" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/contracts" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
 | Response Item                           | Description                                                                                            |
 | --------------------------------------- | ------------------------------------------------------------------------------------------------------ |
@@ -51,46 +51,46 @@ The following endpoints are available for the Smart Contracts object:
 
 
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/contracts/{contractIdOrAddress}" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/contracts/{contractIdOrAddress}" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/contracts/results/{transactionIdOrHash}" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/contracts/results/{transactionIdOrHash}" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/contracts/{contractIdOrAddress}/results" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/contracts/{contractIdOrAddress}/results" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/contracts/{contractIdOrAddress}/state" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/contracts/{contractIdOrAddress}/state" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/contracts/results" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/contracts/results" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/contracts/results/{transactionIdOrHash}/actions" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/contracts/results/{transactionIdOrHash}/actions" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/contracts/{contractIdOrAddress}/results/{timestamp}" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/contracts/{contractIdOrAddress}/results/{timestamp}" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/contracts/{contractIdOrAddress}/results/logs" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/contracts/{contractIdOrAddress}/results/logs" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/contracts/results/logs" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/contracts/results/logs" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/contracts/results/{transactionIdOrHash}/opcodes" method="get" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/contracts/results/{transactionIdOrHash}/opcodes" method="get" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
-{% swagger src="https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml" path="/api/v1/contracts/call" method="post" %}
-[https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml](https://raw.githubusercontent.com/hiero-ledger/hiero-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml)
-{% endswagger %}
+{% openapi-operation spec="mainnet" path="/api/v1/contracts/call" method="post" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}

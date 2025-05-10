@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   update-release-notes:
-    runs-on: ubuntu-latest
+    runs-on: hashgraph-docs-linux-medium
     steps:
       - name: Checkout docs repo
         uses: actions/checkout@v3

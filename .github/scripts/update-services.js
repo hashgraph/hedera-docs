@@ -270,5 +270,3 @@ function reorderSections(content) {
     process.exit(1);
   }
 })();
-
-// test

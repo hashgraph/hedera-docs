@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   update-tables:
-    runs-on: hashgraph-docs-linux-medium
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3 # v3.6.0

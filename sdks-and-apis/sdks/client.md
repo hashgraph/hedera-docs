@@ -6,7 +6,7 @@ Build your client to interact with any of the Hedera network nodes. Mainnet, tes
 
 For a predefined network (preview, testnet, and mainnet), the mirror node client is configured to the corresponding network mirror node. The default mainnet mirror node connection is to the [whitelisted mirror node](../../core-concepts/mirror-nodes/hedera-mirror-node.md#mainnet).\
 \
-To access the _**public mainnet mirror node**_, use `setMirrorNetwork()` and enter `mainnet-public.mirrornode.hedera.com:433` for the endpoint. The gRPC API requires TLS. The following SDK versions are compatible with TLS:
+To access the _**public mainnet mirror node**_, use `setMirrorNetwork()` and enter `mainnet.mirrornode.hedera.com:433` for the endpoint. The gRPC API requires TLS. The following SDK versions are compatible with TLS:
 
 * **Java:** v2.3.0+
 * **JavaScript**: v2.4.0+

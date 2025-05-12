@@ -13,6 +13,7 @@
   * [Smart Contracts](tutorials/smart-contracts/README.md)
     * [How to Mint & Burn an ERC-721 Token Using Hardhat and Ethers (Part 1)](tutorials/smart-contracts/how-to-mint-and-burn-an-erc-721-token-using-hardhat-and-ethers-part-1.md)
     * [How to Set Access Control, a Token URI, Pause, and Transfer an ERC-721 Token Using Hardhat (Part 2)](tutorials/smart-contracts/how-to-set-access-control-a-token-uri-pause-and-transfer-an-erc-721-token-using-hardhat-part-2.md)
+    * [How to Upgrade an ERC-721 Token with OpenZeppelin UUPS Proxies and Hardhat (Part 3)](tutorials/smart-contracts/how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md)
     * [How to Verify a Smart Contract on HashScan](tutorials/smart-contracts/how-to-verify-a-smart-contract-on-hashscan.md)
     * [Deploy a Smart Contract Using Remix](tutorials/smart-contracts/deploy-a-smart-contract-using-remix.md)
     * [Deploy a Smart Contract Using Hardhat and Hiero JSON-RPC Relay](tutorials/smart-contracts/deploy-a-smart-contract-using-hardhat-hedera-json-rpc-relay.md)

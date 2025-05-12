@@ -174,6 +174,7 @@
     * [DAO Proposals](open-source-solutions/hashiodao/dao-proposals.md)
     * [Local Environment Setup](open-source-solutions/hashiodao/local-environment-setup.md)
   * [Hedera CLI](open-source-solutions/hedera-cli.md)
+  * [Hedera Contract Builder](open-source-solutions/hedera-contract-builder.md)
   * [Hedera Custodians Library](open-source-solutions/hedera-custodians-library/README.md)
     * [How to use it](open-source-solutions/hedera-custodians-library/how-to-use-it.md)
   * [Hedera Developer Playground](open-source-solutions/hedera-developer-playground.md)

@@ -18,6 +18,16 @@ Please ensure that the [Environment Setup](../environment-setup.md) step is comp
 
 <table data-view="cards"><thead><tr><th></th><th></th><th data-hidden data-card-target data-type="content-ref"></th><th data-hidden data-card-cover data-type="files"></th></tr></thead><tbody><tr><td><strong>Transfer HBAR</strong></td><td>Learn how to transfer HBAR between accounts.</td><td><a href="transfer-hbar.md">transfer-hbar.md</a></td><td><a href="../../.gitbook/assets/transfer-hbar-getting-started.png">transfer-hbar-getting-started.png</a></td></tr><tr><td><strong>Create a Token</strong></td><td>Learn how to create a token using the <a href="../../support-and-community/glossary.md#hedera-token-service-hts">HTS</a>.</td><td><a href="create-a-token.md">create-a-token.md</a></td><td><a href="../../.gitbook/assets/fungible-tokens-icon.png">fungible-tokens-icon.png</a></td></tr><tr><td><strong>Create a Topic</strong></td><td>Learn how to create a topic using the <a href="../../support-and-community/glossary.md#hedera-consensus-service-hcs">HCS</a>.</td><td><a href="create-a-topic.md">create-a-topic.md</a></td><td><a href="../../.gitbook/assets/create-a-topic-getting-started.png">create-a-topic-getting-started.png</a></td></tr></tbody></table>
 
+{% hint style="info" %}
+_**ℹ️ Try the**_ [_**Hedera Developer Playground**_](https://portal.hedera.com/playground) _**to explore services, transactions, and queries on your own using the Hedera SDKs.**_&#x20;
+
+{% embed url="https://www.canva.com/design/DAGcenPjdjg/tJNBCThltCIsVgG54h-bPA/view" %}
+[**Hedera Dev Playground**](https://portal.hedera.com/playground)
+{% endembed %}
+
+***
+{% endhint %}
+
 ***
 
 ## Additional Resources for Web2 Developers

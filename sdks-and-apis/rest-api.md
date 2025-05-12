@@ -36,7 +36,7 @@ Hedera provides interactive Swagger UI for its Mirror Node REST API. Developers 
 
 #### **Available Environments:**
 
-<table><thead><tr><th width="217">Network</th><th>Swagger UI URL</th></tr></thead><tbody><tr><td><strong>Mainnet</strong></td><td><a href="https://mainnet-public.mirrornode.hedera.com/api/v1/docs/#/">Mainnet Swagger UI</a></td></tr><tr><td><strong>Testnet</strong></td><td><a href="https://testnet.mirrornode.hedera.com/api/v1/docs/#/">Testnet Swagger UI</a></td></tr><tr><td><strong>Previewnet</strong></td><td><a href="https://previewnet.mirrornode.hedera.com/api/v1/docs/#/">Previewnet Swagger UI</a></td></tr></tbody></table>
+<table><thead><tr><th width="217">Network</th><th>Swagger UI URL</th></tr></thead><tbody><tr><td><strong>Mainnet</strong></td><td><a href="https://mainnet.mirrornode.hedera.com/api/v1/docs/#/">Mainnet Swagger UI</a></td></tr><tr><td><strong>Testnet</strong></td><td><a href="https://testnet.mirrornode.hedera.com/api/v1/docs/#/">Testnet Swagger UI</a></td></tr><tr><td><strong>Previewnet</strong></td><td><a href="https://previewnet.mirrornode.hedera.com/api/v1/docs/#/">Previewnet Swagger UI</a></td></tr></tbody></table>
 
 ***
 

@@ -2,7 +2,7 @@
 
 A query that returns the account balance for the specified account. Requesting an account balance is currently free of charge. Queries do not change the state of the account or require network consensus. The information is returned from a single node processing the query.
 
-In Services release 0.50, returning token balance from the consensus node was deprecated with HIP-367. This query returns token information by requesting the information from the Hedera Mirror Node APIs via   [/api/v1/accounts/{id}/tokens](https://mainnet-public.mirrornode.hedera.com/api/v1/docs/#/accounts/listTokenRelationshipByAccountId). Token symbol is not returned in the response.
+In Services release 0.50, returning token balance from the consensus node was deprecated with HIP-367. This query returns token information by requesting the information from the Hedera Mirror Node APIs via   [/api/v1/accounts/{id}/tokens](https://mainnet.mirrornode.hedera.com/api/v1/docs/#/accounts/listTokenRelationshipByAccountId). Token symbol is not returned in the response.
 
 **Query Fees**
 

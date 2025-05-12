@@ -50,7 +50,7 @@ client.SetMirrorNetwork([]string{"mainnet.mirrornode.hedera.com:443"})
 {% hint style="info" %}
 **Mainnet Mirror Node Endpoint:** mainnet.mirrornode.hedera.com:443\
 \
-**REST API Mainnet Root Endpoint:**[ https://mainnet.mirrornode.hedera.com](https://mainnet-public.mirrornode.hedera.com/)
+**REST API Mainnet Root Endpoint:**[ https://mainnet.mirrornode.hedera.com](https://mainnet.mirrornode.hedera.com)
 {% endhint %}
 
 ## Testnet
@@ -60,7 +60,7 @@ The endpoints provided below allow developers to access the testnet mirror node,
 {% hint style="info" %}
 **HCS Testnet Mirror Node Endpoint:** testnet.mirrornode.hedera.com:443
 
-**REST API Testnet Root Endpoint:**[ https://testnet.mirrornode.hedera.com](https://testnet.mirrornode.hedera.com/)
+**REST API Testnet Root Endpoint:**[ https://testnet.mirrornode.hedera.com](https://testnet.mirrornode.hedera.com)
 {% endhint %}
 
 ## Previewnet

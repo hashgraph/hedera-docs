@@ -8,10 +8,10 @@ You can take a look at the **complete code** in the [**Hedera-Code-Snippets repo
 
 ## Understanding the Upgradeable Proxy Pattern (Simplified)
 
-In traditional smart contracts, you can't change the logic once deployed, which can be risky if you find bugs or want to add new features. The upgradeable proxy pattern solves this by separating your contract into two parts:
+In traditional smart contracts, once deployed, the code is immutable, meaning bugs can't be fixed and new features can't be added. The upgradeable proxy pattern solves this by separating the contract into two components:
 
-1. **Proxy Contract**: Stores the state (data) and delegates all calls to the logic contract.
-2. **Logic Contract**: Contains the actual business logic and can be replaced or upgraded.
+1. **Proxy Contract**: Stores the contract’s state (data) and delegates all function calls to a logic contract using `delegatecall`.
+2. **Logic Contract**: Contains the actual business logic and can be upgraded.
 
 When you upgrade your smart contract, you deploy a new logic contract and point your proxy contract to this new logic. The proxy stays at the same address, retaining your data and allowing seamless upgrades.
 
@@ -31,11 +31,11 @@ When you upgrade your smart contract, you deploy a new logic contract and point 
 
 ## Table of Contents
 
-1. [Step 1: Set Up Your Project](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#step-1-set-up-your-project)
-2. [Step 2: Create Your Initial Upgradeable ERC-721 Contract](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#step-2-create-your-initial-upgradeable-erc-721-contract)
-3. [Step 3: Deploy Your Upgradeable Contract](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#step-3-deploy-your-upgradeable-contract)
-4. [Step 4: Upgrade Your ERC-721 Contract](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#step-4-upgrade-your-erc-721-contract)
-5. [Step 5: Deploy the Upgrade and Verify](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#step-5-deploy-the-upgrade-and-verify)
+1. [Set Up Your Project](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#step-1-set-up-your-project)
+2. [Create Your Initial Upgradeable ERC-721 Contract](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#step-2-create-your-initial-upgradeable-erc-721-contract)
+3. [Deploy Your Upgradeable Contract](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#step-3-deploy-your-upgradeable-contract)
+4. [Upgrade Your ERC-721 Contract](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#step-4-upgrade-your-erc-721-contract)
+5. [Deploy the Upgrade and Verify](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#step-5-deploy-the-upgrade-and-verify)
 6. [Why Use the UUPS Pattern?](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#why-use-the-uups-pattern)
 
 ***
@@ -54,9 +54,11 @@ require("@openzeppelin/hardhat-upgrades"); // Plugin for upgradeable contracts
 require("@nomicfoundation/hardhat-ethers");
 </code></pre>
 
+***
+
 ## Step 2: Create Your Initial Upgradeable ERC-721 Contract
 
-Create `erc-721-upgrade.sol` in the `contracts` directory:
+Create `erc-721-upgrade.sol` in the `contracts/` directory:
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -107,6 +109,8 @@ Compile the contract:
 npx hardhat compile
 ```
 
+***
+
 ## Step 3: Deploy Your Upgradeable Contract
 
 Create `deploy-upgradeable.js` under the `scripts` directory:
@@ -129,7 +133,6 @@ main().catch(console.error);
 
 * **`deployProxy` function**: Deploys the logic contract behind a proxy, calling the initializer function (`initialize`) automatically.
 * **`initializer: "initialize"`**: Explicitly specifies which function initializes the contract.
-* **`kind: "uups"`**: Specifies using the UUPS proxy pattern.
 
 Deploy your contract:
 
@@ -143,6 +146,8 @@ npx hardhat run scripts/deploy-upgradeable.js --network testnet
 </strong><strong>Compiled 32 Solidity files successfully (evm target: paris).
 </strong>Upgradeable ERC721 deployed to: 0xb54c97235A7a90004fEb89dDccd68f36066fea8c
 </code></pre>
+
+***
 
 ## Step 4: Upgrade Your ERC-721 Contract
 
@@ -171,6 +176,8 @@ Compile the upgraded version:
 ```bash
 npx hardhat compile
 ```
+
+***
 
 ## Step 5: Deploy the Upgrade and Verify
 
@@ -211,7 +218,7 @@ main().catch(console.error);
 ```
 
 * **`upgradeProxy`**: Replaces the logic contract behind your existing proxy with the new version.
-* **`proxyAddress`**: Points to the proxy contract that manages storage and delegates calls to logic contracts. Upgrading involves replacing the logic without altering the stored data. **Make sure to replace the proxy contract address with the address you've copied.**
+* **`proxyAddress`**: Points to the proxy contract that manages storage and delegates calls to logic contracts. Upgrading involves replacing the logic without altering the stored data, since all contract state resides in the proxy, and `delegatecall` ensures the new logic runs in that same storage context. **Make sure to replace the proxy contract address with the address you've copied.**
 * **Verification step**: Calls the new `version` method to ensure the upgrade succeeded.
 
 Run this upgrade script:

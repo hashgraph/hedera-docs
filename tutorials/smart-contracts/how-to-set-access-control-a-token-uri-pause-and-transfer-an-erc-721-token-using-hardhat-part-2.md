@@ -114,6 +114,8 @@ Compile your new contract:
 npx hardhat compile
 ```
 
+***
+
 ## Step 2: Deploying the Smart Contract and Minting a Token
 
 Create `deploy-advanced.js` in your `scripts` folder:

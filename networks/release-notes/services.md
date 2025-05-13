@@ -15,6 +15,24 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **TESTNET UPDATE SCHEDULED: MAY 22, 2025**
 {% endhint %}
 
+### [Build 0.62.2](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.2)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* fix: (cherry-pick) Change default `decline_reward` to true for nodes created during genesis by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#19087](https://github.com/hiero-ledger/hiero-consensus-node/pull/19087)
+* chore: Disable Batch Transactions by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#19115](https://github.com/hiero-ledger/hiero-consensus-node/pull/19115)
+* chore: Config changes for batch transactions by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#19130](https://github.com/hiero-ledger/hiero-consensus-node/pull/19130)
+* fix: (cherry-pick) Flaky Jumbo transactions tests by [@derektriley](https://github.com/derektriley) in [#19140](https://github.com/hiero-ledger/hiero-consensus-node/pull/19140)
+* chore: increase transactionMaxBytes by [@lpetrovic05](https://github.com/lpetrovic05) in [#19104](https://github.com/hiero-ledger/hiero-consensus-node/pull/19104)
+* fix: 19107 Corrected classId of `BenchmarkMerkleInternal` to prevent `classId` conflict. by [@imalygin](https://github.com/imalygin) in [#19108](https://github.com/hiero-ledger/hiero-consensus-node/pull/19108)
+* chore: Fix the ConsensusSubmitMessage fee scaling for topic with customFees by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#19144](https://github.com/hiero-ledger/hiero-consensus-node/pull/19144)
+
+**Full Changelog**: [v0.62.1...v0.62.2](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.62.1...v0.62.2)
+
+</details>
+
 ### [**Build 0.62.1**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.1)
 
 <details>

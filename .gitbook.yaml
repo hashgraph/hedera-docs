@@ -6,10 +6,16 @@ redirects:
     tutorials/hello-world/hcs-topic: getting-started/web2-developers/create-a-topic.md
     tutorials/hello-world/hscs-smart-contract: getting-started/evm-developers/deploy-a-contract.md
     core-concepts/smart-contracts/hederas-evm-equivalence-goals-and-exceptions: core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility/README.md
+    core-concepts/smart-contracts/supported-erc-token-standards: core-concepts/smart-contracts/tokens-managed-by-smart-contracts.md
+    core-concepts/tokens/access-hts-tokens-through-the-evm: core-concepts/tokens/hybrid-hts-+-evm-tokenization.md
     docs/hashgraph-overview: core-concepts/hashgraph-consensus-algorithms/README.md
     getting-started/hcs-submit-your-first-message: tutorials/consensus/submit-your-first-message.md
     getting-started/query-data: getting-started/README.md
     getting-started/create-an-account: getting-started/environment-setup.md
+    getting-started/transfer-hbar: getting-started/web2-developers/transfer-hbar.md
+    sdks-and-apis/deprecated/sdks/token-service/atomic-swaps: sdks-and-apis/sdks/token-service/atomic-swaps.md
+    sdks-and-apis/deprecated/sdks/token-service/mint-a-token: sdks-and-apis/sdks/token-service/mint-a-token.md
+    support-and-community/hedera-ai-agents-hackathon: support-and-community/README.md
     docs/hedera-api: sdks-and-apis/sdks/README.md
     docs/hedera-api/basic-types/feedata: sdks-and-apis/hedera-api/basic-types/feedata.md
     docs/hedera-api/basic-types/tokensupplytype: sdks-and-apis/hedera-api/basic-types/tokensupplytype.md
@@ -32,7 +38,9 @@ redirects:
     docs/mirror-node-api/rest-api: sdks-and-apis/rest-api.md
     docs/release-notes: networks/release-notes/README.md
     docs/release-notes/services: networks/release-notes/services.md
+    docs: README.md
     docs/sdks: sdks-and-apis/sdks/README.md
+    docs/hedera-sdks: sdks-and-apis/sdks/README.md
     docs/sdks/address-book: sdks-and-apis/sdks/address-book.md
     docs/sdks/consensus/create-a-topic: sdks-and-apis/sdks/consensus-service/create-a-topic.md
     docs/sdks/cryptocurrency/adjust-an-allowance: sdks-and-apis/sdks/accounts-and-hbar/adjust-an-allowance.md

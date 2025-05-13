@@ -31,6 +31,8 @@ You can take a look at the **complete code** in the [**Hedera-Code-Snippets repo
 5. [Adding the Burn Functionality](how-to-mint-and-burn-an-erc-721-token-using-hardhat-and-ethers-part-1.md#step-5-adding-the-burn-functionality)
 6. [Burning an NFT](how-to-mint-and-burn-an-erc-721-token-using-hardhat-and-ethers-part-1.md#step-6-burning-an-nft)
 
+***
+
 ## Step 1: Project Setup
 
 #### Initialize Project&#x20;
@@ -318,6 +320,8 @@ npx hardhat run scripts/burn.js --network testnet
 ```
 
 **Congratulations! 🎉 You have successfully learned how to deploy an ERC-721 smart contract using Hardhat, OpenZeppelin, and Ethers. Feel free to reach out in** [**Discord**](https://hedera.com/discord)**!**
+
+***
 
 ## Additional Resources
 

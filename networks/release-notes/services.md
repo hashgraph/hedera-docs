@@ -12,7 +12,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 {% endhint %}
 
 {% hint style="info" %}
-**TESTNET UPDATE SCHEDULED: MAY 20, 2025**
+**TESTNET UPDATE SCHEDULED: MAY 22, 2025**
 {% endhint %}
 
 ### [**Build 0.62.1**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.1)
@@ -139,11 +139,11 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 ## Release v0.61
 
 {% hint style="info" %}
-**MAINNET UPDATE SCHEDULED: MAY 14, 2025**
+**MAINNET UPDATE SCHEDULED: MAY 21, 2025**
 {% endhint %}
 
-{% hint style="success" %}
-**TESTNET UPDATE SCHEDULED: April 24, 2025**
+{% hint style="info" %}
+**TESTNET UPDATE SCHEDULED: MAY 14, 2025**
 {% endhint %}
 
 ### [Build 0.61.6](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.6)

@@ -7,7 +7,32 @@ description: Consensus Node release information
 Visit the [Hedera status page](https://status.hedera.com/) for the latest versions supported on each network.
 ## Release v0.62
 
-### [Build v0.62.1](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.1)
+{% hint style="info" %}
+**MAINNET UPDATE SCHEDULED: JUNE 11, 2025**
+{% endhint %}
+
+{% hint style="info" %}
+**TESTNET UPDATE SCHEDULED: MAY 20, 2025**
+{% endhint %}
+
+### [**Build 0.62.1**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.1)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* feat: Limit the callData field instead of ethereumData (cherry-pick) by [@vtronkov](https://github.com/vtronkov) in [#18968](https://github.com/hiero-ledger/hiero-consensus-node/pull/18968)
+* chore: (cherry-pick) Write marker files for sidecars ([#18916](https://github.com/hiero-ledger/hiero-consensus-node/pull/18916)) by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#18992](https://github.com/hiero-ledger/hiero-consensus-node/pull/18992)
+* feat: enable the jumbo transaction feature flag (cherry-pick) by [@vtronkov](https://github.com/vtronkov) in [#19012](https://github.com/hiero-ledger/hiero-consensus-node/pull/19012)
+* fix: (cherry-pick) Update Roster Schema isUpgrade check ([#19006](https://github.com/hiero-ledger/hiero-consensus-node/pull/19006)) by [@derektriley](https://github.com/derektriley) in [#19057](https://github.com/hiero-ledger/hiero-consensus-node/pull/19057)
+* feat: Implement fee changes for HIP-991 ([#18991](https://github.com/hiero-ledger/hiero-consensus-node/pull/18991)) by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#19050](https://github.com/hiero-ledger/hiero-consensus-node/pull/19050)
+* feat: Cherry-pick: Implement feature flag for gRPC web proxy endpoint ([#19051](https://github.com/hiero-ledger/hiero-consensus-node/pull/19051)) by [@mhess-swl](https://github.com/mhess-swl) in [#19073](https://github.com/hiero-ledger/hiero-consensus-node/pull/19073)
+
+**Full Changelog**: [v0.62.0...v0.62.1](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.62.0...v0.62.1)
+
+</details>
+
+### [**Build 0.62.0**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.0)
 
 <details>
 <summary><strong>What's Changed</strong></summary>

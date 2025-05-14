@@ -793,6 +793,12 @@ A non-custodial wallet is a [decentralized](glossary.md#decentralization) wallet
 
 A unique digital asset with ownership rights that are stored on a distributed network. An NFT can be a one-of-a-kind image, video, composed music, game asset, medical record, event ticket, domain, or other creative media that is tokenized, therefore, can be bought, sold, or traded on a distributed ledger using various cryptocurrencies.
 
+### Non-Fungible Token (NFT) ID
+
+***
+
+The unique ID of a non-fungible token composed of the token ID and serial number in the format: `<shardNum>.<realmNum>.<tokenNum>/<serialNum>`  (e.g., `0.0.1234/1`).
+
 ### Nonce
 
 ***

@@ -38,15 +38,15 @@ This Token ID is used in all transactions and queries involving the token.&#x20;
 
 For **non-fungible tokens (NFTs)**, an additional serial number is appended to the Token ID to distinguish each unique instance within a collection:
 
-📌 `<shardNum>.<realmNum>.<tokenNum>-`_<mark style="color:green;background-color:green;">`<serialNum>`</mark>_
+📌 `<shardNum>.<realmNum>.<tokenNum>/`_<mark style="color:green;background-color:green;">`<serialNum>`</mark>_
 
 #### **NFT Token ID Example**
 
-📌 `0.0.12345-1` → First NFT in collection `0.0.12345`
+📌 `0.0.12345/1` → First NFT in collection `0.0.12345`
 
-📌 `0.0.12345-2` → Second NFT in collection `0.0.12345`
+📌 `0.0.12345/2` → Second NFT in collection `0.0.12345`
 
-<figure><img src="../../../.gitbook/assets/token-id-structure-flow-v2-for-dark-mode (1).png" alt=""><figcaption></figcaption></figure>
+<figure><picture><source srcset="../../../.gitbook/assets/token-id-structure-flow-v2-for-dark-mode (1) (1).png" media="(prefers-color-scheme: dark)"><img src="../../../.gitbook/assets/token-id-structure-flow-v2-for-light-mode.png" alt=""></picture><figcaption></figcaption></figure>
 
 
 

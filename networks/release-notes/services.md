@@ -57,7 +57,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 <summary><strong>What's Changed</strong></summary>
 
-#### Features
+**Features**
 
 * remove code deposit gas charge waiver ([#18797](https://github.com/hiero-ledger/hiero-consensus-node/pull/18797))
 * decouple backend throttle config from front end and add support for burst ([#18743](https://github.com/hiero-ledger/hiero-consensus-node/pull/18743))
@@ -86,7 +86,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 * Add ingest workflow jumbo checks ([#18312](https://github.com/hiero-ledger/hiero-consensus-node/pull/18312))
 * try using non-zero realm/shard ([#18092](https://github.com/hiero-ledger/hiero-consensus-node/pull/18092))
 
-#### Bug Fixes
+**Bug Fixes**
 
 * 18903: Tighten HDHM repair checks ([#18906](https://github.com/hiero-ledger/hiero-consensus-node/pull/18906))
 * detach FCQueue copy when serializing ([#18863](https://github.com/hiero-ledger/hiero-consensus-node/pull/18863))
@@ -226,7 +226,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 <summary><strong>What's Changed</strong></summary>
 
-### What's Changed
+#### What's Changed
 
 * chore: Remove the entityCounts migration code in 0.61 ([#18500](https://github.com/hiero-ledger/hiero-consensus-node/pull/18500)) by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#18511](https://github.com/hiero-ledger/hiero-consensus-node/pull/18511)
 * refactor: cherry-pick "Use a list of signed bytes for transactions in AtomicBatchTransaction" by [@ibankov](https://github.com/ibankov) in [#18522](https://github.com/hiero-ledger/hiero-consensus-node/pull/18522)
@@ -249,7 +249,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 <summary><strong>What's Changed</strong></summary>
 
-#### Features
+**Features**
 
 * Dynamic peers for the sync network ([#18051](https://github.com/hiero-ledger/hiero-consensus-node/pull/18051))
 * Add JumboTransactionsConfig ([#18277](https://github.com/hiero-ledger/hiero-consensus-node/pull/18277))
@@ -265,7 +265,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 * Support non-zero realms for contracts service ([#18010](https://github.com/hiero-ledger/hiero-consensus-node/pull/18010))
 * HIP-551 atomic batch transactions ([#17333](https://github.com/hiero-ledger/hiero-consensus-node/pull/17333))
 
-#### Bug Fixes
+**Bug Fixes**
 
 * Detect ISSes when states are not produced for every round ([#18399](https://github.com/hiero-ledger/hiero-consensus-node/pull/18399))
 * remove @OrderedInIsolation from contract bdd tests ([#18400](https://github.com/hiero-ledger/hiero-consensus-node/pull/18400))
@@ -294,7 +294,7 @@ This release focuses on significant performance improvements, enhanced developer
 
 [HIP-1021](https://hips.hedera.com/hip/hip-1021): Improve Assignment of Auto-Renew Account ID for Topics
 
-* Full implementation of improved auto-renew account ID assignment for topics, enabling setting `autoRenewAccountId` during topic creation without an admin key.&#x20;
+* Full implementation of improved auto-renew account ID assignment for topics, enabling setting `autoRenewAccountId` during topic creation without an admin key.
 * Developers benefit from simplified topic management and reduced risk of unexpected expirations.
 
 ### [Build 0.60.1](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.60.1)
@@ -609,7 +609,7 @@ Re-tag of `v0.58.7` to trigger workflow
 * fix: 16748 Fixed serialization for AddressBookTestingToolState by [@imalygin](https://github.com/imalygin) in [#16799](https://github.com/hashgraph/hedera-services/pull/16799)
 * build(deps): bump docker/setup-qemu-action from 3.0.0 to 3.2.0 by [@dependabot](https://github.com/dependabot) in [#16232](https://github.com/hashgraph/hedera-services/pull/16232)
 
-#### New Contributors
+**New Contributors**
 
 * [@boooby19](https://github.com/boooby19) made their first contribution in [#16767](https://github.com/hashgraph/hedera-services/pull/16767)
 * [@PavelSBorisov](https://github.com/PavelSBorisov) made their first contribution in [#16701](https://github.com/hashgraph/hedera-services/pull/16701)
@@ -894,7 +894,7 @@ Starting with version 0.56, consensus nodes will publish preview block stream fi
 * chore: schedule 0.56 release branch creation by [@kimbor](https://github.com/kimbor) in [#16184](https://github.com/hashgraph/hedera-services/pull/16184)
 * feat: Initial TssVoteHandler by [@derektriley](https://github.com/derektriley) in [#16061](https://github.com/hashgraph/hedera-services/pull/16061)
 
-#### New Contributors
+**New Contributors**
 
 * [@albertopasqualetto](https://github.com/albertopasqualetto) made their first contribution in [#15927](https://github.com/hashgraph/hedera-services/pull/15927)
 * [@san-est](https://github.com/san-est) made their first contribution in [#16036](https://github.com/hashgraph/hedera-services/pull/16036)
@@ -1052,7 +1052,7 @@ Starting with version 0.56, consensus nodes will publish preview block stream fi
 * chore: disable dab in 0.55 by [@iwsimon](https://github.com/iwsimon) in [#15951](https://github.com/hashgraph/hedera-services/pull/15951)
 * fix: (0.55) post-upgrade txn detection in presence of pre-upgrade events by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#15835](https://github.com/hashgraph/hedera-services/pull/15835)
 
-#### New Contributors
+**New Contributors**
 
 * [@tungbq](https://github.com/tungbq) made their first contribution in [#14264](https://github.com/hashgraph/hedera-services/pull/14264)
 

@@ -13,7 +13,7 @@ jobs:
     runs-on: hashgraph-docs-linux-medium
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3 # v3.6.0
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
         with:
           fetch-depth: 0 # Fetch all history for all branches and tags
           persist-credentials: true # Do not use the GITHUB_TOKEN for authentication

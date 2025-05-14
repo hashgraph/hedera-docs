@@ -8,6 +8,30 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Latest Releases
 
+## [v0.129.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.129.0)
+
+Repository: [hiero-ledger/hiero-mirror-node](https://github.com/hiero-ledger/hiero-mirror-node) · Tag: [v0.129.0](https://github.com/hiero-ledger/hiero-mirror-node/tree/v0.129.0) · Commit: [24976d9](https://github.com/hiero-ledger/hiero-mirror-node/commit/24976d9800e6fae9961e18288b49a320e58b9cf8) · Released by: [github-actions\[bot\]](https://github.com/apps/github-actions)
+
+This release begins the design effort for HIP-1081 Block Node. Next sprint the initial support for connecting to a block node will be started. Additionally, all of the `/api/v1/tokens/{id}` endpoints now support an ID in the form of a 40 character hexadecimal EVM address.
+
+The integration of the latest consensus node EVM library into`/api/v1/contracts/call` continues. This release saw a number of bug fixes and test improvements to verify support for newer EVM functionality. This new code path is now live in all production environments, though each at varying percentage as we work to ramp it up to 100%.
+
+## [v0.128.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.128.0)
+
+Repository: [hiero-ledger/hiero-mirror-node](https://github.com/hiero-ledger/hiero-mirror-node) · Tag: [v0.128.0](https://github.com/hiero-ledger/hiero-mirror-node/tree/v0.128.0) · Commit: [4607dc9](https://github.com/hiero-ledger/hiero-mirror-node/commit/4607dc92a0c7226b0f68319d1b4662a79c8046bc) · Released by: [github-actions\[bot\]](https://github.com/apps/github-actions)
+
+This release sees support for [HIP-551](https://hips.hedera.com/hip/hip-551) Batch Transactions. This includes ingest support for the new batch transaction type and the corresponding REST API changes. The `/api/v1/transactions/{id}` REST API was changed to return the inner transactions when given the transaction ID of the outer batch transaction.
+
+[HIP-1064](https://hips.hedera.com/hip/hip-1064) Daily Reward for Active Nodes was also implemented in this release. This support takes the form of ingesting the new `decline_reward` field on node create and update transactions as well as adding the field to the response of the `/api/v1/network/nodes` REST API.
+
+[HIP-991](https://hips.hedera.com/hip/hip-991) Topic custom fees saw the final tasks in the epic completed including new acceptance and performance tests added to verify functionality and performance end to end.
+
+A number of components saw their versions upgraded. Support for Kubernetes 1.32 was verified and we are in the process of upgrading the control plane across our managed instances. The helm chart saw all of its dependent charts upgraded to the latest version. Finally, Node.js saw a major upgrade with a bump from 18.20.8 to 22.14.0. This moves mirror nodes off of Node.js 18 LTS which reaches end-of-life at the end of April 2025.
+
+The REST API now enables the response cache by default in the Helm chart. The response cache uses Redis to store the JSON response indexed by URL to bypass the potentially slow database query. Similar to the CDN that our managed instances use, the responses are cached based upon the max-age in the `cache-control` header, which vary per endpoint. Unlike the CDN, this cache cannot be bypassed by the client via specific headers helping to further protect our API. For operators not using our helm chart, it's recommended to configure the REST module with a connection to a Redis instance and enable the response cache.
+
+The `/api/v1/contracts/call` saw further fixes and improvements to integrate the latest modularized EVM library. The EVM library was updated to v0.60 and v0.61 which brought support for new system contracts. This includes support for the new `IHederaScheduleService` in [HIP-755](https://hips.hedera.com/hip/hip-755) and [HIP-756](https://hips.hedera.com/hip/hip-756), the new `IHederaAccountService` in [HIP-632](https://hips.hedera.com/hip/hip-632) and [HIP-906](https://hips.hedera.com/hip/hip-906), custom fee system contracts in [HIP-1010](https://hips.hedera.com/hip/hip-1010), and friction-less airdrop system contracts in [HIP-904](https://hips.hedera.com/hip/hip-904).
+
 ## [v0.127.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.127.0)
 
 This release contains important fixes to the modularized web3 project that aims to enhance the `/api/v1/contracts/call` REST API with the latest consensus node functionality. Along with various bug fixes and test improvements, we implemented the `EntityCountsSingleton` and added verification and caching of system files. There are also new metrics and dashboard improvements to improve monitoring of the modularized traffic. With these changes, we have enough confidence to begin slowly rolling out this feature to production. As of writing, previewnet is at 50% and testnet is at 10% of traffic flowing to the new modularized code path. Please test your application and let us know of any regressions you may encounter during this transition period.

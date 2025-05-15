@@ -1,14 +1,18 @@
 name: Auto-generate consensus-node release notes
+
 on:
   push:
     branches:
       - main
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
 permissions:
   contents: write
+  pull-requests: write
+
 jobs:
   update-release-notes:
     runs-on: hashgraph-docs-linux-medium
@@ -16,10 +20,10 @@ jobs:
       - name: Checkout docs repo
         uses: actions/checkout@v3
 
-      - name: set up node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "20" # specify the version of node.js you need
+          node-version: "20"
 
       - name: Run update script
         env:
@@ -28,11 +32,13 @@ jobs:
           node .github/scripts/update-services.js \
             --md-path networks/release-notes/services.md
 
-      - name: Commit & push changes
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add networks/release-notes/services.md
-          git commit -m "chore: update release notes" || echo "nothing to commit"
-          git pull --rebase origin main
-          git push origin main
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "chore: update release notes"
+          signoff: true
+          branch: update-release-notes
+          title: "chore: update release notes"
+          body: "Automated update of consensus-node release notes."
+          labels: automated-pr
+          delete-branch: true

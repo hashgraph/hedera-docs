@@ -1,0 +1,38 @@
+name: Auto-generate consensus-node release notes
+on:
+  push:
+    branches:
+      - main
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+jobs:
+  update-release-notes:
+    runs-on: hashgraph-docs-linux-medium
+    steps:
+      - name: Checkout docs repo
+        uses: actions/checkout@v3
+
+      - name: set up node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20" # specify the version of node.js you need
+
+      - name: Run update script
+        env:
+          CONSENSUS_TOKEN: ${{ secrets.CONSENSUS_TOKEN }}
+        run: |
+          node .github/scripts/update-services.js \
+            --md-path networks/release-notes/services.md
+
+      - name: Commit & push changes
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add networks/release-notes/services.md
+          git commit -m "chore: update release notes" || echo "nothing to commit"
+          git pull --rebase origin main
+          git push origin main

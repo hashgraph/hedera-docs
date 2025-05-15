@@ -143,11 +143,11 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 ## Release v0.61
 
 {% hint style="info" %}
-**MAINNET UPDATE SCHEDULED: MAY 21, 2025**
+**MAINNET UPDATE SCHEDULED: MAY 28, 2025**
 {% endhint %}
 
-{% hint style="success" %}
-**TESTNET UPDATE SCHEDULED: MAY 14, 2025**
+{% hint style="info" %}
+**TESTNET UPDATE SCHEDULED: MAY 20, 2025**
 {% endhint %}
 
 ### Release Highlights
@@ -175,6 +175,19 @@ This release focuses on enhancing network incentivization and improving overall 
   * Fixed incorrect SELFDESTRUCT behavior per EIP-6780 post-Cancun, where a contract specifying itself as the beneficiary in a non-creation transaction erroneously triggered a SELF\_DESTRUCT\_TO\_SELF error. The fix ensures compliance with EIP-6780, allowing the operation to proceed without deleting the contract or transferring its balance, including native tokens.&#x20;
   * Additionally, refactored CustomSelfDestructOperation.execute to streamline validation checks before state changes.&#x20;
   * Impact: Enhances EVM compatibility and reliability on Hedera for contracts using SELFDESTRUCT, ensuring correct execution under post-Cancun rules.
+
+### [Build 0.61.7](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.7)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* fix: Fix the `transactionFee` in the record for `ConsensusSubmitMessage` with custom fees by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#19195](https://github.com/hiero-ledger/hiero-consensus-node/pull/19195)
+* chore: Disable `AtomicBatch` prod throttles by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#19217](https://github.com/hiero-ledger/hiero-consensus-node/pull/19217)
+
+**Full Changelog**: [v0.61.6...v0.61.7](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.61.6...v0.61.7)
+
+</details>
 
 ### [Build 0.61.6](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.6)
 

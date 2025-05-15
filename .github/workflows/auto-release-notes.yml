@@ -33,6 +33,7 @@ jobs:
             --md-path networks/release-notes/services.md
 
       - name: Create Pull Request
+        if: ${{ steps.git-check.outputs.changes == 'true' }}
         uses: peter-evans/create-pull-request@v7
         with:
           commit-message: "chore: update release notes"

@@ -3,7 +3,7 @@ name: Auto-generate consensus-node release notes
 on:
   push:
     branches:
-      - update-release-notes
+      - update-node-tables
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

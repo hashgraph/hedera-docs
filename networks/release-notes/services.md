@@ -146,9 +146,35 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **MAINNET UPDATE SCHEDULED: MAY 21, 2025**
 {% endhint %}
 
-{% hint style="info" %}
+{% hint style="success" %}
 **TESTNET UPDATE SCHEDULED: MAY 14, 2025**
 {% endhint %}
+
+### Release Highlights
+
+This release focuses on enhancing network incentivization and improving overall system robustness and developer experience.
+
+#### Hiero Improvement Proposals (HIPs)
+
+* [HIP-1064](https://github.com/hiero-ledger/hiero-improvement-proposals/issues/1064): Full implementation of a daily reward mechanism for active consensus nodes, including an option for node operators to decline these rewards. This enhances network health by incentivizing consistent node uptime and participation, while providing operators flexibility in managing their rewards and improving network decentralization.
+
+#### New Features
+
+* Node Reward Opt-Out (HIP-1064): Node operators can now decline daily node rewards using a new decline\_reward boolean flag in NodeCreateTransactionBody and NodeUpdateTransactionBody. This offers greater control and flexibility for node operators based on their specific requirements.
+  * ```
+    // Example: Opting out of node rewards during node creation
+    NodeCreateTransactionBody createBody = NodeCreateTransactionBody.newBuilder()
+        // ... other fields like accountID, description, etc.
+        .setDeclineReward(true) // Set to true to decline node rewards
+        .build();
+    ```
+
+#### Notable Bug Fixes
+
+* [#17478](https://github.com/hiero-ledger/hiero-consensus-node/issues/17478): Corrected Cancun SELFDESTRUCT Semantics:&#x20;
+  * Fixed incorrect SELFDESTRUCT behavior per EIP-6780 post-Cancun, where a contract specifying itself as the beneficiary in a non-creation transaction erroneously triggered a SELF\_DESTRUCT\_TO\_SELF error. The fix ensures compliance with EIP-6780, allowing the operation to proceed without deleting the contract or transferring its balance, including native tokens.&#x20;
+  * Additionally, refactored CustomSelfDestructOperation.execute to streamline validation checks before state changes.&#x20;
+  * Impact: Enhances EVM compatibility and reliability on Hedera for contracts using SELFDESTRUCT, ensuring correct execution under post-Cancun rules.
 
 ### [Build 0.61.6](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.6)
 

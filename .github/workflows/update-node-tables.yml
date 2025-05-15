@@ -3,7 +3,7 @@ name: Update Node Tables
 on:
   push:
     branches:
-      - main
+      - test-pr
 
 permissions:
   contents: write

@@ -3,7 +3,7 @@ name: Auto-generate consensus-node release notes
 on:
   push:
     branches:
-      - main
+      - test-pr
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

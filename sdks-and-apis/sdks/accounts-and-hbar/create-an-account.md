@@ -51,9 +51,9 @@ If an alias is set during account creation, it becomes [immutable](../../../supp
 ```java
 //Create the transaction
 AccountCreateTransaction transaction = new AccountCreateTransaction()
-    .setKey(ecdsaPublicKey)
-    //Do NOT set an alias if you need to update/rotate keys in the future
-    .setAlias(ecdsaPublicKey.toEvmAddress())
+    .setKeyWithAlias(ecdsaPublicKey)
+    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .setKeyWithoutAlias instead 
+    // .setKeyWithoutAlias(ecdsaPublicKey)
     .setInitialBalance(new Hbar(1));
 
 //Submit the transaction to a Hedera network
@@ -78,9 +78,9 @@ const ecdsaPublicKey = PrivateKey.generateECDSA().publicKey
 
 //Create the transaction
 const transaction = new AccountCreateTransaction()
-    .setKey(ecdsaPublicKey)
-    //Do NOT set an alias if you need to update/rotate keys in the future
-    .setAlias(ecdsaPublicKey.toEvmAddress())
+    .setKeyWithAlias(ecdsaPublicKey)
+    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .setKeyWithoutAlias instead 
+    // .setKeyWithoutAlias(ecdsaPublicKey)
     .setInitialBalance(new Hbar(1));
 
 //Sign the transaction with the client operator private key and submit to a Hedera network
@@ -102,9 +102,9 @@ console.log("The new account ID is " +newAccountId);
 ```go
 //Create the transaction
 transaction := hedera.NewAccountCreateTransaction().
-        SetKey(ecdsaPublicKey).
+        SetKeyWithAlias(ecdsaPublicKey).
         //do not set if you need to rotate keys in the future
-        SetAlias(ecdsaPublicKey.ToEvmAddress()).
+        // SetKeyWithoutAlias(ecdsaPublicKey).
         SetInitialBalance(hedera.NewHbar(1))
 
 //Sign the transaction with the client operator private key and submit to a Hedera network
@@ -147,9 +147,9 @@ fmt.Printf("The new account ID is %v\n", newAccountId)
 //Create an account with 1 hbar
 AccountCreateTransaction transaction = new AccountCreateTransaction()
     // The only _required_ property here is `key`
-    .setKey(newPublicKey)
-    //Do NOT set an alias if you need to update/rotate keys in the future
-    .setAlias(newPublicKey.toEvmAddress())
+    .setKeyWithAlias(newPublicKey)
+    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .setKeyWithoutAlias instead 
+    // .setKeyWithoutAlias(newPublicKey)
     .setInitialBalance(new Hbar(1));
 
 //Return the key on the account
@@ -162,9 +162,9 @@ Key accountKey = transaction.getKey();
 //Create an account with 1 HBAR 
 const transaction = new AccountCreateTransaction()
     // The only _required_ property here is `key`
-    .setKey(newPublicKey)
-    //Do NOT set an alias if you need to update/rotate keys in the future
-    .setAlias(newPublicKey.toEvmAddress())
+    .setKeyWithAlias(newPublicKey)
+    // Do NOT set an alias if you need to rotate keys in the future. Use .setKeyWithoutAlias instead
+    // .setKeyWithoutAlias(newPublicKey)
     .setInitialBalance(new Hbar(1));
 
 //Return the key on the account
@@ -176,9 +176,9 @@ const accountKey = transaction.getKey();
 ```go
 //Create an account with 1 hbar
 AccountCreateTransaction := hedera.NewAccountCreateTransaction().
-    SetKey(newPublicKey).
-    //Do NOT set an alias if you need to update/rotate keys in the future
-    SetAlias(newPublicKey.ToEvmAddress()).
+    SetKeyWithAlias(newPublicKey).
+    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .SetKeyWithoutAlias instead 
+    // SetKeyWithoutAlias(newPublicKey).
     SetInitialBalance(hedera.NewHbar(1))
 
 //Return the key on the account

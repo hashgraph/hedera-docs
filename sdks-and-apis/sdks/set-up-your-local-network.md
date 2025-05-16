@@ -102,7 +102,7 @@ Submit a transaction that will create a new account in your local network. The c
 ```java
 //Submit a transaction to your local node
 TransactionResponse newAccount = new AccountCreateTransaction()
-        .setKey(PrivateKey.fromString("302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137"))
+        .setKeyWithoutAlias(PrivateKey.fromString("302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137"))
         .setInitialBalance(new Hbar(1))
         .execute(client);
                 
@@ -119,7 +119,7 @@ System.out.println(newAccountId);
 ```javascript
 //Submit a transaction to your local node
 const newAccount = await new AccountCreateTransaction()
-        .setKey(PrivateKey.fromString("302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137"))
+        .setKeyWithoutAlias(PrivateKey.fromString("302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137"))
         .setInitialBalance(new Hbar(1))
         .execute(client);
 
@@ -136,7 +136,7 @@ console.log(newAccountId);
 ```go
 //Submit a transaction to your local node
 newAccount, err := hedera.NewAccountCreateTransaction().
-	SetKey(privateKey).
+	SetKeyWithoutAlias(privateKey).
     	SetInitialBalance(hedera.NewHbar(1)).
 	Execute(client)
 
@@ -200,7 +200,7 @@ public class LocalNode {
         
         //Submit a transaction to your local node
         TransactionResponse newAccount = new AccountCreateTransaction()
-                .setKey(PrivateKey.fromString("302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137"))
+                .setKeyWithoutAlias(PrivateKey.fromString("302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137"))
                 .setInitialBalance(new Hbar(1))
                 .execute(client);
        
@@ -237,7 +237,7 @@ async function main() {
 
         //Submit a transaction to your local node
         const newAccount = await new AccountCreateTransaction()
-                .setKey(PrivateKey.fromString("302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137"))
+                .setKeyWithoutAlias(PrivateKey.fromString("302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137"))
                 .setInitialBalance(new Hbar(1))
                 .execute(client);
 
@@ -279,7 +279,7 @@ func main() {
 
 	//Submit a transaction to your local node
 	newAccount, err := hedera.NewAccountCreateTransaction().
-		SetKey(privateKey).
+		SetKeyWithoutAlias(privateKey).
     		SetInitialBalance(hedera.NewHbar(1)).
 		Execute(client)
 

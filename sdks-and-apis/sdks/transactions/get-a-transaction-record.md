@@ -57,9 +57,9 @@ If an alias is set during account creation, it becomes [immutable](../../../supp
 ```java
 //Create a transaction
 AccountCreateTransaction transaction = new AccountCreateTransaction()
-    .setKey(ecdsaPublicKey)
-    //Do NOT set an alias if you need to update/rotate keys in the future
-    .setAlias(ecdsaPublicKey.toEvmAddress())
+    .setKeyWithAlias(ecdsaPublicKey)
+    // DO NOT set an alias with your key if you need to update/rotate keys in the future, Use .setKeyWithoutAlias instead 
+    // .setKeyWithoutAlias(ecdsaPublicKey)
     .setInitialBalance(new Hbar(1));
 
 //Sign with the client operator account key and submit to a Hedera network
@@ -78,9 +78,9 @@ System.out.println("The transaction record is " +record);
 ```javascript
 //Create a transaction
 const transaction = new AccountCreateTransaction()
-    .setKey(ecdsaPublicKey)
-    //Do NOT set an alias if you need to update/rotate keys in the future
-    .setAlias(ecdsaPublicKey.toEvmAddress())
+    .setKeyWithAlias(ecdsaPublicKey)
+    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .setKeyWithoutAlias instead 
+    // .setKeyWithoutAlias(ecdsaPublicKey)
     .setInitialBalance(new Hbar(1));
 
 //Sign with the client operator account key and submit to a Hedera network
@@ -99,9 +99,9 @@ console.log("The transaction record is " +record);
 ```go
 //Create a transaction
 transaction := hedera.NewAccountCreateTransaction().
-    SetKey(ecdsaPublicKey).
-    //Do NOT set an alias if you need to update/rotate keys in the future
-    SetAlias(ecdsaPublicKey.ToEvmAddress()).
+    SetKeyWithAlias(ecdsaPublicKey).
+    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .setKeyWithoutAlias instead 
+    // SetKeyWithoutAlias(ecdsaPublicKey).
     SetInitialBalance(hedera.NewHbar(1))
 
 //Sign with the client operator account key and submit to a Hedera network

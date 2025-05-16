@@ -31,9 +31,9 @@ If an alias is set during account creation, it becomes [immutable](../../../supp
 ```java
 //Create the transaction and set the transaction properties
 Transaction transaction = new AccountCreateTransaction() //Any transaction can be applied here
-    .setKey(ecdsaPublicKey)
-    //Do NOT set an alias if you need to update/rotate keys in the future
-    .setAlias(ecdsaPublicKey.toEvmAddress())
+    .setKeyWithAlias(ecdsaPublicKey)
+    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .setKeyWithoutAlias instead 
+    // .setKeyWithoutAlias(ecdsaPublicKey)
     .setInitialBalance(new Hbar(1))
     .setMaxTransactionFee(new Hbar(2)) //Set the max transaction fee to 2 hbar
     .setTransactionMemo("Transaction memo"); //Set the node ID to submit the transaction to
@@ -46,9 +46,9 @@ Transaction transaction = new AccountCreateTransaction() //Any transaction can b
 ```javascript
 //Create the transaction and set the transaction properties
 const transaction = await new AccountCreateTransaction() //Any transaction can be applied here
-    .setKey(ecdsaPublicKey)
-    //Do NOT set an alias if you need to update/rotate keys in the future
-    .setAlias(ecdsaPublicKey.toEvmAddress())
+    .setKeyWithAlias(ecdsaPublicKey)
+    // DO NOT if you plan to rotate keys in the future
+    // .setKeyWithoutAlias(ecdsaPublicKey)
     .setInitialBalance(new Hbar(1))
     .setMaxTransactionFee(new Hbar(2)) //Set the max transaction fee to 2 hbar
     .setTransactionMemo("Transaction memo"); //Set the node ID to submit the transaction to
@@ -59,9 +59,9 @@ const transaction = await new AccountCreateTransaction() //Any transaction can b
 ```go
 //Create the transaction and set the transaction properties
 transaction := hedera.NewAccountCreateTransaction(). //Any transaction can be applied here
-    SetKey(ecdsaPublicKey).
-    //Do NOT set an alias if you need to update/rotate keys in the future
-    SetAlias(ecdsaPublicKey.ToEvmAddress()).
+    SetKeyWithAlias(ecdsaPublicKey).
+    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .SetKeyWithoutAlias instead 
+    // SetKeyWithoutAlias(ecdsaPublicKey).
     SetInitialBalance(hedera.NewHbar(1)).
     SetMaxTransactionFee(hedera.NewHbar(2)). //Set the max transaction fee to 2 hbar
     SetTransactionMemo("Transaction memo") //Set the transaction memo
@@ -107,7 +107,7 @@ const maxTransactionFee = transaction.getMaxTransactionFee();
 ```go
 //Create the transaction and set the transaction properties
 transaction := hedera.NewAccountCreateTransaction(). //Any transaction can be applied here
-    SetKey(newKey.PublicKey()).
+    SetKeyWithAlias(newKey).
     SetInitialBalance(hedera.NewHbar(100)).
     SetMaxTransactionFee(hedera.NewHbar(2)). //Set the max transaction fee to 2 hbar
     SetTransactionMemo("Transaction memo") //Add a transaction memo

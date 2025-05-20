@@ -15,9 +15,9 @@ If an alias is set during account creation, it becomes [immutable](../../../supp
 ```java
 //Create an unsigned transaction 
 AccountCreateTransaction transaction = new AccountCreateTransaction()
-    .setKey(ecdsaPublicKey)
-    //Do NOT set an alias if you need to update/rotate keys in the future
-    .setAlias(ecdsaPublicKey.toEvmAddress())
+    .setKeyWithAlias(ecdsaPublicKey)
+    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .setKeyWithoutAlias instead 
+    // .setKeyWithoutAlias(ecdsaPublicKey)
     .setInitialBalance(new Hbar(1));
 
 //Freeze the transaction for signing
@@ -34,9 +34,9 @@ System.out.println(freezeTransaction);
 ```java
 //Create an unsigned transaction 
 const transaction = new AccountCreateTransaction()
-    .setKey(ecdsaPublicKey)
-    //Do NOT set an alias if you need to update/rotate keys in the future
-    .setAlias(ecdsaPublicKey.toEvmAddress())
+    .setKeyWithAlias(ecdsaPublicKey)
+    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .setKeyWithoutAlias instead 
+    // .setKeyWithoutAlias(ecdsaPublicKey)
     .setInitialBalance(new Hbar(1));
 
 //Freeze the transaction for signing
@@ -53,9 +53,9 @@ console.log(freezeTransaction);
 ```go
 //Create an unsigned transaction 
 transaction := hedera.NewAccountCreateTransaction().
-    SetKey(ecdsaPublicKey).
-    //Do NOT set an alias if you need to update/rotate keys in the future
-    SetAlias(ecdsaPublicKey.ToEvmAddress())
+    SetKeyWithAlias(ecdsaPublicKey).
+    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .SetKeyWithoutAlias instead 
+    // SetKeyWithoutAlias(ecdsaPublicKey)
     SetInitialBalance(hedera.NewHbar(1)).
     
 //Freeze the transaction for signing

@@ -23,9 +23,9 @@ If an alias is set during account creation, it becomes [immutable](../../../supp
 ```java
 //Create the transaction
 AccountCreateTransaction transaction = new AccountCreateTransaction()
-        .setKey(ecdsaPublicKey)
+        .setKeyWithAlias(ecdsaPublicKey)
         //do not set if you need to rotate keys in the future
-        .setAlias(ecdsaPublicKey.toEvmAddress())
+        // .setKeyWithoutAlias(ecdsaPublicKey)
         .setInitialBalance(new Hbar(1));
 
 //Sign with client operator private key and submit the transaction to a Hedera network
@@ -52,9 +52,9 @@ System.out.println("The node ID is " +nodeId);
 ```javascript
 //Create the transaction
 const transaction = new AccountCreateTransaction()
-        .setKey(ecdsaPublicKey)
+        .setKeyWithAlias(ecdsaPublicKey)
         //do not set if you need to rotate keys in the future
-        .setAlias(ecdsaPublicKey.toEvmAddress())
+        // .setKeyWithoutAlias(ecdsaPublicKey)
         .setInitialBalance(new Hbar(1));
 
 //Sign with client operator private key and submit the transaction to a Hedera network
@@ -81,9 +81,9 @@ console.log("The node ID is " +nodeId);
 ```go
 //Create the transaction
 transaction := hedera.NewAccountCreateTransaction().
-        SetKey(ecdsaPublicKey).
+        SetKeyWithAlias(ecdsaPublicKey).
         //do not set if you need to rotate keys in the future
-        SetAlias(ecdsaPublicKey.ToEvmAddress()).
+        // SetKeyWithoutAlias(ecdsaPublicKey).
         SetInitialBalance(hedera.NewHbar(1))
 
 //Sign with client operator private key and submit the transaction to a Hedera network

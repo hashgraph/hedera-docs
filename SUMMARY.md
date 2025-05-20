@@ -178,6 +178,7 @@
   * [Hedera Contract Builder](open-source-solutions/hedera-contract-builder.md)
   * [Hedera Custodians Library](open-source-solutions/hedera-custodians-library/README.md)
     * [How to use it](open-source-solutions/hedera-custodians-library/how-to-use-it.md)
+  * [Hedera Developers Code Repository](open-source-solutions/hedera-developers-code-repository.md)
   * [Hedera Developer Playground](open-source-solutions/hedera-developer-playground.md)
   * [Hedera Wallet Snap By MetaMask](open-source-solutions/hedera-wallet-snap-by-metamask/README.md)
     * [Hedera Wallet Snap Documentation](https://docs.tuum.tech/hedera-wallet-snap/basics/introduction)

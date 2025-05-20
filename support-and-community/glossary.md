@@ -1026,6 +1026,24 @@ A _rug pull_ in the [NFT](glossary.md#non-fungible-token-nft) ecosystem refers t
 
 ## S
 
+### secC2C
+
+***
+
+A performance metric that measures the time between a node creating a self event and knowing its consensus on the same node that created it. It's crucial to note that this metric _does not_ measure the time for an event to achieve network-wide consensus. It is solely a local node measurement, focusing on consensus discovery within the originating node, and should not be misconstrued as a network
+
+### secR2C
+
+***
+
+A performance metric that measures the time between a node receiving an event created by a peer and knowing its consensus. This metric helps analyze how quickly a node, after receiving an event from another node, determines the consensus status of that event. It is distinct from [secC2C](glossary.md#secc2c) (which is local to the node that created the event) and [secC2RC](glossary.md#secc2rc) (which measures network-wide consensus latency).
+
+### secC2RC
+
+***
+
+A performance metric that measures the time between a peer creating an event and the measuring node knowing its consensus. This metric provides insight into the total time required for an event to achieve network-wide consensus, as opposed to local node latency (which is measured by [secC2C](glossary.md#secc2c)).
+
 ### Security Model
 
 ***

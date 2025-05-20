@@ -77,7 +77,8 @@ function fetchPage(page, per_page = 100) {
       res.on("end", () => {
         if (res.statusCode >= 200 && res.statusCode < 300) {
           try {
-            resolve(JSON.parse(data));
+            const parsedData = JSON.parse(data);
+            resolve({ data: parsedData, headers: res.headers });
           } catch (e) {
             reject(new Error("Invalid JSON from GitHub"));
           }
@@ -97,11 +98,15 @@ async function fetchAllReleases() {
   const all = [];
   while (true) {
     log(`fetching page ${page}`);
-    const list = await fetchPage(page);
+    const { data: list, headers } = await fetchPage(page);
     if (!Array.isArray(list) || list.length === 0) break;
     all.push(...list);
-    if (list.length < 100) break;
-    page++;
+    const linkHeader = headers.link;
+    if (linkHeader && linkHeader.includes('rel="next"')) {
+      page++;
+    } else {
+      break;
+    }
   }
   return all.filter((r) => r.tag_name && (includePrereleases || !r.prerelease));
 }

@@ -29,7 +29,7 @@ These optional compliance and control mechanisms make HTS flexible to meet regul
 
 Managing token operations on Hedera involves defining roles and performing key actions to control and manage the token lifecycle. Below are the primary roles and token management operations supported by HTS.
 
-### Role-Bases Access Control
+### Role-Based Access Control
 
 HTS utilizes role-based access control (RBAC) to securely manage token lifecycle operations. Token issuers can assign distinct roles to delegate responsibilities, enhance security, and ensure compliance.
 

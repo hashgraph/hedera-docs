@@ -16,6 +16,21 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **TESTNET UPDATE SCHEDULED: JUNE 3, 2025**
 {% endhint %}
 
+### [Build 0.62.3](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.3)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* fix: Fix the transactionFee in the record for ConsensusSubmitMessage with custom fees by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#19198](https://github.com/hiero-ledger/hiero-consensus-node/pull/19198)
+* chore: Remove `AtomicBatch` from prod throttles by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#19216](https://github.com/hiero-ledger/hiero-consensus-node/pull/19216)
+* feat: Bump PBJ version and use Block Stream Publish Service by [@derektriley](https://github.com/derektriley) in [#19256](https://github.com/hiero-ledger/hiero-consensus-node/pull/19256)
+* chore: (0.62) Use app fee charging mechanisms for gas by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#19254](https://github.com/hiero-ledger/hiero-consensus-node/pull/19254)
+
+**Full Changelog**: [v0.62.2...v0.62.3](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.62.2...v0.62.3)
+
+</details>
+
 ### [Build 0.62.2](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.2)&#x20;
 
 <details>

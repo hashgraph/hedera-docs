@@ -16,7 +16,19 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **TESTNET UPDATE SCHEDULED: JUNE 3, 2025**
 {% endhint %}
 
-### [Build 0.62.3](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.3)
+### [Build 0.62.4](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.4)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* chore: Remove the migration code for setting `declineReward=true` for all nodes on upgrade by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#19338](https://github.com/hiero-ledger/hiero-consensus-node/pull/19338)
+
+**Full Changelog**: [v0.62.3...v0.62.4](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.62.3...v0.62.4)
+
+</details>
+
+### [Build 0.62.3](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.3)&#x20;
 
 <details>
 
@@ -171,9 +183,10 @@ This release focuses on enhancing network incentivization and improving overall 
 
 #### Hiero Improvement Proposals (HIPs)
 
-* **Daily rewards for active nodes** [HIP-1064](https://github.com/hiero-ledger/hiero-improvement-proposals/issues/1064): Full implementation of a daily reward mechanism for active consensus nodes, including an option for node operators to decline these rewards. This enhances network health by incentivizing consistent node uptime and participation, while providing operators flexibility in managing their rewards and improving network decentralization.
-* **HIP-551 (Atomic Batch Transactions)**: [HIP-551](https://hips.hedera.com/hip/551) This release includes the implementation of Atomic Batch Transactions; however, due to technical challenges identified in testing, this feature has been temporarily disabled.&#x20;
-  * As a result, users attempting to submit Atomic Batch Transactions will receive a status code of BUSY from the network. We are actively working to resolve these issues and plan to enable this feature in a future update.
+* **Daily rewards for active nodes** [HIP-1064](https://github.com/hiero-ledger/hiero-improvement-proposals/issues/1064): Full implementation of a daily reward mechanism for active consensus nodes, including an option for node operators to decline these rewards. This enhances network health by incentivizing consistent node uptime and participation, while providing operators flexibility in managing their rewards and improving network decentralization.  Please note this feature will be disabled until a July 1, 2025 launch date.
+*   **HIP-551 (Atomic Batch Transactions)**: [HIP-551](https://hips.hedera.com/hip/551) This release includes the implementation of Atomic Batch Transactions; however, due to technical challenges identified in testing, this feature has been temporarily disabled.&#x20;
+
+    As a result, users attempting to submit Atomic Batch Transactions will receive a status code of `BUSY` from the network. We are actively working to resolve these issues and plan to enable this feature in a future update.
 
 #### New Features
 
@@ -188,7 +201,7 @@ This release focuses on enhancing network incentivization and improving overall 
 
 #### Notable Bug Fixes
 
-* [**#17478**](https://github.com/hiero-ledger/hiero-consensus-node/issues/17478)**: Corrected Cancun SELFDESTRUCT Semantics**: Fixed incorrect SELFDESTRUCT behavior per EIP-6780 post-Cancun, where a contract specifying itself as the beneficiary in a non-creation transaction erroneously triggered a SELF\_DESTRUCT\_TO\_SELF error. The fix ensures compliance with EIP-6780, allowing the operation to proceed without deleting the contract or transferring its balance, including native tokens. Additionally, refactored CustomSelfDestructOperation.execute to streamline validation checks before state changes. Impact: Enhances EVM compatibility and reliability on Hedera for contracts using SELFDESTRUCT, ensuring correct execution under post-Cancun rules.
+* [**#17478**](https://github.com/hiero-ledger/hiero-consensus-node/issues/17478)**: Corrected Cancun SELFDESTRUCT Semantics**: Fixed incorrect `SELFDESTRUCT` behavior per [EIP-6780](https://eips.ethereum.org/EIPS/eip-6780) post-Cancun, where a contract specifying itself as the beneficiary in a non-creation transaction erroneously triggered a `SELF_DESTRUCT_TO_SELF` error. The fix ensures compliance with [EIP-6780](https://eips.ethereum.org/EIPS/eip-6780), allowing the operation to proceed without deleting the contract or transferring its balance, including native tokens. Additionally, refactored CustomSelfDestructOperation.execute to streamline validation checks before state changes. Impact: Enhances EVM compatibility and reliability on Hedera for contracts using `SELFDESTRUCT`, ensuring correct execution under post-Cancun rules.
 
 ### [Build 0.61.7](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.7)
 

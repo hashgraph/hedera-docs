@@ -251,7 +251,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Release v0.61
 
-{% hint style="info" %}
+{% hint style="success" %}
 **MAINNET UPDATE SCHEDULED: MAY 30, 2025**
 {% endhint %}
 
@@ -423,6 +423,10 @@ This release focuses on enhancing network incentivization and improving overall 
 * Fix candidate roster adoption logic (v61) ([#18372](https://github.com/hiero-ledger/hiero-consensus-node/pull/18372))
 
 </details>
+
+### Performance Results
+
+<figure><img src="../../.gitbook/assets/‎0.61_Performance Measurement Results_Extract.‎001.png" alt=""><figcaption></figcaption></figure>
 
 ## Release v0.60
 

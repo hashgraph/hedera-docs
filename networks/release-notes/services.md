@@ -98,6 +98,29 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **TESTNET UPDATE SCHEDULED: JUNE 3, 2025**
 {% endhint %}
 
+### [Build 0.62.6](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.6)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* chore: Add overrides for `nodes.nodeRewardsEnabled=false` by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#19422](https://github.com/hiero-ledger/hiero-consensus-node/pull/19422)
+* fix: (0.62) Reclaim ingest throttle capacity after failure by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#19525](https://github.com/hiero-ledger/hiero-consensus-node/pull/19525)
+
+**Full Changelog**: [v0.62.5...v0.62.6](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.62.5...v0.62.6)
+
+</details>
+
+### [Build 0.62.5](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.5)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* chore: Remove the migration code for setting `declineReward=true` for all nodes on upgrade ([#19338](https://github.com/hiero-ledger/hiero-consensus-node/pull/19338))
+
+</details>
+
 ### [Build 0.62.4](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.4)
 
 <details>
@@ -284,6 +307,42 @@ This release focuses on enhancing network incentivization and improving overall 
 #### Notable Bug Fixes
 
 * [**#17478**](https://github.com/hiero-ledger/hiero-consensus-node/issues/17478)**: Corrected Cancun SELFDESTRUCT Semantics**: Fixed incorrect `SELFDESTRUCT` behavior per [EIP-6780](https://eips.ethereum.org/EIPS/eip-6780) post-Cancun, where a contract specifying itself as the beneficiary in a non-creation transaction erroneously triggered a `SELF_DESTRUCT_TO_SELF` error. The fix ensures compliance with [EIP-6780](https://eips.ethereum.org/EIPS/eip-6780), allowing the operation to proceed without deleting the contract or transferring its balance, including native tokens. Additionally, refactored CustomSelfDestructOperation.execute to streamline validation checks before state changes. Impact: Enhances EVM compatibility and reliability on Hedera for contracts using `SELFDESTRUCT`, ensuring correct execution under post-Cancun rules.
+
+### [Build 0.61.10](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.10)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* chore: (cherry-pick to tag 0.61.10) Disable the defaults for `contracts.evm.ethTransaction.zeroHapiFees.enabled` and `nodes.nodeRewardsEnabled` by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#19521](https://github.com/hiero-ledger/hiero-consensus-node/pull/19521)
+
+**Full Changelog**: [v0.61.9...v0.61.10](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.61.9...v0.61.10)
+
+</details>
+
+### [Build 0.61.9](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.9)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* chore: (cherry-pick to tag 0.61.9) Disable `nodes.nodeRewardsEnabled` by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#19519](https://github.com/hiero-ledger/hiero-consensus-node/pull/19519)
+
+**Full Changelog**: [v0.61.8...v0.61.9](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.61.8...v0.61.9)
+
+</details>
+
+### [Build 0.61.8](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.8)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* chore: (cherry-pick for 0.61.8) Reclaim throttle capacity after ingest failure by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#19526](https://github.com/hiero-ledger/hiero-consensus-node/pull/19526)
+
+**Full Changelog**: [v0.61.7...v0.61.8](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.61.7...v0.61.8)
+
+</details>
 
 ### [Build 0.61.7](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.61.7)
 

@@ -34,6 +34,9 @@ Before you begin, you should have **completed** the following guide:
   * Minimum version: 2.37
     * Check version: `git version`
   * Recommended: [Install Git (Github)](https://github.com/git-guides/install-git)
+* `jq` installed
+  * Minimum version: 1.7
+    * Check version: `jq --version`
 * A code editor or IDE
   * Recommended: VS Code. [Install VS Code (Visual Studio)](https://code.visualstudio.com/docs/setup/setup-overview)
 * NodeJs + `npm` installed

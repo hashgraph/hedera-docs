@@ -1,275 +1,266 @@
 ---
 description: >-
   The Hedera Mainnet is currently comprised of permissioned consensus nodes
-  operated by the Hedera Council
+  operated by the Hedera Council.
 ---
 
-# Node Requirements
+# Node Deployment Requirements
 
-The following is provided to help [_Hedera Council_](https://hederacouncil.org) members deploy their permissioned mainnet consensus node. Please note, this information is not intended to apply to Hedera's transition to a permissionless network.
+This guide outlines the technical requirements, system setup, and network configuration for [_Hedera Council_](https://hedera.com/council) members to deploy and operate their permissioned consensus node on the Hedera Mainnet. All requirements aim to ensure consistency and performance across the network.
 
-{% hint style="success" %}
-**Please note**: this information does not apply to Hedera's transition to a permissionless network. The following is provided to assist the _Hedera Council_:
+{% hint style="danger" %}
+<mark style="color:blue;">**Note:**</mark> This documentation applies only to permissioned consensus nodes operated by Hedera Council Members. It does not cover Hedera’s transition to a permissionless network.
 {% endhint %}
 
 ## Minimum Node Platform Requirements
 
-Currently, the Hedera Mainnet will perform at a rate determined by the lowest-performing node. To ensure a common level of performance minimum hardware, connectivity, and hosting requirements have been defined for the initial permissioned, _Hedera Council_ nodes.
+The overall performance of the Hedera Mainnet is currently constrained by the lowest-performing node in the network. To maintain consistent performance across all Council nodes, a set of minimum hardware, connectivity, and hosting requirements has been established for this initial permissioned phase.
 
-{% hint style="warning" %}
-To ensure accurate conformity with the minimum requirements, please provide node hardware, connectivity, and hosting details to Hedera prior to purchase (devops@hashgraph.com).
+{% hint style="info" %}
+<mark style="color:red;">**Action:**</mark> To ensure compliance with these requirements, submit your proposed node hardware, connectivity, and hosting specifications to Hedera for review **before making any purchases via** :e-mail: <mark style="color:blue;">**devops@hashgraph.com.**</mark>
 {% endhint %}
 
 ### CPU
 
-X86/X64 compatible (Intel Xeon or AMD EPYC); 24 cores/48 threads meeting or exceeding the following benchmarks:
+* **Architecture**: X86/X64 (Intel Xeon or AMD EPYC)
+* **Cores**: 24 cores / 48 threads
+* **Benchmarks:**
+  * **Geekbench 6 single-core:**
+    * Minimum: ≥ 1000
+    * Recommended: ≥ 1500
+  * **Passmark single-thread:**
+    * Minimum: ≥ 2300 (required for Mainnet)
+    * Recommended: ≥ 2800
 
-**Geekbench 6 single-core score**
-
-* Minimum: 1000 or greater
-* Recommended: 1500 or greater
-
-**Passmark single thread rating:**
-
-* Minimum to remain on Mainnet: 2300 or greater
-* Recommended: 2800 or greater
-
-### **Network Connectivity**
-
-Sustained 1Gb/s internet bandwidth via a single 1-Gigabit / 10-Gigabit Ethernet interface
+***
 
 ### **Memory**
 
-256 GB PC4-21300 2666MHz DDR4 ECC Registered DIMM or faster (minimum), 320GB or higher PC4-25600 3200MHz (recommended)
+* **Minimum:** 256GB DDR4 ECC Registered DIMM (PC4-21300 2666MHz)
+* **Recommended:** 320 GB+ DDR4 ECC (PC4-25600 3200MHz)
+
+***
 
 ### **Storage**
 
-It is recommended to mount 240 GB SSD with Raid 1 as a root volume `/` and then provide usable storage via different devices later mounted during installation. This may not be possible on your hardware, so alternatively all required storage may be allocated to the root volume.
+**General Guidelines:**\
+It is recommended to configure a **240 GB SSD in RAID 1** for the root volume (`/`) and mount additional volumes for usable storage during installation. If RAID is not available, assign all storage to root.
 
 <details>
 
-<summary><strong>Minimum Requirements/Recommendations ⬇</strong> </summary>
+<summary><strong>Minimum Requirements/Recommendations ⬇</strong></summary>
 
-**Minimum**: 5TB of SSD NVMe usable storage
+* **Minimum:** 5TB NVMe SSD (usable)
+* **Recommended:**
+  * OS: 2 × 240GB SSD (RAID 1)
+  * Data: 2 × NVMe drives (7.5TB RAID 0) or 4× in RAID 10 array
 
-**Recommended**:
+**Performance:** \
+If mounted to root volume, the root volume must meet these requirements. If provisioned via RAID, the RAID array should meet these requirements:
 
-* 2 x 240GB SSD with RAID 1 for OS Storage
-* 2 x NVMe devices as a 7.5TB RAID 0 (or 4x as RAID 10 array)
+* Sequential Write: 2,000–3,000 MB/s
+* Sequential Read: 3,000–6,200 MB/s
+* Random Read (sync): 250k–1M IOPS
+* Random Write (sync): 100k–170k IOPS
+* Avg. Latency: ≤ 200µs
 
-**Storage performance**: If mounted to root volume, the root volume must meet these requirements. If provisioned via RAID, the RAID array should meet these requirements:
-
-**Sequential write sustained:**
-
-* Minimum: 2,000 MBps
-* Recommended: 3,000 MBps
-
-**Sequential read sustained:**
-
-* Minimum: 3,000 MBps
-* Recommended: 6,200 MBps
-
-**Random read, synchronous:**
-
-* Minimum: 250,000 IOPS
-* Recommended: 1,000,000 IOPS
-
-**Random read, AIO:**
-
-* Minimum: 500,000 IOPS
-* Recommended: 1,000,000 IOPS
-
-**Random write, synchronous:**
-
-* Minimum: 100,000 IOPS
-* Recommended: 170,000 IOPS
-
-Less than 200µs random read latency, average
+> 📁 <mark style="color:blue;">**Note**</mark>: Nodes must pass the Hedera performance test suite at installation time.
 
 </details>
 
-{% hint style="success" %}
-**Note**: nodes must pass the Hedera performance test suite performed at installation time.
-{% endhint %}
+***
 
-### **Node Operating System:**
+### **Network Connectivity**
 
-**Linux**
+* Sustained bandwidth: ≥ 1Gbps (via 1/10Gb Ethernet)
 
-**Minimum kernel mainline versions (not distribution version)**
+***
 
-* 6.2.0
-* 6.1.2
-* 6.0.16
-* 5.15.86
+### Node Operating System & Tools
 
-**Actively Supported Long-Term-Support (LTS) 64-bit Linux Distributions**
+#### Supported OS
 
-* Ubuntu LTS 22.04
-* Red Hat Enterprise Linux (RHEL) 8 and 9
-* Oracle Linux 8 and 9
+* Supported Linux Distributions (64-bit, LTS only):
+  * Ubuntu 22.04 LTS
+  * Red Hat Enterprise Linux (RHEL) 8 and 9
+  * Oracle Linux 8 and 9
+* Supported kernel versions:
+  * 6.2.0
+  * 6.1.2&#x20;
+  * 6.0.16
+  * 5.15.86
 
 <details>
 
-<summary><strong>Node Software ⬇</strong> </summary>
+<summary>🧩 <strong>Node Software ⬇</strong></summary>
 
-* Docker Engine (`docker-ce` version 20.10.6)
-  * Deployed with root privileges
-  * Privileged container support enabled (optional)
-    * If privileged container support is disabled then host machine must run the Havege Daemon
+The following software components must be installed and configured on your node host to ensure proper participation in the Hedera Mainnet. All installations must follow the minimum version requirements and path conventions.
 
-- Docker Compose (`docker-compose` version 1.29.2)
+**🐳 Docker & Containerization:**
 
-* IPTables Support (`linux-kernel` version 3.10+)
+<table><thead><tr><th width="203.68359375">Component</th><th width="214.16796875">Version</th><th>Notes</th></tr></thead><tbody><tr><td><strong>Docker Engine</strong></td><td><code>20.10.6</code></td><td>Must be deployed with <strong>root privileges</strong>.</td></tr><tr><td><strong>Docker Compose</strong></td><td><code>1.29.2</code></td><td>Required for managing multi-container deployments.</td></tr><tr><td><strong>Privileged Containers</strong></td><td>Optional</td><td>If <strong>disabled</strong>, host machine <strong>must run</strong> the Havege Daemon.</td></tr><tr><td><strong>Havege Daemon</strong></td><td><code>1.9.14</code></td><td>Needed only if privileged containers are disabled.</td></tr><tr><td><strong>IPTables Support</strong></td><td>Linux kernel <code>3.10+</code></td><td>Required for Docker networking.</td></tr></tbody></table>
 
-- Havege Daemon (`haveged` version 1.9.14)
-  * If privileged container support is enabled then this requirement is optional
+> :information\_source: <mark style="color:orange;">**Information**</mark>: Havege Daemon enhances the system’s entropy pool and is only necessary if container privilege escalation is disabled in your environment.
 
-* HashDeep Utilities (`hashdeep` version 4.4)
-  * Required for update integrity validation
+**🔐 System Utilities:**
 
-- Bindplane Collector (`bindplane-collector` version 4+)
-  * Required for node software log monitoring
+<table><thead><tr><th width="182.73828125">Component</th><th width="189.078125">Required Version</th><th>Purpose</th></tr></thead><tbody><tr><td><strong>HashDeep</strong></td><td><code>4.4</code></td><td>Used for update integrity verification.</td></tr><tr><td><strong>Bindplane Collector</strong></td><td><code>4+</code></td><td>Required for node software log monitoring</td></tr><tr><td><strong>JQ CLI</strong></td><td><code>1.5+</code></td><td>JSON parser utility used in scripts and CLI workflows.</td></tr><tr><td><strong>GNU CoreUtils</strong></td><td><code>8.00+</code></td><td>Provides essential Unix command-line tools.</td></tr><tr><td><strong>cURL CLI</strong></td><td><code>7.58.0+</code></td><td>Used for API communication and health checks.</td></tr><tr><td><strong>InCron Daemon</strong></td><td><code>0.5.12+</code></td><td>Enables file-system-triggered automation (e.g., network upgrades).</td></tr><tr><td><strong>Rsync CLI</strong></td><td><code>3.0.0+</code></td><td>Required for network-wide upgrade file synchronization.</td></tr></tbody></table>
 
-* JQ CLI (`jq` version 1.5+)
-  * Required dependency for the Node Management Tools
+> 📁 <mark style="color:blue;">Note:</mark> Ensure all command-line tools are installed in your system's global $PATH and are accessible to the node admin user.
 
-- GNU CoreUtils (`coreutils` version 8.00+)
-  * Required dependency for the Node Management Tools
+**⚙️ Node Management Tools:**
 
-* cURL CLI (`curl` version 7.58.0+)
-  * Required dependency for the Node Management Tools
+<table><thead><tr><th width="195.47265625">Component</th><th width="154.7265625">Version</th><th>Configuration Requirements</th></tr></thead><tbody><tr><td><strong>Node Mgmt Tools</strong></td><td><code>0.1.0+</code></td><td>Must be installed at <code>/opt/hgcapp/node-mgmt-tools</code></td></tr><tr><td></td><td></td><td>Path must be writable and executable by <code>hgcadmin</code> user</td></tr></tbody></table>
 
-- InCron Daemon (`incron` version 0.5.12+)
-  * Required dependency for the Node Management Tools
-  * Required for automated network upgrade
-
-* Rsync CLI (`rsync` version 3.0.0+)
-  * Required dependency for the Node Management Tools
-  * Required for automated network upgrade
-
-- Node Management Tools (`node-mgmt-tools` version 0.1.0+)
-  * Updates deployed via the node upgrade process
-  * Must be installed at the following path: `/opt/hgcapp/node-mgmt-tools`
-    * The path must be writable and executable by the `hgcadmin` user account
+> 📁 <mark style="color:blue;">Note</mark>: The Node Mgmt Tools bundle includes essential scripts for update operations, log rotation, and status health checks.
 
 </details>
 
-### **System User Accounts:**
+***
 
-#### _**Node Software Account (mandatory)**_
+### **System User Accounts**
 
-**User Specification**
+#### _**Node Software Account (Mandatory):**_
 
-* Name: `hedera`
-* Unix UID: `2000`
-* Group Membership
-  * Primary: `hedera`
-  * Secondary: `admin` or `wheel` _(depending on Linux distribution)_
-* Permissions:
-  * Read, Write, and Execute Access to the entire `/opt/hgcapp` folder tree
-* Group Specification
-  * Name: `hedera`
-  * Unix GID: `2000`
+<table><thead><tr><th width="299.6484375">Attribute</th><th>Value</th></tr></thead><tbody><tr><td><strong>Username</strong></td><td><code>hedera</code></td></tr><tr><td><strong>Unix</strong> <strong>UID</strong></td><td>2000</td></tr><tr><td><strong>Group Specification</strong></td><td><code>hedera</code> (GID 2000)</td></tr><tr><td><strong>Secondary Group</strong></td><td><code>admin</code> or <code>wheel</code></td></tr><tr><td><strong>Permissions</strong></td><td>Full access to the entire <code>/opt/hgcapp</code>folder</td></tr></tbody></table>
 
-{% hint style="info" %}
-**Note:** Reference Configurations available in Appendices B, C, D
-{% endhint %}
+***
 
-### Proxy
+### Proxy Server Requirements
 
-Access to the node via public APIs must be mediated by an in-line proxy. Below are the specifications for establishing this proxy.
+A proxy is required to expose the node’s public APIs.
 
-* 2- core-x86/x64 CPU
-* 4GB RAM
-* 100GB SSD storage
-* 200Mb/s sustained internet network connectivity with public static IP address
-* Supported Docker (Hedera to provide Docker image with HAProxy)
+#### Minimum Proxy Specifications:
 
-### Network Connectivity
+* **CPU**: 2-core X86/X64
+* **Memory**: 4GB RAM
+* **Storage**: 100GB SSD
+* **Network**: 200Mbps sustained, static IP
+
+**Software:**
+
+* **Docker container** (provided by Hedera) with pre-configured HAProxy
+
+***
+
+### Network Configuration
 
 <details>
 
-<summary><strong>Node Connectivity ⬇</strong> </summary>
+<summary>🌐 <strong>Node Connectivity ⬇</strong></summary>
 
-* 1Gbps internet connectivity – sustained (not burstable)
-  * Unmetered preferred
-  * Deployed with firewalled access to other mainnet consensus nodes
+#### ✅ Network Bandwidth
 
-- Node deployed in dedicated (isolated) DMZ network
-  * Static IP (FQDN is not supported)
-  * TCP Port 50111 open to 0.0.0.0/0
-  * TCP Port 50211 open to 0.0.0.0/0
-  * TCP Port 50212 open to 0.0.0.0/0
-  * TCP Port 80 open egress to 0.0.0.0/0 (for OS package repository connectivity)
-  * TCP Port 443 open egress to 0.0.0.0/0 (for OS package repository connectivity)
-  * UDP Port 123 open ingress and egress to 0.0.0.0/0 (for NTP pool synchronization of system time)
+* **Minimum:** `1 Gbps` sustained internet connection _(not burstable)._
+* **Recommended:** Unmetered bandwidth to ensure uninterrupted sync and consensus participation.
+
+#### 🔐 Network Isolation & IP Requirements
+
+* Deployed within a **dedicated, isolated DMZ** (Demilitarized Zone) network
+* Configured with a **firewall** to allow connectivity only with Hedera consensus nodes
+* Node must have a **static IP address**
+
+> 📁 <mark style="color:blue;">**Note**</mark>**:** Fully Qualified Domain Names (FQDNs) are **not** supported.
+
+#### 📡 Port Configuration
+
+The following ports must be configured for **public internet access** unless otherwise stated:
+
+<table><thead><tr><th width="136.35546875">Port</th><th width="115.03515625">Protocol</th><th width="171.6953125">Direction</th><th>Description</th></tr></thead><tbody><tr><td><code>50111</code></td><td>TCP</td><td>Ingress</td><td>gRPC (public) API access</td></tr><tr><td><code>50211</code></td><td>TCP</td><td>Ingress</td><td>Gossip protocol</td></tr><tr><td><code>50212</code></td><td>TCP</td><td>Ingress</td><td>TLS-encrypted Gossip protocol</td></tr><tr><td><code>80</code></td><td>TCP</td><td>Egress only</td><td>OS package repository connectivity</td></tr><tr><td><code>443</code></td><td>TCP</td><td>Egress only</td><td>Secure package &#x26; system update access</td></tr><tr><td><code>123</code></td><td>UDP</td><td>Ingress/Egress</td><td>Time sync via NTP pool</td></tr></tbody></table>
 
 </details>
 
 <details>
 
-<summary><strong>Proxy Connectivity ⬇</strong> </summary>
+<summary>🛡️ <strong>Proxy Connectivity ⬇</strong></summary>
 
-* Static IP address (FQDN not supported)
+**✅ Internet Bandwidth**
 
-- 200Mb/s internet connectivity
+* **Required:** 200 Mbps sustained connection
 
-* TCP Port 80 open egress to 0.0.0.0/0 (for OS package repository connectivity)
+**📡 Port Configuration**
 
-- TCP Port 443 open egress to 0.0.0.0/0 (for OS package repository connectivity)
-
-* TCP Port 50211 open to 0.0.0.0/0
-
-- TCP Port 50212 open to 0.0.0.0/0
+<table><thead><tr><th width="132.375">Port</th><th width="129.4921875">Protocol</th><th width="170.046875">Direction</th><th>Purpose</th></tr></thead><tbody><tr><td><code>50211</code></td><td>TCP</td><td>Ingress</td><td>Gossip protocol</td></tr><tr><td><code>50212</code></td><td>TCP</td><td>Ingress</td><td>TLS-encrypted gossip</td></tr><tr><td><code>80</code></td><td>TCP</td><td>Egress only</td><td>OS package repository</td></tr><tr><td><code>443</code></td><td>TCP</td><td>Egress only</td><td>Secure updates</td></tr></tbody></table>
 
 </details>
 
 <details>
 
-<summary><strong>Interface Bonding (optional) ⬇</strong> </summary>
+<summary>🔀 Interface Bonding (Optional) <strong>⬇</strong></summary>
 
-If using interface bonding, note that mutual TLS is in use, and Layer 3 Policy Based Routing (PBR) with dual-pathways is not supported. Only Layer 2 interface bonding using mode 1 (autonomous ports using active-backup) or mode 4 (LACP 802.3ad active/active) is supported.
+If you plan to use **interface bonding (NIC bonding)** to increase reliability or performance, note the following:
+
+**✅ Supported Configurations**
+
+Only **Layer 2** bonding is supported:
+
+* **Mode 1 (Active-Backup):**
+  * Uses one active NIC at a time
+  * Automatically switches to backup if the active NIC fails
+* **Mode 4 (LACP – 802.3ad Active/Active):**
+  * Uses Link Aggregation Control Protocol
+  * Requires switch support
+  * Provides load balancing and redundancy
+
+**❌ Not Supported**
+
+* **Layer 3 Policy-Based Routing (PBR)** with dual-pathways is **not supported**, due to the use of **mutual TLS** in the Hedera network.
+
+> ⚠️ Mutual TLS depends on consistent IP-level paths; Layer 3 routing can disrupt this, leading to connection failures.
 
 </details>
 
-### Hosting
+***
 
-* Industry-standard hosting requirements for security and availability
-  * Tier 1 Data Center Hosting facility
-  * SSAE 16 /18, SOC 2 Type 2 compliant
-* Hedera will seek to avoid duplicating hosting providers across Council members
+### Hosting Requirements
 
-## Network Topology /(Typical Corporate Datacenter Configuration/)
+To ensure high availability, security, and operational consistency, all nodes must be hosted in accordance with the following standards:
 
-![](<../../../../.gitbook/assets/network-topology (1).jpg>)
+**✅ Hosting Facility Standards**
 
-## Deployment Steps
+* Must use a **Tier 1 Data Center** with high availability and redundancy.
+* The facility should be compliant with industry security standards:
+  * **SSAE 16 / SSAE 18**
+  * **SOC 2 Type 2**
 
-The following steps outline the process for Council Members to add their consensus node to the mainnet.
+**🔒 Security & Compliance**
 
-1. **Initial contact with Council Member and node hosting entity**
-   * Identify key individuals and project managers
-   * Establish regular deployment team meeting cadence
-2. **Conveyance of technical requirements and discussion of deployment options**
-3. **Node platform acquisition**
-   * Hardware or virtual instance
-   * Network connectivity
-   * Hosting facility
-4. **Configuration of the operating system on platform**
-   * Provisioning of accounts as specified
-   * Provisioning of network access (firewall rules/access control lists)
-5. **Conveyance of credentials to Hedera**
-   * Includes any special instructions for permissioned access such as VPNs
-   * Discussion of support and escalation paths between organizations
-6. **Hedera undertakes configuration review**
-   * Platform
-   * Connectivity
-7. **Deployment of Hedera consensus node software and required supporting libraries**
-8. **Add connection configuration for a Hedera performance testnet**
-   * Hedera executes functional, stability and performance tests for all network services
-9. **Review of test results and determination of preparedness for mainnet connectivity**
-   * Review key management documentation related to Council Member's accounts including: fee account, proxy staking account, et al.
-   * Update private keys using provided tools
-10. **Schedule mainnet connection**
-11. **Mainnet live**
+* Facilities must implement industry-standard physical and logical security controls.
+* Regular audits and certifications (must be available on request).
+
+**⚠️ Redundancy Across Council**
+
+* **Hedera aim to avoid using the same hosting providers** across multiple Council Members to minimize systemic risk and improve geographic and provider diversity.
+
+## Network Topology
+
+This section provides a reference implementation of a typical corporate datacenter setup for deploying a Hedera mainnet consensus node. It emphasizes secure, high-availability deployment practices and strict network segmentation.
+
+<figure><img src="../../../../.gitbook/assets/image (10).png" alt=""><figcaption></figcaption></figure>
+
+#### 📘 Reference Diagram and Flow
+
+Review the detailed network diagram and data flow:
+
+👉Reference: [**Network Flow Diagram & Explanation**](https://app.gitbook.com/s/ciE2PlZkrSIYdcNiYhAA/technical-concepts-and-requirments/system-requirements/network-requirements/network-flows)
+
+This covers:
+
+* How the consensus node interacts with the internet and other mainnet nodes
+* Use of firewall and DMZ
+* Optional use of a proxy for egress traffic
+* Internal tooling connectivity (e.g., metrics, logging)
+
+***
+
+## Contacts
+
+For questions or approval of infrastructure plans, contact:
+
+* 📧 devops@hashgraph.com
+
+***
+
+## Next Steps
+
+For detailed guidance on deploying and onboarding your Hedera Mainnet node, please see the [Node Deployment Steps](../node-deployment-process.md).

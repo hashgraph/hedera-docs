@@ -32,9 +32,15 @@ The testnet mirror node will be available for developers to store any data befor
 * Mirror Node operators can reference the instructions [here](https://github.com/hashgraph/hedera-mirror-node/blob/main/docs/database.md#reset) to set up your mirror node
   * GCP GCS and AWS S3 buckets: `hedera-testnet-streams-2023-01`
 
-If you have any questions or concerns, please connect with us via [Discord](https://hedera.com/discord).
+If you have any questions or concerns, please connect with us via [Discord](https://hedera.com/discord).&#x20;
 
-**Reset Dates:**
+**Latest reset dates can be found here:**
+
+{% content-ref url="../release-notes/" %}
+[release-notes](../release-notes/)
+{% endcontent-ref %}
+
+**Past Reset Dates:**
 
 **2024**
 

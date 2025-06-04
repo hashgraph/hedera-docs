@@ -232,25 +232,6 @@ To ensure high availability, security, and operational consistency, all nodes mu
 
 * **Hedera aim to avoid using the same hosting providers** across multiple Council Members to minimize systemic risk and improve geographic and provider diversity.
 
-## Network Topology
-
-This section provides a reference implementation of a typical corporate datacenter setup for deploying a Hedera mainnet consensus node. It emphasizes secure, high-availability deployment practices and strict network segmentation.
-
-<figure><img src="../../../../.gitbook/assets/image (10).png" alt=""><figcaption></figcaption></figure>
-
-#### 📘 Reference Diagram and Flow
-
-Review the detailed network diagram and data flow:
-
-👉Reference: [**Network Flow Diagram & Explanation**](https://app.gitbook.com/s/ciE2PlZkrSIYdcNiYhAA/technical-concepts-and-requirments/system-requirements/network-requirements/network-flows)
-
-This covers:
-
-* How the consensus node interacts with the internet and other mainnet nodes
-* Use of firewall and DMZ
-* Optional use of a proxy for egress traffic
-* Internal tooling connectivity (e.g., metrics, logging)
-
 ***
 
 ## Contacts

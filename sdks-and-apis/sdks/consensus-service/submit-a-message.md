@@ -2,11 +2,11 @@
 
 A transaction that submits a topic message to the Hedera network. To access the messages submitted to a topic ID, subscribe to the topic via a mirror node. The mirror node will publish the ordered messages to subscribers. Once the transaction is successfully executed, the receipt of the transaction will include the topic's updated sequence number and topic running hash.
 
-**Max Chunks**
+## **Max Chunks**
 
-The **max chunks** setting defines the maximum number of chunks into which a given message can be split. The default value is **20 chunks**, meaning a message can consist of up to 20 chunks by default. This value can be modified using the `setMaxChunks` method.\
-\
-**Max Chunk Size**
+The **max chunks** setting defines the maximum number of chunks into which a given message can be split. The default value is **20 chunks**, meaning a message can consist of up to 20 chunks by default. This value can be modified using the `setMaxChunks` method.
+
+#### **Max Chunk Size**
 
 {% hint style="info" %}
 🚨 **NOTE:** Max size of an HCS message: 1024 bytes (1 kb).
@@ -14,7 +14,7 @@ The **max chunks** setting defines the maximum number of chunks into which a giv
 
 The **max chunk size** refers to the maximum size (in bytes) of each individual chunk of a message. By default, the max chunk size is **1024 bytes (1 KB)**. This value can be modified using the `setChunkSize` method.
 
-**Custom Fee Payment**
+## **Custom Fee Payment**
 
 If a topic has custom fees enabled, users submitting messages must pay the required fee in **HBAR or HTS fungible tokens**. If `setCustomFees` is not specified in the transaction, the user would need to pay any fee associated with that topic ID. The transaction will only fail if the user does not have sufficient assets to cover the fee.
 
@@ -28,20 +28,27 @@ TopicMessageSubmitTransaction()
    .execute(client);
 ```
 
-**Transaction Signing Requirements**
+## **Transaction Signing Requirements**
 
 * Anyone can submit a message to a public topic.
 * The `submitKey` is required to sign the transaction for a private topic.
 
-**Transaction Fees**
+## **Transaction Fees**
 
-* Each **transaction** incurs a **standard Hedera network fee** based on network resource usage.
-* If a **custom fee** is set for a topic, users submitting messages must pay this fee in **HBAR or HTS tokens**.
-* The **Fee Schedule Key** allows authorized users to update fee structures. If set, it must sign transactions modifying fees.
-* If the topic has **custom fees**, the sender must have sufficient balance to cover the fees unless they are exempt via the **Fee Exempt Key List**. It is recommended to use `setCustomFees` on the `TopicMessageSubmitTransaction` to ensure the expected fee structure is applied and avoid unexpected transaction failures due to insufficient funds.
-* Use the [Hedera Fee Estimator](https://hedera.com/fees) to estimate standard network fees.
+* Each transaction incurs a standard Hedera network fee based on network resource usage.
+* If a custom fee is set for a topic, users submitting messages must pay this fee in HBAR or HTS tokens.
+* The Fee Schedule Key allows authorized users to update fee structures. If set, it must sign transactions modifying fees.
+* If the topic has custom fees, the sender must have sufficient balance to cover the fees unless they are exempt via the Fee Exempt Key List. It is recommended to use `setCustomFees` on the `TopicMessageSubmitTransaction` to ensure the expected fee structure is applied and avoid unexpected transaction failures due to insufficient funds.
+* If you submit a message to a topic with a custom fee, the cost changes from the baseline $0.0001 USD to roughly $0.05 USD per `TopicMessageSubmitTransaction`.
+* Use the [query fees table](https://docs.hedera.com/hedera/networks/mainnet/fees#consensus-service) for the base transaction fee and the [Hedera Fee Estimator](https://hedera.com/fees) to estimate standard network fees.
 
-#### Methods
+{% hint style="danger" %}
+## **⚠️ Warning**
+
+Messages submitted to topics that enforce a custom fee have a higher cost ($0.05–$0.06 per message) compared to topics without custom fees (≈$0.0001). Be sure to factor this into your budget when targeting custom-fee topics, as the added complexity and extra compute overhead for custom fees is reflected in the higher transaction cost. Because fees are calculated by kilobyte with up to a 20% buffer, a single `TopicMessageSubmitTransaction` charge may reach a maximum of $0.06.
+{% endhint %}
+
+## Methods
 
 <table><thead><tr><th width="298">Method</th><th width="135">Type</th><th>Description</th><th>Requirement</th></tr></thead><tbody><tr><td><code>setTopicId(&#x3C;topicId>)</code></td><td>TopicId</td><td>The topic ID to submit the message to</td><td>Required</td></tr><tr><td><code>setMessage(&#x3C;message>)</code></td><td>String</td><td>The message in a String format</td><td>Optional</td></tr><tr><td><code>setMessage(&#x3C;message>)</code></td><td>byte [ ]</td><td>The message in a byte array format</td><td>Optional</td></tr><tr><td><code>setMessage(&#x3C;message>)</code></td><td>ByteString</td><td>The message in a ByteString format</td><td>Optional</td></tr><tr><td><code>setChunkSize()</code></td><td>int</td><td>The max size of individual chunk for a given message. Default: 1024 bytes</td><td>Optional</td></tr><tr><td><code>setMaxChunks()</code></td><td>int</td><td>The max number of chunks a given message can be split into. Default: 20</td><td>Optional</td></tr><tr><td><code>setMaxCustomFees()</code></td><td>Fee[]</td><td>The maximum custom fees the sender is willing to pay</td><td>Optional</td></tr></tbody></table>
 

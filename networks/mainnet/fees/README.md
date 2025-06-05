@@ -34,7 +34,7 @@ All fees are subject to change. The fees below reflect a base price for the tran
 
 ### Consensus Service
 
-<table><thead><tr><th width="484">Operations</th><th>USD ($)</th></tr></thead><tbody><tr><td>ConsensusCreateTopic</td><td>$0.01</td></tr><tr><td>ConsensusUpdateTopic</td><td>$0.00022</td></tr><tr><td>ConsensusDeleteTopic</td><td>$0.005</td></tr><tr><td>ConsensusSubmitMessage</td><td>$0.0001</td></tr><tr><td>ConsensusGetTopicInfo</td><td>$0.0001</td></tr></tbody></table>
+<table><thead><tr><th width="484">Operations</th><th>USD ($)</th></tr></thead><tbody><tr><td>ConsensusCreateTopic</td><td>$0.01</td></tr><tr><td>ConsensusUpdateTopic</td><td>$0.00022</td></tr><tr><td>ConsensusDeleteTopic</td><td>$0.005</td></tr><tr><td>ConsensusSubmitMessage</td><td>$0.0001</td></tr><tr><td>ConsensusSubmitMessage (with custom fees)</td><td>$0.05</td></tr><tr><td>ConsensusGetTopicInfo</td><td>$0.0001</td></tr></tbody></table>
 
 ### Token Service
 

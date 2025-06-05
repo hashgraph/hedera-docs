@@ -14,52 +14,70 @@ Once your application has been built and tested in this test environment, you ca
 
 <table><thead><tr><th width="325">Network Service</th><th>Availability</th></tr></thead><tbody><tr><td><strong>Cryptocurrency</strong></td><td>Limited</td></tr><tr><td><strong>Consensus Service</strong></td><td>Limited</td></tr><tr><td><strong>File Service</strong></td><td>Limited</td></tr><tr><td><strong>Smart Contract Service</strong></td><td>Limited</td></tr><tr><td><strong>Token Service</strong></td><td>Limited</td></tr></tbody></table>
 
-### Test Network Resets
+## Test Network Resets
 
-The mirror node and consensus node test network are scheduled to reset once a quarter. When a testnet reset occurs, all account, token, contract, topic, schedule, and file data are wiped.
+The mirror node and consensus node test network are scheduled to be reset _periodically_. Scheduled resets are communicated to the ecosystem with anticipation so developers can plan ahead. During a reset:
 
-Developers will no longer have access to the state data from test network consensus nodes. For example, you will not be able to perform transactions or queries on an account that existed before the reset.&#x20;
+### What Gets Reset
 
-The testnet mirror node will be available for developers to store any data before access is completely removed for two weeks after the date of the reset. You will be able to query old testnet information for the two-week period if it is available.
+* All account balances and transaction history
+* Smart contract state and deployed contracts
+* Consensus node ledger state
+* Topic and token configurations
 
-**What you should do:**
+### What Remains
 
-* Take note of the upcoming reset dates.
-* Have the ability to recreate test data for your application to minimize interruptions.
-* After the reset, you will need to visit the [Hedera Developer Portal](https://portal.hedera.com/register) to get your new testnet account ID.
-  * The public and private key pair will remain the same after resets.
-* Subscribe to the [Hedera status page](https://status.hedera.com/) to receive reset notifications.
-* Mirror Node operators can reference the instructions [here](https://github.com/hashgraph/hedera-mirror-node/blob/main/docs/database.md#reset) to set up your mirror node
+* Your account's public/private key pairs
+* Access to the [Hedera Developer Portal](https://portal.hedera.com/register)&#x20;
+* SDK configurations and application code
+
+## Scheduled Reset Process
+
+Resets follow a structured communication and execution process:
+
+### Pre-Reset (2-4 weeks before)
+
+* Subscribe to notifications on the [Hedera Status Page](https://status.hedera.com/)
+* Community notification through official channels
+* Developer preparation period begins
+
+### During Reset
+
+* Network temporarily unavailable
+* Consensus nodes cleared and reinitialized
+* Mirror node data archived
+
+### Post-Reset (within 24 hours)
+
+* Network restored with fresh state
+* New account IDs available via Developer Portal
+* Mirror node historical data accessible for 2 weeks
+
+### Preparing for Resets
+
+To minimize disruption during scheduled resets:
+
+* Export any test data you need to preserve before the reset
+* Schedule development activities around announced reset dates
+* Obtain new testnet account IDs from the [Hedera Developer Portal](https://portal.hedera.com/register) after each reset
+* _Mirror Node operators_ can reference the instructions [here](https://github.com/hiero-ledger/hiero-mirror-node/blob/main/docs/database/README.md) to set up your mirror node
   * GCP GCS and AWS S3 buckets: `hedera-testnet-streams-2023-01`
 
-If you have any questions or concerns, please connect with us via [Discord](https://hedera.com/discord).&#x20;
+{% hint style="info" %}
+**❓ If you have any questions or concerns, please connect with us via** [**Discord**](https://hedera.com/discord)**.**&#x20;
+{% endhint %}
 
-**Latest reset dates can be found here:**
+### **Reset History**
 
-{% content-ref url="../release-notes/" %}
-[release-notes](../release-notes/)
-{% endcontent-ref %}
+<table><thead><tr><th width="172.6319580078125">Date</th><th width="164.25177001953125">Status</th></tr></thead><tbody><tr><td><strong>February 1, 2024</strong></td><td>Completed</td></tr><tr><td><strong>April 25, 2024</strong> </td><td>Skipped</td></tr><tr><td><strong>July 25, 2024</strong></td><td>Skipped</td></tr><tr><td><strong>Oct 31, 2024</strong></td><td>Skipped</td></tr></tbody></table>
 
-**Past Reset Dates:**
+_📊 **Historical data**: Previous resets occurred on **January 26, 2023** and July 27, 2023._
 
-**2024**
-
-* February 1, 2024 - Completed
-* April 25, 2024 - Skipped&#x20;
-* July 25, 2024 - Skipped&#x20;
-* Oct 31, 2024
-
-**2023**
-
-* January 26, 2023 - Completed&#x20;
-* April 27, 2023 - Skipped&#x20;
-* July 27, 2023 - Completed
-* October 26, 2023 - Skipped
-
-### Test Network Throttles
+## Test Network Throttles
 
 {% hint style="warning" %}
-**Limited Support**\
+## **Limited Support**
+
 Transactions are currently throttled for testnets. You will receive a **`BUSY`** response if the number of transactions submitted to the network exceeds the threshold value.
 {% endhint %}
 

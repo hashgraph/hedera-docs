@@ -94,7 +94,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **MAINNET UPDATE SCHEDULED: JUNE 11, 2025**
 {% endhint %}
 
-{% hint style="info" %}
+{% hint style="success" %}
 **TESTNET UPDATE SCHEDULED: JUNE 3, 2025**
 {% endhint %}
 

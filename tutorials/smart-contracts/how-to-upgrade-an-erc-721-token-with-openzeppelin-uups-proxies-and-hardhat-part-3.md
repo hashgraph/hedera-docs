@@ -40,6 +40,14 @@ When you upgrade your smart contract, you deploy a new logic contract and point 
 
 ***
 
+## Video Tutorial
+
+You can either watch the video tutorial or follow the step-by-step tutorial below.
+
+{% embed url="https://www.youtube.com/watch?v=vI-9WTFMy7U" %}
+
+***
+
 ## Step 1: Set Up Your Project
 
 Install necessary dependencies if you haven't done so. For part 3 of this tutorial series, we're adding two extra dependencies:

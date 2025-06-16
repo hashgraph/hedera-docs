@@ -33,6 +33,14 @@ You can take a look at the **complete code** in the [**Hedera-Code-Snippets repo
 
 ***
 
+## Video Tutorial
+
+You can either watch the video tutorial or follow the step-by-step tutorial below.
+
+{% embed url="https://www.youtube.com/watch?t=3s&v=B23aVhaCARU" %}
+
+***
+
 ## Step 1: Project Setup
 
 #### Initialize Project&#x20;

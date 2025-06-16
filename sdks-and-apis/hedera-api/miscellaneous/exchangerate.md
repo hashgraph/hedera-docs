@@ -3,6 +3,8 @@
 ## ExchangeRate
 
 An exchange rate between hbar and cents (USD) and the time at which the exchange rate will expire, and be superseded by a new exchange rate.
+The price is computed as follow: `1 hbar = (centEquiv / hbarEquiv) USD cents`
+
 
 | Field            | Type                                              | Description                                                        |
 | ---------------- | ------------------------------------------------- | ------------------------------------------------------------------ |

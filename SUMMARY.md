@@ -11,6 +11,7 @@
     * [Deploy a Contract](getting-started/evm-developers/deploy-a-contract.md)
 * [Tutorials](tutorials/README.md)
   * [Smart Contracts](tutorials/smart-contracts/README.md)
+    * [Configuring Hardhat with Hiero Local Node: A Step-by-Step Guide](tutorials/smart-contracts/configuring-hardhat-with-hiero-local-node-a-step-by-step-guide.md)
     * [How to Mint & Burn an ERC-721 Token Using Hardhat and Ethers (Part 1)](tutorials/smart-contracts/how-to-mint-and-burn-an-erc-721-token-using-hardhat-and-ethers-part-1.md)
     * [How to Set Access Control, a Token URI, Pause, and Transfer an ERC-721 Token Using Hardhat (Part 2)](tutorials/smart-contracts/how-to-set-access-control-a-token-uri-pause-and-transfer-an-erc-721-token-using-hardhat-part-2.md)
     * [How to Upgrade an ERC-721 Token with OpenZeppelin UUPS Proxies and Hardhat (Part 3)](tutorials/smart-contracts/how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md)

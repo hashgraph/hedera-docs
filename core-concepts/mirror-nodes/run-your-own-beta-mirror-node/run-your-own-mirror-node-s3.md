@@ -106,7 +106,7 @@ Start and run the Hedera Mirror Node using Docker. Docker packages development t
 * From the mirror node directory, run the following command:
 
 ```bash
-docker compose up -d && docker logs hedera-mirror-node-importer-1 --follow
+docker compose up -d && docker logs hiero-mirror-node-importer-1 --follow
 ```
 
 ## 5. Access Your Mirror Node Data
@@ -121,10 +121,10 @@ docker ps
 
 <figure><img src="../../../.gitbook/assets/docker ps (1).png" alt=""><figcaption></figcaption></figure>
 
-* Run the following command to enter the `hedera-mirror-node-db-1` container:
+* Run the following command to enter the `hiero-mirror-node-db-1` container:
 
 ```bash
-docker exec -it hedera-mirror-node-db-1 bash
+docker exec -it hiero-mirror-node-db-1 bash
 ```
 
 * Enter the following command to access and query the database:

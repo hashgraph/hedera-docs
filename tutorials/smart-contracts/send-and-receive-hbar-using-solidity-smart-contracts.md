@@ -197,7 +197,7 @@ async function contractDeployFcn(bytecode, gasLim) {
 
 ## **Getting HBAR to the Contract**
 
-### **The \_receive**_**/**_**fallback**\_\*\* Functions\*\*
+### **The receive**_**/**_**fallback** Functions
 
 In this scenario, you (Operator) transfer 10 HBAR to the contract by triggering either the _**receive**_ or _**fallback**_ functions of the contract. As described in this [Solidity by Example](https://solidity-by-example.org/sending-ether/) page, the _**receive**_ function is called when _**msg.data**_ is empty, otherwise the _**fallback**_ function is called.
 
@@ -205,6 +205,7 @@ In this case, the helper function _**contractExecuteNoFcn**_ pays HBAR to the co
 
 The helper function _**contractCallQueryFcn**_ checks the HBAR balance of the contract by calling the _**getBalance**_ function of the contract – this call is done using [**ContractCallQuery()**](https://docs.hedera.com/hedera/sdks-and-apis/sdks/smart-contracts/call-a-smart-contract-function-1).
 
+{% code overflow="wrap" %}
 ```javascript
 	console.log(`
 ====================================================
@@ -219,6 +220,7 @@ GETTING HBAR TO THE CONTRACT
 	// Get contract HBAR balance by calling the getBalance function in the contract AND/OR using ContractInfoQuery in the SDK
 	await contractCallQueryFcn(contractId, gasLimit, "getBalance"); // Outputs the contract balance in the console
 ```
+{% endcode %}
 
 **Helper Functions:**
 
@@ -332,7 +334,7 @@ async function contractExecuteFcn(cId, gasLim, fcnName, params, amountHbar) {
 
 </details>
 
-### **Using \_TransferTransaction**\_\*\* in the SDK\*\*
+### **Using `TransferTransaction`** in the SDK
 
 Lastly in this scenario, the Treasury transfers 30 HBAR to the contract using [**TransferTransaction()**](https://docs.hedera.com/hedera/sdks-and-apis/sdks/cryptocurrency/transfer-cryptocurrency)**.** This is done with the helper function _**hbar2ContractSdkFcn**_. This scenario is just a quick recap and reminder of [Part 1 of the series](https://hedera.com/blog/how-to-send-and-receive-hbar-using-smart-contracts-part-1-using-the-sdk), so be sure to give that a read for more details.
 

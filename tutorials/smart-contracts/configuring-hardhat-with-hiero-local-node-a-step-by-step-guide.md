@@ -13,6 +13,16 @@ Not sure whether to use the Hiero Local Node, Hashio, or a custom relay setup? R
 * Basic understanding of [Hardhat Ethereum Development Tool](https://hardhat.org/hardhat-runner/docs/guides/project-setup) and [Ethers](https://docs.ethers.org/v5/).
 * ECDSA account from the [Hedera Portal](https://portal.hedera.com/).
 
+***
+
+## Video Tutorial
+
+You can either watch the video tutorial or follow the step-by-step tutorial below.
+
+{% embed url="https://www.youtube.com/watch?v=F34uHc0hVAg" %}
+
+***
+
 ## Step 1: Set Up the Hiero Local Node
 
 Hedera provides a local node configuration that includes a mirror node, a consensus node, and the JSON-RPC relay. You can run it via `npm`.

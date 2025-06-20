@@ -54,11 +54,15 @@ Standard transactions are individual operations submitted to the network, such a
 
 ### Batch Transactions (coming soon...)
 
-Batch transactions allow multiple operations (HAPI calls) to be executed atomically as a single network transaction, ensuring that all operations either succeed together or fail together (upholding ACID properties). Batch transactions consist of:
+{% hint style="info" %}
+#### **Note**
 
-{% hint style="danger" %}
-**Note**: [**HIP-551**](https://hips.hedera.com/hip/hip-551) for Batch Transactions will be included in a future release coming soon. Please note that Jumbo `EthereumTransaction` (for [**HIP-1086**](https://github.com/hiero-ledger/hiero-improvement-proposals/pull/1086)) _**will NOT be supported in batch transactions**_. Since this limitation is currently _**not supported**_ by the network, developers _must avoid including jumbo transactions in batches_ to prevent unexpected behaviors. \*_This limitation may be lifted in a future release._&#x20;
+Jumbo EthereumTransaction ([HIP-1086](https://hips.hedera.com/hip/hip-1086)) supports large `callData` directly in `ethereumData` but can’t be included in batch transactions. For limits and details, see the [EthereumTransaction SDK documentation](../../sdks-and-apis/sdks/smart-contracts/ethereum-transaction.md#handling-large-calldata-payloads).
+
+📣 For detailed gas cost calculation of jumbo Ethereum transactions, refer to the [Gas and Fees page](../smart-contracts/gas-and-fees.md#gas-schedule-and-fee-calculation).
 {% endhint %}
+
+Batch transactions (_to be included in a future release for_ [_HIP-551_](https://hips.hedera.com/hip/hip-551)) allow multiple operations (HAPI calls) to be executed atomically as a single network transaction, ensuring that all operations either succeed together or fail together (upholding ACID properties).&#x20;
 
 #### **Outer Batch Transaction ID**
 
@@ -75,9 +79,9 @@ _**Example:**_ **`0.0.9401@1598924675.82525000`**
 * Upon processing, each inner transaction record includes a `parentConsensusTimestamp` field, which links it to the consensus timestamp of the outer batch transaction. This linkage preserves the atomicity of the batch by ensuring all inner transactions are tied to the same consensus event.
 * Methods such as `getInnerTransactionIds()` can be used to retrieve the inner transaction IDs after execution.
 
-#### **Batch Key (HIP-551)**
+#### **Batch Key (**&#x63;oming soo&#x6E;**)**
 
-To prevent tampering—such as reordering, removing, or adding transactions within the batch—a Batch Key is used.
+To prevent tampering—such as reordering, removing, or adding transactions within the batch a Batch Key is used.
 
 * **Purpose:**
   * The Batch Key signals the trusted signer who is authorized to finalize the batch.
@@ -99,7 +103,7 @@ The outer batch transaction does not include the Batch Key; its role is solely t
 * Despite the atomic processing, each inner transaction is recorded individually, allowing for detailed auditing and troubleshooting if necessary.
 * The design of batch transactions minimizes network overhead and ensures that all related operations are executed in lockstep, thereby maintaining the integrity and consistency of the network state.
 
-Reference: [HIP-551](https://hips.hedera.com/hip/hip-551)
+**Reference**: [HIP-551](https://hips.hedera.com/hip/hip-551), [HIP-1086](https://hips.hedera.com/hip/hip-1086)
 
 ### Nested Transactions
 

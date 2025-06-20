@@ -28,6 +28,64 @@ Reference: [https://ethervm.io/](https://ethervm.io/)
 
 ***
 
+## Deployment Options
+
+**SDK**
+
+You can use a [Hedera SDK](../../sdks-and-apis/sdks/) to deploy your smart contract bytecode to the network. This approach does not require using any EVM tools like Hardhat or an instance of the Hedera JSON-RPC Relay.
+
+{% content-ref url="../../tutorials/smart-contracts/deploy-your-first-smart-contract.md" %}
+[deploy-your-first-smart-contract.md](../../tutorials/smart-contracts/deploy-your-first-smart-contract.md)
+{% endcontent-ref %}
+
+**Hardhat**
+
+Hardhat can be used to deploy your smart contract by pointing to a community-hosted [JSON-RPC Relay](json-rpc-relay.md). However, EVM tools do not support features that are native to Hedera smart contracts like:
+
+* Admin Key
+* Contract Memo
+* Automatic Token Associations
+* Auto Renew Account ID
+* Staking Node ID or Account ID
+* Decline Staking Rewards
+
+If you need to set any of the above properties for your contract, you will have to call the `ContractCreateTransaction` API using one of the [Hedera SDKs.](../../sdks-and-apis/sdks/)
+
+{% content-ref url="../../tutorials/smart-contracts/deploy-a-smart-contract-using-hardhat-hedera-json-rpc-relay.md" %}
+[deploy-a-smart-contract-using-hardhat-hedera-json-rpc-relay.md](../../tutorials/smart-contracts/deploy-a-smart-contract-using-hardhat-hedera-json-rpc-relay.md)
+{% endcontent-ref %}
+
+### Deploying Large Contracts
+
+Hedera supports **jumbo Ethereum transactions (**[**HIP-1086**](https://hips.hedera.com/hip/hip-1086)**)** for large bytecode payloads. You can include up to **24KB for contract creation** and **128KB for contract calls** directly in `ethereumData`, without using the File Service (`callDataFileId`).
+
+However, jumbo transactions:
+
+* Can’t be included in batch transactions (`TransactionList`).
+* Are subject to network throttling based on bytes per second and per-node limits.
+
+#### Bytecode and Gas Essentials
+
+When deploying contracts, gas must cover both intrinsic gas and the cost of executing deployment code. Intrinsic gas includes a base fee (21,000) plus a per-byte cost for `callData`:
+
+* Intrinsic gas includes a base fee (21,000) plus a per-byte cost for `callData`:
+  * 4 gas per zero byte
+  * 16 gas per non-zero byte
+
+#### Example
+
+If your contract bytecode is 10KB, with 20% (2KB) as zero bytes and 80% (8KB) as non-zero bytes:
+
+* **gas for zero bytes**: 4 × 2,048 = 8,192
+* **gas for non-zero bytes**: 16 × 8,192 = 131,072
+* **total intrinsic gas** = 21,000 + 8,192 + 131,072 = 160,264
+
+Ensure you adjust `gasLimit` (RLP) and `maxGasAllowance` (wrapper) to cover this total gas.
+
+📣 Learn more on the [Gas and Fees page,](gas-and-fees.md) [EthereumTransaction SDK page](../../sdks-and-apis/sdks/smart-contracts/ethereum-transaction.md), and the [Understanding Hedera's EVM Differences and Compatibility page](understanding-hederas-evm-differences-and-compatibility/).
+
+***
+
 ## Hyperledger Besu EVM on Hedera
 
 The Hedera network nodes utilize the [HyperLedger Besu EVM ](../../support-and-community/glossary.md#hyperledger-besu-evm)Client written in Java as an execution layer for Ethereum-type transactions. The codebase is up to date with the current Ethereum Mainnet hard forks. The Besu EVM client library is used without hooks for Ethereum's consensus, networking, and storage features. Instead, Hedera hooks into its own Hashgraph consensus, Gossip communication, and [Virtual Merkle Trees](../../support-and-community/glossary.md#virtual-merkle-tree) components for greater fault tolerance, finality, and scalability.
@@ -82,35 +140,6 @@ Understanding these differences is crucial for anyone developing smart contracts
 
 ***
 
-## Deploying Your Smart Contract
-
-**SDK**
-
-You can use a [Hedera SDK](../../sdks-and-apis/sdks/) to deploy your smart contract bytecode to the network. This approach does not require using any EVM tools like Hardhat or an instance of the Hedera JSON-RPC Relay.
-
-{% content-ref url="../../tutorials/smart-contracts/deploy-your-first-smart-contract.md" %}
-[deploy-your-first-smart-contract.md](../../tutorials/smart-contracts/deploy-your-first-smart-contract.md)
-{% endcontent-ref %}
-
-**Hardhat**
-
-Hardhat can be used to deploy your smart contract by pointing to a community-hosted [JSON-RPC Relay](json-rpc-relay.md). However, EVM tools do not support features that are native to Hedera smart contracts like:
-
-* Admin Key
-* Contract Memo
-* Automatic Token Associations
-* Auto Renew Account ID
-* Staking Node ID or Account ID
-* Decline Staking Rewards
-
-If you need to set any of the above properties for your contract, you will have to call the `ContractCreateTransaction` API using one of the [Hedera SDKs.](../../sdks-and-apis/sdks/)
-
-{% content-ref url="../../tutorials/smart-contracts/deploy-a-smart-contract-using-hardhat-hedera-json-rpc-relay.md" %}
-[deploy-a-smart-contract-using-hardhat-hedera-json-rpc-relay.md](../../tutorials/smart-contracts/deploy-a-smart-contract-using-hardhat-hedera-json-rpc-relay.md)
-{% endcontent-ref %}
-
-***
-
 ## FAQs
 
 <details>
@@ -118,6 +147,46 @@ If you need to set any of the above properties for your contract, you will have 
 <summary><strong>Can I use Solidity functions directly with the Hedera EVM?</strong></summary>
 
 Yes, you can use Solidity functions directly with the Hedera EVM. However, refer to the [Solidity Variables and Opcodes](deploying-smart-contracts.md#solidity-variables-and-opcodes) table to understand any modifications to opcode descriptions that better reflect their behavior on the Hedera network.
+
+</details>
+
+<details>
+
+<summary><strong>Can i deploy large contracts with big bytecode?</strong></summary>
+
+Yes, hedera supports jumbo ethereum transactions (HIP-1086), allowing up to **24kb for contract creation** and **128kb for contract calls**. this eliminates the need for uploading bytecode to the file service in most cases. [Learn more](understanding-hederas-evm-differences-and-compatibility/#jumbo-ethereum-transactions).
+
+</details>
+
+<details>
+
+<summary><strong>Do jumbo transactions work with batch transactions?</strong></summary>
+
+No, jumbo ethereum transactions cannot be included in a `TransactionList` (batch). each jumbo transaction must be submitted individually.
+
+</details>
+
+<details>
+
+<summary><strong>How does gas work when deploying a contract?</strong></summary>
+
+Gas covers intrinsic costs (base + per-byte of `callData`) and execution costs (opcodes run by the EVM). Ensure your `gasLimit` and `maxGasAllowance` cover the total. See the [gas and fees page](gas-and-fees.md) for details.
+
+</details>
+
+<details>
+
+<summary><strong>How does hedera handle <code>fallback()</code> and <code>receive()</code> functions?</strong></summary>
+
+Hedera does not trigger `fallback()` or `receive()` functions on HBAR transfers. Balances may change through native operations, so use explicit functions to handle HBAR. [Learn more](deploying-smart-contracts.md#limitation-on-fallback-receive-functions-in-hedera-smart-contracts).
+
+</details>
+
+<details>
+
+<summary><strong>Can i deploy contracts using only hardhat?</strong></summary>
+
+Yes, but Hardhat cannot set Hedera-native properties like admin key or token associations. For these, use the [Hedera SDK](../../sdks-and-apis/sdks/).
 
 </details>
 

@@ -46,13 +46,13 @@ contract HelloHedera {
 
 ## Things you should consider when creating a contract
 
-**Automatic Token Associations**
+#### **Automatic Token Associations**
 
 An auto association slot is one or more slots you approve that allow tokens to be sent to your contract without explicit authorization for each token type. If this property is not set, you must associate each token before it is transferred to the contract for the transfer to be successful via the `TokenAssociateTransaction` in the SDKs. Learn more about auto-token associations [here](../accounts/account-properties.md#automatic-token-associations).
 
 This functionality is exclusively accessible when configuring a `ContractCreateTransaction` API through the Hedera SDKs. If you are deploying a contract on Hedera using EVM tools such as Hardhat and the Hedera JSON RPC Relay, please note that this property cannot be configured, as EVM tools lack compatibility with Hedera's unique features.
 
-**Admin Key**
+#### **Admin Key**
 
 Contracts have the option to have an [admin key](https://github.com/hashgraph/hedera-protobufs/blob/main/services/contract_create.proto#L117). This concept is native to Hedera contracts and allows the contract account properties to be updated. Note that this does not impact the contract [bytecode](../../support-and-community/glossary.md#bytecode) and does not relate to upgradability. If the admin key is not set, you will not be able to update the following Hedera native properties (noted in [ContractUpdateTransactionBody](https://github.com/hashgraph/hedera-protobufs/blob/main/services/contract_update.proto) protobuf) for your contract once it is deployed:
 
@@ -63,17 +63,19 @@ Contracts have the option to have an [admin key](https://github.com/hashgraph/he
 * [`staked_id`](https://github.com/hashgraph/hedera-protobufs/blob/main/services/contract_update.proto#L116)
 * [`decline_reward`](https://github.com/hashgraph/hedera-protobufs/blob/main/services/contract_update.proto#L134)
 
-You cannot set the admin key field if you deploy a contract via tools like Hardhat. This field can be set if desired by deploying a contract using one of the Hedera [SDKs](../../sdks-and-apis/sdks/).&#x20;
+You cannot set the admin key field if you deploy a contract via tools like Hardhat. This field can be set if desired by deploying a contract using one of the Hedera [SDKs](../../sdks-and-apis/sdks/).
 
-**Max Contract Storage Size**
+{% include "../../.gitbook/includes/jumbo-ethereum-transaction-callout.md" %}
 
-Each contract on Hedera has a storage size limit of 16,384,000 key value pairs (\~500MB).&#x20;
+#### **Max Contract Storage Size**
 
-**Rent**
+Each contract on Hedera has a storage size limit of 16,384,000 key value pairs (\~500MB).
+
+#### **Rent**
 
 While rent is not enabled for contracts deployed on Hedera today, you will want to be familiar with the concept of rent, as it may potentially impact the costs of maintaining your contract state on the network. Please refer to the Smart Contract Rent documentation [here](smart-contract-rent.md).
 
-**Transaction and Gas Fees**
+#### **Transaction and Gas Fees**
 
 There are Hedera transaction fees and EVM fees associated with deploying a contract. To view the list of base fees, check out the fees page [here](../../networks/mainnet/fees/) and the fee estimator calculator [here](https://hedera.com/fees).
 
@@ -99,9 +101,9 @@ Hedera supports the official [Ethereum Virtual Machine](https://ethereum.org/en/
 
 <details>
 
-<summary>Can I write and compile my smart contracts using Remix IDE or other Ethereum ecosystem tools? </summary>
+<summary>Can I write and compile my smart contracts using Remix IDE or other Ethereum ecosystem tools?</summary>
 
-You can use Remix IDE or other Ethereum ecosystem tools to write, compile, and deploy your smart contract on Hedera. Check out our EVM-compatible tools [here](../../#evm-compatible-tools).&#x20;
+You can use Remix IDE or other Ethereum ecosystem tools to write, compile, and deploy your smart contract on Hedera. Check out our EVM-compatible tools [here](../../#evm-compatible-tools).
 
 </details>
 
@@ -109,7 +111,7 @@ You can use Remix IDE or other Ethereum ecosystem tools to write, compile, and d
 
 <summary>Where can I find the smart contracts that are deployed to each Hedera network (previewnet, testnet, mainnet)?</summary>
 
-On your favorite trusted Block Explorer (also called Mirror Node Explorer on Hedera). To view community-hosted explorers check out the network explorer tools page [here](../../networks/community-mirror-nodes.md).&#x20;
+On your favorite trusted Block Explorer (also called Mirror Node Explorer on Hedera). To view community-hosted explorers check out the network explorer tools page [here](../../networks/community-mirror-nodes.md).
 
 </details>
 

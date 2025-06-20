@@ -6,11 +6,18 @@ When executing smart contracts, the EVM requires the amount of work paid in gas.
 
 ### **Weibar**
 
-The EVM returns gas information in Weibar (introduced in [HIP-410](https://hips.hedera.com/hip/hip-410)). One weibar is `10^-18th` HBAR, which translates to 1 tinybar is `10^10` weibars. As noted in HIP-410, this maximizes compatibility with third-party tools that expect ether units to be operated on in fractions of `10^18`, also known as a Wei.
+Gas information for EVM operations is returned in **weibar** (introduced in HIP-410).&#x20;
+
+* 1 weibar = `10^-18 HBAR`
+* 1 tinybar = `10^10 weibar`
+
+As noted in [HIP-410](https://hips.hedera.com/hip/hip-410), this maximizes compatibility with third-party tools that expect ether units to be operated on in fractions of `10^18`, also known as a Wei.
 
 ## **Gas Schedule and Fee Calculation**
 
-Gas is used to charge fees to pay for work performed by the network when a smart contract transaction is submitted. Specifically, transactions of type, `ContractCall`, `ContractCreate` and `EthereumTransactions` have fees charged denominated in gas. Other smart contracts-related transactions `ContractDelete`, `ContractGetInfo` etc., are only accessed by the normal Hedera-related network, node, and service fees denominated in HBAR. Gas fees paid for EVM transactions on Hedera can be composed of three different kinds of gas costs:
+Gas charges apply to `ContractCall`, `ContractCreate`, and `EthereumTransaction`. Other smart contract-related transactions (e.g., `ContractDelete`, `ContractGetInfo`) use standard Hedera network, node, and service fees in HBAR.
+
+Gas fees for EVM transactions constist of:
 
 * **Intrinsic Gas**: The minimum amount of gas required to execute a transaction.
 * **EVM opcode Gas**: The gas required to execute the defined [opcodes](../../support-and-community/glossary.md#opcodes) for the smart contract call.
@@ -21,18 +28,27 @@ Gas is used to charge fees to pay for work performed by the network when a smart
 A transaction submitted to the smart contract service must be sent with enough gas to cover intrinsic gas. With the Cancun fork of the EVM update, intrinsic gas is calculated as:
 
 ```bash
-21000 + 4 * (number of zeros bytes) + 16 * (number of non-zeros bytes)= intrinsic gas
+21000 + 4 x (number of zeros bytes) + 16 x (number of non-zeros bytes)= intrinsic gas
 ```
 
 * **21,000**: The base gas cost for any transaction.
-* **4 \*** (number of zero bytes): The cost of each zero byte in the transaction payload.
-* **16 \*** (number of non-zero bytes): The cost for each non-zero byte in the transaction payload.
+* **4 x (zero bytes)**: The cost of each zero byte in the transaction payload.
+* **16 x (number of non-zero bytes)**: The cost for each non-zero byte in the transaction payload.
 
 If insufficient gas is submitted, the transaction will fail during precheck and no record will be created.
 
+{% hint style="info" %}
+#### Note
+
+This applies to both **standard transactions** and **jumbo EthereumTransactions** introduced by HIP-1086, which allow larger `callData` payloads.
+{% endhint %}
+
 ### **EVM Opcode Gas**
 
-Execution costs in the EVM include both fixed and dynamic components. The _fixed execution cost_ is the base cost applied each time the opcode is executed, while the _dynamic execution cost_ varies based on parameters, such as whether the storage slot is "cold" (accessed for the first time in the transaction) or "warm" (already accessed).
+Execution costs in the EVM include both fixed and dynamic costs:
+
+* **Fixed Cost**: Base cost per opcode execution.
+* **Dynamic Cost**: Varies by parameters (e.g., cold vs warm storage access).
 
 **Example**: For the `SLOAD` opcode, which loads data from storage:
 
@@ -46,11 +62,11 @@ If `SLOAD` accesses a storage slot twice within the same transaction, the **tota
 2. **Second Access (Warm)** =  100 + 100 = 200 gas
 3. **Final Gas Cost Total = 2,200 + 200 = 2,400 gas**
 
-Here's an interactive opcode [reference](https://www.evm.codes/) supported in the Cancun fork.&#x20;
+_📣 Explore_ [_opcodes in Cancun fork_](https://www.evm.codes/)_._
 
 ### **Hedera System Contract Gas**
 
-Hedera system contract gas fees apply only when using a native Hedera service. They are calculated by converting the transaction cost in USD to gas using a set conversion rate. After calculating the base gas cost, a 20% surcharge was added for overhead and variations in gas usage.
+Hedera system contract gas fees apply only when using a native Hedera service. They are calculated by converting the transaction cost in USD to gas using a set conversion rat, then adding 20% surcharge was added for overhead and variations in gas usage.&#x20;
 
 **Example**: For a $0.10 transaction with a conversion rate of 1,000,000 gas per USD:
 
@@ -64,9 +80,9 @@ Hedera system contract gas fees apply only when using a native Hedera service. T
 The gas requirements for HTS view functions can be calculated in a slightly modified manner. The transaction type of `getTokenInfo` can be used and a nominal price need not be calculated. This implies that converting the fee into HBAR is not necessary as the canonical price ($0.0001) can be directly converted into gas by using the conversion factor of 852 tinycents. Add 20% markup. Thus gas cost is:
 
 * **Base gas cost** = (1000000 + 852000 - 1) \* 1000 / 852000 = <mark style="color:blue;">2173</mark> gas
-* **Total Gas Cost** =  <mark style="color:blue;">2173</mark> x 1.2 = **2607** **gas**
+* **Total Gas Cost** =  <mark style="color:blue;">2173</mark> x 1.2 = **2607 gas**
 
-**Final gas cost total** =  **2607** **gas**&#x20;
+**Final gas cost total** = **2607 gas**&#x20;
 
 {% hint style="info" %}
 **Example System Contracts:**
@@ -77,6 +93,35 @@ The gas requirements for HTS view functions can be calculated in a slightly modi
 
 **Learn More:** Our detailed gas calculation [reference](https://github.com/hashgraph/hedera-services/blob/develop/hedera-node/docs/design/services/smart-contract-service/system-contract-gas-calc.md#system-contracts) explains the precise steps for calculating gas fees on Hedera.&#x20;
 {% endhint %}
+
+### Gas for Jumbo Transactions
+
+Jumbo `EthereumTransaction` that include large `callData` under [HIP-1086](https://hips.hedera.com/hip/hip-1086) follow the same gas model as standard EVM transactions. This gas pricing applies **only** to `EthereumTransaction` type, standard HAPI transactions are unaffected.
+
+#### **Formula**
+
+The gas cost for `callData` is based on byte content:
+
+```
+callData gas = (4 × zero bytes) + (16 × non-zero bytes)
+```
+
+This is added to the base gas and execution gas to calculate the total gas required.
+
+[_📣 Learn more about Ethereum jumbo transactions_](../../sdks-and-apis/sdks/smart-contracts/ethereum-transaction.md#handling-large-calldata-payloads)
+
+#### **Example Calculation**
+
+For 100KB of `callData` with 10,000 zero bytes and 90,000 non-zero bytes:
+
+* Zero byte gas: `4 × 10,000 = 40,000`
+* Non-zero byte gas: `16 × 90,000 = 1,440,000`
+* **Total callData gas = 1,480,000**
+
+Ensure both `gasLimit` (RLP) and `maxGasAllowance` (wrapper) are set high enough to cover the total.
+
+> 🔹 **Size Caps**: Jumbo `EthereumTransaction`s are capped at **24KB (creation)** and **128KB (call)**. Larger payloads require `callDataFileId`.\
+> 🔹 **Throttling**: Jumbo transactions are subject to dedicated throttling (bytes/sec per node).
 
 ### Gas Limit
 

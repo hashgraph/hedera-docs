@@ -488,6 +488,7 @@
       * [Understanding different types of documentation](support-and-community/contributing-guide/style-guide/understanding-different-types-of-documentation.md)
       * [Use of HBAR and tinybars](support-and-community/contributing-guide/style-guide/use-of-hbar-and-tinybars.md)
       * [Use of web2 and web3](support-and-community/contributing-guide/style-guide/use-of-web2-and-web3.md)
+      * [Use of mainnet, testnet, and previewnet](support-and-community/contributing-guide/style-guide/use-of-mainnet-testnet-and-previewnet.md)
       * [Language and grammar](support-and-community/contributing-guide/style-guide/language-and-grammar.md)
       * [Formatting](support-and-community/contributing-guide/style-guide/formatting.md)
       * [Punctuation](support-and-community/contributing-guide/style-guide/punctuation.md)

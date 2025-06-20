@@ -6,7 +6,7 @@ description: >-
 
 # Use of HBAR and tinybars
 
-### HBAR
+## HBAR
 
 When referring to the Hedera native currency, use the singular form of the noun **HBAR**. For example:
 
@@ -14,7 +14,7 @@ When referring to the Hedera native currency, use the singular form of the noun 
 
 Do not use the plural form of the noun, as this style rule applies even when referring to multiple units of **HBAR**.
 
-### tinybars
+## tinybars
 
 When referring to fractions of **HBAR**, use the plural form **tinybars**. For example:
 

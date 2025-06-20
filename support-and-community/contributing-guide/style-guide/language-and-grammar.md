@@ -138,7 +138,6 @@ For ease of reading, use "a", "an", and "the" in your writing.&#x20;
 Follow the standard [capitalization](https://owl.purdue.edu/owl/general_writing/mechanics/help_with_capitals.html) rules for American English. Additionally, use the following style standards consistently throughout the Hedera developer documentation:
 
 * Follow the official capitalization of Hedera products, services, or terms defined by open-source communities, e.g., Hedera Consensus Service, Hedera Improvement Proposal, and Secure Hashing Algorithm.
-* Capitalize each instance of network names mainnet, testnet, and mirrornet only when preceded by Hedera, e.g., Hedera Mainnet, Hedera Testnet, and Hedera Mirrornet.
 * Do not use all-uppercase or camelcase except in the following contexts: in official names, abbreviations, or variable names in a code block, e.g., HBAR, HIPs, or SHA384.
 * You should revise any sentence starting with lowercase word stylization to avoid creating a sentence with a lowercase word.
 

@@ -134,6 +134,30 @@ fmt.Printf("The new file ID is %v\n", newFileId)
 //v2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create a new file
+let transaction = FileCreateTransaction::new()
+    .keys([file_key])
+    .contents("Hello, Hedera!")
+    .file_memo("My file memo")
+    .max_transaction_fee(Hbar::new(2));
+
+// Sign with the client operator private key and submit to a Hedera network
+let tx_response = transaction.execute(&client)?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client)?;
+
+// Get the file ID
+let file_id = receipt.file_id.unwrap();
+
+println!("The new file ID is {}", file_id);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}
 
 ## Get transaction values

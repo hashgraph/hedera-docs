@@ -117,4 +117,72 @@ fmt.Printf("The transaction consensus status is %v\n", status)
 //v2.1.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Mint another 1,000 tokens
+let transaction = TokenMintTransaction::new()
+    .token_id(token_id)
+    .amount(1000)
+    .max_transaction_fee(Hbar::from(20)); // Use when HBAR is under 10 cents
+
+// Freeze the unsigned transaction, sign with the supply private key of the token
+let tx_response = transaction
+    .freeze_with(&client)?
+    .sign(supply_key)?
+    .execute(&client)?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client)?;
+
+// Get the transaction consensus status
+let status = receipt.status;
+
+println!("The transaction consensus status is {}", status);
+
+// v2.12.0+
+```
+{% endtab %}
+{% endtabs %}
+
+### Mint an NFT
+
+{% tabs %}
+{% tab title="Java" %}
+// ... existing code ...
+{% endtab %}
+
+{% tab title="JavaScript" %}
+// ... existing code ...
+{% endtab %}
+
+{% tab title="Go" %}
+// ... existing code ...
+{% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Mint an NFT
+let transaction = TokenMintTransaction::new()
+    .token_id(token_id)
+    .max_transaction_fee(Hbar::from(20)) // Use when HBAR is under 10 cents
+    .add_metadata(metadata);
+
+// Freeze the unsigned transaction, sign with the supply private key of the token
+let tx_response = transaction
+    .freeze_with(&client)?
+    .sign(supply_key)?
+    .execute(&client)?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client)?;
+
+// Get the serial number of the NFT
+let serial_number = receipt.serials[0];
+
+println!("Created NFT with serial number: {}", serial_number);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}

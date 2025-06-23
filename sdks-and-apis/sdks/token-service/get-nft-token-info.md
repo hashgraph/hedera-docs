@@ -56,4 +56,15 @@ nftInfo, err := NewTokenNftInfoQuery().
 //v2.1.16
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Returns the info for the specified NFT ID
+let nft_infos = TokenNftInfoQuery::new()
+    .nft_id(nft_id)
+    .execute(&client)?;
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}

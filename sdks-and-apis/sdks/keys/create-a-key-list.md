@@ -102,4 +102,28 @@ fmt.Printf("The key list is %v\n", keyStructure)
 //v2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Generate 3 keys
+let key1 = PrivateKey::generate_ed25519()?;
+let public_key1 = key1.public_key();
+
+let key2 = PrivateKey::generate_ed25519()?;
+let public_key2 = key2.public_key();
+
+let key3 = PrivateKey::generate_ed25519()?;
+let public_key3 = key3.public_key();
+
+// Create a key list where all 3 keys are required to sign
+let key_list = KeyList::new()
+    .add_key(public_key1)
+    .add_key(public_key2)
+    .add_key(public_key3);
+
+println!("The key list is {}", key_list);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}

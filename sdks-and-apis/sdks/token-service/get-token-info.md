@@ -64,4 +64,22 @@ fmt.Printf("The token info is %v\n", tokenInfo)
 //v2.1.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the query
+let query = TokenInfoQuery::new()
+    .token_id(token_id);
+
+// Sign with the client operator private key, submit the query to the network
+let token_info = query.execute(&client)?;
+
+// Get the token supply
+let token_supply = token_info.total_supply;
+
+println!("The total supply of this token is {}", token_supply);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}

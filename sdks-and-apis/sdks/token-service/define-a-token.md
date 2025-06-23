@@ -149,4 +149,36 @@ fmt.Printf("The new token ID is %v\n", tokenId)
 //v2.1.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the transaction
+let transaction = TokenCreateTransaction::new()
+    .token_name("Your Token Name")
+    .token_symbol("F")
+    .treasury_account_id(treasury_account_id)
+    .initial_supply(5000)
+    .admin_key(admin_key.public_key())
+    .metadata_key(metadata_key)
+    .metadata(metadata)
+    .max_transaction_fee(Hbar::from(30)); // Change the default max transaction fee
+
+// Build the unsigned transaction, sign with admin private key of the token, sign with the token treasury private key
+let tx_response = transaction
+    .freeze_with(&client)?
+    .sign(admin_key)?
+    .sign(treasury_key)?
+    .execute(&client)?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client)?;
+
+// Get the token ID from the receipt
+let token_id = receipt.token_id.unwrap();
+
+println!("The new token ID is {}", token_id);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}

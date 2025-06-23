@@ -8,9 +8,9 @@ Custom fee tokens are tokens that have a unique custom fee schedule associated t
 
 {% hint style="warning" %}
 * A max of 10 balance adjustments in its HBAR transferList
-* A max of 10 token fungible balance adjustments across all its tokenTransferList’s
-* A max of 10 NFT ownership changes across all its tokenTransferList’s
-* There’s also a maximum of 20 balance adjustments or NFT ownership changes implied by a transaction (including custom fees)
+* A max of 10 token fungible balance adjustments across all its tokenTransferList's
+* A max of 10 NFT ownership changes across all its tokenTransferList's
+* There's also a maximum of 20 balance adjustments or NFT ownership changes implied by a transaction (including custom fees)
 * If you are transferring a token with custom fees, only two levels of nesting of fees are allowed
 * The sending account is responsible to pay for the custom token fees
 {% endhint %}
@@ -112,6 +112,29 @@ status := receipt.Status
 
 fmt.Printf("The transaction consensus status is %v\n", status)
 //v2.1.0
+```
+{% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the transfer transaction
+let transaction = TransferTransaction::new()
+    .add_token_transfer(token_id, operator_id, -1)
+    .add_token_transfer(token_id, account_id, 1);
+
+// Sign with the client operator key and submit the transaction
+let tx_response = transaction
+    .execute(&client)?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client)?;
+
+// Get the transaction consensus status
+let status = receipt.status;
+
+println!("The transaction consensus status is {}", status);
+
+// v2.12.0+
 ```
 {% endtab %}
 {% endtabs %}

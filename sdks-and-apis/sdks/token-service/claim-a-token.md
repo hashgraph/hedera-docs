@@ -100,6 +100,30 @@ fmt.Println("The transaction consensus status:", transactionStatus)
 ```
 {% endcode %}
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the token claim airdrop transaction
+let transaction = TokenClaimAirdropTransaction::new()
+    .add_pending_airdrop_id(pending_airdrop_id)
+    .freeze_with(&client)?;
+
+// Sign with the sender account key and submit the transaction to a Hedera network
+let tx_response = transaction
+    .sign(account_key)?
+    .execute(&client)?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client)?;
+
+// Get the transaction consensus status
+let transaction_status = receipt.status;
+
+println!("The transaction consensus status: {}", transaction_status);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}
 
 **Reference:** [**Token Airdrop Example**](https://github.com/hashgraph/hedera-sdk-js/blob/main/examples/token-airdrop-example.js)

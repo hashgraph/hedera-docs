@@ -56,6 +56,17 @@ hedera.NewTransactionReceiptQuery().
     Execute(client)
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Get the receipt of the transaction
+let receipt = tx_response.get_receipt(&client)?;
+
+println!("The transaction receipt: {:?}", receipt);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}
 
 ### Helper Methods

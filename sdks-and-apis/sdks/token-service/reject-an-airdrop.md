@@ -106,6 +106,31 @@ fmt.Printf("The transaction consensus status is %v\n", status)
 // v2.51.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the token reject transaction for fungible token
+let transaction = TokenRejectTransaction::new()
+    .owner_id(account_id)
+    .add_token_id(token_id)
+    .freeze_with(&client)?;
+
+// Sign with the account Id key and submit the transaction to a Hedera network
+let tx_response = transaction
+    .sign(account_id_key)?
+    .execute(&client)?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client)?;
+
+// Get the transaction consensus status
+let transaction_status = receipt.status;
+
+println!("The transaction consensus status is {}", transaction_status);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}
 
 ## TokenRejectFlow
@@ -203,6 +228,31 @@ status := receipt.Status
 fmt.Printf("The transaction consensus status is %v\n", status)
 
 // v2.50.0
+```
+{% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the token reject transaction for fungible token
+let transaction = TokenRejectFlow::new()
+    .owner_id(account_id)
+    .add_token_id(token_id)
+    .freeze_with(&client)?;
+
+// Sign with the account Id key and submit the transaction to a Hedera network
+let tx_response = transaction
+    .sign(account_id_key)?
+    .execute(&client)?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client)?;
+
+// Get the transaction consensus status
+let transaction_status = receipt.status;
+
+println!("The transaction consensus status is {}", transaction_status);
+
+// v2.12.0+
 ```
 {% endtab %}
 {% endtabs %}

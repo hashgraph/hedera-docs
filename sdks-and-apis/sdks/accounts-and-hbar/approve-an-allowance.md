@@ -111,4 +111,28 @@ println("The transaction consensus status is ", transactionStatus)
 //v2.13.1+
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the transaction
+let transaction = AccountAllowanceApproveTransaction::new()
+    .approve_hbar_allowance(owner_account, spender_account_id, Hbar::from(1));
+
+// Sign the transaction with the owner account key and the transaction fee payer key (client)
+let tx_response = transaction
+    .freeze_with(&client)?
+    .sign(owner_account_key)?
+    .execute(&client)?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client)?;
+
+// Get the transaction consensus status
+let status = receipt.status;
+
+println!("The transaction consensus status is {}", status);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}

@@ -54,4 +54,23 @@ signedTransaction := freezeTransaction.Sign(hedera.PrivateKeyFromString("302e020
 //v2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create any transaction
+let transaction = AccountUpdateTransaction::new()
+    .account_id(account_id)
+    .key(key);
+
+// Freeze the transaction for signing
+let freeze_transaction = transaction.freeze_with(&client)?;
+
+// Sign the transaction with a private key
+let signed_transaction = freeze_transaction.sign(
+    PrivateKey::from_str("302e020100300506032b65700422042012a4a4add3d885bd61d7ce5cff88c5ef2d510651add00a7f64cb90de3359bc5c")?
+);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}

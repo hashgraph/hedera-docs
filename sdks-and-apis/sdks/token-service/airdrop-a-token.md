@@ -113,4 +113,31 @@ fmt.Println("The transaction consensus status:", transactionStatus.String())
 ```
 {% endcode %}
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the token airdrop transaction for fungible token
+let transaction = TokenAirdropTransaction::new()
+    .add_token_transfer(token_id, account_id1, -1)
+    .add_token_transfer(token_id, account_id2, 1)
+    .add_token_transfer(token_id, account_id1, -1)
+    .add_token_transfer(token_id, account_id3, 1)
+    .freeze_with(&client)?;
+
+// Sign with the sender account key and submit the transaction to a Hedera network
+let tx_response = transaction
+    .sign(account_key)?
+    .execute(&client)?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client)?;
+
+// Get the transaction consensus status
+let transaction_status = receipt.status;
+
+println!("The transaction consensus status: {}", transaction_status);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}

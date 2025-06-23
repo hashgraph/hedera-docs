@@ -97,6 +97,31 @@ fmt.Printf("The transaction consensus status is %v\n", transactionStatus)
 //v2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the transaction to delete an account
+let transaction = AccountDeleteTransaction::new()
+    .account_id(account_id)
+    .transfer_account_id(operator_id);
+
+// Freeze the transaction for signing, sign with the private key of the account that will be deleted
+let tx_response = transaction
+    .freeze_with(&client)?
+    .sign(account_key)?
+    .execute(&client)?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client)?;
+
+// Get the transaction consensus status
+let status = receipt.status;
+
+println!("The transaction consensus status is {}", status);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}
 
 ## Get transaction values

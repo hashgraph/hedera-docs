@@ -109,4 +109,33 @@ fmt.Printf("The node id is %v\n", transactionNodeId)
 //v2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the transaction
+let transaction = AccountCreateTransaction::new()
+    .key_with_alias(ecdsa_public_key)
+    // do not set if you need to rotate keys in the future
+    // .key_without_alias(ecdsa_public_key)
+    .initial_balance(Hbar::new(1));
+
+// Sign with client operator private key and submit the transaction to a Hedera network
+let tx_response = transaction.execute(&client)?;
+
+// Get the transaction ID
+let transaction_id = tx_response.transaction_id;
+
+// Get the account ID of the node that processed the transaction
+let node_id = tx_response.node_id;
+
+// Get the transaction hash
+let transaction_hash = tx_response.transaction_hash;
+
+println!("The transaction ID is {:?}", transaction_id);
+println!("The transaction hash is {:?}", transaction_hash);
+println!("The node ID is {:?}", node_id);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}

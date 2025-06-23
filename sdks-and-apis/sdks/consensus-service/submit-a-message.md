@@ -124,6 +124,29 @@ fmt.Printf("The transaction consensus status is %v\n", transactionStatus)
 //v2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the transaction
+let transaction = TopicMessageSubmitTransaction::new()
+    .topic_id(topic_id)
+    .message("Hello, HCS!")
+    .max_custom_fees(max_custom_fees); // Set max custom fees if applicable
+
+// Sign with the client operator key and submit to a Hedera network
+let tx_response = transaction.execute(&client)?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client)?;
+
+// Get the transaction consensus status
+let status = receipt.status;
+
+println!("The transaction consensus status is {}", status);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}
 
 ## Get transaction values

@@ -114,6 +114,33 @@ fmt.Printf("Token metadata update status: ", receipt.Status)
 ```
 {% endcode %}
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the transaction
+let token_update_nfts_tx = TokenUpdateNftsTransaction::new()
+    .token_id(token_id)
+    .serial_numbers(nft_serials)
+    .metadata(new_metadata)
+    .freeze_with(&client)?;
+
+// Sign the transaction and execute it
+let token_update_nfts_response = token_update_nfts_tx
+    .sign(metadata_key)?
+    .execute(&client)?;
+
+// Get receipt for update nfts metadata transaction
+let token_update_nfts_receipt = token_update_nfts_response.get_receipt(&client)?;
+
+// Get the transaction consensus status
+let transaction_status = token_update_nfts_receipt.status;
+
+// Print the token update metadata transaction status
+println!("Token metadata update status: {}", transaction_status);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}
 
 ## FAQs

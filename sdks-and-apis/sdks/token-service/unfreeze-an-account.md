@@ -110,4 +110,29 @@ fmt.Printf("The transaction consensus status is %v\n", status)
 //v2.1.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Unfreeze an account
+let transaction = TokenUnfreezeTransaction::new()
+    .account_id(account_id)
+    .token_id(token_id);
+
+// Freeze the unsigned transaction, sign with the freeze private key of the token
+let tx_response = transaction
+    .freeze_with(&client)?
+    .sign(freeze_key)?
+    .execute(&client)?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client)?;
+
+// Get the transaction consensus status
+let status = receipt.status;
+
+println!("The transaction consensus status is {}", status);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}

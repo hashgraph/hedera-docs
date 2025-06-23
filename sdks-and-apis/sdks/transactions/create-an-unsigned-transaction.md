@@ -70,6 +70,25 @@ println(freezeTransaction.String())
 //v2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create an unsigned transaction
+let transaction = AccountCreateTransaction::new()
+    .key_with_alias(ecdsa_public_key)
+    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .key_without_alias instead
+    // .key_without_alias(ecdsa_public_key)
+    .initial_balance(Hbar::new(1));
+
+// Freeze the transaction for signing
+// The transaction cannot be modified after this point
+let freeze_transaction = transaction.freeze_with(&client)?;
+
+println!("{:?}", freeze_transaction);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}
 
 **Sample Output**

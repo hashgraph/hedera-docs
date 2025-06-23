@@ -72,8 +72,8 @@ System.out.println("The new topic ID is " + newTopicId);
 {% tab title="JavaScript" %}
 <pre class="language-javascript"><code class="lang-javascript">//Create the transaction
 const transaction = new TopicCreateTransaction()
-<strong>    .setFeeScheduleKey(feeScheduleKey)
-</strong>    .setFeeExemptKeys(feeExemptKeys)
+    .setFeeScheduleKey(feeScheduleKey)
+    .setFeeExemptKeys(feeExemptKeys)
     .setCustomFees(customFees);
 
 //Sign with the client operator private key and submit the transaction to a Hedera network
@@ -94,8 +94,8 @@ console.log("The new topic ID is " + newTopicId);
 {% tab title="Go" %}
 <pre class="language-go"><code class="lang-go">//Create the transaction
 transaction := hedera.NewTopicCreateTransaction().
-<strong>    .setFeeScheduleKey(feeScheduleKey).
-</strong>    .setFeeExemptKeys(feeExemptKeys).
+    .setFeeScheduleKey(feeScheduleKey).
+    .setFeeExemptKeys(feeExemptKeys).
     .setCustomFees(customFees)
 
 //Sign with the client operator private key and submit the transaction to a Hedera network
@@ -119,6 +119,30 @@ fmt.Printf("The new topic ID is %v\n", newTopicID)
 
 //v2.0.0
 </code></pre>
+{% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create a new topic
+let transaction = TopicCreateTransaction::new()
+    .topic_memo("My topic memo")
+    .admin_key(admin_key)
+    .submit_key(submit_key)
+    .auto_renew_period(Duration::hours(24 * 30)); // 30 days
+
+// Sign with the client operator private key and submit to a Hedera network
+let tx_response = transaction.execute(&client)?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client)?;
+
+// Get the topic ID
+let topic_id = receipt.topic_id.unwrap();
+
+println!("The new topic ID is {}", topic_id);
+
+// v2.12.0+
+```
 {% endtab %}
 {% endtabs %}
 

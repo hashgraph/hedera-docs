@@ -127,6 +127,34 @@ fmt.Printf("The new account ID is %v\n", newAccountId)
 //Version 2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create new ECDSA key
+let ecdsa_public_key = PrivateKey::generate_ecdsa().public_key();
+
+// Create the transaction
+let transaction = AccountCreateTransaction::new()
+    .key_with_alias(ecdsa_public_key)
+    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .key_without_alias instead 
+    // .key_without_alias(ecdsa_public_key)
+    .initial_balance(Hbar::from(1));
+
+// Sign the transaction with the client operator private key and submit to a Hedera network
+let tx_response = transaction
+    .execute(&client)?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client)?;
+
+// Get the account ID
+let new_account_id = receipt.account_id.unwrap();
+
+println!("The new account ID is {}", new_account_id);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}
 
 #### Get transaction values

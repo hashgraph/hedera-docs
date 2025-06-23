@@ -77,6 +77,22 @@ getInfo, err := query.Execute(client)
 fmt.Println(getInfo)
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the query
+let query = FileInfoQuery::new()
+    .file_id(file_id);
+
+// Submit the query to a Hedera network
+let file_info = query.execute(&client)?;
+
+// Print the file info to the console
+println!("File info: {:?}", file_info);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}
 
 **Sample Output:**
@@ -135,6 +151,19 @@ query := hedera.NewFileContentsQuery().
 getFileId := query.GetFileID()
 
 //v2.0.0
+```
+{% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the query
+let query = FileInfoQuery::new()
+    .file_id(file_id);
+
+// Get the file ID
+let file_id = query.get_file_id();
+
+// v2.12.0+
 ```
 {% endtab %}
 {% endtabs %}

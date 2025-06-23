@@ -112,6 +112,31 @@ fmt.Println("The transaction consensus status is ", transactionStatus)
 //v2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the transaction
+let transaction = FileDeleteTransaction::new()
+    .file_id(file_id)
+    .max_transaction_fee(Hbar::new(2));
+
+// Sign with the file key and submit to a Hedera network
+let tx_response = transaction
+    .freeze_with(&client)?
+    .sign(file_key)?
+    .execute(&client)?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client)?;
+
+// Get the transaction consensus status
+let status = receipt.status;
+
+println!("The transaction consensus status is {}", status);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}
 
 ## Get transaction values
@@ -151,6 +176,19 @@ transaction := hedera.NewFileDeleteTransaction().
 	
 //Get the file ID
 getFileId := transaction.GetFileID()
+```
+{% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the transaction
+let transaction = FileDeleteTransaction::new()
+    .file_id(file_id);
+
+// Get the file ID
+let file_id = transaction.get_file_id();
+
+// v2.12.0+
 ```
 {% endtab %}
 {% endtabs %}

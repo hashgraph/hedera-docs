@@ -40,6 +40,27 @@ hedera.NewTransactionRecordQuery().
     Execute(client)
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create a transaction
+let transaction = AccountCreateTransaction::new()
+    .key_with_alias(ecdsa_public_key)
+    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .key_without_alias instead
+    // .key_without_alias(ecdsa_public_key)
+    .initial_balance(Hbar::new(1));
+
+// Sign with the client operator account key and submit to a Hedera network
+let tx_response = transaction.execute(&client)?;
+
+// Request the record of the transaction
+let record = tx_response.get_record(&client)?;
+
+println!("The transaction record is {:?}", record);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}
 
 ### Methods

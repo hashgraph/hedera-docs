@@ -68,6 +68,24 @@ transferTransaction := hedera.NewTransferTransaction().
 transaction, err := transferTransaction.FreezeWith(client)
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// The node account ID to submit the transaction to. You can add more than 1 node account ID to the list
+let node_id = vec![AccountId::new(3)];
+
+// Create the transfer transaction
+let transfer_transaction = TransferTransaction::new()
+    .hbar_transfer(sender_account_id, Hbar::new(1))
+    .hbar_transfer(receiver_account_id, Hbar::new(-1))
+    .node_account_ids(node_id);
+
+// Freeze the transaction from any further modifications
+let transaction = transfer_transaction.freeze_with(&client)?;
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}
 
 ## 2. Collect required signatures
@@ -125,6 +143,23 @@ if err != nil {
 //signature1, signature2, and signature3 are returned back to you
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Signer one signs the transaction with their private key
+let signature1 = private_key_signer1.sign_transaction(&transaction)?;
+
+// Signer two signs the transaction with their private key
+let signature2 = private_key_signer2.sign_transaction(&transaction)?;
+
+// Signer three signs the transaction with their private key
+let signature3 = private_key_signer3.sign_transaction(&transaction)?;
+
+// signature1, signature2, and signature3 are returned back to you
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}
 
 ## 3. Create a single transaction with all three signatures
@@ -152,6 +187,18 @@ const signedTransaction = transaction.addSignature(publicKey1, signature1).addSi
 ```go
 //Collate all three signatures with the transaction
 signedTransaction := transaction.AddSignature(publicKey1, signature1).AddSignature(publicKey2, signature2).AddSignature(publicKey3, signature3)
+```
+{% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Collate all three signatures with the transaction
+let signed_transaction = transaction
+    .add_signature(public_key1, signature1)?
+    .add_signature(public_key2, signature2)?
+    .add_signature(public_key3, signature3)?;
+
+// v2.12.0+
 ```
 {% endtab %}
 {% endtabs %}
@@ -182,6 +229,16 @@ signatures, err := signedTransaction.GetSignatures()
 fmt.Println("The public keys that signed the transaction ", signatures)
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Print all public keys that signed the transaction
+let signatures = signed_transaction.get_signatures()?;
+println!("The public keys that signed the transaction: {:?}", signatures);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}
 
 ## 5. Submit the transaction
@@ -208,7 +265,7 @@ System.out.println("The transaction ID " +txId);
 const submitTx = await signedTransaction.execute(client);
 
 //Get the transaction ID
-const txId = submitTx.transactionId.toString();
+const txId = submitTx.transactionId;
 
 //Print the transaction ID to the console
 console.log("The transaction ID " +txId);
@@ -221,10 +278,25 @@ console.log("The transaction ID " +txId);
 submitTx, err := signedTransaction.Execute(client)
 
 //Get the transaction ID
-txId := submitTx.TransactionID
+txId := submitTx.GetTransactionID()
 
 //Print the transaction ID to the console
 fmt.Println("The transaction ID ", txId)
+```
+{% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Submit the transaction to a Hedera network
+let submit_tx = signed_transaction.execute(&client)?;
+
+// Get the transaction ID
+let tx_id = submit_tx.transaction_id;
+
+// Print the transaction ID to the console
+println!("Transaction ID: {:?}", tx_id);
+
+// v2.12.0+
 ```
 {% endtab %}
 {% endtabs %}

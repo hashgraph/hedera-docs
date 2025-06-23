@@ -141,6 +141,27 @@ fmt.Printf("The new topic ID is %v\n", newContractId)
 //SDK Version: 2.11.0-beta.1
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the transaction
+let contract_create = ContractCreateFlow::new()
+    .bytecode(bytecode)
+    .gas(100_000);
+
+// Sign the transaction with the client operator key and submit to a Hedera network
+let tx_response = contract_create.execute(&client)?;
+
+// Get the receipt of the transaction
+let receipt = tx_response.get_receipt(&client)?;
+
+// Get the new contract ID
+let new_contract_id = receipt.contract_id.unwrap();
+println!("The new contract ID is {}", new_contract_id);
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}
 
 ## `ContractCreateTransaction()`

@@ -72,6 +72,24 @@ hedera.HbarFrom(10, hedera.HbarUnits.Tinybar)
 //v2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// 10 HBAR
+Hbar::new(10);
+
+// 10 HBAR from hbar value
+Hbar::from(10);
+
+// 100 tinybars from HBAR convert to unit
+Hbar::from_tinybars(100);
+
+// 10 HBAR converted from string value
+Hbar::from_str("10")?;
+
+// v2.12.0+
+```
+{% endtab %}
 {% endtabs %}
 
 ### HBAR to:
@@ -124,6 +142,18 @@ hedera.NewHbar(10).String()
 //10 HBAR converted to tinybars
 hedera.NewHbar(10).AsTinybar()
 //v2.0.0
+```
+{% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// 10 HBAR converted to tinybars
+Hbar::new(10).to(HbarUnit::Tinybar);
+
+// 10 HBAR converted to tinybars
+Hbar::new(10).to_tinybars();
+
+// v2.12.0+
 ```
 {% endtab %}
 {% endtabs %}
@@ -179,6 +209,21 @@ hbarMin := hedera.MinHbar
 hbarZero := hedera.ZeroHbar
 
 //v2.0.0
+```
+{% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// The maximum number of hbars
+let hbar_max = Hbar::MAX;
+
+// The minimum number of hbars
+let hbar_min = Hbar::MIN;
+
+// A constant value of zero hbars
+let hbar_zero = Hbar::ZERO;
+
+// v2.12.0+
 ```
 {% endtab %}
 {% endtabs %}

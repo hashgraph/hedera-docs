@@ -98,6 +98,46 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **TESTNET UPDATE SCHEDULED: JUNE 3, 2025**
 {% endhint %}
 
+### Release Highlights
+
+Release 0.62 delivers substantial improvements in Ethereum compatibility, continuing Hedera’s commitment to providing a seamless and cost-effective experience for developers and ecosystem participants building with Ethereum tools and infrastructure. In addition, this release updates the HIP-991 SubmitMessage fees and lays the groundwork for block streams. What's new in Release 0.62?
+
+#### **Jumbo Ethereum Transaction Support (**[**HIP-1086**](https://hips.hedera.com/hip/hip-1086)**)**
+
+Historically, the Hedera API (HAPI) transaction size has been limited to 6 KB. Many Ethereum smart contracts and certain Ethereum contract calls exceed this limit. To work around this, developers previously had to utilize Hedera’s file service to upload larger contracts or call data in multiple 6 KB chunks — a process that added complexity, cost, and latency. Release 0.62 eliminates this friction by supporting a significantly larger transaction size of almost 128 KB for smart contract transactions, thereby simplifying EVM developer workflows and improving performance.
+
+**Key benefits:**
+
+* Simplified development: Eliminates the need to write and maintain custom code to handle 6 KB chunking.
+* Reduced cost and latency: Streamlines common operations such as ContractCreate, ContractCall, and `EthereumTransaction`.
+* Improved cost efficiency for JSON-RPC relays: Lowers operational costs for relay providers.
+* Enhanced Ethereum compatibility: Brings the experience of creating and calling smart contracts on Hedera closer to native Ethereum workflows.
+
+To support this capability, the release also introduces a reworked throttling system that protects against potential denial-of-service (DoS) attacks while maintaining fairness across transaction sizes.
+
+#### **Zero-Cost EthereumTransaction on Success (**[**HIP-1084**](https://hips.hedera.com/hip/hip-1084)**)**
+
+A frequently reported pain point from JSON-RPC relay operators has been the cost of submitting wrapper EthereumTransactions. While gas costs for contract execution are typically borne by the calling entity (EOA or contract), relay operators have been required to fund the HBAR-based transaction fee — resulting in reduced adoption and ecosystem participation. Release 0.62 addresses this by eliminating the cover charge for EthereumTransactions where the inner call completes and pays for the gas consumed.
+
+#### **Key benefits:**
+
+* Simplified relay operation: Removes the need for relay operators or embedded relays in dApps to maintain funded HBAR accounts for successful calls.
+* Enhanced Ethereum compatibility: Further enhances Hedera’s Ethereum compatibility by charging all costs in gas alone.
+* Better ecosystem support: Encourages greater participation by third-party relay operators and dApp developers.
+
+To maintain network security, malformed, underfunded, or invalid contract calls that fail to cover gas fees through regular mechanisms will still be charged a fee in order to prevent abuse.
+
+#### Other updates:
+
+In addition to the aforementioned features that improve Ethereum compatibility, Release 0.62 introduces two other updates:
+
+* SubmitMessage API calls for an HCS topic with Custom Fees ([HIP-991](https://hips.hedera.com/hip/hip-991)) have been updated to $0.05 for the Hedera network.
+* Foundational improvements in block stream management and handling workflows that will enable future features in block streaming capabilities and performance in upcoming releases.
+
+#### **Summary:**
+
+Release 0.62 represents an important milestone toward making Hedera a highly competitive platform for Ethereum-compatible applications, completes the implementation of HIP-991, and sets up the foundation for streaming the network blocks and state information.
+
 ### [Build 0.62.6](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.6)
 
 <details>

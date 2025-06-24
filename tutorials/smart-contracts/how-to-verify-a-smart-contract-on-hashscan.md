@@ -8,7 +8,7 @@ description: >-
 
 Verifying smart contracts helps ensure the deployed bytecode matches the expected source files. [HashScan](https://hashscan.io/) Smart Contract Verifier is a tool that simplifies this process. This guide will walk through the basic steps of smart contract verification using the HashScan Smart Contract Verifier tool.&#x20;
 
-<figure><img src="../../.gitbook/assets/contract-verification-flow.png" alt=""><figcaption><p>Smart Contract Verification Flow</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/smart-contract-verification-flow.png" alt=""><figcaption><p>Smart Contract Verification Flow</p></figcaption></figure>
 
 {% hint style="info" %}
 _**📣 Note**: This is an initial release. API functionalities will see enhancements in upcoming updates of the_ [_https://github.com/hashgraph/hedera-sourcify_](https://github.com/hashgraph/hedera-sourcify) _repository._
@@ -38,9 +38,9 @@ _**📣 Note**: This is an initial release. API functionalities will see enhance
 
 ## Step 1: Find the Contract on HashScan
 
-Open a web browser and navigate to [HashScan](https://hashscan.io/). Make sure you are on the correct Hedera network (Mainnet, Testnet, or Previewnet), and search for the deployed contract address in the search bar at the top of the page. In the _**Contract Bytecode**_ section click on _**Verify Contract**_. The source code file importer popup window will open.
+Open a web browser and navigate to [HashScan](https://hashscan.io/). Make sure you are on the correct Hedera network (mainnet, testnet, or previewnet), and search for the deployed contract address in the search bar at the top of the page. In the _**Contract Bytecode**_ section click on _**Verify**_. The source code file importer popup window will open.
 
-<figure><img src="../../.gitbook/assets/hashscan-find-contract (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/verify-contract-sources.png" alt=""><figcaption></figcaption></figure>
 
 ***
 
@@ -48,7 +48,7 @@ Open a web browser and navigate to [HashScan](https://hashscan.io/). Make sure y
 
 Add your Solidity source code files in the source file importer popup. Source files include the smart contract (`.sol`) [source code file](../../core-concepts/smart-contracts/verifying-smart-contracts-beta.md#smart-contract-source-code) and [metadata](../../core-concepts/smart-contracts/verifying-smart-contracts-beta.md#the-metadata-file) (`.json` ) file. The metadata file can be found in the `artifacts/` directory of your smart contract project and its name correlates with the smart contract. For example, the metadata for the `HelloHedera.sol` contract would be called `HelloHedera.json`.
 
-<figure><img src="../../.gitbook/assets/verify-contract-popup.png" alt="" width="563"><figcaption><p>HashScan Verification Source File Importer Popup</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/verify-add-source-files.png" alt="" width="563"><figcaption><p>HashScan Verification Source File Importer Popup</p></figcaption></figure>
 
 <details>
 
@@ -71,9 +71,9 @@ _**Note**: Uploading only the Solidity file without the metadata file will resul
 
 ## Step 3: Verify Contract
 
-After importing the source files, if you get the "_Contract \<contract name> is ready to be verified"_ message, click **VERIFY** to initiate the verification process. Sourcify will then compare the deployed contract bytecode to the source files you imported in the previous step.
+After importing the source files, if you get the "_Contract \<contract name> is ready to be verified"_ message, click **VERIFY** to initiate the verification process. Sourcify will then compare the deployed contract bytecode to the source files you imported in the previous step.&#x20;
 
-<figure><img src="../../.gitbook/assets/hashscan-ready-to-be-verified.png" alt="" width="563"><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/verify-contract.png" alt="" width="563"><figcaption></figcaption></figure>
 
 ***
 
@@ -84,31 +84,15 @@ If your verification is successful, the verifier will return either a [<mark sty
 * **Full Match**: Indicates the bytecode is a full (perfect) match, including all the metadata. The contract source code and metadata settings are identical to the deployed version.
 * **Partial Match**: Indicates the bytecode _mostly_ (partially) matches with the deployed contract, except for the metadata hash like comments or variable names. It is usually sufficient for most verification purposes.
 
-<figure><img src="../../.gitbook/assets/hashscan-verification-full-match.png" alt="" width="563"><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/verification-full-match.png" alt="" width="563"><figcaption></figcaption></figure>
 
 To learn more about each verification match status, head over to the official Sourcify documentation [here](https://docs.sourcify.dev/docs/full-vs-partial-match/).&#x20;
-
-***
-
-## Step 5: View Verified Contract
-
-To view the verified contract repository, click _**View Contract Sources**_ in the _**Contract Bytecode**_ section on HashScan. This will open a verified contract repository search page window.
-
-<figure><img src="../../.gitbook/assets/hashscan-view-contract-source.png" alt=""><figcaption></figcaption></figure>
-
-A summary of your contract's verification details will be displayed in the new window. Verification details include the contract address, source code files, match type, chain ID, metadata, and an option to open the repository in Remix.&#x20;
-
-<figure><img src="../../.gitbook/assets/smart-contract-verified-repo.png" alt=""><figcaption><p>Verified contract repository</p></figcaption></figure>
-
-To be directed to the Sourcify Contract Repository search page, click on `⬅ 296`.
-
-<figure><img src="../../.gitbook/assets/sourcify-verified-contract-repo-search.png" alt="" width="563"><figcaption><p>Sourcify Contract Repository search page</p></figcaption></figure>
 
 **Congratulations! 🎉 You have successfully learned how to verify a smart contract.  Feel free to reach out on** [**Discord**](https://hedera.com/discord) **if you have any questions!**
 
 ***
 
-## Step 6: Re-Verify Smart Contract
+## Step 5: Re-Verify Smart Contract
 
 If you change your contract or want to upgrade your contract from a **Partial Match** to a **Full Match**, there are two options for re-verification:
 
@@ -124,9 +108,9 @@ Enter the smart contract address and chain, then click _**Verify**_.
 
 #### Option 2
 
-Revisit [**Step 1**](how-to-verify-a-smart-contract-on-hashscan.md#step-1-find-the-contract-on-hashscan) and use the _**Re-verify Contract**_ flow. Then proceed to Steps 2 through 5.
+Revisit [**Step 1**](how-to-verify-a-smart-contract-on-hashscan.md#step-1-find-the-contract-on-hashscan) and use the _**Re-verify Contract**_ flow. Then proceed to Steps 2 through 4.
 
-<figure><img src="../../.gitbook/assets/reverification-flow.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/re-verify-flow.png" alt="" width="563"><figcaption></figcaption></figure>
 
 ***
 
@@ -148,4 +132,4 @@ Revisit [**Step 1**](how-to-verify-a-smart-contract-on-hashscan.md#step-1-find-t
 
 **➡** [**Smart Contract Documentation**](../../core-concepts/smart-contracts/verifying-smart-contracts-beta.md)
 
-<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Krystal, Technical Writer</p><p><a href="https://github.com/theekrystallee">GitHub</a> | <a href="https://twitter.com/theekrystallee">Twitter</a></p></td><td><a href="https://twitter.com/theekrystallee">https://twitter.com/theekrystallee</a></td></tr><tr><td align="center"><p>Editor: Nana, Sr. Software Manager</p><p><a href="https://github.com/Nana-EC">GitHub</a> | <a href="https://www.linkedin.com/in/nconduah/">LinkedIn</a></p></td><td><a href="https://www.linkedin.com/in/nconduah/">https://www.linkedin.com/in/nconduah/</a></td></tr><tr><td align="center"><p>Editor: Ed, DevRel Engineer</p><p><a href="https://github.com/ed-marquez">GitHub</a> | <a href="https://www.linkedin.com/in/ed-marquez/">LinkedIn</a></p></td><td></td></tr><tr><td align="center"><p>Editor: Logan, Software Engineer Intern</p><p><a href="https://github.com/quiet-node">GitHub</a> | <a href="https://www.linkedin.com/in/logann131/">LinkedIn</a></p></td><td><a href="https://github.com/quiet-node">https://github.com/quiet-node</a></td></tr></tbody></table>
+<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Krystal, Technical Writer</p><p><a href="https://github.com/theekrystallee">GitHub</a> | <a href="https://twitter.com/theekrystallee">Twitter</a></p></td><td><a href="https://twitter.com/theekrystallee">https://twitter.com/theekrystallee</a></td></tr><tr><td align="center"><p>Editor: Nana, Sr. Software Manager</p><p><a href="https://github.com/Nana-EC">GitHub</a> | <a href="https://www.linkedin.com/in/nconduah/">LinkedIn</a></p></td><td><a href="https://www.linkedin.com/in/nconduah/">https://www.linkedin.com/in/nconduah/</a></td></tr><tr><td align="center"><p>Editor: Ed, DevRel Engineer</p><p><a href="https://github.com/ed-marquez">GitHub</a> | <a href="https://www.linkedin.com/in/ed-marquez/">LinkedIn</a></p></td><td></td></tr><tr><td align="center"><p>Editor: Logan, Software Engineer II</p><p><a href="https://github.com/quiet-node">GitHub</a> | <a href="https://www.linkedin.com/in/logann131/">LinkedIn</a></p></td><td><a href="https://github.com/quiet-node">https://github.com/quiet-node</a></td></tr></tbody></table>

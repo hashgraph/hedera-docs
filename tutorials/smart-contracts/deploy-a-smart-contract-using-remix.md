@@ -15,7 +15,6 @@ Remix IDE is an open-source tool for developing smart contracts in Solidity for 
 ## Prerequisites
 
 * Web browser with access to [Remix IDE](https://remix.ethereum.org/).
-* [Create](../more-tutorials/create-and-fund-your-hedera-testnet-account.md) a Hedera ECDSA testnet account.
 * [Download](https://metamask.io/download/) the MetaMask wallet browser extension.&#x20;
 
 ***
@@ -47,7 +46,7 @@ Copy and paste this sample contract to the new file you created:
 ```solidity
 //SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.22;
+pragma solidity ^0.8.22;
 
 contract SampleContract {
     string public myString = "Hello Hedera";
@@ -102,11 +101,11 @@ Once the transaction is successful, you can interact with the smart contract thr
 
 Copy the contract address from the Deployed Contracts window.&#x20;
 
-<figure><img src="../../.gitbook/assets/remix-deployed-contract.png" alt="" width="563"><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/deployed-contract-address-remix-copy-address.png" alt="" width="563"><figcaption></figcaption></figure>
 
 Navigate to the [HashScan](https://hashscan.io/) network explorer and use the contract address to search for your contract to view the details.
 
-<figure><img src="../../.gitbook/assets/remix-hashscan-contract-details.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/deploy-contract-remix-new-hashscanui.png" alt=""><figcaption></figcaption></figure>
 
 ### Next Steps: Verify Your Smart Contract
 
@@ -128,4 +127,4 @@ If you're up for it, you can verify your deployed contract using the HashScan Sm
 
 **➡** [**Deploy Leveraging EVM Dev Tools** ](deploy-by-leveraging-ethereum-developer-tools-on-hedera.md)
 
-<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Krystal, Technical Writer</p><p><a href="https://github.com/theekrystallee">GitHub</a> | <a href="https://hashnode.com/@theekrystallee">Hashnode</a></p></td><td><a href="https://hashnode.com/@theekrystallee">https://hashnode.com/@theekrystallee</a></td></tr><tr><td align="center"><p>Editor: Abi, DevRel Engineer</p><p><a href="https://github.com/a-ridley">GitHub</a> | <a href="https://www.linkedin.com/in/a-ridley/">LinkedIn</a></p></td><td><a href="https://www.linkedin.com/in/a-ridley/">https://www.linkedin.com/in/a-ridley/</a></td></tr><tr><td align="center"><p>Editor: Logan, Software Engineering Intern</p><p><a href="https://github.com/quiet-node">GitHub</a> | <a href="https://www.linkedin.com/in/logann131/">LinkedIn</a></p></td><td><a href="https://github.com/quiet-node">https://github.com/quiet-node</a></td></tr></tbody></table>
+<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Krystal, Technical Writer</p><p><a href="https://github.com/theekrystallee">GitHub</a> | <a href="https://hashnode.com/@theekrystallee">Hashnode</a></p></td><td><a href="https://hashnode.com/@theekrystallee">https://hashnode.com/@theekrystallee</a></td></tr><tr><td align="center"><p>Editor: Logan, Software Engineer II</p><p><a href="https://github.com/quiet-node">GitHub</a> | <a href="https://www.linkedin.com/in/logann131/">LinkedIn</a></p></td><td><a href="https://github.com/quiet-node">https://github.com/quiet-node</a></td></tr></tbody></table>

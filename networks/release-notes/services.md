@@ -90,8 +90,8 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Release v0.62
 
-{% hint style="info" %}
-**MAINNET UPDATE SCHEDULED: JUNE 25, 2025**
+{% hint style="success" %}
+**MAINNET UPDATE: JUNE 25, 2025**
 {% endhint %}
 
 {% hint style="success" %}
@@ -311,6 +311,12 @@ Release 0.62 represents an important milestone toward making Hedera a highly com
 * update reference to `unhex` method ([#18470](https://github.com/hiero-ledger/hiero-consensus-node/pull/18470))
 
 </details>
+
+
+
+### Performance Results
+
+<figure><img src="../../.gitbook/assets/‎‎0.62_Performance Measurement Results_Extract.‎001.‎001.png" alt=""><figcaption></figcaption></figure>
 
 ## Release v0.61
 

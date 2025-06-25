@@ -44,7 +44,7 @@ let public_key = private_key.public_key();
 let private_key = PrivateKey::from_mnemonic_with_passphrase(&mnemonic, "passphrase")?;
 let public_key = private_key.public_key();
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

@@ -65,7 +65,7 @@ let contents = file_query.execute(&client)?;
 
 println!("{}", String::from_utf8(contents)?);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endcode %}
 {% endtab %}
@@ -116,7 +116,7 @@ let address_book = NodeAddressBookQuery::new()
 
 println!("{:?}", address_book);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endcode %}
 {% endtab %}

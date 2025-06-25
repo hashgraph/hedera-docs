@@ -39,7 +39,7 @@ console.log(scheduleID)
 let schedule_id = ScheduleId::new(0, 0, 10);
 println!("{}", schedule_id);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

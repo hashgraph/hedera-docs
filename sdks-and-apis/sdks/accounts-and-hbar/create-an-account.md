@@ -152,7 +152,7 @@ let new_account_id = receipt.account_id.unwrap();
 
 println!("The new account ID is {}", new_account_id);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

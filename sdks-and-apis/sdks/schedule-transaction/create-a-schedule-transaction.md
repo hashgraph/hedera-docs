@@ -130,7 +130,7 @@ let receipt = tx_response.get_receipt(&client)?;
 let schedule_id = receipt.schedule_id.unwrap();
 println!("The schedule ID of the schedule transaction is {}", schedule_id);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

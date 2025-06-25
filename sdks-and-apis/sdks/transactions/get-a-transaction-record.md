@@ -58,7 +58,7 @@ let record = tx_response.get_record(&client)?;
 
 println!("The transaction record is {:?}", record);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

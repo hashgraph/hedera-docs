@@ -138,7 +138,7 @@ let transaction_status = token_update_nfts_receipt.status;
 // Print the token update metadata transaction status
 println!("Token metadata update status: {}", transaction_status);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

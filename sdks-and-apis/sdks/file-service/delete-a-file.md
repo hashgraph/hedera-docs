@@ -134,7 +134,7 @@ let status = receipt.status;
 
 println!("The transaction consensus status is {}", status);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}
@@ -188,7 +188,7 @@ let transaction = FileDeleteTransaction::new()
 // Get the file ID
 let file_id = transaction.get_file_id();
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

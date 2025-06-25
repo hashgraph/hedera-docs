@@ -74,7 +74,7 @@ let query_cost = query.get_cost(&client)?;
 
 println!("The account balance query cost is {}", query_cost);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

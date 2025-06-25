@@ -84,7 +84,7 @@ println!("Deleted Time: {:?}", info.deleted_time);
 println!("Memo: {}", info.memo);
 println!("Wait For Expiry: {}", info.wait_for_expiry);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

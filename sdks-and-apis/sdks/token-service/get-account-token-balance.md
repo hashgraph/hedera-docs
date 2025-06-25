@@ -72,7 +72,7 @@ let token_balance = query.execute(&client)?;
 
 println!("The token balance(s) for this account: {:?}", token_balance.tokens);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

@@ -54,7 +54,7 @@ let private_key = PrivateKey::from_pem("-----BEGIN PRIVATE KEY-----\n...\n-----E
 // With password if encrypted
 let private_key = PrivateKey::from_pem_with_password("-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----", "password")?;
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

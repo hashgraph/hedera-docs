@@ -71,7 +71,7 @@ let nodes = HashMap::from([
 
 let client = Client::for_network(nodes);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}
@@ -149,7 +149,7 @@ let mut client = Client::for_testnet();
 // Set the operator with the account ID and private key
 client.set_operator(my_account_id, my_private_key);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}
@@ -307,7 +307,7 @@ client.set_default_max_transaction_fee(Hbar::from(10));
 // Set the maximum payment for queries (in Hbar)
 client.set_default_max_query_payment(Hbar::from(5));
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

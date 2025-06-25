@@ -79,7 +79,7 @@ let account_balance = query.execute(&client)?;
 
 println!("The account balance is {}", account_balance.hbars);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

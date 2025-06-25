@@ -87,7 +87,7 @@ let account_info = query.execute(&client)?;
 // Print the account info to the console
 println!("{:?}", account_info);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

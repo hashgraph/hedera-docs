@@ -50,7 +50,7 @@ fmt.println(txId)
 let tx_id = TransactionId::generate(AccountId::new(5))?;
 println!("{:?}", tx_id);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

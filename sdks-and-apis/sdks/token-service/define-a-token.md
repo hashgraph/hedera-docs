@@ -178,7 +178,7 @@ let token_id = receipt.token_id.unwrap();
 
 println!("The new token ID is {}", token_id);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

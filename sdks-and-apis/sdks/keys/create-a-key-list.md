@@ -123,7 +123,7 @@ let key_list = KeyList::new()
 
 println!("The key list is {}", key_list);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

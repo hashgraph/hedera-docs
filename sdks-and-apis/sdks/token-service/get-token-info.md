@@ -79,7 +79,7 @@ let token_supply = token_info.total_supply;
 
 println!("The total supply of this token is {}", token_supply);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

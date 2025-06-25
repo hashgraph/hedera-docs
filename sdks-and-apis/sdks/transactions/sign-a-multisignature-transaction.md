@@ -83,7 +83,7 @@ let transfer_transaction = TransferTransaction::new()
 // Freeze the transaction from any further modifications
 let transaction = transfer_transaction.freeze_with(&client)?;
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}
@@ -157,7 +157,7 @@ let signature3 = private_key_signer3.sign_transaction(&transaction)?;
 
 // signature1, signature2, and signature3 are returned back to you
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}
@@ -198,7 +198,7 @@ let signed_transaction = transaction
     .add_signature(public_key2, signature2)?
     .add_signature(public_key3, signature3)?;
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}
@@ -236,7 +236,7 @@ fmt.Println("The public keys that signed the transaction ", signatures)
 let signatures = signed_transaction.get_signatures()?;
 println!("The public keys that signed the transaction: {:?}", signatures);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}
@@ -296,7 +296,7 @@ let tx_id = submit_tx.transaction_id;
 // Print the transaction ID to the console
 println!("Transaction ID: {:?}", tx_id);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

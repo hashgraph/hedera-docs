@@ -81,7 +81,7 @@ let transaction = AccountCreateTransaction::new() // Any transaction can be appl
     .max_transaction_fee(Hbar::new(2)) // Set the max transaction fee to 2 hbar
     .transaction_memo("Transaction memo"); // Set the transaction memo
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}
@@ -143,7 +143,7 @@ let transaction = AccountCreateTransaction::new() // Any transaction can be appl
 
 let max_transaction_fee = transaction.max_transaction_fee();
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

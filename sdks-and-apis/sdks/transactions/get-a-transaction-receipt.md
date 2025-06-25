@@ -64,7 +64,7 @@ let receipt = tx_response.get_receipt(&client)?;
 
 println!("The transaction receipt: {:?}", receipt);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

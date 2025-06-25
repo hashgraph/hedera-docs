@@ -91,7 +91,7 @@ let info = query.execute(&client)?;
 
 println!("Contract info: {:?}", info);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

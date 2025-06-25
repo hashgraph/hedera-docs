@@ -144,7 +144,7 @@ let threshold_key = KeyList::with_threshold(1)
 
 println!("The 1/3 threshold key structure {}", threshold_key);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

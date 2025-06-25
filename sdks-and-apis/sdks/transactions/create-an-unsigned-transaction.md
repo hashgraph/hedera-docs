@@ -86,7 +86,7 @@ let freeze_transaction = transaction.freeze_with(&client)?;
 
 println!("{:?}", freeze_transaction);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

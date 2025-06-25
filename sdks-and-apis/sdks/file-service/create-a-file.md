@@ -155,7 +155,7 @@ let file_id = receipt.file_id.unwrap();
 
 println!("The new file ID is {}", file_id);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

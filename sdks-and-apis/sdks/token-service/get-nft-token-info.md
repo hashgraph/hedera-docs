@@ -64,7 +64,7 @@ let nft_infos = TokenNftInfoQuery::new()
     .nft_id(nft_id)
     .execute(&client)?;
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

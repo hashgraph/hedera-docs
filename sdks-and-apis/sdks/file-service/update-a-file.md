@@ -160,7 +160,7 @@ let status = receipt.status;
 
 println!("The transaction consensus status is {}", status);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}
@@ -225,7 +225,7 @@ let transaction = FileUpdateTransaction::new()
 // Get the key
 let key = transaction.get_key();
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

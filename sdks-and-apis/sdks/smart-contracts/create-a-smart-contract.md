@@ -159,7 +159,7 @@ let receipt = tx_response.get_receipt(&client)?;
 let new_contract_id = receipt.contract_id.unwrap();
 println!("The new contract ID is {}", new_contract_id);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

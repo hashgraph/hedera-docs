@@ -66,7 +66,7 @@ let bytecode = query.execute(&client)?;
 
 println!("Contract bytecode: {:?}", bytecode);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

@@ -128,7 +128,7 @@ let transaction_status = receipt.status;
 
 println!("The transaction consensus status is {}", transaction_status);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}
@@ -252,7 +252,7 @@ let transaction_status = receipt.status;
 
 println!("The transaction consensus status is {}", transaction_status);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

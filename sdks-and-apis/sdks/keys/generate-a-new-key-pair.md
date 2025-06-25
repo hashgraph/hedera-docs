@@ -63,7 +63,7 @@ let public_key = private_key.public_key();
 println!("private key = {}", private_key);
 println!("public key = {}", public_key);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}
@@ -137,7 +137,7 @@ let public_key = private_key.public_key();
 println!("private key = {}", private_key);
 println!("public key = {}", public_key);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

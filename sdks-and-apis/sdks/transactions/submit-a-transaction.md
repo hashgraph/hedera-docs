@@ -135,7 +135,7 @@ println!("The transaction ID is {:?}", transaction_id);
 println!("The transaction hash is {:?}", transaction_hash);
 println!("The node ID is {:?}", node_id);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

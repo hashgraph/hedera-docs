@@ -92,7 +92,7 @@ let result = query.execute(&client)?;
 let message = result.get_string(0)?;
 println!("Contract message: {}", message);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

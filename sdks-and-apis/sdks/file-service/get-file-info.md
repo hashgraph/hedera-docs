@@ -90,7 +90,7 @@ let file_info = query.execute(&client)?;
 // Print the file info to the console
 println!("File info: {:?}", file_info);
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}
@@ -163,7 +163,7 @@ let query = FileInfoQuery::new()
 // Get the file ID
 let file_id = query.get_file_id();
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

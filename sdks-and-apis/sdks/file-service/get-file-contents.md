@@ -86,7 +86,7 @@ let contents = query.execute(&client)?;
 // Print the contents to the console
 println!("File contents: {}", String::from_utf8_lossy(&contents));
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}
@@ -144,7 +144,7 @@ let query = FileContentsQuery::new()
 // Get the file ID
 let file_id = query.get_file_id();
 
-// v2.12.0+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

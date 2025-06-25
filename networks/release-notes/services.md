@@ -95,7 +95,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 {% endhint %}
 
 {% hint style="success" %}
-**TESTNET UPDATE SCHEDULED: JUNE 3, 2025**
+**TESTNET UPDATE: JUNE 3, 2025**
 {% endhint %}
 
 ### Release Highlights
@@ -315,11 +315,11 @@ Release 0.62 represents an important milestone toward making Hedera a highly com
 ## Release v0.61
 
 {% hint style="success" %}
-**MAINNET UPDATE SCHEDULED: MAY 30, 2025**
+**MAINNET UPDATE: MAY 30, 2025**
 {% endhint %}
 
 {% hint style="success" %}
-**TESTNET UPDATE SCHEDULED: MAY 20, 2025**
+**TESTNET UPDATE: MAY 20, 2025**
 {% endhint %}
 
 ### Release Highlights
@@ -530,11 +530,11 @@ This release focuses on enhancing network incentivization and improving overall 
 ## Release v0.60
 
 {% hint style="success" %}
-**MAINNET UPDATE SCHEDULED: APRIL 16, 2025**
+**MAINNET UPDATE: APRIL 16, 2025**
 {% endhint %}
 
 {% hint style="success" %}
-**TESTNET UPDATE SCHEDULED: April 9, 2025**
+**TESTNET UPDATE: April 9, 2025**
 {% endhint %}
 
 ### Release Highlights
@@ -590,11 +590,11 @@ This release focuses on significant performance improvements, enhanced developer
 ## Release v0.59
 
 {% hint style="success" %}
-**MAINNET UPDATE SCHEDULED: MARCH 26, 2025**
+**MAINNET UPDATE: MARCH 26, 2025**
 {% endhint %}
 
 {% hint style="success" %}
-**TESTNET UPDATE SCHEDULED: MARCH 18, 2025**
+**TESTNET UPDATE: MARCH 18, 2025**
 {% endhint %}
 
 ### Release Highlights
@@ -697,11 +697,11 @@ This release focuses on significant performance improvements, enhanced developer
 ## Release v0.58
 
 {% hint style="success" %}
-**MAINNET UPDATE SCHEDULED: MARCH 12, 2025**
+**MAINNET UPDATE: MARCH 12, 2025**
 {% endhint %}
 
 {% hint style="success" %}
-**TESTNET UPDATE SCHEDULED: FEBRUARY 11, 2025**
+**TESTNET UPDATE: FEBRUARY 11, 2025**
 {% endhint %}
 
 ### Release Highlights
@@ -875,11 +875,11 @@ Re-tag of `v0.58.7` to trigger workflow
 ## Release v0.57
 
 {% hint style="success" %}
-**MAINNET UPDATE SCHEDULED: JANUARY 28, 2025**
+**MAINNET UPDATE: JANUARY 28, 2025**
 {% endhint %}
 
 {% hint style="success" %}
-**TESTNET UPDATE SCHEDULED: JANUARY 8, 2025**
+**TESTNET UPDATE: JANUARY 8, 2025**
 {% endhint %}
 
 ### Release Highlights
@@ -976,11 +976,11 @@ This release introduces several new features, improvements, and bug fixes, inclu
 ## Release v0.56
 
 {% hint style="success" %}
-**MAINNET UPDATE SCHEDULED: DECEMBER 11, 2024**
+**MAINNET UPDATE: DECEMBER 11, 2024**
 {% endhint %}
 
 {% hint style="success" %}
-**TESTNET UPDATE SCHEDULED: DECEMBER 4, 2024**
+**TESTNET UPDATE: DECEMBER 4, 2024**
 {% endhint %}
 
 ### Release Highlights

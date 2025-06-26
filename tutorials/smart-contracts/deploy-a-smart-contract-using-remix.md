@@ -125,6 +125,6 @@ If you're up for it, you can verify your deployed contract using the HashScan Sm
 
 **➡** [**HashScan Network Explorer**](https://hashscan.io/)
 
-**➡** [**Deploy Leveraging EVM Dev Tools** ](deploy-by-leveraging-ethereum-developer-tools-on-hedera.md)
+**➡** [**Deploy Leveraging EVM Dev Tools** ](broken-reference)
 
 <table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Krystal, Technical Writer</p><p><a href="https://github.com/theekrystallee">GitHub</a> | <a href="https://hashnode.com/@theekrystallee">Hashnode</a></p></td><td><a href="https://hashnode.com/@theekrystallee">https://hashnode.com/@theekrystallee</a></td></tr><tr><td align="center"><p>Editor: Logan, Software Engineer II</p><p><a href="https://github.com/quiet-node">GitHub</a> | <a href="https://www.linkedin.com/in/logann131/">LinkedIn</a></p></td><td><a href="https://github.com/quiet-node">https://github.com/quiet-node</a></td></tr></tbody></table>

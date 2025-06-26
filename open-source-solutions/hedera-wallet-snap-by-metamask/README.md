@@ -10,7 +10,7 @@ MetaMask Snaps is an open-source framework allowing secure extensions to MetaMas
 
 Snaps enable users to interact with new blockchains, protocols, and decentralized applications (dApps) beyond what is natively supported by MetaMask. The goal of the MetaMask Snaps system is to create a more open, customizable, and extensible wallet experience for users while fostering innovation and collaboration within the blockchain and decentralized application ecosystem.
 
-<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p><strong>➡</strong> <a href="https://docs.tuum.tech/hedera-wallet-snap/basics/introduction"><strong>Hedera Wallet Snap Documentation</strong> </a></p><p><a href="https://docs.tuum.tech/hedera-wallet-snap/basics/introduction"><strong>by Tuum Tech</strong></a></p></td><td><a href="https://docs.tuum.tech/hedera-wallet-snap/basics/introduction">https://docs.tuum.tech/hedera-wallet-snap/basics/introduction</a></td></tr><tr><td align="center"><strong>➡</strong> <a href="https://docs.hedera.com/hedera/tutorials/smart-contracts/metamask-hedera-wallet-snap-tutorial"><strong>Hedera Wallet Snap Tutorial</strong></a></td><td><a href="https://docs.hedera.com/hedera/tutorials/smart-contracts/metamask-hedera-wallet-snap-tutorial">https://docs.hedera.com/hedera/tutorials/smart-contracts/metamask-hedera-wallet-snap-tutorial</a></td></tr></tbody></table>
+<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p><strong>➡</strong> <a href="https://docs.tuum.tech/hedera-wallet-snap/basics/introduction"><strong>Hedera Wallet Snap Documentation</strong></a></p><p><a href="https://docs.tuum.tech/hedera-wallet-snap/basics/introduction"><strong>by Tuum Tech</strong></a></p></td><td><a href="https://docs.tuum.tech/hedera-wallet-snap/basics/introduction">https://docs.tuum.tech/hedera-wallet-snap/basics/introduction</a></td></tr><tr><td align="center"><strong>➡</strong> <a href="https://docs.hedera.com/hedera/tutorials/smart-contracts/metamask-hedera-wallet-snap-tutorial"><strong>Hedera Wallet Snap Tutorial</strong></a></td><td><a href="https://docs.hedera.com/hedera/tutorials/smart-contracts/metamask-hedera-wallet-snap-tutorial">https://docs.hedera.com/hedera/tutorials/smart-contracts/metamask-hedera-wallet-snap-tutorial</a></td></tr></tbody></table>
 
 ## FAQs
 
@@ -26,7 +26,7 @@ The Hedera JSON RPC Relay supports only the methods defined at [Hedera JSON RPC 
 
 <summary><strong>How can I deploy a smart contract on Hedera using MetaMask?</strong></summary>
 
-To deploy a smart contract on Hedera using MetaMask, you will need to use the [Hedera JSON RPC relay](https://docs.hedera.com/hedera/core-concepts/smart-contracts/deploying-smart-contracts/json-rpc-relay). You can deploy using tools compatible with EVM-based chains. For detailed steps, refer to [Deploying Smart Contracts on Hedera](../../tutorials/smart-contracts/deploy-your-first-smart-contract.md).
+To deploy a smart contract on Hedera using MetaMask, you will need to use the [Hedera JSON RPC relay](https://docs.hedera.com/hedera/core-concepts/smart-contracts/deploying-smart-contracts/json-rpc-relay). You can deploy using tools compatible with EVM-based chains. For detailed steps, refer to [Deploying Smart Contracts on Hedera](broken-reference).
 
 </details>
 

@@ -1,4 +1,4 @@
-# Hedera Agent Kit
+# Hedera AI Agent Kit
 
 Build LLM-powered applications that interact with the Hedera Network. Create conversational agents that can understand user requests in natural language and execute Hedera transactions, or build backend systems that leverage AI for on-chain operations.
 
@@ -6,23 +6,23 @@ Build LLM-powered applications that interact with the Hedera Network. Create con
 
 The Hedera Agent Kit provides:
 
-- **Conversational AI**: LangChain-based agents that understand natural language
-- **Comprehensive Tools**: 67 pre-built tools covering all Hedera services
-- **Flexible Transaction Handling**: Direct execution or provide transaction bytes for user signing
-- **Service Builders**: Fluent APIs for programmatic Hedera operations
-- **Plugin System**: Extend functionality with custom tools
-- **TypeScript First**: Fully typed with comprehensive interfaces
+* **Conversational AI**: LangChain-based agents that understand natural language
+* **Comprehensive Tools**: 67 pre-built tools covering all Hedera services
+* **Flexible Transaction Handling**: Direct execution or provide transaction bytes for user signing
+* **Service Builders**: Fluent APIs for programmatic Hedera operations
+* **Plugin System**: Extend functionality with custom tools
+* **TypeScript First**: Fully typed with comprehensive interfaces
 
 ## Installation
 
 ```bash
-npm install @hashgraphonline/hedera-agent-kit @hashgraph/sdk @langchain/openai @langchain/core zod
+npm install hedera-agent-kit @hashgraph/sdk @langchain/openai @langchain/community
 ```
 
 For WalletConnect integration:
 
 ```bash
-npm install @hashgraphonline/hashinal-wc
+npm install @hashgraph/hedera-wallet-connect
 ```
 
 ## Quick Start
@@ -33,7 +33,7 @@ npm install @hashgraphonline/hashinal-wc
 import {
   HederaConversationalAgent,
   ServerSigner,
-} from '@hashgraphonline/hedera-agent-kit';
+} from 'hedera-agent-kit';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -188,17 +188,17 @@ The core engine that manages builders and tools.
 
 The foundation - fluent APIs that simplify Hedera SDK complexity:
 
-- **AccountBuilder**: Account operations and HBAR transfers
-- **HtsBuilder**: Token operations (most feature-rich)
-- **HcsBuilder**: Consensus service operations
-- **ScsBuilder**: Smart contract interactions
-- **FileBuilder**: File storage operations
-- **QueryBuilder**: Read-only queries
+* **AccountBuilder**: Account operations and HBAR transfers
+* **HtsBuilder**: Token operations (most feature-rich)
+* **HcsBuilder**: Consensus service operations
+* **ScsBuilder**: Smart contract interactions
+* **FileBuilder**: File storage operations
+* **QueryBuilder**: Read-only queries
 
 ### Signers
 
-- **ServerSigner**: Backend applications with keys
-- **WalletConnect**: Use `@hashgraphonline/hashinal-wc` for browser wallets
+* **ServerSigner**: Backend applications with keys
+* **WalletConnect**: Use `@hashgraph/hedera-wallet-connect` for browser wallets
 
 ## Available Tools
 
@@ -206,42 +206,42 @@ The kit includes 67 pre-built LangChain tools:
 
 ### Account Management (19 tools)
 
-- Account creation, updates, deletion
-- HBAR transfers and allowances
-- Balance queries
-- Scheduled transaction signing
+* Account creation, updates, deletion
+* HBAR transfers and allowances
+* Balance queries
+* Scheduled transaction signing
 
 ### Token Service - HTS (26 tools)
 
-- Token creation (fungible & NFT)
-- Minting, burning, transfers
-- Associations and dissociations
-- Freezing, pausing, KYC operations
-- Airdrops
+* Token creation (fungible & NFT)
+* Minting, burning, transfers
+* Associations and dissociations
+* Freezing, pausing, KYC operations
+* Airdrops
 
 ### Consensus Service - HCS (7 tools)
 
-- Topic creation and management
-- Message submission
-- Topic queries
+* Topic creation and management
+* Message submission
+* Topic queries
 
 ### Smart Contracts - SCS (7 tools)
 
-- Contract deployment
-- Function execution
-- Contract queries and updates
+* Contract deployment
+* Function execution
+* Contract queries and updates
 
 ### File Service (5 tools)
 
-- File creation and updates
-- Content management
+* File creation and updates
+* Content management
 
 ### Network & Queries (8 tools)
 
-- Network information
-- Transaction queries
-- HBAR price data
-- Block information
+* Network information
+* Transaction queries
+* HBAR price data
+* Block information
 
 ## Service Builders
 
@@ -272,42 +272,6 @@ const token = await kit
   .execute();
 ```
 
-## Plugin System
-
-Extend functionality with custom plugins:
-
-```typescript
-import { IPlugin } from '@hashgraphonline/standards-agent-kit';
-
-class MyPlugin implements IPlugin {
-  id = 'my-plugin';
-  version = '1.0.0';
-
-  getTools(context) {
-    return [
-      new DynamicStructuredTool({
-        name: 'my-custom-tool',
-        description: 'Does something custom',
-        schema: z.object({
-          param: z.string(),
-        }),
-        func: async (input) => {
-          // Implementation
-          return 'Result';
-        },
-      }),
-    ];
-  }
-}
-
-// Use with agent
-const agent = new HederaConversationalAgent(signer, {
-  pluginConfig: {
-    plugins: [new MyPlugin()],
-  },
-});
-```
-
 ## Operational Modes
 
 ### Direct Execution
@@ -336,24 +300,24 @@ scheduleUserTransactionsInBytesMode: true;
 
 Full working examples are available in the repository:
 
-- `examples/langchain-demo.ts` - Interactive chat demo
-- `examples/hello-world-plugin.ts` - Plugin creation
-- `examples/custom-mirror-node.ts` - Mirror node configuration
+* `examples/langchain-demo.ts` - Interactive chat demo
+* `examples/hello-world-plugin.ts` - Plugin creation
+* `examples/custom-mirror-node.ts` - Mirror node configuration
 
 ## Documentation
 
-- [User Prompts Guide](./hedera-agent-kit-user-prompts.md) - Handling messages and responses
-- [Query Guide](./hedera-agent-kit-queries.md) - Reading data from Hedera
-- [Service Builders Guide](./hedera-agent-kit-builders.md) - Creating transactions
-- [Plugin Development Guide](./hedera-agent-kit-plugins.md) - Extending functionality
-- [Tools Reference](./hedera-agent-kit-tools-reference.md) - All available tools
-- [OpenConvAI Integration](./hedera-agent-kit-openconvai.md) - Multi-agent communication
+* [User Prompts Guide](hedera-agent-kit-user-prompts.md) - Handling messages and responses
+* [Query Guide](hedera-agent-kit-queries.md) - Reading data from Hedera
+* [Service Builders Guide](hedera-agent-kit-builders.md) - Creating transactions
+* [Plugin Development Guide](hedera-agent-kit-plugins.md) - Extending functionality
+* [Tools Reference](hedera-agent-kit-tools-reference.md) - All available tools
+* [OpenConvAI Integration](hedera-agent-kit-openconvai.md) - Multi-agent communication
 
 ## Resources
 
-- **GitHub**: [github.com/hashgraph-online/hedera-agent-kit](https://github.com/hashgraph-online/hedera-agent-kit)
-- **NPM**: [@hashgraphonline/hedera-agent-kit](https://www.npmjs.com/package/@hashgraphonline/hedera-agent-kit)
-- **Issues**: [GitHub Issues](https://github.com/hashgraph-online/hedera-agent-kit/issues)
+* **GitHub**: [github.com/hedera-dev/hedera-agent-kit](https://github.com/hedera-dev/hedera-agent-kit)&#x20;
+* **NPM**: [hedera-agent-kit](https://www.npmjs.com/package/hedera-agent-kit)
+* **Issues**: [GitHub Issues](https://github.com/hedera-dev/hedera-agent-kit/issues)
 
 ## License
 

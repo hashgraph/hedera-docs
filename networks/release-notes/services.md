@@ -16,6 +16,37 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **TESTNET UPDATE SCHEDULED: JULY 2, 2025**
 {% endhint %}
 
+### [Build 0.63.7](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.63.7)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* ci: fix typo in secret by [@andrewb1269hg](https://github.com/andrewb1269hg) in [#19893](https://github.com/hiero-ledger/hiero-consensus-node/pull/19893)
+
+**Full Changelog**: [v0.63.6...v0.63.7](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.63.6...v0.63.7)
+
+</details>
+
+### [Build 0.63.6](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.63.6)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* ci: remove windows-2019 runner option ([#19491](https://github.com/hiero-ledger/hiero-consensus-node/pull/19491)) by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#19608](https://github.com/hiero-ledger/hiero-consensus-node/pull/19608)
+* fix: (0.63) Log active config _after_ initializing props and permissions facilities by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#19619](https://github.com/hiero-ledger/hiero-consensus-node/pull/19619)
+* chore: Remove `AtomicBatch` from prod throttles ([#19213](https://github.com/hiero-ledger/hiero-consensus-node/pull/19213)) by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#19555](https://github.com/hiero-ledger/hiero-consensus-node/pull/19555)
+* chore: (0.63) Reclaim ingest throttle capacity after other failures by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#19502](https://github.com/hiero-ledger/hiero-consensus-node/pull/19502)
+* chore: Cherry pick changes that update publishing mech to use central publishing portal ([#19567](https://github.com/hiero-ledger/hiero-consensus-node/pull/19567)) by [@rbarker-dev](https://github.com/rbarker-dev) in [#19869](https://github.com/hiero-ledger/hiero-consensus-node/pull/19869)
+* chore: (0.63) Assess fractional fees relative to non-exempt credits and debits by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#19883](https://github.com/hiero-ledger/hiero-consensus-node/pull/19883)
+* chore: (0.63) Restore 0.62 token auto-renew period validations by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#19882](https://github.com/hiero-ledger/hiero-consensus-node/pull/19882)
+* chore: (0.63) Adds `application-override.properties` by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#19889](https://github.com/hiero-ledger/hiero-consensus-node/pull/19889)
+
+**Full Changelog**: [v0.63.5...v0.63.6](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.63.5...v0.63.6)
+
+</details>
+
 ### [Build 0.63.0](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.63.0)
 
 <details>

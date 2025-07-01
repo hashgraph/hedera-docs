@@ -180,7 +180,7 @@ The following ports must be configured for **public internet access** unless oth
 
 **📡 Port Configuration**
 
-<table><thead><tr><th width="132.375">Port</th><th width="129.4921875">Protocol</th><th width="170.046875">Direction</th><th>Purpose</th></tr></thead><tbody><tr><td><code>50211</code></td><td>TCP</td><td>Ingress</td><td>Gossip protocol</td></tr><tr><td><code>50212</code></td><td>TCP</td><td>Ingress</td><td>TLS-encrypted gossip</td></tr><tr><td><code>80</code></td><td>TCP</td><td>Egress only</td><td>OS package repository</td></tr><tr><td><code>443</code></td><td>TCP</td><td>Egress only</td><td>Secure updates</td></tr></tbody></table>
+<table><thead><tr><th width="132.375">Port</th><th width="129.4921875">Protocol</th><th width="170.046875">Direction</th><th>Purpose</th></tr></thead><tbody><tr><td><code>50211</code></td><td>TCP</td><td>Ingress/Egress</td><td>Gossip protocol</td></tr><tr><td><code>50212</code></td><td>TCP</td><td>Ingress/Egress</td><td>TLS-encrypted gossip</td></tr><tr><td><code>80</code></td><td>TCP</td><td>Egress only</td><td>OS package repository</td></tr><tr><td><code>443</code></td><td>TCP</td><td>Egress only</td><td>Secure updates</td></tr></tbody></table>
 
 </details>
 

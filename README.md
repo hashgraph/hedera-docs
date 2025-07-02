@@ -67,6 +67,49 @@ Whether you’re fixing bugs, enhancing features, or improving documentation, yo
 
 Please read our [contributing guide](https://github.com/hashgraph/.github/blob/main/CONTRIBUTING.md) to see how you can get involved.
 
+## Serve Locally with Gitbook CLI
+
+To serve this documentation locally using the legacy GitBook CLI, you must use Node.js v10. Newer versions of Node are not compatible with the open-source GitBook CLI.
+
+1. Install Node Version Manager (nvm)
+If you don’t have nvm installed, follow the instructions at nvm-sh/nvm or use Homebrew:
+
+```sh
+brew install nvm
+```
+
+Then add the following to your ~/.zshrc or ~/.bashrc:
+
+```sh
+export NVM_DIR="$HOME/.nvm"
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+```
+
+Reload your shell:
+
+```sh
+source ~/.zshrc  # or source ~/.bashrc
+```
+
+2. Install and Use Node.js v10
+```sh
+nvm install 10
+nvm use 10
+```
+
+3. Install GitBook CLI Locally
+In your project directory, run:
+
+```sh
+npm install gitbook-cli
+```
+4. Install GitBook Plugins and Serve
+sh
+npx gitbook install
+npx gitbook serve
+This will build the documentation and serve it at `http://localhost:4000`.
+
+
 ## Code of Conduct
 
 This project is governed by the [Contributor Covenant Code of Conduct](https://github.com/hashgraph/.github/blob/main/CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code of conduct.

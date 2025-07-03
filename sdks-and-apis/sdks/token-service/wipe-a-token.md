@@ -123,8 +123,8 @@ let transaction = TokenWipeTransaction::new()
 // Freeze the unsigned transaction, signing with the private key of the payer and the token's wipe key
 let tx_response = transaction
     .freeze_with(&client)?
-    .sign(account_key)?
-    .sign(wipe_key)?
+    .sign(account_key)
+    .sign(wipe_key)
     .execute(&client).await?;
 
 // Request the receipt of the transaction

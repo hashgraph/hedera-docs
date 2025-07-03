@@ -144,10 +144,18 @@ fmt.Printf("The new topic ID is %v\n", newContractId)
 
 {% tab title="Rust" %}
 ```rust
+// Create the admin key
+let admin_key = PrivateKey::generate_ed25519();
+
 // Create the transaction
 let contract_create = ContractCreateFlow::new()
-    .bytecode(bytecode)
+    .bytecode_hex(bytecode_hex)
+    .admin_key(admin_key.public_key())
     .gas(100_000);
+    .constructor_parameters(
+        ContractFunctionParameters::new().add_string("Hello from Hedera.").to_bytes(None),
+    )
+    .contract_memo("[e2e::ContractCreateFlow]".to_owned())
 
 // Sign the transaction with the client operator key and submit to a Hedera network
 let tx_response = contract_create.execute(&client).await?;

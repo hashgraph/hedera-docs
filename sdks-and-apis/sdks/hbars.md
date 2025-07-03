@@ -38,7 +38,7 @@ Hbar.fromString("10");
 //100 tinybars from string value
 Hbar.fromString("10", HbarUnit.TINYBAR);
 
-//v0.34.0
+// v2.0.0+
 ```
 {% endtab %}
 
@@ -69,7 +69,7 @@ hedera.NewHbar(10)
 //100 tinybars
 hedera.HbarFrom(10, hedera.HbarUnits.Tinybar)
 
-//v0.34.0
+// v2.0.0+
 ```
 {% endtab %}
 
@@ -114,7 +114,7 @@ new Hbar(10).toString(HbarUnit.TINYBAR);
 //10 HBAR converted to tinybars
 new Hbar(10).toTinybars();
 
-//v0.34.0
+// v2.0.0+
 ```
 {% endtab %}
 
@@ -141,7 +141,7 @@ hedera.NewHbar(10).String()
 
 //10 HBAR converted to tinybars
 hedera.NewHbar(10).AsTinybar()
-//v0.34.0
+// v2.0.0+
 ```
 {% endtab %}
 
@@ -180,7 +180,7 @@ Hbar hbarMin = Hbar.MIN;
 //A constant value of zero hbars
 Hbar hbarZero = Hbar.ZERO; 
 
-//v0.34.0
+// v2.0.0+
 ```
 {% endtab %}
 
@@ -208,7 +208,7 @@ hbarMin := hedera.MinHbar
 //A constant value of zero hbars
 hbarZero := hedera.ZeroHbar
 
-//v0.34.0
+// v2.0.0+
 ```
 {% endtab %}
 
@@ -248,7 +248,7 @@ Modify the _**HBAR**_ representation to one of the _**HBAR**_ denominations.
 //100 tinybars
 Hbar.from(100, HbarUnit.TINYBAR);
 
-//v0.34.0
+// v2.0.0+
 ```
 {% endtab %}
 
@@ -257,7 +257,7 @@ Hbar.from(100, HbarUnit.TINYBAR);
 //100 tinybars
 Hbar.from(100, HbarUnit.TINYBAR);
 
-//v0.34.0
+// v2.0.0+
 ```
 {% endtab %}
 
@@ -266,7 +266,7 @@ Hbar.from(100, HbarUnit.TINYBAR);
 //100 tinybars
 hedera.HbarFrom(100, hedera.HbarUnits.Tinybar)
 
-//v0.34.0
+// v2.0.0+
 ```
 {% endtab %}
 {% endtabs %}

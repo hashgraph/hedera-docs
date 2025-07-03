@@ -120,13 +120,13 @@ fmt.Printf("Token metadata update status: ", receipt.Status)
 // Create the transaction
 let token_update_nfts_tx = TokenUpdateNftsTransaction::new()
     .token_id(token_id)
-    .serial_numbers(nft_serials)
+    .serials(vec![nft_serial as i64])
     .metadata(new_metadata)
     .freeze_with(&client)?;
 
 // Sign the transaction and execute it
 let token_update_nfts_response = token_update_nfts_tx
-    .sign(metadata_key)?
+    .sign(metadata_key)
     .execute(&client).await?;
 
 // Get receipt for update nfts metadata transaction

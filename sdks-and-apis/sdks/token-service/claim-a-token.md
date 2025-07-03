@@ -110,7 +110,7 @@ let transaction = TokenClaimAirdropTransaction::new()
 
 // Sign with the sender account key and submit the transaction to a Hedera network
 let tx_response = transaction
-    .sign(account_key)?
+    .sign(account_key)
     .execute(&client).await?;
 
 // Request the receipt of the transaction

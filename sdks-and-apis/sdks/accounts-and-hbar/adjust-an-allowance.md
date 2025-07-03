@@ -106,7 +106,7 @@ let transaction = AccountAllowanceDeleteTransaction::new()
 // Sign the transaction with the owner account key
 let tx_response = transaction
     .freeze_with(&client)?
-    .sign(owner_account_key)?
+    .sign(owner_account_key)
     .execute(&client).await?;
 
 // Request the receipt of the transaction

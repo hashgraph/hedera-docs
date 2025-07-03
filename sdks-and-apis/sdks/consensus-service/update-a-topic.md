@@ -123,7 +123,7 @@ let transaction = TopicUpdateTransaction::new()
 // Sign the transaction with the admin key
 let tx_response = transaction
     .freeze_with(&client)?
-    .sign(admin_key)?
+    .sign(admin_key)
     .execute(&client).await?;
 
 // Request the receipt of the transaction

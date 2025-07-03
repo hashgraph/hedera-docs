@@ -120,7 +120,7 @@ let transaction = TokenRevokeKycTransaction::new()
 // Freeze the unsigned transaction, sign with the kyc private key of the token
 let tx_response = transaction
     .freeze_with(&client)?
-    .sign(kyc_key)?
+    .sign(kyc_key)
     .execute(&client).await?;
 
 // Request the receipt of the transaction

@@ -127,8 +127,8 @@ let transaction = AccountUpdateTransaction::new()
 // Sign the transaction with the old key and new key
 let tx_response = transaction
     .freeze_with(&client)?
-    .sign(old_key)?
-    .sign(new_key)?
+    .sign(old_key)
+    .sign(new_key)
     .execute(&client).await?;
 
 // Request the receipt of the transaction

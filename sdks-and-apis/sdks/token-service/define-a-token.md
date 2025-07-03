@@ -154,8 +154,8 @@ fmt.Printf("The new token ID is %v\n", tokenId)
 ```rust
 // Create the transaction
 let transaction = TokenCreateTransaction::new()
-    .token_name("Your Token Name")
-    .token_symbol("F")
+    .name("Your Token Name")
+    .symbol("F")
     .treasury_account_id(treasury_account_id)
     .initial_supply(5000)
     .admin_key(admin_key.public_key())
@@ -166,8 +166,8 @@ let transaction = TokenCreateTransaction::new()
 // Build the unsigned transaction, sign with admin private key of the token, sign with the token treasury private key
 let tx_response = transaction
     .freeze_with(&client)?
-    .sign(admin_key)?
-    .sign(treasury_key)?
+    .sign(admin_key)
+    .sign(treasury_key)
     .execute(&client).await?;
 
 // Request the receipt of the transaction

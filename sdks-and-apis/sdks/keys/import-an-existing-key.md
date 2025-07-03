@@ -46,13 +46,13 @@ if err != nil {
 {% tab title="Rust" %}
 ```rust
 // Import ED25519 keys from strings
-let private_key = PrivateKey::from_str("302e020100300506032b657004220420d763df96caaabf192c67326e87c32a1ae4571f739022c77d2acaae5dd09cfb13")?;
-let public_key = PublicKey::from_str("302a300506032b65700321008f556741dcb5e144e5cabfce5355ad5050ec7a6ea15787a5fd759d616e047d24")?;
+let private_key = PrivateKey::from_str("302e020100300506032b657004220420d763df96caaabf192c67326e87c32a1ae4571f739022c77d2acaae5dd09cfb13");
+let public_key = PublicKey::from_str("302a300506032b65700321008f556741dcb5e144e5cabfce5355ad5050ec7a6ea15787a5fd759d616e047d24");
 
 // Import from PEM
-let private_key = PrivateKey::from_pem("-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----")?;
+let private_key = PrivateKey::from_pem("-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----");
 // With password if encrypted
-let private_key = PrivateKey::from_pem_with_password("-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----", "password")?;
+let private_key = PrivateKey::from_pem_with_password("-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----", "password");
 
 println!("Imported private key: {:?}", private_key);
 println!("Imported public key: {:?}", public_key);

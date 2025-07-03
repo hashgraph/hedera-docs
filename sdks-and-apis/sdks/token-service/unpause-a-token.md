@@ -107,7 +107,7 @@ let transaction = TokenUnpauseTransaction::new()
 // Freeze the unsigned transaction, sign with the pause key
 let tx_response = transaction
     .freeze_with(&client)?
-    .sign(pause_key)?
+    .sign(pause_key)
     .execute(&client).await?;
 
 // Request the receipt of the transaction

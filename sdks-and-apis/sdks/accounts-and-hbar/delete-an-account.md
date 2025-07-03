@@ -108,7 +108,7 @@ let transaction = AccountDeleteTransaction::new()
 // Freeze the transaction for signing, sign with the private key of the account that will be deleted
 let tx_response = transaction
     .freeze_with(&client)?
-    .sign(account_key)?
+    .sign(account_key)
     .execute(&client)
     .await?;
 

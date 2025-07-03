@@ -118,15 +118,15 @@ fmt.Println("The transaction consensus status:", transactionStatus.String())
 ```rust
 // Create the token airdrop transaction for fungible token
 let transaction = TokenAirdropTransaction::new()
-    .add_token_transfer(token_id, account_id1, -1)
-    .add_token_transfer(token_id, account_id2, 1)
-    .add_token_transfer(token_id, account_id1, -1)
-    .add_token_transfer(token_id, account_id3, 1)
+    .token_transfer(token_id, account_id1, -1)
+    .token_transfer(token_id, account_id2, 1)
+    .token_transfer(token_id, account_id1, -1)
+    .token_transfer(token_id, account_id3, 1)
     .freeze_with(&client)?;
 
 // Sign with the sender account key and submit the transaction to a Hedera network
 let tx_response = transaction
-    .sign(account_key)?
+    .sign(account_key)
     .execute(&client).await?;
 
 // Request the receipt of the transaction

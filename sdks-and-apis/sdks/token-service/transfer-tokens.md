@@ -119,8 +119,8 @@ fmt.Printf("The transaction consensus status is %v\n", status)
 ```rust
 // Create the transfer transaction
 let transaction = TransferTransaction::new()
-    .add_token_transfer(token_id, operator_id, -1)
-    .add_token_transfer(token_id, account_id, 1);
+    .token_transfer(token_id, operator_id, -1)
+    .token_transfer(token_id, account_id, 1);
 
 // Sign with the client operator key and submit the transaction
 let tx_response = transaction

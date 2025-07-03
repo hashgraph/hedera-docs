@@ -111,13 +111,13 @@ fmt.Printf("The transaction consensus status is %v\n", status)
 ```rust
 // Create the token reject transaction for fungible token
 let transaction = TokenRejectTransaction::new()
-    .owner_id(account_id)
+    .owner(account_id)
     .add_token_id(token_id)
     .freeze_with(&client)?;
 
 // Sign with the account Id key and submit the transaction to a Hedera network
 let tx_response = transaction
-    .sign(account_id_key)?
+    .sign(account_id_key)
     .execute(&client).await?;
 
 // Request the receipt of the transaction
@@ -235,13 +235,13 @@ fmt.Printf("The transaction consensus status is %v\n", status)
 ```rust
 // Create the token reject transaction for fungible token
 let transaction = TokenRejectFlow::new()
-    .owner_id(account_id)
+    .owner(account_id)
     .add_token_id(token_id)
     .freeze_with(&client)?;
 
 // Sign with the account Id key and submit the transaction to a Hedera network
 let tx_response = transaction
-    .sign(account_id_key)?
+    .sign(account_id_key)
     .execute(&client).await?;
 
 // Request the receipt of the transaction

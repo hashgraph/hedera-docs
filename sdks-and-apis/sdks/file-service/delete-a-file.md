@@ -123,7 +123,7 @@ let transaction = FileDeleteTransaction::new()
 // Sign with the file key and submit to a Hedera network
 let tx_response = transaction
     .freeze_with(&client)?
-    .sign(file_key)?
+    .sign(file_key)
     .execute(&client).await?;
 
 // Request the receipt of the transaction

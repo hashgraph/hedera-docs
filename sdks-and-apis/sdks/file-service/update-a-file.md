@@ -148,8 +148,8 @@ let transaction = FileUpdateTransaction::new()
 // Sign with the file key and new key
 let tx_response = transaction
     .freeze_with(&client)?
-    .sign(file_key)?
-    .sign(new_key)?
+    .sign(file_key)
+    .sign(new_key)
     .execute(&client).await?;
 
 // Request the receipt of the transaction

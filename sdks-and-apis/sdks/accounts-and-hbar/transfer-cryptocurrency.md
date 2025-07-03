@@ -122,13 +122,13 @@ fmt.Printf("The transaction consensus status is %v\n", transactionReceipt.Status
 ```rust
 // Create the transfer transaction
 let transaction = TransferTransaction::new()
-    .add_hbar_transfer(account_id, Hbar::from(-10))
-    .add_hbar_transfer(recipient_id, Hbar::from(10));
+    .hbar_transfer(account_id, Hbar::from(-10))
+    .hbar_transfer(recipient_id, Hbar::from(10));
 
 // Freeze the transaction for signing, sign with the private key of the account that is sending hbars
 let tx_response = transaction
     .freeze_with(&client)?
-    .sign(account_key)?
+    .sign(account_key)
     .execute(&client).await?;
 
 // Request the receipt of the transaction

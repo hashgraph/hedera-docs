@@ -121,7 +121,7 @@ let transaction = AccountAllowanceApproveTransaction::new()
 // Sign the transaction with the owner account key and the transaction fee payer key (client)
 let tx_response = transaction
     .freeze_with(&client)?
-    .sign(owner_account_key)?
+    .sign(owner_account_key)
     .execute(&client)
     .await?;
 

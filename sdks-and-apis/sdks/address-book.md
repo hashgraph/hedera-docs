@@ -58,7 +58,7 @@ fmt.Println(string(contents))
 ```rust
 // Create the query
 let file_query = FileContentsQuery::new()
-    .file_id(FileId::from_str("0.0.102")?);
+    .file_id(FileId::from_str("0.0.102"));
 
 // Sign with the operator private key and submit to a Hedera network
 let contents = file_query.execute(&client).await?;

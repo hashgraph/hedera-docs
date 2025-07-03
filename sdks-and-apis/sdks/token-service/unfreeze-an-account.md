@@ -121,7 +121,7 @@ let transaction = TokenUnfreezeTransaction::new()
 // Freeze the unsigned transaction, sign with the freeze private key of the token
 let tx_response = transaction
     .freeze_with(&client)?
-    .sign(freeze_key)?
+    .sign(freeze_key)
     .execute(&client).await?;
 
 // Request the receipt of the transaction

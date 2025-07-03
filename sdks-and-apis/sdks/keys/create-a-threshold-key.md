@@ -122,27 +122,18 @@ fmt.Printf("The 1/3 threshold key structure %v\n", thresholdKey)
 
 {% tab title="Rust" %}
 ```rust
-// Generate 3 keys
-let key1 = PrivateKey::generate_ed25519()?;
-let public_key1 = key1.public_key();
+// Generate 2 keys
+let key1 = PrivateKey::generate_ed25519();
+let key2 = PrivateKey::generate_ed25519();
 
-let key2 = PrivateKey::generate_ed25519()?;
-let public_key2 = key2.public_key();
+// Create a threshold key that requires 1 out of 2 keys to sign
+let threshold_key = KeyList {
+        keys: vec![key1.public_key().into(), key2.public_key().into()],
+        threshold: Some(1),
+    };
 
-let key3 = PrivateKey::generate_ed25519()?;
-let public_key3 = key3.public_key();
 
-// Create a key list with the three keys
-let mut keys = Vec::new();
-keys.push(public_key1);
-keys.push(public_key2);
-keys.push(public_key3);
-
-// Create a threshold key that requires 1 out of 3 keys to sign
-let threshold_key = KeyList::with_threshold(1)
-    .add_all_keys(&keys);
-
-println!("The 1/3 threshold key structure {:?}", threshold_key);
+println!("The 1/2 threshold key structure {:?}", threshold_key);
 
 // v0.34.0
 ```

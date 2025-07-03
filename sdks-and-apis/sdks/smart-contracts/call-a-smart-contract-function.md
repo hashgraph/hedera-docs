@@ -102,7 +102,7 @@ let transaction = ContractExecuteTransaction::new()
     .contract_id(new_contract_id)
     .gas(100_000_000)
     .function("set_message", ContractFunctionParameters::new()
-        .add_string("hello from hedera again!"))?;
+        .add_string("hello from hedera again!"));
 
 // Sign with the client operator private key to pay for the transaction and submit to a Hedera network
 let tx_response = transaction.execute(&client).await?;

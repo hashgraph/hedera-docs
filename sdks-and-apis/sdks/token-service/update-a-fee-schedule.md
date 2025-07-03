@@ -113,7 +113,7 @@ let transaction = TokenFeeScheduleUpdateTransaction::new()
 
 // Sign with the fee schedule key of the token and submit the transaction to a Hedera network
 let tx_response = transaction
-    .sign(fee_schedule_key)?
+    .sign(fee_schedule_key)
     .execute(&client).await?;
 
 // Request the receipt of the transaction

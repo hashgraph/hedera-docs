@@ -134,11 +134,14 @@ maxtransactionFee := transaction.GetMaxTransactionFee()
 
 {% tab title="Rust" %}
 ```rust
+// The node account ID to submit the transaction to. You can add more than 1 node account ID to the list
+let node_id = vec![AccountId::new(3)];
+
 // Create the transaction and set the transaction properties
 let transaction = AccountCreateTransaction::new() // Any transaction can be applied here
     .initial_balance(Hbar::from_tinybars(1000))
     .max_transaction_fee(Hbar::new(50)) // Set the max transaction fee to 50 hbar
-    .node_account_id(AccountId::new(3)) // Set the node ID to submit the transaction to
+    .node_account_ids([node_id]) // Set the node ID to submit the transaction to
     .transaction_memo("Transaction memo"); // Add a transaction memo
 
 let max_transaction_fee = transaction.max_transaction_fee();

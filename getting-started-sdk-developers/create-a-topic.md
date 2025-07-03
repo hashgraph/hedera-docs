@@ -2,7 +2,7 @@
 
 ## Introduction to Creating a Topic
 
-This tutorial will walk you through a `TopicCreateTransaction` to create a new consensus topic and a `TopicMessageSubmitTransaction` to publish your first message using the [Hedera Consensus Service (HCS)](../../support-and-community/glossary.md#hedera-consensus-service-hcs). The service provides developers a decentralized tool for logging, ordering, and timestamping messages or transactions on the Hedera network.
+This tutorial will walk you through a `TopicCreateTransaction` to create a new consensus topic and a `TopicMessageSubmitTransaction` to publish your first message using the [Hedera Consensus Service (HCS)](../support-and-community/glossary.md#hedera-consensus-service-hcs). The service provides developers a decentralized tool for logging, ordering, and timestamping messages or transactions on the Hedera network.
 
 #### What you will accomplish
 
@@ -19,8 +19,8 @@ By the end of this tutorial, you will be able to:
 
 Before you begin, you should have **completed** the following tutorials:
 
-* [x] [Create and Fund Your Hedera Testnet Account](../../tutorials/more-tutorials/create-and-fund-your-hedera-testnet-account.md)
-* [x] [Environment Setup](../environment-setup.md)
+* [x] [Create and Fund Your Hedera Testnet Account](../tutorials/more-tutorials/create-and-fund-your-hedera-testnet-account.md)
+* [x] [Environment Setup](environment-setup.md)
 
 ***
 
@@ -490,7 +490,7 @@ fmt.Printf("Topic Message Sequence Number: %v\n", topicMsgSeqNum)
 {% endtab %}
 {% endtabs %}
 
-The total cost to create a topic and send a message to it is approximately [**$0.0101**](../../networks/mainnet/fees/#consensus-service), making it an affordable way to interact with the Hedera network.
+The total cost to create a topic and send a message to it is approximately [**$0.0101**](../networks/mainnet/fees/#consensus-service), making it an affordable way to interact with the Hedera network.
 
 {% embed url="https://docs.hedera.com/hedera/networks/mainnet/fees#consensus-service" %}
 
@@ -522,7 +522,7 @@ You can explore the Mirror Node APIs interactively via its Swagger page: [Hedera
 
 You can perform the same Mirror Node API query as `topicVerifyMirrorNodeApiUrl` above. This is what the relevant part of the Swagger page would look like when doing so:
 
-<img src="../../.gitbook/assets/topic-verify-mirror-node-api.png" alt="" data-size="original">
+<img src="../.gitbook/assets/topic-verify-mirror-node-api.png" alt="" data-size="original">
 
 _➡ You can learn more about the Mirror Nodes via its documentation:_ [_REST API_](https://docs.hedera.com/hedera/sdks-and-apis/rest-api)_._
 
@@ -578,7 +578,7 @@ Messages retrieved from this topic:
 
 To verify that both the `TopicCreateTransaction` and `TopicMessageSubmitTransaction` have been successful, check the transaction details on HashScan. Open _View the topic on HashScan_ URL from the console output in your browser and check that:
 
-<figure><img src="../../.gitbook/assets/hello-world--hcs--topic.drawing.svg" alt=""><figcaption><p>HCS topic in Hashscan, with annotated items to check.</p></figcaption></figure>
+<figure><img src="../.gitbook/assets/hello-world--hcs--topic.drawing.svg" alt=""><figcaption><p>HCS topic in Hashscan, with annotated items to check.</p></figcaption></figure>
 
 * The topic exists, and its topic ID matches `topicId` output by the script. **(1)**
 * There is one entry in the topic, and its message is `Hello HCS -` followed by your name/ nickname. **(2)**
@@ -610,7 +610,7 @@ You learned how to:
 
 Continue building on Hedera with another tutorial in the series to explore more Consensus Node services.
 
-<table data-card-size="large" data-view="cards"><thead><tr><th></th><th></th><th align="center"></th><th data-hidden><select multiple><option value="MB66z3fRYAlS" label="Accounts" color="blue"></option><option value="ZtnVYE29eArB" label="Topics" color="blue"></option><option value="TDPtoF12LPsm" label="Consensus Service" color="blue"></option><option value="FA8tkDPySmBL" label="Smart Contract Service" color="blue"></option><option value="VB4WYIKreZrZ" label="Token Service" color="blue"></option><option value="ILNVVpFoQpVk" label="Transactions" color="blue"></option><option value="CyJdTxHORHj7" label="Mirror Node" color="blue"></option><option value="6rVFgdKhOqrP" label="Keys &#x26; Signatures" color="blue"></option><option value="1ea0c60597qU" label="Queries" color="blue"></option><option value="iVX52i9gmTP4" label="Cryptocurrency" color="blue"></option></select></th><th data-hidden><select multiple><option value="WZtQiM8yq8qW" label="Accounts" color="blue"></option><option value="pr6gYjjHGJYO" label="Tokens" color="blue"></option><option value="0Vfu6ryyddVV" label="Smart Contracts" color="blue"></option><option value="paNqgxe1BUOW" label="EVM" color="blue"></option><option value="TtBMmEvGoSry" label="Transactions &#x26; Queries" color="blue"></option><option value="aNiFPpmkJ3uC" label="Keys &#x26; Signatures" color="blue"></option><option value="iq5mK7i8IkXM" label="Cryptocurrency" color="blue"></option><option value="RMY8nJInTzMv" label="Topics" color="blue"></option><option value="LPy3Gd1S3ilQ" label="Consensus Service" color="blue"></option><option value="zC34wTqgyTq8" label="Token Service" color="blue"></option><option value="dJ5dfPXSBQaX" label="Smart Contracts Service" color="blue"></option></select></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td><strong>Transfer HBAR</strong></td><td>Learn how to transfer HBAR, Hedera's native cryptocurrency, between accounts.</td><td align="center"><a href="transfer-hbar.md"><strong>LEARN MORE</strong></a></td><td><span data-option="MB66z3fRYAlS">Accounts, </span><span data-option="6rVFgdKhOqrP">Keys &#x26; Signatures, </span><span data-option="ILNVVpFoQpVk">Transactions, </span><span data-option="1ea0c60597qU">Queries</span></td><td></td><td><a href="broken-reference/">broken-reference</a></td></tr><tr><td><strong>Create a Token</strong></td><td>Learn how to create fungible tokens using the <a href="../../support-and-community/glossary.md#hedera-token-service-hts">Hedera Token Service</a> (HTS).</td><td align="center"><a href="create-a-token.md"><strong>LEARN MORE</strong></a></td><td><span data-option="ZtnVYE29eArB">Topics, </span><span data-option="TDPtoF12LPsm">Consensus Service</span></td><td></td><td><a href="create-a-token.md">create-a-token.md</a></td></tr></tbody></table>
+<table data-card-size="large" data-view="cards"><thead><tr><th></th><th></th><th align="center"></th><th data-hidden><select multiple><option value="MB66z3fRYAlS" label="Accounts" color="blue"></option><option value="ZtnVYE29eArB" label="Topics" color="blue"></option><option value="TDPtoF12LPsm" label="Consensus Service" color="blue"></option><option value="FA8tkDPySmBL" label="Smart Contract Service" color="blue"></option><option value="VB4WYIKreZrZ" label="Token Service" color="blue"></option><option value="ILNVVpFoQpVk" label="Transactions" color="blue"></option><option value="CyJdTxHORHj7" label="Mirror Node" color="blue"></option><option value="6rVFgdKhOqrP" label="Keys &#x26; Signatures" color="blue"></option><option value="1ea0c60597qU" label="Queries" color="blue"></option><option value="iVX52i9gmTP4" label="Cryptocurrency" color="blue"></option></select></th><th data-hidden><select multiple><option value="WZtQiM8yq8qW" label="Accounts" color="blue"></option><option value="pr6gYjjHGJYO" label="Tokens" color="blue"></option><option value="0Vfu6ryyddVV" label="Smart Contracts" color="blue"></option><option value="paNqgxe1BUOW" label="EVM" color="blue"></option><option value="TtBMmEvGoSry" label="Transactions &#x26; Queries" color="blue"></option><option value="aNiFPpmkJ3uC" label="Keys &#x26; Signatures" color="blue"></option><option value="iq5mK7i8IkXM" label="Cryptocurrency" color="blue"></option><option value="RMY8nJInTzMv" label="Topics" color="blue"></option><option value="LPy3Gd1S3ilQ" label="Consensus Service" color="blue"></option><option value="zC34wTqgyTq8" label="Token Service" color="blue"></option><option value="dJ5dfPXSBQaX" label="Smart Contracts Service" color="blue"></option></select></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td><strong>Transfer HBAR</strong></td><td>Learn how to transfer HBAR, Hedera's native cryptocurrency, between accounts.</td><td align="center"><a href="transfer-hbar.md"><strong>LEARN MORE</strong></a></td><td><span data-option="MB66z3fRYAlS">Accounts, </span><span data-option="6rVFgdKhOqrP">Keys &#x26; Signatures, </span><span data-option="ILNVVpFoQpVk">Transactions, </span><span data-option="1ea0c60597qU">Queries</span></td><td></td><td><a href="../getting-started/web2-developers/broken-reference/">broken-reference</a></td></tr><tr><td><strong>Create a Token</strong></td><td>Learn how to create fungible tokens using the <a href="../support-and-community/glossary.md#hedera-token-service-hts">Hedera Token Service</a> (HTS).</td><td align="center"><a href="create-a-token.md"><strong>LEARN MORE</strong></a></td><td><span data-option="ZtnVYE29eArB">Topics, </span><span data-option="TDPtoF12LPsm">Consensus Service</span></td><td></td><td><a href="create-a-token.md">create-a-token.md</a></td></tr></tbody></table>
 
 {% hint style="info" %}
 **Have questions?** Join the [Hedera Discord](https://hedera.com/discord) and post them in the [`developer-general`](https://discord.com/channels/373889138199494658/373889138199494660) channel or ask on [Stack Overflow](https://stackoverflow.com/questions/tagged/hedera-hashgraph).

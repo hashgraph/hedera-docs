@@ -1,20 +1,6 @@
 ---
 cover: .gitbook/assets/HH-Eco-Hero-Desktop-R1.webp
 coverY: -16.77342463378693
-layout:
-  cover:
-    visible: true
-    size: full
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
 ---
 
 # Welcome to Hedera — let’s build the future
@@ -33,9 +19,9 @@ Start your journey with the public Hedera network by learning the basics — fro
 
 ## Getting Started
 
-Follow the step-by-step guides in the [Getting Started series](getting-started/) to start developing on the Hedera network today. The series offers personalized developer learning paths to help you understand the essentials and start building web3 applications.
+Follow the step-by-step guides in the [Getting Started series](getting-started-sdk-developers/) to start developing on the Hedera network today. The series offers personalized developer learning paths to help you understand the essentials and start building web3 applicationss.
 
-<table data-view="cards"><thead><tr><th></th><th></th><th data-hidden data-card-target data-type="content-ref"></th><th data-hidden data-card-cover data-type="files"></th></tr></thead><tbody><tr><td><strong>1.</strong> <a href="tutorials/more-tutorials/create-and-fund-your-hedera-testnet-account.md"><strong>Create Testnet Account</strong></a></td><td>Create and fund your Hedera Testnet account using the Hedera developer portal, faucet, or HashPack wallet.</td><td><a href="tutorials/more-tutorials/create-and-fund-your-hedera-testnet-account.md">create-and-fund-your-hedera-testnet-account.md</a></td><td><a href=".gitbook/assets/testnet access.png">testnet access.png</a></td></tr><tr><td><strong>2.</strong> <a href="getting-started/environment-setup.md"><strong>Set Up Environment</strong></a></td><td>Set up your development environment after creating your testnet account to interact with the Hedera network.</td><td><a href="getting-started/environment-setup.md">environment-setup.md</a></td><td><a href=".gitbook/assets/environment setup (1).png">environment setup (1).png</a></td></tr><tr><td><strong>3.</strong> <a href="https://docs.hedera.com/hedera/getting-started#select-your-developer-learning-path"><strong>Choose Learning Path</strong></a></td><td>Choose your developer learning path: <a data-footnote-ref href="#user-content-fn-1">Web2 Developers</a> or <a data-footnote-ref href="#user-content-fn-2">EVM Developers</a>, depending on your experience level.</td><td><a href="https://docs.hedera.com/hedera/getting-started#select-your-developer-learning-path">https://docs.hedera.com/hedera/getting-started#select-your-developer-learning-path</a></td><td><a href=".gitbook/assets/transfer hbar.png">transfer hbar.png</a></td></tr></tbody></table>
+<table data-view="cards"><thead><tr><th></th><th></th><th data-hidden data-card-cover data-type="files"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td><a href="tutorials/more-tutorials/create-and-fund-your-hedera-testnet-account.md"><strong>Create Testnet Account</strong></a></td><td>Create and fund your Hedera testnet account using the Hedera developer portal, faucet, or HashPack wallet.</td><td><a href=".gitbook/assets/testnet access.png">testnet access.png</a></td><td><a href="tutorials/more-tutorials/create-and-fund-your-hedera-testnet-account.md">create-and-fund-your-hedera-testnet-account.md</a></td></tr><tr><td><a href="getting-started-sdk-developers/"><strong>SDK Developers</strong></a></td><td>This is the developer learning path for Hedera-native developers and developers new to web3 and Hedera.</td><td><a href=".gitbook/assets/SDKs.png">SDKs.png</a></td><td><a href="getting-started-sdk-developers/">getting-started-sdk-developers</a></td></tr><tr><td><a href="getting-started-evm-developers/"><strong>EVM Developers</strong></a></td><td>This is the learning path for smart contract developers with experience deploying Solidity smart contracts. </td><td><a href=".gitbook/assets/evm-developers-landing-getting-started.png">evm-developers-landing-getting-started.png</a></td><td><a href="getting-started-evm-developers/">getting-started-evm-developers</a></td></tr></tbody></table>
 
 ## Build Your First Decentralized Application (DApp)
 
@@ -74,7 +60,3 @@ This project is governed by the [Contributor Covenant Code of Conduct](https://g
 ## License
 
 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
-
-[^1]: This is the developer learning path for beginners and web2 developers new to web3 and Hedera.
-
-[^2]: This is the learning path for smart contract developers with experience deploying contracts on Ethereum or other EVM-compatible networks.

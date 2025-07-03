@@ -134,15 +134,15 @@ let transaction = TopicMessageSubmitTransaction::new()
     .max_custom_fees(max_custom_fees); // Set max custom fees if applicable
 
 // Sign with the client operator key and submit to a Hedera network
-let tx_response = transaction.execute(&client)?;
+let tx_response = transaction.execute(&client).await?;
 
 // Request the receipt of the transaction
-let receipt = tx_response.get_receipt(&client)?;
+let receipt = tx_response.get_receipt(&client).await?;
 
 // Get the transaction consensus status
 let status = receipt.status;
 
-println!("The transaction consensus status is {}", status);
+println!("The transaction consensus status is {:?}", status);
 
 // v0.34.0
 ```

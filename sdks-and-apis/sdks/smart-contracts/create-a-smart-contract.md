@@ -150,14 +150,14 @@ let contract_create = ContractCreateFlow::new()
     .gas(100_000);
 
 // Sign the transaction with the client operator key and submit to a Hedera network
-let tx_response = contract_create.execute(&client)?;
+let tx_response = contract_create.execute(&client).await?;
 
 // Get the receipt of the transaction
-let receipt = tx_response.get_receipt(&client)?;
+let receipt = tx_response.get_receipt(&client).await?;
 
 // Get the new contract ID
 let new_contract_id = receipt.contract_id.unwrap();
-println!("The new contract ID is {}", new_contract_id);
+println!("The new contract ID is {:?}", new_contract_id);
 
 // v0.34.0
 ```

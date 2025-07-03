@@ -68,7 +68,7 @@ let query = AccountBalanceQuery::new()
     .account_id(account_id);
 
 // Sign with the client operator private key and submit to a Hedera network
-let token_balance = query.execute(&client)?;
+let token_balance = query.execute(&client).await?;
 
 println!("The token balance(s) for this account: {:?}", token_balance.tokens);
 

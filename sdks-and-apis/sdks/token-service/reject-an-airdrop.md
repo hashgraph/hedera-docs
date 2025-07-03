@@ -118,15 +118,15 @@ let transaction = TokenRejectTransaction::new()
 // Sign with the account Id key and submit the transaction to a Hedera network
 let tx_response = transaction
     .sign(account_id_key)?
-    .execute(&client)?;
+    .execute(&client).await?;
 
 // Request the receipt of the transaction
-let receipt = tx_response.get_receipt(&client)?;
+let receipt = tx_response.get_receipt(&client).await?;
 
 // Get the transaction consensus status
 let transaction_status = receipt.status;
 
-println!("The transaction consensus status is {}", transaction_status);
+println!("The transaction consensus status is {:?}", transaction_status);
 
 // v0.34.0
 ```
@@ -242,15 +242,15 @@ let transaction = TokenRejectFlow::new()
 // Sign with the account Id key and submit the transaction to a Hedera network
 let tx_response = transaction
     .sign(account_id_key)?
-    .execute(&client)?;
+    .execute(&client).await?;
 
 // Request the receipt of the transaction
-let receipt = tx_response.get_receipt(&client)?;
+let receipt = tx_response.get_receipt(&client).await?;
 
 // Get the transaction consensus status
 let transaction_status = receipt.status;
 
-println!("The transaction consensus status is {}", transaction_status);
+println!("The transaction consensus status is {:?}", transaction_status);
 
 // v0.34.0
 ```

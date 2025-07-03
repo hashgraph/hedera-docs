@@ -85,7 +85,7 @@ let query = FileInfoQuery::new()
     .file_id(file_id);
 
 // Submit the query to a Hedera network
-let file_info = query.execute(&client)?;
+let file_info = query.execute(&client).await?;
 
 // Print the file info to the console
 println!("File info: {:?}", file_info);

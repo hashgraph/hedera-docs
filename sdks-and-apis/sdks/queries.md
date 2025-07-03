@@ -70,9 +70,9 @@ let query = AccountBalanceQuery::new()
     .account_id(account_id);
 
 // Get the cost of the query
-let query_cost = query.get_cost(&client)?;
+let query_cost = query.get_cost(&client).await?;
 
-println!("The account balance query cost is {}", query_cost);
+println!("The account balance query cost is {:?}", query_cost);
 
 // v0.34.0
 ```

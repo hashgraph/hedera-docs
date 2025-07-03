@@ -114,7 +114,7 @@ let query = TopicInfoQuery::new()
     .topic_id(topic_id);
 
 // Submit the query to a Hedera network
-let topic_info = query.execute(&client)?;
+let topic_info = query.execute(&client).await?;
 
 // Print the topic info to the console
 println!("{:?}", topic_info);

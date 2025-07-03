@@ -122,15 +122,16 @@ let transaction = AccountAllowanceApproveTransaction::new()
 let tx_response = transaction
     .freeze_with(&client)?
     .sign(owner_account_key)?
-    .execute(&client)?;
+    .execute(&client)
+    .await?;
 
 // Request the receipt of the transaction
-let receipt = tx_response.get_receipt(&client)?;
+let receipt = tx_response.get_receipt(&client).await?;
 
 // Get the transaction consensus status
 let status = receipt.status;
 
-println!("The transaction consensus status is {}", status);
+println!("The transaction consensus status is {:?}", status);
 
 // v0.34.0
 ```

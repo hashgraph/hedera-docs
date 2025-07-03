@@ -105,14 +105,14 @@ let transaction = ContractExecuteTransaction::new()
         .add_string("hello from hedera again!"))?;
 
 // Sign with the client operator private key to pay for the transaction and submit to a Hedera network
-let tx_response = transaction.execute(&client)?;
+let tx_response = transaction.execute(&client).await?;
 
 // Request the receipt of the transaction
-let receipt = tx_response.get_receipt(&client)?;
+let receipt = tx_response.get_receipt(&client).await?;
 
 // Get the transaction consensus status
 let transaction_status = receipt.status;
-println!("The transaction consensus status is {}", transaction_status);
+println!("The transaction consensus status is {:?}", transaction_status);
 
 // v0.34.0
 ```

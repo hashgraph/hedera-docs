@@ -70,19 +70,19 @@ let query = ScheduleInfoQuery::new()
     .schedule_id(schedule_id);
 
 // Sign with the client operator private key and submit the query request to a node in a Hedera network
-let info = query.execute(&client)?;
+let info = query.execute(&client).await?;
 
 // Print the schedule info
-println!("Schedule ID: {}", info.schedule_id);
-println!("Creator Account ID: {}", info.creator_account_id);
-println!("Payer Account ID: {}", info.payer_account_id);
+println!("Schedule ID: {:?}", info.schedule_id);
+println!("Creator Account ID: {:?}", info.creator_account_id);
+println!("Payer Account ID: {:?}", info.payer_account_id);
 println!("Admin Key: {:?}", info.admin_key);
 println!("Signatories: {:?}", info.signatories);
 println!("Expiration Time: {:?}", info.expiration_time);
 println!("Executed Time: {:?}", info.executed_time);
 println!("Deleted Time: {:?}", info.deleted_time);
-println!("Memo: {}", info.memo);
-println!("Wait For Expiry: {}", info.wait_for_expiry);
+println!("Memo: {:?}", info.memo);
+println!("Wait For Expiry: {:?}", info.wait_for_expiry);
 
 // v0.34.0
 ```

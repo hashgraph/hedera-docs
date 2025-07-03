@@ -142,7 +142,7 @@ keys.push(public_key3);
 let threshold_key = KeyList::with_threshold(1)
     .add_all_keys(&keys);
 
-println!("The 1/3 threshold key structure {}", threshold_key);
+println!("The 1/3 threshold key structure {:?}", threshold_key);
 
 // v0.34.0
 ```

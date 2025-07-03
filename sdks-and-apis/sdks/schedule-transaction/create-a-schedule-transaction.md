@@ -121,14 +121,14 @@ let transaction = ScheduleCreateTransaction::new()
     .scheduled_transaction(transaction_to_schedule);
 
 // Sign with the client operator key and submit the transaction to a Hedera network
-let tx_response = transaction.execute(&client)?;
+let tx_response = transaction.execute(&client).await?;
 
 // Request the receipt of the transaction
-let receipt = tx_response.get_receipt(&client)?;
+let receipt = tx_response.get_receipt(&client).await?;
 
 // Get the schedule ID
 let schedule_id = receipt.schedule_id.unwrap();
-println!("The schedule ID of the schedule transaction is {}", schedule_id);
+println!("The schedule ID of the schedule transaction is {:?}", schedule_id);
 
 // v0.34.0
 ```

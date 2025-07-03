@@ -62,7 +62,7 @@ nftInfo, err := NewTokenNftInfoQuery().
 // Returns the info for the specified NFT ID
 let nft_infos = TokenNftInfoQuery::new()
     .nft_id(nft_id)
-    .execute(&client)?;
+    .execute(&client).await?;
 
 // v0.34.0
 ```

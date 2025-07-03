@@ -222,7 +222,7 @@ client.setOperator(myAccountId, myPrivateKey);
 ```rust
     err := dotenv::dotenv().ok();
     if err.is_err() {
-        panic!("Unable to load environment variables from demo.env file. Error:\n{}", err);
+        panic!("Unable to load environment variables from demo.env file. Error:\n{:?}", err);
     }
 
     // Get the operator account ID and private key

@@ -127,16 +127,16 @@ let token_update_nfts_tx = TokenUpdateNftsTransaction::new()
 // Sign the transaction and execute it
 let token_update_nfts_response = token_update_nfts_tx
     .sign(metadata_key)?
-    .execute(&client)?;
+    .execute(&client).await?;
 
 // Get receipt for update nfts metadata transaction
-let token_update_nfts_receipt = token_update_nfts_response.get_receipt(&client)?;
+let token_update_nfts_receipt = token_update_nfts_response.get_receipt(&client).await?;
 
 // Get the transaction consensus status
 let transaction_status = token_update_nfts_receipt.status;
 
 // Print the token update metadata transaction status
-println!("Token metadata update status: {}", transaction_status);
+println!("Token metadata update status: {:?}", transaction_status);
 
 // v0.34.0
 ```

@@ -168,15 +168,15 @@ let tx_response = transaction
     .freeze_with(&client)?
     .sign(admin_key)?
     .sign(treasury_key)?
-    .execute(&client)?;
+    .execute(&client).await?;
 
 // Request the receipt of the transaction
-let receipt = tx_response.get_receipt(&client)?;
+let receipt = tx_response.get_receipt(&client).await?;
 
 // Get the token ID from the receipt
 let token_id = receipt.token_id.unwrap();
 
-println!("The new token ID is {}", token_id);
+println!("The new token ID is {:?}", token_id);
 
 // v0.34.0
 ```

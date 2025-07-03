@@ -145,15 +145,15 @@ let transaction = FileCreateTransaction::new()
     .max_transaction_fee(Hbar::new(2));
 
 // Sign with the client operator private key and submit to a Hedera network
-let tx_response = transaction.execute(&client)?;
+let tx_response = transaction.execute(&client).await?;
 
 // Request the receipt of the transaction
-let receipt = tx_response.get_receipt(&client)?;
+let receipt = tx_response.get_receipt(&client).await?;
 
 // Get the file ID
 let file_id = receipt.file_id.unwrap();
 
-println!("The new file ID is {}", file_id);
+println!("The new file ID is {:?}", file_id);
 
 // v0.34.0
 ```

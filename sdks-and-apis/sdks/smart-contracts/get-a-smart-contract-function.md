@@ -86,11 +86,11 @@ let query = ContractCallQuery::new()
     .function("greet")?;
 
 // Sign with the client operator private key and submit to a Hedera network
-let result = query.execute(&client)?;
+let result = query.execute(&client).await?;
 
 // Get the function value
-let message = result.get_string(0)?;
-println!("Contract message: {}", message);
+let message = result.get_str(0)?;
+println!("Contract message: {:?}", message);
 
 // v0.34.0
 ```

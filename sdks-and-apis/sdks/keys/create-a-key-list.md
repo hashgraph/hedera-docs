@@ -121,7 +121,7 @@ let key_list = KeyList::new()
     .add_key(public_key2)
     .add_key(public_key3);
 
-println!("The key list is {}", key_list);
+println!("The key list is {:?}", key_list);
 
 // v0.34.0
 ```

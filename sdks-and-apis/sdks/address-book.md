@@ -61,9 +61,9 @@ let file_query = FileContentsQuery::new()
     .file_id(FileId::from_str("0.0.102")?);
 
 // Sign with the operator private key and submit to a Hedera network
-let contents = file_query.execute(&client)?;
+let contents = file_query.execute(&client).await?;
 
-println!("{}", String::from_utf8(contents)?);
+println!("{:?}", String::from_utf8(contents)?);
 
 // v0.34.0
 ```
@@ -112,7 +112,8 @@ fmt.Print(addressBook)
 ```rust
 // Mirror node address book query
 let address_book = NodeAddressBookQuery::new()
-    .execute(&client)?;
+    .execute(&client)
+    .await?;
 
 println!("{:?}", address_book);
 

@@ -37,7 +37,7 @@ console.log(scheduleID)
 ```rust
 // Create a schedule ID
 let schedule_id = ScheduleId::new(0, 0, 10);
-println!("{}", schedule_id);
+println!("{:?}", schedule_id);
 
 // v0.34.0
 ```

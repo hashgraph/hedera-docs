@@ -130,15 +130,15 @@ let transaction = TokenMintTransaction::new()
 let tx_response = transaction
     .freeze_with(&client)?
     .sign(supply_key)?
-    .execute(&client)?;
+    .execute(&client).await?;
 
 // Request the receipt of the transaction
-let receipt = tx_response.get_receipt(&client)?;
+let receipt = tx_response.get_receipt(&client).await?;
 
 // Get the transaction consensus status
 let status = receipt.status;
 
-println!("The transaction consensus status is {}", status);
+println!("The transaction consensus status is {:?}", status);
 
 // v0.34.0
 ```
@@ -172,15 +172,15 @@ let transaction = TokenMintTransaction::new()
 let tx_response = transaction
     .freeze_with(&client)?
     .sign(supply_key)?
-    .execute(&client)?;
+    .execute(&client).await?;
 
 // Request the receipt of the transaction
-let receipt = tx_response.get_receipt(&client)?;
+let receipt = tx_response.get_receipt(&client).await?;
 
 // Get the serial number of the NFT
 let serial_number = receipt.serials[0];
 
-println!("Created NFT with serial number: {}", serial_number);
+println!("Created NFT with serial number: {:?}", serial_number);
 
 // v0.34.0
 ```

@@ -75,9 +75,9 @@ let query = AccountBalanceQuery::new()
     .account_id(account_id);
 
 // Sign with client operator private key and submit to a Hedera network
-let account_balance = query.execute(&client)?;
+let account_balance = query.execute(&client).await?;
 
-println!("The account balance is {}", account_balance.hbars);
+println!("The account balance is {:?}", account_balance.hbars);
 
 // v0.34.0
 ```

@@ -51,7 +51,7 @@ let transaction = AccountCreateTransaction::new()
     .initial_balance(Hbar::new(1));
 
 // Sign with the client operator account key and submit to a Hedera network
-let tx_response = transaction.execute(&client)?;
+let tx_response = transaction.execute(&client).await?;
 
 // Request the record of the transaction
 let record = tx_response.get_record(&client)?;

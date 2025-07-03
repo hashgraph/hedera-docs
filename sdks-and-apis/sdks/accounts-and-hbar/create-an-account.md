@@ -142,10 +142,11 @@ let transaction = AccountCreateTransaction::new()
 
 // Sign the transaction with the client operator private key and submit to a Hedera network
 let tx_response = transaction
-    .execute(&client)?;
+    .execute(&client)
+    .await?;
 
 // Request the receipt of the transaction
-let receipt = tx_response.get_receipt(&client)?;
+let receipt = tx_response.get_receipt(&client).await?;
 
 // Get the account ID
 let new_account_id = receipt.account_id.unwrap();

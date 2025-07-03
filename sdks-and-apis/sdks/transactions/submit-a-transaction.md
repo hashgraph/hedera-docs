@@ -120,7 +120,7 @@ let transaction = AccountCreateTransaction::new()
     .initial_balance(Hbar::new(1));
 
 // Sign with client operator private key and submit the transaction to a Hedera network
-let tx_response = transaction.execute(&client)?;
+let tx_response = transaction.execute(&client).await?;
 
 // Get the transaction ID
 let transaction_id = tx_response.transaction_id;

@@ -81,10 +81,10 @@ let query = FileContentsQuery::new()
     .file_id(file_id);
 
 // Submit the query to a Hedera network
-let contents = query.execute(&client)?;
+let contents = query.execute(&client).await?;
 
 // Print the contents to the console
-println!("File contents: {}", String::from_utf8_lossy(&contents));
+println!("File contents: {:?}", String::from_utf8_lossy(&contents));
 
 // v0.34.0
 ```

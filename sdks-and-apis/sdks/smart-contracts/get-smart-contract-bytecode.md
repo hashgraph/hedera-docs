@@ -62,7 +62,7 @@ let query = ContractByteCodeQuery::new()
     .contract_id(contract_id);
 
 // Sign with the client operator private key and submit to a Hedera network
-let bytecode = query.execute(&client)?;
+let bytecode = query.execute(&client).await?;
 
 println!("Contract bytecode: {:?}", bytecode);
 

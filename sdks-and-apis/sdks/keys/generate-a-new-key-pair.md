@@ -53,15 +53,15 @@ fmt.Printf("public key = %v\n", publicKey)
 let private_key = PrivateKey::generate_ed25519()?;
 let public_key = private_key.public_key();
 
-println!("private key = {}", private_key);
-println!("public key = {}", public_key);
+println!("private key = {:?}", private_key);
+println!("public key = {:?}", public_key);
 
 // Generate ECDSA key pair
 let private_key = PrivateKey::generate_ecdsa()?;
 let public_key = private_key.public_key();
 
-println!("private key = {}", private_key);
-println!("public key = {}", public_key);
+println!("private key = {:?}", private_key);
+println!("public key = {:?}", public_key);
 
 // v0.34.0
 ```
@@ -127,15 +127,15 @@ fmt.Printf("public key = %v\n", publicKey)
 let private_key = PrivateKey::generate_ed25519()?;
 let public_key = private_key.public_key();
 
-println!("private key = {}", private_key);
-println!("public key = {}", public_key);
+println!("private key = {:?}", private_key);
+println!("public key = {:?}", public_key);
 
 // Generate ECDSA key pair
 let private_key = PrivateKey::generate_ecdsa()?;
 let public_key = private_key.public_key();
 
-println!("private key = {}", private_key);
-println!("public key = {}", public_key);
+println!("private key = {:?}", private_key);
+println!("public key = {:?}", public_key);
 
 // v0.34.0
 ```

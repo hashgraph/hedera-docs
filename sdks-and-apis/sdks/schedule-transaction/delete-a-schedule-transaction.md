@@ -98,14 +98,14 @@ let transaction = ScheduleDeleteTransaction::new()
     .sign(admin_key);
 
 // Sign with the operator key and submit to a Hedera network
-let tx_response = transaction.execute(&client)?;
+let tx_response = transaction.execute(&client).await?;
 
 // Get the transaction receipt
-let receipt = tx_response.get_receipt(&client)?;
+let receipt = tx_response.get_receipt(&client).await?;
 
 // Get the transaction status
 let status = receipt.status;
-println!("The transaction consensus status is {}", status);
+println!("The transaction consensus status is {:?}", status);
 
 // v0.34.0
 ```

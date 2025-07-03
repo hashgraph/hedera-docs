@@ -82,7 +82,7 @@ let query = AccountInfoQuery::new()
     .account_id(new_account_id);
 
 // Submit the query to a Hedera network
-let account_info = query.execute(&client)?;
+let account_info = query.execute(&client).await?;
 
 // Print the account info to the console
 println!("{:?}", account_info);

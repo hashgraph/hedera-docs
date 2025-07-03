@@ -131,15 +131,15 @@ let transaction = TopicCreateTransaction::new()
     .auto_renew_period(Duration::hours(24 * 30)); // 30 days
 
 // Sign with the client operator private key and submit to a Hedera network
-let tx_response = transaction.execute(&client)?;
+let tx_response = transaction.execute(&client).await?;
 
 // Request the receipt of the transaction
-let receipt = tx_response.get_receipt(&client)?;
+let receipt = tx_response.get_receipt(&client).await?;
 
 // Get the topic ID
 let topic_id = receipt.topic_id.unwrap();
 
-println!("The new topic ID is {}", topic_id);
+println!("The new topic ID is {:?}", topic_id);
 
 // v0.34.0
 ```

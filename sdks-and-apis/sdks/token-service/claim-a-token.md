@@ -111,15 +111,15 @@ let transaction = TokenClaimAirdropTransaction::new()
 // Sign with the sender account key and submit the transaction to a Hedera network
 let tx_response = transaction
     .sign(account_key)?
-    .execute(&client)?;
+    .execute(&client).await?;
 
 // Request the receipt of the transaction
-let receipt = tx_response.get_receipt(&client)?;
+let receipt = tx_response.get_receipt(&client).await?;
 
 // Get the transaction consensus status
 let transaction_status = receipt.status;
 
-println!("The transaction consensus status: {}", transaction_status);
+println!("The transaction consensus status: {:?}", transaction_status);
 
 // v0.34.0
 ```

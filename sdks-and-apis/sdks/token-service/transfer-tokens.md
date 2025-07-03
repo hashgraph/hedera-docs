@@ -124,15 +124,15 @@ let transaction = TransferTransaction::new()
 
 // Sign with the client operator key and submit the transaction
 let tx_response = transaction
-    .execute(&client)?;
+    .execute(&client).await?;
 
 // Request the receipt of the transaction
-let receipt = tx_response.get_receipt(&client)?;
+let receipt = tx_response.get_receipt(&client).await?;
 
 // Get the transaction consensus status
 let status = receipt.status;
 
-println!("The transaction consensus status is {}", status);
+println!("The transaction consensus status is {:?}", status);
 
 // v0.34.0
 ```

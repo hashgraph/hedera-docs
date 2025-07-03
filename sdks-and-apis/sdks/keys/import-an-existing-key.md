@@ -54,6 +54,9 @@ let private_key = PrivateKey::from_pem("-----BEGIN PRIVATE KEY-----\n...\n-----E
 // With password if encrypted
 let private_key = PrivateKey::from_pem_with_password("-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----", "password")?;
 
+println!("Imported private key: {:?}", private_key);
+println!("Imported public key: {:?}", public_key);
+
 // v0.34.0
 ```
 {% endtab %}

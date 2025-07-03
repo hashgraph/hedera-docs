@@ -72,12 +72,12 @@ let query = TokenInfoQuery::new()
     .token_id(token_id);
 
 // Sign with the client operator private key, submit the query to the network
-let token_info = query.execute(&client)?;
+let token_info = query.execute(&client).await?;
 
 // Get the token supply
 let token_supply = token_info.total_supply;
 
-println!("The total supply of this token is {}", token_supply);
+println!("The total supply of this token is {:?}", token_supply);
 
 // v0.34.0
 ```

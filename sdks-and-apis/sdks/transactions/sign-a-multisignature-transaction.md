@@ -288,7 +288,7 @@ fmt.Println("The transaction ID ", txId)
 {% tab title="Rust" %}
 ```rust
 // Submit the transaction to a Hedera network
-let submit_tx = signed_transaction.execute(&client)?;
+let submit_tx = signed_transaction.execute(&client).await?;
 
 // Get the transaction ID
 let tx_id = submit_tx.transaction_id;

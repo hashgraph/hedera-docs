@@ -10,13 +10,12 @@ The Hedera Agent Kit provides:
 * **Comprehensive Tools**: 67 pre-built tools covering all Hedera services
 * **Flexible Transaction Handling**: Direct execution or provide transaction bytes for user signing
 * **Service Builders**: Fluent APIs for programmatic Hedera operations
-* **Plugin System**: Extend functionality with custom tools
 * **TypeScript First**: Fully typed with comprehensive interfaces
 
 ## Installation
 
 ```bash
-npm install hedera-agent-kit @hashgraph/sdk @langchain/openai @langchain/community
+npm install hedera-agent-kit
 ```
 
 For WalletConnect integration:
@@ -33,6 +32,8 @@ npm install @hashgraph/hedera-wallet-connect
 import {
   HederaConversationalAgent,
   ServerSigner,
+  HederaAccountPlugin,
+  HederaHCSPlugin
 } from 'hedera-agent-kit';
 import * as dotenv from 'dotenv';
 
@@ -47,7 +48,12 @@ async function main() {
 
   const agent = new HederaConversationalAgent(signer, {
     openAIApiKey: process.env.OPENAI_API_KEY,
-    operationalMode: 'directExecution',
+    operationalMode: 'autonomous',
+    pluginConfig: {
+        new HederaAccountPlugin(),
+        new HederaHCSPlugin()
+      ] // or getAllHederaCorePlugins() to load all core plugins
+    }
   });
 
   await agent.initialize();
@@ -68,7 +74,7 @@ main().catch(console.error);
 
 ```typescript
 const agent = new HederaConversationalAgent(agentSigner, {
-  operationalMode: 'provideBytes',
+  operationalMode: 'returnBytes',
   userAccountId: userAccountId,
   scheduleUserTransactionsInBytesMode: true,
 });
@@ -231,11 +237,6 @@ The kit includes 67 pre-built LangChain tools:
 * Function execution
 * Contract queries and updates
 
-### File Service (5 tools)
-
-* File creation and updates
-* Content management
-
 ### Network & Queries (8 tools)
 
 * Network information
@@ -274,12 +275,12 @@ const token = await kit
 
 ## Operational Modes
 
-### Direct Execution
+### Autonomous
 
 Agent signs and submits transactions using its configured signer:
 
 ```typescript
-operationalMode: 'directExecution';
+operationalMode: 'autonamous';
 ```
 
 ### Provide Bytes
@@ -287,7 +288,7 @@ operationalMode: 'directExecution';
 Agent returns transaction bytes for user signing:
 
 ```typescript
-operationalMode: 'provideBytes';
+operationalMode: 'returnBytes';
 ```
 
 With automatic scheduling for user transactions:
@@ -318,7 +319,3 @@ Full working examples are available in the repository:
 * **GitHub**: [github.com/hedera-dev/hedera-agent-kit](https://github.com/hedera-dev/hedera-agent-kit)&#x20;
 * **NPM**: [hedera-agent-kit](https://www.npmjs.com/package/hedera-agent-kit)
 * **Issues**: [GitHub Issues](https://github.com/hedera-dev/hedera-agent-kit/issues)
-
-## License
-
-Apache 2.0

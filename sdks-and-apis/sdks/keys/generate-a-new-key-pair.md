@@ -46,6 +46,26 @@ fmt.Printf("private key = %v\n", privateKey)
 fmt.Printf("public key = %v\n", publicKey)
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Generate ED25519 key pair
+let private_key = PrivateKey::generate_ed25519()?;
+let public_key = private_key.public_key();
+
+println!("private key = {:?}", private_key);
+println!("public key = {:?}", public_key);
+
+// Generate ECDSA key pair
+let private_key = PrivateKey::generate_ecdsa()?;
+let public_key = private_key.public_key();
+
+println!("private key = {:?}", private_key);
+println!("public key = {:?}", public_key);
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}
 
 **Sample Output:**
@@ -100,11 +120,28 @@ fmt.Printf("private key = %v\n", privateKey)
 fmt.Printf("public key = %v\n", publicKey)
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Generate ED25519 key pair
+let private_key = PrivateKey::generate_ed25519()?;
+let public_key = private_key.public_key();
+
+println!("private key = {:?}", private_key);
+println!("public key = {:?}", public_key);
+
+// Generate ECDSA key pair
+let private_key = PrivateKey::generate_ecdsa()?;
+let public_key = private_key.public_key();
+
+println!("private key = {:?}", private_key);
+println!("public key = {:?}", public_key);
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}
 
 **Sample Output:**
 
-```
-private key = 3030020100300706052b8104000a04220420818c50766e025db403416421cb4a16d26ab0044b7f1a1e45513cef2c86123b91
-public key = 302d300706052b8104000a0322000224d3700dc68fc9061457c5f50b66442c73367f7d0b1d5a7e3a1903e352ca217c
 ```

@@ -76,7 +76,22 @@ if err != nil {
 }
 
 //Print the account key to the console
-println(info
+println(info)
+```
+{% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the query
+let query = ContractInfoQuery::new()
+    .contract_id(contract_id);
+
+// Sign with the client operator private key and submit to a Hedera network
+let info = query.execute(&client).await?;
+
+println!("Contract info: {:?}", info);
+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

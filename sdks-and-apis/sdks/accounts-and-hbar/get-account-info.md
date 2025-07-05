@@ -74,6 +74,22 @@ fmt.Println(accountInfo)
 //v2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the account info query
+let query = AccountInfoQuery::new()
+    .account_id(new_account_id);
+
+// Submit the query to a Hedera network
+let account_info = query.execute(&client).await?;
+
+// Print the account info to the console
+println!("{:?}", account_info);
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}
 
 {% tabs %}

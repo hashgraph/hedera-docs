@@ -68,6 +68,24 @@ transferTransaction := hedera.NewTransferTransaction().
 transaction, err := transferTransaction.FreezeWith(client)
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// The node account ID to submit the transaction to. You can add more than 1 node account ID to the list
+let node_id = vec![AccountId::new(3)];
+
+// Create the transfer transaction
+let transfer_transaction = TransferTransaction::new()
+    .hbar_transfer(sender_account_id, Hbar::new(1))
+    .hbar_transfer(receiver_account_id, Hbar::new(-1))
+    .node_account_ids([node_id]);
+
+// Freeze the transaction from any further modifications
+let transaction = transfer_transaction.freeze_with(&client)?;
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}
 
 ## 2. Collect required signatures
@@ -123,6 +141,25 @@ if err != nil {
 }
 
 //signature1, signature2, and signature3 are returned back to you
+```
+{% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create a transaction
+transfer_transaction
+    .node_account_ids([AccountId::from(3)])
+    .hbar_transfer(account_id, Hbar::new(-1))
+    .hbar_transfer(AccountId::from(3), Hbar::new(1))
+    .freeze_with(&client)?;
+
+transfer_transaction.sign_with_operator(&client)?;
+// Signer one signs the transaction with their private key
+user1_key.sign_transaction(&mut transfer_transaction)?;
+// Signer two signs the transaction with their private key
+user2_key.sign_transaction(&mut transfer_transaction)?;
+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}
@@ -208,7 +245,7 @@ System.out.println("The transaction ID " +txId);
 const submitTx = await signedTransaction.execute(client);
 
 //Get the transaction ID
-const txId = submitTx.transactionId.toString();
+const txId = submitTx.transactionId;
 
 //Print the transaction ID to the console
 console.log("The transaction ID " +txId);
@@ -221,7 +258,7 @@ console.log("The transaction ID " +txId);
 submitTx, err := signedTransaction.Execute(client)
 
 //Get the transaction ID
-txId := submitTx.TransactionID
+txId := submitTx.GetTransactionID()
 
 //Print the transaction ID to the console
 fmt.Println("The transaction ID ", txId)

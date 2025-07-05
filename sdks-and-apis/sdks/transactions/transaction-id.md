@@ -44,6 +44,15 @@ fmt.println(txId)
 //v2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+let tx_id = TransactionId::generate(AccountId::new(5))?;
+println!("{:?}", tx_id);
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}
 
 **Sample Output:**

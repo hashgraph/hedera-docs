@@ -116,6 +116,32 @@ println("The transaction consensus status is ", transactionStatus)
 //Version 2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the transaction to update the key on the account
+let transaction = AccountUpdateTransaction::new()
+    .account_id(account_id)
+    .key(update_key);
+
+// Sign the transaction with the old key and new key
+let tx_response = transaction
+    .freeze_with(&client)?
+    .sign(old_key)
+    .sign(new_key)
+    .execute(&client).await?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client).await?;
+
+// Get the transaction consensus status
+let status = receipt.status;
+
+println!("The transaction consensus status is {:?}", status);
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}
 
 ## Get transaction values

@@ -58,6 +58,22 @@ client := Client.forNetwork(nodes)
 //v2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// From a pre-configured network
+let client = Client::for_testnet();
+
+// For a specified network
+let nodes = HashMap::from([
+    ("34.94.106.61:50211".to_string(), AccountId::from(10))
+]);
+
+let client = Client::for_network(nodes);
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}
 
 ## 2. Define the operator account ID and private key
@@ -118,6 +134,22 @@ client := hedera.ClientForTestnet()
 
 //Set the operator with the operator ID and operator key
 client.SetOperator(operatorAccountID, operatorKey)
+```
+{% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Operator account ID and private key from string value
+let my_account_id = AccountId::from_str("0.0.96928")?;
+let my_private_key = PrivateKey::from_str("302e020100300506032b657004220420b9c3ebac81a72aafa5490cc78111643d016d311e60869436fbb91c7330796928")?;
+
+// Pre-configured client for test network (testnet)
+let mut client = Client::for_testnet();
+
+// Set the operator with the account ID and private key
+client.set_operator(my_account_id, my_private_key);
+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}
@@ -185,6 +217,19 @@ client.setOperator(myAccountId, myPrivateKey);
     }
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+    err := dotenv::dotenv().ok();
+    if err.is_err() {
+        panic!("Unable to load environment variables from demo.env file. Error:\n{:?}", err);
+    }
+
+    // Get the operator account ID and private key
+    let my_account_id = AccountId::from_str(std::env::var("MY_ACCOUNT_ID").expect("MY_ACCOUNT_ID environment variable not set")).expect("Invalid MY_ACCOUNT_ID format");
+    let my_private_key = PrivateKey::from_str(std::env::var("MY_PRIVATE_KEY").expect("MY_PRIVATE_KEY environment variable not set")).expect("Invalid MY_PRIVATE_KEY format");
+```
+{% endtab %}
 {% endtabs %}
 
 ## 3. Additional client modifications
@@ -215,8 +260,7 @@ client.setDefaultMaxQueryPayment(new Hbar(5));
 {% endtab %}
 
 {% tab title="JavaScript" %}
-{% code title="JavaScript" %}
-```java
+```javascript
 // For test network (testnet)
 const client = Client.forTestnet()
 
@@ -231,7 +275,6 @@ client.setDefaultMaxQueryPayment(new Hbar(5));
 
 //v2.0.0
 ```
-{% endcode %}
 {% endtab %}
 
 {% tab title="Go" %}
@@ -247,8 +290,24 @@ client.SetDefaultMaxTransactionFee(hedera.HbarFrom(10, hedera.HbarUnits.Hbar))
 
 // Set max query payment
 client.setDefaultMaxQueryPayment(hedera.HbarFrom(5, hedera.HbarUnits.Hbar))
+```
+{% endtab %}
 
-//v2.0.0
+{% tab title="Rust" %}
+```rust
+// For test network (testnet)
+let mut client = Client::for_testnet();
+
+// Set your account as the client's operator
+client.set_operator(my_account_id, my_private_key);
+
+// Set the default maximum transaction fee (in Hbar)
+client.set_default_max_transaction_fee(Hbar::from(10));
+
+// Set the maximum payment for queries (in Hbar)
+client.set_default_max_query_payment(Hbar::from(5));
+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

@@ -96,4 +96,26 @@ status:= *receipt.Status
 fmt.Printf("The transaction consensus status is %v\n", status)
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the transaction
+let transaction = ScheduleSignTransaction::new()
+    .schedule_id(schedule_id)
+    .freeze_with(&client)?
+    .sign(private_key_signer1);
+
+// Sign with the client operator key to pay for the transaction and submit to a Hedera network
+let tx_response = transaction.execute(&client).await?;
+
+// Get the receipt of the transaction
+let receipt = tx_response.get_receipt(&client).await?;
+
+// Get the transaction status
+let status = receipt.status;
+println!("The transaction consensus status is {:?}", status);
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}

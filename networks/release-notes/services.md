@@ -13,7 +13,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 {% endhint %}
 
 {% hint style="info" %}
-**TESTNET UPDATE SCHEDULED: JULY 15, 2025**
+**TESTNET UPDATE SCHEDULED: JULY 10, 2025**
 {% endhint %}
 
 ### [Build 0.63.7](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.63.7)

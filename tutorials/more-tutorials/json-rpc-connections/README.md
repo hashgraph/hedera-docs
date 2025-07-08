@@ -2,6 +2,7 @@
 description: >-
   A variety of EVM-compatible developer tools and wallets communicate over
   JSON-RPC, so here is how to set them up!
+hidden: true
 ---
 
 # How to Connect to Hedera Networks Over RPC

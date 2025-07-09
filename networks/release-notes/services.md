@@ -16,6 +16,20 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **TESTNET UPDATE SCHEDULED: JULY 10, 2025**
 {% endhint %}
 
+### [Build 0.63.9](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.63.9)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* fix(18458): Pces file writer rollback by [@mxtartaglia-sl](https://github.com/mxtartaglia-sl) in [#20019](https://github.com/hiero-ledger/hiero-consensus-node/pull/20019)
+* fix: Fix SteadyStateThrottlingTest by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#20040](https://github.com/hiero-ledger/hiero-consensus-node/pull/20040)
+* chore: (0.63) move scripts from paa to hcn by [@andrewb1269hg](https://github.com/andrewb1269hg) in [#20042](https://github.com/hiero-ledger/hiero-consensus-node/pull/20042)
+
+**Full Changelog**: [v0.63.7...v0.63.9](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.63.7...v0.63.9)
+
+</details>
+
 ### [Build 0.63.7](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.63.7)
 
 <details>

@@ -16,6 +16,32 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **TESTNET UPDATE: JULY 10, 2025**
 {% endhint %}
 
+### Release Highlights
+
+Release v0.63 introduces three focused improvements: birth-round based ancient event handling, low overhead SDK usage metrics, and full support for non-zero realm IDs.
+
+<details>
+
+<summary><strong>What's new in Release 0.63?</strong></summary>
+
+**Birth-Round Migration**
+
+Today ancient event pruning correlates with clock time rather than specifically from consensus rounds causing overhead during node updates. In this release birth-rounds are based on consensus time which causes more consistent pruning and smoother node joins, exits, and upgrades.
+
+**SDK Usage Metrics & gRPC Call insights**
+
+Release .63 introduces a gRPC interceptor that aggregates methods into `gRPC_usage` metrics every 15m. This will give node and network operators granular visibility with minimal overhead.
+
+**Non-Zero Realm Support**
+
+Shard and realm default values on Hiero have previously assumed 0 values, sometimes with hardcoded logic limiting our ability to test future multi value shard and realm network implementations. All APIs and services now accept arbitrary shard and realm IDs. Moving forward we can consistently test future network upgrades in a way that validates non zero realm and shard network configurations.
+
+#### Summary
+
+Release 0.63 aligns ancient event handling with consensus time, adds actionable higher resolution SDK telemetry, and removes limitations to implementing non zero realm and shard value tests. This improves Hiero network operational robustness, and expands test configurations.
+
+</details>
+
 ### [Build 0.63.9](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.63.9)
 
 <details>

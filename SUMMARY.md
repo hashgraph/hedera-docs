@@ -1,11 +1,11 @@
 # Table of contents
 
 * [Welcome to Hedera — let’s build the future](README.md)
-* [SDK Developers](getting-started-sdk-developers/README.md)
-  * [Environment Setup](getting-started-sdk-developers/environment-setup.md)
-  * [Transfer HBAR](getting-started-sdk-developers/transfer-hbar.md)
-  * [Create a Token](getting-started-sdk-developers/create-a-token.md)
-  * [Create a Topic](getting-started-sdk-developers/create-a-topic.md)
+* [Hedera Native Developers](getting-started-hedera-native-developers/README.md)
+  * [Environment Setup](getting-started-hedera-native-developers/environment-setup.md)
+  * [Transfer HBAR](getting-started-hedera-native-developers/transfer-hbar.md)
+  * [Create a Token](getting-started-hedera-native-developers/create-a-token.md)
+  * [Create a Topic](getting-started-hedera-native-developers/create-a-topic.md)
 * [EVM Developers](getting-started-evm-developers/README.md)
   * [Add Hedera to MetaMask](getting-started-evm-developers/add-hedera-to-metamask.md)
   * [Hedera Testnet Faucet](getting-started-evm-developers/hedera-testnet-faucet.md)

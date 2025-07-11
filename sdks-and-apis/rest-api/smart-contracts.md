@@ -71,6 +71,10 @@ The following endpoints are available for the Smart Contracts object:
 [OpenAPI mainnet](https://mainnet.mirrornode.hedera.com/api/v1/docs/openapi.yml)
 {% endopenapi-operation %}
 
+{% openapi-operation spec="mainnet" path="/api/v1/contracts/results" method="get" %}
+[OpenAPI mainnet](https://mainnet.mirrornode.hedera.com/api/v1/docs/openapi.yml)
+{% endopenapi-operation %}
+
 {% openapi-operation spec="mainnet" path="/api/v1/contracts/results/{transactionIdOrHash}/actions" method="get" %}
 [OpenAPI mainnet](https://mainnet.mirrornode.hedera.com/api/v1/docs/openapi.yml)
 {% endopenapi-operation %}

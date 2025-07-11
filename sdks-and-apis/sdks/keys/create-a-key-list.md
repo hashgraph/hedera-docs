@@ -102,4 +102,14 @@ fmt.Printf("The key list is %v\n", keyStructure)
 //v2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+let key_list = KeyList::new()
+
+println!("The key list is {:?}", key_list);
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}

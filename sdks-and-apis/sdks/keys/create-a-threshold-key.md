@@ -119,4 +119,23 @@ fmt.Printf("The 1/3 threshold key structure %v\n", thresholdKey)
 //v2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Generate 2 keys
+let key1 = PrivateKey::generate_ed25519();
+let key2 = PrivateKey::generate_ed25519();
+
+// Create a threshold key that requires 1 out of 2 keys to sign
+let threshold_key = KeyList {
+        keys: vec![key1.public_key().into(), key2.public_key().into()],
+        threshold: Some(1),
+    };
+
+
+println!("The 1/2 threshold key structure {:?}", threshold_key);
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}

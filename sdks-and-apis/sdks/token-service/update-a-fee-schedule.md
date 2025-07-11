@@ -102,4 +102,29 @@ fmt.Printf("The transaction consensus status is %v\n", status)
 //Version: 2.1.11
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the transaction
+let transaction = TokenFeeScheduleUpdateTransaction::new()
+    .token_id(token_id)
+    .custom_fees(custom_fee)
+    .freeze_with(&client)?;
+
+// Sign with the fee schedule key of the token and submit the transaction to a Hedera network
+let tx_response = transaction
+    .sign(fee_schedule_key)
+    .execute(&client).await?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client).await?;
+
+// Get the transaction consensus status
+let transaction_status = receipt.status;
+
+println!("The transaction consensus status is {:?}", transaction_status);
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}

@@ -1,6 +1,6 @@
-# SDK Developers
+# Hedera Native Developers
 
-The [Hedera SDKs](https://docs.hedera.com/hedera/sdks-and-apis/sdks) make it easy for developers to start building on Hedera using familiar programming languages like JavaScript and Java. Learn how to transfer HBAR, create tokens, and create and publish messages to topics.&#x20;
+The [Hiero SDKs](https://docs.hedera.com/hedera/sdks-and-apis/sdks) make it easy for developers to start building on Hedera using familiar programming languages like JavaScript and Java. Learn how to transfer HBAR, create tokens, and create and publish messages to topics.&#x20;
 
 _**ℹ️ Try the**_ [_**Hedera Developer Playground**_](https://portal.hedera.com/playground) _**to explore services, transactions, and queries on your own using the Hedera SDKs.**_
 

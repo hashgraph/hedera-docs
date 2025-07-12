@@ -6,6 +6,42 @@ description: Consensus Node release information
 
 Visit the [Hedera status page](https://status.hedera.com/) for the latest versions supported on each network.
 
+## Release v0.64
+
+{% hint style="info" %}
+**MAINNET UPDATE SCHEDULED: AUGUST 13, 2025**
+{% endhint %}
+
+{% hint style="info" %}
+**TESTNET UPDATE SCHEDULED: JULY 23, 2025**
+{% endhint %}
+
+### [Build 0.64.0](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.64.0)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+**Features**
+
+* Make worker loop sleep duration configurable ([#20007](https://github.com/hiero-ledger/hiero-consensus-node/pull/20007))
+* Add transaction support for the container environment ([#19941](https://github.com/hiero-ledger/hiero-consensus-node/pull/19941))
+* end the stream if block node is too far behind ([#19434](https://github.com/hiero-ledger/hiero-consensus-node/pull/19434))
+* replace hashmap with an array to improve performace for ops duration lookups ([#19836](https://github.com/hiero-ledger/hiero-consensus-node/pull/19836))
+* Apply EIP-3529 refund limits ([#19769](https://github.com/hiero-ledger/hiero-consensus-node/pull/19769)) ([#19821](https://github.com/hiero-ledger/hiero-consensus-node/pull/19821))
+
+#### Bug Fixes
+
+* remove workflow dispatch inputs when calling integration workflow ([#20046](https://github.com/hiero-ledger/hiero-consensus-node/pull/20046))
+* **18458** Pces file writer rollback ([#20038](https://github.com/hiero-ledger/hiero-consensus-node/pull/20038))
+* false positive tests used 'numeric contract complex' from numeric validation test ([#19954](https://github.com/hiero-ledger/hiero-consensus-node/pull/19954)) ([#20037](https://github.com/hiero-ledger/hiero-consensus-node/pull/20037))
+* resolve issues with the integration trigger workflow ([#20026](https://github.com/hiero-ledger/hiero-consensus-node/pull/20026))
+* Restore missing deps, META-INF files ([#20031](https://github.com/hiero-ledger/hiero-consensus-node/pull/20031))
+
+**Full changelog can be found in the** [**repo**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.64.0)**.**
+
+</details>
+
 ## Release v0.63
 
 {% hint style="info" %}

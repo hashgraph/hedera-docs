@@ -25,6 +25,15 @@ Before you begin, you should have **completed** the following tutorial:
 
 ***
 
+## Table of Contents
+
+1. [Step 1: Project Setup](deploy-a-smart-contract-with-hardhat.md#step-1-project-setup)
+2. [Step 2: Creating the ERC-721 Contract](deploy-a-smart-contract-with-hardhat.md#step-2-creating-the-erc-721-contract)
+3. [Step 3: Deploy Your ERC-721 Smart Contract](deploy-a-smart-contract-with-hardhat.md#step-3-deploy-your-erc-721-smart-contract)
+4. [Step 4: Minting an ERC-721 Token](deploy-a-smart-contract-with-hardhat.md#step-4-minting-an-erc-721-token)
+
+***
+
 ## Step 1: Project Setup
 
 #### Initialize Project&#x20;

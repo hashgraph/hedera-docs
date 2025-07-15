@@ -12,6 +12,7 @@
   * [Deploy your First Contract with Hedera Contract Builder](getting-started-evm-developers/deploy-your-first-contract-with-hedera-contract-builder.md)
   * [Deploy a Smart Contract with Remix](getting-started-evm-developers/deploy-a-smart-contract-using-remix.md)
   * [Deploy a Smart Contract with Hardhat](getting-started-evm-developers/deploy-a-smart-contract-with-hardhat.md)
+  * [Deploy a Smart Contract with Foundry](getting-started-evm-developers/deploy-a-smart-contract-with-foundry.md)
   * [Hedera Contract Builder](https://portal.hedera.com/contract-builder)
   * [Differences: Hedera vs. Ethereum](https://docs.hedera.com/hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility)
 * [Tutorials](tutorials/README.md)

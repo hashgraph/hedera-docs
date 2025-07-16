@@ -53,6 +53,21 @@ fmt.Println(string(contents))
 //v2.0.0
 ```
 {% endcode %}
+
+{% code title="Rust" %}
+```rust
+// Create the query
+let file_query = FileContentsQuery::new()
+    .file_id(FileId::from_str("0.0.102"));
+
+// Sign with the operator private key and submit to a Hedera network
+let contents = file_query.execute(&client).await?;
+
+println!("{:?}", String::from_utf8(contents)?);
+
+// v0.34.0
+```
+{% endcode %}
 {% endtab %}
 
 {% tab title="Mirror Nodes" %}
@@ -90,6 +105,19 @@ addressBook, err := hedera.NewAddressBookQuery().
 //Print address book to console
 fmt.Print(addressBook)
 //SDK Version: 2.10.0
+```
+{% endcode %}
+
+{% code title="Rust" %}
+```rust
+// Mirror node address book query
+let address_book = NodeAddressBookQuery::new()
+    .execute(&client)
+    .await?;
+
+println!("{:?}", address_book);
+
+// v0.34.0
 ```
 {% endcode %}
 {% endtab %}

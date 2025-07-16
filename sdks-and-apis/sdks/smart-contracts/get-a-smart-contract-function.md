@@ -76,6 +76,25 @@ println(contractFunctionResult)
 //v2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the query
+let query = ContractCallQuery::new()
+    .contract_id(contract_id)
+    .gas(600)
+    .function("greet")?;
+
+// Sign with the client operator private key and submit to a Hedera network
+let result = query.execute(&client).await?;
+
+// Get the function value
+let message = result.get_str(0)?;
+println!("Contract message: {:?}", message);
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}
 
 **Sample Output:**

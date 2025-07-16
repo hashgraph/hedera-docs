@@ -141,6 +141,35 @@ fmt.Printf("The new topic ID is %v\n", newContractId)
 //SDK Version: 2.11.0-beta.1
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the admin key
+let admin_key = PrivateKey::generate_ed25519();
+
+// Create the transaction
+let contract_create = ContractCreateFlow::new()
+    .bytecode_hex(bytecode_hex)
+    .admin_key(admin_key.public_key())
+    .gas(100_000);
+    .constructor_parameters(
+        ContractFunctionParameters::new().add_string("Hello from Hedera.").to_bytes(None),
+    )
+    .contract_memo("[e2e::ContractCreateFlow]".to_owned())
+
+// Sign the transaction with the client operator key and submit to a Hedera network
+let tx_response = contract_create.execute(&client).await?;
+
+// Get the receipt of the transaction
+let receipt = tx_response.get_receipt(&client).await?;
+
+// Get the new contract ID
+let new_contract_id = receipt.contract_id.unwrap();
+println!("The new contract ID is {:?}", new_contract_id);
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}
 
 ## `ContractCreateTransaction()`

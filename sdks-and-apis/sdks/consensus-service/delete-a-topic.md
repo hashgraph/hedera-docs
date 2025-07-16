@@ -86,6 +86,30 @@ fmt.Printf("The transaction consensus status is %v\n", transactionStatus)
 //v2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the transaction to delete the topic
+let transaction = TopicDeleteTransaction::new()
+    .topic_id(topic_id);
+
+// Sign the transaction with the admin key
+let tx_response = transaction
+    .freeze_with(&client)?
+    .sign(admin_key)
+    .execute(&client).await?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client).await?;
+
+// Get the transaction consensus status
+let status = receipt.status;
+
+println!("The transaction consensus status is {:?}", status);
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}
 
 ## Get transaction values

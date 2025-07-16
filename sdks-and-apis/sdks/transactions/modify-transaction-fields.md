@@ -69,6 +69,21 @@ transaction := hedera.NewAccountCreateTransaction(). //Any transaction can be ap
 //v2.0.0 
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the transaction and set the transaction properties
+let transaction = AccountCreateTransaction::new() // Any transaction can be applied here
+    .key_with_alias(ecdsa_public_key)
+    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .key_without_alias instead
+    // .key_without_alias(ecdsa_public_key)
+    .initial_balance(Hbar::new(1))
+    .max_transaction_fee(Hbar::new(2)) // Set the max transaction fee to 2 hbar
+    .transaction_memo("Transaction memo"); // Set the transaction memo
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}
 
 ## Get transaction properties
@@ -114,6 +129,24 @@ transaction := hedera.NewAccountCreateTransaction(). //Any transaction can be ap
 
 maxtransactionFee := transaction.GetMaxTransactionFee()
 //v2.0.0         
+```
+{% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// The node account ID to submit the transaction to. You can add more than 1 node account ID to the list
+let node_id = vec![AccountId::new(3)];
+
+// Create the transaction and set the transaction properties
+let transaction = AccountCreateTransaction::new() // Any transaction can be applied here
+    .initial_balance(Hbar::from_tinybars(1000))
+    .max_transaction_fee(Hbar::new(50)) // Set the max transaction fee to 50 hbar
+    .node_account_ids([node_id]) // Set the node ID to submit the transaction to
+    .transaction_memo("Transaction memo"); // Add a transaction memo
+
+let max_transaction_fee = transaction.max_transaction_fee();
+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

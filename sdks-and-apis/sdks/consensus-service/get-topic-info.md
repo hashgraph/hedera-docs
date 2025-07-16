@@ -16,7 +16,7 @@ Topic info returns the following values for a topic. Queries do not change the s
 | **Auto Renew Period**  | The lifetime of the topic and the amount of time to extend the topic's lifetime by                                                                                                                                                                                                                        |
 | **Auto Renew Account** | Null if there is no autoRenewAccount.                                                                                                                                                                                                                                                                     |
 | **Ledger ID**          | The ID of the network the response came from. See [HIP-198](https://hips.hedera.com/hip/hip-198).                                                                                                                                                                                                         |
-| **Fee Schedule Key**   | The key that is authorized to modify the fee structure for submitting messages to this topic. If present, this key must be used to update the topic’s fee settings. If absent, the topic’s fee structure cannot be changed.                                                                               |
+| **Fee Schedule Key**   | The key that is authorized to modify the fee structure for submitting messages to this topic. If present, this key must be used to update the topic's fee settings. If absent, the topic's fee structure cannot be changed.                                                                               |
 | **Fee Exempt Key**     | A list of accounts that do not have to pay a fee when submitting messages to the topic. If this field is present, it means certain accounts are allowed to submit messages for free. If absent, no exemptions exist.                                                                                      |
 | **Fee Schedule**       | The current fee structure that applies to message submissions for this topic. It specifies the amount charged per message, which can be denominated in HBAR or a chosen fungible token. If this field is present, the topic enforces fees for message submissions; if absent, message submission is free. |
 
@@ -104,6 +104,22 @@ fmt.Println("Custom Fees:", customFees)
 fmt.Println("Fee Exempt Key List:", feeExemptKeys)
 
 //v2.0.0
+```
+{% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the topic info query
+let query = TopicInfoQuery::new()
+    .topic_id(topic_id);
+
+// Submit the query to a Hedera network
+let topic_info = query.execute(&client).await?;
+
+// Print the topic info to the console
+println!("{:?}", topic_info);
+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

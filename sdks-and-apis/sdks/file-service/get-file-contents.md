@@ -73,6 +73,22 @@ fmt.Println(string(contents))
 //v2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the query
+let query = FileContentsQuery::new()
+    .file_id(file_id);
+
+// Submit the query to a Hedera network
+let contents = query.execute(&client).await?;
+
+// Print the contents to the console
+println!("File contents: {:?}", String::from_utf8_lossy(&contents));
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}
 
 ## Get query values
@@ -116,6 +132,19 @@ query := hedera.NewFileContentsQuery().
 getFileId := query.GetFileID()
 
 //v2.0.0
+```
+{% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the query
+let query = FileContentsQuery::new()
+    .file_id(file_id);
+
+// Get the file ID
+let file_id = query.get_file_id();
+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

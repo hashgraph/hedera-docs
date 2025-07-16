@@ -109,6 +109,34 @@ fmt.Printf("Transaction Status: %v\n", transactionStatus)
 //v2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the transaction to update the topic
+let transaction = TopicUpdateTransaction::new()
+    .topic_id(topic_id)
+    .topic_memo("Updated topic memo")
+    .admin_key(new_admin_key)
+    .submit_key(new_submit_key)
+    .auto_renew_period(Duration::hours(24 * 30)); // 30 days
+
+// Sign the transaction with the admin key
+let tx_response = transaction
+    .freeze_with(&client)?
+    .sign(admin_key)
+    .execute(&client).await?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client).await?;
+
+// Get the transaction consensus status
+let status = receipt.status;
+
+println!("The transaction consensus status is {:?}", status);
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}
 
 ## Get transaction values

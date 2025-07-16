@@ -67,4 +67,19 @@ fmt.Println("The hbar account balance for this account is ", accountBalance.Hbar
 //v2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the query
+let query = AccountBalanceQuery::new()
+    .account_id(account_id);
+
+// Sign with client operator private key and submit to a Hedera network
+let account_balance = query.execute(&client).await?;
+
+println!("The account balance is {:?}", account_balance.hbars);
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}

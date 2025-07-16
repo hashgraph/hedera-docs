@@ -117,6 +117,31 @@ fmt.Printf("The transaction consensus status is %v\n", transactionReceipt.Status
 //Version 2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the transfer transaction
+let transaction = TransferTransaction::new()
+    .hbar_transfer(account_id, Hbar::from(-10))
+    .hbar_transfer(recipient_id, Hbar::from(10));
+
+// Freeze the transaction for signing, sign with the private key of the account that is sending hbars
+let tx_response = transaction
+    .freeze_with(&client)?
+    .sign(account_key)
+    .execute(&client).await?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client).await?;
+
+// Get the transaction consensus status
+let status = receipt.status;
+
+println!("The transaction consensus status is {:?}", status);
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}
 
 ## Get transaction values

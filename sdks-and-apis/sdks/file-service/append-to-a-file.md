@@ -122,6 +122,32 @@ fmt.Println("The transaction consensus status is ", transactionStatus)
 //v2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the transaction
+let transaction = FileAppendTransaction::new()
+    .file_id(file_id)
+    .contents("The appended contents")
+    .max_transaction_fee(Hbar::new(2));
+
+// Sign with the file key and submit to a Hedera network
+let tx_response = transaction
+    .freeze_with(&client)?
+    .sign(file_key)
+    .execute(&client).await?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client).await?;
+
+// Get the transaction consensus status
+let status = receipt.status;
+
+println!("The transaction consensus status is {:?}", status);
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}
 
 ## Get transaction values

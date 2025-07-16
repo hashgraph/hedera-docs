@@ -33,4 +33,14 @@ publicKey := recoveredKey.PublicKey()
 //v2.0.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Recover private key from mnemonic phrase with passphrase
+let private_key = PrivateKey::from_mnemonic_with_passphrase(&mnemonic, "passphrase")?;
+let public_key = private_key.public_key();
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}

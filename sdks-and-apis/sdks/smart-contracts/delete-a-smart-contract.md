@@ -89,9 +89,31 @@ if err != nil {
 //Get the transaction consensus status
 transactionStatus := receipt.Status
 
-fmt.Printf("The transaction consensus status %v\n", transactionStatus)
+fmt.Printf("The transaction consensus status is %v\n", transactionStatus)
 
 //v2.0.0
+```
+{% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the transaction
+let transaction = ContractDeleteTransaction::new()
+    .contract_id(contract_id)
+    .freeze_with(&client)?
+    .sign(admin_key);
+
+// Sign with the client operator private key and submit to a Hedera network
+let tx_response = transaction.execute(&client).await?;
+
+// Get the receipt of the transaction
+let receipt = tx_response.get_receipt(&client).await?;
+
+// Get the transaction consensus status
+let transaction_status = receipt.status;
+println!("The transaction consensus status is {:?}", transaction_status);
+
+// v0.34.0
 ```
 {% endtab %}
 {% endtabs %}

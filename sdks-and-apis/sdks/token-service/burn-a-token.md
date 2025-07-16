@@ -110,4 +110,29 @@ fmt.Printf("The transaction consensus status is %v\n", status)
 //v2.1.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Burn 1,000 tokens
+let transaction = TokenBurnTransaction::new()
+    .token_id(token_id)
+    .amount(1000);
+
+// Freeze the unsigned transaction, sign with the supply private key of the token
+let tx_response = transaction
+    .freeze_with(&client)?
+    .sign(supply_key)
+    .execute(&client).await?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client).await?;
+
+// Get the transaction consensus status
+let status = receipt.status;
+
+println!("The transaction consensus status is {:?}", status);
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}

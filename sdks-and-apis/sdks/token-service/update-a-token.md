@@ -114,4 +114,31 @@ fmt.Printf("The transaction consensus status is %v\n", status)
 //v2.1.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the transaction
+let transaction = TokenUpdateTransaction::new()
+    .token_id(token_id)
+    .metadata_key(metadata_key)
+    .metadata(new_metadata)
+    .token_name("Your New Token Name");
+
+// Freeze the unsigned transaction, sign with the admin private key of the token
+let tx_response = transaction
+    .freeze_with(&client)?
+    .sign(admin_key)
+    .execute(&client).await?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client).await?;
+
+// Get the transaction consensus status
+let status = receipt.status;
+
+println!("The transaction consensus status is {:?}", status);
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}

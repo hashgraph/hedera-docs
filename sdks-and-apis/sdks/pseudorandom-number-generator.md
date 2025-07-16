@@ -87,4 +87,26 @@ println("The pseudorandom number is:", *transactionRecord.PrngNumber)
 //Version 2.17.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the transaction with range set
+let transaction = PrngTransaction::new()
+    .range(250)
+    .execute(&client)
+    .await?;
+
+// Get the record
+let record = transaction.get_record(&client)?;
+
+// Get the number
+if let Some(prng_number) = record.prng_number {
+    println!("The pseudorandom number is: {:?}", prng_number);
+} else {
+    println!("No pseudorandom number returned in the record.");
+}
+
+// v2.17.0+
+```
+{% endtab %}
 {% endtabs %}

@@ -54,6 +54,21 @@ if err != nil {
 }
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the query
+let query = ContractByteCodeQuery::new()
+    .contract_id(contract_id);
+
+// Sign with the client operator private key and submit to a Hedera network
+let bytecode = query.execute(&client).await?;
+
+println!("Contract bytecode: {:?}", bytecode);
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}
 
 ## Get query values

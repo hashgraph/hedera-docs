@@ -97,4 +97,28 @@ fmt.Printf("The transaction consensus status is %v\n", status)
 //v2.3.0
 ```
 {% endtab %}
+
+{% tab title="Rust" %}
+```rust
+// Create the token unpause transaction and specify the token to unpause
+let transaction = TokenUnpauseTransaction::new()
+    .token_id(token_id);
+
+// Freeze the unsigned transaction, sign with the pause key
+let tx_response = transaction
+    .freeze_with(&client)?
+    .sign(pause_key)
+    .execute(&client).await?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client).await?;
+
+// Get the transaction consensus status
+let status = receipt.status;
+
+println!("The transaction consensus status is {:?}", status);
+
+// v0.34.0
+```
+{% endtab %}
 {% endtabs %}

@@ -44,8 +44,8 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Release v0.63
 
-{% hint style="info" %}
-**MAINNET UPDATE SCHEDULED: JULY 23, 2025**
+{% hint style="success" %}
+**MAINNET UPDATE: JULY 23, 2025**
 {% endhint %}
 
 {% hint style="success" %}

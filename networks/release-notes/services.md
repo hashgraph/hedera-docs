@@ -16,6 +16,51 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **TESTNET UPDATE SCHEDULED: JULY 24, 2025**
 {% endhint %}
 
+### Release Highlights
+
+Release v0.64 significantly improves the developer experience for frontend applications by introducing dynamic gRPC-Web endpoint discovery. This simplifies development workflows, enhances scalability, and sets the stage for a more decentralized and robust Hedera network. Additionally, this release includes important important block stream feature development, bug fixes, optimizations, and dependency updates that contribute to the overall stability and performance of the Hiero Consensus Node.
+
+<details>
+
+<summary><strong>What's new in Release 0.64?</strong></summary>
+
+#### **HIP-1046: gRPC-Web Proxy Endpoint Support To the Address Book**
+
+Historically, connecting frontend applications to Hedera using the JavaScript SDK has been challenging due to browser security restrictions. gRPC-Web was used as a workaround, but the necessary endpoints were hardcoded into the SDK. This approach required manual updates and coordination, which could become problematic as Hedera grows and more independent nodes operate.
+
+To address this issue, release v0.64.0 introduces dynamic endpoint discovery for gRPC-Web, as described in [HIP-1046](https://hips.hedera.com/hip/hip-1046). The Hedera address book now includes gRPC-Web endpoint information, which the JavaScript SDK uses dynamically. This eliminates the need for hardcoded endpoints and simplifies connecting frontend applications to the Hedera network, even as endpoints change.
+
+**Key benefits:**
+
+* **Simplified Development**: Eliminates the need for manual SDK updates to reflect endpoint changes.
+* **Enhanced Scalability**: Supports the growing number of nodes on the Hedera network.
+* **Improved User Experience**: Provides a more seamless and robust connection experience for frontend applications.
+
+**Client code impact:**
+
+* Update to the latest Hedera JavaScript SDK to leverage this feature. The SDK will now automatically retrieve gRPC-Web endpoints from the address book.
+* Applications or tools that manually maintained lists of gRPC-Web endpoints should now query the mirror node for the latest list.
+
+#### **Advancements in HIP-1056: Block Streams**
+
+Version 0.64 introduces substantial progress on [HIP-1056](https://hips.hedera.com/hip/hip-1056), which aims to create Block Streams—a unified, verifiable data stream that combines Hedera's existing event, record, and sidecar streams into a single efficient output. These enhancements focus on making Block Streams production-ready by prioritizing efficiency, cost-effectiveness, and security.
+
+Key developments in this release include:
+
+* **Stream Size Optimization:** The block stream has been refined to minimize its size, reducing storage and transmission costs while maintaining high performance and scalability. This release represents a partial update, with more enhancements to follow.
+* **Batch Transaction Support:** Added functionality to include batch transactions into the block stream.
+* **Consensus Node-to-Block Node Communication:** Established secure and reliable communication channels between consensus nodes and block nodes including features like acknowledgments and resend mechanisms. This release represents a partial update, with more enhancements to follow.
+
+#### **Other updates:**
+
+In addition to the aforementioned features, release 0.64 introduces other updates:
+
+* Added TCK tests to the continuous integration pipeline ( #18727 ) to improve testing coverage and software quality.
+* Disallowed setting duplicate rosters ( #19072 ) to optimize storage and CPU usage.
+* Several dependency updates ( #18714, #18841, #19074 ) to leverage the latest improvements and security patches.
+
+</details>
+
 ### [Build 0.64.0](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.64.0)
 
 <details>

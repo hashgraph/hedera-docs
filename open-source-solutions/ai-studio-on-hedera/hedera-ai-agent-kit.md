@@ -124,6 +124,8 @@ main().catch(console.error);
 
 ### Examples
 
+See and try out the [**example NextJS Application** ](https://github.com/hedera-dev/template-hedera-agent-kit-nextjs)built using the latest version of the AI Agent Kit to see
+
 [**Clone and try out**](https://github.com/hedera-dev/hedera-agent-kit?tab=readme-ov-file#-clone--test-the-sdk-examples) different examples in the toolkit:
 
 * The [**example tool calling agent**](https://github.com/hedera-dev/hedera-agent-kit?tab=readme-ov-file#2--configure-add-environment-variables-1) can carry out simple tasks with hedera tools in 'autonomous mode'
@@ -161,14 +163,14 @@ See the available tools and implementation details in the Github docs: [TOOLS.md
 
 The Hedera network is made up of two types of nodes: consensus nodes and mirror nodes. Mirror nodes are free to query, and maintain a copy of the state of the network for users to query.
 
-This toolkit provides a set of tools to query the state of the network, including accounts, tokens, and transactions. To request more functionality, please [open an issue](https://github.com/hedera-dev/hedera-agent-kit/issues/new?template=toolkit_feature_request.md\&title=%5BFEATURE%5D%20-%20).
-
 The Hedera Agent Kit provides a set of tools to execute and query these nodes:
 
 * Get Account Query
 * Get HBAR Balance Query
 * Get Account Token Balances Query
 * Get Topic Messages Query
+
+If you need additional functionality outside of these Hedera tools, please [open an issue](https://github.com/hedera-dev/hedera-agent-kit/issues/new?template=toolkit_feature_request.md\&title=%5BFEATURE%5D%20-%20).
 
 ## Requests and Contributions
 

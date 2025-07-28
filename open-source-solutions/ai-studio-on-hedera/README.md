@@ -4,23 +4,31 @@ description: Build verifiable, transparent AI agents on Hedera.
 
 # AI Studio on Hedera
 
-[Hedera AI Studio](https://hedera.com/ai-studio) is an open-source, modular toolkit that simplifies the creation and deployment of verifiable AI agents on the Hedera network. It provides developers with intuitive tools to build intelligent, transparent, and automated AI workflows with minimal effort.
+[Hedera AI Studio](https://hedera.com/ai-studio) is a set of open-source tools built to enable developers to  create and deploy of verifiable AI agents on the Hedera network. Theis studio provides developers with intuitive tools  to build intelligent, transparent, and automated AI workflows with minimal effort.
 
 <figure><img src="../../.gitbook/assets/vlcsnap-2025-05-14-08h55m18s541.webp" alt=""><figcaption></figcaption></figure>
 
+AI Studio enables developers build AI agents that run transparently and verifiably on the Hedera network. Using Hedera Consensus Service (HCS), Hedera Token Service (HTS) AI Studio records data and transactions on the Hedera network with timestamps and immutable logs, ensuring fairness and trust.
+
 ## Key Components
 
-AI systems often feel like black boxes that are hidden, unverifiable, and tough to control, especially once they're plugged into real-world apps. AI Studio changes that by letting developers build AI agents that run transparently and verifiably on the Hedera network. Using Hedera Consensus Service (HCS), AI Studio records data and transactions on the Hedera network with timestamps and immutable logs, ensuring fairness and trust. Combined with tools like the:
-
-<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><a href="https://docs.hedera.com/hedera/open-source-solutions/ai-tools-for-developers/hedera-ai-agent-kit"><strong>Hedera Agent Kit</strong></a></td><td>A <a href="https://www.langchain.com/">LangChain</a>-compatible SDK enabling agents to interact with Hedera using JavaScript or natural language.</td><td><a href="https://docs.hedera.com/hedera/open-source-solutions/ai-tools-for-developers/hedera-ai-agent-kit">https://docs.hedera.com/hedera/open-source-solutions/ai-tools-for-developers/hedera-ai-agent-kit</a></td></tr><tr><td align="center"><a href="https://docs.hedera.com/hedera/open-source-solutions/ai-tools-for-developers/elizaos-plugin-for-hedera"><strong>ElizaOS Plugin</strong></a></td><td>A natural language interface for real-time network interaction and context-aware responses.</td><td><a href="https://docs.hedera.com/hedera/open-source-solutions/ai-tools-for-developers/elizaos-plugin-for-hedera">https://docs.hedera.com/hedera/open-source-solutions/ai-tools-for-developers/elizaos-plugin-for-hedera</a></td></tr><tr><td align="center"><a href="https://hashgraphonline.com/openconvai"><strong>OpenConvAI (HCS-10)</strong></a></td><td>A new protocol for decentralized agent communication, enabling discoverability and tamper-proof messaging.</td><td><a href="https://hashgraphonline.com/openconvai">https://hashgraphonline.com/openconvai</a></td></tr><tr><td align="center"><a href="https://moonscape.tech/openconvai"><strong>Moonscape OpenConvAI</strong></a></td><td>An implementation of the HCS-10 OpenConvAI standard for browser-based agent interactions.</td><td><a href="https://moonscape.tech/openconvai">https://moonscape.tech/openconvai</a></td></tr><tr><td align="center"><a href="https://github.com/hedera-dev/mcp-server-hedera"><strong>MCP Server</strong></a></td><td>A program that helps define how AI agents can interact with external tools and data sources. (Coming Soon)</td><td><a href="https://github.com/hedera-dev/mcp-server-hedera">https://github.com/hedera-dev/mcp-server-hedera</a></td></tr></tbody></table>
+<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><a href="https://docs.hedera.com/hedera/open-source-solutions/ai-tools-for-developers/hedera-ai-agent-kit"><strong>Hedera Agent Kit</strong></a> <strong>+ MCP Server</strong></td><td>A <a href="https://www.langchain.com/">LangChain</a>-compatible SDK enabling agents to interact with Hedera using JavaScript or natural language.</td><td><a href="https://docs.hedera.com/hedera/open-source-solutions/ai-tools-for-developers/hedera-ai-agent-kit">https://docs.hedera.com/hedera/open-source-solutions/ai-tools-for-developers/hedera-ai-agent-kit</a></td></tr><tr><td align="center"><a href="https://docs.hedera.com/hedera/open-source-solutions/ai-tools-for-developers/elizaos-plugin-for-hedera"><strong>ElizaOS Plugin</strong></a></td><td>A natural language interface for real-time network interaction and context-aware responses.</td><td><a href="https://docs.hedera.com/hedera/open-source-solutions/ai-tools-for-developers/elizaos-plugin-for-hedera">https://docs.hedera.com/hedera/open-source-solutions/ai-tools-for-developers/elizaos-plugin-for-hedera</a></td></tr><tr><td align="center"><a href="https://github.com/hedera-dev/hedera-agent-kit/blob/main/docs/TOOLS.md"><strong>Available Hedera Tools</strong></a></td><td>See the tools and capabilities available in the Hedera Agent Kit SDK</td><td></td></tr></tbody></table>
 
 ## Getting Started
 
-[**Sign up today**](https://hedera.com/ai-studio) to learn more about the next generation of trusted intelligent systems with AI Studio.
+With the AI Studio, developers can use the SDK to build agents that can interact with the Hedera network, query Hedera mirror nodes, and use native Hedera services to build agents that can use natural laguage to query and carry out actions on Hedera.
+
+* [**Try the 60-second quickstart**](https://github.com/hedera-dev/hedera-agent-kit?tab=readme-ov-file#-60-second-quick-start). Use npm to install the latest version of the agent kit and create a simple "Hello Hedera Agent Kit"
+* [**Clone and try out**](https://github.com/hedera-dev/hedera-agent-kit?tab=readme-ov-file#-clone--test-the-sdk-examples) different examples in the toolkit:
+  * The [**example tool calling agent**](https://github.com/hedera-dev/hedera-agent-kit?tab=readme-ov-file#2--configure-add-environment-variables-1) can carry out simple tasks with hedera tools in 'autonomous mode'
+  * The [**structured chat agent**](https://github.com/hedera-dev/hedera-agent-kit?tab=readme-ov-file#4--option-b-run-the-structured-chat-agent) can string together and complete more complex tasks, autonomously on Hedera
+  * The [**human in the loop agent**](https://github.com/hedera-dev/hedera-agent-kit?tab=readme-ov-file#5---option-c-try-the-human-in-the-loop-chat-agent) shows you how you can create a more controlled workflow
+  * [**Try out the MCP server**](https://github.com/hedera-dev/hedera-agent-kit?tab=readme-ov-file#6---option-d-try-out-the-mcp-server) to enable interaction with Hedera in your favorite application such as Claude Desktop or an IDE like Cursor.&#x20;
 
 ## Explore More
 
-* [**Hedera AI Studio**](https://hedera.com/ai-studio)
-* [**Hashgraph Online**](https://hashgraphonline.com/openconvai)
-* [**Hedera Developer Portal**](https://portal.hedera.com/)
-* [**Introducing Hedera AI Studio \[Blog\]**](https://hedera.com/blog/introducing-hedera-ai-studio)
+* Visit the [**Hedera AI Studio**](https://github.com/hedera-dev/hedera-agent-kit) Github repo for more details
+* Create a Hedera account on the [**Hedera Developer Portal**](https://portal.hedera.com/)**,** and play around with Hedera services and tools
+* Learn about the studio in the blog: [**Introducing Hedera AI Studio** ](https://hedera.com/blog/introducing-hedera-ai-studio)
+
+[**Sign up**](https://hedera.com/ai-studio) to our newsletter to learn more about the next generation of trusted intelligent systems with AI Studio.

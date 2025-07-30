@@ -12,7 +12,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **MAINNET UPDATE SCHEDULED: AUGUST 13, 2025**
 {% endhint %}
 
-{% hint style="info" %}
+{% hint style="success" %}
 **TESTNET UPDATE SCHEDULED: JULY 30, 2025**
 {% endhint %}
 
@@ -58,6 +58,23 @@ In addition to the aforementioned features, release 0.64 introduces other update
 * Added TCK tests to the continuous integration pipeline ( #18727 ) to improve testing coverage and software quality.
 * Disallowed setting duplicate rosters ( #19072 ) to optimize storage and CPU usage.
 * Several dependency updates ( #18714, #18841, #19074 ) to leverage the latest improvements and security patches.
+
+</details>
+
+### [Build 0.64.1](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.64.1)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* fix: (0.64) Query new account balance in throttling tests by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#20130](https://github.com/hiero-ledger/hiero-consensus-node/pull/20130)
+* build: (0.64) add 'hedera-protobuf-java-api' to published artifacts by [@andrewb1269hg](https://github.com/andrewb1269hg) in [#20154](https://github.com/hiero-ledger/hiero-consensus-node/pull/20154)
+* chore: (0.64) update CITR SDPT workflow for Kubernetes by [@andrewb1269hg](https://github.com/andrewb1269hg) in [#20226](https://github.com/hiero-ledger/hiero-consensus-node/pull/20226)
+* chore: cherry pick final change for release/0.64 infra changes by [@rbarker-dev](https://github.com/rbarker-dev) in [#20290](https://github.com/hiero-ledger/hiero-consensus-node/pull/20290)
+* fix: Revert Autorenew error code translation by [@ibankov](https://github.com/ibankov) in [#20292](https://github.com/hiero-ledger/hiero-consensus-node/pull/20292)
+* chore: Update UBUNTU\_TAG to use debian bookworm-20250630-slim ([#20296](https://github.com/hiero-ledger/hiero-consensus-node/pull/20296)) by [@rbarker-dev](https://github.com/rbarker-dev) in [#20312](https://github.com/hiero-ledger/hiero-consensus-node/pull/20312)
+
+**Full Changelog**: [v0.64.0...v0.64.1](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.64.0...v0.64.1)
 
 </details>
 

@@ -221,7 +221,7 @@ Learn how to verify your smart contract:
 
 **➡** [**Sourcify Docs**](https://docs.sourcify.dev/docs/intro)
 
-**➡** [**Smart Contract Verification API**](https://docs.sourcify.dev/docs/intro)
+**➡** [**Smart Contract Verification API**](../../sdks-and-apis/smart-contract-verification-api.md)
 
 **➡** [**HashScan Network Explorer**](https://hashscan.io/)
 

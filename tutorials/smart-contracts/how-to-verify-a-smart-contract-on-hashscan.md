@@ -122,6 +122,8 @@ Revisit [**Step 1**](how-to-verify-a-smart-contract-on-hashscan.md#step-1-find-t
 
 ## Additional Resources
 
+**➡** [**Smart Contract Verification API**](https://docs.sourcify.dev/docs/intro)
+
 **➡** [**HashScan Network Explorer**](https://hashscan.io/)
 
 **➡** [**Smart Contract Verifier Page**](https://verify.hashscan.io/)

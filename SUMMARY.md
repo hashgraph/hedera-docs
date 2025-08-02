@@ -469,6 +469,7 @@
       * [TransactionResponse](sdks-and-apis/hedera-api/miscellaneous/transactionresponse.md)
       * [UncheckedSubmit](sdks-and-apis/hedera-api/miscellaneous/uncheckedsubmit.md)
   * [Hedera Status API](sdks-and-apis/hedera-status-api.md)
+  * [Smart Contract Verification API](sdks-and-apis/smart-contract-verification-api.md)
 * [Support & Community](support-and-community/README.md)
   * [Glossary](support-and-community/glossary.md)
   * [Contributing to Hedera documentation](support-and-community/contributing-guide/README.md)

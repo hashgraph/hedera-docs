@@ -34,36 +34,36 @@ The [Hedera CLI ](https://github.com/hashgraph/hedera-cli)is a command‑line in
 
 ## Key Features
 
-### Feature 1: Multi-Network Execution
+### Feature 1: Multi-Network Execution and Local Node
 
-The **`network use <network>`**&#x63;ommand gives you the ability to switch between different networks if you have configured accounts for each of the Hedera networks.&#x20;
+The **`network use <network>`** command gives you the ability to switch between different networks if you have configured accounts for each of the Hedera networks. You can also configure the default account for the [Hedera Local Node in your Hedera CLI](https://github.com/hashgraph/hedera-cli?tab=readme-ov-file#4-set-up-operator-credentials)  so you can run tests locally on your local node.&#x20;
 
 ### Feature 2: Script Blocks
 
 [**Script blocks**](https://github.com/hashgraph/hedera-cli?tab=readme-ov-file#backup-commands) allow you to chain multiple commands to prepare a testing environment on a specific network. Let's take a look at some examples.
 
-**A. Simple account and token creation**
+**A. Account creation and fetching a balance (basic example)**
 
-The script block switches to the testnet and then creates an account with a randomly generated alias. The command uses the `--args` parameter to store variables, which we can reference in future commands in the script block. For example, we store the `privateKey`of the account as `myAdminKey` . Next, we create a new token and use the `accountAlias`  variable as the token name. We also set the stored `privateKey` as the admin key for the token.
+This script block is a simple example that shows how the Script Block feature works. The script switches to the testnet, creates an account (called Alice), stores the account's ID, and queries the account's balance using the stored account ID.
 
-{% code overflow="wrap" %}
 ```json
 {
-  "name": "random-token-create",
+  "name": "account-create",
   "commands": [
     "network use testnet",
-    "account create -a random --args privateKey,myAdminKey --args alias,accountAlias",
-    "token create -n {{accountAlias}} --symbol rand --decimals 2 --initial-supply 1000 --supply-type infinite --admin-key {{myAdminKey}} --treasury-id 0.0.4536940 --treasury-key 302302[...]"
-  ]
+    "account create --name alice -b 100000000 --args accountId:idAcc1",
+    "wait 3",
+    "account balance --account-id-or-name {{idAcc1}} --only-hbar"
+  ],
+  "args": {}
 }
 ```
-{% endcode %}
 
 **B. Advanced token creation and transfer**
 
 The following example is a bit more complex. Here's a breakdown:
 
-* Create three random accounts and store key variables like the private key, alias, and account ID.
+* Create three random accounts and store outputs as variables like the private key, internal account name, and account ID.
 * Create a token called `mytoken` and use account 1 as the admin key and account 2 as the treasury account. Again, we store the token ID in a variable conveniently called `tokenId` .
 * Associate account 3 with our newly created token and transfer one unit of our token from account 2 to account 3. The wait command has been added to make sure the operation has been completed.&#x20;
 * Let's wait three seconds to make sure the mirror nodes have picked up the balance changes, then look up the balance for account 3 for our newly created token. Finally, we print the stored state for our new token to the terminal.&#x20;
@@ -73,17 +73,18 @@ The following example is a bit more complex. Here's a breakdown:
 {
   "name": "transfer",
   "commands": [
-    "network use testnet",
-    "account create -a random --args privateKey,privKeyAcc1 --args alias,aliasAcc1 --args accountId,idAcc1",
-    "account create -a random --args privateKey,privKeyAcc2 --args alias,aliasAcc2 --args accountId,idAcc2",
-    "account create -a random --args privateKey,privKeyAcc3 --args alias,aliasAcc3 --args accountId,idAcc3",
-    "token create -n mytoken -s MTK -d 2 -i 1000 --supply-type infinite -a {{privKeyAcc1}} -t {{idAcc2}} -k {{privKeyAcc2}} --args tokenId,tokenId",
+   "network use testnet",
+    "account create --name alice --args privateKey:privKeyAcc1 --args name:nameAcc1 --args accountId:idAcc1",
+    "account create --name bob --args privateKey:privKeyAcc2 --args name:nameAcc2 --args accountId:idAcc2",
+    "account create --name greg --args privateKey:privKeyAcc3 --args name:nameAcc3 --args accountId:idAcc3",
+    "token create -n mytoken -s MTK -d 2 -i 1000 --supply-type infinite --admin-key {{privKeyAcc1}} --treasury-id {{idAcc2}} --treasury-key {{privKeyAcc2}} --args tokenId:tokenId",
     "token associate --account-id {{idAcc3}} --token-id {{tokenId}}",
-    "token transfer -t {{tokenId}} -b 1 --from {{aliasAcc2}} --to {{aliasAcc3}}",
+    "token transfer -t {{tokenId}} -b 1 --from {{nameAcc2}} --to {{nameAcc3}}",
     "wait 3",
-    "account balance --account-id-or-alias {{aliasAcc3}} --token-id {{tokenId}}",
+    "account balance --account-id-or-name {{nameAcc3}} --token-id {{tokenId}}",
     "state view --token-id {{tokenId}}"
-  ]
+  ],
+  "args": {}
 }
 ```
 {% endcode %}
@@ -92,15 +93,40 @@ The following example is a bit more complex. Here's a breakdown:
 Scripts can also be downloaded from external sources using the [`state download` command](https://github.com/hashgraph/hedera-cli?tab=readme-ov-file#usage-7) to make it easier to set up your Hedera CLI in CI/CD pipelines.
 {% endhint %}
 
-### Feature 3: State Management
+### Feature 3: Smart Contract Deployment and Interactions
 
-The Hedera CLI tool **tracks state**. Each account, token, or topic you create gets stored in its internal state. Additionally, you can **assign aliases** to each entity type to make it easier to reference them, eliminating the need to remember account IDs or private keys. The tool automatically looks up the account alias in the state and signs a transaction using the found account's private key. This makes it a lot easier to execute commands.
+You can use the CLI to deploy and interact with smart contracts. Currently, the CLI supports only Hardhat scripts for these operations. We've also added support for storing data as variables within Hardhat scripts, allowing you to maintain state and share it between scripts and commands. This is especially useful when using the Script Blocks feature (see [bullet 3 in the announcement blog post](https://hedera.com/blog/an-early-look-at-the-hedera-cli-simplify-automate-and-accelerate-development-on-hedera)).
+
+{% code title="scripts/deploy.js" %}
+```javascript
+const stateController = require('../../state/stateController.js').default;
+
+async function main() {
+  const [deployer] = await ethers.getSigners();
+
+  console.log('Deploying contracts with the account:', deployer.address);
+
+  // The deployer will also be the owner of our token contract
+  const ERC721Token = await ethers.getContractFactory('ERC721Token', deployer);
+  const contract = await ERC721Token.deploy(deployer.address);
+  await contract.waitForDeployment();
+
+  const contractAddress = await contract.getAddress();
+  console.log('ERC721 Token contract deployed at:', contractAddress);
+
+  // Store address in script arguments as "erc721address"
+  stateController.saveScriptArgument('erc721address', contractAddress);
+}
+
+main().catch(console.error);
+```
+{% endcode %}
+
+### Feature 4: State Management
+
+The Hedera CLI tool **tracks state**. Each account, token, or topic you create gets stored in its internal state. Additionally, you can **assign names** to each entity type to make it easier to reference them, eliminating the need to remember account IDs or private keys. The tool automatically looks up the account name in the state and signs a transaction using the found account's private key. This makes it a lot easier to execute commands.
 
 Additionally, you can [**create state backups**](https://github.com/hashgraph/hedera-cli?tab=readme-ov-file#backup-commands) **or** [**download a state file**](https://github.com/hashgraph/hedera-cli?tab=readme-ov-file#state-commands) **from an external location**. This is useful if you want to use the same base state to run your tests. It also avoids the need to prepare the testing environment manually.
-
-### Feature 4: Supports Local Node
-
-You can configure the default account for the Hedera Local Node in your Hedera CLI tool so you can run tests locally on your local node.&#x20;
 
 {% hint style="info" %}
 #### 💡 Feature Requests?

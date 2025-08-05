@@ -50,7 +50,7 @@ Messages submitted to topics that enforce a custom fee have a higher cost ($0.05
 
 ## Methods
 
-<table><thead><tr><th width="298">Method</th><th width="135">Type</th><th>Description</th><th>Requirement</th></tr></thead><tbody><tr><td><code>setTopicId(&#x3C;topicId>)</code></td><td>TopicId</td><td>The topic ID to submit the message to</td><td>Required</td></tr><tr><td><code>setMessage(&#x3C;message>)</code></td><td>String</td><td>The message in a String format</td><td>Optional</td></tr><tr><td><code>setMessage(&#x3C;message>)</code></td><td>byte [ ]</td><td>The message in a byte array format</td><td>Optional</td></tr><tr><td><code>setMessage(&#x3C;message>)</code></td><td>ByteString</td><td>The message in a ByteString format</td><td>Optional</td></tr><tr><td><code>setChunkSize()</code></td><td>int</td><td>The max size of individual chunk for a given message. Default: 1024 bytes</td><td>Optional</td></tr><tr><td><code>setMaxChunks()</code></td><td>int</td><td>The max number of chunks a given message can be split into. Default: 20</td><td>Optional</td></tr><tr><td><code>setMaxCustomFees()</code></td><td>Fee[]</td><td>The maximum custom fees the sender is willing to pay</td><td>Optional</td></tr></tbody></table>
+<table><thead><tr><th width="298">Method</th><th width="192.37890625">Type</th><th>Description</th><th>Requirement</th></tr></thead><tbody><tr><td><code>setTopicId(&#x3C;topicId>)</code></td><td>TopicId</td><td>The topic ID to submit the message to</td><td>Required</td></tr><tr><td><code>setMessage(&#x3C;message>)</code></td><td>String</td><td>The message in a String format</td><td>Optional</td></tr><tr><td><code>setMessage(&#x3C;message>)</code></td><td>byte [ ]</td><td>The message in a byte array format</td><td>Optional</td></tr><tr><td><code>setMessage(&#x3C;message>)</code></td><td>ByteString</td><td>The message in a ByteString format</td><td>Optional</td></tr><tr><td><code>setChunkSize()</code></td><td>int</td><td>The max size of individual chunk for a given message. Default: 1024 bytes</td><td>Optional</td></tr><tr><td><code>setMaxChunks()</code></td><td>int</td><td>The max number of chunks a given message can be split into. Default: 20</td><td>Optional</td></tr><tr><td><code>setCustomFeeLimits()</code></td><td>List&#x3C;CustomFeeLimit></td><td>The maximum custom fees the sender is willing to pay</td><td>Optional</td></tr><tr><td><code>addCustomFeeLimit()</code></td><td>CustomFeeLimit</td><td>Adds a custom fee limit</td><td>Optional</td></tr></tbody></table>
 
 {% tabs %}
 {% tab title="Java" %}
@@ -151,12 +151,11 @@ println!("The transaction consensus status is {:?}", status);
 
 ## Get transaction values
 
-| Method                    | Type       | Description                             |
-| ------------------------- | ---------- | --------------------------------------- |
-| `getTopicId()`            | TopicId    | The topic ID to submit the message to   |
-| `getMessage()`            | ByteString | The message being submitted             |
-| `getAllTransactionHash()` | byte \[ ]  | The hash for each transaction           |
-| `getMaxCustomFees()`      | Fee\[]     | The max custom fees set for the message |
+| Method                 | Type       | Description                                      |
+| ---------------------- | ---------- | ------------------------------------------------ |
+| `getTopicId()`         | TopicId    | The topic ID to submit the message to            |
+| `getMessage()`         | ByteString | The message being submitted                      |
+| `getCustomFeeLimits()` | Fee\[]     | Extract the custom fee limits of the transaction |
 
 {% tabs %}
 {% tab title="Java" %}

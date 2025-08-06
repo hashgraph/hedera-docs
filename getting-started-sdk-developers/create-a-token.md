@@ -249,7 +249,7 @@ PrivateKey adminKey = supplyKey; // can update/delete (reuse for simplicity)
 {% tab title="Go" %}
 ```go
 // Generate keys that control your token
-supplyKey, _ := hedera.PrivateKeyGenerateEcdsa() // can mint/bur
+supplyKey := hedera.PrivateKeyGenerateEcdsa() // can mint/burn
 adminKey := supplyKey // can update/delete (reuse for simplicity)
 ```
 {% endtab %}

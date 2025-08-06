@@ -155,7 +155,7 @@ import (
     "os"
     "time"
 
-    "github.com/hiero-ledger/hiero-sdk-go/v2"
+    hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
 )
 ```
 {% endtab %}

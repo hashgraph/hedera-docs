@@ -6,7 +6,7 @@ Learn how to create a new Hedera **account** on _testnet_ using the JavaScript, 
 
 ## Prerequisites
 
-* A Hedera testnet **operator account ID** and **DER-encoded private key** (from the [Quickstart](quickstart.md))
+* A Hedera testnet **operator account ID** and **DER-encoded private key** (from the [Quickstart](quickstart.md)).
 * A small amount of testnet **HBAR (ℏ)** to pay the `$0.05` account‑creation fee.
 
 > ### _**Note**_&#x20;
@@ -154,7 +154,7 @@ import (
     "os"
     "time"
 
-    "github.com/hashgraph/hedera-sdk-go/v2"
+    hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
 )
 ```
 {% endtab %}

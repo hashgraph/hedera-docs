@@ -8,7 +8,7 @@ description: >-
 
 The [Hiero SDKs](https://docs.hedera.com/hedera/sdks-and-apis/sdks) make it easy for developers to start building on Hedera using familiar programming languages like JavaScript and Java. Learn how to transfer HBAR, create tokens, and create and publish messages to topics.&#x20;
 
-_**ℹ️ Try the**_ [_**Hedera Developer Playground**_](https://portal.hedera.com/playground) _**to explore services, transactions, and queries on your own using the Hedera SDKs.**_
+#### _**ℹ️ Try the**_ [_**Hedera Developer Playground**_](https://portal.hedera.com/playground) _**to explore services, transactions, and queries on your own using the Hedera SDKs.**_
 
 {% embed url="https://www.canva.com/design/DAGcenPjdjg/tJNBCThltCIsVgG54h-bPA/view" %}
 [**Hedera Developer Playground**](https://portal.hedera.com/playground)

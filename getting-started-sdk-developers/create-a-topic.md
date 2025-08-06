@@ -8,7 +8,7 @@ Learn how to create a new topic and submit your first message on Hedera testnet 
 
 ## Prerequisites
 
-* A Hedera testnet **operator account ID** and **DER-encoded private key** (from the [Quickstart](quickstart.md))y (from the [Quickstart](quickstart.md)).
+* A Hedera testnet **operator account ID** and **DER-encoded private key** (from the [Quickstart](quickstart.md)).
 * A small amount of testnet **HBAR (ℏ)** to cover the fees
   * Topic creation: ≈ `$0.01`
   * Each message: < `$0.001`

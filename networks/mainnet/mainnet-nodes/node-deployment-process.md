@@ -1,6 +1,6 @@
 # Node Deployment Process
 
-This document outlines the step-by-step process for Hedera Council members to deploy a permissioned consensus node on the Hedera Mainnet.
+This document outlines the step-by-step process for Hedera Council members to deploy a permissioned consensus node on the Hedera mainnet.
 
 ## Prerequisite
 

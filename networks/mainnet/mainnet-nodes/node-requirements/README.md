@@ -1,12 +1,12 @@
 ---
 description: >-
-  The Hedera Mainnet is currently comprised of permissioned consensus nodes
+  The Hedera mainnet is currently comprised of permissioned consensus nodes
   operated by the Hedera Council.
 ---
 
 # Node Deployment Requirements
 
-This guide outlines the technical requirements, system setup, and network configuration for [_Hedera Council_](https://hedera.com/council) members to deploy and operate their permissioned consensus node on the Hedera Mainnet. All requirements aim to ensure consistency and performance across the network.
+This guide outlines the technical requirements, system setup, and network configuration for [_Hedera Council_](https://hedera.com/council) members to deploy and operate their permissioned consensus node on the Hedera mainnet. All requirements aim to ensure consistency and performance across the network.
 
 {% hint style="danger" %}
 <mark style="color:blue;">**Note:**</mark> This documentation applies only to permissioned consensus nodes operated by Hedera Council Members. It does not cover Hedera’s transition to a permissionless network.
@@ -14,7 +14,7 @@ This guide outlines the technical requirements, system setup, and network config
 
 ## Minimum Node Platform Requirements
 
-The overall performance of the Hedera Mainnet is currently constrained by the lowest-performing node in the network. To maintain consistent performance across all Council nodes, a set of minimum hardware, connectivity, and hosting requirements has been established for this initial permissioned phase.
+The overall performance of the Hedera mainnet is currently constrained by the lowest-performing node in the network. To maintain consistent performance across all Council nodes, a set of minimum hardware, connectivity, and hosting requirements has been established for this initial permissioned phase.
 
 {% hint style="info" %}
 <mark style="color:red;">**Action:**</mark> To ensure compliance with these requirements, submit your proposed node hardware, connectivity, and hosting specifications to Hedera for review **before making any purchases via** :e-mail: <mark style="color:blue;">**devops@hashgraph.com.**</mark>
@@ -55,7 +55,7 @@ It is recommended to configure a **240 GB SSD in RAID 1** for the root volume (`
   * OS: 2 × 240GB SSD (RAID 1)
   * Data: 2 × NVMe drives (7.5TB RAID 0) or 4× in RAID 10 array
 
-**Performance:** \
+**Performance:**\
 If mounted to root volume, the root volume must meet these requirements. If provisioned via RAID, the RAID array should meet these requirements:
 
 * Sequential Write: 2,000–3,000 MB/s
@@ -86,7 +86,7 @@ If mounted to root volume, the root volume must meet these requirements. If prov
   * Oracle Linux 8 and 9
 * Supported kernel versions:
   * 6.2.0
-  * 6.1.2&#x20;
+  * 6.1.2
   * 6.0.16
   * 5.15.86
 
@@ -149,12 +149,12 @@ A proxy is required to expose the node’s public APIs.
 
 <summary>🌐 <strong>Node Connectivity ⬇</strong></summary>
 
-#### ✅ Network Bandwidth
+**✅ Network Bandwidth**
 
 * **Minimum:** `1 Gbps` sustained internet connection _(not burstable)._
 * **Recommended:** Unmetered bandwidth to ensure uninterrupted sync and consensus participation.
 
-#### 🔐 Network Isolation & IP Requirements
+**🔐 Network Isolation & IP Requirements**
 
 * Deployed within a **dedicated, isolated DMZ** (Demilitarized Zone) network
 * Configured with a **firewall** to allow connectivity only with Hedera consensus nodes
@@ -162,7 +162,7 @@ A proxy is required to expose the node’s public APIs.
 
 > 📁 <mark style="color:blue;">**Note**</mark>**:** Fully Qualified Domain Names (FQDNs) are **not** supported.
 
-#### 📡 Port Configuration
+**📡 Port Configuration**
 
 The following ports must be configured for **public internet access** unless otherwise stated:
 
@@ -238,10 +238,10 @@ To ensure high availability, security, and operational consistency, all nodes mu
 
 For questions or approval of infrastructure plans, contact:
 
-* 📧 devops@hashgraph.com
+* 📧 [devops@hashgraph.com](mailto:devops@hashgraph.com)
 
 ***
 
 ## Next Steps
 
-For detailed guidance on deploying and onboarding your Hedera Mainnet node, please see the [Node Deployment Steps](../node-deployment-process.md).
+For detailed guidance on deploying and onboarding your Hedera mainnet node, please see the [Node Deployment Steps](../node-deployment-process.md).

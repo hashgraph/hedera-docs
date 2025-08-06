@@ -187,7 +187,7 @@ Release 0.63 aligns ancient event handling with consensus time, adds actionable 
 
 ### [Build 0.63.0](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.63.0)
 
-{% include "../../.gitbook/includes/untitled.md" %}
+{% include "../../.gitbook/includes/untitled (2).md" %}
 
 ### Performance Results
 

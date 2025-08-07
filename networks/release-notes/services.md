@@ -12,7 +12,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **MAINNET UPDATE SCHEDULED: AUGUST 13, 2025**
 {% endhint %}
 
-{% hint style="info" %}
+{% hint style="success" %}
 **TESTNET UPDATE: AUGUST 7, 2025**
 {% endhint %}
 

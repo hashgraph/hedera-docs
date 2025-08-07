@@ -13,7 +13,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 {% endhint %}
 
 {% hint style="info" %}
-**TESTNET UPDATE SCHEDULED: AUGUST 7, 2025**
+**TESTNET UPDATE: AUGUST 7, 2025**
 {% endhint %}
 
 ### Release Highlights
@@ -58,6 +58,20 @@ In addition to the aforementioned features, release 0.64 introduces other update
 * Added TCK tests to the continuous integration pipeline ( #18727 ) to improve testing coverage and software quality.
 * Disallowed setting duplicate rosters ( #19072 ) to optimize storage and CPU usage.
 * Several dependency updates ( #18714, #18841, #19074 ) to leverage the latest improvements and security patches.
+
+</details>
+
+### [Build 0.64.2](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.64.2)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* fix: Remove `UnsupportedOperationException`s that fail when `streamMode=RECORDS` by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#20391](https://github.com/hiero-ledger/hiero-consensus-node/pull/20391)
+* fix: (0.64) Fix else if -> else bytecode sidecar construct by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#20478](https://github.com/hiero-ledger/hiero-consensus-node/pull/20478)
+* chore: Disable bytecode sidecar check for r64 by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#20505](https://github.com/hiero-ledger/hiero-consensus-node/pull/20505)
+
+**Full Changelog**: [v0.64.1...v0.64.2](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.64.1...v0.64.2)
 
 </details>
 

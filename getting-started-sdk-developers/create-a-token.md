@@ -499,19 +499,19 @@ import {
 } from "@hashgraph/sdk";
 
 async function createTokenDemo() {
-  // 1. load your operator credentials
+  // load your operator credentials
   const operatorId = process.env.OPERATOR_ID;
   const operatorKey = process.env.OPERATOR_KEY;
 
-  // 2. initialize the client for testnet
+  // initialize the client for testnet
   const client = Client.forTestnet()
     .setOperator(operatorId, operatorKey);
 
-  // 3. generate token keys
+  // generate token keys
   const supplyKey = PrivateKey.generateECDSA();
   const adminKey = supplyKey;
 
-  // 4. build & execute the token creation transaction
+  // build & execute the token creation transaction
   const transaction = new TokenCreateTransaction()
     .setTokenName("Demo Token")
     .setTokenSymbol("DEMO")
@@ -536,7 +536,7 @@ async function createTokenDemo() {
   console.log("Waiting for Mirror Node to update...");
   await new Promise(resolve => setTimeout(resolve, 3000));
 
-  // 5. query balance using Mirror Node
+  // query balance using Mirror Node
   const mirrorNodeUrl = `https://testnet.mirrornode.hedera.com/api/v1/accounts/${operatorId}/tokens?token.id=${tokenId}`;
 
   const response = await fetch(mirrorNodeUrl);
@@ -575,18 +575,18 @@ import com.google.gson.JsonArray;
 
 public class CreateTokenDemo {
     public static void main(String[] args ) throws Exception {
-        // 1. load your operator credentials
+        // load your operator credentials
         AccountId operatorId = AccountId.fromString(System.getenv("OPERATOR_ID"));
         PrivateKey operatorKey = PrivateKey.fromString(System.getenv("OPERATOR_KEY"));
 
-        // 2. initialize the client for testnet
+        // initialize the client for testnet
         Client client = Client.forTestnet().setOperator(operatorId, operatorKey);
 
-        // 3. generate token keys
+        // generate token keys
         PrivateKey supplyKey = PrivateKey.generateECDSA();
         PrivateKey adminKey = supplyKey;
 
-        // 4. build & execute the token creation transaction
+        // build & execute the token creation transaction
         TokenCreateTransaction transaction = new TokenCreateTransaction()
             .setTokenName("Demo Token")
             .setTokenSymbol("DEMO")
@@ -611,7 +611,7 @@ public class CreateTokenDemo {
         System.out.println("Waiting for Mirror Node to update...");
         Thread.sleep(3000);
 
-        // 5. query balance using Mirror Node
+        // query balance using Mirror Node
         String mirrorNodeUrl = "https://testnet.mirrornode.hedera.com/api/v1/accounts/" + 
                                operatorId + "/tokens?token.id=" + tokenId;
         
@@ -658,19 +658,19 @@ import (
 )
 
 func main() {
-    // 1. load your operator credentials
+    // load your operator credentials
     operatorId, _ := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
     operatorKey, _ := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 
-    // 2. initialize the client for testnet
+    // initialize the client for testnet
     client := hedera.ClientForTestnet()
     client.SetOperator(operatorId, operatorKey)
 
-    // 3. generate token keys
+    // generate token keys
     supplyKey := hedera.PrivateKeyGenerateEcdsa()
     adminKey := supplyKey
 
-    // 4. build & execute the token creation transaction
+    // build & execute the token creation transaction
     transaction, _ := hedera.NewTokenCreateTransaction().
         SetTokenName("Demo Token").
         SetTokenSymbol("DEMO").
@@ -695,7 +695,7 @@ func main() {
     fmt.Println("Waiting for Mirror Node to update...")
     time.Sleep(3 * time.Second)
 
-    // 5. query balance using Mirror Node
+    // query balance using Mirror Node
     mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/accounts/" + 
                      operatorId.String() + "/tokens?token.id=" + tokenId.String()
 

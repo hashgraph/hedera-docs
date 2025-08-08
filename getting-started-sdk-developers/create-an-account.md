@@ -264,7 +264,7 @@ Build an `AccountCreateTransaction` with the _new public key_ and initial balanc
 ```js
 // Build & execute the account creation transaction
 const transaction = new AccountCreateTransaction()
-  .setKey(newPublicKey)                        // set the account key
+  .setECDSAKeyWithAlias(newPublicKey)                        // set the account key
   .setInitialBalance(new Hbar(20));            // fund with 20 HBAR
 
 const txResponse = await transaction.execute(client);
@@ -280,7 +280,7 @@ console.log(`EVM Address: 0x${newPublicKey.toEvmAddress()}`);
 ```java
 // Build & execute the account creation transaction
 AccountCreateTransaction transaction = new AccountCreateTransaction()
-    .setKey(newPublicKey)                        // set the account key
+    .setECDSAKeyWithAlias(newPublicKey)                        // set the account key
     .setInitialBalance(new Hbar(20));            // fund with 20 HBAR
 
 TransactionResponse txResponse = transaction.execute(client);
@@ -296,7 +296,7 @@ System.out.println("EVM Address: 0x" + newPublicKey.toEvmAddress());
 ```go
 // Build & execute the account creation transaction
 transaction := hedera.NewAccountCreateTransaction().
-    SetKey(newPublicKey).                        // set the account key
+    SetECDSAKeyWithAlias(newPublicKey).                        // set the account key
     SetInitialBalance(hedera.NewHbar(20))        // fund with 20 HBAR
 
 // Execute the transaction and get response
@@ -477,19 +477,19 @@ import {
 } from "@hashgraph/sdk";
 
 async function createAccountDemo() {
-  // 1. load your operator credentials
+  // load your operator credentials
   const operatorId = process.env.OPERATOR_ID;
   const operatorKey = process.env.OPERATOR_KEY;
 
-  // 2. initialize the client for testnet
+  // initialize the client for testnet
   const client = Client.forTestnet()
     .setOperator(operatorId, operatorKey);
 
-  // 3. generate a new key pair
+  // generate a new key pair
   const newPrivateKey = PrivateKey.generateECDSA();
   const newPublicKey = newPrivateKey.publicKey;
 
-  // 4. build & execute the account creation transaction
+  // build & execute the account creation transaction
   const transaction = new AccountCreateTransaction()
     .setECDSAKeyWithAlias(newPublicKey)          // set the account key with alias
     .setInitialBalance(new Hbar(20));           // fund with 20 HBAR
@@ -505,7 +505,7 @@ async function createAccountDemo() {
   console.log("Waiting for Mirror Node to update...\n");
   await new Promise(resolve => setTimeout(resolve, 6000));
 
-  // 5. query balance using Mirror Node
+  // query balance using Mirror Node
   const mirrorNodeUrl = `https://testnet.mirrornode.hedera.com/api/v1/balances?account.id=${newAccountId}`;
 
   const response = await fetch(mirrorNodeUrl);
@@ -546,19 +546,19 @@ import com.google.gson.JsonArray;
 
 public class CreateAccountDemo {
     public static void main(String[] args) throws Exception {
-        // 1. load your operator credentials
+        // load your operator credentials
         String operatorId = System.getenv("OPERATOR_ID");
         String operatorKey = System.getenv("OPERATOR_KEY");
 
-        // 2. initialize the client for testnet
+        // initialize the client for testnet
         Client client = Client.forTestnet()
             .setOperator(AccountId.fromString(operatorId), PrivateKey.fromString(operatorKey));
 
-        // 3. generate a new key pair
+        // generate a new key pair
         PrivateKey newPrivateKey = PrivateKey.generateECDSA();
         PublicKey newPublicKey = newPrivateKey.getPublicKey();
 
-        // 4. build & execute the account creation transaction
+        // build & execute the account creation transaction
         AccountCreateTransaction transaction = new AccountCreateTransaction()
             // set the account key with alias
             .setECDSAKeyWithAlias(newPublicKey)          
@@ -575,7 +575,7 @@ public class CreateAccountDemo {
         System.out.println("Waiting for Mirror Node to update...\n");
         Thread.sleep(6000);
 
-        // 5. query balance using Mirror Node
+        // query balance using Mirror Node
         String mirrorNodeUrl = "https://testnet.mirrornode.hedera.com/api/v1/balances?account.id=" + newAccountId;
 
         HttpClient httpClient = HttpClient.newHttpClient();
@@ -626,7 +626,7 @@ import (
 )
 
 func main() {
-    // 1. load your operator credentials
+    // load your operator credentials
     operatorId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
     if err != nil {
         panic(err)
@@ -637,18 +637,18 @@ func main() {
         panic(err)
     }
 
-    // 2. initialize the client for testnet
+    // initialize the client for testnet
     client := hedera.ClientForTestnet()
     client.SetOperator(operatorId, operatorKey)
 
-    // 3. generate a new key pair
+    // generate a new key pair
     newPrivateKey, err := hedera.PrivateKeyGenerateECDSA()
     if err != nil {
         panic(err)
     }
     newPublicKey := newPrivateKey.PublicKey()
 
-    // 4. build & execute the account creation transaction
+    // build & execute the account creation transaction
     transaction := hedera.NewAccountCreateTransaction().
         // set the account key with alias
         SetECDSAKeyWithAlias(newPublicKey).          

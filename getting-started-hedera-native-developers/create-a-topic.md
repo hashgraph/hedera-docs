@@ -262,23 +262,23 @@ System.out.println("Topic created: " + topicId);
 
 {% tab title="Go" %}
 ```go
-// Build and send the create‐topic transaction
+// build & execute the topic creation transaction
 transaction := hedera.NewTopicCreateTransaction().
     SetTopicMemo("My first HCS topic")
 
 txResponse, err := transaction.Execute(client)
 if err != nil {
-    panic(err)
+	panic(err)
 }
 
 receipt, err := txResponse.GetReceipt(client)
 if err != nil {
-    panic(err)
+	panic(err)
 }
 
 topicID := *receipt.TopicID
 
-fmt.Printf("Topic created: %s\n", topicID.String())
+fmt.Printf("\nTopic created: %s\n\n", topicID.String())
 ```
 {% endtab %}
 {% endtabs %}
@@ -329,7 +329,7 @@ System.out.println("Message submitted to topic " + topicId);
 
 {% tab title="Go" %}
 ```go
-// Build & execute the message submission transaction
+// build & execute the message submission transaction
 message := "Hello, Hedera!"
 
 messageTransaction := hedera.NewTopicMessageSubmitTransaction().
@@ -341,7 +341,7 @@ if err != nil {
     panic(err)
 }
 
-fmt.Printf("Message submitted to topic: %s\n", message)
+fmt.Printf("Message submitted: %s\n\n", message)
 ```
 {% endtab %}
 {% endtabs %}
@@ -467,7 +467,7 @@ client.close();
 fmt.Println("Waiting for Mirror Node to update...\n")
 time.Sleep(3 * time.Second)
 
-// Query messages using Mirror Node
+// query messages using Mirror Node
 mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/topics/" + topicID.String() + "/messages"
 
 resp, err := http.Get(mirrorNodeUrl)
@@ -478,12 +478,12 @@ defer resp.Body.Close()
 
 body, err := io.ReadAll(resp.Body)
 if err != nil {
-    panic(err)
+     panic(err)
 }
 
 var data struct {
     Messages []struct {
-        Message string `json:"message"`
+	Message string `json:"message"`
     } `json:"messages"`
 }
 
@@ -495,13 +495,13 @@ if err != nil {
 if len(data.Messages) > 0 {
     latestMessage := data.Messages[len(data.Messages)-1]
     decodedMessage, _ := base64.StdEncoding.DecodeString(latestMessage.Message)
-    
+
     fmt.Printf("Latest message: %s\n\n", string(decodedMessage))
 } else {
-    fmt.Println("No messages found yet in Mirror Node\n")
+   fmt.Println("No messages found yet in Mirror Node\n")
 }
 
-client.Close(nil)
+client.Close()
 ```
 {% endtab %}
 {% endtabs %}
@@ -667,110 +667,105 @@ public class CreateTopicDemo {
 
 <summary><strong>Go</strong></summary>
 
+{% code overflow="wrap" %}
 ```go
 package main
 
 import (
-    "encoding/base64"
-    "encoding/json"
-    "fmt"
-    "io"
-    "net/http"
-    "os"
-    "time"
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+	"time"
 
-    "github.com/hiero-ledger/hiero-sdk-go/v2"
+	hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
 )
 
 func main() {
-    // load your operator credentials
-    operatorId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
-    if err != nil {
-        panic(err)
-    }
+	// load your operator credentials
+	operatorId, _ := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
+	operatorKey, _ := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 
-    operatorKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
-    if err != nil {
-        panic(err)
-    }
+	// initialize the client for testnet
+	client := hedera.ClientForTestnet()
+	client.SetOperator(operatorId, operatorKey)
 
-    // initialize the client for testnet
-    client := hedera.ClientForTestnet()
-    client.SetOperator(operatorId, operatorKey)
+	// build & execute the topic creation transaction
+	transaction := hedera.NewTopicCreateTransaction().
+		SetTopicMemo("My first HCS topic")
 
-    // build & execute the topic creation transaction
-    transaction := hedera.NewTopicCreateTransaction().
-        SetTopicMemo("My first HCS topic")
+	txResponse, err := transaction.Execute(client)
+	if err != nil {
+		panic(err)
+	}
 
-    txResponse, err := transaction.Execute(client)
-    if err != nil {
-        panic(err)
-    }
+	receipt, err := txResponse.GetReceipt(client)
+	if err != nil {
+		panic(err)
+	}
 
-    receipt, err := txResponse.GetReceipt(client)
-    if err != nil {
-        panic(err)
-    }
+	topicID := *receipt.TopicID
 
-    topicID := *receipt.TopicID
+	fmt.Printf("\nTopic created: %s\n\n", topicID.String())
 
-    fmt.Printf("Topic created: %s\n\n", topicID.String())
+	// build & execute the message submission transaction
+	message := "Hello, Hedera!"
 
-    // build & execute the message submission transaction
-    message := "Hello, Hedera!"
+	messageTransaction := hedera.NewTopicMessageSubmitTransaction().
+		SetTopicID(topicID).
+		SetMessage([]byte(message))
 
-    messageTransaction := hedera.NewTopicMessageSubmitTransaction().
-        SetTopicID(topicID).
-        SetMessage([]byte(message))
+	_, err = messageTransaction.Execute(client)
+	if err != nil {
+		panic(err)
+	}
 
-    _, err = messageTransaction.Execute(client)
-    if err != nil {
-        panic(err)
-    }
+	fmt.Printf("Message submitted: %s\n\n", message)
 
-    fmt.Printf("Message submitted to topic: %s\n\n", message)
+	// Wait for Mirror Node to populate data
+	fmt.Println("Waiting for Mirror Node to update...\n")
+	time.Sleep(3 * time.Second)
 
-    // Wait for Mirror Node to populate data
-    fmt.Println("Waiting for Mirror Node to update...\n")
-    time.Sleep(3 * time.Second)
+	// query messages using Mirror Node
+	mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/topics/" + topicID.String() + "/messages"
 
-    // query messages using Mirror Node
-    mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/topics/" + topicID.String() + "/messages"
+	resp, err := http.Get(mirrorNodeUrl)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
 
-    resp, err := http.Get(mirrorNodeUrl)
-    if err != nil {
-        panic(err)
-    }
-    defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
 
-    body, err := io.ReadAll(resp.Body)
-    if err != nil {
-        panic(err)
-    }
+	var data struct {
+		Messages []struct {
+			Message string `json:"message"`
+		} `json:"messages"`
+	}
 
-    var data struct {
-        Messages []struct {
-            Message string `json:"message"`
-        } `json:"messages"`
-    }
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		panic(err)
+	}
 
-    err = json.Unmarshal(body, &data)
-    if err != nil {
-        panic(err)
-    }
+	if len(data.Messages) > 0 {
+		latestMessage := data.Messages[len(data.Messages)-1]
+		decodedMessage, _ := base64.StdEncoding.DecodeString(latestMessage.Message)
 
-    if len(data.Messages) > 0 {
-        latestMessage := data.Messages[len(data.Messages)-1]
-        decodedMessage, _ := base64.StdEncoding.DecodeString(latestMessage.Message)
-        
-        fmt.Printf("Latest message: %s\n\n", string(decodedMessage))
-    } else {
-        fmt.Println("No messages found yet in Mirror Node\n")
-    }
+		fmt.Printf("Latest message: %s\n\n", string(decodedMessage))
+	} else {
+		fmt.Println("No messages found yet in Mirror Node\n")
+	}
 
-    client.Close(nil)
+	client.Close()
 }
 ```
+{% endcode %}
 
 </details>
 

@@ -249,7 +249,7 @@ PrivateKey adminKey = supplyKey; // can update/delete (reuse for simplicity)
 {% tab title="Go" %}
 ```go
 // Generate keys that control your token
-supplyKey := hedera.PrivateKeyGenerateEcdsa() // can mint/burn
+supplyKey, _ := hedera.PrivateKeyGenerateEcdsa() // can mint/burn
 adminKey := supplyKey // can update/delete (reuse for simplicity)
 ```
 {% endtab %}
@@ -654,72 +654,72 @@ import (
     "os"
     "time"
 
-    "github.com/hashgraph/hedera-sdk-go/v2"
+    hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
 )
 
 func main() {
-    // load your operator credentials
-    operatorId, _ := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
-    operatorKey, _ := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
+	// load your operator credentials
+	operatorId, _ := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
+	operatorKey, _ := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 
-    // initialize the client for testnet
-    client := hedera.ClientForTestnet()
-    client.SetOperator(operatorId, operatorKey)
+	// initialize the client for testnet
+	client := hedera.ClientForTestnet()
+	client.SetOperator(operatorId, operatorKey)
 
-    // generate token keys
-    supplyKey := hedera.PrivateKeyGenerateEcdsa()
-    adminKey := supplyKey
+	// generate token keys
+	supplyKey, _ := hedera.PrivateKeyGenerateEcdsa()
+	adminKey := supplyKey
 
-    // build & execute the token creation transaction
-    transaction, _ := hedera.NewTokenCreateTransaction().
-        SetTokenName("Demo Token").
-        SetTokenSymbol("DEMO").
-        SetDecimals(2).
-        SetInitialSupply(100_000).
-        SetSupplyType(hedera.TokenSupplyTypeFinite).
-        SetMaxSupply(100_000).
-        SetTreasuryAccountID(operatorId).
-        SetAdminKey(adminKey.PublicKey()).
-        SetSupplyKey(supplyKey.PublicKey()).
-        SetTokenMemo("Created via tutorial").
-        FreezeWith(client)
+	// build & execute the token creation transaction
+	transaction, _ := hedera.NewTokenCreateTransaction().
+		SetTokenName("Demo Token").
+		SetTokenSymbol("DEMO").
+		SetDecimals(2).
+		SetInitialSupply(100_000).
+		SetSupplyType(hedera.TokenSupplyTypeFinite).
+		SetMaxSupply(100_000).
+		SetTreasuryAccountID(operatorId).
+		SetAdminKey(adminKey.PublicKey()).
+		SetSupplyKey(supplyKey.PublicKey()).
+		SetTokenMemo("Created via tutorial").
+		FreezeWith(client)
 
-    signedTx := transaction.Sign(adminKey)
-    txResponse, _ := signedTx.Execute(client)
-    receipt, _ := txResponse.GetReceipt(client)
-    tokenId := *receipt.TokenID
+	signedTx := transaction.Sign(adminKey)
+	txResponse, _ := signedTx.Execute(client)
+	receipt, _ := txResponse.GetReceipt(client)
+	tokenId := *receipt.TokenID
 
-    fmt.Printf("Token created: %s\n", tokenId.String())
+	fmt.Printf("\nToken created: %s\n", tokenId.String())
 
-    // Wait for Mirror Node to populate data
-    fmt.Println("Waiting for Mirror Node to update...")
-    time.Sleep(3 * time.Second)
+	// Wait for Mirror Node to populate data
+	fmt.Println("\nWaiting for Mirror Node to update...")
+	time.Sleep(3 * time.Second)
 
-    // query balance using Mirror Node
-    mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/accounts/" + 
-                     operatorId.String() + "/tokens?token.id=" + tokenId.String()
+	// query balance using Mirror Node
+	mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/accounts/" +
+		operatorId.String() + "/tokens?token.id=" + tokenId.String()
 
-    response, _ := http.Get(mirrorNodeUrl)
-    defer response.Body.Close()
+	response, _ := http.Get(mirrorNodeUrl)
+	defer response.Body.Close()
 
-    body, _ := io.ReadAll(response.Body)
+	body, _ := io.ReadAll(response.Body)
 
-    var data struct {
-        Tokens []struct {
-            Balance int64 `json:"balance"`
-        } `json:"tokens"`
-    }
+	var data struct {
+		Tokens []struct {
+			Balance int64 `json:"balance"`
+		} `json:"tokens"`
+	}
 
-    json.Unmarshal(body, &data)
+	json.Unmarshal(body, &data)
 
-    if len(data.Tokens) > 0 {
-        balance := data.Tokens[0].Balance
-        fmt.Printf("Treasury holds: %d DEMO\n", balance)
-    } else {
-        fmt.Println("Token balance not yet available in Mirror Node")
-    }
+	if len(data.Tokens) > 0 {
+		balance := data.Tokens[0].Balance
+		fmt.Printf("\nTreasury holds: %d DEMO\n\n", balance)
+	} else {
+		fmt.Println("Token balance not yet available in Mirror Node")
+	}
 
-    client.Close()
+	client.Close()
 }
 ```
 {% endcode %}

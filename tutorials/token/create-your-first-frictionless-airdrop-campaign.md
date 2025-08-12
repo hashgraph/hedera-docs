@@ -136,7 +136,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/hashgraph/hedera-sdk-go/v2"
+	hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"2"
 	"github.com/joho/godotenv"
 )
 
@@ -1064,7 +1064,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/hashgraph/hedera-sdk-go/v2"
+	hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
 	"github.com/joho/godotenv"
 )
 

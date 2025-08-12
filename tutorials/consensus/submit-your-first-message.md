@@ -13,7 +13,7 @@ In short, HCS offers the validity of the order of events and transparency into t
 We recommend you complete the following introduction to get a basic understanding of Hedera transactions. This example does not build upon the previous examples.
 
 1. Get a [Hedera testnet account](../more-tutorials/create-and-fund-your-hedera-testnet-account.md).
-2. Set up your environment [here](broken-reference).
+2. Set up your environment [here](../../getting-started-hedera-native-developers/quickstart.md).
 
 ✅ _You can find a full_ [_code check_](submit-your-first-message.md#code-check) _for this tutorial at the bottom of this page._
 
@@ -353,7 +353,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/hashgraph/hedera-sdk-go/v2"
+	hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
 	"github.com/joho/godotenv"
 )
 

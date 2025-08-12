@@ -11,7 +11,7 @@ Fungible tokens share a single set of properties and have interchangeable value 
 We recommend you complete the following introduction to get a basic understanding of Hedera transactions. This example does not build upon the previous examples.
 
 1. Get a [Hedera testnet account](../more-tutorials/create-and-fund-your-hedera-testnet-account.md).
-2. Set up your environment [here](broken-reference).
+2. Set up your environment [here](../../getting-started-hedera-native-developers/quickstart.md).
 
 ***
 
@@ -532,7 +532,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/hashgraph/hedera-sdk-go/v2"
+	hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
 	"github.com/joho/godotenv"
 )
 

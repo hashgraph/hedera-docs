@@ -18,7 +18,7 @@ Besides creating NFTs using Hedera SDK, you can use a Solidity Contract to creat
 We recommend you complete the following introduction to get a basic understanding of Hedera transactions. This example does not build upon the previous examples.
 
 1. Get a [Hedera testnet account](https://portal.hedera.com/register).
-2. Set up your environment [here](broken-reference).
+2. Set up your environment [here](../../getting-started-hedera-native-developers/quickstart.md).
 
 If you are interested in creating, minting, and transferring NFTs using Hedera SDKs you can find the example [here](https://docs.hedera.com/guides/getting-started/try-examples/create-and-transfer-your-first-nft).
 
@@ -768,7 +768,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/hashgraph/hedera-sdk-go/v2"
+	hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
 	"github.com/joho/godotenv"
 )
 

@@ -1,11 +1,11 @@
 # Table of contents
 
 * [Welcome to Hedera — let’s build the future](README.md)
-* [Hedera Native Developers](getting-started-sdk-developers/README.md)
-  * [Quickstart](getting-started-sdk-developers/quickstart.md)
-  * [Create an Account](getting-started-sdk-developers/create-an-account.md)
-  * [Create a Token](getting-started-sdk-developers/create-a-token.md)
-  * [Create a Topic](getting-started-sdk-developers/create-a-topic.md)
+* [Hedera Native Developers](getting-started-hedera-native-developers/README.md)
+  * [Quickstart](getting-started-hedera-native-developers/quickstart.md)
+  * [Create an Account](getting-started-hedera-native-developers/create-an-account.md)
+  * [Create a Token](getting-started-hedera-native-developers/create-a-token.md)
+  * [Create a Topic](getting-started-hedera-native-developers/create-a-topic.md)
   * [Developer Playground](https://portal.hedera.com/playground)
 * [EVM Developers](getting-started-evm-developers/README.md)
   * [Add Hedera to MetaMask](getting-started-evm-developers/add-hedera-to-metamask.md)

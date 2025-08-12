@@ -134,17 +134,7 @@ public class CreateTokenDemo {
 {% endtab %}
 
 {% tab title="Go" %}
-In your project's root directory, initialize modules and pull in the [Go SDK](https://github.com/hiero-ledger/hiero-sdk-go):
-
-{% code overflow="wrap" %}
-```go-module
-go mod init create_token_demo
-go get github.com/hiero-ledger/hiero-sdk-go/v2@latest
-go mod tidy
-```
-{% endcode %}
-
-Import the following packages to your `create_token_demo.go` file:
+Create a new file `create_token_demo.go`  and import the following packages to your file:
 
 ```go
 import (
@@ -158,6 +148,16 @@ import (
     hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
 )
 ```
+
+In your project's root directory, initialize modules and pull in the [Go SDK](https://github.com/hiero-ledger/hiero-sdk-go):
+
+{% code overflow="wrap" %}
+```go-module
+go mod init create_token_demo
+go get github.com/hiero-ledger/hiero-sdk-go/v2@latest
+go mod tidy
+```
+{% endcode %}
 {% endtab %}
 {% endtabs %}
 
@@ -169,7 +169,7 @@ Set your operator credentials as environment variables:
 
 ```bash
 export OPERATOR_ID="0.0.1234"
-export OPERATOR_KEY="302e020100300506032b657004220420..."
+export OPERATOR_KEY="3030020100300506032b657004220420..."
 ```
 
 ***
@@ -734,7 +734,7 @@ Ensure your environment variables are set:
 
 ```bash
 export OPERATOR_ID="0.0.1234"
-export OPERATOR_KEY="302e020100300506032b657004220420..."
+export OPERATOR_KEY="3030020100300506032b657004220420..."
 ```
 
 {% tabs %}

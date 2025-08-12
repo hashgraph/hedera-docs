@@ -133,17 +133,7 @@ public class CreateAccountDemo {
 {% endtab %}
 
 {% tab title="Go" %}
-In your project's root directory, initialize modules and pull in the [Go SDK](https://github.com/hiero-ledger/hiero-sdk-go):
-
-{% code overflow="wrap" %}
-```go-module
-go mod init create_account_demo
-go get github.com/hiero-ledger/hiero-sdk-go/v2@latest
-go mod tidy
-```
-{% endcode %}
-
-Import the following packages to your `create_account_demo.go` file:
+Create a new file `create_account_demo.go` and import the following packages to your file:
 
 ```go
 import (
@@ -157,6 +147,16 @@ import (
     hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
 )
 ```
+
+In your project's root directory, initialize modules and pull in the [Go SDK](https://github.com/hiero-ledger/hiero-sdk-go):
+
+{% code overflow="wrap" %}
+```go-module
+go mod init create_account_demo
+go get github.com/hiero-ledger/hiero-sdk-go/v2@latest
+go mod tidy
+```
+{% endcode %}
 {% endtab %}
 {% endtabs %}
 
@@ -168,7 +168,7 @@ Set your operator credentials as environment variables:
 
 ```bash
 export OPERATOR_ID="0.0.1234"
-export OPERATOR_KEY="302e020100300506032b657004220420..."
+export OPERATOR_KEY="3030020100300506032b657004220420..."
 ```
 
 ***
@@ -204,11 +204,11 @@ Client client = Client.forTestnet().setOperator(operatorId, operatorKey);
 {% endtab %}
 
 {% tab title="Go" %}
-<pre class="language-go"><code class="lang-go"><strong>// Load your operator credentials
+<pre class="language-go"><code class="lang-go"><strong>// load your operator credentials
 </strong>operatorId, _ := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
 operatorKey, _ := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 
-// Initialize the client for testnet
+// initialize the client for testnet
 client := hedera.ClientForTestnet()
 client.SetOperator(operatorId, operatorKey)
 </code></pre>
@@ -228,7 +228,7 @@ On the Hedera network, a **private key** allows you to sign transactions, ensuri
 {% tabs %}
 {% tab title="JavaScript" %}
 ```js
-// Generates a new ECDSA key pair in memory
+// generates a new ECDSA key pair in memory
 const newPrivateKey = PrivateKey.generateECDSA();
 const newPublicKey = newPrivateKey.publicKey;
 ```
@@ -244,9 +244,9 @@ PublicKey newPublicKey   = newPrivateKey.getPublicKey();
 
 {% tab title="Go" %}
 ```go
-// generate an ECDSA key pair in memory
-newPrivateKey, err := hedera.GenerateEcdsaPrivateKey()
-newPublicKey := privateKey.PublicKey()
+// generate a new key pair
+newPrivateKey, _ := hedera.PrivateKeyGenerateEcdsa()
+newPublicKey := newPrivateKey.PublicKey()
 ```
 {% endtab %}
 {% endtabs %}
@@ -424,32 +424,31 @@ client.close();
 
 {% tab title="Go" %}
 ```go
-// Wait for Mirror Node to populate data
-fmt.Println("Waiting for Mirror Node to update...")
+// wait for Mirror Node to populate data
+fmt.Println("\nWaiting for Mirror Node to update...")
 time.Sleep(6 * time.Second)
 
-// Query balance using Mirror Node
-mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/balances?account.id=" + newAccountId.String( )
+// query balance using Mirror Node
+mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/balances?account.id=" + newAccountId.String()
+resp, _ := http.Get(mirrorNodeUrl)
+defer resp.Body.Close()
 
-response, _ := http.Get(mirrorNodeUrl )
-defer response.Body.Close()
-
-body, _ := io.ReadAll(response.Body)
+body, _ := io.ReadAll(resp.Body)
 
 var data struct {
-    Balances []struct {
-        Balance int64 `json:"balance"`
-    } `json:"balances"`
+	Balances []struct {
+		Balance int64 `json:"balance"`
+	} `json:"balances"`
 }
 
 json.Unmarshal(body, &data)
 
 if len(data.Balances) > 0 {
-    balanceInTinybars := data.Balances[0].Balance
-    balanceInHbar := float64(balanceInTinybars) / 100000000.0
-    fmt.Printf("Account balance: %.8f ℏ\n", balanceInHbar)
+	balanceInTinybars := data.Balances[0].Balance
+	balanceInHbar := float64(balanceInTinybars) / 100000000.0
+	fmt.Printf("\nAccount balance: %g ℏ\n\n", balanceInHbar)
 } else {
-    fmt.Println("Account balance not yet available in Mirror Node")
+	fmt.Println("\nAccount balance not yet available in Mirror Node")
 }
 
 client.Close()
@@ -615,99 +614,69 @@ public class CreateAccountDemo {
 package main
 
 import (
-    "encoding/json"
-    "fmt"
-    "io"
-    "net/http"
-    "os"
-    "time"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+	"time"
 
-    "github.com/hashgraph/hedera-sdk-go/v2"
+	hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
 )
 
 func main() {
-    // load your operator credentials
-    operatorId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
-    if err != nil {
-        panic(err)
-    }
+	// load your operator credentials
+	operatorId, _ := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
+	operatorKey, _ := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 
-    operatorKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
-    if err != nil {
-        panic(err)
-    }
+	// initialize the client for testnet
+	client := hedera.ClientForTestnet()
+	client.SetOperator(operatorId, operatorKey)
 
-    // initialize the client for testnet
-    client := hedera.ClientForTestnet()
-    client.SetOperator(operatorId, operatorKey)
+	// generate a new key pair
+	newPrivateKey, _ := hedera.PrivateKeyGenerateEcdsa()
+	newPublicKey := newPrivateKey.PublicKey()
 
-    // generate a new key pair
-    newPrivateKey, err := hedera.PrivateKeyGenerateECDSA()
-    if err != nil {
-        panic(err)
-    }
-    newPublicKey := newPrivateKey.PublicKey()
+	// build & execute the account creation transaction
+	transaction := hedera.NewAccountCreateTransaction().
+		SetECDSAKeyWithAlias(newPublicKey).   // set the account key with alias
+		SetInitialBalance(hedera.NewHbar(20)) // fund with 20 HBAR
 
-    // build & execute the account creation transaction
-    transaction := hedera.NewAccountCreateTransaction().
-        // set the account key with alias
-        SetECDSAKeyWithAlias(newPublicKey).          
-        SetInitialBalance(hedera.NewHbar(20)) // fund with 20 HBAR
+	txResponse, _ := transaction.Execute(client)
+	receipt, _ := txResponse.GetReceipt(client)
+	newAccountId := *receipt.AccountID
 
-    txResponse, err := transaction.Execute(client)
-    if err != nil {
-        panic(err)
-    }
+	fmt.Printf("\nHedera account created: %s\n", newAccountId.String())
+	fmt.Printf("EVM Address: 0x%s\n", newPublicKey.ToEvmAddress())
 
-    receipt, err := txResponse.GetReceipt(client)
-    if err != nil {
-        panic(err)
-    }
+	// wait for Mirror Node to populate data
+	fmt.Println("\nWaiting for Mirror Node to update...")
+	time.Sleep(6 * time.Second)
 
-    newAccountId := *receipt.AccountID
+	// query balance using Mirror Node
+	mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/balances?account.id=" + newAccountId.String()
+	resp, _ := http.Get(mirrorNodeUrl)
+	defer resp.Body.Close()
 
-    fmt.Printf("Hedera account created: %s\n", newAccountId.String())
-    fmt.Printf("EVM Address: 0x%s\n", newPublicKey.ToEvmAddress())
+	body, _ := io.ReadAll(resp.Body)
 
-    // Wait for Mirror Node to populate data
-    fmt.Println("Waiting for Mirror Node to update...\n")
-    time.Sleep(6 * time.Second)
+	var data struct {
+		Balances []struct {
+			Balance int64 `json:"balance"`
+		} `json:"balances"`
+	}
 
-    // 5. query balance using Mirror Node
-    mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/balances?account.id=" + newAccountId.String()
+	json.Unmarshal(body, &data)
 
-    resp, err := http.Get(mirrorNodeUrl)
-    if err != nil {
-        panic(err)
-    }
-    defer resp.Body.Close()
+	if len(data.Balances) > 0 {
+		balanceInTinybars := data.Balances[0].Balance
+		balanceInHbar := float64(balanceInTinybars) / 100000000.0
+		fmt.Printf("\nAccount balance: %g ℏ\n\n", balanceInHbar)
+	} else {
+		fmt.Println("\nAccount balance not yet available in Mirror Node")
+	}
 
-    body, err := io.ReadAll(resp.Body)
-    if err != nil {
-        panic(err)
-    }
-
-    var data struct {
-        Balances []struct {
-            Balance int64 `json:"balance"`
-        } `json:"balances"`
-    }
-
-    err = json.Unmarshal(body, &data)
-    if err != nil {
-        panic(err)
-    }
-
-    if len(data.Balances) > 0 {
-        balanceInTinybars := data.Balances[0].Balance
-        balanceInHbar := float64(balanceInTinybars) / 100000000.0
-        
-        fmt.Printf("Account balance: %.8f ℏ", balanceInHbar)
-    } else {
-        fmt.Println("Account balance not yet available in Mirror Node")
-    }
-
-    client.Close(nil)
+	client.Close()
 }
 ```
 {% endcode %}
@@ -722,7 +691,7 @@ Ensure your environment variables are set:
 
 ```bash
 export OPERATOR_ID="0.0.1234"
-export OPERATOR_KEY="302e020100300506032b657004220420..."
+export OPERATOR_KEY="3030020100300506032b657004220420..."
 ```
 
 {% tabs %}

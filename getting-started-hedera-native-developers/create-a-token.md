@@ -446,11 +446,11 @@ client.close();
 
 {% tab title="Go" %}
 ```go
-// Wait for Mirror Node to populate data
+// wait for Mirror Node to populate data
 fmt.Println("Waiting for Mirror Node to update...")
 time.Sleep(3 * time.Second)
 
-// Query balance using Mirror Node
+// query balance using Mirror Node
 mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/accounts/" + 
                  operatorId.String() + "/tokens?token.id=" + tokenId.String()
 
@@ -805,7 +805,7 @@ Treasury holds: 100000 DEMO
 
 * [Create a Topic](create-a-topic.md)
 * Try out our [3-part NFT tutorial](../tutorials/token/hedera-token-service-part-1-how-to-mint-nfts.md)
-* Explore more examples in the [JavaScript SDK repository](https://github.com/hiero-ledger/hiero-sdk-js)
+* Explore more examples in the SDK repos ([JavaScript](https://github.com/hiero-ledger/hiero-sdk-js), [Java](https://github.com/hiero-ledger/hiero-sdk-java), [Go](https://github.com/hiero-ledger/hiero-sdk-go))
 
 ***
 

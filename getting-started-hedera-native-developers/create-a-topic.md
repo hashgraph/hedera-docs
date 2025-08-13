@@ -463,7 +463,7 @@ client.close();
 
 {% tab title="Go" %}
 ```go
-// Wait for Mirror Node to populate data
+// wait for Mirror Node to populate data
 fmt.Println("Waiting for Mirror Node to update...\n")
 time.Sleep(3 * time.Second)
 
@@ -849,9 +849,9 @@ Latest message: Hello, Hedera!
 
 ## Next steps
 
-* **Subscribe** to the topic from your backend or front-end to process messages as they come in
-* **Encrypt** messages if you need privacy before publishing
-* **Explore more examples** in the SDK repos ([JavaScript](https://github.com/hiero-ledger/hiero-sdk-js), [Java](https://github.com/hiero-ledger/hiero-sdk-java), [Go](https://github.com/hiero-ledger/hiero-sdk-go))
+* Subscribe to the topic from your backend or front-end to process messages as they come in
+* Encrypt messages if you need privacy before publishing
+* Explore more examples in the SDK repos ([JavaScript](https://github.com/hiero-ledger/hiero-sdk-js), [Java](https://github.com/hiero-ledger/hiero-sdk-java), [Go](https://github.com/hiero-ledger/hiero-sdk-go))
 
 ***
 

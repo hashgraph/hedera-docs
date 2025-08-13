@@ -14,7 +14,7 @@ This guide helps EVM developers understand key concepts and differences that imp
 
 ### Additional Resources
 
-* [**Getting Started for EVM Developers**](https://docs.hedera.com/hedera/getting-started)
+* [**Getting Started for EVM Developers**](https://docs.hedera.com/hedera/getting-started-evm-developers)
 * [**JSON-RPC Documentation**](https://docs.hedera.com/hedera/core-concepts/smart-contracts/json-rpc-relay)
 * [**Mirror Node API Documentation**](https://docs.hedera.com/hedera/sdks-and-apis/rest-api)
-* [**Java SDK**](https://github.com/hashgraph/hedera-sdk-java)**,** [**Go SDK**](https://github.com/hashgraph/hedera-sdk-go)**,** [**JavaScript SDK**](https://github.com/hashgraph/hedera-sdk-js)
+* [**Java SDK**](https://github.com/hiero-ledger/hiero-sdk-java)**,** [**Go SDK**](https://github.com/hiero-ledger/hiero-sdk-go)**,** [**JavaScript SDK**](https://github.com/hiero-ledger/hiero-sdk-js)

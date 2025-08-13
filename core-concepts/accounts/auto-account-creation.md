@@ -104,9 +104,9 @@ To update the hollow account into a complete account, the hollow account needs t
 
 <summary><strong>Auto-create an account using a public key alias</strong></summary>
 
-:black\_circle: [Java](https://github.com/hashgraph/hedera-sdk-java/blob/main/examples/src/main/java/com/hedera/hashgraph/sdk/examples/AccountAliasExample.java)\
-:black\_circle: [JavaScript](https://github.com/hashgraph/hedera-sdk-js/blob/develop/examples/account-alias.js)\
-:black\_circle: [Go](https://github.com/hashgraph/hedera-sdk-go/blob/develop/examples/alias_id_example/main.go)
+:black\_circle: [Java](https://github.com/hiero-ledger/hiero-sdk-java/blob/main/examples/src/main/java/com/hedera/hashgraph/sdk/examples/AccountAliasExample.java)\
+:black\_circle: [JavaScript](https://github.com/hiero-ledger/hiero-sdk-js/blob/main/examples/account-alias.js)\
+:black\_circle: [Go](https://github.com/hiero-ledger/hiero-sdk-go/blob/main/examples/alias_id_example/main.go)
 
 </details>
 
@@ -114,8 +114,8 @@ To update the hollow account into a complete account, the hollow account needs t
 
 <summary><strong>Auto-create an account using an EVM address (public address) alias</strong></summary>
 
-:black\_circle: [Java](https://github.com/hashgraph/hedera-sdk-java/blob/main/examples/src/main/java/com/hedera/hashgraph/sdk/examples/AutoCreateAccountTransferTransactionExample.java)\
-:black\_circle: [JavaScript](https://github.com/hashgraph/hedera-sdk-js/blob/develop/examples/transfer-using-evm-address.js)\
-:black\_circle: [Go](https://github.com/hashgraph/hedera-sdk-go/blob/develop/examples/account_create_token_transfer/main.go)
+:black\_circle: [Java](https://github.com/hiero-ledger/hiero-sdk-java/blob/main/examples/src/main/java/com/hedera/hashgraph/sdk/examples/AutoCreateAccountTransferTransactionExample.java)\
+:black\_circle: [JavaScript](https://github.com/hiero-ledger/hiero-sdk-js/blob/main/examples/transfer-using-evm-address.js)\
+:black\_circle: [Go](https://github.com/hiero-ledger/hiero-sdk-go/blob/main/examples/account_create_token_transfer/main.go)
 
 </details>

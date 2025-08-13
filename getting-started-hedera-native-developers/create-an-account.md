@@ -264,8 +264,8 @@ Build an `AccountCreateTransaction` with the _new public key_ and initial balanc
 ```js
 // Build & execute the account creation transaction
 const transaction = new AccountCreateTransaction()
-  .setECDSAKeyWithAlias(newPublicKey)                        // set the account key
-  .setInitialBalance(new Hbar(20));            // fund with 20 HBAR
+  .setECDSAKeyWithAlias(newPublicKey)  // set the account key
+  .setInitialBalance(new Hbar(20));    // fund with 20 HBAR
 
 const txResponse = await transaction.execute(client);
 const receipt = await txResponse.getReceipt(client);
@@ -294,18 +294,18 @@ System.out.println("EVM Address: 0x" + newPublicKey.toEvmAddress());
 
 {% tab title="Go" %}
 ```go
-// Build & execute the account creation transaction
+// build & execute the account creation transaction
 transaction := hedera.NewAccountCreateTransaction().
-    SetECDSAKeyWithAlias(newPublicKey).                        // set the account key
-    SetInitialBalance(hedera.NewHbar(20))        // fund with 20 HBAR
+    SetECDSAKeyWithAlias(newPublicKey).  // set the account key
+    SetInitialBalance(hedera.NewHbar(20))   // fund with 20 HBAR
 
-// Execute the transaction and get response
+// execute the transaction and get response
 txResponse, err := transaction.Execute(client)
 if err != nil {
     panic(err)
 }
 
-// Get the receipt to extract the new account ID
+// get the receipt to extract the new account ID
 receipt, err := txResponse.GetReceipt(client)
 if err != nil {
     panic(err)

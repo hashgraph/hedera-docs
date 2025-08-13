@@ -286,7 +286,7 @@ const txResponse = await signedTx.execute(client);
 const receipt = await txResponse.getReceipt(client);
 const tokenId = receipt.tokenId;
 
-console.log(`Fungible token created: ${tokenId.toString()}`)
+console.log(`\nFungible token created: ${tokenId.toString()}`)
 ```
 {% endtab %}
 
@@ -312,7 +312,7 @@ TransactionResponse txResponse = signedTx.execute(client);
 TransactionReceipt receipt = txResponse.getReceipt(client);
 TokenId tokenId = receipt.tokenId;
 
-System.out.println("Fungible token created: " + tokenId);
+System.out.println("\nFungible token created: " + tokenId);
 ```
 {% endtab %}
 
@@ -396,7 +396,7 @@ mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/accounts/" + oper
 {% tab title="JavaScript" %}
 ```javascript
 // Wait for Mirror Node to populate data
-console.log("Waiting for Mirror Node to update...");
+console.log("\nWaiting for Mirror Node to update...");
 await new Promise(resolve => setTimeout(resolve, 3000));
 
 // Query balance using Mirror Node
@@ -407,7 +407,7 @@ const data = await response.json();
 
 if (data.tokens && data.tokens.length > 0) {
   const balance = data.tokens[0].balance;
-  console.log(`Treasury holds: ${balance} DEMO`);
+  console.log(`\nTreasury holds: ${balance} DEMO\n`);
 } else {
   console.log("Token balance not yet available in Mirror Node");
 }
@@ -419,7 +419,7 @@ client.close();
 {% tab title="Java" %}
 ```java
 // Wait for Mirror Node to populate data
-System.out.println("Waiting for Mirror Node to update...");
+System.out.println("\nWaiting for Mirror Node to update...");
 Thread.sleep(3000);
 
 // Query balance using Mirror Node
@@ -435,7 +435,7 @@ JsonArray tokens = data.getAsJsonArray("tokens");
 
 if (tokens.size() > 0) {
     long balance = tokens.get(0).getAsJsonObject().get("balance").getAsLong();
-    System.out.println("Treasury holds: " + balance + " DEMO");
+    System.out.println("\nTreasury holds: " + balance + " DEMO\n");
 } else {
     System.out.println("Token balance not yet available in Mirror Node");
 }
@@ -530,10 +530,10 @@ async function createTokenDemo() {
   const receipt = await txResponse.getReceipt(client);
   const tokenId = receipt.tokenId;
 
-  console.log(`Fungible token created: ${tokenId}`);
+  console.log(`\nFungible token created: ${tokenId}`);
 
   // Wait for Mirror Node to populate data
-  console.log("Waiting for Mirror Node to update...");
+  console.log("\nWaiting for Mirror Node to update...");
   await new Promise(resolve => setTimeout(resolve, 3000));
 
   // query balance using Mirror Node
@@ -544,7 +544,7 @@ async function createTokenDemo() {
   
   if (data.tokens && data.tokens.length > 0) {
     const balance = data.tokens[0].balance;
-    console.log(`Treasury holds: ${balance} DEMO`);
+    console.log(`\nTreasury holds: ${balance} DEMO\n`);
   } else {
     console.log("Token balance not yet available in Mirror Node");
   }
@@ -605,10 +605,10 @@ public class CreateTokenDemo {
         TransactionReceipt receipt = txResponse.getReceipt(client);
         TokenId tokenId = receipt.tokenId;
 
-        System.out.println("Fungible token created: " + tokenId );
+        System.out.println("\nFungible token created: " + tokenId );
 
         // Wait for Mirror Node to populate data
-        System.out.println("Waiting for Mirror Node to update...");
+        System.out.println("\nWaiting for Mirror Node to update...");
         Thread.sleep(3000);
 
         // query balance using Mirror Node
@@ -624,7 +624,7 @@ public class CreateTokenDemo {
         
         if (tokens.size() > 0) {
             long balance = tokens.get(0).getAsJsonObject().get("balance").getAsLong();
-            System.out.println("Treasury holds: " + balance + " DEMO");
+            System.out.println("\nTreasury holds: " + balance + " DEMO\n");
         } else {
             System.out.println("Token balance not yet available in Mirror Node");
         }

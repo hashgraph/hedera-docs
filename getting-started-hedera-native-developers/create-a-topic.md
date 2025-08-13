@@ -241,7 +241,7 @@ const txResponse = await new TopicCreateTransaction()
 const receipt = await txResponse.getReceipt(client);
 const topicId = receipt.topicId;
 
-console.log(`Topic created: ${topicId.toString()}`);
+console.log(`\nTopic created: ${topicId.toString()}`);
 ```
 {% endtab %}
 
@@ -278,7 +278,7 @@ if err != nil {
 
 topicID := *receipt.TopicID
 
-fmt.Printf("\nTopic created: %s\n\n", topicID.String())
+fmt.Println("\nTopic created:", topicID.String())
 ```
 {% endtab %}
 {% endtabs %}
@@ -299,7 +299,7 @@ fmt.Printf("\nTopic created: %s\n\n", topicID.String())
 {% tab title="JavaScript" %}
 ```js
 // Build & execute the message submission transaction
-const message = "Hello, Hedera! \n";
+const message = "Hello, Hedera!";
 
 const messageTransaction = new TopicMessageSubmitTransaction()
   .setTopicId(topicId)
@@ -307,23 +307,22 @@ const messageTransaction = new TopicMessageSubmitTransaction()
 
 await messageTransaction.execute(client);
 
-console.log(`Message submitted to topic: ${message}\n`);
+console.log(`\nMessage submitted: ${message}\n`);
 ```
 {% endtab %}
 
 {% tab title="Java" %}
 ```java
-// Build & execute the message submission transaction
+// build & execute the message submission transaction
 String message = "Hello, Hedera!";
 
-TransactionResponse txResponse = new TopicMessageSubmitTransaction()
-     .setTopicId(topicId)
-     .setMessage(message)
-     .execute(client);
+TopicMessageSubmitTransaction messageTransaction = new TopicMessageSubmitTransaction()
+    .setTopicId(topicId)
+    .setMessage(message);
 
-TransactionReceipt receipt = txResponse.getReceipt(client);
+messageTransaction.execute(client);
 
-System.out.println("Message submitted to topic " + topicId);
+System.out.println("\nMessage submitted: " + message);
 ```
 {% endtab %}
 
@@ -341,7 +340,7 @@ if err != nil {
     panic(err)
 }
 
-fmt.Printf("Message submitted: %s\n\n", message)
+fmt.Printf("\nMessage submitted: %s\n", message)
 ```
 {% endtab %}
 {% endtabs %}
@@ -405,9 +404,9 @@ mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/topics/" + topicI
 {% tabs %}
 {% tab title="JavaScript" %}
 ```javascript
-// Wait for Mirror Node to populate data
-console.log("Waiting for Mirror Node to update...\n");
-await new Promise(resolve => setTimeout(resolve, 3000));
+// wait for Mirror Node to populate data
+console.log("\nWaiting for Mirror Node to update...");
+await new Promise((resolve) => setTimeout(resolve, 6000));
 
 // query messages using Mirror Node
 const mirrorNodeUrl = `https://testnet.mirrornode.hedera.com/api/v1/topics/${topicId}/messages`;
@@ -417,11 +416,13 @@ const data = await response.json();
 
 if (data.messages && data.messages.length > 0) {
   const latestMessage = data.messages[data.messages.length - 1];
-  const messageContent = Buffer.from(latestMessage.message, 'base64').toString('utf8');
-  
-  console.log(`Latest message: ${messageContent}\n`);
+  const messageContent = Buffer.from(latestMessage.message, "base64")
+    .toString("utf8")
+    .trim();
+
+  console.log(`\nLatest message: ${messageContent}\n`);
 } else {
-  console.log("No messages found yet in Mirror Node\n");
+  console.log("No messages found yet in Mirror Node");
 }
 
 client.close();
@@ -429,20 +430,21 @@ client.close();
 {% endtab %}
 
 {% tab title="Java" %}
+{% code overflow="wrap" %}
 ```java
-// Wait for Mirror Node to populate data
-System.out.println("Waiting for Mirror Node to update...\n");
-Thread.sleep(3000);
+// wait for Mirror Node to populate data
+System.out.println("\nWaiting for Mirror Node to update...");
+Thread.sleep(6000);
 
 // query messages using Mirror Node
 String mirrorNodeUrl = "https://testnet.mirrornode.hedera.com/api/v1/topics/" + topicId + "/messages";
 
-HttpClient httpClient = HttpClient.newHttpClient();
+HttpClient httpClient = HttpClient.newHttpClient( );
 HttpRequest request = HttpRequest.newBuilder()
     .uri(URI.create(mirrorNodeUrl))
     .build();
 
-HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString( ));
 Gson gson = new Gson();
 JsonObject data = gson.fromJson(response.body(), JsonObject.class);
 
@@ -450,55 +452,56 @@ if (data.has("messages") && data.getAsJsonArray("messages").size() > 0) {
     JsonArray messages = data.getAsJsonArray("messages");
     JsonObject latestMessage = messages.get(messages.size() - 1).getAsJsonObject();
     String encodedMessage = latestMessage.get("message").getAsString();
-    String messageContent = new String(java.util.Base64.getDecoder().decode(encodedMessage));
-    
-    System.out.println("Latest message: " + messageContent + "\n");
-} else {
-    System.out.println("No messages found yet in Mirror Node\n");
-}
+    String messageContent = new String(java.util.Base64.getDecoder().decode(encodedMessage)).trim();
+            
+    System.out.println("\nLatest message: " + messageContent + "\n");
+  } else {
+    System.out.println("No messages found yet in Mirror Node");
+  }
 
 client.close();
 ```
+{% endcode %}
 {% endtab %}
 
 {% tab title="Go" %}
 ```go
 // wait for Mirror Node to populate data
-fmt.Println("Waiting for Mirror Node to update...\n")
-time.Sleep(3 * time.Second)
+fmt.Println("Waiting for Mirror Node to update...")
+time.Sleep(6 * time.Second)
 
 // query messages using Mirror Node
 mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/topics/" + topicID.String() + "/messages"
 
 resp, err := http.Get(mirrorNodeUrl)
 if err != nil {
-    panic(err)
+	panic(err)
 }
 defer resp.Body.Close()
 
 body, err := io.ReadAll(resp.Body)
 if err != nil {
-     panic(err)
+	panic(err)
 }
 
 var data struct {
-    Messages []struct {
-	Message string `json:"message"`
-    } `json:"messages"`
+	Messages []struct {
+		Message string `json:"message"`
+	} `json:"messages"`
 }
 
 err = json.Unmarshal(body, &data)
 if err != nil {
-    panic(err)
+	panic(err)
 }
 
 if len(data.Messages) > 0 {
-    latestMessage := data.Messages[len(data.Messages)-1]
-    decodedMessage, _ := base64.StdEncoding.DecodeString(latestMessage.Message)
+	latestMessage := data.Messages[len(data.Messages)-1]
+	decodedMessage, _ := base64.StdEncoding.DecodeString(latestMessage.Message)
 
-    fmt.Printf("Latest message: %s\n\n", string(decodedMessage))
+	fmt.Println("\nLatest message:", strings.TrimSpace(string(decodedMessage)))
 } else {
-   fmt.Println("No messages found yet in Mirror Node\n")
+	fmt.Println("No messages found yet in Mirror Node")
 }
 
 client.Close()
@@ -521,7 +524,7 @@ Before running your project, verify your code matches the complete example:
 import {
   Client,
   TopicCreateTransaction,
-  TopicMessageSubmitTransaction
+  TopicMessageSubmitTransaction,
 } from "@hashgraph/sdk";
 
 async function createTopicDemo() {
@@ -530,21 +533,21 @@ async function createTopicDemo() {
   const operatorKey = process.env.OPERATOR_KEY;
 
   // initialize the client for testnet
-  const client = Client.forTestnet()
-    .setOperator(operatorId, operatorKey);
+  const client = Client.forTestnet().setOperator(operatorId, operatorKey);
 
   // build & execute the topic creation transaction
-  const transaction = new TopicCreateTransaction()
-    .setTopicMemo("My first HCS topic");
+  const transaction = new TopicCreateTransaction().setTopicMemo(
+    "My first HCS topic"
+  );
 
   const txResponse = await transaction.execute(client);
   const receipt = await txResponse.getReceipt(client);
   const topicId = receipt.topicId;
 
-  console.log(`\nTopic created: ${topicId}\n`);
+  console.log(`\nTopic created: ${topicId}`);
 
   // build & execute the message submission transaction
-  const message = "Hello, Hedera! \n";
+  const message = "Hello, Hedera!";
 
   const messageTransaction = new TopicMessageSubmitTransaction()
     .setTopicId(topicId)
@@ -552,11 +555,11 @@ async function createTopicDemo() {
 
   await messageTransaction.execute(client);
 
-  console.log(`Message submitted to topic: ${message}\n`);
+  console.log(`\nMessage submitted: ${message}`);
 
-  // Wait for Mirror Node to populate data
-  console.log("Waiting for Mirror Node to update...\n");
-  await new Promise(resolve => setTimeout(resolve, 3000));
+  // wait for Mirror Node to populate data
+  console.log("\nWaiting for Mirror Node to update...");
+  await new Promise((resolve) => setTimeout(resolve, 6000));
 
   // query messages using Mirror Node
   const mirrorNodeUrl = `https://testnet.mirrornode.hedera.com/api/v1/topics/${topicId}/messages`;
@@ -566,11 +569,13 @@ async function createTopicDemo() {
 
   if (data.messages && data.messages.length > 0) {
     const latestMessage = data.messages[data.messages.length - 1];
-    const messageContent = Buffer.from(latestMessage.message, 'base64').toString('utf8');
-    
+    const messageContent = Buffer.from(latestMessage.message, "base64")
+      .toString("utf8")
+      .trim();
+
     console.log(`\nLatest message: ${messageContent}\n`);
   } else {
-    console.log("No messages found yet in Mirror Node\n");
+    console.log("No messages found yet in Mirror Node");
   }
 
   client.close();
@@ -598,7 +603,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
 
 public class CreateTopicDemo {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args ) throws Exception {
         // load your operator credentials
         String operatorId = System.getenv("OPERATOR_ID");
         String operatorKey = System.getenv("OPERATOR_KEY");
@@ -615,7 +620,7 @@ public class CreateTopicDemo {
         TransactionReceipt receipt = txResponse.getReceipt(client);
         TopicId topicId = receipt.topicId;
 
-        System.out.println("Topic created: " + topicId + "\n");
+        System.out.println("\nTopic created: " + topicId);
 
         // build & execute the message submission transaction
         String message = "Hello, Hedera!";
@@ -626,21 +631,21 @@ public class CreateTopicDemo {
 
         messageTransaction.execute(client);
 
-        System.out.println("Message submitted to topic: " + message + "\n");
+        System.out.println("\nMessage submitted: " + message);
 
-        // Wait for Mirror Node to populate data
-        System.out.println("Waiting for Mirror Node to update...\n");
-        Thread.sleep(3000);
+        // wait for Mirror Node to populate data
+        System.out.println("\nWaiting for Mirror Node to update...");
+        Thread.sleep(6000);
 
         // query messages using Mirror Node
         String mirrorNodeUrl = "https://testnet.mirrornode.hedera.com/api/v1/topics/" + topicId + "/messages";
 
-        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpClient httpClient = HttpClient.newHttpClient( );
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(mirrorNodeUrl))
             .build();
 
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString( ));
         Gson gson = new Gson();
         JsonObject data = gson.fromJson(response.body(), JsonObject.class);
 
@@ -648,16 +653,17 @@ public class CreateTopicDemo {
             JsonArray messages = data.getAsJsonArray("messages");
             JsonObject latestMessage = messages.get(messages.size() - 1).getAsJsonObject();
             String encodedMessage = latestMessage.get("message").getAsString();
-            String messageContent = new String(java.util.Base64.getDecoder().decode(encodedMessage));
+            String messageContent = new String(java.util.Base64.getDecoder().decode(encodedMessage)).trim();
             
-            System.out.println("Latest message: " + messageContent + "\n");
+            System.out.println("\nLatest message: " + messageContent + "\n");
         } else {
-            System.out.println("No messages found yet in Mirror Node\n");
+            System.out.println("No messages found yet in Mirror Node");
         }
 
         client.close();
     }
 }
+
 ```
 {% endcode %}
 
@@ -678,6 +684,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
@@ -708,7 +715,7 @@ func main() {
 
 	topicID := *receipt.TopicID
 
-	fmt.Printf("\nTopic created: %s\n\n", topicID.String())
+	fmt.Println("\nTopic created:", topicID.String())
 
 	// build & execute the message submission transaction
 	message := "Hello, Hedera!"
@@ -722,11 +729,11 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Printf("Message submitted: %s\n\n", message)
+	fmt.Printf("\nMessage submitted: %s\n", message)
 
 	// Wait for Mirror Node to populate data
-	fmt.Println("Waiting for Mirror Node to update...\n")
-	time.Sleep(3 * time.Second)
+	fmt.Println("\nWaiting for Mirror Node to update...")
+	time.Sleep(6 * time.Second)
 
 	// query messages using Mirror Node
 	mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/topics/" + topicID.String() + "/messages"
@@ -757,9 +764,9 @@ func main() {
 		latestMessage := data.Messages[len(data.Messages)-1]
 		decodedMessage, _ := base64.StdEncoding.DecodeString(latestMessage.Message)
 
-		fmt.Printf("Latest message: %s\n\n", string(decodedMessage))
+		fmt.Println("\nLatest message:", strings.TrimSpace(string(decodedMessage)))
 	} else {
-		fmt.Println("No messages found yet in Mirror Node\n")
+		fmt.Println("No messages found yet in Mirror Node")
 	}
 
 	client.Close()

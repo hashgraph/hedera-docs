@@ -271,7 +271,7 @@ const txResponse = await transaction.execute(client);
 const receipt = await txResponse.getReceipt(client);
 const newAccountId = receipt.accountId;
 
-console.log(`Hedera Account created: ${newAccountId}`);
+console.log(`\nHedera Account created: ${newAccountId}`);
 console.log(`EVM Address: 0x${newPublicKey.toEvmAddress()}`);
 ```
 {% endtab %}
@@ -287,7 +287,7 @@ TransactionResponse txResponse = transaction.execute(client);
 TransactionReceipt receipt = txResponse.getReceipt(client);
 AccountId newAccountId = receipt.accountId;
 
-System.out.println("Hedera Account created: " + newAccountId);
+System.out.println("\nHedera Account created: " + newAccountId);
 System.out.println("EVM Address: 0x" + newPublicKey.toEvmAddress());
 ```
 {% endtab %}
@@ -373,7 +373,7 @@ mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/balances?account.
 {% tab title="JavaScript" %}
 ```js
 // Wait for Mirror Node to populate data
-console.log("Waiting for Mirror Node to update...");
+console.log("\nWaiting for Mirror Node to update...");
 await new Promise(resolve => setTimeout(resolve, 6000));
 
 // Query balance using Mirror Node
@@ -385,7 +385,7 @@ const data = await response.json();
 if (data.balances && data.balances.length > 0) {
   const balanceInTinybars = data.balances[0].balance;
   const balanceInHbar = balanceInTinybars / 100000000;
-  console.log(`Account balance: ${balanceInHbar} ℏ`);
+  console.log(`\nAccount balance: ${balanceInHbar} ℏ\n`);
 } else {
   console.log("Account balance not yet available in Mirror Node");
 }
@@ -397,7 +397,7 @@ client.close();
 {% tab title="Java" %}
 ```java
 // Wait for Mirror Node to populate data
-System.out.println("Waiting for Mirror Node to update...");
+System.out.println("\nWaiting for Mirror Node to update...");
 Thread.sleep(6000);
 
 // Query balance using Mirror Node
@@ -413,7 +413,7 @@ JsonArray balances = data.getAsJsonArray("balances");
 if (balances.size() > 0) {
     long balanceInTinybars = balances.get(0).getAsJsonObject().get("balance").getAsLong();
     double balanceInHbar = balanceInTinybars / 100000000.0;
-    System.out.println("Account balance: " + balanceInHbar + " ℏ");
+    System.out.println("\nAccount balance: " + balanceInHbar + " ℏ\n");
 } else {
     System.out.println("Account balance not yet available in Mirror Node");
 }
@@ -498,10 +498,10 @@ async function createAccountDemo() {
   const newAccountId = receipt.accountId;
 
   console.log(`\nHedera account created: ${newAccountId}`);
-  console.log(`EVM Address: 0x${newPublicKey.toEvmAddress()}\n`);
+  console.log(`EVM Address: 0x${newPublicKey.toEvmAddress()}`);
 
   // Wait for Mirror Node to populate data
-  console.log("Waiting for Mirror Node to update...\n");
+  console.log("\nWaiting for Mirror Node to update...");
   await new Promise(resolve => setTimeout(resolve, 6000));
 
   // query balance using Mirror Node
@@ -514,7 +514,7 @@ async function createAccountDemo() {
     const balanceInTinybars = data.balances[0].balance;
     const balanceInHbar = balanceInTinybars / 100000000;
     
-    console.log(`Account balance: ${balanceInHbar} ℏ\n`);
+    console.log(`\nAccount balance: ${balanceInHbar} ℏ\n`);
   } else {
     console.log("Account balance not yet available in Mirror Node");
   }
@@ -567,11 +567,11 @@ public class CreateAccountDemo {
         TransactionReceipt receipt = txResponse.getReceipt(client);
         AccountId newAccountId = receipt.accountId;
 
-        System.out.println("Hedera account created: " + newAccountId);
+        System.out.println("\nHedera account created: " + newAccountId);
         System.out.println("EVM Address: 0x" + newPublicKey.toEvmAddress() + "\n");
 
         // Wait for Mirror Node to populate data
-        System.out.println("Waiting for Mirror Node to update...\n");
+        System.out.println("\nWaiting for Mirror Node to update...\n");
         Thread.sleep(6000);
 
         // query balance using Mirror Node
@@ -592,7 +592,7 @@ public class CreateAccountDemo {
             long balanceInTinybars = accountBalance.get("balance").getAsLong();
             double balanceInHbar = balanceInTinybars / 100000000.0;
             
-            System.out.println("Account balance: " + balanceInHbar + " ℏ");
+            System.out.println("Account balance: " + balanceInHbar + " ℏ\n");
         } else {
             System.out.println("Account balance not yet available in Mirror Node");
         }

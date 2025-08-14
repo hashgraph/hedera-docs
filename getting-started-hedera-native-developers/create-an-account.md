@@ -159,8 +159,7 @@ go mod tidy
 {% endtab %}
 
 {% tab title="Python" %}
-
-Open your terminal and create a directory named `hedera-examples`. Then navigate into the new directory:
+Open your terminal and create a new directory named `hedera-examples`. Then navigate into the new directory:
 
 ```bash
 mkdir hedera-examples && cd hedera-examples
@@ -173,7 +172,7 @@ python -m venv .venv
 source .venv/bin/activate
 ```
 
-Install the [Python SDK](https://github.com/hiero-ledger/hiero-sdk-python) and requests (used later for querying the Mirror Node):
+Install the [ Python SDK](https://github.com/hiero-ledger/hiero-sdk-python) and requests (used later for querying the Mirror Node):
 
 ```bash
 pip install hiero_sdk_python requests

@@ -156,6 +156,7 @@ go mod init create_account_demo
 go get github.com/hiero-ledger/hiero-sdk-go/v2@latest
 go mod tidy
 ```
+{% endtab %}
 
 {% tab title="Python" %}
 
@@ -446,6 +447,7 @@ mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/balances?account.
 {% endtab %}
 
 {% tab title="Python" %}
+{% code overflow="wrap" %}
 ```python
 mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/balances?account.id={new_account_id}"
 ```
@@ -854,6 +856,7 @@ else:
     print("Account balance not yet available in Mirror Node")
 ```
 {% endcode %}
+
 </details>
 
 ***
@@ -896,6 +899,7 @@ go run create_account_demo.go
 ```bash
 python CreateTokenDemo.py
 ```
+{% endtab %}
 {% endtabs %}
 
 #### **Expected sample output:**

@@ -387,12 +387,14 @@ transaction = (
       .set_key(newPublicKey)            # set the account key
       .set_initial_balance(Hbar(20))    # fund with 20 HBAR
 )
+
+# Get the receipt to extract the new account ID
 receipt = transaction.execute(client)
 newAccountId = receipt.account_id
 
-print(f"\nHedera account created: {newAccountId}")
-# Derive the EVM address from the ECDSA public key and print it
 evm_address = keccak256(newPublicKey.to_bytes_ecdsa(compressed=False)[1:])[-20:].hex()
+
+print(f"\nHedera account created: {newAccountId}")
 print(f"EVM Address: 0x{evm_address}")
 ```
 {% endtab %}
@@ -795,7 +797,7 @@ func main() {
 
 <details>
 
-<summary><strong>Go</strong></summary>
+<summary><strong>Python</strong></summary>
 
 {% code overflow="wrap" %}
 ```python

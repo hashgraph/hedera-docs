@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   update-tables:
-    runs-on: hashgraph-docs-linux-medium # switch to ubuntu-latest if you don't need the self-hosted runner
+    runs-on: hashgraph-docs-linux-medium
     steps:
       - name: Harden the runner
         uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0

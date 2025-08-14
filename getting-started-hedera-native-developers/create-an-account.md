@@ -156,6 +156,46 @@ go mod init create_account_demo
 go get github.com/hiero-ledger/hiero-sdk-go/v2@latest
 go mod tidy
 ```
+
+{% tab title="Python" %}
+
+Open your terminal and create a directory named `hedera-examples`. Then navigate into the new directory:
+
+```bash
+mkdir hedera-examples && cd hedera-examples
+```
+
+Create and activate a virtual environment (Python 3.10+ recommended):
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
+
+Install the [Python SDK](https://github.com/hiero-ledger/hiero-sdk-python) and requests (used later for querying the Mirror Node):
+
+```bash
+pip install hiero_sdk_python requests
+```
+
+Create a file named `CreateTokenDemo.py` and add the following imports:
+
+```python
+import os
+import time
+import requests
+
+from hiero_sdk_python import (
+    Client,
+    AccountId,
+    PrivateKey,
+    AccountCreateTransaction,
+    Hbar,
+)
+
+# Used to print the EVM address for the new ECDSA public key
+from hiero_sdk_python.utils.crypto_utils import keccak256
+```
 {% endcode %}
 {% endtab %}
 {% endtabs %}
@@ -213,6 +253,19 @@ client := hedera.ClientForTestnet()
 client.SetOperator(operatorId, operatorKey)
 </code></pre>
 {% endtab %}
+
+{% tab title="Python" %}
+
+```python
+# Load your operator credentials
+operatorId = AccountId.from_string(os.environ["OPERATOR_ID"])
+operatorKey = PrivateKey.from_string(os.environ["OPERATOR_KEY"])
+
+# Initialize your testnet client and set operator
+client = Client()
+client.set_operator(operatorId, operatorKey)
+```
+{% endtab %}
 {% endtabs %}
 
 ***
@@ -249,6 +302,14 @@ newPrivateKey, _ := hedera.PrivateKeyGenerateEcdsa()
 newPublicKey := newPrivateKey.PublicKey()
 ```
 {% endtab %}
+
+{% tab title="Python" %}
+```python
+# generate a new ECDSA key pair in memory
+newPrivateKey = PrivateKey.generate_ecdsa()
+newPublicKey = newPrivateKey.public_key()
+```
+{% endtab %}
 {% endtabs %}
 
 **‼️ Security reminder**: Keep your private keys secure - anyone with access can control your account and funds.
@@ -280,7 +341,7 @@ console.log(`EVM Address: 0x${newPublicKey.toEvmAddress()}`);
 ```java
 // Build & execute the account creation transaction
 AccountCreateTransaction transaction = new AccountCreateTransaction()
-    .setECDSAKeyWithAlias(newPublicKey)                        // set the account key
+    .setECDSAKeyWithAlias(newPublicKey)          // set the account key
     .setInitialBalance(new Hbar(20));            // fund with 20 HBAR
 
 TransactionResponse txResponse = transaction.execute(client);
@@ -296,7 +357,7 @@ System.out.println("EVM Address: 0x" + newPublicKey.toEvmAddress());
 ```go
 // build & execute the account creation transaction
 transaction := hedera.NewAccountCreateTransaction().
-    SetECDSAKeyWithAlias(newPublicKey).  // set the account key
+    SetECDSAKeyWithAlias(newPublicKey).     // set the account key
     SetInitialBalance(hedera.NewHbar(20))   // fund with 20 HBAR
 
 // execute the transaction and get response
@@ -315,6 +376,24 @@ newAccountId := *receipt.AccountID
 
 fmt.Printf("Hedera Account created: %s\n", newAccountId.String())
 fmt.Printf("EVM Address: 0x%s\n", newPublicKey.ToEvmAddress())
+```
+{% endtab %}
+
+{% tab title="Python" %}
+```python
+# Build & execute the account creation transaction
+transaction = (
+    AccountCreateTransaction()
+      .set_key(newPublicKey)            # set the account key
+      .set_initial_balance(Hbar(20))    # fund with 20 HBAR
+)
+receipt = transaction.execute(client)
+newAccountId = receipt.account_id
+
+print(f"\nHedera account created: {newAccountId}")
+# Derive the EVM address from the ECDSA public key and print it
+evm_address = keccak256(newPublicKey.to_bytes_ecdsa(compressed=False)[1:])[-20:].hex()
+print(f"EVM Address: 0x{evm_address}")
 ```
 {% endtab %}
 {% endtabs %}
@@ -362,6 +441,13 @@ String mirrorNodeUrl = "https://testnet.mirrornode.hedera.com/api/v1/balances?ac
 {% code overflow="wrap" %}
 ```go
 mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/balances?account.id=" + newAccountId.String( )
+```
+{% endcode %}
+{% endtab %}
+
+{% tab title="Python" %}
+```python
+mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/balances?account.id={new_account_id}"
 ```
 {% endcode %}
 {% endtab %}
@@ -453,6 +539,29 @@ if len(data.Balances) > 0 {
 
 client.Close()
 ```
+{% endtab %}
+
+{% tab title="Python" %}
+```python
+# Wait for Mirror Node to populate data
+print("\nWaiting for Mirror Node to update...\n")
+time.sleep(6)
+
+# Query balance using Mirror Node
+mirrorNodeUrl = f"https://testnet.mirrornode.hedera.com/api/v1/balances?account.id={newAccountId}"
+response = requests.get(mirrorNodeUrl, timeout=10)
+response.raise_for_status()
+data = response.json()
+balances = data.get("balances", [])
+
+if balances:
+    balanceInTinybars = balances[0].get("balance", 0)
+    balanceInHbar = balanceInTinybars / 100_000_000
+    print(f"Account balance: {balanceInHbar:g} ℏ\n")
+else:
+    print("Account balance not yet available in Mirror Node")
+```
+
 {% endtab %}
 {% endtabs %}
 
@@ -683,6 +792,70 @@ func main() {
 
 </details>
 
+<details>
+
+<summary><strong>Go</strong></summary>
+
+{% code overflow="wrap" %}
+```python
+# create_account_demo.py
+
+import os
+import time
+import requests
+from hiero_sdk_python import (
+    Client, AccountId, PrivateKey, AccountCreateTransaction, Hbar
+)
+from hiero_sdk_python.utils.crypto_utils import keccak256
+
+# load your operator credentials
+operatorId = AccountId.from_string(os.environ["OPERATOR_ID"])
+operatorKey = PrivateKey.from_string(os.environ["OPERATOR_KEY"])
+
+# initialize the client for testnet
+client = Client()
+client.set_operator(operatorId, operatorKey)
+
+# generate a new key pair
+newPrivateKey = PrivateKey.generate_ecdsa()
+newPublicKey = newPrivateKey.public_key()
+
+# build & execute the account creation transaction
+transaction = (
+    AccountCreateTransaction()
+      .set_key(newPublicKey)            # set the account key
+      .set_initial_balance(Hbar(20))    # fund with 20 HBAR
+)
+receipt = transaction.execute(client)
+newAccountId = receipt.account_id
+
+evm_address = keccak256(newPublicKey.to_bytes_ecdsa(compressed=False)[1:])[-20:].hex()
+
+
+print(f"\nHedera account created: {newAccountId}")
+print(f"EVM Address: 0x{evm_address}")
+
+# wait for Mirror Node to populate data
+print("\nWaiting for Mirror Node to update...\n")
+time.sleep(6)
+
+# query balance using Mirror Node
+mirrorNodeUrl = f"https://testnet.mirrornode.hedera.com/api/v1/balances?account.id={newAccountId}"
+response = requests.get(mirrorNodeUrl, timeout=10)
+response.raise_for_status()
+data = response.json()
+balances = data.get("balances", [])
+
+if balances:
+    balanceInTinybars = balances[0].get("balance", 0)
+    balanceInHbar = balanceInTinybars / 100_000_000
+    print(f"Account balance: {balanceInHbar:g} ℏ\n")
+else:
+    print("Account balance not yet available in Mirror Node")
+```
+{% endcode %}
+</details>
+
 ***
 
 ## Run Your Project
@@ -718,6 +891,11 @@ mvn compile exec:java -Dexec.mainClass="CreateAccountDemo"
 go run create_account_demo.go
 ```
 {% endtab %}
+
+{% tab title="Python" %}
+```bash
+python CreateTokenDemo.py
+```
 {% endtabs %}
 
 #### **Expected sample output:**

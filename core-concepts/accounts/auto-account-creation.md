@@ -64,23 +64,26 @@ Create an account alias and convert it to the alias account ID format. The alias
 
 ### **2. Deposit tokens to the account alias account ID**
 
-Once the alias account ID is created, applications can create a transaction to transfer tokens to the alias account ID for users. Users can transfer HBAR, custom fungible or non-fungible tokens to the alias account ID. This will trigger the creation of the official Hedera account. When using the auto account creation flow, the first token transferred to the alias account ID is automatically associated to the account.
+Once the alias Account ID exists, create a **TransferTransaction** that sends HBAR or HTS tokens to that alias. Sending tokens triggers auto account creation on the network, and the first token transferred is automatically associated with the new account.
 
-The initial transfer of tokens to the alias account ID will do a few things:
+When the transfer executes, the network:
 
-1. The system will first create a system-initiated transaction to create a new account on Hedera. This is to create a new account on Hedera officially. This transaction occurs one nanosecond before the subsequent token transfer transaction.
-2. After the new account is created, the system will assign a new account number, and the account alias will be stored with the account in the alias field in the state. The new account will have an "auto-created account" set in the account memo field.
-   * For accounts created using the public key alias, the account will be assigned the account public key that matches the alias public key.
-   * For an account created via an EVM address alias, the account will not have an account public key, creating a [hollow account](auto-account-creation.md#auto-account-creation-evm-address-alias).
-3. Once the new account is officially created, the token transfer transaction instantiated by the user will transfer the tokens to the new account.
-4. The account specified to pay for the token transfer transaction fees will also be charged the account creation transaction fees in tinybar.
+* Creates a **child** account-creation transaction just before the transfer
+* Assigns a new account number and stores the alias on the account
+* Sets the memo to indicate an auto-created account
+* Sets the account key if the alias is a public key, or leaves the account **hollow** if the alias is an EVM address
 
-The above interactions introduce the concept of [parent and child transactions](../transactions-and-queries/#nested-transactions). The parent transaction is the transaction that represents the transfer of tokens from the sender account to the destination account. The child transaction is the transaction the system initiated to create the account. This concept is important since the parent transaction record or receipt will not return the new account number ID. You must get the transaction record or receipt of the child transaction. The parent and child transactions will share the same transaction ID, except the child transaction has an added nonce value.
+The **parent** transaction is the token transfer. The **child** is the account creation. They share a transaction ID; the child uses the same ID with a nonce increment. To fetch the new account ID, query the child record or request the parent record with child records included.
+
+The **payer** of the transfer covers both the token transfer fee and the account creation fee.
 
 {% hint style="info" %}
-**parent transaction**: the transaction responsible for transferring the tokens to the alias account ID destination account.
+#### **Note**
 
-**child transaction**: the transaction that created the new account
+The account-creation child transaction is timestamped just before the transfer (a minimal offset).\
+Parent and child share the same Transaction ID; the child uses the same ID with a nonce increment.\
+Fees for both the account creation and the transfer are charged **in tinybars** to the payer of the parent transfer.\
+To retrieve the new Account ID, either request the parent record with child records included or query the child record directly by incrementing the nonce.
 {% endhint %}
 
 ### **3. Get the new account number**
@@ -92,11 +95,38 @@ You can obtain the new account number in any of the following ways:
 * Specify the account alias account ID in an `AccountInfoQuery` transaction request. The response will return the account's account number account ID.
 * Inspect the parent transfer transaction record transfer list for the account with a transfer equal to the token transfer value.
 
-## Auto Account Creation: EVM Address Alias
+## Auto Account Creation with an EVM Address&#x20;
 
-Accounts created with the auto account creation flow using an [EVM address alias](account-properties.md#account-alias-evm-address) result in creating a **hollow account**. Hollow accounts are incomplete accounts with an account number and alias but not an account key. The hollow account can accept token transfers into the account in this state. It cannot transfer tokens from the account or modify any account properties until the account key has been added and the account is complete.
+When the alias is an EVM address, the network creates a **hollow account**. A hollow account has an account number and alias but no key. It can receive tokens, but it cannot send tokens or modify account properties until it is a complete account.
 
-To update the hollow account into a complete account, the hollow account needs to be specified as a transaction fee payer account for a Hedera transaction. It must also sign the transaction with the ECDSA private key corresponding to the EVM address alias. When the hollow account becomes a complete account, you can use the account to pay for transaction fees or update account properties as you would with regular Hedera accounts.
+### Complete a Hollow Account
+
+To complete a hollow account, submit a Hedera transaction that:
+
+1. Sets the hollow account as the **fee payer** (`TransactionID.accountID`), and
+2. Is **signed** with the ECDSA private key that matches the EVM address.
+
+If either condition is missing, the transaction is rejected. After completion, the account behaves like a regular Hedera account.
+
+#### **Using HAPI (SDKs)**
+
+* Build a transaction (for example, a small [`TransferTransaction`](../../sdks-and-apis/sdks/accounts-and-hbar/transfer-cryptocurrency.md)).
+* Set the payer by generating a `TransactionId` with the hollow account ID.
+* Sign with the corresponding ECDSA key and execute.
+
+#### **Using EVM Wallets via JSON-RPC**
+
+* Send the first transaction from the new account in the wallet.
+* JSON-RPC relay providers set the payer to the new account and include the user’s ECDSA signature automatically.&#x20;
+
+#### **Set a Different Fee Payer (After Completion)**
+
+* **HAPI (SDKs):** Generate a `TransactionId` with the desired payer before freeze/sign. If not set, the SDK uses the client operator by default.
+* **JSON-RPC:** Configure your relay or custom endpoint to set `TransactionID.accountID` to the payer account. Submit the signed EVM transaction to that endpoint and the relay will wrap it, set the payer, forward it to Hedera, and you can verify the payer in the transaction record or on HashScan.
+
+## **Automatic Token Associations for Completed Accounts**
+
+Once a hollow account has been converted into a complete account by acting as the payer for a transaction and signing with its ECDSA private key, it inherits the default automatic association settings. Specifically, the account’s `maxAutoAssociations` property defaults to `–1`, enabling unlimited automatic token associations. This means that any subsequent HTS tokens transferred to the completed account will be automatically associated, and the recipient does not need to manually associate with each token. This behavior is part of frictionless airdrops ([HIP‑904](https://hips.hedera.com/hip/hip-904)) and differs from earlier network versions where auto‑association for new tokens was not available.
 
 ## Examples
 

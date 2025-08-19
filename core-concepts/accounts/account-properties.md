@@ -195,7 +195,11 @@ Accounts can automatically approve up to 5,000 tokens without manually preauthor
 
 ## Maximum Auto-Associations
 
-The property `maxAutoAssociations` of Hedera accounts defines the maximum number of automatic associations allowed. If this is `0`, then automatic token associations or airdrops are not allowed, and it requires manual association with the token. This is also if the value is lesser or equal to `usedAutoAssociations`. The default value of the property is `-1` for the new automatically created accounts in a way that basically allows unlimited number of auto-associations \[NOT ENABLED]. If the value is a positive number, this puts a limit on the number of auto token associations to that value.
+The property `maxAutoAssociations` defines how many tokens an account can automatically associate with.
+
+<table><thead><tr><th width="107.8438720703125" align="center">Property Value</th><th></th></tr></thead><tbody><tr><td align="center"><code>0</code></td><td>Automatic token associations or airdrops are not allowed; the account must manually associate each token.</td></tr><tr><td align="center"><code>-1</code></td><td>Unlimited automatic token associations are allowed. this is the default for accounts created via <strong>auto account creation</strong> and for accounts that originated as hollow accounts (created from EVM aliases) and have since been completed. a value of <code>-1</code> allows the account to receive new tokens without manually associating them</td></tr><tr><td align="center"><code>> 0</code></td><td>the account can automatically associate up to that number of tokens. the sender covers the <code>maxAutoAssociations</code> fee and the first auto‑renewal rent for the association.</td></tr></tbody></table>
+
+This feature is enabled on Hedera mainnet as part of frictionless airdrops (hip‑904). When tokens are sent to an account with available auto‑association slots, one slot is consumed and the account becomes associated automatically.&#x20;
 
 Reference Hedera Improvement Proposal: [HIP-23](https://hips.hedera.com/hip/hip-23), [HIP-904](https://hips.hedera.com/hip/hip-904)
 

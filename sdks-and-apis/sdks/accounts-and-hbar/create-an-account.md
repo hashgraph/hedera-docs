@@ -28,7 +28,7 @@ When creating a **new account** using the<mark style="color:purple;">`AccountCre
 
 Accounts have a property, `maxAutoAssociations`, and the property's value determines the maximum number of automatic token associations allowed.
 
-<table><thead><tr><th width="162" align="center">Property Value</th><th>Description</th></tr></thead><tbody><tr><td align="center"><code>0</code></td><td>Automatic <strong>token</strong> associations or <a data-footnote-ref href="#user-content-fn-1"><strong>token airdrops</strong></a> are not allowed, and the account must be manually associated with a token. This also applies if the value is less than or equal to <code>usedAutoAssociations</code>.</td></tr><tr><td align="center"><code>-1</code></td><td>The number of automatic <strong>token</strong> associations an account can have is unlimited. <code>-1</code> is the default value for new automatically-created accounts.</td></tr><tr><td align="center"><code>> 0</code></td><td>If the value is a positive number (number greater than 0), the number of automatic token associations an account can have is limited to that number. </td></tr></tbody></table>
+<table><thead><tr><th width="162" align="center">Property Value</th><th>Description</th></tr></thead><tbody><tr><td align="center"><code>0</code></td><td>Automatic <strong>token</strong> associations or <strong>token airdrops</strong> are not allowed, and the account must be manually associated with a token. This also applies if the value is less than or equal to <code>usedAutoAssociations</code>.</td></tr><tr><td align="center"><code>-1</code></td><td>Unlimited automatic token associations are allowed, and this is the default for accounts created via <a href="../../../core-concepts/accounts/auto-account-creation.md">auto account creation</a> and for accounts that began as hollow accounts and are now complete. Accounts with <code>-1</code> can receive new tokens without manually associating them. The sender still pays the <code>maxAutoAssociations</code> fee and initial rent for each association.</td></tr><tr><td align="center"><code>> 0</code></td><td>If the value is a positive number (number greater than 0), the number of automatic token associations an account can have is limited to that number.</td></tr></tbody></table>
 
 {% hint style="info" %}
 The sender pays the `maxAutoAssociations` fee and the rent for the first auto-renewal period for the association. This is in addition to the typical transfer fees. This ensures the receiver can receive tokens without association and makes it a smoother transfer process.
@@ -41,9 +41,9 @@ The sender pays the `maxAutoAssociations` fee and the rent for the first auto-re
 <table><thead><tr><th width="508">Method</th><th width="125.33333333333331">Type</th><th>Requirement</th></tr></thead><tbody><tr><td><code>setKey(&#x3C;key>)</code></td><td>Key</td><td>Required</td></tr><tr><td><code>setAlias(&#x3C;alias>)</code></td><td>EvmAddress</td><td>Optional</td></tr><tr><td><code>setInitialBalance(&#x3C;initialBalance>)</code></td><td>HBar</td><td>Optional</td></tr><tr><td><code>setReceiverSignatureRequired(&#x3C;booleanValue>)</code></td><td>boolean</td><td>Optional</td></tr><tr><td><code>setMaxAutomaticTokenAssociations(&#x3C;amount>)</code></td><td>int</td><td>Optional</td></tr><tr><td><code>setStakedAccountId(&#x3C;stakedAccountId>)</code></td><td>AccountId</td><td>Optional</td></tr><tr><td><code>setStakedNodeId(&#x3C;stakedNodeId>)</code></td><td>long</td><td>Optional</td></tr><tr><td><code>setDeclineStakingReward(&#x3C;declineStakingReward>)</code></td><td>boolean</td><td>Optional</td></tr><tr><td><code>setAccountMemo(&#x3C;memo>)</code></td><td>String</td><td>Optional</td></tr><tr><td><code>setAutoRenewPeriod(&#x3C;autoRenewPeriod>)</code></td><td>Duration</td><td>Disabled</td></tr></tbody></table>
 
 {% hint style="warning" %}
-#### Account Alias
+**Account Alias**
 
-If an alias is set during account creation, it becomes [immutable](../../../support-and-community/glossary.md#immutability), meaning it cannot be changed. If you plan to update or rotate keys in the future, do not set the alias at the time of initial account creation. The alias can be set after finalizing all key updates.&#x20;
+If an alias is set during account creation, it becomes [immutable](../../../support-and-community/glossary.md#immutability), meaning it cannot be changed. If you plan to update or rotate keys in the future, do not set the alias at the time of initial account creation. The alias can be set after finalizing all key updates.
 {% endhint %}
 
 {% tabs %}
@@ -215,5 +215,3 @@ accountKey, err := AccountCreateTransaction.GetKey()
 ```
 {% endtab %}
 {% endtabs %}
-
-[^1]: 

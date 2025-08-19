@@ -103,26 +103,21 @@ When the alias is an EVM address, the network creates a **hollow account**. A ho
 
 To complete a hollow account, submit a Hedera transaction that:
 
-1. Sets the hollow account as the **fee payer** (`TransactionID.accountID`), and
-2. Is **signed** with the ECDSA private key that matches the EVM address.
+1. Make the hollow account the **fee payer** for a Hedera transaction, and
+2. Sign that transaction with the **ECDSA private key** that matches the EVM address.
 
 If either condition is missing, the transaction is rejected. After completion, the account behaves like a regular Hedera account.
 
 #### **Using HAPI (SDKs)**
 
 * Build a transaction (for example, a small [`TransferTransaction`](../../sdks-and-apis/sdks/accounts-and-hbar/transfer-cryptocurrency.md)).
-* Set the payer by generating a `TransactionId` with the hollow account ID.
+* Set the transaction’s payer to the hollow account in your SDK.
 * Sign with the corresponding ECDSA key and execute.
 
 #### **Using EVM Wallets via JSON-RPC**
 
 * Send the first transaction from the new account in the wallet.
-* JSON-RPC relay providers set the payer to the new account and include the user’s ECDSA signature automatically.&#x20;
-
-#### **Set a Different Fee Payer (After Completion)**
-
-* **HAPI (SDKs):** Generate a `TransactionId` with the desired payer before freeze/sign. If not set, the SDK uses the client operator by default.
-* **JSON-RPC:** Configure your relay or custom endpoint to set `TransactionID.accountID` to the payer account. Submit the signed EVM transaction to that endpoint and the relay will wrap it, set the payer, forward it to Hedera, and you can verify the payer in the transaction record or on HashScan.
+* EVM wallets will set the new account as the transaction fee payer when users sign transactions to complete the account. No further action is required as the RPC will set the users account ID as the fee payer.
 
 ## **Automatic Token Associations for Completed Accounts**
 

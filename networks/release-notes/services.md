@@ -8,7 +8,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Release v0.64
 
-{% hint style="info" %}
+{% hint style="success" %}
 **MAINNET UPDATE SCHEDULED: AUGUST 20, 2025**
 {% endhint %}
 
@@ -117,6 +117,10 @@ In addition to the aforementioned features, release 0.64 introduces other update
 **Full changelog can be found in the** [**repo**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.64.0)**.**
 
 </details>
+
+### Performance Results
+
+<figure><img src="../../.gitbook/assets/0.64_Performance Measurement Results_Extract.001.png" alt=""><figcaption></figcaption></figure>
 
 ## Release v0.63
 

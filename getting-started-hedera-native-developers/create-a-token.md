@@ -90,7 +90,7 @@ Create a new **Maven** project and name it `HederaExamples`. Add the following d
 </dependencies>
 ```
 
-Or for **Gradle** projects, add these dependencies to your `build.gradle` file:
+Or for **Gradle** projects using the Groovy DSL, add these dependencies to your `build.gradle` file and install the dependencies using `./gradlew build`
 
 ```gradle
 plugins {
@@ -124,6 +124,7 @@ import java.net.http.HttpResponse;
 import java.net.URI;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
 
 public class CreateTokenDemo {
     public static void main(String[] args ) throws Exception {
@@ -165,7 +166,7 @@ go mod tidy
 
 ## Environment Variables
 
-Set your operator credentials as environment variables:
+Set your operator credentials as environment variables. Your `OPERATOR_ID` is your testnet account ID. Your `OPERATOR_KEY` is your testnet account's corresponding ECDSA private key.
 
 ```bash
 export OPERATOR_ID="0.0.1234"
@@ -176,7 +177,7 @@ export OPERATOR_KEY="3030020100300506032b657004220420..."
 
 ## Step 1: Initialize Hedera client
 
-Load your operator credentials from environment variables and initialize your Hedera testnet client. This client will connect to the network and use your operator account to sign transactions and pay fees.
+Load your operator credentials from environment variables and initialize your Hedera testnet client. This client will connect to the Hedera test network and use your operator account to sign transactions and pay transaction fees.
 
 {% tabs %}
 {% tab title="JavaScript" %}

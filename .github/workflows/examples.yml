@@ -28,18 +28,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Start Solo (and Mirror)
+      - name: Start Solo
         id: solo
         uses: hiero-ledger/hiero-solo-action@v0.11.0
         with:
           installMirrorNode: true
 
-      - name: Show assigned account (redacted)
+      - name: Show assigned account
         run: |
           echo "ECDSA Account: ${{ steps.solo.outputs.ecdsaAccountId }}"
           echo "ECDSA PrivateKey: **** (redacted)"
 
-      - name: Set up Temurin JDK 21
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin

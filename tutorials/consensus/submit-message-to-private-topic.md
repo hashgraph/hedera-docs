@@ -34,7 +34,7 @@ To create a private topic, you will use [_<mark style="color:purple;">**`setSubm
 ```java
 // Create a new topic
 TransactionResponse txResponse = new TopicCreateTransaction()
-   .setSubmitKey(myPrivateKey.getPublicKey())
+   .setSubmitKey(operatorKey.getPublicKey())
    .execute(client);
 
 // Get the receipt
@@ -55,7 +55,7 @@ Thread.sleep(5000);
 ```javascript
 // Create a new topic
 let txResponse = await new TopicCreateTransaction()
-    .setSubmitKey(myPrivateKey.publicKey)
+    .setSubmitKey(operatorKey.publicKey)
     .execute(client);
 
 // Grab the newly generated topic ID
@@ -71,7 +71,7 @@ await new Promise((resolve) => setTimeout(resolve, 5000));
 ```go
 // Create a new topic
 transactionResponse, err := hedera.NewTopicCreateTransaction().
-	SetSubmitKey(myPrivateKey.PublicKey()).
+	SetSubmitKey(operatorKey.PublicKey()).
 	Execute(client)
 
 if err != nil {
@@ -155,7 +155,7 @@ TransactionResponse submitMessage = new TopicMessageSubmitTransaction()
       .setTopicId(topicId)
       .setMessage("Submitkey set!")
       .freezeWith(client)
-      .sign(myPrivateKey)
+      .sign(operatorKey)
       .execute(client)
 
 // Get the receipt of the transaction
@@ -174,7 +174,7 @@ let submitMsgTx = await new TopicMessageSubmitTransaction({
   message: "Submitkey set!",
 })
 .freezeWith(client)
-.sign(myPrivateKey);
+.sign(operatorKey);
 
 let submitMsgTxSubmit = await submitMsgTx.execute(client);
 
@@ -201,7 +201,7 @@ if err != nil {
 }
 
 // Sign message with submit key
-submitMessageTx.Sign(myPrivateKey)
+submitMessageTx.Sign(operatorKey)
 
 // Submit message
 submitTxResponse, err := submitMessageTx.Execute(client)
@@ -243,16 +243,16 @@ public class CreateTopicTutorial {
     public static void main(String[] args) throws TimeoutException, PrecheckStatusException, ReceiptStatusException, InterruptedException {
 
         // Grab your Hedera testnet account ID and private key
-        AccountId myAccountId = AccountId.fromString(Dotenv.load().get("OPERATOR_ID"));
-        PrivateKey myPrivateKey = PrivateKey.fromString(Dotenv.load().get("OPERATOR_KEY"));
+        AccountId operatorId = AccountId.fromString(Dotenv.load().get("OPERATOR_ID"));
+        PrivateKey operatorKey = PrivateKey.fromString(Dotenv.load().get("OPERATOR_KEY"));
 
         // Build your Hedera client
         Client client = Client.forTestnet();
-        client.setOperator(myAccountId, myPrivateKey);
+        client.setOperator(operatorId, operatorKey);
 
         // Create a new topic
         TransactionResponse txResponse = new TopicCreateTransaction()
-                .setSubmitKey(myPrivateKey.getPublicKey())
+                .setSubmitKey(operatorKey.getPublicKey())
                 .execute(client);
 
         // Get the receipt
@@ -280,7 +280,7 @@ public class CreateTopicTutorial {
 </strong>              .setTopicId(topicId)
               .setMessage("Submitkey set!")
               .freezeWith(client)
-              .sign(myPrivateKey)
+              .sign(operatorKey)
               .execute(client)
 
         // Get the receipt of the transaction
@@ -311,19 +311,19 @@ const {
 } = require("@hashgraph/sdk");
 
 // Grab the OPERATOR_ID and OPERATOR_KEY from the .env file
-const myAccountId = process.env.OPERATOR_ID;
-const myPrivateKey = process.env.OPERATOR_KEY;
+const operatorId = process.env.OPERATOR_ID;
+const operatorKey = process.env.OPERATOR_KEY;
 
 // Build Hedera testnet and mirror node client
 const client = Client.forTestnet();
 
 // Set the operator account ID and operator private key
-client.setOperator(myAccountId, myPrivateKey);
+client.setOperator(operatorId, operatorKey);
 
 async function submitPrivateMessage() {
   // Create a new topic
   let txResponse = await new TopicCreateTransaction()
-    .setSubmitKey(myPrivateKey.publicKey)
+    .setSubmitKey(operatorKey.publicKey)
     .execute(client);
 
   // Grab the newly generated topic ID
@@ -350,7 +350,7 @@ async function submitPrivateMessage() {
     message: "Submitkey set!",
   })
   .freezeWith(client)
-  .sign(myPrivateKey);
+  .sign(operatorKey);
 
   let submitMsgTxSubmit = await submitMsgTx.execute(client);
   let getReceipt = await submitMsgTxSubmit.getReceipt(client);
@@ -390,23 +390,23 @@ func main() {
 	}
 
 	// Grab your testnet account ID and private key from the .env file
-	myAccountId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
+	operatorId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
 	if err != nil {
 		panic(err)
 	}
 
-	myPrivateKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
+	operatorKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 	if err != nil {
 		panic(err)
 	}
 
 	// Create your testnet client
 	client := hedera.ClientForTestnet()
-	client.SetOperator(myAccountId, myPrivateKey)
+	client.SetOperator(operatorId, operatorKey)
 
 	// Create a new topic
 	transactionResponse, err := hedera.NewTopicCreateTransaction().
-		SetSubmitKey(myPrivateKey.PublicKey()).
+		SetSubmitKey(operatorKey.PublicKey()).
 		Execute(client)
 
 	if err != nil {
@@ -447,7 +447,7 @@ func main() {
 	}
 	
 	// Sign message with submit key
-	submitMessageTx.Sign(myPrivateKey)
+	submitMessageTx.Sign(operatorKey)
 	
 	// Submit message
 	submitTxResponse, err := submitMessageTx.Execute(client)

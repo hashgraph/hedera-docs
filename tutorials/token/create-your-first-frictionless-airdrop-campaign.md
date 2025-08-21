@@ -146,18 +146,18 @@ func main() {
 		panic(fmt.Errorf("Unable to load environment variables from .env file. Error:\n%v\n", err))
 	}
 
-	myAccountId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
+	operatorId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
 	if err != nil {
 		panic(err)
 	}
 
-	myPrivateKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
+	operatorKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 	if err != nil {
 		panic(err)
 	}
 
 	client := hedera.ClientForTestnet()
-	client.SetOperator(myAccountId, myPrivateKey)
+	client.SetOperator(operatorId, operatorKey)
 	client.SetDefaultMaxTransactionFee(hedera.HbarFrom(100, hedera.HbarUnits.Hbar))
 	client.SetDefaultMaxQueryPayment(hedera.HbarFrom(50, hedera.HbarUnits.Hbar))
 
@@ -1074,18 +1074,18 @@ func main() {
 		panic(fmt.Errorf("Unable to load environment variables from .env file. Error:\n%v\n", err))
 	}
 
-	myAccountId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
+	operatorId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
 	if err != nil {
 		panic(err)
 	}
 
-	myPrivateKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
+	operatorKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 	if err != nil {
 		panic(err)
 	}
 
 	client := hedera.ClientForTestnet()
-	client.SetOperator(myAccountId, myPrivateKey)
+	client.SetOperator(operatorId, operatorKey)
 	client.SetDefaultMaxTransactionFee(hedera.HbarFrom(100, hedera.HbarUnits.Hbar))
 	client.SetDefaultMaxQueryPayment(hedera.HbarFrom(50, hedera.HbarUnits.Hbar))
 

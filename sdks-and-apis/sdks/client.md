@@ -183,14 +183,14 @@ client.setOperator(OPERATOR_ID, OPERATOR_KEY);
 {% tab title="JavaScript" %}
 ```javascript
 //Grab the account ID and private key of the operator account from the .env file
-const myAccountId = process.env.OPERATOR_ID;
-const myPrivateKey = process.env.OPERATOR_KEY;
+const operatorId = process.env.OPERATOR_ID;
+const operatorKey = process.env.OPERATOR_KEY;
 
 // Pre-configured client for test network (testnet)
 const client = Client.forTestnet()
 
 //Set the operator with the account ID and private key
-client.setOperator(myAccountId, myPrivateKey);
+client.setOperator(operatorId, operatorKey);
 ```
 {% endtab %}
 
@@ -211,7 +211,7 @@ client.setOperator(myAccountId, myPrivateKey);
         panic(err)
     }
 
-    myPrivateKey, err := hedera.PrivateKeyFromString(OPERATOR_KEY)
+    operatorKey, err := hedera.PrivateKeyFromString(OPERATOR_KEY)
     if err != nil {
         panic(err)
     }
@@ -247,7 +247,7 @@ The **max transaction fee** and **max query payment** are both set to 100\_000\_
 Client client = Client.forTestnet()
 
 //Set your account as the client's operator
-client.setOperator(myAccountId, myPrivateKey);
+client.setOperator(operatorId, operatorKey);
 
 //Set the default maximum transaction fee (in Hbar)
 client.setDefaultMaxTransactionFee(new Hbar(10));
@@ -265,7 +265,7 @@ client.setDefaultMaxQueryPayment(new Hbar(5));
 const client = Client.forTestnet()
 
 //Set your account as the client's operator
-client.setOperator(myAccountId, myPrivateKey);
+client.setOperator(operatorId, operatorKey);
 
 //Set the default maximum transaction fee (in Hbar)
 client.setDefaultMaxTransactionFee(new Hbar(10));
@@ -283,7 +283,7 @@ client.setDefaultMaxQueryPayment(new Hbar(5));
 client := hedera.ClientForTestnet()
 
 //Set your account as the client's operator
-client.SetOperator(myAccountId, myPrivateKey)
+client.SetOperator(operatorId, operatorKey)
 
 // Set default max transaction fee
 client.SetDefaultMaxTransactionFee(hedera.HbarFrom(10, hedera.HbarUnits.Hbar))

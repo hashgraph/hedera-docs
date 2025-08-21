@@ -9,7 +9,7 @@ Example:
 ```java
 TransferTransaction transactionToSchedule = new TransferTransaction()
         .addHbarTransfer(newAccountId, Hbar.fromTinybars(-1))
-        .addHbarTransfer(myAccountId, Hbar.fromTinybars(1));
+        .addHbarTransfer(operatorId, Hbar.fromTinybars(1));
 ```
 
 {% hint style="info" %}

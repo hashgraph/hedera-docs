@@ -243,8 +243,8 @@ public class CreateTopicTutorial {
     public static void main(String[] args) throws TimeoutException, PrecheckStatusException, ReceiptStatusException, InterruptedException {
 
         // Grab your Hedera testnet account ID and private key
-        AccountId myAccountId = AccountId.fromString(Dotenv.load().get("MY_ACCOUNT_ID"));
-        PrivateKey myPrivateKey = PrivateKey.fromString(Dotenv.load().get("MY_PRIVATE_KEY"));
+        AccountId myAccountId = AccountId.fromString(Dotenv.load().get("OPERATOR_ID"));
+        PrivateKey myPrivateKey = PrivateKey.fromString(Dotenv.load().get("OPERATOR_KEY"));
 
         // Build your Hedera client
         Client client = Client.forTestnet();
@@ -311,8 +311,8 @@ const {
 } = require("@hashgraph/sdk");
 
 // Grab the OPERATOR_ID and OPERATOR_KEY from the .env file
-const myAccountId = process.env.MY_ACCOUNT_ID;
-const myPrivateKey = process.env.MY_PRIVATE_KEY;
+const myAccountId = process.env.OPERATOR_ID;
+const myPrivateKey = process.env.OPERATOR_KEY;
 
 // Build Hedera testnet and mirror node client
 const client = Client.forTestnet();
@@ -390,12 +390,12 @@ func main() {
 	}
 
 	// Grab your testnet account ID and private key from the .env file
-	myAccountId, err := hedera.AccountIDFromString(os.Getenv("MY_ACCOUNT_ID"))
+	myAccountId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
 	if err != nil {
 		panic(err)
 	}
 
-	myPrivateKey, err := hedera.PrivateKeyFromString(os.Getenv("MY_PRIVATE_KEY"))
+	myPrivateKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 	if err != nil {
 		panic(err)
 	}

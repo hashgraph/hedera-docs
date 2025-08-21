@@ -91,28 +91,28 @@ The operator is the account that will, by default, pay the transaction fee for t
 {% tab title="Java" %}
 ```java
 // Operator account ID and private key from string value
-AccountId MY_ACCOUNT_ID = AccountId.fromString("0.0.96928");
-Ed25519PrivateKey MY_PRIVATE_KEY = PrivateKey.fromString("302e020100300506032b657004220420b9c3ebac81a72aafa5490cc78111643d016d311e60869436fbb91c7330796928");
+AccountId OPERATOR_ID = AccountId.fromString("0.0.96928");
+Ed25519PrivateKey OPERATOR_KEY = PrivateKey.fromString("302e020100300506032b657004220420b9c3ebac81a72aafa5490cc78111643d016d311e60869436fbb91c7330796928");
 
 // Pre-configured client for test network (testnet)
 Client client = Client.forTestnet()
 
 //Set the operator with the account ID and private key
-client.setOperator(MY_ACCOUNT_ID, MY_PRIVATE_KEY);
+client.setOperator(OPERATOR_ID, OPERATOR_KEY);
 ```
 {% endtab %}
 
 {% tab title="JavaScript" %}
 ```javascript
 // Your account ID and private key from string value
-const MY_ACCOUNT_ID = AccountId.fromString("0.0.96928");
-const MY_PRIVATE_KEY = PrivateKey.fromString("302e020100300506032b657004220420b9c3ebac81a72aafa5490cc78111643d016d311e60869436fbb91c7330796928");
+const OPERATOR_ID = AccountId.fromString("0.0.96928");
+const OPERATOR_KEY = PrivateKey.fromString("302e020100300506032b657004220420b9c3ebac81a72aafa5490cc78111643d016d311e60869436fbb91c7330796928");
 
 // Pre-configured client for test network (testnet)
 const client = Client.forTestnet()
 
 //Set the operator with the account ID and private key
-client.setOperator(MY_ACCOUNT_ID, MY_PRIVATE_KEY);
+client.setOperator(OPERATOR_ID, OPERATOR_KEY);
 ```
 {% endtab %}
 
@@ -161,30 +161,30 @@ The .env file is created in the root directory of the SDK. The `.env` file store
 **.env**
 
 ```
-MY_ACCOUNT_ID=0.0.941
-MY_PRIVATE_KEY=302e020100300506032b65700422042012a4a4add3d885bd61d7ce5cff88c5ef2d510651add00a7f64cb90de3359bc5e
+OPERATOR_ID=0.0.941
+OPERATOR_KEY=302e020100300506032b65700422042012a4a4add3d885bd61d7ce5cff88c5ef2d510651add00a7f64cb90de3359bc5e
 ```
 
 {% tabs %}
 {% tab title="Java" %}
 ```java
 //Grab the account ID and private key of the operator account from the .env file
-AccountId MY_ACCOUNT_ID = AccountId.fromString(Objects.requireNonNull(Dotenv.load().get("OPERATOR_ID")));
-Ed25519PrivateKey MY_PRIVATE_KEY = Ed25519PrivateKey.fromString(Objects.requireNonNull(Dotenv.load().get("OPERATOR_KEY")));
+AccountId OPERATOR_ID = AccountId.fromString(Objects.requireNonNull(Dotenv.load().get("OPERATOR_ID")));
+Ed25519PrivateKey OPERATOR_KEY = Ed25519PrivateKey.fromString(Objects.requireNonNull(Dotenv.load().get("OPERATOR_KEY")));
 
 // Pre-configured client for test network (testnet)
 Client client = Client.forTestnet()
 
 //Set the operator with the account ID and private key
-client.setOperator(MY_ACCOUNT_ID, MY_PRIVATE_KEY);
+client.setOperator(OPERATOR_ID, OPERATOR_KEY);
 ```
 {% endtab %}
 
 {% tab title="JavaScript" %}
 ```javascript
 //Grab the account ID and private key of the operator account from the .env file
-const myAccountId = process.env.MY_ACCOUNT_ID;
-const myPrivateKey = process.env.MY_PRIVATE_KEY;
+const myAccountId = process.env.OPERATOR_ID;
+const myPrivateKey = process.env.OPERATOR_KEY;
 
 // Pre-configured client for test network (testnet)
 const client = Client.forTestnet()
@@ -202,16 +202,16 @@ client.setOperator(myAccountId, myPrivateKey);
     }
 
     //Get the operator account ID and private key
-    MY_ACCOUNT_ID := os.Getenv("MY_ACCOUNT_ID")
-    MY_PRIVATE_KEY := os.Getenv("MY_PRIVATE_KEY")
+    OPERATOR_ID := os.Getenv("OPERATOR_ID")
+    OPERATOR_KEY := os.Getenv("OPERATOR_KEY")
 
 
-    myAccountID, err := hedera.AccountIDFromString(MY_ACCOUNT_ID)
+    myAccountID, err := hedera.AccountIDFromString(OPERATOR_ID)
     if err != nil {
         panic(err)
     }
 
-    myPrivateKey, err := hedera.PrivateKeyFromString(MY_PRIVATE_KEY)
+    myPrivateKey, err := hedera.PrivateKeyFromString(OPERATOR_KEY)
     if err != nil {
         panic(err)
     }
@@ -226,8 +226,8 @@ client.setOperator(myAccountId, myPrivateKey);
     }
 
     // Get the operator account ID and private key
-    let my_account_id = AccountId::from_str(std::env::var("MY_ACCOUNT_ID").expect("MY_ACCOUNT_ID environment variable not set")).expect("Invalid MY_ACCOUNT_ID format");
-    let my_private_key = PrivateKey::from_str(std::env::var("MY_PRIVATE_KEY").expect("MY_PRIVATE_KEY environment variable not set")).expect("Invalid MY_PRIVATE_KEY format");
+    let my_account_id = AccountId::from_str(std::env::var("OPERATOR_ID").expect("OPERATOR_ID environment variable not set")).expect("Invalid OPERATOR_ID format");
+    let my_private_key = PrivateKey::from_str(std::env::var("OPERATOR_KEY").expect("OPERATOR_KEY environment variable not set")).expect("Invalid OPERATOR_KEY format");
 ```
 {% endtab %}
 {% endtabs %}

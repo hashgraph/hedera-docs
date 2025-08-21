@@ -318,8 +318,8 @@ public class CreateFungibleTutorial {
     public static void main(String[] args) throws TimeoutException, PrecheckStatusException, ReceiptStatusException {
 
         //Grab your Hedera testnet account ID and private key
-        AccountId myAccountId = AccountId.fromString(Objects.requireNonNull(Dotenv.load().get("MY_ACCOUNT_ID")));
-        PrivateKey myPrivateKey = PrivateKey.fromString(Objects.requireNonNull(Dotenv.load().get("MY_PRIVATE_KEY")));
+        AccountId myAccountId = AccountId.fromString(Objects.requireNonNull(Dotenv.load().get("OPERATOR_ID")));
+        PrivateKey myPrivateKey = PrivateKey.fromString(Objects.requireNonNull(Dotenv.load().get("OPERATOR_KEY")));
 
         //Create your Hedera testnet client
         Client client = Client.forTestnet();
@@ -545,12 +545,12 @@ func main() {
 	}
 
 	//GRAB YOUR TESTNET ACCOUNT ID AND KEY FROMZ THE .ENV FILE
-	myAccountId, err := hedera.AccountIDFromString(os.Getenv("MY_ACCOUNT_ID"))
+	myAccountId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
 	if err != nil {
 		panic(err)
 	}
 
-	myPrivateKey, err := hedera.PrivateKeyFromString(os.Getenv("MY_PRIVATE_KEY"))
+	myPrivateKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 	if err != nil {
 		panic(err)
 	}

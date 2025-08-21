@@ -1,0 +1,96 @@
+name: Daily Examples Check (Solo)
+
+on:
+  schedule:
+    - cron: "0 16 * * *"   # 9:00 AM America/Los_Angeles
+  workflow_dispatch:
+
+jobs:
+  run-java-example:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    env:
+      HEDERA_NETWORK: local
+      MIRROR_NODE_URL: http://localhost:5551/api/v1
+      STATUS_DIR: .github/example-status
+      STATUS_FILE: .github/example-status/java-status.md
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Start Solo (and Mirror)
+        id: solo
+        uses: hiero-ledger/hiero-solo-action@v0.11.0
+        with:
+          installMirrorNode: true
+
+      - name: Show assigned account (redacted)
+        run: |
+          echo "ECDSA Account: ${{ steps.solo.outputs.ecdsaAccountId }}"
+          echo "ECDSA PrivateKey: **** (redacted)"
+
+      - name: Set up Temurin JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Bootstrap Gradle for examples/java
+        run: |
+          chmod +x scripts/java-gradle-bootstrap.sh
+          ./scripts/java-gradle-bootstrap.sh
+
+      - name: Build & Run Java example
+        id: run_java
+        env:
+          OPERATOR_ID: ${{ steps.solo.outputs.ecdsaAccountId }}
+          OPERATOR_KEY: ${{ steps.solo.outputs.ecdsaPrivateKey }}
+          HEDERA_NETWORK: ${{ env.HEDERA_NETWORK }}
+          MIRROR_NODE_URL: ${{ env.MIRROR_NODE_URL }}
+        run: |
+          chmod +x scripts/run-java-example.sh
+          ./scripts/run-java-example.sh
+
+      - name: Summarize status
+        if: ${{ always() }}
+        run: |
+          mkdir -p "$STATUS_DIR"
+          ts="$(date -u +'%Y-%m-%d %H:%M:%SZ')"
+          {
+            if [ "${{ steps.run_java.outcome }}" = "success" ]; then
+              echo "## ✅ Java example passed"
+            else
+              echo "## ❌ Java example failed"
+            fi
+            echo "- Timestamp (UTC): ${ts}"
+            echo "- Network: ${HEDERA_NETWORK}"
+            echo ""
+            echo "<details><summary>Output</summary>"
+            if [ -f java-output.txt ]; then
+              # Redact the private key if script exists; otherwise print raw output
+              if [ -f scripts/redact.sh ]; then
+                bash scripts/redact.sh "${{ steps.solo.outputs.ecdsaPrivateKey }}" java-output.txt || cat java-output.txt
+              else
+                cat java-output.txt
+              fi
+            else
+              echo "_No output captured._"
+            fi
+            echo "</details>"
+          } > "$STATUS_FILE"
+
+      - name: Open/Update PR with status
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: update daily Java example status"
+          title: "Daily Example Status – Java"
+          body: "Automated run of the Java example against Solo."
+          branch: "bot/java-example-check"
+          add-paths: ${{ env.STATUS_FILE }}
+          labels: |
+            automation
+            ci

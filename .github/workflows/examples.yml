@@ -99,6 +99,4 @@ jobs:
           body: "Automated run of the Java example"
           branch: "bot/java-example-check"
           add-paths: ${{ env.STATUS_FILE }}
-          labels: |
-            automation
-            ci
+

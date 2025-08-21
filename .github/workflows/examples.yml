@@ -60,7 +60,7 @@ jobs:
           MIRROR_NODE_URL: ${{ env.MIRROR_NODE_URL }}
         run: |
           chmod +x scripts/run-java-example.sh
-          ./scripts/run-java-example.sh
+          ./scripts/run-java.sh
 
       - name: Summarize status
         if: ${{ always() }}

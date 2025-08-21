@@ -2,8 +2,14 @@ name: Daily Examples Check (Solo)
 
 on:
   schedule:
-    - cron: "0 16 * * *"   # 9:00 AM America/Los_Angeles
+    - cron: "0 16 * * *" 
   workflow_dispatch:
+  push:
+    branches:
+      - test-workflows     
+  pull_request:
+    branches:
+      - main
 
 jobs:
   run-java-example:

@@ -8,7 +8,7 @@ plugins { id 'application' }
 repositories { mavenCentral() }
 
 dependencies {
-    implementation 'com.hedera.hashgraph:sdk:2.39.0'
+    implementation 'com.hedera.hashgraph:sdk:2.60.0'
     implementation 'com.google.code.gson:gson:2.11.0'
 }
 

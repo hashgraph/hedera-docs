@@ -47,7 +47,8 @@ jobs:
 
       - name: Bootstrap Gradle for examples/java
         run: |
-          chmod +x scripts/java-gradle-bootstrap.sh
+          pwd
+          chmod +x ./scripts/java-gradle-bootstrap.sh
           ./scripts/java-gradle-bootstrap.sh
 
       - name: Build & Run Java example

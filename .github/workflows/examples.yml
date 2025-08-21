@@ -93,9 +93,10 @@ jobs:
       - name: Open/Update PR with status
         uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: "chore: update daily Java example status"
-          title: "Daily Example Status – Java"
-          body: "Automated run of the Java example against Solo."
+          commit-message: "chore: update example run status"
+          signoff: true 
+          title: "Example Status – Java"
+          body: "Automated run of the Java example"
           branch: "bot/java-example-check"
           add-paths: ${{ env.STATUS_FILE }}
           labels: |

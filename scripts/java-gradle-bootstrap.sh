@@ -10,6 +10,8 @@ repositories { mavenCentral() }
 dependencies {
     implementation 'com.hedera.hashgraph:sdk:2.60.0'
     implementation 'com.google.code.gson:gson:2.11.0'
+    implementation 'io.grpc:grpc-netty-shaded:1.61.0'
+
 }
 
 sourceSets {

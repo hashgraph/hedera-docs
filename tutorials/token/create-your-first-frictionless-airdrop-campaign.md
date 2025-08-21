@@ -57,18 +57,18 @@ dotenv.config();
 
 async function main() {
     if (
-        process.env.MY_ACCOUNT_ID == null ||
-        process.env.MY_PRIVATE_KEY == null ||
+        process.env.OPERATOR_ID == null ||
+        process.env.OPERATOR_KEY == null ||
         process.env.HEDERA_NETWORK == null
     ) {
         throw new Error(
-            "Environment variables MY_ACCOUNT_ID, HEDERA_NETWORK, and MY_PRIVATE_KEY are required.",
+            "Environment variables OPERATOR_ID, HEDERA_NETWORK, and OPERATOR_KEY are required.",
         );
     }
 
     const client = Client.forName(process.env.HEDERA_NETWORK).setOperator(
-        AccountId.fromString(process.env.MY_ACCOUNT_ID),
-        PrivateKey.fromStringDer(process.env.MY_PRIVATE_KEY),
+        AccountId.fromString(process.env.OPERATOR_ID),
+        PrivateKey.fromStringDer(process.env.OPERATOR_KEY),
     );
 
     /**
@@ -146,12 +146,12 @@ func main() {
 		panic(fmt.Errorf("Unable to load environment variables from .env file. Error:\n%v\n", err))
 	}
 
-	myAccountId, err := hedera.AccountIDFromString(os.Getenv("MY_ACCOUNT_ID"))
+	myAccountId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
 	if err != nil {
 		panic(err)
 	}
 
-	myPrivateKey, err := hedera.PrivateKeyFromString(os.Getenv("MY_PRIVATE_KEY"))
+	myPrivateKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 	if err != nil {
 		panic(err)
 	}
@@ -729,8 +729,8 @@ By understanding these costs and who is responsible for them, you can build effi
 <summary><strong><code>.env</code> file example</strong></summary>
 
 ```
-MY_ACCOUNT_ID=0.0.1234
-MY_PRIVATE_KEY=302e020100300506032b657004220420ed5a93073.....
+OPERATOR_ID=0.0.1234
+OPERATOR_KEY=302e020100300506032b657004220420ed5a93073.....
 HEDERA_NETWORK=testnet
 ```
 
@@ -755,18 +755,18 @@ dotenv.config();
 
 async function main() {
     if (
-        process.env.MY_ACCOUNT_ID == null ||
-        process.env.MY_PRIVATE_KEY == null ||
+        process.env.OPERATOR_ID == null ||
+        process.env.OPERATOR_KEY == null ||
         process.env.HEDERA_NETWORK == null
     ) {
         throw new Error(
-            "Environment variables MY_ACCOUNT_ID, HEDERA_NETWORK, and MY_PRIVATE_KEY are required.",
+            "Environment variables OPERATOR_ID, HEDERA_NETWORK, and OPERATOR_KEY are required.",
         );
     }
 
     const client = Client.forName(process.env.HEDERA_NETWORK).setOperator(
-        AccountId.fromString(process.env.MY_ACCOUNT_ID),
-        PrivateKey.fromStringDer(process.env.MY_PRIVATE_KEY),
+        AccountId.fromString(process.env.OPERATOR_ID),
+        PrivateKey.fromStringDer(process.env.OPERATOR_KEY),
     );
 
     /**
@@ -1074,12 +1074,12 @@ func main() {
 		panic(fmt.Errorf("Unable to load environment variables from .env file. Error:\n%v\n", err))
 	}
 
-	myAccountId, err := hedera.AccountIDFromString(os.Getenv("MY_ACCOUNT_ID"))
+	myAccountId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
 	if err != nil {
 		panic(err)
 	}
 
-	myPrivateKey, err := hedera.PrivateKeyFromString(os.Getenv("MY_PRIVATE_KEY"))
+	myPrivateKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 	if err != nil {
 		panic(err)
 	}

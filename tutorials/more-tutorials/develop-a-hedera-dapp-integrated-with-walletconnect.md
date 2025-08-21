@@ -785,8 +785,8 @@ Open `hedera-test-accounts` folder in a new visual studio code window.
 Create a new file and name it `.env` with the following contents. Remember to enter your account ID and your private key.
 
 ```shell
-MY_ACCOUNT_ID=<enter your account id>
-MY_PRIVATE_KEY=<enter your DER private key>
+OPERATOR_ID=<enter your account id>
+OPERATOR_KEY=<enter your DER private key>
 ```
 
 Within the `hedera-test-accounts` home directory, execute the following command in the terminal,

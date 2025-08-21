@@ -570,8 +570,8 @@ public class CreateYourFirstNft {
         Dotenv dotenv = Dotenv.load();
 
         // Grab your Hedera testnet account ID and private key
-        AccountId myAccountId = AccountId.fromString(dotenv.get("MY_ACCOUNT_ID"));
-        PrivateKey myPrivateKey = PrivateKey.fromStringDER(dotenv.get("MY_PRIVATE_KEY"));
+        AccountId myAccountId = AccountId.fromString(dotenv.get("OPERATOR_ID"));
+        PrivateKey myPrivateKey = PrivateKey.fromStringDER(dotenv.get("OPERATOR_KEY"));
 
         // Create your Hedera testnet client
         Client client = Client.forTestnet();
@@ -937,12 +937,12 @@ func main() {
 	}
 
 	// Grab your testnet account ID and private key from the .env file
-	myAccountId, err := hedera.AccountIDFromString(os.Getenv("MY_ACCOUNT_ID"))
+	myAccountId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
 	if err != nil {
 		panic(err)
 	}
 
-	myPrivateKey, err := hedera.PrivateKeyFromString(os.Getenv("MY_PRIVATE_KEY"))
+	myPrivateKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 	if err != nil {
 		panic(err)
 	}

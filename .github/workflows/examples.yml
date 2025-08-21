@@ -59,7 +59,7 @@ jobs:
           HEDERA_NETWORK: ${{ env.HEDERA_NETWORK }}
           MIRROR_NODE_URL: ${{ env.MIRROR_NODE_URL }}
         run: |
-          chmod +x scripts/run-java-example.sh
+          chmod +x scripts/run-java.sh
           ./scripts/run-java.sh
 
       - name: Summarize status

@@ -1,4 +1,4 @@
-name: Daily Examples Check (Solo)
+name: Examples Check
 
 on:
   schedule:

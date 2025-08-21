@@ -570,12 +570,12 @@ public class CreateYourFirstNft {
         Dotenv dotenv = Dotenv.load();
 
         // Grab your Hedera testnet account ID and private key
-        AccountId myAccountId = AccountId.fromString(dotenv.get("OPERATOR_ID"));
-        PrivateKey myPrivateKey = PrivateKey.fromStringDER(dotenv.get("OPERATOR_KEY"));
+        AccountId operatorId = AccountId.fromString(dotenv.get("OPERATOR_ID"));
+        PrivateKey operatorKey = PrivateKey.fromStringDER(dotenv.get("OPERATOR_KEY"));
 
         // Create your Hedera testnet client
         Client client = Client.forTestnet();
-        client.setOperator(myAccountId, myPrivateKey);
+        client.setOperator(operatorId, operatorKey);
 
         // Treasury Key
         PrivateKey treasuryKey = PrivateKey.generateECDSA();
@@ -937,19 +937,19 @@ func main() {
 	}
 
 	// Grab your testnet account ID and private key from the .env file
-	myAccountId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
+	operatorId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
 	if err != nil {
 		panic(err)
 	}
 
-	myPrivateKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
+	operatorKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 	if err != nil {
 		panic(err)
 	}
 
 	// Create your testnet client
 	client := hedera.ClientForTestnet()
-	client.SetOperator(myAccountId, myPrivateKey)
+	client.SetOperator(operatorId, operatorKey)
 
 	// Create a treasury Key
 	treasuryKey, err := hedera.GenerateEcdsaPrivateKey()

@@ -318,12 +318,12 @@ public class CreateFungibleTutorial {
     public static void main(String[] args) throws TimeoutException, PrecheckStatusException, ReceiptStatusException {
 
         //Grab your Hedera testnet account ID and private key
-        AccountId myAccountId = AccountId.fromString(Objects.requireNonNull(Dotenv.load().get("OPERATOR_ID")));
-        PrivateKey myPrivateKey = PrivateKey.fromString(Objects.requireNonNull(Dotenv.load().get("OPERATOR_KEY")));
+        AccountId operatorId = AccountId.fromString(Objects.requireNonNull(Dotenv.load().get("OPERATOR_ID")));
+        PrivateKey operatorKey = PrivateKey.fromString(Objects.requireNonNull(Dotenv.load().get("OPERATOR_KEY")));
 
         //Create your Hedera testnet client
         Client client = Client.forTestnet();
-        client.setOperator(myAccountId, myPrivateKey);
+        client.setOperator(operatorId, operatorKey);
 
         //Treasury Key
         PrivateKey treasuryKey = PrivateKey.generateECDSA();
@@ -545,23 +545,23 @@ func main() {
 	}
 
 	//GRAB YOUR TESTNET ACCOUNT ID AND KEY FROMZ THE .ENV FILE
-	myAccountId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
+	operatorId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
 	if err != nil {
 		panic(err)
 	}
 
-	myPrivateKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
+	operatorKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 	if err != nil {
 		panic(err)
 	}
 
 	//PRINT ACCOUNT ID AND KEY TO MAKE SURE THERE WASN'T AN ERROR READING FROM THE .ENV FILE
-	fmt.Printf("The account ID is = %v\n", myAccountId)
-	fmt.Printf("The private key is = %v\n", myPrivateKey)
+	fmt.Printf("The account ID is = %v\n", operatorId)
+	fmt.Printf("The private key is = %v\n", operatorKey)
 
 	//CREATE TESTNET CLIENT
 	client := hedera.ClientForTestnet()
-	client.SetOperator(myAccountId, myPrivateKey)
+	client.SetOperator(operatorId, operatorKey)
 
 	//CREATE TREASURY KEY
 	treasuryKey, err := hedera.GenerateEcdsaPrivateKey()

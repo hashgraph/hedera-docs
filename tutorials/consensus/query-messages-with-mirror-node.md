@@ -34,7 +34,7 @@ Copy and execute the following code. Make sure to write down your `topic ID`. Th
 ```java
 // Create a new topic
 TransactionResponse txResponse = new TopicCreateTransaction()
-    .setSubmitKey(myPrivateKey.getPublicKey())
+    .setSubmitKey(operatorKey.getPublicKey())
     .execute(client);
 
 // Get the receipt
@@ -96,7 +96,7 @@ await new TopicMessageSubmitTransaction({
 ```go
 // Create a new topic
 transactionResponse, err := hedera.NewTopicCreateTransaction().
-	SetSubmitKey(myPrivateKey.PublicKey()).
+	SetSubmitKey(operatorKey.PublicKey()).
 	Execute(client)
 
 if err != nil {

@@ -13,7 +13,7 @@ You can take a look at the **complete code** in the [**Hedera-Code-Snippets repo
 * ⚠️ **Complete** [**tutorial part 1**](how-to-mint-and-burn-an-erc-721-token-using-hardhat-and-ethers-part-1.md) **as we continue from this example.**
 * Basic understanding of smart contracts.
 * Basic understanding of [Node.js](https://nodejs.org/en/download) and JavaScript.
-* Basic understanding of [Hardhat EVM Development Tool](https://hardhat.org/hardhat-runner/docs/guides/project-setup) and [Ethers](https://docs.ethers.org/v5/).
+* Basic understanding of [Hardhat EVM Development Tool](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3) and [Ethers](https://docs.ethers.org/v6/).
 * ECDSA account from the [Hedera Portal](https://portal.hedera.com/).
 
 ***
@@ -30,7 +30,9 @@ You can take a look at the **complete code** in the [**Hedera-Code-Snippets repo
 
 ## Video Tutorial
 
-You can either watch the video tutorial or follow the step-by-step tutorial below.
+You can watch the video tutorial (which uses **Hardhat version 2**) or follow the step-by-step tutorial below (which uses **Hardhat version 3**).
+
+{% include "../../.gitbook/includes/hardhat-2-3.md" %}
 
 {% embed url="https://www.youtube.com/watch?t=1s&v=UBlppu3sJVg" %}
 
@@ -38,13 +40,13 @@ You can either watch the video tutorial or follow the step-by-step tutorial belo
 
 ## Step 1: Create and Compile the Solidity Contract
 
-Create a new Solidity file named `erc-721-advanced.sol` in your `contracts` directory, and paste this Solidity code:
+Create a new Solidity file named `MyTokenAdvanced.sol` in your `contracts` directory, and paste this Solidity code:
 
-{% code title="erc-721-advanced.sol" %}
+{% code title="contracts/MyTokenAdvanced.sol" %}
 ```solidity
 // SPDX-License-Identifier: MIT
 // Compatible with OpenZeppelin Contracts ^5.0.0
-pragma solidity ^0.8.22;
+pragma solidity ^0.8.28;
 
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -114,29 +116,48 @@ contract MyTokenAdvanced is ERC721, ERC721URIStorage, ERC721Pausable, AccessCont
 ```
 {% endcode %}
 
-The contract implements the `ERC721URIStorage`, `ERC721Pausable`, and `AccessControl` interfaces from OpenZeppelin. You can create the contract yourself using the OpenZeppelin Wizard and enable "Mintable," "Pausable," "URI Storage," and "Access Control -> Roles."&#x20;
+The contract implements the `ERC721URIStorage`, `ERC721Pausable`, and `AccessControl` interfaces from OpenZeppelin. You can create the contract yourself using the OpenZeppelin Wizard and enable "Mintable," "Pausable," "URI Storage," and "Access Control → Roles."&#x20;
 
 Compile your new contract:
 
 ```bash
-npx hardhat compile
+npx hardhat build
 ```
 
 ***
 
 ## Step 2: Deploying the Smart Contract and Minting a Token
 
-Create `deploy-advanced.js` in your `scripts` folder:
+Create `deploy-advanced.ts` in your `scripts` folder:
 
-{% code title="deploy-advanced.js" %}
-```javascript
+{% code title="scripts/deploy-advanced.ts" %}
+```typescript
+import { network } from "hardhat";
+
+const { ethers } = await network.connect({
+  network: "testnet"
+});
+
 async function main() {
+  // Get the signer of the tx and address for minting the token
   const [deployer] = await ethers.getSigners();
-  const MyTokenAdvanced = await ethers.getContractFactory("MyTokenAdvanced", deployer);
-  
-  // Third argument is the minting role set to an unknown address
-  const contract = await MyTokenAdvanced.deploy(deployer.address, deployer.address, "0xc0ffee254729296a45a3885639AC7E10F9d54979");
-  console.log("Contract deployed at:", contract.target);
+  console.log("Deploying contract with the account:", deployer.address);
+
+  // The deployer will also be the owner of our NFT contract
+  const MyTokenAdvanced = await ethers.getContractFactory(
+    "MyTokenAdvanced",
+    deployer
+  );
+  const contract = await MyTokenAdvanced.deploy(
+    deployer.address,
+    deployer.address,
+    "0xc0ffee254729296a45a3885639AC7E10F9d54979"
+  );
+
+  await contract.waitForDeployment();
+
+  const address = await contract.getAddress();
+  console.log("Contract deployed at:", address);
 }
 
 main().catch(console.error);
@@ -149,25 +170,33 @@ Note that we are providing three arguments to the `MyTokenAdvanced.deploy()` fun
 constructor(address defaultAdmin, address pauser, address minter)
 ```
 
-The `deploy-advanced.js` script sets the minter role to an unknown (random) address. This should prevent the deployer account from minting new tokens in the next step. First, let's run the deployer script:
+The `deploy-advanced.ts` script sets the minter role to an unknown (_random_) address. This should prevent the deployer account from minting new tokens in the next step. First, let's run the deployer script:
 
 ```bash
-npx hardhat run scripts/deploy-advanced.js --network testnet
+npx hardhat run scripts/deploy-advanced.ts --network testnet
 ```
 
 Here's the output of the command:
 
 ```bash
-Deploying contracts with the account: 0x7203b2B56CD700e4Df7C2868216e82bCCA225423
-Contract deployed at: 0x28abF02031C65866c9D1F8fbc9c73e12A1a6A878
+Deploying contract with the account: 0xA98556A4deeB07f21f8a66093989078eF86faa30
+Contract deployed at: 0x5f41411477b506FA32DFe3B73BEE52a3D80B755f
 ```
 
-**Copy the contract address of your newly deployed contract.** Next, create `mint-advanced.js` in your `scripts` folder:
+**Copy the contract address of your newly deployed contract.** Next, create `mint-advanced.ts` in your `scripts` folder:
 
-{% code title="mint-advanced.js" %}
-```javascript
+{% code title="scripts/mint-advanced.ts" %}
+```typescript
+import { network } from "hardhat";
+
+const { ethers } = await network.connect({
+  network: "testnet"
+});
+
 async function main() {
   const [deployer] = await ethers.getSigners();
+
+  // Get the ContractFactory of your MyTokenAdvanced ERC-721 contract
   const MyTokenAdvanced = await ethers.getContractFactory(
     "MyTokenAdvanced",
     deployer
@@ -175,7 +204,7 @@ async function main() {
 
   // Connect to the deployed contract (REPLACE WITH YOUR CONTRACT ADDRESS)
   const contractAddress = "0x6F5F9Ed50140bb9C94246257241Ed5AA5d40A25d";
-  const contract = await MyTokenAdvanced.attach(contractAddress);
+  const contract = MyTokenAdvanced.attach(contractAddress);
 
   // Mint a token to ourselves
   const mintTx = await contract.safeMint(
@@ -183,39 +212,35 @@ async function main() {
     "https://myserver.com/8bitbeard/8bitbeard-tokens/tokens/1"
   );
   const receipt = await mintTx.wait();
-  const mintedTokenId = receipt.logs[0].topics[3];
+  console.log("receipt: ", JSON.stringify(receipt, null, 2));
+  const mintedTokenId = receipt?.logs[0].topics[3];
   console.log("Minted token ID:", mintedTokenId);
 
   // Check the balance of the token
   const balance = await contract.balanceOf(deployer.address);
   console.log("Balance:", balance.toString(), "NFTs");
-
-  // Check the token URI
-  const tokenURI = await contract.tokenURI(mintedTokenId);
-  console.log("Token URI:", tokenURI);
 }
 
 main().catch(console.error);
-
 ```
 {% endcode %}
 
 This contract tries to mint a new token and sets the token URI to <mark style="color:blue;">`https://myserver.com/8bitbeard/8bitbeard-tokens/tokens/1`</mark> . This transaction will fail because our deployer account doesn't have the `minter` permission. Run the script:
 
 ```bash
-npx hardhat run scripts/mint-advanced.js --network testnet
+npx hardhat run scripts/mint-advanced.ts --network testnet
 ```
 
-Notice minting fails due to incorrect permissions. Let's fix this in the next step.
+‼️ Notice minting fails due to incorrect permissions. Let's fix this in the next step.
 
 ***
 
 ## Step 3: Fixing Permissions, Redeploying, and Minting
 
-Update the minting role to your deployer account by modifying the following line of code in your `deploy-advanced.js` script:
+Update the minting role to your deployer account by modifying the following line of code in your `deploy-advanced.ts` script:
 
-{% code title="deploy-advanced.js" overflow="wrap" %}
-```javascript
+{% code title="scripts/deploy-advanced.ts" overflow="wrap" %}
+```typescript
 const contract = await MyTokenAdvanced.deploy(deployer.address, deployer.address, deployer.address); // Deployer account gets all roles
 ```
 {% endcode %}
@@ -223,15 +248,15 @@ const contract = await MyTokenAdvanced.deploy(deployer.address, deployer.address
 Now that the deployer account has all the roles, redeploy the contract:
 
 ```bash
-npx hardhat run scripts/deploy-advanced.js --network testnet
+npx hardhat run scripts/deploy-advanced.ts --network testnet
 ```
 
-Don't forget to **copy the new contract address and update** the `contractAddress` variable in your `mint-advanced.js` script with this new address.&#x20;
+Don't forget to **copy the new contract address and update** the `contractAddress` variable in your `mint-advanced.ts` script with this new address.&#x20;
 
 Next, execute the minting logic:
 
 ```bash
-npx hardhat run scripts/mint-advanced.js --network testnet
+npx hardhat run scripts/mint-advanced.ts --network testnet
 ```
 
 The new token will be minted with token ID `0` and the corresponding token URI is printed to your terminal.&#x20;
@@ -240,52 +265,64 @@ The new token will be minted with token ID `0` and the corresponding token URI i
 
 ## Step 4: Pausing the Contract
 
-Create a new `pause-advanced.js` script and make sure to replace the `contractAddress` variable with your address:
+Create a new `pause-advanced.ts` script and make sure to replace the `contractAddress` variable with your address:
 
-{% code title="pause-advanced.js" %}
-```javascript
+{% code title="scripts/pause-advanced.ts" %}
+```typescript
+import { network } from "hardhat";
+
+const { ethers } = await network.connect({
+  network: "testnet"
+});
+
 async function main() {
-    const [deployer] = await ethers.getSigners();
-    const MyTokenAdvanced = await ethers.getContractFactory("MyTokenAdvanced", deployer);
-  
-    // Connect to the deployed contract (REPLACE WITH YOUR CONTRACT ADDRESS)
-    const contractAddress = "0x11828533C93F8A1e19623343308dFb4a811005dE";
-    const contract = await MyTokenAdvanced.attach(contractAddress);
-  
-    // Pause the token
-    const pauseTx = await contract.pause();
-    await pauseTx.wait();
-    console.log("Paused token");
+  const [deployer] = await ethers.getSigners();
 
-    // Read the paused state
-    const pausedState = await contract.paused();
-    console.log("Contract paused state is:", pausedState);
+  // Get the ContractFactory of your MyTokenAdvanced ERC-721 contract
+  const MyTokenAdvanced = await ethers.getContractFactory(
+    "MyTokenAdvanced",
+    deployer
+  );
+
+  // Connect to the deployed contract (REPLACE WITH YOUR CONTRACT ADDRESS)
+  const contractAddress = "0x2a35e6532e9e6477205Cc845362EB6e71FcC0F0E";
+  const contract = MyTokenAdvanced.attach(contractAddress);
+
+  // Pause the token
+  const pauseTx = await contract.pause();
+  const receipt = await pauseTx.wait();
+  console.log("receipt: ", JSON.stringify(receipt, null, 2));
+  console.log("Paused token");
+
+  // Read the paused state
+  const pausedState = await contract.paused();
+  console.log("Contract paused state is:", pausedState);
 }
-  
+
 main().catch(console.error);
 ```
 {% endcode %}
 
-The script calls the pause function on your contract. As we have the correct role, the token will be paused and its paused state will be printed to the terminal. Execute the script:
+The script calls the pause function on your contract. As we have the correct role, the token will be paused, and its paused state will be printed to the terminal. Execute the script:
 
 ```bash
-npx hardhat run scripts/pause-advanced.js --network testnet
+npx hardhat run scripts/pause-advanced.ts --network testnet
 ```
 
 The contract will return `true` when it is paused. Now, nobody can mint new tokens.
 
 {% hint style="success" %}
-Pausing an ERC-721 contract temporarily disables critical functions, including minting, transferring, and burning tokens. While the contract is paused, users cannot perform these operations, making it particularly useful in emergency scenarios or maintenance periods. However, read operations such as checking token balances or URIs are still possible.
+Pausing an ERC-721 contract temporarily disables critical functions, including minting, transferring, and burning tokens. While the contract is paused, users cannot perform these operations, making it particularly useful in emergency scenarios or maintenance periods. However, read operations, such as checking token balances or URIs, are still possible.
 {% endhint %}
 
 ***
 
 ## Step 5: Transferring NFTs
 
-Create a `transfer-advanced.js` script to transfer an NFT to another address. Don't forget to replace the `contractAddress` with your smart contract address.
+Create a `transfer-advanced.ts` script to transfer an NFT to another address. Don't forget to replace the `contractAddress` with your smart contract address.
 
-{% code title="transfer-advanced.js" %}
-```javascript
+{% code title="scripts/transfer-advanced.ts" %}
+```typescript
 async function main() {
   const [deployer] = await ethers.getSigners();
   const MyTokenAdvanced = await ethers.getContractFactory(
@@ -328,10 +365,32 @@ This script will first unpause your contract and then transfer the token to a ra
 Execute the script to transfer the token:
 
 ```bash
-npx hardhat run scripts/transfer-advanced.js --network testnet
+npx hardhat run scripts/transfer-advanced.ts --network testnet
 ```
 
 **If the balance for the&#x20;**<mark style="color:green;">**`0x5FbDB2315678afecb367f032d93F642f64180aa3`**</mark>**&#x20;account shows `1` , then you've successfully transferred the NFT and completed this tutorial! 🎉**
+
+***
+
+## Step 6: Run tests(Optional)
+
+You can find both types of tests in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hardhat-erc-721-mint-burn). You will find the following files:
+
+* `contracts/MyTokenAdvanced.t.sol`
+* `test/MyTokenAdvanced.ts`
+
+Copy these files and then run the tests:
+
+```bash
+npx hardhat test
+```
+
+You can also run tests individually with either of these
+
+```bash
+npx hardhat test solidity
+npx hardhat test mocha
+```
 
 ***
 
@@ -340,4 +399,4 @@ npx hardhat run scripts/transfer-advanced.js --network testnet
 * [OpenZeppelin ERC-721 Docs](https://docs.openzeppelin.com/contracts/5.x/erc721)
 * [Access Control Docs](https://docs.openzeppelin.com/contracts/5.x/access-control#using-access-control)
 
-<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Michiel, Developer Relations Engineer</p><p><a href="https://github.com/michielmulders">GitHub</a> | <a href="https://www.linkedin.com/in/michielmulders/">LinkedIn</a></p></td><td><a href="https://www.linkedin.com/in/michielmulders/">https://www.linkedin.com/in/michielmulders/</a></td></tr><tr><td align="center"><p>Editor: Luis, Sr Software Developer</p><p><a href="https://github.com/acuarica">GitHub</a></p></td><td><a href="https://github.com/acuarica">https://github.com/acuarica</a></td></tr><tr><td align="center"><p>Editor: Krystal, Technical Writer</p><p><a href="https://github.com/theekrystallee">GitHub</a> | <a href="https://x.com/theekrystallee">X</a></p></td><td><a href="https://x.com/theekrystallee">https://x.com/theekrystallee</a></td></tr></tbody></table>
+<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Michiel, DevRel Engineer</p><p><a href="https://github.com/michielmulders">GitHub</a> | <a href="https://www.linkedin.com/in/michielmulders/">LinkedIn</a></p></td><td><a href="https://www.linkedin.com/in/michielmulders/">https://www.linkedin.com/in/michielmulders/</a></td></tr><tr><td align="center"><p>Editor: Luis, Sr Software Developer</p><p><a href="https://github.com/acuarica">GitHub</a></p></td><td><a href="https://github.com/acuarica">https://github.com/acuarica</a></td></tr><tr><td align="center"><p>Editor: Krystal, Technical Writer</p><p><a href="https://github.com/theekrystallee">GitHub</a> | <a href="https://x.com/theekrystallee">X</a></p></td><td><a href="https://x.com/theekrystallee">https://x.com/theekrystallee</a></td></tr><tr><td align="center"><p>Editor: Kiran, Developer Advocate</p><p><a href="https://github.com/kpachhai">GitHub</a> | <a href="https://www.linkedin.com/in/kiranpachhai/">LinkedIn</a></p></td><td><a href="https://github.com/kpachhai">https://github.com/kpachhai</a></td></tr></tbody></table>

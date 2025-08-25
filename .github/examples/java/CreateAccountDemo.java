@@ -6,8 +6,8 @@ import com.google.gson.*;
 public class CreateAccountDemo {
     public static void main(String[] args) throws Exception {
         // .env-provided
-        String operatorId = System.getenv("OPERATOR_ID");
-        String operatorKey = System.getenv("OPERATOR_KEY");
+        String operatorId = AccountId.fromString(System.getenv("OPERATOR_ID"));
+        String operatorKey = PrivateKey.fromString(System.getenv("OPERATOR_KEY"));
         String network = System.getenv().getOrDefault("HEDERA_NETWORK", "local"); // "local" for Solo
         String mirrorNodeUrl = System.getenv().getOrDefault(
             "MIRROR_NODE_URL",
@@ -23,7 +23,7 @@ public class CreateAccountDemo {
                 ? Client.forNetwork(java.util.Map.of("127.0.0.1:50211", new AccountId(3))) // Solo default node + node account (adjust if needed)
                 : Client.forTestnet();
 
-        client.setOperator(AccountId.fromString(operatorId), PrivateKey.fromString(operatorKey));
+        client.setOperator(operatorId, operatorKey);
 
         PrivateKey newPrivateKey = PrivateKey.generateECDSA();
         PublicKey newPublicKey = newPrivateKey.getPublicKey();

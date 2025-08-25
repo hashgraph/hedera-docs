@@ -17,15 +17,21 @@ dependencies {
     implementation 'io.grpc:grpc-netty-shaded:1.61.0'
 }
 
+/**
+ * Define an 'examples' source set for .github/examples/java.
+ * IMPORTANT: Use resolvable configurations (examplesCompileClasspath/examplesRuntimeClasspath).
+ */
 sourceSets {
     examples {
         java.srcDirs = ['.github/examples/java']
-        compileClasspath += sourceSets.main.output + configurations.implementation
-        runtimeClasspath += output + compileClasspath
+        // Add main's compiled classes to examples' classpaths
+        compileClasspath += sourceSets.main.output + configurations.examplesCompileClasspath
+        runtimeClasspath += output + sourceSets.main.output + configurations.examplesRuntimeClasspath
     }
 }
 
 configurations {
+    // Let examples inherit dependencies declared on 'implementation'/'runtimeOnly'
     examplesImplementation.extendsFrom implementation
     examplesRuntimeOnly.extendsFrom runtimeOnly
 }
@@ -52,6 +58,7 @@ def exampleFiles = examplesDir.exists()
 tasks.register('runExample', JavaExec) {
     group = 'examples'
     description = 'Run a single Java example (use -PexampleClass=<FQN>)'
+    // Use the examples source set's runtime classpath
     classpath = sourceSets.examples.runtimeClasspath
 
     doFirst {

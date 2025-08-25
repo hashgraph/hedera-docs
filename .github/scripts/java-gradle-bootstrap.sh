@@ -52,12 +52,15 @@ def exampleFiles = examplesDir.exists()
 tasks.register('runExample', JavaExec) {
     group = 'examples'
     description = 'Run a single Java example (use -PexampleClass=<FQN>)'
+    classpath = sourceSets.examples.runtimeClasspath
+
     doFirst {
         if (!project.hasProperty('exampleClass')) {
             throw new GradleException("Missing -PexampleClass=<fully.qualified.ClassName>")
         }
-        // Set it to a concrete String value at execution time
+        // Set to a concrete String value at execution time
         mainClass.set(project.property('exampleClass').toString())
+    }
 }
 
 // Create a JavaExec task per discovered example: run_<FQN with dots replaced by underscores>

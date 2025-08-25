@@ -95,8 +95,10 @@ jobs:
         with:
           commit-message: "chore: update example run status"
           signoff: true 
-          title: "Example Status – Java"
-          body: "Automated run of the Java example"
+          title: "Example Status"
+          body: "Automated run of examples"
           branch: "bot/java-example-check"
           add-paths: ${{ env.STATUS_FILE }}
+          labels: automated-pr
+          delete-branch: true
 

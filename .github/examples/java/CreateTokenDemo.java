@@ -10,7 +10,7 @@ import com.google.gson.JsonArray;
 public class CreateTokenDemo {
     public static void main(String[] args ) throws Exception {
         // .env-provided
-        String operatorId = System.getenv("OPERATOR_ID");
+        String operatorId = AccountId.fromString(System.getenv("OPERATOR_ID"));
         String operatorKey = System.getenv("OPERATOR_KEY");
         String network = System.getenv().getOrDefault("HEDERA_NETWORK", "local"); // "local" for Solo
         String mirrorNode = System.getenv().getOrDefault(

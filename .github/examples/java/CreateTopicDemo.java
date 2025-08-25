@@ -13,7 +13,7 @@ public class CreateTopicDemo {
         String operatorId = System.getenv("OPERATOR_ID");
         String operatorKey = System.getenv("OPERATOR_KEY");
         String network = System.getenv().getOrDefault("HEDERA_NETWORK", "local"); // "local" for Solo
-        String mirrorNodeUrl = System.getenv().getOrDefault(
+        String mirrorNode = System.getenv().getOrDefault(
             "MIRROR_NODE_URL",
             "http://localhost:5551/api/v1" // Solo default (adjust if yours differs)
         );
@@ -54,7 +54,7 @@ public class CreateTopicDemo {
         Thread.sleep(6000);
 
         // query messages using Mirror Node
-        String mirrorNodeUrl = "https://localhost:5551/api/v1/topics/" + topicId + "/messages";
+        String mirrorNodeUrl = mirrorNode + topicId + "/messages";
 
         HttpClient httpClient = HttpClient.newHttpClient( );
         HttpRequest request = HttpRequest.newBuilder()

@@ -13,9 +13,9 @@ public class CreateTokenDemo {
         String operatorId = System.getenv("OPERATOR_ID");
         String operatorKey = System.getenv("OPERATOR_KEY");
         String network = System.getenv().getOrDefault("HEDERA_NETWORK", "local"); // "local" for Solo
-        String mirrorNodeUrl = System.getenv().getOrDefault(
+        String mirrorNode = System.getenv().getOrDefault(
             "MIRROR_NODE_URL",
-            "http://localhost:5551/api/v1" // Solo default (adjust if yours differs)
+            "http://localhost:5551/api/v1" 
         );
 
         if (operatorId == null || operatorKey == null) {
@@ -59,7 +59,7 @@ public class CreateTokenDemo {
         Thread.sleep(3000);
 
         // query balance using Mirror Node
-        String mirrorNodeUrl = "https://localhost:5551/api/v1/accounts/" + 
+        String mirrorNodeUrl = mirrorNode + 
                                operatorId + "/tokens?token.id=" + tokenId;
         
         HttpClient httpClient = HttpClient.newHttpClient( );

@@ -17,7 +17,7 @@ dependencies {
 sourceSets {
     main {
         java {
-            srcDirs = ['examples/java']
+            srcDirs = ['./.github/examples/java']
         }
     }
 }

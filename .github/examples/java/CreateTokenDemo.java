@@ -9,12 +9,25 @@ import com.google.gson.JsonArray;
 
 public class CreateTokenDemo {
     public static void main(String[] args ) throws Exception {
-        // load your operator credentials
-        AccountId operatorId = AccountId.fromString(System.getenv("OPERATOR_ID"));
-        PrivateKey operatorKey = PrivateKey.fromString(System.getenv("OPERATOR_KEY"));
+        // .env-provided
+        String operatorId = System.getenv("OPERATOR_ID");
+        String operatorKey = System.getenv("OPERATOR_KEY");
+        String network = System.getenv().getOrDefault("HEDERA_NETWORK", "local"); // "local" for Solo
+        String mirrorNodeUrl = System.getenv().getOrDefault(
+            "MIRROR_NODE_URL",
+            "http://localhost:5551/api/v1" // Solo default (adjust if yours differs)
+        );
 
-        // initialize the client for testnet
-        Client client = Client.forTestnet().setOperator(operatorId, operatorKey);
+        if (operatorId == null || operatorKey == null) {
+            throw new IllegalStateException("OPERATOR_ID / OPERATOR_KEY not set");
+        }
+
+        Client client =
+            "local".equalsIgnoreCase(network)
+                ? Client.forNetwork(java.util.Map.of("127.0.0.1:50211", new AccountId(3))) // Solo default node + node account (adjust if needed)
+                : Client.forTestnet();
+
+        client.setOperator(AccountId.fromString(operatorId), PrivateKey.fromString(operatorKey));
 
         // generate token keys
         PrivateKey supplyKey = PrivateKey.generateECDSA();

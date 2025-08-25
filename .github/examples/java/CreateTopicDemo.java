@@ -10,8 +10,8 @@ import com.google.gson.JsonArray;
 public class CreateTopicDemo {
     public static void main(String[] args ) throws Exception {
         // .env-provided
-        String operatorId = System.getenv("OPERATOR_ID");
-        String operatorKey = System.getenv("OPERATOR_KEY");
+        String operatorId = AccountId.fromString(System.getenv("OPERATOR_ID"));
+        String operatorKey = PrivateKey.fromString(System.getenv("OPERATOR_KEY"));
         String network = System.getenv().getOrDefault("HEDERA_NETWORK", "local"); // "local" for Solo
         String mirrorNode = System.getenv().getOrDefault(
             "MIRROR_NODE_URL",
@@ -27,7 +27,7 @@ public class CreateTopicDemo {
                 ? Client.forNetwork(java.util.Map.of("127.0.0.1:50211", new AccountId(3))) // Solo default node + node account (adjust if needed)
                 : Client.forTestnet();
 
-        client.setOperator(AccountId.fromString(operatorId), PrivateKey.fromString(operatorKey));
+        client.setOperator(operatorId, operatorKey);
         // build & execute the topic creation transaction
         TopicCreateTransaction transaction = new TopicCreateTransaction()
             .setTopicMemo("My first HCS topic");

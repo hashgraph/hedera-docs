@@ -59,7 +59,7 @@ public class CreateTokenDemo {
         Thread.sleep(3000);
 
         // query balance using Mirror Node
-        String mirrorNodeUrl = "https://testnet.mirrornode.hedera.com/api/v1/accounts/" + 
+        String mirrorNodeUrl = "https://localhost:5551/api/v1/accounts/" + 
                                operatorId + "/tokens?token.id=" + tokenId;
         
         HttpClient httpClient = HttpClient.newHttpClient( );

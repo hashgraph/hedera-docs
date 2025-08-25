@@ -233,6 +233,7 @@ Please note the smallest unit of _**HBAR is the tinybar (8 decimal places)**_, w
 ## Additional Resources
 
 * [**LZ Examples Repo**](https://github.com/hashgraph/hedera-smart-contracts/tree/main/lib/layer-zero#layer-zero-examples)
+* [**Independent Audit Report**](https://hedera.com/audits-and-standards)
 * [**Demo Code Repo**](https://github.com/hedera-dev/hedera-example-layer-zero-bridging-oapp)
 * [**LayerZero Scan**](https://layerzeroscan.com/)
 * [**Hedera Fee Estimator**](https://hedera.com/fees)

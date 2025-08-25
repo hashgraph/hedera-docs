@@ -54,7 +54,7 @@ public class CreateTopicDemo {
         Thread.sleep(6000);
 
         // query messages using Mirror Node
-        String mirrorNodeUrl = "https://testnet.mirrornode.hedera.com/api/v1/topics/" + topicId + "/messages";
+        String mirrorNodeUrl = "https://localhost:5551/api/v1/topics/" + topicId + "/messages";
 
         HttpClient httpClient = HttpClient.newHttpClient( );
         HttpRequest request = HttpRequest.newBuilder()

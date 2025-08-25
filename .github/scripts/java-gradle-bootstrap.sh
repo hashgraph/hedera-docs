@@ -56,9 +56,8 @@ tasks.register('runExample', JavaExec) {
         if (!project.hasProperty('exampleClass')) {
             throw new GradleException("Missing -PexampleClass=<fully.qualified.ClassName>")
         }
-    }
-    classpath = sourceSets.examples.runtimeClasspath
-    mainClass.set({ project.property('exampleClass') })
+        // Set it to a concrete String value at execution time
+        mainClass.set(project.property('exampleClass').toString())
 }
 
 // Create a JavaExec task per discovered example: run_<FQN with dots replaced by underscores>

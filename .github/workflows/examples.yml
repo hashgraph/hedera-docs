@@ -49,7 +49,7 @@ jobs:
         run: |
           pwd
           chmod +x ./.github/scripts/java-gradle-bootstrap.sh
-          ./scripts/java-gradle-bootstrap.sh
+          ./.github/scripts/java-gradle-bootstrap.sh
 
       - name: Build & Run Java example
         id: run_java
@@ -60,7 +60,7 @@ jobs:
           MIRROR_NODE_URL: ${{ env.MIRROR_NODE_URL }}
         run: |
           chmod +x ./.github/scripts/run-java.sh
-          ./scripts/run-java.sh
+          ./github/scripts/run-java.sh
 
       - name: Summarize status
         if: ${{ always() }}
@@ -79,8 +79,8 @@ jobs:
             echo "<details><summary>Output</summary>"
             if [ -f java-output.txt ]; then
               # Redact the private key if script exists; otherwise print raw output
-              if [ -f scripts/redact.sh ]; then
-                bash scripts/redact.sh "${{ steps.solo.outputs.ecdsaPrivateKey }}" java-output.txt || cat java-output.txt
+              if [ -f ./.github/scripts/redact.sh ]; then
+                bash ./.github/scripts/redact.sh "${{ steps.solo.outputs.ecdsaPrivateKey }}" java-output.txt || cat java-output.txt
               else
                 cat java-output.txt
               fi

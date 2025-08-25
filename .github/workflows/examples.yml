@@ -48,7 +48,7 @@ jobs:
       - name: Bootstrap Gradle for examples/java
         run: |
           pwd
-          chmod +x ./scripts/java-gradle-bootstrap.sh
+          chmod +x ./.github/scripts/java-gradle-bootstrap.sh
           ./scripts/java-gradle-bootstrap.sh
 
       - name: Build & Run Java example
@@ -59,7 +59,7 @@ jobs:
           HEDERA_NETWORK: ${{ env.HEDERA_NETWORK }}
           MIRROR_NODE_URL: ${{ env.MIRROR_NODE_URL }}
         run: |
-          chmod +x scripts/run-java.sh
+          chmod +x ./.github/scripts/run-java.sh
           ./scripts/run-java.sh
 
       - name: Summarize status

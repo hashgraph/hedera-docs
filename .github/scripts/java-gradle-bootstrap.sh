@@ -15,6 +15,7 @@ dependencies {
     implementation 'com.hedera.hashgraph:sdk:2.60.0'
     implementation 'com.google.code.gson:gson:2.11.0'
     implementation 'io.grpc:grpc-netty-shaded:1.61.0'
+    runtimeOnly 'org.slf4j:slf4j-simple:2.0.13' 
 }
 
 /**

@@ -39,6 +39,40 @@ jobs:
           echo "ECDSA Account: ${{ steps.solo.outputs.ecdsaAccountId }}"
           echo "ECDSA PrivateKey: **** (redacted)"
 
+      - name: Wait for Mirror Node health
+        env:
+          URL: ${{ env.MIRROR_NODE_URL }}  
+        run: |
+          set -euo pipefail
+          base="${URL%/}"             # strip trailing slash
+          root="${base%/api/v1}"      # strip /api/v1 if present
+          # Try both /api/v1/health and /health (some builds expose both)
+          tries=60
+          echo "Waiting for mirror health at: ${base}/health (or ${root}/health)"
+          for i in $(seq 1 $tries); do
+            if curl -fsS "${base}/health" >/dev/null 2>&1 || curl -fsS "${root}/health" >/dev/null 2>&1; then
+              echo "✅ Mirror health OK"
+              exit 0
+            fi
+            echo "⏳ Mirror not ready (try $i/${tries})…"
+            sleep 2
+          done
+          echo "❌ Mirror never became healthy"
+          curl -sv "${base}/health" || curl -sv "${root}/health" || true
+          exit 1
+
+      - name: Sanity check mirror endpoints
+        env:
+          URL: ${{ env.MIRROR_NODE_URL }}
+        run: |
+          set -euo pipefail
+          base="${URL%/}"
+          echo "GET ${base}/network/nodes?limit=1"
+          curl -fsS "${base}/network/nodes?limit=1" | jq -C . || true
+          echo "GET ${base}/accounts?limit=1"
+          curl -fsS "${base}/accounts?limit=1" | jq -C . || true
+
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:

@@ -56,7 +56,7 @@ public class CreateTokenDemo {
 
         // Wait for Mirror Node to populate data
         System.out.println("\nWaiting for Mirror Node to update...");
-        Thread.sleep(3000);
+        Thread.sleep(5000);
 
         // query balance using Mirror Node
         String mirrorNodeUrl = mirrorNode + 

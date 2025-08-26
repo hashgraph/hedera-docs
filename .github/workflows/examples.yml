@@ -44,49 +44,46 @@ jobs:
 
       - name: Wait for Mirror Node
         env:
-          HEALTH: ${{ env.MIRROR_HEALTH_URL }}
-          API: ${{ env.MIRROR_NODE_URL }}
-          TRIES: ${{ env.MIRROR_HEALTH_TRIES }}
-          INTERVAL: ${{ env.MIRROR_HEALTH_INTERVAL }}
+          API: ${{ env.MIRROR_NODE_URL }}      
+          TRIES: "60"                          
+          INTERVAL: "2"
         shell: bash
         run: |
           set -euo pipefail
-          base_api="${API%/}"                 # .../api/v1
-          base_health="${HEALTH%/}"           # .../health
-          alt_health="${base_api}/health"     # fallback if some builds expose this
+          base_api="${API%/}"
 
-          echo "Waiting for mirror health at: ${base_health} (or ${alt_health})"
-          for i in $(seq 1 "${TRIES}"); do
-            # Expect 200/204 from /health; use short timeouts so loop doesn't hang
-            code="$(curl -m 2 --connect-timeout 2 -sS -o /dev/null -w '%{http_code}' "${base_health}" || true)"
-            if [ "$code" = "200" ] || [ "$code" = "204" ]; then
-              echo "✅ /health is up"
-
-              # Light API sanity check to ensure REST is answering under /api/v1
-              if curl -m 3 --connect-timeout 2 -fsS "${base_api}/network/nodes?limit=1" > /dev/null; then
-                echo "✅ REST API (${base_api}) is responding"
-                exit 0
-              else
-                echo "ℹ️  Health OK but API not ready yet…"
-              fi
-            else
-              # Try alternate legacy path once per loop
-              if curl -m 2 --connect-timeout 2 -fsS "${alt_health}" > /dev/null; then
-                echo "✅ ${alt_health} responded; proceeding"
-                exit 0
-              fi
+          # 1) Quick TCP readiness check to avoid long hangs if container isn't listening yet
+          host="$(echo "$base_api" | awk -F[/:] '{print $4}')"
+          port="$(echo "$base_api" | awk -F[/:] '{print $5}')"
+          if ! command -v timeout >/dev/null; then sudo apt-get update -y && sudo apt-get install -y coreutils >/dev/null; fi
+          echo "Waiting for TCP ${host}:${port} to accept connections…"
+          for i in $(seq 1 60); do
+            if (echo >/dev/tcp/"$host"/"$port") >/dev/null 2>&1; then
+              echo "✅ Port ${port} is accepting connections"
+              break
             fi
+            echo "⏳ TCP not ready (try $i/60)…"
+            sleep 1
+          done
 
-            echo "⏳ Mirror not ready (try $i/${TRIES})…"
+          # 2) Functional probe: a real API route
+          probe="${base_api}/network/nodes?limit=1"
+          echo "Waiting for Mirror REST at: ${probe}"
+          for i in $(seq 1 "${TRIES}"); do
+            code="$(curl -m 3 --connect-timeout 2 -sS -o /dev/null -w '%{http_code}' "$probe" || true)"
+            if [ "$code" = "200" ]; then
+              echo "✅ Mirror REST is responding (HTTP 200)"
+              exit 0
+            fi
+            echo "⏳ Mirror not ready (try $i/${TRIES})… (code=$code)"
             sleep "${INTERVAL}"
           done
 
-          echo "❌ Mirror never became healthy"
-          echo "🔎 Debug:"
-          echo "  Health:  $(curl -m 2 --connect-timeout 2 -sS -w ' [%{http_code}]' "${base_health}" || true)"
-          echo "  Alt:     $(curl -m 2 --connect-timeout 2 -sS -w ' [%{http_code}]' "${alt_health}" || true)"
-          echo "  API ping:$(curl -m 3 --connect-timeout 2 -sS -w ' [%{http_code}]' "${base_api}/network/nodes?limit=1" || true)"
+          echo "❌ Mirror never became ready via ${probe}"
+          echo "🔎 Last response:"
+          curl -m 3 --connect-timeout 2 -sS -v "$probe" || true
           exit 1
+
 
       - name: Sanity check mirror endpoints
         env:

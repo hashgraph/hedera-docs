@@ -51,7 +51,7 @@ public class CreateTopicDemo {
 
         // wait for Mirror Node to populate data
         System.out.println("\nWaiting for Mirror Node to update...");
-        Thread.sleep(6000);
+        Thread.sleep(10000);
 
         // query messages using Mirror Node
         String mirrorNodeUrl = mirrorNode + topicId + "/messages";

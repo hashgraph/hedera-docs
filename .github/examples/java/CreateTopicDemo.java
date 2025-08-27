@@ -54,7 +54,7 @@ public class CreateTopicDemo {
         Thread.sleep(100000);
 
         // query messages using Mirror Node
-        String mirrorNodeUrl = mirrorNode + topicId + "/messages";
+        String mirrorNodeUrl = mirrorNode + "/" + topicId + "/messages";
 
         HttpClient httpClient = HttpClient.newHttpClient( );
         HttpRequest request = HttpRequest.newBuilder()

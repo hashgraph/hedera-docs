@@ -59,7 +59,7 @@ public class CreateTokenDemo {
         Thread.sleep(100000);
 
         // query balance using Mirror Node
-        String mirrorNodeUrl = mirrorNode + + "/" + 
+        String mirrorNodeUrl = mirrorNode + "/" + 
                                operatorId + "/tokens?token.id=" + tokenId;
         
         HttpClient httpClient = HttpClient.newHttpClient( );

@@ -2,7 +2,7 @@
 
 ## Summary
 
-In the previous tutorial, "Submit Your First Message," you have learned how to submit a message to a **public topic**. It means anyone can send a message to the topic you created because you didn't set a [Submit Key](https://docs.hedera.com/hedera/sdks-and-apis/sdks/consensus-service/create-a-topic#private-topic).&#x20;
+In the previous tutorial, "Submit Your First Message," you have learned how to submit a message to a **public topic**. It means anyone can send a message to the topic you created because you didn't set a [Submit Key](https://docs.hedera.com/hedera/sdks-and-apis/sdks/consensus-service/create-a-topic#private-topic).
 
 When setting a _Submit Key,_ your topic becomes a **private topic** because each message needs to be signed by the Submit Key. Therefore, you can control who can submit messages to your topic. Of course, the data is still public, as is all data on a public ledger, but we say the topic is private because the topic is restricted by who can submit messages to it.
 
@@ -54,12 +54,12 @@ Thread.sleep(5000);
 {% tab title="JavaScript" %}
 ```javascript
 // Create a new topic
-let txResponse = await new TopicCreateTransaction()
+const txResponse = await new TopicCreateTransaction()
     .setSubmitKey(operatorKey.publicKey)
     .execute(client);
 
 // Grab the newly generated topic ID
-let receipt = await txResponse.getReceipt(client);
+const receipt = await txResponse.getReceipt(client);
 console.log(`Your topic ID is: ${receipt.topicId}`);
 
 // Wait 5 seconds between consensus topic creation and subscription creation
@@ -100,7 +100,7 @@ fmt.Printf("topicID: %v\n", topicID)
 
 ## 2. Subscribe to a topic
 
-The code used to subscribe to a public or private topic doesn't change. Anyone can listen to the messages you send to your private topic. You need to provide the [_<mark style="color:purple;">**`TopicMessageQuery()`**</mark>_](../../sdks-and-apis/sdks/consensus-service/get-topic-message.md) with your topic ID to subscribe to it.&#x20;
+The code used to subscribe to a public or private topic doesn't change. Anyone can listen to the messages you send to your private topic. You need to provide the [_<mark style="color:purple;">**`TopicMessageQuery()`**</mark>_](../../sdks-and-apis/sdks/consensus-service/get-topic-message.md) with your topic ID to subscribe to it.
 
 {% tabs %}
 {% tab title="Java" %}
@@ -121,7 +121,7 @@ new TopicMessageQuery()
 new TopicMessageQuery()
   .setTopicId(topicId)
   .subscribe(client, null, (message) => {
-    let messageAsString = Buffer.from(message.contents, "utf8").toString();
+    const messageAsString = Buffer.from(message.contents, "utf8").toString();
     console.log(
       `${message.consensusTimestamp.toDate()} Received: ${messageAsString}`
     );
@@ -145,7 +145,7 @@ _, err = hedera.NewTopicMessageQuery().
 
 ## 3. Submit a message
 
-Now you are ready to submit a message to your private topic. To do this, you will use [_<mark style="color:purple;">**`TopicMessageSubmitTransaction()`**</mark>_](../../sdks-and-apis/sdks/consensus-service/submit-a-message.md). However, you need to sign this transaction with your Submit Key. The cost for sending a message to a private topic is the same as a public topic: [**$0.0001**](https://docs.hedera.com/hedera/networks/mainnet/fees#consensus-service).&#x20;
+Now you are ready to submit a message to your private topic. To do this, you will use [_<mark style="color:purple;">**`TopicMessageSubmitTransaction()`**</mark>_](../../sdks-and-apis/sdks/consensus-service/submit-a-message.md). However, you need to sign this transaction with your Submit Key. The cost for sending a message to a private topic is the same as a public topic: [**$0.0001**](https://docs.hedera.com/hedera/networks/mainnet/fees#consensus-service).
 
 {% tabs %}
 {% tab title="Java" %}
@@ -169,17 +169,17 @@ Thread.sleep(30000);
 {% tab title="JavaScript" %}
 ```javascript
 // Send message to private topic
-let submitMsgTx = await new TopicMessageSubmitTransaction({
+const submitMsgTx = await new TopicMessageSubmitTransaction({
   topicId: topicId,
   message: "Submitkey set!",
 })
 .freezeWith(client)
 .sign(operatorKey);
 
-let submitMsgTxSubmit = await submitMsgTx.execute(client);
+const submitMsgTxSubmit = await submitMsgTx.execute(client);
 
 // Get the receipt of the transaction
-let getReceipt = await submitMsgTxSubmit.getReceipt(client);
+const getReceipt = await submitMsgTxSubmit.getReceipt(client);
 
 // Get the status of the transaction
 const transactionStatus = getReceipt.status;
@@ -218,7 +218,7 @@ transactionStatus := receipt.Status
 fmt.Println("The message transaction status " + transactionStatus.String())
 
 // Prevent the program from exiting to display the message from the mirror node to the console
-time.Sleep(30000)
+time.Sleep(30 * time.Second)
 ```
 {% endtab %}
 {% endtabs %}
@@ -233,7 +233,8 @@ To conclude: The total cost to create a topic and send a message to it is **$0.0
 
 <summary>Java</summary>
 
-<pre class="language-java"><code class="lang-java">import com.hedera.hashgraph.sdk.*;
+```java
+import com.hedera.hashgraph.sdk.*;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.nio.charset.StandardCharsets;
@@ -276,8 +277,8 @@ public class CreateTopicTutorial {
                 });
 
         // Send message to private topic
-<strong>        TransactionResponse submitMessage = new TopicMessageSubmitTransaction()
-</strong>              .setTopicId(topicId)
+        TransactionResponse submitMessage = new TopicMessageSubmitTransaction()
+              .setTopicId(topicId)
               .setMessage("Submitkey set!")
               .freezeWith(client)
               .sign(operatorKey)
@@ -290,7 +291,7 @@ public class CreateTopicTutorial {
         Thread.sleep(30000);
     }
 }
-</code></pre>
+```
 
 </details>
 
@@ -300,64 +301,68 @@ public class CreateTopicTutorial {
 
 ```javascript
 console.clear();
-require("dotenv").config();
-const {
+import dotenv from "dotenv";
+dotenv.config();
+
+import {
   AccountId,
   PrivateKey,
   Client,
   TopicCreateTransaction,
   TopicMessageQuery,
   TopicMessageSubmitTransaction,
-} = require("@hashgraph/sdk");
+} from "@hashgraph/sdk";
 
 // Grab the OPERATOR_ID and OPERATOR_KEY from the .env file
 const operatorId = process.env.OPERATOR_ID;
-const operatorKey = process.env.OPERATOR_KEY;
+const operatorKeyStr = process.env.OPERATOR_KEY;
+
+// Parse the private key because we use .publicKey and .sign(...)
+const operatorKey = PrivateKey.fromString(operatorKeyStr);
 
 // Build Hedera testnet and mirror node client
 const client = Client.forTestnet();
-
-// Set the operator account ID and operator private key
-client.setOperator(operatorId, operatorKey);
+client.setOperator(AccountId.fromString(operatorId), operatorKey);
 
 async function submitPrivateMessage() {
-  // Create a new topic
-  let txResponse = await new TopicCreateTransaction()
+  // create a new topic with a submit key
+  const txResponse = await new TopicCreateTransaction()
     .setSubmitKey(operatorKey.publicKey)
     .execute(client);
 
-  // Grab the newly generated topic ID
-  let receipt = await txResponse.getReceipt(client);
-  let topicId = receipt.topicId;
+  const receipt = await txResponse.getReceipt(client);
+  const topicId = receipt.topicId;
   console.log(`Your topic ID is: ${topicId}`);
 
-  // Wait 5 seconds between consensus topic creation and subscription creation
+  // give the mirror a moment before subscribing
   await new Promise((resolve) => setTimeout(resolve, 5000));
 
-  // Create the topic
+  // subscribe
   new TopicMessageQuery()
     .setTopicId(topicId)
     .subscribe(client, null, (message) => {
-      let messageAsString = Buffer.from(message.contents, "utf8").toString();
+      const messageAsString = Buffer.from(message.contents).toString("utf8");
       console.log(
         `${message.consensusTimestamp.toDate()} Received: ${messageAsString}`
       );
     });
 
-  // Send message to private topic
-  let submitMsgTx = await new TopicMessageSubmitTransaction({
-    topicId: topicId,
+  // send message to private topic
+  const submitMsgTx = await new TopicMessageSubmitTransaction({
+    topicId,
     message: "Submitkey set!",
   })
-  .freezeWith(client)
-  .sign(operatorKey);
+    .freezeWith(client)
+    .sign(operatorKey);
 
-  let submitMsgTxSubmit = await submitMsgTx.execute(client);
-  let getReceipt = await submitMsgTxSubmit.getReceipt(client);
+  const submitMsgTxSubmit = await submitMsgTx.execute(client);
+  const getReceipt = await submitMsgTxSubmit.getReceipt(client);
 
-  // Get the status of the transaction
+  // status
   const transactionStatus = getReceipt.status;
-  console.log("The message transaction status: " + transactionStatus.toString());
+  console.log(
+    "The message transaction status: " + transactionStatus.toString()
+  );
 }
 
 submitPrivateMessage();
@@ -464,7 +469,7 @@ func main() {
 	fmt.Println("The message transaction status " + transactionStatus.String())
 	
 	// Prevent the program from exiting to display the message from the mirror node to the console
-	time.Sleep(30000)
+	time.Sleep(30 * time.Second)
     }
 ```
 
@@ -474,4 +479,4 @@ func main() {
 Have a question? [Ask it on StackOverflow](https://stackoverflow.com/questions/tagged/hedera-hashgraph)
 {% endhint %}
 
-<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Michiel, Developer Advocate</p><p><a href="https://github.com/michielmulders">GitHub</a> | <a href="https://www.linkedin.com/in/michielmulders/">LinkedIn</a></p></td><td><a href="https://www.linkedin.com/in/michielmulders/">https://www.linkedin.com/in/michielmulders/</a></td></tr><tr><td align="center"><p>Editor: Krystal, Technical Writer</p><p><a href="https://github.com/theekrystallee">GitHub</a> | <a href="https://twitter.com/theekrystallee">Twitter</a></p></td><td><a href="https://twitter.com/theekrystallee">https://twitter.com/theekrystallee</a></td></tr></tbody></table>
+<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Michiel, DevRel Engineer</p><p><a href="https://github.com/michielmulders">GitHub</a> | <a href="https://www.linkedin.com/in/michielmulders/">LinkedIn</a></p></td><td><a href="https://www.linkedin.com/in/michielmulders/">https://www.linkedin.com/in/michielmulders/</a></td></tr><tr><td align="center"><p>Editor: Krystal, Technical Writer</p><p><a href="https://github.com/theekrystallee">GitHub</a> | <a href="https://x.com/theekrystallee">X</a></p></td><td><a href="https://x.com/theekrystallee">https://x.com/theekrystallee</a></td></tr></tbody></table>

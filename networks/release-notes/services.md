@@ -6,6 +6,38 @@ description: Consensus Node release information
 
 Visit the [Hedera status page](https://status.hedera.com/) for the latest versions supported on each network.
 
+## Release v0.65
+
+{% hint style="info" %}
+**MAINNET UPDATE SCHEDULED: SEPTEMBER 17, 2025**
+{% endhint %}
+
+{% hint style="info" %}
+**TESTNET UPDATE SCHEDULED: AUGUST 28, 2025**
+{% endhint %}
+
+### [Build 0.65.0](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.65.0)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* test: Edge cases - Smart Contracts Service Tests Part 3 by [@vtronkov](https://github.com/vtronkov) in [#19987](https://github.com/hiero-ledger/hiero-consensus-node/pull/19987)
+* test: Edge cases - Smart Contracts Service Tests Part 4 by [@vtronkov](https://github.com/vtronkov) in [#20014](https://github.com/hiero-ledger/hiero-consensus-node/pull/20014)
+* chore: update test URL for JTR by [@lpetrovic05](https://github.com/lpetrovic05) in [#20067](https://github.com/hiero-ledger/hiero-consensus-node/pull/20067)
+* build(deps): bump testContainers from 1.21.0 to 1.21.1 in /hiero-dependency-versions by [@dependabot](https://github.com/dependabot)\[bot] in [#19445](https://github.com/hiero-ledger/hiero-consensus-node/pull/19445)
+* chore: update hiero gradle conventions to v0.4.9 by [@andrewb1269hg](https://github.com/andrewb1269hg) in [#20062](https://github.com/hiero-ledger/hiero-consensus-node/pull/20062)
+* chore: Move EthereumSuite to long running tests bucket by [@stoyanov-st](https://github.com/stoyanov-st) in [#20066](https://github.com/hiero-ledger/hiero-consensus-node/pull/20066)
+* fix: 19107: Corrected `classId` of `BenchmarkMerkleInternal` to prevent `classId` conflict by [@imalygin](https://github.com/imalygin) in [#19122](https://github.com/hiero-ledger/hiero-consensus-node/pull/19122)
+* chore: Update CODEOWNERS for SC contributions ([#20027](https://github.com/hiero-ledger/hiero-consensus-node/pull/20027)) by [@gkozyryatskyy](https://github.com/gkozyryatskyy) in [#20084](https://github.com/hiero-ledger/hiero-consensus-node/pull/20084)
+
+- chore: Add ability to debug docker nodes by [@timo0](https://github.com/timo0) in [#20051](https://github.com/hiero-ledger/hiero-consensus-node/pull/20051)
+- chore: Rename commonly used Turtle components to Otter by [@timo0](https://github.com/timo0) in [#20100](https://github.com/hiero-ledger/hiero-consensus-node/pull/20100)
+
+**Full Changelog**: [v0.64.2...v0.65.0](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.64.2...v0.65.0)
+
+</details>
+
 ## Release v0.64
 
 {% hint style="success" %}

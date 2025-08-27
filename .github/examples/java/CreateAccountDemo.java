@@ -42,7 +42,7 @@ public class CreateAccountDemo {
         System.out.println("\nWaiting for Mirror Node to update...\n");
         Thread.sleep(100000);
 
-        String url = mirrorNodeUrl + "/" + "/balances?account.id=" + newAccountId;
+        String url = mirrorNodeUrl + "/balances?account.id=" + newAccountId;
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());

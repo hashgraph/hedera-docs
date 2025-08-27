@@ -42,21 +42,24 @@ jobs:
           echo "ECDSA Account: ${{ steps.solo.outputs.ecdsaAccountId }}"
           echo "ECDSA PrivateKey: **** (redacted)"
 
-      - name: Wait for Mirror Node
+      - name: Wait for Mirror Node data (/network/nodes)
         env:
-          API: ${{ env.MIRROR_NODE_URL }}      
-          TRIES: "60"                          
+          API_BASE: ${{ env.MIRROR_NODE_URL }}
+          TRIES: "180"                             
           INTERVAL: "2"
         shell: bash
         run: |
           set -euo pipefail
-          base_api="${API%/}"
 
-          # 1) Quick TCP readiness check to avoid long hangs if container isn't listening yet
+          # Tools
+          if ! command -v jq >/dev/null; then sudo apt-get update -y && sudo apt-get install -y jq >/dev/null; fi
+          if ! command -v timeout >/dev/null; then sudo apt-get update -y && sudo apt-get install -y coreutils >/dev/null; fi
+
+          base_api="${API_BASE%/}"
           host="$(echo "$base_api" | awk -F[/:] '{print $4}')"
           port="$(echo "$base_api" | awk -F[/:] '{print $5}')"
-          if ! command -v timeout >/dev/null; then sudo apt-get update -y && sudo apt-get install -y coreutils >/dev/null; fi
-          echo "Waiting for TCP ${host}:${port} to accept connections…"
+
+          echo "Waiting for TCP ${host}:${port}…"
           for i in $(seq 1 60); do
             if (echo >/dev/tcp/"$host"/"$port") >/dev/null 2>&1; then
               echo "✅ Port ${port} is accepting connections"
@@ -66,35 +69,51 @@ jobs:
             sleep 1
           done
 
-          # 2) Functional probe: a real API route
-          probe="${base_api}/network/nodes?limit=1"
-          echo "Waiting for Mirror REST at: ${probe}"
+          probe_nodes="${base_api}/network/nodes?limit=1"
+          echo "Probing Mirror REST for data at: ${probe_nodes}"
+
+          # First ensure 200s…
           for i in $(seq 1 "${TRIES}"); do
-            code="$(curl -m 3 --connect-timeout 2 -sS -o /dev/null -w '%{http_code}' "$probe" || true)"
+            code="$(curl -m 3 --connect-timeout 2 -sS -o /dev/null -w '%{http_code}' "$probe_nodes" || true)"
             if [ "$code" = "200" ]; then
-              echo "✅ Mirror REST is responding (HTTP 200)"
-              exit 0
+              echo "✅ HTTP 200 from Mirror REST"
+              break
             fi
-            echo "⏳ Mirror not ready (try $i/${TRIES})… (code=$code)"
+            echo "⏳ Mirror REST not 200 yet (try $i/${TRIES})… (code=$code)"
             sleep "${INTERVAL}"
           done
 
-          echo "❌ Mirror never became ready via ${probe}"
-          echo "🔎 Last response:"
-          curl -m 3 --connect-timeout 2 -sS -v "$probe" || true
-          exit 1
+          if [ "${code:-}" != "200" ]; then
+            echo "❌ Mirror REST never returned 200 for ${probe_nodes}"
+            curl -m 3 --connect-timeout 2 -sS -v "$probe_nodes" || true
+            exit 1
+          fi
 
+          for i in $(seq 1 "${TRIES}"); do
+            body="$(curl -fsS "$probe_nodes" || true)"
+            count="$(echo "$body" | jq -r '.nodes | length' 2>/dev/null || echo "0")"
 
-      - name: Sanity check mirror endpoints
-        env:
-          URL: ${{ env.MIRROR_NODE_URL }}
-        run: |
-          set -euo pipefail
-          base="${URL%/}"
-          echo "GET ${base}/network/nodes?limit=1"
-          curl -fsS "${base}/network/nodes?limit=1" | jq -C . || true
-          echo "GET ${base}/accounts?limit=1"
-          curl -fsS "${base}/accounts?limit=1" | jq -C . || true
+            if [ "$count" -ge 1 ]; then
+              echo "✅ Mirror REST returned ${count} node(s)"
+              echo "Sample response:"
+              echo "$body" | jq '{nodes: (.nodes | .[:1])}' -C
+              ready=1
+              break
+            fi
+
+            echo "⏳ Mirror REST returned empty/invalid data (try $i/${TRIES})…"
+            sleep "${INTERVAL}"
+          done
+
+          if [ "${ready:-0}" -ne 1 ]; then
+            echo "❌ Mirror REST never produced non-empty nodes list at ${probe_nodes}"
+            echo "Last payload (truncated to 500 chars):"
+            echo "$body" | head -c 500 || true
+            exit 1
+          fi
+
+          echo "GET ${base_api}/accounts?limit=1"
+          curl -fsS "${base_api}/accounts?limit=1" | jq -C '.accounts | (.|length as $n | {count:$n, sample:(.[:1])})' || true
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4

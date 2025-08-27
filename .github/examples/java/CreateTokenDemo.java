@@ -66,14 +66,23 @@ public class CreateTokenDemo {
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(mirrorNodeUrl)).build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString( ));
         
-        JsonObject data = new Gson().fromJson(response.body(), JsonObject.class);
-        JsonArray tokens = data.getAsJsonArray("tokens");
-        
-        if (tokens.size() > 0) {
-            long balance = tokens.get(0).getAsJsonObject().get("balance").getAsLong();
-            System.out.println("\nTreasury holds: " + balance + " DEMO\n");
-        } else {
-            System.out.println("Token balance not yet available in Mirror Node");
+        try {
+            if (response.statusCode() != 200) {
+                System.out.println("Mirror Node returned status " + response.statusCode() + ". Skipping balance read.");
+            } else {
+                JsonObject data = new Gson().fromJson(response.body(), JsonObject.class);
+                JsonArray tokens = (data != null) ? data.getAsJsonArray("tokens") : null;
+
+                if (tokens != null && tokens.size() > 0) {
+                    long balance = tokens.get(0).getAsJsonObject().get("balance").getAsLong();
+                    System.out.println("\nTreasury holds: " + balance + " DEMO\n");
+                } else {
+                    System.out.println("Token balance not yet available in Mirror Node");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error reading token balance from Mirror Node: " + e.getMessage());
+            // continue without failing
         }
 
         client.close();

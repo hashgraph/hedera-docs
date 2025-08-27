@@ -45,6 +45,7 @@ jobs:
       - name: Wait for Mirror Node data (/network/nodes)
         env:
           API_BASE: ${{ env.MIRROR_NODE_URL }}
+          ACCOUNT_ID: ${{ steps.solo.outputs.ecdsaAccountId }}
           TRIES: "180"                             
           INTERVAL: "2"
         shell: bash
@@ -112,8 +113,38 @@ jobs:
             exit 1
           fi
 
-          echo "GET ${base_api}/accounts?limit=1"
-          curl -fsS "${base_api}/accounts?limit=1" | jq -C '.accounts | (.|length as $n | {count:$n, sample:(.[:1])})' || true
+          # ---- Probe account balance for the provided ACCOUNT_ID ----
+          if [ -z "${ACCOUNT_ID:-}" ]; then
+            echo "⚠️  ACCOUNT_ID not provided; skipping balance check."
+            exit 0
+          fi
+
+          echo "Checking balance for ACCOUNT_ID=${ACCOUNT_ID}"
+
+          # 1) Snapshot endpoint (works on public testnet; may be empty on local)
+          bal_url="${base_api}/balances?account.id=${ACCOUNT_ID}&limit=1"
+          echo "Trying snapshot endpoint: ${bal_url}"
+
+          snapshot_ok=0
+          tinybars=""
+          for i in $(seq 1 "${TRIES}"); do
+            resp="$(curl -fsS "$bal_url" || true)"
+            tb="$(echo "$resp" | jq -r '.balances[0].balance // empty' 2>/dev/null || true)"
+            if [ -n "$tb" ]; then
+              tinybars="$tb"
+              snapshot_ok=1
+              break
+            fi
+            echo "⏳ /balances has no snapshot yet (try $i/${TRIES})…"
+            sleep "${INTERVAL}"
+          done
+
+          if [ "$snapshot_ok" -eq 1 ]; then
+            echo "✅ Mirror /balances returned a snapshot balance: ${tinybars} tinybars"
+            exit 0
+          fi
+
+
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4

@@ -12,10 +12,10 @@ public class CreateTopicDemo {
         // .env-provided
         AccountId operatorId = AccountId.fromString(System.getenv("OPERATOR_ID"));
         PrivateKey operatorKey = PrivateKey.fromString(System.getenv("OPERATOR_KEY"));
-        String network = System.getenv().getOrDefault("HEDERA_NETWORK", "local"); // "local" for Solo
+        String network = System.getenv().getOrDefault("HEDERA_NETWORK", "local");
         String mirrorNode = System.getenv().getOrDefault(
             "MIRROR_NODE_URL",
-            "http://localhost:5551/api/v1" // Solo default (adjust if yours differs)
+            "http://localhost:5551/api/v1" 
         );
 
         if (operatorId == null || operatorKey == null) {
@@ -24,7 +24,7 @@ public class CreateTopicDemo {
 
         Client client =
             "local".equalsIgnoreCase(network)
-                ? Client.forNetwork(java.util.Map.of("127.0.0.1:50211", new AccountId(3))) // Solo default node + node account (adjust if needed)
+                ? Client.forNetwork(java.util.Map.of("127.0.0.1:50211", new AccountId(3)))
                 : Client.forTestnet();
 
         client.setOperator(operatorId, operatorKey);

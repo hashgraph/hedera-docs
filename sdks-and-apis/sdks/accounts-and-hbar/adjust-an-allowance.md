@@ -1,15 +1,19 @@
 # Delete an allowance
 
-A transaction that deletes one or more non-fungible approved allowances from an owner's account. This operation will remove the allowances granted to one or more specific non-fungible token serial numbers. Each owner account listed as wiping an allowance must sign the transaction. HBAR and fungible token allowances can be removed by setting the amount to zero in `CryptoApproveAllowance`.
+A transaction that deletes one or more non-fungible approved allowances from an owner's account. This operation will remove the allowances granted to one or more specific non-fungible token serial numbers. Each owner account listed as wiping an allowance must sign the transaction.&#x20;
 
 The total number of NFT serial number deletions within the transaction body cannot exceed 20.
 
-**Transaction Fees**
+#### **Fungible and HBAR allowance deletion:**
+
+HBAR and fungible token allowances can be removed by setting the amount to zero in `CryptoApproveAllowance`.
+
+#### **Transaction Fees**
 
 * Please see the transaction and query [fees](../../../networks/mainnet/fees/#transaction-and-query-fees) table for the base transaction fee
 * Please use the [Hedera fee estimator](https://hedera.com/fees) to estimate your transaction fee cost
 
-**Transaction Signing Requirements**
+#### **Transaction Signing Requirements**
 
 * The transaction must be signed by the owner's account
 * The transaction must be signed by the transaction fee-paying account if different than the owner's account

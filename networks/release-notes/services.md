@@ -16,6 +16,48 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **TESTNET UPDATE SCHEDULED: AUGUST 28, 2025**
 {% endhint %}
 
+### Release Highlights
+
+Release v0.65 highlights include Virtual Mega Map, enforcement of `max_custom_fees` for [HIP-991 ](https://hips.hedera.com/hip/hip-991)scheduled transactions, and Block Stream improvements including forward-compatibility and unified transaction records. Together, these changes introduce powerful new state management capabilities, scheduled transaction fee controls, and continued advancements toward production-ready Block Streams.
+
+<details>
+
+<summary><strong>What's new in Release 0.65?</strong></summary>
+
+#### Virtual Mega Map
+
+The Virtual Mega Map enhances Hedera's internal state data structure by consolidating all entities—including singletons, queues, and maps—into a single virtual map. This ensures the entire state rolls up to one root hash.\
+\
+**Key benefit:**
+
+* Enhanced Verifiability: A unified root hash simplifies  state and block item proofs, used for block streams.
+
+#### HIP-991 Enhancements: max\_custom\_fees for Scheduled Transactions
+
+Release v0.65 adds support for max\_custom\_fees in scheduled transactions with HIP-991 topics.
+
+**Key benefits:**
+
+* Predictable Fees: Ensures maximum custom fee limits are enforced.
+* Alignment with HTS: Extends scheduled transaction functionality to better match Hedera Token Service features.
+* Developer Guardrails: Protects applications and users from unexpected fee outcomes.
+
+#### **Advancements in HIP-1056 & HIP-1127: Block Streams**
+
+Building on the Block Stream work from v0.64, this release delivers major steps toward a unified, verifiable stream layer.
+
+**New developments:**
+
+[HIP-1127](https://hips.hedera.com/hip/hip-1127): Unified Transaction Record in Block Stream: Addresses historical duplication in how transactions are represented and creates a single, unified standard for the block stream. It achieves this while ensuring complete backward compatibility for existing applications, requiring no code changes for developers submitting transactions.
+
+**Key benefits:**
+
+* Performance & Scalability: Improves throughput and reduces latency when handling accounts, tokens, and other stateful data.
+* Future-Proofing: Provides a foundation for ongoing state service optimization.
+* Reduces State: Reduces the size and cost of the data stream
+
+</details>
+
 ### [Build 0.65.0](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.65.0)
 
 <details>

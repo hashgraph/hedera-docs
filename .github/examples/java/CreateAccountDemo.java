@@ -40,7 +40,7 @@ public class CreateAccountDemo {
         System.out.println("EVM Address: 0x" + newPublicKey.toEvmAddress() + "\n");
 
         System.out.println("\nWaiting for Mirror Node to update...\n");
-        Thread.sleep(100000);
+        Thread.sleep(10000);
 
         String url = mirrorNodeUrl + "/balances?account.id=" + newAccountId;
         HttpClient httpClient = HttpClient.newHttpClient();

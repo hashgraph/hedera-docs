@@ -36,6 +36,7 @@ jobs:
         uses: hiero-ledger/hiero-solo-action@v0.11.0
         with:
           installMirrorNode: true
+          hieroVersion: v0.63.7
 
       - name: Show assigned account
         run: |

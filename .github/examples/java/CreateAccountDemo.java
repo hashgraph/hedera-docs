@@ -43,7 +43,7 @@ public class CreateAccountDemo {
         Thread.sleep(10000);
 
         String url = mirrorNodeUrl + "/balances?account.id=" + newAccountId;
-        System.out.println(mirrorNodeUrl);
+        System.out.println("RequestURL: "+ url);
             
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();

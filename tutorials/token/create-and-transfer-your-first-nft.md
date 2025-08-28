@@ -58,17 +58,17 @@ System.out.println("Created NFT with token ID " + tokenId);
 ```javascript
 //Create the NFT
 const nftCreate = await new TokenCreateTransaction()
-	.setTokenName("diploma")
-	.setTokenSymbol("GRAD")
-	.setTokenType(TokenType.NonFungibleUnique)
-	.setDecimals(0)
-	.setInitialSupply(0)
-	.setTreasuryAccountId(treasuryId)
-	.setSupplyType(TokenSupplyType.Finite)
-	.setMaxSupply(250)
-	.setSupplyKey(supplyKey)
-	.freezeWith(client);
-
+    .setTokenName("diploma")
+    .setTokenSymbol("GRAD")
+    .setTokenType(TokenType.NonFungibleUnique)
+    .setDecimals(0)
+    .setInitialSupply(0)
+    .setTreasuryAccountId(treasuryId)
+    .setSupplyType(TokenSupplyType.Finite)
+    .setMaxSupply(250)
+    .setSupplyKey(supplyKey)
+    .freezeWith(client); 
+    
 //Sign the transaction with the treasury key
 const nftCreateTxSign = await nftCreate.sign(treasuryKey);
 
@@ -82,7 +82,7 @@ const nftCreateRx = await nftCreateSubmit.getReceipt(client);
 const tokenId = nftCreateRx.tokenId;
 
 //Log the token ID
-console.log("Created NFT with Token ID: " + tokenId);
+console.log(`\nCreated NFT with token ID: ${tokenId}`);
 ```
 {% endtab %}
 
@@ -129,8 +129,6 @@ Both the NFT image and metadata live in the InterPlanetary File System (IPFS), w
 
 {% tabs %}
 {% tab title="Java" %}
-
-
 ```java
 // Max transaction fee as a constant
 final int MAX_TRANSACTION_FEE = 20;
@@ -170,6 +168,7 @@ System.out.println("Created NFT " + tokenId + " with serial: " + mintRx.serials)
 {% endtab %}
 
 {% tab title="JavaScript" %}
+{% code overflow="wrap" %}
 ```javascript
 // Max transaction fee as a constant
 const maxTransactionFee = new Hbar(20);
@@ -194,11 +193,11 @@ const CID = [
 ];
 	
 // MINT NEW BATCH OF NFTs
-const mintTx = new TokenMintTransaction()
-	.setTokenId(tokenId)
-	.setMetadata(CID) //Batch minting - UP TO 10 NFTs in single tx
-	.setMaxTransactionFee(maxTransactionFee)
-	.freezeWith(client);
+ const mintTx = await new TokenMintTransaction()
+    .setTokenId(tokenId)
+    .setMetadata(CID) // Batch minting up to 10 per tx
+    .setMaxTransactionFee(maxTransactionFee)
+    .freezeWith(client);
 
 //Sign the transaction with the supply key
 const mintTxSign = await mintTx.sign(supplyKey);
@@ -210,8 +209,9 @@ const mintTxSubmit = await mintTxSign.execute(client);
 const mintRx = await mintTxSubmit.getReceipt(client);
 
 //Log the serial number
-console.log("Created NFT " + tokenId + " with serial number: " + mintRx.serials);
+console.log("Created NFT " + tokenId + " with serial number: " + mintRx.serials + "\n");
 ```
+{% endcode %}
 {% endtab %}
 
 {% tab title="Go" %}
@@ -229,23 +229,23 @@ CID := [][]byte{
 }
 
 // Mint new NFT
-mintTx, err := hedera.NewTokenMintTransaction().
-    SetTokenID(tokenId).
-    SetMetadatas(CID).
-    SetMaxTransactionFee(hedera.HbarFromTinybars(maxTransactionFee)).
-    FreezeWith(client)
+mintTx := must(hedera.NewTokenMintTransaction().
+    SetTokenID(tokenID).
+    SetMetadatas(cid).
+    SetMaxTransactionFee(hedera.NewHbar(20)).
+    FreezeWith(client))
 
 // Sign the transaction with the supply key
-mintTxSign := mintTx.Sign(supplyKey)
-
+mintSigned := mintTx.Sign(supplyKey)
+	
 // Submit the transaction to a Hedera network
-mintTxSubmit, err := mintTxSign.Execute(client)
+mintSubmit := must(mintSigned.Execute(client))
 
 // Get the transaction receipt
-mintRx, err := mintTxSubmit.GetReceipt(client)
+mintRx := must(mintSubmit.GetReceipt(client))
 
 // Log the serial number
-fmt.Printf("Created NFT %s with serial: %d\n", tokenId, mintRx.SerialNumbers[0])
+fmt.Printf("Created NFT %s with serial number(s): %v\n\n", tokenID, mintRx.SerialNumbers)
 ```
 {% endtab %}
 {% endtabs %}
@@ -271,7 +271,7 @@ fmt.Printf("Created NFT %s with serial: %d\n", tokenId, mintRx.SerialNumbers[0])
 ```
 {% endcode %}
 
-### **🚨 Throttle cap warning**&#x20;
+### **🚨 Throttle cap warning**
 
 Batch minting of 10+ NFTs can run into throughput issues and potentially hit the [transaction limit (throttle cap)](../../networks/mainnet/#network-throttles), causing the SDK to throw `BUSY` exceptions. Adding an application-level retry loop can help manage these exceptions for the batch-minting process.
 
@@ -380,7 +380,9 @@ TransactionResponse associateAliceTxSubmit = associateAliceTx.execute(client);
 TransactionReceipt associateAliceRx = associateAliceTxSubmit.getReceipt(client);
 
 //Confirm the transaction was successful
-System.out.println("\nNFT association with Alice's account: " + associateAliceRx.status + " ✅");
+System.out.println(
+        "\nNFT association with Alice's account: " 
+                + associateAliceRx.status + " ✅");
 ```
 {% endtab %}
 
@@ -400,29 +402,29 @@ const associateAliceTxSubmit = await associateAliceTx.execute(client);
 const associateAliceRx = await associateAliceTxSubmit.getReceipt(client);
 
 //Confirm the transaction was successful
-console.log(`NFT association with Alice's account: ${associateAliceRx.status}\n`);
+console.log(`NFT association with Alice's account: ${associateAliceRx.status} ✅`);
 ```
 {% endtab %}
 
 {% tab title="Go" %}
 ```go
 //Create the associate transaction
-associateAliceTx, err := hedera.NewTokenAssociateTransaction().
-	SetAccountID(aliceAccountId).
-	SetTokenIDs(tokenId).
-	FreezeWith(client)
+associateAlice := must(hedera.NewTokenAssociateTransaction().
+    SetAccountID(aliceID).
+    SetTokenIDs(tokenID). // single token id
+    FreezeWith(client))
 
 //Sign with Alice's key
-signTx := associateAliceTx.Sign(aliceKey)
-
+associateAliceSigned := associateAlice.Sign(aliceKey)
+	
 //Submit the transaction to a Hedera network
-associateAliceTxSubmit, err := signTx.Execute(client)//Get the transaction receipt
+associateAliceSubmit := must(associateAliceSigned.Execute(client))
 
 //Get the transaction receipt
-associateAliceRx, err := associateAliceTxSubmit.GetReceipt(client)
+associateAliceRx := must(associateAliceSubmit.GetReceipt(client))
 
 //Confirm the transaction was successful
-fmt.Println("NFT association with Alice's account:", associateAliceRx.Status)
+fmt.Println("NFT association with Alice's account:", associateAliceRx.Status, "✅")
 ```
 {% endtab %}
 {% endtabs %}
@@ -437,16 +439,21 @@ Now, transfer the NFT and check the account balances before and after the send! 
 {% tab title="Java" %}
 ```java
 // Check the balance before the NFT transfer for the treasury account
-AccountBalance balanceCheckTreasury = new AccountBalanceQuery().setAccountId(treasuryId).execute(client);
+AccountBalance balanceCheckTreasury = new AccountBalanceQuery()
+        .setAccountId(treasuryId)
+        .execute(client);
 System.out.println(
         "- Treasury balance: " + balanceCheckTreasury.tokens.getOrDefault(tokenId, 0L)
                 + " NFTs of ID " + tokenId);
 
 
 // Check the balance before the NFT transfer for Alice's account
-AccountBalance balanceCheckAlice = new AccountBalanceQuery().setAccountId(aliceAccountId)
-                        .execute(client);
-System.out.println("Alice's balance: " + balanceCheckAlice.tokens.getOrDefault(tokenId, 0L) + " NFTs of ID " + tokenId);
+AccountBalance balanceCheckAlice = new AccountBalanceQuery()
+        .setAccountId(aliceAccountId)
+        .execute(client);
+System.out.println(
+        "Alice's balance: " + balanceCheckAlice.tokens.getOrDefault(tokenId, 0L) 
+                + " NFTs of ID " + tokenId);
 
 // Transfer NFT from treasury to Alice
 // Sign with the treasury key to authorize the transfer
@@ -458,14 +465,22 @@ TransferTransaction tokenTransferTx = new TransferTransaction()
 TransactionResponse tokenTransferSubmit = tokenTransferTx.execute(client);
 TransactionReceipt tokenTransferRx = tokenTransferSubmit.getReceipt(client);
 
-System.out.println("\nNFT transfer from Treasury to Alice: " + tokenTransferRx.status);
+System.out.println(
+        "\nNFT transfer from Treasury to Alice: " 
+                + tokenTransferRx.status + " ✅");
 
 // Check the balance for the treasury account after the transfer
-AccountBalance balanceCheckTreasury2 = new AccountBalanceQuery().setAccountId(treasuryId).execute(client);
-System.out.println("\nTreasury balance: " + balanceCheckTreasury2.tokens.getOrDefault(tokenId, 0L) + " NFTs of ID " + tokenId);
+AccountBalance balanceCheckTreasury2 = new AccountBalanceQuery()
+        .setAccountId(treasuryId)
+        .execute(client);
+System.out.println(
+        "\nTreasury balance: " + balanceCheckTreasury2.tokens.getOrDefault(tokenId, 0L) 
+                + " NFTs of ID " + tokenId);
 
 // Check the balance for Alice's account after the transfer
-AccountBalance balanceCheckAlice2 = new AccountBalanceQuery().setAccountId(aliceAccountId).execute(client);
+AccountBalance balanceCheckAlice2 = new AccountBalanceQuery()
+        .setAccountId(aliceAccountId)
+        .execute(client);
 System.out.println(
         "- Alice's balance: " + balanceCheckAlice2.tokens.getOrDefault(tokenId, 0L)
                 + " NFTs of ID " + tokenId + "\n");
@@ -474,74 +489,87 @@ System.out.println(
 
 {% tab title="JavaScript" %}
 ```javascript
-// Check the balance before the transfer for the treasury account
-var balanceCheckTx = await new AccountBalanceQuery().setAccountId(treasuryId).execute(client);
-console.log(`Treasury balance: ${balanceCheckTx.tokens._map.get(tokenId.toString())} NFTs of ID ${tokenId}`);
+// Check the balances before the transfer for the treasury/Alice accounts
+let balanceCheckTx = await new AccountBalanceQuery()
+  .setAccountId(treasuryId)
+  .execute(client);
+console.log(
+  `- Treasury balance: ${balanceCheckTx.tokens._map.get(
+    tokenId.toString()
+  )} NFTs of ID ${tokenId}`
+);
 
-// Check the balance before the transfer for Alice's account
-var balanceCheckTx = await new AccountBalanceQuery().setAccountId(aliceId).execute(client);
-console.log(`Alice's balance: ${balanceCheckTx.tokens._map.get(tokenId.toString())} NFTs of ID ${tokenId}`);
+balanceCheckTx = await new AccountBalanceQuery()
+  .setAccountId(aliceId)
+  .execute(client);
+console.log(
+  `- Alice's balance: ${balanceCheckTx.tokens._map.get(
+    tokenId.toString()
+  )} NFTs of ID ${tokenId}`
+);
 
 // Transfer the NFT from treasury to Alice
 // Sign with the treasury key to authorize the transfer
 const tokenTransferTx = await new TransferTransaction()
-	.addNftTransfer(tokenId, 1, treasuryId, aliceId)
-	.freezeWith(client)
-	.sign(treasuryKey);
+    .addNftTransfer(tokenId, 1, treasuryId, aliceId)
+    .freezeWith(client)
+    .sign(treasuryKey);
 
 const tokenTransferSubmit = await tokenTransferTx.execute(client);
 const tokenTransferRx = await tokenTransferSubmit.getReceipt(client);
+console.log(
+  `\nNFT transfer from treasury to Alice: ${tokenTransferRx.status}  ✅`
+);
 
-console.log(`\nNFT transfer from Treasury to Alice: ${tokenTransferRx.status} \n`);
+// Check the balances of the treasury/Alice accounts after the transfer
+balanceCheckTx = await new AccountBalanceQuery()
+  .setAccountId(treasuryId)
+  .execute(client);
+console.log(
+  `- Treasury balance: ${balanceCheckTx.tokens._map.get(
+    tokenId.toString()
+  )} NFTs of ID ${tokenId}`
+);
 
-// Check the balance of the treasury account after the transfer
-var balanceCheckTx = await new AccountBalanceQuery().setAccountId(treasuryId).execute(client);
-console.log(`Treasury balance: ${balanceCheckTx.tokens._map.get(tokenId.toString())} NFTs of ID ${tokenId}`);
-
-// Check the balance of Alice's account after the transfer
-var balanceCheckTx = await new AccountBalanceQuery().setAccountId(aliceId).execute(client);
-console.log(`Alice's balance: ${balanceCheckTx.tokens._map.get(tokenId.toString())} NFTs of ID ${tokenId}`);
+balanceCheckTx = await new AccountBalanceQuery()
+  .setAccountId(aliceId)
+  .execute(client);
+console.log(
+  `- Alice's balance: ${balanceCheckTx.tokens._map.get(
+    tokenId.toString()
+  )} NFTs of ID ${tokenId}\n`
+);
 ```
 {% endtab %}
 
 {% tab title="Go" %}
-
-
 ```go
 // Transfer the NFT from treasury to Alice
-	tokenTransferTx, err := hedera.NewTransferTransaction().
-			AddNftTransfer(hedera.NftID{TokenID: tokenId, SerialNumber: 1}, treasuryAccountId, aliceAccountId).
-			FreezeWith(client)
-		if err != nil {
-			panic(err)
-		}
+transfer := must(hedera.NewTransferTransaction().
+    AddNftTransfer(hedera.NftID{TokenID: tokenID, SerialNumber: 1}, treasuryID, aliceID).
+    FreezeWith(client))
+    
+// Sign with the treasury key to authorize the transfer
+transferSigned := transfer.Sign(treasuryKey)
 
-		// Sign with the treasury key to authorize the transfer
-		signTransferTx := tokenTransferTx.Sign(treasuryKey)
+//Submit the transaction
+transferSubmit := must(transferSigned.Execute(client))
 
-		//Submit the transaction
-		tokenTransferSubmit, err := signTransferTx.Execute(client)
+// Get the transaction receipt
+transferRx := must(transferSubmit.GetReceipt(client))
 
-		// Get the transaction receipt
-		tokenTransferRx, err := tokenTransferSubmit.GetReceipt(client)
+fmt.Println("\nNFT transfer from Treasury to Alice:", transferRx.Status, "✅")
 
-		fmt.Println("\nNFT transfer from Treasury to Alice:", tokenTransferRx.Status, "✅")
+// Check the balance of the treasury account after the transfer
+treasuryBal2 := must(hedera.NewAccountBalanceQuery().SetAccountID(treasuryID).Execute(client))
+treasuryNftAfter := (&treasuryBal2.Tokens).Get(tokenID)
 
-		// Check the balance of the treasury account after the transfer
-		balanceCheckTreasury2, err := hedera.NewAccountBalanceQuery().SetAccountID(treasuryAccountId).Execute(client)
-		if err != nil {
-			panic(err)
-		}
-		treasuryNftBalance2 := balanceCheckTreasury2.Tokens.Get(tokenId)
-		fmt.Println("Treasury balance:", treasuryNftBalance2, "NFTs of ID", tokenId)
+// Check the balance of Alice's account after the transfer
+aliceBal2 := must(hedera.NewAccountBalanceQuery().SetAccountID(aliceID).Execute(client))
+aliceNftAfter := (&aliceBal2.Tokens).Get(tokenID)
 
-		// Check the balance of Alice's account after the transfer
-		balanceCheckAlice2, err := hedera.NewAccountBalanceQuery().SetAccountID(aliceAccountId).Execute(client)
-		if err != nil {
-			panic(err)
-		}
-		aliceNftBalance2 := balanceCheckAlice2.Tokens.Get(tokenId)
-		fmt.Println("Alice's balance:", aliceNftBalance2, "NFTs of ID", tokenId, "\n")
+fmt.Printf("- Treasury balance: %d NFTs of ID %s\n", treasuryNftAfter, tokenID)
+fmt.Printf("- Alice's balance: %d NFTs of ID %s\n\n", aliceNftAfter, tokenID)
 ```
 {% endtab %}
 {% endtabs %}
@@ -583,10 +611,9 @@ public class CreateYourFirstNft {
 
         // Create treasury account
         TransactionResponse treasuryAccount = new AccountCreateTransaction()
-                .setKey(treasuryPublicKey)
-                //Do NOT set an alias if you need to update/rotate keys in the future
-                .setAlias(treasuryPublicKey.toEvmAddress())
-                .setInitialBalance(new Hbar(10))
+                //Do NOT set an alias if you need to rotate keys in the future
+                .setKeyWithAlias(treasuryPublicKey)
+                .setInitialBalance(new Hbar(20))
                 .execute(client);
 
         AccountId treasuryId = treasuryAccount.getReceipt(client).accountId;
@@ -597,15 +624,14 @@ public class CreateYourFirstNft {
 
         // Create Alice's account
         TransactionResponse aliceAccount = new AccountCreateTransaction()
-                .setKey(alicePublicKey)
-                //Do NOT set an alias if you need to update/rotate keys in the future
-                .setAlias(alicePublicKey.toEvmAddress())
-                .setInitialBalance(new Hbar(10))
+                //Do NOT set an alias if you need to rotate keys in the future
+                .setKeyWithAlias(alicePublicKey)
+                .setInitialBalance(new Hbar(20))
                 .execute(client);
 
         AccountId aliceAccountId = aliceAccount.getReceipt(client).accountId;
 
-        // Generate the upply Key
+        // Generate the Supply Key
         PrivateKey supplyKey = PrivateKey.generateECDSA();
         PublicKey supplyPublicKey = supplyKey.getPublicKey();
 
@@ -650,7 +676,8 @@ public class CreateYourFirstNft {
         };
 
         // Mint a new NFT
-        TokenMintTransaction mintTx = new TokenMintTransaction().setTokenId(tokenId)
+        TokenMintTransaction mintTx = new TokenMintTransaction()
+                .setTokenId(tokenId)
                 .setMaxTransactionFee(new Hbar(MAX_TRANSACTION_FEE));
 
         for (String cid : CID) {
@@ -670,7 +697,8 @@ public class CreateYourFirstNft {
         TransactionReceipt mintRx = mintTxSubmit.getReceipt(client);
 
         // Log the serial number
-        System.out.println("Created NFT " + tokenId + " with serial: " + mintRx.serials);
+        System.out.println(
+                "Created NFT " + tokenId + " with serial: " + mintRx.serials);
 
         // Create the associate transaction and sign with Alice's key
         TokenAssociateTransaction associateAliceTx = new TokenAssociateTransaction()
@@ -686,16 +714,22 @@ public class CreateYourFirstNft {
         TransactionReceipt associateAliceRx = associateAliceTxSubmit.getReceipt(client);
 
         // Confirm the transaction was successful
-        System.out.println("\nNFT association with Alice's account: " + associateAliceRx.status + " ✅");
+        System.out.println(
+                "\nNFT association with Alice's account: " 
+                        + associateAliceRx.status + " ✅");
 
         // Check the balance before the NFT transfer for the treasury account
-        AccountBalance balanceCheckTreasury = new AccountBalanceQuery().setAccountId(treasuryId).execute(client);
+        AccountBalance balanceCheckTreasury = new AccountBalanceQuery()
+                .setAccountId(treasuryId)
+                .execute(client);
         System.out.println(
                 "- Treasury balance: " + balanceCheckTreasury.tokens.get(tokenId)
                         + " NFTs of ID " + tokenId);
 
         // Check the balance before the NFT transfer for Alice's account
-        AccountBalance balanceCheckAlice = new AccountBalanceQuery().setAccountId(aliceAccountId).execute(client);
+        AccountBalance balanceCheckAlice = new AccountBalanceQuery()
+                .setAccountId(aliceAccountId)
+                .execute(client);
         System.out.println(
                 "- Alice's balance: " + balanceCheckAlice.tokens.get(tokenId)
                         + " NFTs of ID " + tokenId);
@@ -713,16 +747,22 @@ public class CreateYourFirstNft {
         TransactionReceipt tokenTransferRx = tokenTransferSubmit.getReceipt(client);
 
         // Confirm the transfer was successful
-        System.out.println("\nNFT transfer from Treasury to Alice: " + tokenTransferRx.status + " ✅");
+        System.out.println(
+                "\nNFT transfer from Treasury to Alice: " 
+                        + tokenTransferRx.status + " ✅");
 
         // Check the balance for the treasury account after the transfer
-        AccountBalance balanceCheckTreasury2 = new AccountBalanceQuery().setAccountId(treasuryId).execute(client);
+        AccountBalance balanceCheckTreasury2 = new AccountBalanceQuery()
+                .setAccountId(treasuryId)
+                .execute(client);
         System.out.println(
                 "- Treasury balance: " + balanceCheckTreasury2.tokens.get(tokenId)
                         + " NFTs of ID " + tokenId);
 
         // Check the balance for Alice's account after the transfer
-        AccountBalance balanceCheckAlice2 = new AccountBalanceQuery().setAccountId(aliceAccountId).execute(client);
+        AccountBalance balanceCheckAlice2 = new AccountBalanceQuery()
+                .setAccountId(aliceAccountId)
+                .execute(client);
         System.out.println(
                 "- Alice's balance: " + balanceCheckAlice2.tokens.get(tokenId)
                         + " NFTs of ID " + tokenId + "\n");
@@ -738,12 +778,15 @@ public class CreateYourFirstNft {
 
 ```javascript
 console.clear();
-require("dotenv").config();
-const {
+import dotenv from "dotenv";
+dotenv.config();
+
+import {
   Hbar,
   Client,
   AccountId,
   PrivateKey,
+  AccountCreateTransaction,
   TokenType,
   TokenSupplyType,
   TokenMintTransaction,
@@ -751,22 +794,49 @@ const {
   AccountBalanceQuery,
   TokenCreateTransaction,
   TokenAssociateTransaction,
-} = require("@hashgraph/sdk");
+} from "@hashgraph/sdk";
 
-// Configure accounts and client, and generate needed keys
+// operator creds from env
 const operatorId = AccountId.fromString(process.env.OPERATOR_ID);
-const operatorKey = PrivateKey.fromStringDer(process.env.OPERATOR_PVKEY);
-const treasuryId = AccountId.fromString(process.env.TREASURY_ID);
-const treasuryKey = PrivateKey.fromStringDer(process.env.TREASURY_PVKEY);
-const aliceId = AccountId.fromString(process.env.ALICE_ID);
-const aliceKey = PrivateKey.fromStringDer(process.env.ALICE_PVKEY);
 
+// be flexible on private key encoding
+function parsePriv(str) {
+  try {
+    return PrivateKey.fromStringDer(str);
+  } catch {
+    return PrivateKey.fromStringDer(str);
+  }
+}
+const operatorKey = parsePriv(process.env.OPERATOR_KEY);
+
+// client
 const client = Client.forTestnet().setOperator(operatorId, operatorKey);
 
-const supplyKey = PrivateKey.generate();
+// generate treasury and alice keys like the go example
+const treasuryKey = PrivateKey.generateECDSA();
+const treasuryPub = treasuryKey.publicKey;
+const aliceKey = PrivateKey.generateECDSA();
+const alicePub = aliceKey.publicKey;
+
+// helper to create an account with a given public key
+async function createAccount(pubKey) {
+  const tx = await new AccountCreateTransaction()
+    .setECDSAKeyWithAlias(pubKey)
+    .setInitialBalance(new Hbar(20))
+    .execute(client);
+
+  const receipt = await tx.getReceipt(client);
+  return receipt.accountId;
+}
 
 async function createFirstNft() {
-  //Create the NFT
+  // Create treasury and Alice accounts
+  const treasuryId = await createAccount(treasuryPub);
+  const aliceId = await createAccount(alicePub);
+
+  const supplyKey = PrivateKey.generateECDSA();
+
+  // Create the NFT
   const nftCreate = await new TokenCreateTransaction()
     .setTokenName("diploma")
     .setTokenSymbol("GRAD")
@@ -792,12 +862,9 @@ async function createFirstNft() {
   const tokenId = nftCreateRx.tokenId;
 
   //Log the token ID
-  console.log(`\nCreated NFT with Token ID: ` + tokenId);
+  console.log(`\nCreated NFT with token ID: ${tokenId}`);
 
-  // Max transaction fee as a constant
-  const maxTransactionFee = new Hbar(20);
-
-  //IPFS content identifiers for which we will create a NFT
+  // IPFS content identifiers for which we will create a NFT
   const CID = [
     Buffer.from(
       "ipfs://bafyreiao6ajgsfji6qsgbqwdtjdu5gmul7tv2v3pd6kjgcw5o65b2ogst4/metadata.json"
@@ -816,10 +883,12 @@ async function createFirstNft() {
     ),
   ];
 
+  const maxTransactionFee = new Hbar(20);
+
   // MINT NEW BATCH OF NFTs
-  const mintTx = new TokenMintTransaction()
+  const mintTx = await new TokenMintTransaction()
     .setTokenId(tokenId)
-    .setMetadata(CID) //Batch minting - UP TO 10 NFTs in single tx
+    .setMetadata(CID) // Batch minting up to 10 per tx
     .setMaxTransactionFee(maxTransactionFee)
     .freezeWith(client);
 
@@ -834,10 +903,10 @@ async function createFirstNft() {
 
   //Log the serial number
   console.log(
-    "Created NFT " + tokenId + " with serial number: " + mintRx.serials + "\n"
+    `Created NFT ${tokenId} with serial number(s): ${mintRx.serials}\n`
   );
 
-  //Create the associate transaction and sign with Alice's key
+  // associate alice once
   const associateAliceTx = await new TokenAssociateTransaction()
     .setAccountId(aliceId)
     .setTokenIds([tokenId])
@@ -852,31 +921,29 @@ async function createFirstNft() {
 
   //Confirm the transaction was successful
   console.log(
-    `NFT association with Alice's account: ${associateAliceRx.status}\n`
+    `NFT association with Alice's account: ${associateAliceRx.status} ✅`
   );
 
-  // Check the balance before the transfer for the treasury account
-  var balanceCheckTx = await new AccountBalanceQuery()
+  // Check the balances before the transfer for the treasury/Alice accounts
+  let balanceCheckTx = await new AccountBalanceQuery()
     .setAccountId(treasuryId)
     .execute(client);
   console.log(
-    `Treasury balance: ${balanceCheckTx.tokens._map.get(
+    `- Treasury balance: ${balanceCheckTx.tokens._map.get(
       tokenId.toString()
     )} NFTs of ID ${tokenId}`
   );
 
-  // Check the balance before the transfer for Alice's account
-  var balanceCheckTx = await new AccountBalanceQuery()
+  balanceCheckTx = await new AccountBalanceQuery()
     .setAccountId(aliceId)
     .execute(client);
   console.log(
-    `Alice's balance: ${balanceCheckTx.tokens._map.get(
+    `- Alice's balance: ${balanceCheckTx.tokens._map.get(
       tokenId.toString()
     )} NFTs of ID ${tokenId}`
   );
 
-  // Transfer the NFT from treasury to Alice
-  // Sign with the treasury key to authorize the transfer
+  // Transfer serial 1 treasury -> Alice
   const tokenTransferTx = await new TransferTransaction()
     .addNftTransfer(tokenId, 1, treasuryId, aliceId)
     .freezeWith(client)
@@ -884,31 +951,32 @@ async function createFirstNft() {
 
   const tokenTransferSubmit = await tokenTransferTx.execute(client);
   const tokenTransferRx = await tokenTransferSubmit.getReceipt(client);
-
   console.log(
-    `\nNFT transfer from Treasury to Alice: ${tokenTransferRx.status} \n`
+    `\nNFT transfer from treasury to Alice: ${tokenTransferRx.status} ✅`
   );
 
-  // Check the balance of the treasury account after the transfer
-  var balanceCheckTx = await new AccountBalanceQuery()
+  // Check the balances of the treasury/Alice accounts after the transfer
+  balanceCheckTx = await new AccountBalanceQuery()
     .setAccountId(treasuryId)
     .execute(client);
   console.log(
-    `Treasury balance: ${balanceCheckTx.tokens._map.get(
+    `- Treasury balance: ${balanceCheckTx.tokens._map.get(
       tokenId.toString()
     )} NFTs of ID ${tokenId}`
   );
 
-  // Check the balance of Alice's account after the transfer
-  var balanceCheckTx = await new AccountBalanceQuery()
+  balanceCheckTx = await new AccountBalanceQuery()
     .setAccountId(aliceId)
     .execute(client);
   console.log(
-    `Alice's balance: ${balanceCheckTx.tokens._map.get(
+    `- Alice's balance: ${balanceCheckTx.tokens._map.get(
       tokenId.toString()
-    )} NFTs of ID ${tokenId}`
+    )} NFTs of ID ${tokenId}\n`
   );
+
+  client.close();
 }
+
 createFirstNft();
 ```
 
@@ -929,109 +997,81 @@ import (
 	"github.com/joho/godotenv"
 )
 
+func must[T any](v T, err error) T {
+	if err != nil {
+		panic(err)
+	}
+	return v
+}
+
 func main() {
-	// Load environment variables
-	err := godotenv.Load(".env")
-	if err != nil {
-		panic(fmt.Errorf("Unable to load environment variables from .env file. Error:\n%v\n", err))
+	if err := godotenv.Load(".env"); err != nil {
+		panic(fmt.Errorf("unable to load .env: %w", err))
 	}
 
-	// Grab your testnet account ID and private key from the .env file
-	operatorId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
-	if err != nil {
-		panic(err)
-	}
+	// Load operator credentials
+	operatorID := must(hedera.AccountIDFromString(os.Getenv("OPERATOR_ID")))
+	operatorKey := must(hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY")))
 
-	operatorKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
-	if err != nil {
-		panic(err)
-	}
-
-	// Create your testnet client
+	// Initialize Client
 	client := hedera.ClientForTestnet()
-	client.SetOperator(operatorId, operatorKey)
-
-	// Create a treasury Key
-	treasuryKey, err := hedera.GenerateEcdsaPrivateKey()
-	if err != nil {
-		panic(err)
-	}
-	treasuryPublicKey := treasuryKey.PublicKey()
+	client.SetOperator(operatorID, operatorKey)
 
 	// Create treasury account
-	treasuryAccount, err := hedera.NewAccountCreateTransaction().
-		SetKey(treasuryPublicKey).
-    		//Do NOT set an alias if you need to update/rotate keys in the future
-    		SetAlias(treasuryPublicKey.ToEvmAddress()).
-		SetInitialBalance(hedera.NewHbar(10)).
-		Execute(client)
-	if err != nil {
-		panic(err)
-	}
+	treasuryKey := must(hedera.PrivateKeyGenerateEcdsa())
+	treasuryPub := treasuryKey.PublicKey()
 
-	// Get the receipt of the transaction
-	receipt, err := treasuryAccount.GetReceipt(client)
-	if err != nil {
-		panic(err)
-	}
+	treasuryCreate := must(hedera.NewAccountCreateTransaction().
+		SetECDSAKeyWithAlias(treasuryPub).
+		SetInitialBalance(hedera.NewHbar(20)).
+		Execute(client))
+	treasuryReceipt := must(treasuryCreate.GetReceipt(client))
+	treasuryID := *treasuryReceipt.AccountID
 
-	// Get the account ID
-	treasuryAccountId := *receipt.AccountID
+	// Create Alice account
+	aliceKey := must(hedera.PrivateKeyGenerateEcdsa())
+	alicePub := aliceKey.PublicKey()
 
-	// Alice Key
-	aliceKey, err := hedera.GenerateEcdsaPrivateKey()
-	alicePublicKey := aliceKey.PublicKey()
+	aliceCreate := must(hedera.NewAccountCreateTransaction().
+		SetECDSAKeyWithAlias(alicePub).
+		SetInitialBalance(hedera.NewHbar(20)).
+		Execute(client))
+	aliceReceipt := must(aliceCreate.GetReceipt(client))
+	aliceID := *aliceReceipt.AccountID
 
-	// Create Alice's account
-	aliceAccount, err := hedera.NewAccountCreateTransaction().
-		SetKey(alicePublicKey).
-		//Do NOT set an alias if you need to update/rotate keys in the future
-    		SetAlias(alicePublicKey.ToEvmAddress()).
-		SetInitialBalance(hedera.NewHbar(10)).
-		Execute(client)
-
-	// Get the receipt of the transaction
-	receipt2, err := aliceAccount.GetReceipt(client)
-
-	// Get the account ID
-	aliceAccountId := *receipt2.AccountID
-
-	// Create a supply key
-	supplyKey, err := hedera.GenerateEcdsaPrivateKey()
+	// Generate supply key
+	supplyKey := must(hedera.PrivateKeyGenerateEcdsa())
 
 	// Create the NFT
-	nftCreate, err := hedera.NewTokenCreateTransaction().
+	nftCreate := must(hedera.NewTokenCreateTransaction().
 		SetTokenName("diploma").
 		SetTokenSymbol("GRAD").
 		SetTokenType(hedera.TokenTypeNonFungibleUnique).
 		SetDecimals(0).
 		SetInitialSupply(0).
-		SetTreasuryAccountID(treasuryAccountId).
+		SetTreasuryAccountID(treasuryID).
 		SetSupplyType(hedera.TokenSupplyTypeFinite).
 		SetMaxSupply(250).
 		SetSupplyKey(supplyKey).
-		FreezeWith(client)
+		FreezeWith(client))
 
-	// Sign the transaction with the treasury key
-	nftCreateTxSign := nftCreate.Sign(treasuryKey)
+	//Sign the transaction with the treasury key
+	nftCreateSigned := nftCreate.Sign(treasuryKey)
+	
+	//Submit the transaction to a Hedera network
+	nftCreateSubmit := must(nftCreateSigned.Execute(client))
+	
+	//Get the transaction receipt
+	nftCreateRx := must(nftCreateSubmit.GetReceipt(client))
+	
+	//Get the token ID
+	tokenID := *nftCreateRx.TokenID
+	
+	//Log the token ID
+	fmt.Println("\nCreated NFT with token ID:", tokenID)
 
-	// Submit the transaction to a Hedera network
-	nftCreateSubmit, err := nftCreateTxSign.Execute(client)
-
-	// Get the transaction receipt
-	nftCreateRx, err := nftCreateSubmit.GetReceipt(client)
-
-	// Get the token ID
-	tokenId := *nftCreateRx.TokenID
-
-	// Log the token ID
-	fmt.Println("\nCreated NFT with token ID", tokenId)
-
-	// Max transaction fee as a constant
-	const maxTransactionFee = 20 // in tinybars
-
-	// IPFS content identifiers for which we will create a NFT
-	CID := [][]byte{
+	//IPFS content identifiers for which we will create a NFT
+	cid := [][]byte{
 		[]byte("ipfs://bafyreiao6ajgsfji6qsgbqwdtjdu5gmul7tv2v3pd6kjgcw5o65b2ogst4/metadata.json"),
 		[]byte("ipfs://bafyreic463uarchq4mlufp7pvfkfut7zeqsqmn3b2x3jjxwcjqx6b5pk7q/metadata.json"),
 		[]byte("ipfs://bafyreihhja55q6h2rijscl3gra7a3ntiroyglz45z5wlyxdzs6kjh2dinu/metadata.json"),
@@ -1039,103 +1079,77 @@ func main() {
 		[]byte("ipfs://bafyreie7ftl6erd5etz5gscfwfiwjmht3b52cevdrf7hjwxx5ddns7zneu/metadata.json"),
 	}
 
-	for _, singleCID := range CID {
-		mintTx, err := hedera.NewTokenMintTransaction().
-			SetTokenID(tokenId).
-			SetMetadata(singleCID).
-			SetMaxTransactionFee(hedera.NewHbar(maxTransactionFee)).
-			FreezeWith(client)
-		if err != nil {
-			fmt.Println("Error while creating mint transaction:", err)
-			continue
-		}
+	// Mint new NFT
+	mintTx := must(hedera.NewTokenMintTransaction().
+		SetTokenID(tokenID).
+		SetMetadatas(cid).
+		SetMaxTransactionFee(hedera.NewHbar(20)).
+		FreezeWith(client))
+		
+	// Sign the transaction with the supply key
+	mintSigned := mintTx.Sign(supplyKey)
+	
+	// Submit the transaction to a Hedera network
+	mintSubmit := must(mintSigned.Execute(client))
+	
+	// Get the transaction receipt
+	mintRx := must(mintSubmit.GetReceipt(client))
+	
+	// Log the serial number
+	fmt.Printf("Created NFT %s with serial number(s): %v\n\n", tokenID, mintRx.SerialNumbers)
 
-		mintTxSign := mintTx.Sign(supplyKey)
-		mintTxSubmit, err := mintTxSign.Execute(client)
-		if err != nil {
-			fmt.Println("Error while executing mint transaction:", err)
-			continue
-		}
+	// Create the associate transaction and associate Alice once
+	associateAlice := must(hedera.NewTokenAssociateTransaction().
+		SetAccountID(aliceID).
+		SetTokenIDs(tokenID). // single token id
+		FreezeWith(client))
+		
+	// Sign with Alice's key
+	associateAliceSigned := associateAlice.Sign(aliceKey)
+	
+	// Submit the transaction to a Hedera network
+	associateAliceSubmit := must(associateAliceSigned.Execute(client))
+	
+	// Get the transaction receipt
+	associateAliceRx := must(associateAliceSubmit.GetReceipt(client))
+	
+	// Confirm the transaction was successful
+	fmt.Println("NFT association with Alice's account:", associateAliceRx.Status, "✅")
 
-		mintRx, err := mintTxSubmit.GetReceipt(client)
-		if err != nil {
-			fmt.Println("Error while getting mint transaction receipt:", err)
-			continue
-		}
+	// Check the balances before the transfer for the treasury/Alice accounts
+	treasuryBal := must(hedera.NewAccountBalanceQuery().SetAccountID(treasuryID).Execute(client))
+	treasuryNftBefore := (&treasuryBal.Tokens).Get(tokenID)
+	aliceBal := must(hedera.NewAccountBalanceQuery().SetAccountID(aliceID).Execute(client))
+	aliceNftBefore := (&aliceBal.Tokens).Get(tokenID)
 
-		fmt.Printf("Created NFT %s with serial: %d\n", tokenId, mintRx.SerialNumbers[0])
+	fmt.Printf("- Treasury balance: %d NFTs of ID %s\n", treasuryNftBefore, tokenID)
+	fmt.Printf("- Alice's balance: %d NFTs of ID %s\n", aliceNftBefore, tokenID)
 
-		// Create the associate transaction
-		associateAliceTx, err := hedera.NewTokenAssociateTransaction().
-			SetAccountID(aliceAccountId).
-			SetTokenIDs(tokenId).
-			FreezeWith(client)
-		if err != nil {
-			panic(err)
-		}
+	// Transfer the NFT from treasury to Alice
+	transfer := must(hedera.NewTransferTransaction().
+		AddNftTransfer(hedera.NftID{TokenID: tokenID, SerialNumber: 1}, treasuryID, aliceID).
+		FreezeWith(client))
+		
+	// Sign with the treasury key to authorize the transfer
+	transferSigned := transfer.Sign(treasuryKey)
+	
+	// Submit the transaction
+	transferSubmit := must(transferSigned.Execute(client))
+	
+	// Get the transaction receipt
+	transferRx := must(transferSubmit.GetReceipt(client))
+	
+	fmt.Println("\nNFT transfer from Treasury to Alice:", transferRx.Status, "✅")
 
-		// Sign with Alice's key
-		signTx := associateAliceTx.Sign(aliceKey)
+	// Check the balances of the treasury/Alice accounts after the transfer
+	treasuryBal2 := must(hedera.NewAccountBalanceQuery().SetAccountID(treasuryID).Execute(client))
+	treasuryNftAfter := (&treasuryBal2.Tokens).Get(tokenID)
+	aliceBal2 := must(hedera.NewAccountBalanceQuery().SetAccountID(aliceID).Execute(client))
+	aliceNftAfter := (&aliceBal2.Tokens).Get(tokenID)
 
-		// Submit the transaction to a Hedera network
-		associateAliceTxSubmit, err := signTx.Execute(client)
-
-		// Get the transaction receipt
-		associateAliceRx, err := associateAliceTxSubmit.GetReceipt(client)
-
-		// Confirm the transaction was successful
-		fmt.Println("\nNFT association with Alice's account:", associateAliceRx.Status, "✅")
-
-		// Check the balance before the transfer for the treasury account
-		balanceCheckTreasury, err := hedera.NewAccountBalanceQuery().SetAccountID(treasuryAccountId).Execute(client)
-		if err != nil {
-			panic(err)
-		}
-		treasuryNftBalance := balanceCheckTreasury.Tokens.Get(tokenId)
-		fmt.Println("- Treasury balance:", treasuryNftBalance, "NFTs of ID", tokenId)
-
-		// Check the balance before the transfer for Alice's account
-		balanceCheckAlice, err := hedera.NewAccountBalanceQuery().SetAccountID(aliceAccountId).Execute(client)
-		if err != nil {
-			panic(err)
-		}
-		aliceNftBalance := balanceCheckAlice.Tokens.Get(tokenId)
-		fmt.Println("- Alice's balance:", aliceNftBalance, "NFTs of ID", tokenId)
-
-		// Transfer the NFT from treasury to Alice
-		tokenTransferTx, err := hedera.NewTransferTransaction().
-			AddNftTransfer(hedera.NftID{TokenID: tokenId, SerialNumber: 1}, treasuryAccountId, aliceAccountId).
-			FreezeWith(client)
-		if err != nil {
-			panic(err)
-		}
-
-		// Sign with the treasury key to authorize the transfer
-		signTransferTx := tokenTransferTx.Sign(treasuryKey)
-
-		tokenTransferSubmit, err := signTransferTx.Execute(client)
-		tokenTransferRx, err := tokenTransferSubmit.GetReceipt(client)
-
-		fmt.Println("\nNFT transfer from Treasury to Alice:", tokenTransferRx.Status, "✅")
-
-		// Check the balance of the treasury account after the transfer
-		balanceCheckTreasury2, err := hedera.NewAccountBalanceQuery().SetAccountID(treasuryAccountId).Execute(client)
-		if err != nil {
-			panic(err)
-		}
-		treasuryNftBalance2 := balanceCheckTreasury2.Tokens.Get(tokenId)
-		fmt.Println("- Treasury balance:", treasuryNftBalance2, "NFTs of ID ", tokenId)
-
-		// Check the balance of Alice's account after the transfer
-		balanceCheckAlice2, err := hedera.NewAccountBalanceQuery().SetAccountID(aliceAccountId).Execute(client)
-		if err != nil {
-			panic(err)
-		}
-		aliceNftBalance2 := balanceCheckAlice2.Tokens.Get(tokenId)
-		fmt.Println("- Alice's balance:", aliceNftBalance2, "NFTs of ID ", tokenId, "\n")
-	}
+	fmt.Printf("- Treasury balance: %d NFTs of ID %s\n", treasuryNftAfter, tokenID)
+	fmt.Printf("- Alice's balance: %d NFTs of ID %s\n\n", aliceNftAfter, tokenID)
 }
-
 ```
 
 </details>

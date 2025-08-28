@@ -62,6 +62,8 @@ public class CreateTopicDemo {
             .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString( ));
+        System.out.println(response.body());
+        System.out.println(response.statusCode());
         Gson gson = new Gson();
         JsonObject data = gson.fromJson(response.body(), JsonObject.class);
 

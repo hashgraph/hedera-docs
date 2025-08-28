@@ -2,7 +2,7 @@ name: Examples Check
 
 on:
   schedule:
-    - cron: "0 16 * * *"     # daily at 16:00 UTC
+    - cron: "0 16 * * 0"
   workflow_dispatch:
   push:
     branches:
@@ -146,7 +146,6 @@ jobs:
           fi
 
 
-
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -203,7 +202,7 @@ jobs:
           signoff: true
           title: "chore: example run status"
           body: "Automated run of examples"
-          branch: "bot/java-example-check"
+          branch: "bot/examples-check"
           add-paths: ${{ env.STATUS_FILE }}
           # If your token can't create labels, remove the next line
           labels: automated-pr

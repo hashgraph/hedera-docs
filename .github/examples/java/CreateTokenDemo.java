@@ -63,6 +63,7 @@ public class CreateTokenDemo {
         "%s/accounts/%s/tokens?token.id=%s",
         mirrorNode, operatorId, tokenId
         );
+        System.out.println(mirrorNodeUrl);
 
         
         HttpClient httpClient = HttpClient.newHttpClient( );

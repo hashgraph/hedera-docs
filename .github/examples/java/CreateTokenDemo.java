@@ -68,6 +68,8 @@ public class CreateTokenDemo {
         HttpClient httpClient = HttpClient.newHttpClient( );
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(mirrorNodeUrl)).build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString( ));
+        System.out.println(response.body());
+        System.out.println(response.statusCode());
         
         try {
             if (response.statusCode() != 200) {

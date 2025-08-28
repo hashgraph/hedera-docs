@@ -2,7 +2,7 @@
 
 ## Summary
 
-Using the Hedera Token Service, you can create non-fungible tokens (NFTs). NFTs are uniquely identifiable. On the Hedera network, the token ID represents a collection of NFTs of the same class, and the serial number of each token uniquely identifies each NFT in the class.
+Using the Hedera Token Service (HTS), you can create non-fungible tokens (NFTs). NFTs are uniquely identifiable. On the Hedera network, the token ID represents a collection of NFTs of the same class, and the serial number of each token uniquely identifies each NFT in the class.
 
 ***
 
@@ -12,6 +12,7 @@ We recommend you complete the following introduction to get a basic understandin
 
 1. Get a [Hedera testnet account](../more-tutorials/create-and-fund-your-hedera-testnet-account.md).
 2. Set up your environment [here](../../getting-started-hedera-native-developers/quickstart.md).
+3. [Getting Started: Create a Token](../../getting-started-hedera-native-developers/create-a-token.md).
 
 ***
 

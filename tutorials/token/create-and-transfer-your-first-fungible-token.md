@@ -12,6 +12,7 @@ We recommend you complete the following introduction to get a basic understandin
 
 1. Get a [Hedera testnet account](../more-tutorials/create-and-fund-your-hedera-testnet-account.md).
 2. Set up your environment [here](../../getting-started-hedera-native-developers/quickstart.md).
+3. [Getting Started: Create a Token](../../getting-started-hedera-native-developers/create-a-token.md).
 
 ***
 
@@ -58,7 +59,7 @@ System.out.println("Created token with ID: " +tokenId);
 {% tab title="JavaScript" %}
 ```javascript
 // CREATE FUNGIBLE TOKEN (STABLECOIN)
-let tokenCreateTx = await new TokenCreateTransaction()
+let tokenCreateTx = new TokenCreateTransaction()
 	.setTokenName("USD Bar")
 	.setTokenSymbol("USDB")
 	.setTokenType(TokenType.FungibleCommon)
@@ -70,19 +71,16 @@ let tokenCreateTx = await new TokenCreateTransaction()
 	.freezeWith(client);
 
 //SIGN WITH TREASURY KEY
-let tokenCreateSign = await tokenCreateTx.sign(treasuryKey);
+const tokenCreateSign = await tokenCreateTx.sign(treasuryKey);
 
 //SUBMIT THE TRANSACTION
-let tokenCreateSubmit = await tokenCreateSign.execute(client);
+const tokenCreateSubmit = await tokenCreateSign.execute(client);
 
 //GET THE TRANSACTION RECEIPT
-let tokenCreateRx = await tokenCreateSubmit.getReceipt(client);
-
-//GET THE TOKEN ID
-let tokenId = tokenCreateRx.tokenId;
+const tokenId = (await tokenCreateSubmit.getReceipt(client)).tokenId;
 
 //LOG THE TOKEN ID TO THE CONSOLE
-console.log(`- Created token with ID: ${tokenId} \n`);
+console.log(`\nCreated fungible token with token ID ${tokenId}\n`);
 ```
 {% endtab %}
 
@@ -141,27 +139,30 @@ TransactionResponse associateAliceTxSubmit = associateAliceTx.execute(client);
 TransactionReceipt associateAliceRx = associateAliceTxSubmit.getReceipt(client);
         
 //LOG THE TRANSACTION STATUS
-System.out.println("Token association with Alice's account: " +associateAliceRx.status);
+System.out.println(
+        "STABLECOIN token association with Alice's account: " 
+                + associateAliceRx.status + " ✅");
 ```
 {% endtab %}
 
 {% tab title="JavaScript" %}
 ```javascript
 // TOKEN ASSOCIATION WITH ALICE's ACCOUNT
-let associateAliceTx = await new TokenAssociateTransaction()
-	.setAccountId(aliceId)
-	.setTokenIds([tokenId])
-	.freezeWith(client)
-	.sign(aliceKey);
-
-//SUBMIT THE TRANSACTION
-let associateAliceTxSubmit = await associateAliceTx.execute(client);
-
-//GET THE RECEIPT OF THE TRANSACTION
-let associateAliceRx = await associateAliceTxSubmit.getReceipt(client);
-
+const associateAliceTx = await new TokenAssociateTransaction()
+    .setAccountId(aliceId)
+    .setTokenIds([tokenId])
+    .freezeWith(client)
+    .sign(aliceKey);
+    
+//SUBMIT and GET THE RECEIPT OF THE TRANSACTION
+const associateAliceRx = await (
+    await associateAliceTx.execute(client)
+  ).getReceipt(client);
+  
 //LOG THE TRANSACTION STATUS
-console.log(`- Token association with Alice's account: ${associateAliceRx.status} \n`);
+console.log(
+    `STABLECOIN token association with Alice's account: 
+        ${associateAliceRx.status} ✅`);
 ```
 {% endtab %}
 
@@ -183,7 +184,9 @@ associateAliceTxSubmit, err := signTx.Execute(client)
 associateAliceRx, err := associateAliceTxSubmit.GetReceipt(client)
 
 //LOG THE TRANSACTION STATUS
-fmt.Println("Non-fungible token association with Alice's account:", associateAliceRx.Status)
+fmt.Println(
+	"STABLECOIN token association with Alice's account:", 
+		associateAliceRx.Status, "✅")
 ```
 {% endtab %}
 {% endtabs %}
@@ -192,18 +195,27 @@ fmt.Println("Non-fungible token association with Alice's account:", associateAli
 
 ## 3. Transfer the Token
 
-Now, transfer 25 units of the token from the Treasury to Alice and check the account balances before and after the transfer.
+Now, transfer 5 units of the token from the Treasury to Alice and check the account balances before and after the transfer.
 
 {% tabs %}
 {% tab title="Java" %}
 ```java
-//BALANCE CHECK
-AccountBalance balanceCheckTreasury = new AccountBalanceQuery().setAccountId(treasuryId).execute(client);
-System.out.println(" Treasury balance: " +balanceCheckTreasury.tokens + " units of token ID" +tokenId);
-AccountBalance balanceCheckAlice = new AccountBalanceQuery().setAccountId(aliceAccountId).execute(client);
-System.out.println("Alice's balance: " + balanceCheckAlice.tokens + " units of token ID " + tokenId);
+// BALANCE CHECK BEFORE TRANSFER
+AccountBalance balanceCheckTreasury = new AccountBalanceQuery()
+        .setAccountId(treasuryId)
+        .execute(client);
+System.out.println(
+        "- Treasury balance: " + balanceCheckTreasury.tokens.get(tokenId) +
+                " units of token ID " + tokenId);
 
-//TRANSFER STABLECOIN FROM TREASURY TO ALICE
+AccountBalance balanceCheckAlice = new AccountBalanceQuery()
+        .setAccountId(aliceAccountId)
+        .execute(client);
+System.out.println(
+        "- Alice's balance: " + balanceCheckAlice.tokens.get(tokenId) +
+                " units of token ID " + tokenId + "\n");
+
+// TRANSFER 5 STABLECOIN FROM TREASURY TO ALICE
 TransferTransaction tokenTransferTx = new TransferTransaction()
         .addTokenTransfer(tokenId, treasuryId, -5)
         .addTokenTransfer(tokenId, aliceAccountId, 5)
@@ -217,13 +229,24 @@ TransactionResponse tokenTransferSubmit = tokenTransferTx.execute(client);
 TransactionReceipt tokenTransferRx = tokenTransferSubmit.getReceipt(client);
         
 //LOG THE TRANSACTION STATUS
-System.out.println("Stablecoin transfer from Treasury to Alice: " + tokenTransferRx.status );
+System.out.println(
+        "Stablecoin transfer from Treasury to Alice: " 
+                + tokenTransferRx.status + " ✅");
 
-//BALANCE CHECK
-AccountBalance balanceCheckTreasury2 = new AccountBalanceQuery().setAccountId(treasuryId).execute(client);
-System.out.println("Treasury balance " + balanceCheckTreasury2.tokens +  " units of token ID " + tokenId);
-AccountBalance balanceCheckAlice2 = new AccountBalanceQuery().setAccountId(aliceAccountId).execute(client);
-System.out.println("Alice's balance: " +balanceCheckAlice2.tokens + " units of token ID " + tokenId);
+// BALANCE CHECK AFTER TRANSFER
+AccountBalance balanceCheckTreasury2 = new AccountBalanceQuery()
+        .setAccountId(treasuryId)
+        .execute(client);
+System.out.println(
+        "- Treasury balance: " + balanceCheckTreasury2.tokens.get(tokenId) +
+                " units of token ID " + tokenId);
+
+AccountBalance balanceCheckAlice2 = new AccountBalanceQuery()
+        .setAccountId(aliceAccountId)
+        .execute(client);
+System.out.println(
+        "- Alice's balance: " + balanceCheckAlice2.tokens.get(tokenId) +
+                " units of token ID " + tokenId + "\n");
         
 ```
 {% endtab %}
@@ -231,46 +254,85 @@ System.out.println("Alice's balance: " +balanceCheckAlice2.tokens + " units of t
 {% tab title="JavaScript" %}
 ```javascript
 //BALANCE CHECK
-var balanceCheckTx = await new AccountBalanceQuery().setAccountId(treasuryId).execute(client);
-console.log(`- Treasury balance: ${balanceCheckTx.tokens._map.get(tokenId.toString())} units of token ID ${tokenId}`);
-var balanceCheckTx = await new AccountBalanceQuery().setAccountId(aliceId).execute(client);
-console.log(`- Alice's balance: ${balanceCheckTx.tokens._map.get(tokenId.toString())} units of token ID ${tokenId}`);
+const balanceCheckTreasury = await new AccountBalanceQuery()
+    .setAccountId(treasuryId)
+    .execute(client);
+  console.log(
+    `- Treasury balance: ${getTokenBalance(
+      balanceCheckTreasury,
+      tokenId
+    )} units of token ID ${tokenId}`
+  );
+
+  const balanceCheckAlice = await new AccountBalanceQuery()
+    .setAccountId(aliceId)
+    .execute(client);
+  console.log(
+    `- Alice's balance: ${getTokenBalance(
+      balanceCheckAlice,
+      tokenId
+    )} units of token ID ${tokenId}\n`
+  );
+
 
 // TRANSFER STABLECOIN FROM TREASURY TO ALICE
-let tokenTransferTx = await new TransferTransaction()
-	.addTokenTransfer(tokenId, treasuryId, -5)
-	.addTokenTransfer(tokenId, aliceId, 5)
-	.freezeWith(client)
-	.sign(treasuryKey);
-
-//SUBMIT THE TRANSACTION
-let tokenTransferSubmit = await tokenTransferTx.execute(client);
-
-//GET THE RECEIPT OF THE TRANSACTION
-let tokenTransferRx = await tokenTransferSubmit.getReceipt(client);
-
+const tokenTransferTx = await new TransferTransaction()
+    .addTokenTransfer(tokenId, treasuryId, -5)
+    .addTokenTransfer(tokenId, aliceId, 5)
+    .freezeWith(client)
+    .sign(treasuryKey);
+    
+//SUBMIT and GET THE RECEIPT OF THE TRANSACTION
+const tokenTransferRx = await (
+  await tokenTransferTx.execute(client)
+).getReceipt(client);
+  
 //LOG THE TRANSACTION STATUS
-console.log(`\n- Stablecoin transfer from Treasury to Alice: ${tokenTransferRx.status} \n`);
+console.log(
+  `Stablecoin transfer from Treasury to Alice: ${tokenTransferRx.status} ✅`
+);
 
 // BALANCE CHECK
-var balanceCheckTx = await new AccountBalanceQuery().setAccountId(treasuryId).execute(client);
-console.log(`- Treasury balance: ${balanceCheckTx.tokens._map.get(tokenId.toString())} units of token ID ${tokenId}`);
-var balanceCheckTx = await new AccountBalanceQuery().setAccountId(aliceId).execute(client);
-console.log(`- Alice's balance: ${balanceCheckTx.tokens._map.get(tokenId.toString())} units of token ID ${tokenId}`);
+const balanceCheckTreasury2 = await new AccountBalanceQuery()
+    .setAccountId(treasuryId)
+    .execute(client);
+
+console.log(
+    `- Treasury balance: ${getTokenBalance(
+      balanceCheckTreasury2,
+      tokenId
+    )} units of token ID ${tokenId}`
+  );
+
+const balanceCheckAlice2 = await new AccountBalanceQuery()
+  .setAccountId(aliceId)
+  .execute(client);
+console.log(
+  `- Alice's balance: ${getTokenBalance(
+    balanceCheckAlice2,
+    tokenId
+  )} units of token ID ${tokenId}\n`
+);
 ```
 {% endtab %}
 
 {% tab title="Go" %}
 ```go
 //CHECK THE BALANCE BEFORE THE TRANSFER FROM THE TREASURY ACCOUNT
-balanceCheckTreasury, err := hedera.NewAccountBalanceQuery().SetAccountID(treasuryAccountId).Execute(client)
-fmt.Println("Treasury balance:", balanceCheckTreasury.Tokens, "units of token ID", tokenId)
+balanceCheckTreasury, err := hedera.NewAccountBalanceQuery().
+	SetAccountID(treasuryAccountId).
+	Execute(client)
+treasuryBalance := balanceCheckTreasury.Tokens.Get(tokenId)
+fmt.Printf("Treasury balance: %d units of token %s\n", treasuryBalance, tokenId)
 
 //CHECK THE BALANCE BEFORE THE TRANSFER FOR ALICE'S ACCOUNT
-balanceCheckAlice, err := hedera.NewAccountBalanceQuery().SetAccountID(aliceAccountId).Execute(client)
-fmt.Println("Alice's balance:", balanceCheckAlice.Tokens, "units of token ID", tokenId)
+balanceCheckAlice, err := hedera.NewAccountBalanceQuery().
+	SetAccountID(aliceAccountId).
+	Execute(client)
+aliceBalance := balanceCheckAlice.Tokens.Get(tokenId)
+fmt.Printf("Alice's balance: %d units of token %s\n\n", aliceBalance, tokenId)
 
-//TRANSFER THE STABLECOIN TO ALICE
+//TRANSFER THE STABLECOIN FROM TREASURY TO ALICE
 tokenTransferTx, err := hedera.NewTransferTransaction().
 	AddTokenTransfer(tokenId, treasuryAccountId, -5).
 	AddTokenTransfer(tokenId, aliceAccountId, 5).
@@ -285,15 +347,21 @@ tokenTransferSubmit, err := signTransferTx.Execute(client)
 //GET THE TRANSACTION RECEIPT
 tokenTransferRx, err := tokenTransferSubmit.GetReceipt(client)
 
-fmt.Println("Token transfer from Treasury to Alice:", tokenTransferRx.Status)
+fmt.Println("\nToken transfer from Treasury to Alice:", tokenTransferRx.Status, "✅")
 
 //CHECK THE BALANCE AFTER THE TRANSFER FOR THE TREASURY ACCOUNT
-balanceCheckTreasury2, err := hedera.NewAccountBalanceQuery().SetAccountID(treasuryAccountId).Execute(client)
-fmt.Println("Treasury balance:", balanceCheckTreasury2.Tokens, "units of token", tokenId)
+balanceCheckTreasury2, err := hedera.NewAccountBalanceQuery().
+	SetAccountID(treasuryAccountId).
+	Execute(client)
+treasuryBalance2 := balanceCheckTreasury2.Tokens.Get(tokenId)
+fmt.Printf("Treasury balance: %d units of token %s\n", treasuryBalance2, tokenId)
 
 //CHECK THE BALANCE AFTER THE TRANSFER FOR ALICE'S ACCOUNT
-balanceCheckAlice2, err := hedera.NewAccountBalanceQuery().SetAccountID(aliceAccountId).Execute(client)
-gofmt.Println("Alice's balance:", balanceCheckAlice2.Tokens, "units of token", tokenId)
+balanceCheckAlice2, err := hedera.NewAccountBalanceQuery().
+	SetAccountID(aliceAccountId).
+	Execute(client)
+aliceBalance2 := balanceCheckAlice2.Tokens.Get(tokenId)
+fmt.Printf("Alice's balance: %d units of token %s\n\n", aliceBalance2, tokenId)
 ```
 {% endtab %}
 {% endtabs %}
@@ -311,124 +379,125 @@ import com.hedera.hashgraph.sdk.*;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.util.Collections;
-import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 
 public class CreateFungibleTutorial {
-    public static void main(String[] args) throws TimeoutException, PrecheckStatusException, ReceiptStatusException {
+        public static void main(String[] args)
+                        throws TimeoutException, PrecheckStatusException, ReceiptStatusException {
 
-        //Grab your Hedera testnet account ID and private key
-        AccountId operatorId = AccountId.fromString(Objects.requireNonNull(Dotenv.load().get("OPERATOR_ID")));
-        PrivateKey operatorKey = PrivateKey.fromString(Objects.requireNonNull(Dotenv.load().get("OPERATOR_KEY")));
+                // LOADS THE .ENV FILE
+                Dotenv dotenv = Dotenv.load();
+                AccountId operatorId = AccountId.fromString(dotenv.get("OPERATOR_ID"));
+                PrivateKey operatorKey = PrivateKey.fromStringDER(dotenv.get("OPERATOR_KEY"));
+     
+                // CREATE TESTNET CLIENT
+                Client client = Client.forTestnet();
+                client.setOperator(operatorId, operatorKey);
 
-        //Create your Hedera testnet client
-        Client client = Client.forTestnet();
-        client.setOperator(operatorId, operatorKey);
+                try {
+                        // Generate Treasury key
+                        PrivateKey treasuryKey = PrivateKey.generateECDSA();
+                        PublicKey treasuryPublicKey = treasuryKey.getPublicKey();
 
-        //Treasury Key
-        PrivateKey treasuryKey = PrivateKey.generateECDSA();
-        PublicKey treasuryPublicKey = treasuryKey.getPublicKey();
+                        // Generate Treasury account
+                        TransactionResponse treasuryAccount = new AccountCreateTransaction()
+                                        .setKeyWithAlias(treasuryPublicKey)
+                                        .setInitialBalance(new Hbar(1))
+                                        .execute(client);
 
-        //Create treasury account
-        TransactionResponse treasuryAccount = new AccountCreateTransaction()
-                .setKey(treasuryPublicKey)
-                //Do NOT set an alias if you need to update/rotate keys in the future
-                .setAlias(treasuryPublicKey.toEvmAddress())
-                .setInitialBalance(new Hbar(1))
-                .execute(client);
+                        AccountId treasuryId = treasuryAccount.getReceipt(client).accountId;
 
-        AccountId treasuryId = treasuryAccount.getReceipt(client).accountId;
+                        // Generate Alice's key
+                        PrivateKey aliceKey = PrivateKey.generateECDSA();
+                        PublicKey alicePublicKey = aliceKey.getPublicKey();
 
-        //Alice Key
-        PrivateKey aliceKey = PrivateKey.generateECDSA();
-        PublicKey alicePublicKey = aliceKey.getPublicKey();
+                        // Create Alice's account
+                        TransactionResponse aliceAccount = new AccountCreateTransaction()
+                                        .setKeyWithAlias(alicePublicKey)
+                                        .setInitialBalance(new Hbar(1))
+                                        .execute(client);
 
-        //Create Alice's account
-        TransactionResponse aliceAccount = new AccountCreateTransaction()
-                .setKey(alicePublicKey)
-                //Do NOT set an alias if you need to update/rotate keys in the future
-                .setAlias(alicePublicKey.toEvmAddress())
-                .setInitialBalance(new Hbar(1))
-                .execute(client);
+                        AccountId aliceAccountId = aliceAccount.getReceipt(client).accountId;
 
-        AccountId aliceAccountId = aliceAccount.getReceipt(client).accountId;
+                        // Generate supply key
+                        PrivateKey supplyKey = PrivateKey.generateECDSA();
 
-        //Alice Key
-        PrivateKey supplyKey = PrivateKey.generateECDSA();
-        PublicKey supplyPublicKey = supplyKey.getPublicKey();
+                        // Create fungible token (stablecoin)
+                        TokenCreateTransaction tokenCreateTx = new TokenCreateTransaction()
+                                        .setTokenName("USD Bar")
+                                        .setTokenSymbol("USDB")
+                                        .setTokenType(TokenType.FUNGIBLE_COMMON)
+                                        .setDecimals(2)
+                                        .setInitialSupply(10000)
+                                        .setTreasuryAccountId(treasuryId)
+                                        .setSupplyType(TokenSupplyType.INFINITE)
+                                        .setSupplyKey(supplyKey)
+                                        .freezeWith(client);
 
-        // CREATE FUNGIBLE TOKEN (STABLECOIN)
-        TokenCreateTransaction tokenCreateTx = new TokenCreateTransaction()
-                .setTokenName("USD Bar")
-                .setTokenSymbol("USDB")
-                .setTokenType(TokenType.FUNGIBLE_COMMON)
-                .setDecimals(2)
-                .setInitialSupply(10000)
-                .setTreasuryAccountId(treasuryId)
-                .setSupplyType(TokenSupplyType.INFINITE)
-                .setSupplyKey(supplyKey)
-                .freezeWith(client);
+                        TokenCreateTransaction tokenCreateSign = tokenCreateTx.sign(treasuryKey);
+                        TransactionResponse tokenCreateSubmit = tokenCreateSign.execute(client);
+                        TransactionReceipt tokenCreateRx = tokenCreateSubmit.getReceipt(client);
+                        TokenId tokenId = tokenCreateRx.tokenId;
 
-        //Sign with the treasury key
-        TokenCreateTransaction tokenCreateSign = tokenCreateTx.sign(treasuryKey);
+                        System.out.println("\nCreated token with ID: " + tokenId + "\n");
 
-        //Submit the transaction
-        TransactionResponse tokenCreateSubmit = tokenCreateSign.execute(client);
+                        // TOKEN ASSOCIATION WITH ALICE'S ACCOUNT
+                        TokenAssociateTransaction associateAliceTx = new TokenAssociateTransaction()
+                                        .setAccountId(aliceAccountId)
+                                        .setTokenIds(Collections.singletonList(tokenId))
+                                        .freezeWith(client)
+                                        .sign(aliceKey);
 
-        //Get the transaction receipt
-        TransactionReceipt tokenCreateRx = tokenCreateSubmit.getReceipt(client);
+                        TransactionResponse associateAliceTxSubmit = associateAliceTx.execute(client);
+                        TransactionReceipt associateAliceRx = associateAliceTxSubmit.getReceipt(client);
+                        System.out.println("STABLECOIN token association with Alice's account: " + associateAliceRx.status + " ✅");
 
-        //Get the token ID
-        TokenId tokenId = tokenCreateRx.tokenId;
+                        // BALANCE CHECK BEFORE TRANSFER
+                        AccountBalance balanceCheckTreasury = new AccountBalanceQuery()
+                                        .setAccountId(treasuryId)
+                                        .execute(client);
+                        System.out.println("- Treasury balance: " +
+                                        balanceCheckTreasury.tokens.get(tokenId) +
+                                        " units of token ID " + tokenId);
 
-        //Log the token ID to the console
-        System.out.println("Created token with ID: " +tokenId);
+                        AccountBalance balanceCheckAlice = new AccountBalanceQuery()
+                                        .setAccountId(aliceAccountId)
+                                        .execute(client);
+                        System.out.println("- Alice's balance: " +
+                                        balanceCheckAlice.tokens.get(tokenId) +
+                                        " units of token ID " + tokenId + "\n");
 
-        // TOKEN ASSOCIATION WITH ALICE's ACCOUNT
-        TokenAssociateTransaction associateAliceTx = new TokenAssociateTransaction()
-                .setAccountId(aliceAccountId)
-                .setTokenIds(Collections.singletonList(tokenId))
-	        .freezeWith(client)
-                .sign(aliceKey);
+                        // TRANSFER 5 STABLECOIN FROM TREASURY TO ALICE
+                        TransferTransaction tokenTransferTx = new TransferTransaction()
+                                        .addTokenTransfer(tokenId, treasuryId, -5)
+                                        .addTokenTransfer(tokenId, aliceAccountId, 5)
+                                        .freezeWith(client)
+                                        .sign(treasuryKey);
 
-        //Submit the transaction
-        TransactionResponse associateAliceTxSubmit = associateAliceTx.execute(client);
+                        TransactionResponse tokenTransferSubmit = tokenTransferTx.execute(client);
+                        TransactionReceipt tokenTransferRx = tokenTransferSubmit.getReceipt(client);
+                        System.out.println(
+                                        "Stablecoin transfer from Treasury to Alice: " + tokenTransferRx.status + " ✅");
 
-        //Get the receipt of the transaction
-        TransactionReceipt associateAliceRx = associateAliceTxSubmit.getReceipt(client);
+                        // BALANCE CHECK AFTER TRANSFER
+                        AccountBalance balanceCheckTreasury2 = new AccountBalanceQuery()
+                                        .setAccountId(treasuryId)
+                                        .execute(client);
+                        System.out.println("- Treasury balance: " +
+                                        balanceCheckTreasury2.tokens.get(tokenId) +
+                                        " units of token ID " + tokenId);
 
-        //Get the transaction status
-        System.out.println("Token association with Alice's account: " +associateAliceRx.status);
+                        AccountBalance balanceCheckAlice2 = new AccountBalanceQuery()
+                                        .setAccountId(aliceAccountId)
+                                        .execute(client);
+                        System.out.println("- Alice's balance: " +
+                                        balanceCheckAlice2.tokens.get(tokenId) +
+                                        " units of token ID " + tokenId + "\n");
 
-        // BALANCE CHECK
-        AccountBalance balanceCheckTreasury = new AccountBalanceQuery().setAccountId(treasuryId).execute(client);
-        System.out.println(" Treasury balance: " +balanceCheckTreasury.tokens + " units of token ID" +tokenId);
-        AccountBalance balanceCheckAlice = new AccountBalanceQuery().setAccountId(aliceAccountId).execute(client);
-        System.out.println("Alice's balance: " + balanceCheckAlice.tokens + " units of token ID " + tokenId);
-
-        // TRANSFER STABLECOIN FROM TREASURY TO ALICE
-        TransferTransaction tokenTransferTx = new TransferTransaction()
-                .addTokenTransfer(tokenId, treasuryId, -5)
-                .addTokenTransfer(tokenId, aliceAccountId, 5)
-                .freezeWith(client)
-                .sign(treasuryKey);
-
-        //SUBMIT THE TRANSACTION
-        TransactionResponse tokenTransferSubmit = tokenTransferTx.execute(client);
-
-        //GET THE RECEIPT OF THE TRANSACTION
-        TransactionReceipt tokenTransferRx = tokenTransferSubmit.getReceipt(client);
-
-        //LOG THE TRANSACTION STATUS
-        System.out.println("Stablecoin transfer from Treasury to Alice: " + tokenTransferRx.status );
-
-        // BALANCE CHECK
-        AccountBalance balanceCheckTreasury2 = new AccountBalanceQuery().setAccountId(treasuryId).execute(client);
-        System.out.println("Treasury balance " + balanceCheckTreasury2.tokens +  " units of token ID " + tokenId);
-        AccountBalance balanceCheckAlice2 = new AccountBalanceQuery().setAccountId(aliceAccountId).execute(client);
-        System.out.println("Alice's balance: " +balanceCheckAlice2.tokens + " units of token ID " + tokenId);
-
-    }
+                } finally {
+                        client.close();
+                }
+        }
 }
 ```
 
@@ -440,83 +509,168 @@ public class CreateFungibleTutorial {
 
 ```javascript
 console.clear();
-require("dotenv").config();
-const {
-	AccountId,
-	PrivateKey,
-	Client,
-	TokenCreateTransaction,
-	TokenType,
-	TokenSupplyType,
-	TransferTransaction,
-	AccountBalanceQuery,
-	TokenAssociateTransaction,
-} = require("@hashgraph/sdk");
+import "dotenv/config";
+import {
+  Client,
+  Hbar,
+  PrivateKey,
+  AccountCreateTransaction,
+  AccountBalanceQuery,
+  TokenCreateTransaction,
+  TokenAssociateTransaction,
+  TransferTransaction,
+  TokenType,
+  TokenSupplyType,
+} from "@hashgraph/sdk";
 
-// Configure accounts and client, and generate needed keys
-const operatorId = AccountId.fromString(process.env.OPERATOR_ID);
-const operatorKey = PrivateKey.fromString(process.env.OPERATOR_PVKEY);
-const treasuryId = AccountId.fromString(process.env.TREASURY_ID);
-const treasuryKey = PrivateKey.fromString(process.env.TREASURY_PVKEY);
-const aliceId = AccountId.fromString(process.env.ALICE_ID);
-const aliceKey = PrivateKey.fromString(process.env.ALICE_PVKEY);
+// LOADS THE .ENV FILE
+const operatorId = process.env.OPERATOR_ID;
+const operatorKey = process.env.OPERATOR_KEY;
 
+// CREATE TESTNET CLIENT
 const client = Client.forTestnet().setOperator(operatorId, operatorKey);
 
-const supplyKey = PrivateKey.generateECDSA();
-
-async function createFungibleToken() {
-	//CREATE FUNGIBLE TOKEN (STABLECOIN)
-	let tokenCreateTx = await new TokenCreateTransaction()
-		.setTokenName("USD Bar")
-		.setTokenSymbol("USDB")
-		.setTokenType(TokenType.FungibleCommon)
-		.setDecimals(2)
-		.setInitialSupply(10000)
-		.setTreasuryAccountId(treasuryId)
-		.setSupplyType(TokenSupplyType.Infinite)
-		.setSupplyKey(supplyKey)
-		.freezeWith(client);
-
-	let tokenCreateSign = await tokenCreateTx.sign(treasuryKey);
-	let tokenCreateSubmit = await tokenCreateSign.execute(client);
-	let tokenCreateRx = await tokenCreateSubmit.getReceipt(client);
-	let tokenId = tokenCreateRx.tokenId;
-	console.log(`- Created token with ID: ${tokenId} \n`);
-
-	//TOKEN ASSOCIATION WITH ALICE's ACCOUNT
-	let associateAliceTx = await new TokenAssociateTransaction()
-		.setAccountId(aliceId)
-		.setTokenIds([tokenId])
-		.freezeWith(client)
-		.sign(aliceKey);
-	let associateAliceTxSubmit = await associateAliceTx.execute(client);
-	let associateAliceRx = await associateAliceTxSubmit.getReceipt(client);
-	console.log(`- Token association with Alice's account: ${associateAliceRx.status} \n`);
-
-	//BALANCE CHECK
-	var balanceCheckTx = await new AccountBalanceQuery().setAccountId(treasuryId).execute(client);
-	console.log(`- Treasury balance: ${balanceCheckTx.tokens._map.get(tokenId.toString())} units of token ID ${tokenId}`);
-	var balanceCheckTx = await new AccountBalanceQuery().setAccountId(aliceId).execute(client);
-	console.log(`- Alice's balance: ${balanceCheckTx.tokens._map.get(tokenId.toString())} units of token ID ${tokenId}`);
-
-	//TRANSFER STABLECOIN FROM TREASURY TO ALICE
-	let tokenTransferTx = await new TransferTransaction()
-		.addTokenTransfer(tokenId, treasuryId, -5)
-		.addTokenTransfer(tokenId, aliceId, 5)
-		.freezeWith(client)
-		.sign(treasuryKey);
-	let tokenTransferSubmit = await tokenTransferTx.execute(client);
-	let tokenTransferRx = await tokenTransferSubmit.getReceipt(client);
-	console.log(`\n- Stablecoin transfer from Treasury to Alice: ${tokenTransferRx.status} \n`);
-
-	//BALANCE CHECK
-	var balanceCheckTx = await new AccountBalanceQuery().setAccountId(treasuryId).execute(client);
-	console.log(`- Treasury balance: ${balanceCheckTx.tokens._map.get(tokenId.toString())} units of token ID ${tokenId}`);
-	var balanceCheckTx = await new AccountBalanceQuery().setAccountId(aliceId).execute(client);
-	console.log(`- Alice's balance: ${balanceCheckTx.tokens._map.get(tokenId.toString())} units of token ID ${tokenId}`);
+function getTokenBalance(accountBalance, tokenId) {
+  return (
+    accountBalance.tokens.get(tokenId) ??
+    accountBalance.tokens.get(tokenId.toString()) ??
+    0
+  );
 }
-createFungibleToken();
+
+async function run() {
+  // Generate Treasury key and account
+  const treasuryKey = PrivateKey.generateECDSA();
+  const treasuryPub = treasuryKey.publicKey;
+  const treasuryCreateTx = await new AccountCreateTransaction()
+    .setECDSAKeyWithAlias(treasuryPub) 
+    .setInitialBalance(new Hbar(20))
+    .execute(client);
+  const treasuryId = (await treasuryCreateTx.getReceipt(client)).accountId;
+
+  // Generate Alice key and account
+  const aliceKey = PrivateKey.generateECDSA();
+  const alicePub = aliceKey.publicKey;
+  const aliceCreateTx = await new AccountCreateTransaction()
+    .setECDSAKeyWithAlias(alicePub)
+    .setInitialBalance(new Hbar(20))
+    .execute(client);
+  const aliceId = (await aliceCreateTx.getReceipt(client)).accountId;
+
+  // Generate supply key
+  const supplyKey = PrivateKey.generateECDSA();
+
+  // CREATE FUNGIBLE TOKEN (STABLECOIN)token
+  let tokenCreateTx = new TokenCreateTransaction()
+    .setTokenName("USD Bar")
+    .setTokenSymbol("USDB")
+    .setTokenType(TokenType.FungibleCommon)
+    .setDecimals(2)
+    .setInitialSupply(10000)
+    .setTreasuryAccountId(treasuryId)
+    .setSupplyType(TokenSupplyType.Infinite)
+    .setSupplyKey(supplyKey.publicKey)
+    .freezeWith(client);
+
+  //SIGN WITH TREASURY KEY
+  const tokenCreateSign = await tokenCreateTx.sign(treasuryKey);
+  
+  //SUBMIT THE TRANSACTION
+  const tokenCreateSubmit = await tokenCreateSign.execute(client);
+  
+  //GET THE TRANSACTION RECEIPT
+  const tokenId = (await tokenCreateSubmit.getReceipt(client)).tokenId;
+
+  //LOG THE TOKEN ID TO THE CONSOLE
+  console.log(`\nCreated fungible token with token ID ${tokenId}\n`);
+
+  // TOKEN ASSOCIATION WITH ALICE's ACCOUNT
+  const associateAliceTx = await new TokenAssociateTransaction()
+    .setAccountId(aliceId)
+    .setTokenIds([tokenId])
+    .freezeWith(client)
+    .sign(aliceKey);
+    
+  //SUBMIT AND GET THE RECEIPT OF THE TRANSACTION
+  const associateAliceRx = await (
+    await associateAliceTx.execute(client)
+  ).getReceipt(client);
+  
+  //LOG THE TRANSACTION STATUS
+  console.log(
+    `STABLECOIN token association with Alice's account: ${associateAliceRx.status} ✅`
+  );
+
+  // BALANCE CHECK BEFORE TRANSFER
+  const balanceCheckTreasury = await new AccountBalanceQuery()
+    .setAccountId(treasuryId)
+    .execute(client);
+  console.log(
+    `- Treasury balance: ${getTokenBalance(
+      balanceCheckTreasury,
+      tokenId
+    )} units of token ID ${tokenId}`
+  );
+
+  const balanceCheckAlice = await new AccountBalanceQuery()
+    .setAccountId(aliceId)
+    .execute(client);
+  console.log(
+    `- Alice's balance: ${getTokenBalance(
+      balanceCheckAlice,
+      tokenId
+    )} units of token ID ${tokenId}\n`
+  );
+
+  // TRANSFER 5 STABLECOIN FROM TREASURY TO ALICE
+  const tokenTransferTx = await new TransferTransaction()
+    .addTokenTransfer(tokenId, treasuryId, -5)
+    .addTokenTransfer(tokenId, aliceId, 5)
+    .freezeWith(client)
+    .sign(treasuryKey);
+    
+  //SUBMIT AND GET THE RECEIPT OF THE TRANSACTION
+  const tokenTransferRx = await (
+    await tokenTransferTx.execute(client)
+  ).getReceipt(client);
+  
+  //LOG THE TRANSACTION STATUS
+  console.log(
+    `Stablecoin transfer from Treasury to Alice: ${tokenTransferRx.status} ✅`
+  );
+
+  // BALANCE CHECK AFTER TRANSFER
+  const balanceCheckTreasury2 = await new AccountBalanceQuery()
+    .setAccountId(treasuryId)
+    .execute(client);
+  console.log(
+    `- Treasury balance: ${getTokenBalance(
+      balanceCheckTreasury2,
+      tokenId
+    )} units of token ID ${tokenId}`
+  );
+
+  const balanceCheckAlice2 = await new AccountBalanceQuery()
+    .setAccountId(aliceId)
+    .execute(client);
+  console.log(
+    `- Alice's balance: ${getTokenBalance(
+      balanceCheckAlice2,
+      tokenId
+    )} units of token ID ${tokenId}\n`
+  );
+}
+
+(async () => {
+  try {
+    await run();
+  } catch (err) {
+    console.error(err);
+    process.exitCode = 1;
+  } finally {
+    await client.close();
+  }
+})();
 ```
 
 </details>
@@ -538,13 +692,13 @@ import (
 
 func main() {
 
-	//LOADS THE .ENV FILE AND THROWS AN EROOR IF IT CANNOT LOAD THE VARIABLES
+	// LOADS THE .ENV FILE AND THROWS AN EROOR IF IT CANNOT LOAD THE VARIABLES
 	err := godotenv.Load(".env")
 	if err != nil {
 		panic(fmt.Errorf("Unable to load environment variables from .env file. Error:\n%v\n", err))
 	}
 
-	//GRAB YOUR TESTNET ACCOUNT ID AND KEY FROMZ THE .ENV FILE
+	// GRAB YOUR TESTNET ACCOUNT ID AND KEY FROM THE .ENV FILE
 	operatorId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
 	if err != nil {
 		panic(err)
@@ -555,51 +709,61 @@ func main() {
 		panic(err)
 	}
 
-	//PRINT ACCOUNT ID AND KEY TO MAKE SURE THERE WASN'T AN ERROR READING FROM THE .ENV FILE
-	fmt.Printf("The account ID is = %v\n", operatorId)
-	fmt.Printf("The private key is = %v\n", operatorKey)
-
-	//CREATE TESTNET CLIENT
+	// CREATE TESTNET CLIENT
 	client := hedera.ClientForTestnet()
 	client.SetOperator(operatorId, operatorKey)
 
-	//CREATE TREASURY KEY
-	treasuryKey, err := hedera.GenerateEcdsaPrivateKey()
+	// GENERATE TREASURY KEY
+	treasuryKey, err := hedera.PrivateKeyGenerateEcdsa()
 	treasuryPublicKey := treasuryKey.PublicKey()
 
-	//CREATE TREASURY ACCOUNT
+	// CREATE TREASURY ACCOUNT
 	treasuryAccount, err := hedera.NewAccountCreateTransaction().
-    		SetKey(treasuryPublicKey).
-    		SetAlias(treasuryPublicKey.ToEvmAddress()).
-    		SetInitialBalance(hedera.NewHbar(1))
+		SetECDSAKeyWithAlias(treasuryPublicKey).
+		SetInitialBalance(hedera.NewHbar(20)).
 		Execute(client)
-	
-	//GET THE RECEIPT OF THE TRANSACTION
-	receipt, err := treasuryAccount.GetReceipt(client)
+	if err != nil {
+		panic(err)
+	}
 
-	//GET THE ACCOUNT ID
+	// GET THE RECEIPT OF THE TRANSACTION
+	receipt, err := treasuryAccount.GetReceipt(client)
+	if err != nil {
+		panic(err)
+	}
+
+	// GET THE ACCOUNT ID
 	treasuryAccountId := *receipt.AccountID
 
-	//ALICE'S KEY
-	aliceKey, err := hedera.GenerateEcdsaPrivateKey()
+	// GENERATE ALICE'S KEY
+	aliceKey, err := hedera.PrivateKeyGenerateEcdsa()
 	alicePublicKey := aliceKey.PublicKey()
 
-	//CREATE AILICE'S ACCOUNT
+	// CREATE AILICE'S ACCOUNT
 	aliceAccount, err := hedera.NewAccountCreateTransaction().
-		SetKey(alicePublicKey).
-		SetInitialBalance(hedera.NewHbar(5)).
+		SetECDSAKeyWithAlias(alicePublicKey).
+		SetInitialBalance(hedera.NewHbar(20)).
 		Execute(client)
+	if err != nil {
+		panic(err)
+	}
 
-	//GET THE RECEIPT OF THE TRANSACTION
+	// GET THE RECEIPT OF THE TRANSACTION
 	receipt2, err := aliceAccount.GetReceipt(client)
+	if err != nil {
+		panic(err)
+	}
 
-	//GET ALICE'S ACCOUNT ID
+	// GET ALICE'S ACCOUNT ID
 	aliceAccountId := *receipt2.AccountID
 
 	//CREATE SUPPLY KEY
-	supplyKey, err := hedera.GenerateEcdsaPrivateKey()
+	supplyKey, err := hedera.PrivateKeyGenerateEcdsa()
+	if err != nil {
+		panic(err)
+	}
 
-	//CREATE FUNGIBLE TOKEN (STABLECOIN)
+	// CREATE FUNGIBLE TOKEN (STABLECOIN)
 	tokenCreateTx, err := hedera.NewTokenCreateTransaction().
 		SetTokenName("USD Bar").
 		SetTokenSymbol("USDB").
@@ -610,73 +774,115 @@ func main() {
 		SetSupplyType(hedera.TokenSupplyTypeInfinite).
 		SetSupplyKey(supplyKey).
 		FreezeWith(client)
+	if err != nil {
+		panic(err)
+	}
 
-	//SIGN WITH TREASURY KEY
+	// SIGN WITH TREASURY KEY
 	tokenCreateSign := tokenCreateTx.Sign(treasuryKey)
 
-	//SUBMIT THE TRANSACTION
+	// SUBMIT THE TRANSACTION
 	tokenCreateSubmit, err := tokenCreateSign.Execute(client)
+	if err != nil {
+		panic(err)
+	}
 
-	//GET THE TRANSACTION RECEIPT
+	// GET THE TRANSACTION RECEIPT
 	tokenCreateRx, err := tokenCreateSubmit.GetReceipt(client)
+	if err != nil {
+		panic(err)
+	}
 
-	//GET THE TOKEN ID
+	// GET THE TOKEN ID
 	tokenId := *tokenCreateRx.TokenID
 
-	//LOG THE TOKEN ID TO THE CONSOLE
-	fmt.Println("Created fungible token with token ID", tokenId)
+	// LOG THE TOKEN ID TO THE CONSOLE
+	fmt.Println("\nCreated fungible token with token ID", tokenId, "\n")
 
-	//TOKEN ASSOCIATION WITH ALICE's ACCOUNT
+	// TOKEN ASSOCIATION WITH ALICE'S ACCOUNT
 	associateAliceTx, err := hedera.NewTokenAssociateTransaction().
 		SetAccountID(aliceAccountId).
 		SetTokenIDs(tokenId).
 		FreezeWith(client)
+	if err != nil {
+		panic(err)
+	}
 
-	//SIGN WITH ALICE'S KEY TO AUTHORIZE THE ASSOCIATION
+	// SIGN WITH ALICE'S KEY TO AUTHORIZE THE ASSOCIATION
 	signTx := associateAliceTx.Sign(aliceKey)
 
-	//SUBMIT THE TRANSACTION
+	// SUBMIT THE TRANSACTION
 	associateAliceTxSubmit, err := signTx.Execute(client)
+	if err != nil {
+		panic(err)
+	}
 
-	//GET THE RECEIPT OF THE TRANSACTION
+	// GET THE RECEIPT OF THE TRANSACTION
 	associateAliceRx, err := associateAliceTxSubmit.GetReceipt(client)
+	if err != nil {
+		panic(err)
+	}
 
-	//LOG THE TRANSACTION STATUS
-	fmt.Println("STABLECOIN token association with Alice's account:", associateAliceRx.Status)
+	// LOG THE TRANSACTION STATUS
+	fmt.Println("STABLECOIN token association with Alice's account:", associateAliceRx.Status, "✅")
 
-	//Check the balance before the transfer for the treasury account
+	//CHECK THE BALANCE BEFORE THE TRANSFER FROM THE TREASURY ACCOUNTt
 	balanceCheckTreasury, err := hedera.NewAccountBalanceQuery().SetAccountID(treasuryAccountId).Execute(client)
-	fmt.Println("Treasury balance:", balanceCheckTreasury.Tokens, "units of token ID", tokenId)
+	if err != nil {
+		panic(err)
+	}
+	treasuryBalance := balanceCheckTreasury.Tokens.Get(tokenId)
+	fmt.Printf("Treasury balance: %d units of token %s\n", treasuryBalance, tokenId)
 
-	//Check the balance before the transfer for Alice's account
+	// Check the balance before the transfer for Alice's account
 	balanceCheckAlice, err := hedera.NewAccountBalanceQuery().SetAccountID(aliceAccountId).Execute(client)
-	fmt.Println("Alice's balance:", balanceCheckAlice.Tokens, "units of token ID", tokenId)
+	if err != nil {
+		panic(err)
+	}
+	aliceBalance := balanceCheckAlice.Tokens.Get(tokenId)
+	fmt.Printf("Alice's balance: %d units of token %s\n\n", aliceBalance, tokenId)
 
-	//Transfer the STABLECOIN from treasury to Alice
+	// Transfer the STABLECOIN from treasury to Alice
 	tokenTransferTx, err := hedera.NewTransferTransaction().
 		AddTokenTransfer(tokenId, treasuryAccountId, -5).
 		AddTokenTransfer(tokenId, aliceAccountId, 5).
 		FreezeWith(client)
+	if err != nil {
+		panic(err)
+	}
 
-	//SIGN WITH THE TREASURY KEY TO AUTHORIZE THE TRANSFER
+	// SIGN WITH THE TREASURY KEY TO AUTHORIZE THE TRANSFER
 	signTransferTx := tokenTransferTx.Sign(treasuryKey)
 
-	//SUBMIT THE TRANSACTION
+	// SUBMIT THE TRANSACTION
 	tokenTransferSubmit, err := signTransferTx.Execute(client)
+	if err != nil {
+		panic(err)
+	}
 
-	//GET THE TRANSACTION RECEIPT
+	// GET THE TRANSACTION RECEIPT
 	tokenTransferRx, err := tokenTransferSubmit.GetReceipt(client)
+	if err != nil {
+		panic(err)
+	}
 
-	fmt.Println("Token transfer from Treasury to Alice:", tokenTransferRx.Status)
+	fmt.Println("\nToken transfer from Treasury to Alice:", tokenTransferRx.Status, "✅")
 
-	//CHECK THE BALANCE AFTER THE TRANSFER FOR THE TREASURY ACCOUNT
+	// CHECK THE BALANCE AFTER THE TRANSFER FOR THE TREASURY ACCOUNT
 	balanceCheckTreasury2, err := hedera.NewAccountBalanceQuery().SetAccountID(treasuryAccountId).Execute(client)
-	fmt.Println("Treasury balance:", balanceCheckTreasury2.Tokens, "units of token", tokenId)
+	if err != nil {
+		panic(err)
+	}
+	treasuryBalance2 := balanceCheckTreasury2.Tokens.Get(tokenId)
+	fmt.Printf("Treasury balance: %d units of token %s\n", treasuryBalance2, tokenId)
 
-	//CHECK THE BALANCE AFTER THE TRANSFER FOR ALICE'S ACCOUNT
+	// CHECK THE BALANCE AFTER THE TRANSFER FOR ALICE'S ACCOUNT
 	balanceCheckAlice2, err := hedera.NewAccountBalanceQuery().SetAccountID(aliceAccountId).Execute(client)
-	fmt.Println("Alice's balance:", balanceCheckAlice2.Tokens, "units of token", tokenId)
-
+	if err != nil {
+		panic(err)
+	}
+	aliceBalance2 := balanceCheckAlice2.Tokens.Get(tokenId)
+	fmt.Printf("Alice's balance: %d units of token %s\n\n", aliceBalance2, tokenId)
 }
 ```
 

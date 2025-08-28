@@ -28,6 +28,7 @@ public class CreateTokenDemo {
                 : Client.forTestnet();
 
         client.setOperator(operatorId, operatorKey);
+        System.out.println(operatorId);
 
         // generate token keys
         PrivateKey supplyKey = PrivateKey.generateECDSA();

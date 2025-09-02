@@ -64,15 +64,11 @@ public class CreateTokenDemo {
         "%s/accounts/%s/tokens?token.id=%s",
         mirrorNode, operatorId, tokenId
         );
-        System.out.println(mirrorNodeUrl);
-
         
         HttpClient httpClient = HttpClient.newHttpClient( );
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(mirrorNodeUrl)).build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString( ));
-        System.out.println(response.body());
-        System.out.println(response.statusCode());
-        
+
         try {
             if (response.statusCode() != 200) {
                 System.out.println("Mirror Node returned status " + response.statusCode() + ". Skipping balance read.");

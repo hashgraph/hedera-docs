@@ -33,10 +33,10 @@ jobs:
 
       - name: Start Solo
         id: solo
-        uses: hiero-ledger/hiero-solo-action@v0.11.0
+        uses: hiero-ledger/hiero-solo-action@395fc8fb5df9e91b810e8c9d108afaa4a2d75f39
         with:
           installMirrorNode: true
-          hieroVersion: v0.63.7
+          hieroVersion: v0.65.0
 
       - name: Show assigned account
         run: |

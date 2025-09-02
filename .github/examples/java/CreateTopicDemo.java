@@ -55,7 +55,6 @@ public class CreateTopicDemo {
 
         // query messages using Mirror Node
         String mirrorNodeUrl = mirrorNode + "/topics/" + topicId + "/messages";
-        System.out.println(mirrorNodeUrl);
 
         HttpClient httpClient = HttpClient.newHttpClient( );
         HttpRequest request = HttpRequest.newBuilder()
@@ -63,8 +62,6 @@ public class CreateTopicDemo {
             .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString( ));
-        System.out.println(response.body());
-        System.out.println(response.statusCode());
         Gson gson = new Gson();
         JsonObject data = gson.fromJson(response.body(), JsonObject.class);
 

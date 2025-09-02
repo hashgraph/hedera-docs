@@ -1,47 +1,56 @@
 ## ✅ Java example passed
-- Timestamp (UTC): 2025-08-28 01:21:32Z
+- Timestamp (UTC): 2025-09-02 17:27:50Z
 - Network: local
 
 <details><summary>Output</summary>
 === Java Examples Runner ===
-Timestamp (UTC): 2025-08-28 01:20:44Z
+Timestamp (UTC): 2025-09-02 17:27:02Z
 Network: local
 Mirror:  http://localhost:5551/api/v1
 
 ▶️  Running all examples…
 
-Hedera account created: 0.0.1003
-EVM Address: 0x3f69f941890fbe51755cec0363bd97edc182f898
+Hedera account created: 0.0.1004
+EVM Address: 0xb0f493f813171ee220382db59681334fd32cca0c
 
 
 Waiting for Mirror Node to update...
 
-RequestURL: http://localhost:5551/api/v1/balances?account.id=0.0.1003
-{"timestamp":null,"balances":[],"links":{"next":null}}
+RequestURL: http://localhost:5551/api/v1/balances?account.id=0.0.1004
+{"timestamp":"1756834035.592551431","balances":[{"account":"0.0.1004","balance":2000000000,"tokens":[]}],"links":{"next":null}}
 200
-Account balance not yet available in Mirror Node
-0.0.1001
+Account balance: 20.0 ℏ
 
-Fungible token created: 0.0.1004
+0.0.1002
+
+Fungible token created: 0.0.1005
 
 Waiting for Mirror Node to update...
-http://localhost:5551/api/v1/accounts/0.0.1001/tokens?token.id=0.0.1004
-{"tokens":[],"links":{"next":null}}
+http://localhost:5551/api/v1/accounts/0.0.1002/tokens?token.id=0.0.1005
+{"tokens":[{"automatic_association":false,"balance":100000,"created_timestamp":"1756834047.832762668","decimals":2,"token_id":"0.0.1005","freeze_status":"NOT_APPLICABLE","kyc_status":"NOT_APPLICABLE"}],"links":{"next":null}}
 200
-Token balance not yet available in Mirror Node
 
-Topic created: 0.0.1005
+Treasury holds: 100000 DEMO
+
+
+Topic created: 0.0.1006
 
 Message submitted: Hello, Hedera!
 
 Waiting for Mirror Node to update...
-http://localhost:5551/api/v1/topics/0.0.1005/messages
-{"messages":[],"links":{"next":null}}
+http://localhost:5551/api/v1/topics/0.0.1006/messages
+{"messages":[{"chunk_info":null,"consensus_timestamp":"1756834060.133091847","message":"SGVsbG8sIEhlZGVyYSE=","payer_account_id":"0.0.1002","running_hash":"1kAO3dRmyRRtusmJJDZf3078ac3XjOwjoHTBOWa0cYGedp4RQE068VE8FUU6RwTA","running_hash_version":3,"sequence_number":1,"topic_id":"0.0.1006"}],"links":{"next":null}}
 200
-No messages found yet in Mirror Node
+
+Latest message: Hello, Hedera!
+
 
 ✅ All examples passed.
-es found yet in Mirror Node
+0.0.1006"}],"links":{"next":null}}
+200
+
+Latest message: Hello, Hedera!
+
 
 ✅ All examples passed.
 </details>

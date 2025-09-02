@@ -207,3 +207,4 @@ jobs:
           # If your token can't create labels, remove the next line
           labels: automated-pr
           delete-branch: true
+          base: main

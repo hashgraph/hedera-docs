@@ -43,13 +43,10 @@ public class CreateAccountDemo {
         Thread.sleep(10000);
 
         String url = mirrorNodeUrl + "/balances?account.id=" + newAccountId;
-        System.out.println("RequestURL: "+ url);
             
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
-        System.out.println(response.statusCode());
 
         Gson gson = new Gson();
         JsonObject data = gson.fromJson(response.body(), JsonObject.class);

@@ -160,6 +160,8 @@
 * [Open Source Solutions and Integrations](open-source-solutions/README.md)
   * [AI Studio on Hedera](open-source-solutions/ai-studio-on-hedera/README.md)
     * [Hedera AI Agent Kit](open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit.md)
+    * [Plugins](open-source-solutions/ai-studio-on-hedera/plugins/README.md)
+      * [How To: Publish & Register Your Plugin](open-source-solutions/ai-studio-on-hedera/plugins/how-to-publish-and-register-your-plugin.md)
     * [ElizaOS Plugin for Hedera](open-source-solutions/ai-studio-on-hedera/elizaos-plugin-for-hedera.md)
   * [AI Tools for Developers](open-source-solutions/ai-tools-for-developers/README.md)
     * [Hedera Hivemind](open-source-solutions/ai-tools-for-developers/hedera-hivemind.md)

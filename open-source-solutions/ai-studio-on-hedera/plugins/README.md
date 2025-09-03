@@ -1,0 +1,213 @@
+---
+description: >-
+  The Hedera Agent Kit implements a plugin architecture to include features and
+  functionality for both Hedera Network functions and Services, as well as third
+  party apps and projects.
+---
+
+# Plugins
+
+## Summary
+
+The Hedera Agent Kit provides a comprehensive set of tools organized into **plugins**, which can be installed alongside the Hedera Agent Kit and used to extend the core functionality of the Hedera Agent Kit SDK. These tools can be used both by the conversational agent, and when you are building with the SDK.
+
+The Hedera services and functionality built into this agent toolkit are also implemented as plugins, you can see a description of each plugin in the [HEDERAPLUGINS.md](https://github.com/hashgraph/hedera-agent-kit/blob/main/docs/HEDERAPLUGINS.md) file, as well as list of the individual tools for each Hedera service that are included in each plugin.
+
+### Available Third-Party Plugins
+
+* [Memejob Plugin](https://www.npmjs.com/package/@buidlerlabs/hak-memejob-plugin)  provides a streamlined interface to the [**memejob**](https://memejob.fun/) protocol, exposing the core actions (`create`, `buy`, `sell`) for interacting with meme tokens on Hedera. See the[ **Github repository** ](https://github.com/buidler-labs/hak-memejob-plugin)for more information.\
+
+
+***
+
+## Plugin Architecture
+
+### Plugin Interface
+
+Every plugin must implement the Plugin interface:
+
+```javascript
+export interface Plugin {
+  name: string;
+  version?: string;
+  description?: string;
+  tools: (context: Context) => Tool[];
+}
+```
+
+### Tool Interface
+
+Each tool must implement the Tool interface:
+
+```javascript
+export type Tool = {
+  method: string;
+  name: string;
+  description: string;
+  parameters: z.ZodObject<any, any>;
+  execute: (client: Client, context: Context, params: any) => Promise<any>;
+};
+```
+
+#### Examples
+
+See an example of how to create your own plugin in [hedera-agent-kit/typescript/examples/plugin/example-plugin.ts](https://github.com/hashgraph/hedera-agent-kit/blob/main/typescript/examples/plugin/example-plugin.ts)
+
+See an example application using Hedera plugins and tools and a custom plugin at [hedera-agent-kit/typescript/examples/langchain/plugin-tool-calling-agent.ts](https://github.com/hashgraph/hedera-agent-kit/blob/main/typescript/examples/langchain/plugin-tool-calling-agent.ts)
+
+***
+
+## Step-by-Step Guide
+
+### **Step 1: Create Plugin Directory Structure**
+
+```
+  my-custom-plugin/
+  ├── index.ts                    # Plugin definition and exports
+  ├── tools/
+  │   └── my-service/
+  │       └── my-tool.ts         # Individual tool implementation
+```
+
+### **Step 2: Implement Your Tool**
+
+Create your tool file (e.g., tools/my-service/my-tool.ts):
+
+```typescript
+  import { z } from 'zod';
+  import { Context, Tool, handleTransaction } from 'hedera-agent-kit';
+  import { Client, PrivateKey, AccountId } from '@hashgraph/sdk';
+  import dotenv from 'dotenv';
+  
+  // Load environment variables
+  dotenv.config();
+
+  // Define parameter schema
+  const myToolParameters = (context: Context = {}) =>
+    z.object({
+      requiredParam: z.string().describe('Description of required parameter'),
+      optionalParam: z.string().optional().describe('Description of optional parameter'),
+    });
+
+  // Create prompt function
+  const myToolPrompt = (context: Context = {}) => {
+    return `
+  This tool performs a specific operation.
+
+  Parameters:
+  - requiredParam (string, required): Description
+  - optionalParam (string, optional): Description
+  `;
+  };
+
+  // Implement tool logic
+  const myToolExecute = async (
+    client: Client,
+    context: Context,
+    params: z.infer<ReturnType<typeof myToolParameters>>,
+  ) => {
+    try {
+      // Your implementation here
+      const result = await someHederaOperation(params);
+      return result;
+    } catch (error) {
+      if (error instanceof Error) {
+        return error.message;
+      }
+      return 'Operation failed';
+    }
+  };
+
+  export const MY_TOOL = 'my_tool';
+
+  const tool = (context: Context): Tool => ({
+    method: MY_TOOL,
+    name: 'My Custom Tool',
+    description: myToolPrompt(context),
+    parameters: myToolParameters(context),
+    execute: myToolExecute,
+  });
+
+  export default tool;
+```
+
+### **Step 3: Create Plugin Definition**
+
+Create your plugin index file (index.ts):
+
+{% code title="index.ts" %}
+```typescript
+import { Context } from '@/shared';
+import { Plugin } from '@/shared/plugin';
+import myTool, { MY_TOOL } from './tools/my-service/my-tool';
+
+export const myCustomPlugin: Plugin = {
+  name: 'my-custom-plugin',
+  version: '1.0.0',
+  description: 'A plugin for custom functionality',
+  tools: (context: Context) => {
+    return [myTool(context)];
+  },
+};
+
+export const myCustomPluginToolNames = {
+  MY_TOOL,
+} as const;
+
+export default { myCustomPlugin, myCustomPluginToolNames }; 
+```
+{% endcode %}
+
+### Step 4: Register Your Plugin
+
+Add your plugin to the main plugins index (src/plugins/index.ts):
+
+```typescript
+import { myCustomPlugin, myCustomPluginToolNames } from './my-custom-plugin';
+
+export {
+// ... existing exports
+  myCustomPlugin,
+  myCustomPluginToolNames,
+};
+```
+
+### **Best Practices**
+
+**Parameter Validation**
+
+* Use Zod schemas for robust input validation
+* Provide clear descriptions for all parameters
+* Mark required vs optional parameters appropriately
+
+**Tool Organization**
+
+* Group related tools by service type
+* Use consistent naming conventions
+* Follow the established directory structure
+
+**Transaction Handling**
+
+* Use handleTransaction() to facilitate human-in-the-loop and autonomous execution flows
+* Respect the AgentMode (AUTONOMOUS vs RETURN\_BYTES)
+* Implement proper transaction building patterns
+
+***
+
+## Using Your Custom Plugin
+
+```typescript
+import { HederaLangchainToolkit } from 'hedera-agent-kit';
+import { myCustomPlugin, myCustomPluginToolNames } from './plugins/my-custom-plugin';
+
+const toolkit = new HederaLangchainToolkit({
+  client,
+  configuration: {
+    tools: [myCustomPluginToolNames.MY_TOOL],
+    plugins: [myCustomPlugin],
+    context: {
+      mode: AgentMode.AUTONOMOUS,
+    },
+  },
+});
+```

@@ -58,6 +58,20 @@ Building on the Block Stream work from v0.64, this release delivers major steps 
 
 </details>
 
+### [Build 0.65.1](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.65.1)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* fix: Fall back to `parseAndCheck()` if `parseSignedAndCheck()` is `INVALID_TX` by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#20859](https://github.com/hiero-ledger/hiero-consensus-node/pull/20859)
+* chore: state validator fixes (0.65) by [@OlegMazurov](https://github.com/OlegMazurov) in [#20792](https://github.com/hiero-ledger/hiero-consensus-node/pull/20792)
+* feat: 20823 Added progress output to `export` command ([#20825](https://github.com/hiero-ledger/hiero-consensus-node/pull/20825)) by [@imalygin](https://github.com/imalygin) in [#20835](https://github.com/hiero-ledger/hiero-consensus-node/pull/20835)
+
+**Full Changelog**: [v0.65.0...v0.65.1](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.65.0...v0.65.1)
+
+</details>
+
 ### [Build 0.65.0](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.65.0)
 
 <details>

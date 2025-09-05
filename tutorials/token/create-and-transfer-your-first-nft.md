@@ -796,9 +796,9 @@ const operatorId = AccountId.fromString(process.env.OPERATOR_ID);
 // flexible private key parser
 function parsePriv(str) {
   try {
-    return PrivateKey.fromStringDer(str);
+    return PrivateKey.fromStringECDSA(str);
   } catch {
-    return PrivateKey.fromStringDer(str);
+    return PrivateKey.fromStringED25519(str);
   }
 }
 const operatorKey = parsePriv(process.env.OPERATOR_KEY);

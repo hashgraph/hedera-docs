@@ -83,7 +83,7 @@ This is the example ABI output produced when the [`HelloHedera`](broken-referenc
 
 ## Compiling Smart Contract Example
 
-**➡** [**Hardhat Tutorial**](../../tutorials/smart-contracts/deploy-a-smart-contract-using-hardhat-hedera-json-rpc-relay.md)
+**➡** [**Hardhat Tutorial**](../../readme/tutorials/smart-contracts/deploy-a-smart-contract-using-hardhat-hedera-json-rpc-relay.md)
 
 ## Additional Resources
 

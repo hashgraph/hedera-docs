@@ -326,7 +326,7 @@ Balance: 1 NFTs
 
 ## Next Steps
 
-* Learn how to add [Access Control, Pause, and Transfer ERC-721 ](../tutorials/smart-contracts/how-to-set-access-control-a-token-uri-pause-and-transfer-an-erc-721-token-using-hardhat-part-2.md)tokens
+* Learn how to add [Access Control, Pause, and Transfer ERC-721 ](../readme/tutorials/smart-contracts/how-to-set-access-control-a-token-uri-pause-and-transfer-an-erc-721-token-using-hardhat-part-2.md)tokens
 * Check out [OpenZeppelin ERC-721 Documentation](https://docs.openzeppelin.com/contracts/5.x/erc721)
 * See the full code in the [Hedera-Code-Snippets Repository](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hardhat-erc-721-mint-burn)
 

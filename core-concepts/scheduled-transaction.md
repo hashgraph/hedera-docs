@@ -2,11 +2,11 @@
 
 ## Overview
 
-A scheduled transaction is a type of transaction that allows you to publicly collect all the required signatures on the network. For example, Transaction A requires signatures from Alice, Bob, and Carol. Alice can schedule and sign Transaction A using the schedule transaction.  Alice also specifies an expiry time for Transaction A during creation. Once the schedule transaction is successfully executed and posted on the network Alice can call Bob and Carol to sign the transaction. Bob and Carol can sign the schedule transaction by submitting a schedule sign transaction.
+A scheduled transaction is a type of transaction that allows you to publicly collect all the required signatures on the network. For example, Transaction A requires signatures from Alice, Bob, and Carol. Alice can schedule and sign Transaction A using the schedule transaction. Alice also specifies an expiry time for Transaction A during creation. Once the schedule transaction is successfully executed and posted on the network Alice can call Bob and Carol to sign the transaction. Bob and Carol can sign the schedule transaction by submitting a schedule sign transaction.
 
-Transaction A will automatically execute once it receives the minimum required signatures. However, if the required signatures are not received by the specified expiry time, Transaction A will not execute.  Alice can optionally set the transaction to execute automatically at its expiry time. In this case, even if all required signatures are applied to the transaction, the transaction will wait until the expiry time to execute.
+Transaction A will automatically execute once it receives the minimum required signatures. However, if the required signatures are not received by the specified expiry time, Transaction A will not execute. Alice can optionally set the transaction to execute automatically at its expiry time. In this case, even if all required signatures are applied to the transaction, the transaction will wait until the expiry time to execute.
 
-Unlike other Hedera transactions, this one allows you to queue a transaction for future execution (up to two months into the future). This feature is ideal for transactions that require multiple signatures and would benefit from being submitted on-chain.&#x20;
+Unlike other Hedera transactions, this one allows you to queue a transaction for future execution (up to two months into the future). This feature is ideal for transactions that require multiple signatures and would benefit from being submitted on-chain.
 
 The transaction types that can be scheduled in a schedule transaction as of Consensus Node Release 0.57 are the following:
 
@@ -19,7 +19,7 @@ The transaction types that can be scheduled in a schedule transaction as of Cons
 * `SystemDeleteTransaction`
 * `SystemUndeleteTransaction`
 * `FreezeTransactions`
-* `ContractExecuteTransaction`&#x20;
+* `ContractExecuteTransaction`
 * `ContractCreateTransaction`
 * `ContractUpdateTransaction`
 * `ContractDeleteTransaction`
@@ -38,21 +38,21 @@ When a schedule transaction is created, the following information will need to b
 
 #### Scheduled Transaction ID
 
-The Transaction ID of the transaction that needs to be scheduled. You will need to create the transaction that you would like to schedule prior to creating the schedule transaction. Once you have created the transaction you want to schedule,  you will need to specify that transaction ID in this field.
+The Transaction ID of the transaction that needs to be scheduled. You will need to create the transaction that you would like to schedule prior to creating the schedule transaction. Once you have created the transaction you want to schedule, you will need to specify that transaction ID in this field.
 
 **Admin Key**
 
-Setting an admin key on a schedule transaction allows the user to cancel or delete the schedule transaction, if needed. This key is optional to set. If this key is not set upon creation, the transaction cannot be deleted.&#x20;
+Setting an admin key on a schedule transaction allows the user to cancel or delete the schedule transaction, if needed. This key is optional to set. If this key is not set upon creation, the transaction cannot be deleted.
 
 **Expiration Time**
 
-The expiration time is a timestamp for specifying when the transaction should be evaluated for execution and then expire. The maximum allowed value is 62 days ([5356800 seconds](https://github.com/hashgraph/hedera-services/blob/develop/hedera-node/hedera-config/src/main/java/com/hedera/node/config/data/SchedulingConfig.java#L35)).&#x20;
+The expiration time is a timestamp for specifying when the transaction should be evaluated for execution and then expire. The maximum allowed value is 62 days ([5356800 seconds](https://github.com/hashgraph/hedera-services/blob/develop/hedera-node/hedera-config/src/main/java/com/hedera/node/config/data/SchedulingConfig.java#L35)).
 
 * Scheduled Transactions will execute at the earliest available consensus time after their expiration time on a best-effort basis.
 
 **Wait for Expiry**
 
-The default behavior for a scheduled transaction is to automatically execute when the required number signatures for the transaction are received . If the transaction should wait for the specified expiry time to send the transaction to the network, you can optionally enable the wait\_for\_expiry flag.&#x20;
+The default behavior for a scheduled transaction is to automatically execute when the required number signatures for the transaction are received . If the transaction should wait for the specified expiry time to send the transaction to the network, you can optionally enable the wait\_for\_expiry flag.
 
 * When set to true, the transaction will be evaluated for execution at expiration\_time instead of when all required signatures are received.
 * When this flag is set to false, the transaction will execute immediately after sufficient signatures are received
@@ -63,7 +63,7 @@ The account ID of the account responsible for paying the transaction fees of the
 
 **Schedule Memo**
 
-Publicly visible text that is stored with the schedule transaction and can be viewed in a network explorer up to 100 bytes and does not include the zero byte.&#x20;
+Publicly visible text that is stored with the schedule transaction and can be viewed in a network explorer up to 100 bytes and does not include the zero byte.
 
 {% content-ref url="../sdks-and-apis/sdks/schedule-transaction/create-a-schedule-transaction.md" %}
 [create-a-schedule-transaction.md](../sdks-and-apis/sdks/schedule-transaction/create-a-schedule-transaction.md)
@@ -125,8 +125,8 @@ A schedule transaction can be deleted if an admin key was set during its creatio
 
 ## Tutorial/Examples
 
-{% content-ref url="../tutorials/more-tutorials/schedule-your-first-transaction.md" %}
-[schedule-your-first-transaction.md](../tutorials/more-tutorials/schedule-your-first-transaction.md)
+{% content-ref url="../readme/tutorials/more-tutorials/schedule-your-first-transaction.md" %}
+[schedule-your-first-transaction.md](../readme/tutorials/more-tutorials/schedule-your-first-transaction.md)
 {% endcontent-ref %}
 
 ***
@@ -220,7 +220,7 @@ You can submit a [schedule info query](../sdks-and-apis/sdks/schedule-transactio
 
 <summary>When does a schedule transaction expire?</summary>
 
-A scheduled transaction expires at the specified expiration date/time.&#x20;
+A scheduled transaction expires at the specified expiration date/time.
 
 </details>
 

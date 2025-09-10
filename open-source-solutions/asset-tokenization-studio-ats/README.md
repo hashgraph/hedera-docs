@@ -31,7 +31,7 @@ By transforming asset ownership into digital form, tokenization paves the way fo
 
 ### ➡ Source Code Repo
 
-{% @github-files/github-code-block url="https://github.com/hashgraph/asset-tokenization-studio" %}
+[.](./ "mention")
 
 ***
 

@@ -810,7 +810,7 @@ Treasury holds: 100000 DEMO
 ## Next steps
 
 * [Create a Topic](create-a-topic.md)
-* Try out our [3-part NFT tutorial](../readme/tutorials/token/hedera-token-service-part-1-how-to-mint-nfts.md)
+* Try out our [3-part NFT tutorial](../tutorials/token/hedera-token-service-part-1-how-to-mint-nfts.md)
 * Explore more examples in the SDK repos ([JavaScript](https://github.com/hiero-ledger/hiero-sdk-js), [Java](https://github.com/hiero-ledger/hiero-sdk-java), [Go](https://github.com/hiero-ledger/hiero-sdk-go))
 
 ***

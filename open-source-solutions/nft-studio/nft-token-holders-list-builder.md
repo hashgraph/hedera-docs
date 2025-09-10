@@ -83,4 +83,4 @@ After building your list, the tool provides a breakdown of eligible accounts, sh
 * [**Hedera Testnet HBAR Faucet**](https://portal.hedera.com/)
 * [**HANGRY BABOONS Collection**](https://www.hangry.net/)
 * [**Dead Pixels Ghost Club Collection**](https://www.deadpixels.club/)
-* [**Create and Transfer Your First Hedera NFT**](../../readme/tutorials/token/create-and-transfer-your-first-nft.md)
+* [**Create and Transfer Your First Hedera NFT**](../../tutorials/token/create-and-transfer-your-first-nft.md)

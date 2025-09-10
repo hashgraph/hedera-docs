@@ -1,6 +1,6 @@
 # Ethereum transaction
 
-An `EthereumTransaction` lets you execute a raw, RLP-encoded (type 0, 1, or 2) Ethereum transaction on the Hedera network. This enables developers familiar with EVM tooling to leverage their existing knowledge and infrastructure when interacting with the [Hedera Smart Contract Service (HSCS)](../../../readme/tutorials/smart-contracts/).
+An `EthereumTransaction` lets you execute a raw, RLP-encoded (type 0, 1, or 2) Ethereum transaction on the Hedera network. This enables developers familiar with EVM tooling to leverage their existing knowledge and infrastructure when interacting with the [Hedera Smart Contract Service (HSCS)](../../../tutorials/smart-contracts/).
 
 {% hint style="warning" %}
 #### **Important**

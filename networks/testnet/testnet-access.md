@@ -9,7 +9,7 @@ To create your Hedera Portal profile, register [here](https://portal.hedera.com/
 You can easily copy your `accountId`, `public key`, and `private key` information to your clipboard to use when configuring your SDK environment for testnet.&#x20;
 
 {% hint style="info" %}
-_**Note:** When previewnet or testnet is reset, new account IDs will be generated. The public and private key pair remain consistent during previewnet and testnet resets. If you receive an invalid account ID response from the network it is likely you need to update your previewnet or testnet account ID._ [_Create an Personal Access Token/API key_](../../readme/tutorials/more-tutorials/how-to-create-a-personal-access-token-api-key-on-the-hedera-portal.md) _to streamline the process of account recreation and management when there is a network reset._&#x20;
+_**Note:** When previewnet or testnet is reset, new account IDs will be generated. The public and private key pair remain consistent during previewnet and testnet resets. If you receive an invalid account ID response from the network it is likely you need to update your previewnet or testnet account ID._ [_Create an Personal Access Token/API key_](../../tutorials/more-tutorials/how-to-create-a-personal-access-token-api-key-on-the-hedera-portal.md) _to streamline the process of account recreation and management when there is a network reset._&#x20;
 {% endhint %}
 
 ![](../../.gitbook/assets/portal-testnet-dashboard.png)

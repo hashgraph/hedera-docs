@@ -94,4 +94,4 @@ Once generated, you can export the snapshot as a CSV or other available formats.
 * [**HashScan Network Explorer**](https://hashscan.io/)
 * [**Hedera Testnet HBAR Faucet**](https://portal.hedera.com/)
 * [**Dead Pixels Ghost Club Collection**](https://www.deadpixels.club/)
-* [**Create and Transfer Your First Hedera NFT**](../../readme/tutorials/token/create-and-transfer-your-first-nft.md)
+* [**Create and Transfer Your First Hedera NFT**](../../tutorials/token/create-and-transfer-your-first-nft.md)

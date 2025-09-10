@@ -123,4 +123,4 @@ Before proceeding with your NFTs, ensure all required fields are present and mee
 * [**Hedera Testnet HBAR Faucet**](https://portal.hedera.com/faucet)&#x20;
 * [**Hedera Developer Portal Account**](https://portal.hedera.com/)
 * [**Hedera Improvement Proposals (HIPs)**](https://hips.hedera.com/)
-* [**Create and Transfer Your First Hedera NFT**](../../readme/tutorials/token/create-and-transfer-your-first-nft.md)
+* [**Create and Transfer Your First Hedera NFT**](../../tutorials/token/create-and-transfer-your-first-nft.md)

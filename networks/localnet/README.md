@@ -75,5 +75,5 @@ _**More info coming soon...**_
 
 * [**Hedera Local Node Repo**](https://github.com/hashgraph/hedera-local-node)
 * [**Docker Compose Documentation**](https://docs.docker.com/compose/intro/features-uses/)
-* [**Run a Local Node in Gitpod**](../../readme/tutorials/local-node/how-to-run-hedera-local-node-in-a-cloud-development-environment-cde/gitpod.md) **\[tutorial]**
-* [**Run a Local Node in Codespaces**](../../readme/tutorials/local-node/how-to-run-hedera-local-node-in-a-cloud-development-environment-cde/codespaces.md) **\[tutorial]**
+* [**Run a Local Node in Gitpod**](../../tutorials/local-node/how-to-run-hedera-local-node-in-a-cloud-development-environment-cde/gitpod.md) **\[tutorial]**
+* [**Run a Local Node in Codespaces**](../../tutorials/local-node/how-to-run-hedera-local-node-in-a-cloud-development-environment-cde/codespaces.md) **\[tutorial]**

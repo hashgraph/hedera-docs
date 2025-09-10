@@ -93,4 +93,4 @@ The NFT Risk Calculator pairs well with the [Token Holders List Builder](nft-tok
 * [**HashScan Network Explorer**](https://hashscan.io/)
 * [**Testnet HBAR Faucet**](https://portal.hedera.com/)
 * [**Wild Tigers Collection**](https://x.com/wildtigers_nft)
-* [**Create and Transfer Your First Hedera NFT**](../../readme/tutorials/token/create-and-transfer-your-first-nft.md)
+* [**Create and Transfer Your First Hedera NFT**](../../tutorials/token/create-and-transfer-your-first-nft.md)

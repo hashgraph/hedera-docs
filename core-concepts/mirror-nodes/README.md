@@ -99,7 +99,7 @@ No, Hedera does not charge for running a mirror node. However, there are costs a
 
 <summary>How do I configure a mirror node and query data?</summary>
 
-You can configure your own Hedera Mirror Node by following the step-by-step instructions provided in the "[How to Configure a Mirror Node and Query Data](../../readme/tutorials/more-tutorials/how-to-configure-a-mirror-node-and-query-specific-data.md)" guide. The guide provides instructions on prerequisites, node setup, configuration, and querying the node. Additionally, you can find more details about retention and transaction and entity filtering in the guide.
+You can configure your own Hedera Mirror Node by following the step-by-step instructions provided in the "[How to Configure a Mirror Node and Query Data](../../tutorials/more-tutorials/how-to-configure-a-mirror-node-and-query-specific-data.md)" guide. The guide provides instructions on prerequisites, node setup, configuration, and querying the node. Additionally, you can find more details about retention and transaction and entity filtering in the guide.
 
 </details>
 

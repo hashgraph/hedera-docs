@@ -76,4 +76,4 @@ The NFT Rarity Inspector is designed to support various stages of your NFT proje
 * [**HashScan Network Explorer**](https://hashscan.io/)
 * [**Hedera Testnet HBAR Faucet**](https://portal.hedera.com/faucet)
 * [**Hedera Developer Portal Account**](https://portal.hedera.com/)
-* [**Create and Transfer Your First Hedera NFT**](../../readme/tutorials/token/create-and-transfer-your-first-nft.md)
+* [**Create and Transfer Your First Hedera NFT**](../../tutorials/token/create-and-transfer-your-first-nft.md)

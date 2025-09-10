@@ -55,4 +55,4 @@ These tips help prevent common issues like distributing to incorrect accounts or
 * [**HashScan Network Explorer**](https://hashscan.io/)
 * [**Hedera Testnet HBAR Faucet**](https://portal.hedera.com/faucet)
 * [**Hedera Developer Portal Account**](https://portal.hedera.com/)
-* [**Create Your First Frictionless Airdrop Campaign**](../../readme/tutorials/token/create-your-first-frictionless-airdrop-campaign.md)
+* [**Create Your First Frictionless Airdrop Campaign**](../../tutorials/token/create-your-first-frictionless-airdrop-campaign.md)

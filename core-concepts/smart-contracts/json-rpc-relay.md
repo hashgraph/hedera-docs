@@ -48,8 +48,8 @@ Anyone in the community can set up their own JSON RPC relay that applications ca
 If you want to add your hosted JSON-RPC relay to this list, please open an issue in the [Hedera docs GitHub repository](https://github.com/hashgraph/hedera-docs). Please visit the community-hosted websites to review any limitations specific to their instance.&#x20;
 {% endhint %}
 
-{% content-ref url="../../readme/tutorials/more-tutorials/json-rpc-connections/" %}
-[json-rpc-connections](../../readme/tutorials/more-tutorials/json-rpc-connections/)
+{% content-ref url="../../tutorials/more-tutorials/json-rpc-connections/" %}
+[json-rpc-connections](../../tutorials/more-tutorials/json-rpc-connections/)
 {% endcontent-ref %}
 
 ## FAQ
@@ -70,7 +70,7 @@ If you want to add your hosted JSON-RPC relay to this list, please open an issue
 
 <summary><strong>How do I connect to the Hedera Network over RPC?</strong></summary>
 
-The configuration guide to connect to the Hedera Network over RPC can be found [here](../../readme/tutorials/more-tutorials/json-rpc-connections/).
+The configuration guide to connect to the Hedera Network over RPC can be found [here](../../tutorials/more-tutorials/json-rpc-connections/).
 
 </details>
 

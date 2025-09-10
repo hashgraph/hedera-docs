@@ -29,9 +29,7 @@ The tokenization process involves several key steps:
 
 By transforming asset ownership into digital form, tokenization paves the way for a more efficient and inclusive financial system, opening up new opportunities for investors and asset owners.
 
-### ➡ Source Code Repo
-
-[.](./ "mention")
+➡️[Asset Tokenization Studio Source Code Repo](./#why-tokenize-assets)&#x20;
 
 ***
 

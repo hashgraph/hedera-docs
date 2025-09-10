@@ -209,7 +209,7 @@ An essential detail to remember is that smart contracts verified on Hedera's Sou
 
 ## Verify Your Smart Contract
 
-Learn how to verify your smart contract on [HashScan](../../readme/tutorials/smart-contracts/how-to-verify-a-smart-contract-on-hashscan.md) or programmatically using the [Sourcify API](../../sdks-and-apis/smart-contract-verification-api.md):
+Learn how to verify your smart contract on [HashScan](../../tutorials/smart-contracts/how-to-verify-a-smart-contract-on-hashscan.md) or programmatically using the [Sourcify API](../../sdks-and-apis/smart-contract-verification-api.md):
 
 {% embed url="https://docs.hedera.com/hedera/tutorials/smart-contracts/how-to-verify-a-smart-contract-on-hashscan" %}
 

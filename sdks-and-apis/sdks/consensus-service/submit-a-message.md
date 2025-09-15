@@ -35,6 +35,12 @@ TopicMessageSubmitTransaction()
 
 ## **Transaction Fees**
 
+{% hint style="warning" %}
+#### ⚠️ **Important Upcoming Change**
+
+Effective **January 26**, the cost to submit a message to the Hedera Consensus Service will increase from **$0.0001** to **$0.0008** per transaction. Please review your applications and adjust usage or budgeting accordingly before this change takes effect.
+{% endhint %}
+
 * Each transaction incurs a standard Hedera network fee based on network resource usage.
 * If a custom fee is set for a topic, users submitting messages must pay this fee in HBAR or HTS tokens.
 * The Fee Schedule Key allows authorized users to update fee structures. If set, it must sign transactions modifying fees.

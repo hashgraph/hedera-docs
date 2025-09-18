@@ -25,6 +25,7 @@ You can take a look at the **complete code** in the [**Hedera-Code-Snippets repo
 3. [Fixing Permissions, Redeploying, and Minting](how-to-set-access-control-a-token-uri-pause-and-transfer-an-erc-721-token-using-hardhat-part-2.md#step-3-fixing-permissions-redeploying-and-minting)
 4. [Pausing the Contract](how-to-set-access-control-a-token-uri-pause-and-transfer-an-erc-721-token-using-hardhat-part-2.md#step-4-pausing-the-contract)[Pausing the Contract](how-to-set-access-control-a-token-uri-pause-and-transfer-an-erc-721-token-using-hardhat-part-2.md#step-4-pausing-the-contract)
 5. [Transferring NFTs](how-to-set-access-control-a-token-uri-pause-and-transfer-an-erc-721-token-using-hardhat-part-2.md#step-5-transferring-nfts)
+6. [Run tests](how-to-set-access-control-a-token-uri-pause-and-transfer-an-erc-721-token-using-hardhat-part-2.md#step-6-run-tests-optional)
 
 ***
 

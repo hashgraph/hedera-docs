@@ -24,13 +24,13 @@ You can take a look at the **complete code** in the [**Hedera-Code-Snippets repo
 
 1. [Project Setup](how-to-mint-and-burn-an-erc-721-token-using-hardhat-and-ethers-part-1.md#step-1-project-setup)
    1. [Initialize Project](how-to-mint-and-burn-an-erc-721-token-using-hardhat-and-ethers-part-1.md#initialize-project)
-   2. [Create .env File](how-to-mint-and-burn-an-erc-721-token-using-hardhat-and-ethers-part-1.md#create-.env-file)
-   3. [Configure Hardhat](how-to-mint-and-burn-an-erc-721-token-using-hardhat-and-ethers-part-1.md#configure-hardhat)
+   2. [Configure Hardhat](how-to-mint-and-burn-an-erc-721-token-using-hardhat-and-ethers-part-1.md#configure-hardhat)
 2. [Creating the ERC-721 Contract](how-to-mint-and-burn-an-erc-721-token-using-hardhat-and-ethers-part-1.md#step-2-creating-the-erc-721-contract)
 3. [Deploy Your Smart Contract](how-to-mint-and-burn-an-erc-721-token-using-hardhat-and-ethers-part-1.md#step-3-deploy-your-erc-721-smart-contract)
 4. [Minting an NFT](how-to-mint-and-burn-an-erc-721-token-using-hardhat-and-ethers-part-1.md#step-4-minting-an-nft)
 5. [Adding the Burn Functionality](how-to-mint-and-burn-an-erc-721-token-using-hardhat-and-ethers-part-1.md#step-5-adding-the-burn-functionality)
 6. [Burning an NFT](how-to-mint-and-burn-an-erc-721-token-using-hardhat-and-ethers-part-1.md#step-6-burning-an-nft)
+7. [Run tests](how-to-mint-and-burn-an-erc-721-token-using-hardhat-and-ethers-part-1.md#step-7-run-tests-optional)
 
 ***
 
@@ -76,7 +76,7 @@ npm install @openzeppelin/contracts
 
 #### Configure Hardhat
 
-Update your `hardhat.config.ts`file in the root directory of your project. This file contains the network settings so Hardhat knows how to interact with the Hedera Testnet. We'll use the variables you've stored in your `.env` file.&#x20;
+Update your `hardhat.config.ts`file in the root directory of your project. This file contains the network settings so Hardhat knows how to interact with the Hedera Testnet.&#x20;
 
 {% code title="hardhat.config.ts" %}
 ```typescript

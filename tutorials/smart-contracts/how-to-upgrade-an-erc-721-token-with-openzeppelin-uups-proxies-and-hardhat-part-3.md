@@ -36,7 +36,8 @@ When you upgrade your smart contract, you deploy a new logic contract and point 
 3. [Deploy Your Upgradeable Contract](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#step-3-deploy-your-upgradeable-contract)
 4. [Upgrade Your ERC-721 Contract](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#step-4-upgrade-your-erc-721-contract)
 5. [Deploy the Upgrade and Verify](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#step-5-deploy-the-upgrade-and-verify)
-6. [Why Use the UUPS Pattern?](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#why-use-the-uups-pattern)
+6. [Run tests](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#step-6-run-tests-optional)
+7. [Why Use the UUPS Pattern?](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#why-use-the-uups-pattern)
 
 ***
 

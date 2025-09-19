@@ -1,12 +1,12 @@
 # Accounts
 
-Accounts are the central starting point when interacting with the Hedera network and using Consensus Node services. A Hedera account is an entity, a distinct object type, stored in the ledger, that holds tokens. Accounts can hold the native Hedera fungible token (HBAR), custom fungible, and custom non-fungible tokens (NFTs) created on the Hedera network.&#x20;
+Accounts are the central starting point when interacting with the Hedera network and using Consensus Node services. A Hedera account is an entity, a distinct object type, stored in the ledger, that holds tokens. Accounts can hold the native Hedera fungible token (HBAR), custom fungible, and custom non-fungible tokens (NFTs) created on the Hedera network.
 
-The Hedera native token HBAR (ℏ) is a utility token primarily used to pay for transactions and query fees when interacting with the network. The HBAR symbol is represented as "ℏ."  Applications may reference HBAR as the token denomination; however, the network returns information in tinybars (tℏ), a denomination of HBAR. 100,000,000 tℏ are equivalent to 1 ℏ. This includes things like transaction fees or accounts HBAR balances.&#x20;
+The Hedera native token HBAR (ℏ) is a utility token primarily used to pay for transactions and query fees when interacting with the network. The HBAR symbol is represented as "ℏ." Applications may reference HBAR as the token denomination; however, the network returns information in tinybars (tℏ), a denomination of HBAR. 100,000,000 tℏ are equivalent to 1 ℏ. This includes things like transaction fees or accounts HBAR balances.
 
-You interact with the network by submitting transactions that modify the ledger's state or submitting query requests that read data from the ledger. Most transactions and queries have a [transaction fee](../../networks/mainnet/fees/) that is charged in HBAR. Unlike custom tokens users create on the Hedera network, no token ID represents the native HBAR token.&#x20;
+You interact with the network by submitting transactions that modify the ledger's state or submitting query requests that read data from the ledger. Most transactions and queries have a [transaction fee](../../networks/mainnet/fees/) that is charged in HBAR. Unlike custom tokens users create on the Hedera network, no token ID represents the native HBAR token.
 
-<table data-view="cards"><thead><tr><th></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td><a href="account-creation.md">         <strong>Account Creation</strong></a></td><td><a href="account-creation.md">account-creation.md</a></td></tr><tr><td>   <a href="auto-account-creation.md"><strong>Auto Account Creation</strong></a></td><td><a href="auto-account-creation.md">auto-account-creation.md</a></td></tr><tr><td><a href="account-properties.md">     <strong>Account Properties</strong></a></td><td><a href="account-properties.md">account-properties.md</a></td></tr></tbody></table>
+<table data-view="cards"><thead><tr><th></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td><a href="account-creation.md"><strong>Account Creation</strong></a></td><td><a href="account-creation.md">account-creation.md</a></td></tr><tr><td><a href="auto-account-creation.md"><strong>Auto Account Creation</strong></a></td><td><a href="auto-account-creation.md">auto-account-creation.md</a></td></tr><tr><td><a href="account-properties.md"><strong>Account Properties</strong></a></td><td><a href="account-properties.md">account-properties.md</a></td></tr></tbody></table>
 
 ## FAQ
 
@@ -30,7 +30,7 @@ New accounts are created by submitting a transaction to the network and paying t
 
 <summary>What is the 'Auto Account Creation' feature?</summary>
 
-[Auto Account Creation](auto-account-creation.md) allows applications to generate free user accounts instantly, even without an internet connection, by creating an account alias.&#x20;
+[Auto Account Creation](auto-account-creation.md) allows applications to generate free user accounts instantly, even without an internet connection, by creating an account alias.
 
 </details>
 
@@ -38,6 +38,6 @@ New accounts are created by submitting a transaction to the network and paying t
 
 <summary>What is a "hollow" account?</summary>
 
-If an account is created with an [EVM address](auto-account-creation.md#evm-address) alias via [Auto Account Creation](auto-account-creation.md), it results in a "hollow" account. This account has an account number and alias but no account key. It can accept token transfers but cannot transfer tokens or modify account properties until the account key has been added, completing the account.
+If an account is created with an [EVM address](auto-account-creation.md#evm-address) via [Auto Account Creation](auto-account-creation.md), it results in a "hollow" account. This account has an account number and alias but no account key. It can accept token transfers but cannot transfer tokens or modify account properties until the account key has been added, completing the account.
 
 </details>

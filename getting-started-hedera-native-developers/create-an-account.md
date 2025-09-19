@@ -159,17 +159,14 @@ go mod tidy
 {% endtab %}
 
 {% tab title="Python" %}
-**Before you start:** Ensure you have Python 3.10+ and pip installed on your machine. Run these commands to verify.
+**Before you start:** Ensure you have Python 3.10+ installed on your machine. Run this command to verify.
 
 ```bash
 python --version
 ```
 
-```bash
-python -m pip --version
-```
+If the `python --version` command is not found or shows a version lower than 3.10, install or upgrade Python from [Python Install](https://www.python.org/downloads/).
 
-If neither shows 3.10+, install Python from [Python Install](https://www.python.org/downloads/).
 Open your terminal and create a working directory for your Hedera project. Then navigate into the new directory:
 
 ```bash
@@ -197,6 +194,16 @@ source .venv/bin/activate
 ```
 {% endtab %}
 {% endtabs %}
+
+**Verify Python and pip:** Ensure you have Python 3.10+ and pip installed on your machine. Run these commands to check:
+
+```bash
+python --version
+```
+
+```bash
+python -m pip --version
+```
 
 Upgrade pip to ensure you have the latest package installer (recommended):
 

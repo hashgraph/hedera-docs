@@ -943,6 +943,13 @@ go run create_account_demo.go
 ```bash
 python CreateAccountDemo.py
 ```
+
+**When finished, deactivate the virtual environment:**
+
+```bash
+deactivate
+```
+
 {% endtab %}
 {% endtabs %}
 

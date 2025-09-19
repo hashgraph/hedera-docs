@@ -178,6 +178,16 @@ Open your terminal and create a working directory for your Hedera project. Then 
 mkdir hedera-examples && cd hedera-examples
 ```
 
+**Verify Python and pip:** Ensure you have Python 3.10+ and pip installed on your machine. Run these commands to check:
+
+```bash
+python --version
+```
+
+```bash
+python -m pip --version
+```
+
 Create a virtual environment to isolate your project dependencies (Python best practice):
 
 ```bash
@@ -199,16 +209,6 @@ source .venv/bin/activate
 ```
 {% endtab %}
 {% endtabs %}
-
-**Verify Python and pip:** Ensure you have Python 3.10+ and pip installed on your machine. Run these commands to check:
-
-```bash
-python --version
-```
-
-```bash
-python -m pip --version
-```
 
 Upgrade pip to ensure you have the latest package installer (recommended):
 

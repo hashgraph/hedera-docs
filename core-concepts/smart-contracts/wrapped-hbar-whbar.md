@@ -102,7 +102,7 @@ _**Source Code:**_ [_WHBAR.sol_](https://github.com/hashgraph/hedera-smart-contr
 ## **Security Considerations:&#x20;**_**Audit and Testing**_
 
 * **Audit and Review:**\
-  Although the WHBAR contract has been independently reviewed, developers and users should conduct their own security assessments. Even small oversights in smart contracts may lead to vulnerabilities.
+  Although the [WHBAR contract has been independently reviewed](https://hedera.com/audits-and-standards), developers and users should conduct their own security assessments. Even small oversights in smart contracts may lead to vulnerabilities.
 * **Test in a Sandbox:**\
   Always test interactions in a testnet environment before deploying or integrating with mainnet contracts. This helps ensure the behavior matches expectations.
 * **Follow Best Practices:**\

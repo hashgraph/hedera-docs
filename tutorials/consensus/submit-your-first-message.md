@@ -13,9 +13,18 @@ In short, HCS offers the validity of the order of events and transparency into t
 We recommend you complete the following introduction to get a basic understanding of Hedera transactions. This example does not build upon the previous examples.
 
 1. Get a [Hedera testnet account](../more-tutorials/create-and-fund-your-hedera-testnet-account.md).
-2. Set up your environment [here](../../getting-started-hedera-native-developers/quickstart.md).
+2. Set up your environment [here](../../getting-started-hedera-native-developers/create-a-topic.md#prerequisites).
 
 ✅ _You can find a full_ [_code check_](submit-your-first-message.md#code-check) _for this tutorial at the bottom of this page._
+
+***
+
+## Table of Contents
+
+1. [Create Topic](submit-your-first-message.md#id-1.-create-your-first-topic)
+2. [Subscribe to Topic](submit-your-first-message.md#id-2.-subscribe-to-a-topic)
+3. [Submit Message](submit-your-first-message.md#id-3.-submit-a-message)
+4. [Code Check](submit-your-first-message.md#code-check)
 
 ***
 
@@ -51,11 +60,11 @@ Thread.sleep(5000);
 {% tab title="JavaScript" %}
 ```javascript
 // Create a new topic
-let txResponse = await new TopicCreateTransaction().execute(client);
+const txResponse = await new TopicCreateTransaction().execute(client);
 
 // Grab the newly generated topic ID
-let receipt = await txResponse.getReceipt(client);
-let topicId = receipt.topicId;
+const receipt = await txResponse.getReceipt(client);
+const topicId = receipt.topicId;
 console.log(`Your topic ID is: ${topicId}`);
 
 // Wait 5 seconds between consensus topic creation and subscription creation
@@ -117,16 +126,20 @@ new TopicMessageQuery()
 {% endtab %}
 
 {% tab title="JavaScript" %}
-<pre class="language-javascript"><code class="lang-javascript"><strong>// Subscribe to the topic
-</strong><strong>new TopicMessageQuery()
-</strong>  .setTopicId(topicId)
+```javascript
+// Subscribe to the topic
+new TopicMessageQuery()
+  .setTopicId(topicId)
   .subscribe(client, null, (message) => {
-    let messageAsString = Buffer.from(message.contents, "utf8").toString();
+    const messageAsString = Buffer.from(message.contents, "utf8").toString();
     console.log(
       `${message.consensusTimestamp.toDate()} Received: ${messageAsString}`
     );
+
+    // Close client right after the first received message
+    client.close();
   });
-</code></pre>
+```
 {% endtab %}
 
 {% tab title="Go" %}
@@ -167,7 +180,7 @@ Thread.sleep(30000);
 {% tab title="JavaScript" %}
 ```javascript
 // Send message to the topic
-let sendResponse = await new TopicMessageSubmitTransaction({
+const sendResponse = await new TopicMessageSubmitTransaction({
 	topicId: topicId,
 	message: "Hello, HCS!",
 }).execute(client);
@@ -228,12 +241,12 @@ public class CreateTopicTutorial {
     public static void main(String[] args) throws TimeoutException, PrecheckStatusException, ReceiptStatusException, InterruptedException {
 
         // Grab your Hedera testnet account ID and private key
-        AccountId myAccountId = AccountId.fromString(Dotenv.load().get("MY_ACCOUNT_ID"));
-        PrivateKey myPrivateKey = PrivateKey.fromString(Dotenv.load().get("MY_PRIVATE_KEY"));
+        AccountId operatorId = AccountId.fromString(Dotenv.load().get("OPERATOR_ID"));
+        PrivateKey operatorKey = PrivateKey.fromString(Dotenv.load().get("OPERATOR_KEY"));
 
         // Build your Hedera client
         Client client = Client.forTestnet();
-        client.setOperator(myAccountId, myPrivateKey);
+        client.setOperator(operatorId, operatorKey);
 
         // Create a new topic
         TransactionResponse txResponse = new TopicCreateTransaction()
@@ -281,51 +294,52 @@ public class CreateTopicTutorial {
 
 <summary>JavaScript</summary>
 
-<pre class="language-javascript"><code class="lang-javascript">console.clear();
-require("dotenv").config();
-const {
-  AccountId,
-  PrivateKey,
+```javascript
+console.clear();
+import dotenv from "dotenv";
+dotenv.config();
+
+import {
   Client,
   TopicCreateTransaction,
-<strong>  TopicMessageQuery,
-</strong>  TopicMessageSubmitTransaction,
-} = require("@hashgraph/sdk");
+  TopicMessageQuery,
+  TopicMessageSubmitTransaction,
+} from "@hashgraph/sdk";
 
 // Grab the OPERATOR_ID and OPERATOR_KEY from the .env file
-const myAccountId = process.env.MY_ACCOUNT_ID;
-const myPrivateKey = process.env.MY_PRIVATE_KEY;
+const operatorId = process.env.OPERATOR_ID;
+const operatorKey = process.env.OPERATOR_KEY;
 
 // Build Hedera testnet and mirror node client
-const client = Client.forTestnet();
-
-// Set the operator account ID and operator private key
-client.setOperator(myAccountId, myPrivateKey);
+const client = Client.forTestnet().setOperator(operatorId, operatorKey);
 
 async function submitFirstMessage() {
   // Create a new topic
-  let txResponse = await new TopicCreateTransaction().execute(client);
+  const txResponse = await new TopicCreateTransaction().execute(client);
 
   // Grab the newly generated topic ID
-  let receipt = await txResponse.getReceipt(client);
-  let topicId = receipt.topicId;
+  const receipt = await txResponse.getReceipt(client);
+  const topicId = receipt.topicId;
   console.log(`Your topic ID is: ${topicId}`);
 
   // Wait 5 seconds between consensus topic creation and subscription creation
   await new Promise((resolve) => setTimeout(resolve, 5000));
 
-  // Create the topic
+  // Subscribe to the topic
   new TopicMessageQuery()
     .setTopicId(topicId)
     .subscribe(client, null, (message) => {
-      let messageAsString = Buffer.from(message.contents, "utf8").toString();
+      const messageAsString = Buffer.from(message.contents, "utf8").toString();
       console.log(
         `${message.consensusTimestamp.toDate()} Received: ${messageAsString}`
       );
+
+      // Close client right after the first received message
+      client.close();
     });
 
   // Send message to topic
-  let sendResponse = await new TopicMessageSubmitTransaction({
+  const sendResponse = await new TopicMessageSubmitTransaction({
     topicId: topicId,
     message: "Hello, HCS!",
   }).execute(client);
@@ -333,11 +347,13 @@ async function submitFirstMessage() {
 
   // Get the status of the transaction
   const transactionStatus = getReceipt.status;
-  console.log("The message transaction status: " + transactionStatus.toString());
+  console.log(
+    "The message transaction status: " + transactionStatus.toString()
+  );
 }
 
 submitFirstMessage();
-</code></pre>
+```
 
 </details>
 
@@ -366,19 +382,19 @@ func main() {
 	}
 
 	// Grab your testnet account ID and private key from the .env file
-	myAccountId, err := hedera.AccountIDFromString(os.Getenv("MY_ACCOUNT_ID"))
+	operatorId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
 	if err != nil {
 		panic(err)
 	}
 
-	myPrivateKey, err := hedera.PrivateKeyFromString(os.Getenv("MY_PRIVATE_KEY"))
+	operatorKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 	if err != nil {
 		panic(err)
 	}
 
 	// Create your testnet client
 	client := hedera.ClientForTestnet()
-	client.SetOperator(myAccountId, myPrivateKey)
+	client.SetOperator(operatorId, operatorKey)
 
 	// Create a new topic
 	transactionResponse, err := hedera.NewTopicCreateTransaction().
@@ -439,13 +455,4 @@ func main() {
 Have a question? [Ask it on StackOverflow](https://stackoverflow.com/questions/tagged/hedera-hashgraph)
 {% endhint %}
 
-<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden></th><th data-hidden></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Simi, Sr. Software Manager </p><p><a href="https://github.com/ed-marquez">GitHub</a> | <a href="https://www.linkedin.com/in/shunjan">LinkedIn</a></p></td><td></td><td></td><td><a href="https://www.linkedin.com/in/shunjan">https://www.linkedin.com/in/shunjan </a></td></tr><tr><td align="center"><p>Editor: Michiel, Developer Advocate</p><p><a href="https://github.com/michielmulders">GitHub</a> | <a href="https://www.linkedin.com/in/michielmulders/">LinkedIn</a></p></td><td></td><td></td><td><a href="https://www.linkedin.com/in/michielmulders/">https://www.linkedin.com/in/michielmulders/</a></td></tr></tbody></table>
-
-***
-
-## Table of Contents
-
-1. [Create Topic](submit-your-first-message.md#id-1.-create-your-first-topic)
-2. [Subscribe to Topic](submit-your-first-message.md#id-2.-subscribe-to-a-topic)
-3. [Submit Message](submit-your-first-message.md#id-3.-submit-a-message)
-4. [Code Check](submit-your-first-message.md#code-check)
+<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden></th><th data-hidden></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Simi, Sr. Software Manager</p><p><a href="https://github.com/ed-marquez">GitHub</a> | <a href="https://www.linkedin.com/in/shunjan">LinkedIn</a></p></td><td></td><td></td><td><a href="https://www.linkedin.com/in/shunjan">https://www.linkedin.com/in/shunjan</a></td></tr><tr><td align="center"><p>Editor: Michiel, DevRel Engineer</p><p><a href="https://github.com/michielmulders">GitHub</a> | <a href="https://www.linkedin.com/in/michielmulders/">LinkedIn</a></p></td><td></td><td></td><td><a href="https://www.linkedin.com/in/michielmulders/">https://www.linkedin.com/in/michielmulders/</a></td></tr><tr><td align="center"><p>Editor: Krystal, Technical Writer</p><p><a href="https://github.com/theekrystallee">GitHub</a> | <a href="https://x.com/theekrystallee">X</a></p></td><td></td><td></td><td><a href="https://x.com/theekrystallee">https://x.com/theekrystallee</a></td></tr></tbody></table>

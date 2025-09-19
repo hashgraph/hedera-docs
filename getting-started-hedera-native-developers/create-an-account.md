@@ -6,7 +6,7 @@ Learn how to create a new Hedera **account** on _testnet_ using the JavaScript, 
 
 ## Prerequisites
 
-* A Hedera testnet **operator account ID** and **DER-encoded private key** (from the [Quickstart](quickstart.md)).
+* A Hedera testnet **operator account ID** and **ECDSA** **DER-encoded private key** (from the [Quickstart](quickstart.md)).
 * A small amount of testnet **HBAR (ℏ)** to pay the `$0.05` account‑creation fee.
 
 > ### _**Note**_&#x20;
@@ -69,7 +69,7 @@ import {
 {% endtab %}
 
 {% tab title="Java" %}
-Add the[ Java SDK](https://github.com/hiero-ledger/hiero-sdk-java) depenency to your Maven project's `pom.xml` and create your source file:
+Add the[ Java SDK](https://github.com/hiero-ledger/hiero-sdk-java) dependency to your Maven project's `pom.xml` and create your source file:
 
 Create a new **Maven** project and name it `HederaExamples`. Add the following dependencies to your `pom.xml` file:
 
@@ -85,10 +85,15 @@ Create a new **Maven** project and name it `HederaExamples`. Add the following d
         <artifactId>gson</artifactId>
         <version>2.10.1</version>
     </dependency>
+    <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-netty-shaded</artifactId>
+        <version>1.73.0</version>
+    </dependency>
 </dependencies>
 ```
 
-Or for **Gradle** projects, add these dependencies to your `build.gradle` file:
+Or for **Gradle** projects using the Groovy DSL, add these dependencies to your `build.gradle` file and install the dependencies using `./gradlew build`
 
 ```gradle
 plugins {
@@ -235,7 +240,7 @@ from hiero_sdk_python.utils.crypto_utils import keccak256
 
 ## Environment Variables
 
-Set your operator credentials as environment variables:
+Set your testnet operator credentials as environment variables. Your `OPERATOR_ID` is your testnet account ID. Your `OPERATOR_KEY` is your testnet account's corresponding ECDSA private key.&#x20;
 
 ```bash
 export OPERATOR_ID="0.0.1234"
@@ -246,7 +251,7 @@ export OPERATOR_KEY="3030020100300506032b657004220420..."
 
 ## Step 1: Initialize Hedera Client
 
-Load your operator credentials from environment variables and initialize your Hedera testnet client. This client will connect to the network and use your operator account to sign transactions and pay fees.
+Load your operator credentials from environment variables and initialize your Hedera testnet client. This client will connect to the Hedera test network and use your operator account to sign transactions and pay transaction fees.
 
 {% tabs %}
 {% tab title="JavaScript" %}
@@ -349,7 +354,7 @@ newPublicKey = newPrivateKey.public_key()
 
 ## Step 3: Create Your First Account on Hedera
 
-Build an `AccountCreateTransaction` with the _new public key_ and initial balance, then execute it. Specify the key (or alias), an optional initial HBAR balance, and once you execute it, the network creates the account and returns the new `AccountId` in the receipt.
+Build an `AccountCreateTransaction` with the _new public key_ and initial balance, then execute it. Specify the public key , an optional initial HBAR balance, and once you execute it, the network creates the account and returns the new `AccountId` in the receipt.
 
 {% tabs %}
 {% tab title="JavaScript" %}
@@ -372,8 +377,8 @@ console.log(`EVM Address: 0x${newPublicKey.toEvmAddress()}`);
 ```java
 // Build & execute the account creation transaction
 AccountCreateTransaction transaction = new AccountCreateTransaction()
-    .setECDSAKeyWithAlias(newPublicKey)          // set the account key
-    .setInitialBalance(new Hbar(20));            // fund with 20 HBAR
+    .setKeyWithAlias(newPublicKey) // set the account key
+    .setInitialBalance(new Hbar(20)); // fund with 20 HBAR
 
 TransactionResponse txResponse = transaction.execute(client);
 TransactionReceipt receipt = txResponse.getReceipt(client);
@@ -694,7 +699,7 @@ public class CreateAccountDemo {
 
         // initialize the client for testnet
         Client client = Client.forTestnet()
-            .setOperator(AccountId.fromString(operatorId), PrivateKey.fromString(operatorKey));
+            .setOperator(AccountId.fromString(operatorId),         PrivateKey.fromString(operatorKey));
 
         // generate a new key pair
         PrivateKey newPrivateKey = PrivateKey.generateECDSA();
@@ -703,7 +708,7 @@ public class CreateAccountDemo {
         // build & execute the account creation transaction
         AccountCreateTransaction transaction = new AccountCreateTransaction()
             // set the account key with alias
-            .setECDSAKeyWithAlias(newPublicKey)          
+            .setKeyWithAlias(newPublicKey)          
             .setInitialBalance(new Hbar(20)); // fund with 20 HBAR           
 
         TransactionResponse txResponse = transaction.execute(client);
@@ -911,7 +916,7 @@ node createAccountDemo.js
 
 {% tab title="Java Maven" %}
 ```bash
-mvn compile exec:java -Dexec.mainClass="CreateAccountDemo"
+mvn compile exec:java -Dexec.mainClass="com.example.CreateAccountDemo"
 ```
 {% endtab %}
 

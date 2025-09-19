@@ -16,7 +16,7 @@ This quickstart walks you through submitting your first Hedera transaction using
 {% step %}
 ### Transfer HBAR transaction
 
-Under the **Acc & HBAR** native services, click the **Transfer HBAR** transaction from the left navigation
+Under the **Account & HBAR** native services, click the **Transfer HBAR** transaction from the left navigation
 
 1. Replace `receiverAccount` with account ID "0.0.800"
 2. Then click on **Get Account Balance** under Queries&#x20;

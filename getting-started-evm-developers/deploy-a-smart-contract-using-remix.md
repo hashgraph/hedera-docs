@@ -8,7 +8,7 @@ description: >-
 
 ## Introduction to Remix IDE
 
-Remix IDE is an open-source tool for developing smart contracts in Solidity. Originally built for the Ethereum network and supports deploying to EVM-compatible networks like Hedera. Remix includes built-in tools for compiling, debugging, and deploying contracts directly from the browser.
+Remix IDE is an open-source tool for developing smart contracts in Solidity. It was originally built for the Ethereum network and supports deploying to EVM-compatible networks like Hedera. Remix includes built-in tools for compiling, debugging, and deploying contracts directly from the browser.
 
 In this tutorial, you’ll use Remix IDE to write and deploy a simple smart contract to the Hedera testnet.
 
@@ -167,3 +167,5 @@ If you're up for it, you can verify your deployed contract using the Smart Contr
 * [**Remix IDE Documentation**](https://remix-ide.readthedocs.io/en/latest/)
 * [**Hedera Contract Builder**](https://portal.hedera.com/contract-builder)
 * [**Smart Contracts Documentation**](../core-concepts/smart-contracts/)
+
+<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Krystal, Technical Writer</p><p><a href="https://github.com/theekrystallee">GitHub</a> | <a href="https://x.com/theekrystallee">X</a></p></td><td><a href="https://x.com/theekrystallee">https://x.com/theekrystallee</a></td></tr></tbody></table>

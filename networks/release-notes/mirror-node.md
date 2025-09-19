@@ -8,6 +8,104 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Latest Releases
 
+## [v0.138.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.138.0)&#x20;
+
+This is a testing focused release with a number of changes that improve our test coverage. A new GitHub Actions workflow was added to build and test our acceptance tests end-to-end. This workflow leverages [Solo](https://github.com/hashgraph/solo/) to stand up a consensus node and mirror node in Kubernetes with the proper configuration. In addition, we also run the same suite of tests but using block node instead of record streams. A similar workflow was added to the consensus node repository as part of their extended test suite to gate their release process.
+
+The acceptance tests saw a number of improvements including a focus on increasing coverage of mirror node REST APIs. With this change, coverage was added for seven endpoints including get block by hash, list schedules, network fee, network supply, and three contract endpoints. Acceptance tests now also support testing APIs converted from JavaScript to Java to ensure no regressions.
+
+### Breaking Changes
+
+The [Bitnami](https://bitnami.com/) Helm chart and docker images that we use in our Helm chart are moving to a [paid, closed source](https://github.com/bitnami/containers/issues/83267) model. If you are using our PostgreSQL, Redis, or Minio sub-charts from our wrapper Helm chart you might be impacted by this change. To workaround, we've temporarily switched to using the `bitnamilegacy` container repository. As these won't receive updates, long term we'll have to come up with a different solution. If you're using these, please ensure your instance is upgraded to this release by the date Bitnami notes in the above link.
+
+## [v0.137.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.137.0)
+
+This release marks the conversion of our first JavaScript-based REST API to Java. The `/api/v1/network/stake` was rewritten in the rest-java module, but it's currently disabled by default as we roll it out according to the [plan](https://github.com/hiero-ledger/hiero-mirror-node/blob/main/docs/checklist/rest-conversion.md). Conversion of our code base to a single language will improve code reuse and reduce bugs. During our testing, we were pleasantly surprised that it also improved performance. The `/api/v1/network/stake` API more than doubled in requests per second as a result of the conversion.
+
+It's exciting to see multiple outside contributions come in from community members! [@pratibhanaikk](https://github.com/pratibhanaikk) worked on removing our dependency on [Spring Cloud](https://docs.spring.io/spring-cloud/docs/current/reference/html/). Meanwhile [@HamzaElzarw-2022](https://github.com/HamzaElzarw-2022) removed our use of the `@Lazy` annotation. Both of these streamline our application and make progress towards our goal of native compilation.
+
+[HIP-1127](https://hips.hedera.com/hip/hip-1127) Unified transaction record format was integrated into our block node code. Additional integration test coverage for block nodes was implemented to ensure single and multiple nodes work properly.
+
+Finally, an entity relationship diagram was added to aid operators and developers in understanding the structure of the database schema. The ERD [diagram](https://github.com/hiero-ledger/hiero-mirror-node/blob/main/docs/database/README.md#current-erd-diagram) is in [draw.io](https://draw.io/) format and can be uploaded and viewed directly on that site.
+
+### Breaking Changes
+
+With the removal of Spring Cloud, the automatic configuration refresh from Kubernetes ConfigMaps and Secrets named after the `spring.application.name` property will no longer work. If you're an operator that depends upon this functionality, you'll need to migrate to manually specifying the configuration volumes to mount.
+
+## [v0.136.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.136.0)
+
+This release aligns contract create gas estimation in the legacy mono code to match the result produced by our modularized code. It also ensures both match the gas usage on consensus nodes. This is especially important when modularized traffic is set to less than 100%, causing users to receive highly variable responses for the same request.
+
+Other improvements include a testing framework for end to end testing of block nodes, a flag to control the rollout of new rest-java endpoints, and non-zero realm fixes.
+
+### Upgrading
+
+This release includes a long running migration that fixes the contract log `index` field. It is expected this migration to complete in about an hour. This migration runs asynchronously so it will not incur any immediate downtime, but it does increase the load on the database so it could impact overall system responsiveness.
+
+## [v0.135.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.135.0)
+
+A new `hiero.mirror.importer.db.sslMode` enum property was added to the importer. This property already exists in most other modules and its addition to the importer ensures consistent configuration across modules. It is set to disabled by default, but when enabled it controls the level of verification to be used for TLS connections.
+
+The bulk contract slot caching was improved and enabled by default. This should provide the performance of the `/api/v1/contracts/call` REST API for contracts with many key/value pairs. Also for this API, the horizontal pod autoscaler now will auto scale pods based upon the gas used in addition to its previous memory based scaling.
+
+## [v0.134.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.134.0)
+
+The `/api/v1/contracts/results/{id}/opcodes` REST API now works with the modularized EVM library. Additionally, the debug operation tracer was fixed to support modularized as well.
+
+The `hiero.mirror.web3.evm.maxDataSize` property was removed as part of [HIP-1086](https://hips.hedera.com/hip/hip-1086) Jumbo Transaction (see Breaking Changes). Additional k6 performance tests for fungible and non-fungible contract calls were added. A temporary feature flag was added to workaround users receiving `INSUFFICIENT_PAYER_BALANCE` in modularized as noted in [https://hedera.com/blog/hip-1217-important-updates-to-the-hedera-api-v1-contracts-call-endpoint](https://hedera.com/blog/hip-1217-important-updates-to-the-hedera-api-v1-contracts-call-endpoint).
+
+A new property `hiero.mirror.importer.endBlockNumber` was added to control when a mirror node should stop ingesting blocks. By default it is unset indicating it will keep processing indefinitely. When set, the mirror node will ingest blocks up to and including the configured end block number. This property is currently only applicable to block streams and block nodes and does not work with record files.
+
+Now when running tests, a table usage report will be generated in each module's build directory. This report includes a table grouped by table name and grouped by endpoint. The report will be used to analyze table usage across components and aid in future refactoring efforts.
+
+### Breaking Changes
+
+The `hiero.mirror.web3.evm.maxDataSize` property was removed in favor of the consensus node's `jumboTransactions.ethereumMaxCallDataSize` property. As both properties were configured to the same value there should be no impact to users of the `/api/v1/contracts/call` REST API. Mirror node operators who have customized the value of `maxDataSize` should migrate to setting `hiero.mirror.web3.evm.properties.jumboTransactions.ethereumMaxCallDataSize=131072`.
+
+## [v0.133.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.133.0)
+
+This release contains initial support for [HIP-1081](https://github.com/hiero-ledger/hiero-improvement-proposals/pull/1081) Block Nodes. An experimental `BlockNodeSubscriber` was added to initiate an uni-directional gRPC stream to a block node to receive and process a stream of block items. Future releases will build upon this functionality by adding additional features and resiliency.
+
+A new cache was added to improve the performance of the `/api/v1/contracts/call` API when loading a large number of contract storage slots. A workaround was added to the modularized flow to revert to the previous behavior of accepting long zero addresses for accounts and contracts that have an ECDSA derived alias. This capability can be controlled with the new `HIERO_MIRROR_WEB3_MODULARIZED_ALLOWLONGZEROADDRESS` property. Additionally, support for [HIP-1086 Jumbo EthereumTransaction](https://hips.hedera.com/hip/hip-1086) was verified with additional testing added.
+
+Support for non-zero realms and shards saw continued test support. Tests in grpc, importer, rest-java, and web3 module saw updates to remove hard-coding of zeros for shard and realms in most test setup.
+
+### Breaking Changes
+
+The [pg\_notify](https://www.postgresql.org/docs/current/sql-notify.html) capability in both the importer and gRPC modules was removed in this release . This capability allowed the importer to notify the gRPC module of new topic messages via the PostgreSQL database's NOTIFY messaging. It's recommended to use the Redis-based notification for high throughput streaming or the shared polling listener for low throughput and ease of use. Similarly, the `hiero.mirror.importer.parser.record.entity.notify.*` and `hiero.mirror.grpc.listener.type=NOTIFY` properties were removed.
+
+The GCP Pub/Sub integration in the importer was removed as it has been unused for years. This capability allowed the mirror node to publish transaction data to GCP BigQuery for the [Hedera ETL](https://github.com/blockchain-etl/hedera-etl) effort. The `hiero.mirror.importer.parser.record.pubsub.*` properties were removed as part of this effort.
+
+## [v0.132.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.132.0)
+
+This is a smaller release focused on finalizing the non-zero shard and realm work. Based upon internal feedback, we adjusted the logic for encoding long-zero EVM addresses to not include shard and realm in the 20 byte address. This has no impact on regular networks
+
+## [v0.131.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.131.0)
+
+This release expands upon our read only EVM functionality and includes many bug fixes and performance improvements. We added support for the `HederaScheduleService` system contracts in the modularized `/api/v1/contracts/call` REST API. Tests were added to verify HIP-719 which has system contracts for token `associate`, `dissociate`, and `isAssociated`. Additional testing was conducted to verify airdrops and get schedule info system contracts. The contract call API now supports per request filters including filtering by `from`, `to`, `data`, `block`, etc. If the filter is matched it can be configured to either log, reject, throttle, or redirect to modularized or monolithic code path. We've also [documented](https://github.com/hiero-ledger/hiero-mirror-node/blob/main/docs/web3/modularized.md) the breaking changes to the modularized contract call (see section below for details).
+
+There were some minor follow on tasks related to the Hiero migration after the major changes seen in the last release. The common and web3 modules as well as the OpenAPI generated models all saw their Java packages renamed from `com.hedera.mirror` to `org.hiero.mirror`. The `hedera-mirror-web3` folder was renamed to just `web3` to match the other modules. Finally, the documentation was changed to reduce the use of Hedera or replace it with Hiero.
+
+Important for partial mirror nodes, we now automatically create the `0.0.2` treasury account if it does not exist. This is a special account we use internally to generate our balance snapshots and without it operators without all historical data could only track the latest balance. This synthetic account is excluded from API responses since it is not generated from consensus node state and only used internally.
+
+## [v0.130.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.130.0)
+
+After previously migrating the repository to Hiero, this release focuses on migrating the code base to use Hiero in place of Hedera. The top-level folders were all renamed to remove the `hedera-mirror-` prefix in favor of a simpler module name like `importer`. All Java packages were migrated from `com.hedera.mirror` to `org.hiero.mirror`. Properties were converted from `hedera.mirror` to `hiero.mirror` with a migration path for operators (see Breaking Changes). Finally, Prometheus metrics were also renamed to change Hedera to Hiero and standardized to include the module name.
+
+[HIP-1046](https://hips.hedera.com/hip/hip-1046) gRPC web proxy endpoints support is now available. Support for persisting the new gRPC proxy endpoints on the node create and update transactions was implemented. Additionally, a new `grpc_proxy_endpoint` was added to each node entry in the `/api/v1/network/nodes` REST API.
+
+The mirror node now sets an implicit `ContractID{shard, realm, num}` key on contract creation for contracts without a key. Additionally, we migrated existing contracts without a key to populate a `ContractID` key.
+
+An updated minimal and full database snapshot is now available for download and can be used to [bootstrap](https://github.com/hiero-ledger/hiero-mirror-node/blob/main/docs/database/bootstrap.md) new mirror nodes. The updated snapshots were taken with the 0.125.0 schema and reflect the database as of early March 2025. The minimal and full are identical except the minimal excludes our largest HCS topic and reduces the snapshot size by 90%.
+
+### Breaking Changes
+
+All `hedera.mirror.*` properties were renamed to `hiero.mirror.*`. This includes both environment variables (e.g. `HEDERA_MIRROR`) and yaml properties. To mitigate the impact of this breaking change, a property migrator was added that automatically converts any Hedera property to Hiero. When any mirror node component starts up, it will log a warning that it converted legacy Hedera properties. It's recommended that operators note these warnings and transition their configuration to use the new Hiero prefixed properties. In the future, we might remove this migration logic after customers have had time to migrate their configuration.
+
+All `hedera_mirror` prometheus metrics were renamed to `hiero_mirror`. Any alerts or dashboards that referenced these metrics were also updated to use the new hiero metric. An operator using these metrics outside these areas should update to use the renamed metrics.
+
+With the exception of the protobuf package, all packages were renamed from `com.hedera.mirror` to `org.hiero.mirror`. Since the mirror node does not publish a library that packages its code, this should not be user impacting. Any operator who's running a forked version of the code would need to update its folders and packages to reflect the new Hiero naming.
+
 ## [v0.129.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.129.0)
 
 Repository: [hiero-ledger/hiero-mirror-node](https://github.com/hiero-ledger/hiero-mirror-node) · Tag: [v0.129.0](https://github.com/hiero-ledger/hiero-mirror-node/tree/v0.129.0) · Commit: [24976d9](https://github.com/hiero-ledger/hiero-mirror-node/commit/24976d9800e6fae9961e18288b49a320e58b9cf8) · Released by: [github-actions\[bot\]](https://github.com/apps/github-actions)

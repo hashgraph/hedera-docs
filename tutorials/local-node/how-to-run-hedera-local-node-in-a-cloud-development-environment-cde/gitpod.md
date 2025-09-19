@@ -78,7 +78,7 @@ Visit the local mirror node explorer endpoint ([http://localhost:8080/devnet/das
 
 ## Conclusion and Additional Resources
 
-Congrats on successfully setting up your Gitpod workspace and running a Hedera Local Node!&#x20;
+Congrats on successfully setting up your Gitpod workspace and running a Hedera Local Node!
 
 **➡** [**Hedera Local Node Repository**](https://github.com/hashgraph/hedera-local-node#readme)
 

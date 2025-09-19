@@ -27,7 +27,7 @@ This new method allows you to connect to the Hedera network through HashScan:
 
 ***
 
-## 2. Manual Method&#x20;
+## 2. Manual Method
 
 1. Open MetaMask and click on the network dropdown at the top.
 2. Select **Add Network** and then **Add Network Manually**.

@@ -2,9 +2,9 @@
 
 ## Summary
 
-In the first tutorial, "Submit Your First Message," you have learned how to submit a message to a topic. &#x20;
+In the first tutorial, "Submit Your First Message," you have learned how to submit a message to a topic.
 
-In this tutorial, you will learn how to query the Hedera Mirror Node API to retrieve and filter messages.&#x20;
+In this tutorial, you will learn how to query the Hedera Mirror Node API to retrieve and filter messages.
 
 ***
 
@@ -25,16 +25,16 @@ We recommend that you complete the "Submit Your First Message" tutorial [here](s
 
 ## 1. Create a topic and submit three messages
 
-For this tutorial, create a new topic and submit three messages to this topic on testnet. You will use the retrieved topic ID to query for messages via the Hedera Mirror Node API.&#x20;
+For this tutorial, create a new topic and submit three messages to this topic on testnet. You will use the retrieved topic ID to query for messages via the Hedera Mirror Node API.
 
-Copy and execute the following code. Make sure to write down your `topic ID`. The topic ID will be in `0.0.topicId` format (ex: `0.0.1234`).&#x20;
+Copy and execute the following code. Make sure to write down your `topic ID`. The topic ID will be in `0.0.topicId` format (ex: `0.0.1234`).
 
 {% tabs %}
 {% tab title="Java" %}
 ```java
 // Create a new topic
 TransactionResponse txResponse = new TopicCreateTransaction()
-    .setSubmitKey(myPrivateKey.getPublicKey())
+    .setSubmitKey(operatorKey.getPublicKey())
     .execute(client);
 
 // Get the receipt
@@ -67,11 +67,11 @@ TransactionResponse submitMessage3 = new TopicMessageSubmitTransaction()
 {% tab title="JavaScript" %}
 ```javascript
 // Create a new public topic
-let txResponse = await new TopicCreateTransaction().execute(client);
+const txResponse = await new TopicCreateTransaction().execute(client);
 
 // Grab the newly generated topic ID
-let receipt = await txResponse.getReceipt(client);
-let topicId = receipt.topicId;
+const receipt = await txResponse.getReceipt(client);
+const topicId = receipt.topicId;
 console.log(`Your topic ID is: ${topicId}`);
 
 // Submit messages
@@ -96,7 +96,7 @@ await new TopicMessageSubmitTransaction({
 ```go
 // Create a new topic
 transactionResponse, err := hedera.NewTopicCreateTransaction().
-	SetSubmitKey(myPrivateKey.PublicKey()).
+	SetSubmitKey(operatorKey.PublicKey()).
 	Execute(client)
 
 if err != nil {
@@ -170,14 +170,14 @@ Now all three messages have been submitted to your topic ID on testnet, let's qu
 </strong><strong>https://testnet.mirrornode.hedera.com/api/v1/topics/&#x3C;topicID>/messages
 </strong>
 // Example
-https://testnet.mirrornode.hedera.com/api/v1/topics/0.0.4603900/messages
+https://testnet.mirrornode.hedera.com/api/v1/topics/0.0.123456/messages
 </code></pre>
 
 The result should look similar to the API result below, with three messages being returned. The actual message contents are base64 encoded. If you want to verify the message contents, you can use this [decoder website](https://www.base64decode.org/) or decode it using code yourself.
 
 <details>
 
-<summary><a href="https://emojipedia.org/check-mark-button/">✅ </a> API result</summary>
+<summary><a href="https://emojipedia.org/check-mark-button/">✅ </a>API result</summary>
 
 ```json
 {
@@ -220,13 +220,13 @@ The result should look similar to the API result below, with three messages bein
 
 ## 3. Retrieve a specific message by sequence number
 
-In this section, you'll learn how to query messages by a sequence number. Each message you submit to a topic receives a sequence number starting from 1.&#x20;
+In this section, you'll learn how to query messages by a sequence number. Each message you submit to a topic receives a sequence number starting from 1.
 
 If you take a look at the [REST API docs](https://docs.hedera.com/hedera/sdks-and-apis/rest-api#topics) for `Topics`, you'll find the first query `/api/v1/topics/{topicId}/messages`. If you expand this section, you'll find all query parameters.
 
 <figure><img src="../../.gitbook/assets/Screen Shot 2023-05-08 at 4.45.33 PM.png" alt=""><figcaption><p>Query parameters REST API</p></figcaption></figure>
 
-Execute the below request to retrieve the message with sequence number 2.&#x20;
+Execute the below request to retrieve the message with sequence number 2.
 
 ```
 // Replace <topicId>
@@ -267,7 +267,7 @@ Only message two is returned by the Hedera Mirror Node.
 
 This section explores advanced filtering methods using query modifiers. The [OpenAPI specification](https://raw.githubusercontent.com/hashgraph/hedera-mirror-node/main/hedera-mirror-rest/api/v1/openapi.yml) for the Hedera Mirror Node REST API shows all details for query parameters (e.g. `timestampQueryParam`).
 
-Possible query modifiers are:&#x20;
+Possible query modifiers are:
 
 * Greater than (gt) / greater than or equal (gte)
 * Lower than (lt) / lower than or equal (lte)
@@ -276,7 +276,7 @@ Possible query modifiers are:&#x20;
 
 You can use these modifiers for query parameters like `sequencenumber` and `timestamp` (consensus timestamp).
 
-In this step, let's query all messages with a **sequence number greater than or equal to 2**. To do so, let's use the `gte` query parameter modifier and assign it the value 2, like this: `sequencenumber=gte:2`.&#x20;
+In this step, let's query all messages with a **sequence number greater than or equal to 2**. To do so, let's use the `gte` query parameter modifier and assign it the value 2, like this: `sequencenumber=gte:2`.
 
 ```
 // Replace <topicId>
@@ -324,4 +324,4 @@ Only message two is returned by the Hedera Mirror Node.
 Have a question? [Ask it on StackOverflow](https://stackoverflow.com/questions/tagged/hedera-hashgraph)
 {% endhint %}
 
-<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Michiel, Developer Advocate</p><p><a href="https://github.com/michielmulders">GitHub</a> | <a href="https://www.linkedin.com/in/michielmulders/">LinkedIn</a></p></td><td><a href="https://www.linkedin.com/in/michielmulders/">https://www.linkedin.com/in/michielmulders/</a></td></tr><tr><td align="center"><p>Editor: Simi, Sr. Software Manager</p><p><a href="https://github.com/SimiHunjan">GitHub</a> | <a href="https://www.linkedin.com/in/shunjan">LinkedIn</a></p></td><td><a href="https://www.linkedin.com/in/shunjan">https://www.linkedin.com/in/shunjan </a></td></tr></tbody></table>
+<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Michiel, Developer Advocate</p><p><a href="https://github.com/michielmulders">GitHub</a> | <a href="https://www.linkedin.com/in/michielmulders/">LinkedIn</a></p></td><td><a href="https://www.linkedin.com/in/michielmulders/">https://www.linkedin.com/in/michielmulders/</a></td></tr><tr><td align="center"><p>Editor: Simi, Sr. Software Manager</p><p><a href="https://github.com/SimiHunjan">GitHub</a> | <a href="https://www.linkedin.com/in/shunjan">LinkedIn</a></p></td><td><a href="https://www.linkedin.com/in/shunjan">https://www.linkedin.com/in/shunjan</a></td></tr></tbody></table>

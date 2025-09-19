@@ -659,8 +659,8 @@ const {
 metadata =
   "ipfs://bafyreie3ichmqul4xa7e6xcy34tylbuq2vf3gnjf7c55trg3b6xyjr4bku/metadata.json";
 
-const operatorKey = PrivateKey.fromString(process.env.MY_PRIVATE_KEY);
-const operatorId = AccountId.fromString(process.env.MY_ACCOUNT_ID);
+const operatorKey = PrivateKey.fromString(process.env.OPERATOR_KEY);
+const operatorId = AccountId.fromString(process.env.OPERATOR_ID);
 
 const client = Client.forTestnet().setOperator(operatorId, operatorKey);
 

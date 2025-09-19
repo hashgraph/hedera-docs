@@ -83,7 +83,7 @@ Intermediary contract that handles sending and receiving existing fungible token
 
 ### HTS Connector
 
-The [**HTS Connector**](https://github.com/hashgraph/hedera-smart-contracts/tree/main/lib/layer-zero#hts-connector) extends LayerZero’s functionality to accommodate HTS tokens, addressing the differences between HTS and ERC token standards. It facilitates the integration of existing ERC tokens with Hedera by bridging them as native HTS tokens. This is a variant of OFT when bringing tokens to Hedera as HTS. If you bring a token to Hedera as an ERC token, you can use [**OFT**](https://github.com/hashgraph/hedera-smart-contracts/tree/main/lib/layer-zero#oft) or [**ONFT**](https://github.com/hashgraph/hedera-smart-contracts/tree/main/lib/layer-zero#onft).
+The [**HTS Connector Contract**](https://github.com/hashgraph/hedera-smart-contracts/tree/main/lib/layer-zero#hts-connector) ([independent audit report](https://hedera.com/audits-and-standards)) extends LayerZero’s functionality to accommodate HTS tokens, addressing the differences between HTS and ERC token standards. It facilitates the integration of existing ERC tokens with Hedera by bridging them as native HTS tokens. This is a variant of OFT when bringing tokens to Hedera as HTS. If you bring a token to Hedera as an ERC token, you can use [**OFT**](https://github.com/hashgraph/hedera-smart-contracts/tree/main/lib/layer-zero#oft) or [**ONFT**](https://github.com/hashgraph/hedera-smart-contracts/tree/main/lib/layer-zero#onft).
 
 #### **Use Case**
 
@@ -233,6 +233,7 @@ Please note the smallest unit of _**HBAR is the tinybar (8 decimal places)**_, w
 ## Additional Resources
 
 * [**LZ Examples Repo**](https://github.com/hashgraph/hedera-smart-contracts/tree/main/lib/layer-zero#layer-zero-examples)
+* [**Independent Audit Report**](https://hedera.com/audits-and-standards)
 * [**Demo Code Repo**](https://github.com/hedera-dev/hedera-example-layer-zero-bridging-oapp)
 * [**LayerZero Scan**](https://layerzeroscan.com/)
 * [**Hedera Fee Estimator**](https://hedera.com/fees)

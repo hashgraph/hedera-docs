@@ -4,7 +4,7 @@ description: >-
   tool.
 ---
 
-# How to Verify a Smart Contract on HashScan
+# Verify a Smart Contract on HashScan
 
 Verifying smart contracts helps ensure the deployed bytecode matches the expected source files. [HashScan](https://hashscan.io/) Smart Contract Verifier is a tool that simplifies this process. This guide will walk through the basic steps of smart contract verification using the HashScan Smart Contract Verifier tool.&#x20;
 

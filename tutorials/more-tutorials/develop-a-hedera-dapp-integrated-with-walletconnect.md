@@ -138,7 +138,7 @@ We'll use the Mirror Node API to query information about the tokens we currently
 
 Open `src/services/wallets/mirrorNodeClient.ts` and paste the below interface outside of and above the `MirrorNodeClient` class.
 
-```Typescript
+```typescript
 export interface MirrorNodeAccountTokenBalance {
   balance: number,
   token_id: string,
@@ -151,7 +151,7 @@ This interface defines the data fields we need for our DApp, filtering out any e
 
 Paste the below HTTP GET request outside of and below the `MirrorNodeClient` class in the `src/services/wallets/mirrorNodeClient.ts` file.
 
-```Typescript
+```typescript
  // Purpose: get token balances for an account
  // Returns: an array of MirrorNodeAccountTokenBalance
  async getAccountTokenBalances(accountId: AccountId) {
@@ -181,7 +181,7 @@ Paste the below HTTP GET request outside of and below the `MirrorNodeClient` cla
 
 To ensure you're on the right track, your \`src/services/wallets/mirrorNodeClient.ts\` file should look like below.
 
-```Typescript
+```typescript
 import { AccountId } from "@hashgraph/sdk";
 import { NetworkConfig } from "../../config";
 
@@ -235,7 +235,7 @@ In the previous step we wrote code to obtain the current token balance of an acc
 
 Open `src/services/wallets/mirrorNodeClient.ts` and paste the interface outside of and above the `MirrorNodeClient` class.
 
-```Typescript
+```typescript
 export interface MirrorNodeTokenInfo {
   type: 'FUNGIBLE_COMMON' | 'NON_FUNGIBLE_UNIQUE',
   decimals: string,
@@ -247,7 +247,7 @@ export interface MirrorNodeTokenInfo {
 
 Paste the below HTTP GET request outside of and below the `getAccountTokenBalances` function in the `src/services/wallets/mirrorNodeClient.ts` file.
 
-```Typescript
+```typescript
 // Purpose: get token info for a token
 // Returns: a MirrorNodeTokenInfo 
 async getTokenInfo(tokenId: string) {
@@ -263,7 +263,7 @@ In the previous step we wrote code to obtain the token details (token type, deci
 
 Open `src/services/wallets/mirrorNodeClient.ts` and paste the interface outside of and above the `MirrorNodeClient` class.
 
-```Typescript
+```typescript
 export interface MirrorNodeNftInfo {
   token_id: string,
   serial_number: number,
@@ -272,7 +272,7 @@ export interface MirrorNodeNftInfo {
 
 Paste the below HTTP GET request outside of and below the `getTokenInfo` function in the `src/services/wallets/mirrorNodeClient.ts` file.
 
-```Typescript
+```typescript
 // Purpose: get NFT Infor for an account
 // Returns: an array of NFTInfo
 async getNftInfo(accountId: AccountId) {
@@ -300,7 +300,7 @@ We need to combine all of our HTTP response data in order to display our availab
 
 Open `src/services/wallets/mirrorNodeClient.ts` and paste the interface outside of and above the `MirrorNodeClient` class.
 
-```Typescript
+```typescript
 export interface MirrorNodeAccountTokenBalanceWithInfo extends MirrorNodeAccountTokenBalance {
   info: MirrorNodeTokenInfo,
   nftSerialNumbers?: number[],
@@ -309,7 +309,7 @@ export interface MirrorNodeAccountTokenBalanceWithInfo extends MirrorNodeAccount
 
 Paste the function outside of and below the `getNftInfo` function in the `src/services/wallets/mirrorNodeClient.ts` file.
 
-```Typescript
+```typescript
 // Purpose: get token balances for an account with token info in order to display token balance, token type, decimals, etc.
 // Returns: an array of MirrorNodeAccountTokenBalanceWithInfo
 async getAccountTokenBalancesWithTokenInfo(accountId: AccountId): Promise<MirrorNodeAccountTokenBalanceWithInfo[]> {
@@ -361,7 +361,7 @@ The `getAccountTokenBalancesWithTokenInfo` combines token balances, token info a
 
 To ensure you're on the right track, your \`src/services/wallets/mirrorNodeClient.ts\` file should look like below.
 
-```Typescript
+```typescript
 import { AccountId } from "@hashgraph/sdk";
 import { NetworkConfig } from "../../config";
 
@@ -503,7 +503,7 @@ Before a user can receive a new token, they must associate with it. This associa
 
 Open `src/services/wallets/mirrorNodeClient.ts` and paste the function below the `getAccountTokenBalancesWithTokenInfo` function.
 
-```Typescript
+```typescript
 // Purpose: check if an account is associated with a token
 // Returns: true if the account is associated with the token, false otherwise
 async isAssociated(accountId: AccountId, tokenId: string) {
@@ -522,7 +522,7 @@ Open `src/pages/Home.tsx` and replace the existing code by pasting the below cod
 
 <summary>`Home.tx` file</summary>
 
-```Typescript
+```typescript
 import { Button, MenuItem, TextField, Typography } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useWalletInterface } from "../services/wallets/useWalletInterface";
@@ -739,7 +739,7 @@ export default function Home() {
 {% hint style="info" %}
 The crucial part of the code is found within the following code:
 
-```Typescript
+```typescript
 // include all of this necessary for dropdown
   // Purpose: Get the account token balances with token info for the current account and set them to state
   useEffect(() => {
@@ -785,8 +785,8 @@ Open `hedera-test-accounts` folder in a new visual studio code window.
 Create a new file and name it `.env` with the following contents. Remember to enter your account ID and your private key.
 
 ```shell
-MY_ACCOUNT_ID=<enter your account id>
-MY_PRIVATE_KEY=<enter your DER private key>
+OPERATOR_ID=<enter your account id>
+OPERATOR_KEY=<enter your DER private key>
 ```
 
 Within the `hedera-test-accounts` home directory, execute the following command in the terminal,
@@ -803,7 +803,7 @@ Keep this terminal open for the remainder of the tutorial, as you will refer bac
 
 <summary>Test Accounts Sample Output</summary>
 
-```JSON
+```json
 {
   "ed25519": {
     "sender": {

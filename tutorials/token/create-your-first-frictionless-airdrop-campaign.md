@@ -2,7 +2,7 @@
 
 ## Summary
 
-In this tutorial, we’ll guide you through Hedera’s **Frictionless Airdrop** flow, which streamlines token distribution while giving recipients greater control over the tokens they receive. Throughout the tutorial, you’ll work with four new transaction types designed to simplify the airdrop process and safeguard users' token holdings. Each transaction type plays a unique role in enabling frictionless, user-friendly airdrops.&#x20;
+In this tutorial, we’ll guide you through Hedera’s **Frictionless Airdrop** flow, which streamlines token distribution while giving recipients greater control over the tokens they receive. Throughout the tutorial, you’ll work with four new transaction types designed to simplify the airdrop process and safeguard users' token holdings. Each transaction type plays a unique role in enabling frictionless, user-friendly airdrops.
 
 Before diving into the step-by-step guide, here’s a quick overview of the transaction types you’ll encounter:
 
@@ -11,7 +11,7 @@ Before diving into the step-by-step guide, here’s a quick overview of the tran
 * [**TokenRejectTransaction**](../../sdks-and-apis/sdks/token-service/reject-an-airdrop.md): If a user **receives** unwanted tokens, they can use this transaction to transfer them back to the token’s treasury without incurring any custom fees or royalties.
 * [**TokenCancelAirdropTransaction**](../../sdks-and-apis/sdks/token-service/cancel-a-token.md): This transaction allows the **sender** to cancel a pending airdrop if the recipient hasn’t claimed it yet. It gives the sender flexibility to manage unclaimed token transfers.
 
-Now that we have a basic understanding of the transaction types, let’s move on to the step-by-step implementation of a Frictionless Airdrop on Hedera. The full code solution is provided at the end of the tutorial if you want to see it.&#x20;
+Now that we have a basic understanding of the transaction types, let’s move on to the step-by-step implementation of a Frictionless Airdrop on Hedera. The full code solution is provided at the end of the tutorial if you want to see it.
 
 ***
 
@@ -57,18 +57,18 @@ dotenv.config();
 
 async function main() {
     if (
-        process.env.MY_ACCOUNT_ID == null ||
-        process.env.MY_PRIVATE_KEY == null ||
+        process.env.OPERATOR_ID == null ||
+        process.env.OPERATOR_KEY == null ||
         process.env.HEDERA_NETWORK == null
     ) {
         throw new Error(
-            "Environment variables MY_ACCOUNT_ID, HEDERA_NETWORK, and MY_PRIVATE_KEY are required.",
+            "Environment variables OPERATOR_ID, HEDERA_NETWORK, and OPERATOR_KEY are required.",
         );
     }
 
     const client = Client.forName(process.env.HEDERA_NETWORK).setOperator(
-        AccountId.fromString(process.env.MY_ACCOUNT_ID),
-        PrivateKey.fromStringDer(process.env.MY_PRIVATE_KEY),
+        AccountId.fromString(process.env.OPERATOR_ID),
+        PrivateKey.fromStringDer(process.env.OPERATOR_KEY),
     );
 
     /**
@@ -146,18 +146,18 @@ func main() {
 		panic(fmt.Errorf("Unable to load environment variables from .env file. Error:\n%v\n", err))
 	}
 
-	myAccountId, err := hedera.AccountIDFromString(os.Getenv("MY_ACCOUNT_ID"))
+	operatorId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
 	if err != nil {
 		panic(err)
 	}
 
-	myPrivateKey, err := hedera.PrivateKeyFromString(os.Getenv("MY_PRIVATE_KEY"))
+	operatorKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 	if err != nil {
 		panic(err)
 	}
 
 	client := hedera.ClientForTestnet()
-	client.SetOperator(myAccountId, myPrivateKey)
+	client.SetOperator(operatorId, operatorKey)
 	client.SetDefaultMaxTransactionFee(hedera.HbarFrom(100, hedera.HbarUnits.Hbar))
 	client.SetDefaultMaxQueryPayment(hedera.HbarFrom(50, hedera.HbarUnits.Hbar))
 
@@ -289,7 +289,7 @@ Let's create a new token called "GameGold" that we will airdrop to our gaming co
 
 ### Step 3: Airdrop Tokens with Frictionless Airdrop
 
-Ok, we are ready to airdrop the `GameGold`  token to the top 3 players Alice, Bob, and Charlie. Each of them receives 100 tokens. The code should print one pending airdrop for Charlie because Alice and Bob had free token association slots. Only Charlie didn't have any free slots, so he had to claim the token himself.
+Ok, we are ready to airdrop the `GameGold` token to the top 3 players Alice, Bob, and Charlie. Each of them receives 100 tokens. The code should print one pending airdrop for Charlie because Alice and Bob had free token association slots. Only Charlie didn't have any free slots, so he had to claim the token himself.
 
 {% tabs %}
 {% tab title="JavaScript" %}
@@ -404,7 +404,7 @@ Ok, we are ready to airdrop the `GameGold`  token to the top 3 players Alice, Bo
 {% endtab %}
 {% endtabs %}
 
-The output we expect here is that Alice and Bob have received 100 units of our token, and the balance for Charlie shows `null`.&#x20;
+The output we expect here is that Alice and Bob have received 100 units of our token, and the balance for Charlie shows `null`.
 
 ### Step 4: Charlie Claims the Airdrop
 
@@ -644,13 +644,13 @@ When airdropping the NFTs, we realized we made a mistake: Charlie is not actuall
 
 ### Step 7: Token Reject Already Received Airdrop
 
-And lastly, as Charlie is not the rightful owner of the received fungible token, we've asked him if he wants to return the 100 units of our `GameGold` token. Charlie has agreed and can return the token without paying any fees or royalties using the `TokenRejectTransaction`.&#x20;
+And lastly, as Charlie is not the rightful owner of the received fungible token, we've asked him if he wants to return the 100 units of our `GameGold` token. Charlie has agreed and can return the token without paying any fees or royalties using the `TokenRejectTransaction`.
 
 {% hint style="success" %}
-The `reject` functionality can be used to return an already claimed or a successful airdrop into your account. It can't be used to reject a pending airdrop.&#x20;
+The `reject` functionality can be used to return an already claimed or a successful airdrop into your account. It can't be used to reject a pending airdrop.
 {% endhint %}
 
-Here's the code for step 7. The rejected `GameGold` tokens will be returned to the treasury account.&#x20;
+Here's the code for step 7. The rejected `GameGold` tokens will be returned to the treasury account.
 
 {% tabs %}
 {% tab title="JavaScript" %}
@@ -729,8 +729,8 @@ By understanding these costs and who is responsible for them, you can build effi
 <summary><strong><code>.env</code> file example</strong></summary>
 
 ```
-MY_ACCOUNT_ID=0.0.1234
-MY_PRIVATE_KEY=302e020100300506032b657004220420ed5a93073.....
+OPERATOR_ID=0.0.1234
+OPERATOR_KEY=302e020100300506032b657004220420ed5a93073.....
 HEDERA_NETWORK=testnet
 ```
 
@@ -750,23 +750,22 @@ import {
     TokenRejectTransaction,
 } from "@hashgraph/sdk";
 
-import dotenv from "dotenv";
-dotenv.config();
+import "dotenv/config";
 
 async function main() {
     if (
-        process.env.MY_ACCOUNT_ID == null ||
-        process.env.MY_PRIVATE_KEY == null ||
+        process.env.OPERATOR_ID == null ||
+        process.env.OPERATOR_KEY == null ||
         process.env.HEDERA_NETWORK == null
     ) {
         throw new Error(
-            "Environment variables MY_ACCOUNT_ID, HEDERA_NETWORK, and MY_PRIVATE_KEY are required.",
+            "Environment variables OPERATOR_ID, HEDERA_NETWORK, and OPERATOR_KEY are required.",
         );
     }
 
     const client = Client.forName(process.env.HEDERA_NETWORK).setOperator(
-        AccountId.fromString(process.env.MY_ACCOUNT_ID),
-        PrivateKey.fromStringDer(process.env.MY_PRIVATE_KEY),
+        AccountId.fromString(process.env.OPERATOR_ID),
+        PrivateKey.fromStringDer(process.env.OPERATOR_KEY),
     );
 
     /**
@@ -1074,18 +1073,18 @@ func main() {
 		panic(fmt.Errorf("Unable to load environment variables from .env file. Error:\n%v\n", err))
 	}
 
-	myAccountId, err := hedera.AccountIDFromString(os.Getenv("MY_ACCOUNT_ID"))
+	operatorId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
 	if err != nil {
 		panic(err)
 	}
 
-	myPrivateKey, err := hedera.PrivateKeyFromString(os.Getenv("MY_PRIVATE_KEY"))
+	operatorKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 	if err != nil {
 		panic(err)
 	}
 
 	client := hedera.ClientForTestnet()
-	client.SetOperator(myAccountId, myPrivateKey)
+	client.SetOperator(operatorId, operatorKey)
 	client.SetDefaultMaxTransactionFee(hedera.HbarFrom(100, hedera.HbarUnits.Hbar))
 	client.SetDefaultMaxQueryPayment(hedera.HbarFrom(50, hedera.HbarUnits.Hbar))
 

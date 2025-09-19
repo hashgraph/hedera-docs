@@ -88,10 +88,15 @@ Create a new **Maven** project and name it `HederaExamples`. Add the following d
         <artifactId>gson</artifactId>
         <version>2.10.1</version>
     </dependency>
+    <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-netty-shaded</artifactId>
+        <version>1.73.0</version>
+    </dependency>
 </dependencies>
 ```
 
-Or for **Gradle** projects, add these dependencies to your `build.gradle` file:
+Or for **Gradle** projects using the Groovy DSL, add these dependencies to your `build.gradle` file and install the dependencies using `./gradlew build`
 
 ```gradle
 plugins {
@@ -168,7 +173,7 @@ go mod tidy
 
 ## Environment Variables
 
-Set your operator credentials as environment variables:
+Set your operator credentials as environment variables. Your `OPERATOR_ID` is your testnet account ID. Your `OPERATOR_KEY` is your testnet account's corresponding ECDSA private key.
 
 ```bash
 export OPERATOR_ID="0.0.1234"
@@ -179,7 +184,7 @@ export OPERATOR_KEY="3030020100300506032b657004220420..."
 
 ## Step 1: Initialize Hedera Client
 
-Load your operator credentials from environment variables and configure your Hedera testnet client. The client manages your connection to the Hedera network and uses your operator account to sign transactions and pay fees.
+Load your operator credentials from environment variables and configure your Hedera testnet client. The client manages your connection to the Hedera test network and uses your operator account to sign transactions and pay transaction fees.
 
 {% tabs %}
 {% tab title="JavaScript" %}
@@ -796,7 +801,7 @@ node createTopicDemo.js
 
 {% tab title="Java Maven" %}
 ```bash
-mvn compile exec:java -Dexec.mainClass="CreateTopicDemo"
+mvn compile exec:java -Dexec.mainClass="com.example.CreateTopicDemo"
 ```
 {% endtab %}
 

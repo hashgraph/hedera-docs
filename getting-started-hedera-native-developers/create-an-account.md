@@ -159,26 +159,58 @@ go mod tidy
 {% endtab %}
 
 {% tab title="Python" %}
-Open your terminal and create a new directory named `hedera-examples`. Then navigate into the new directory:
+**Before you start:** Ensure you have Python 3.10+ and pip installed on your machine. Run these commands to verify.
+
+```bash
+python --version
+```
+
+```bash
+python -m pip --version
+```
+
+If neither shows 3.10+, install Python from [Python Install](https://www.python.org/downloads/).
+Open your terminal and create a working directory for your Hedera project. Then navigate into the new directory:
 
 ```bash
 mkdir hedera-examples && cd hedera-examples
 ```
 
-Create and activate a virtual environment (Python 3.10+ recommended):
+Create a virtual environment to isolate your project dependencies (Python best practice):
 
 ```bash
 python -m venv .venv
+```
+
+Activate the virtual environment to use the isolated Python installation:
+
+{% tabs %}
+{% tab title="Mac/Linux" %}
+```bash
 source .venv/bin/activate
 ```
+{% endtab %}
 
-Install the [ Python SDK](https://github.com/hiero-ledger/hiero-sdk-python) and requests (used later for querying the Mirror Node):
+{% tab title="Windows" %}
+```bash
+.venv\Scripts\activate
+```
+{% endtab %}
+{% endtabs %}
+
+Upgrade pip to ensure you have the latest package installer (recommended):
 
 ```bash
-pip install hiero_sdk_python requests
+python -m pip install --upgrade pip
 ```
 
-Create a file named `CreateTokenDemo.py` and add the following imports:
+Install the [Python SDK](https://github.com/hiero-ledger/hiero-sdk-python):
+
+```bash
+python -m pip install hiero_sdk_python
+```
+
+Create a file named `CreateAccountDemo.py` and add the following imports:
 
 ```python
 import os
@@ -196,7 +228,6 @@ from hiero_sdk_python import (
 # Used to print the EVM address for the new ECDSA public key
 from hiero_sdk_python.utils.crypto_utils import keccak256
 ```
-{% endcode %}
 {% endtab %}
 {% endtabs %}
 
@@ -258,8 +289,8 @@ client.SetOperator(operatorId, operatorKey)
 
 ```python
 # Load your operator credentials
-operatorId = AccountId.from_string(os.environ["OPERATOR_ID"])
-operatorKey = PrivateKey.from_string(os.environ["OPERATOR_KEY"])
+operatorId = AccountId.from_string(os.getenv("OPERATOR_ID", ""))
+operatorKey = PrivateKey.from_string(os.getenv("OPERATOR_KEY", ""))
 
 # Initialize your testnet client and set operator
 client = Client()
@@ -450,7 +481,7 @@ mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/balances?account.
 {% tab title="Python" %}
 {% code overflow="wrap" %}
 ```python
-mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/balances?account.id={new_account_id}"
+mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/balances?account.id={newAccountId}"
 ```
 {% endcode %}
 {% endtab %}
@@ -801,7 +832,7 @@ func main() {
 
 {% code overflow="wrap" %}
 ```python
-# create_account_demo.py
+# CreateAccountDemo.py
 
 import os
 import time
@@ -812,8 +843,8 @@ from hiero_sdk_python import (
 from hiero_sdk_python.utils.crypto_utils import keccak256
 
 # load your operator credentials
-operatorId = AccountId.from_string(os.environ["OPERATOR_ID"])
-operatorKey = PrivateKey.from_string(os.environ["OPERATOR_KEY"])
+operatorId = AccountId.from_string(os.getenv("OPERATOR_ID", ""))
+operatorKey = PrivateKey.from_string(os.getenv("OPERATOR_KEY", ""))
 
 # initialize the client for testnet
 client = Client()
@@ -831,9 +862,7 @@ transaction = (
 )
 receipt = transaction.execute(client)
 newAccountId = receipt.account_id
-
 evm_address = keccak256(newPublicKey.to_bytes_ecdsa(compressed=False)[1:])[-20:].hex()
-
 
 print(f"\nHedera account created: {newAccountId}")
 print(f"EVM Address: 0x{evm_address}")
@@ -855,6 +884,8 @@ if balances:
     print(f"Account balance: {balanceInHbar:g} ℏ\n")
 else:
     print("Account balance not yet available in Mirror Node")
+
+client.close()
 ```
 {% endcode %}
 
@@ -898,7 +929,7 @@ go run create_account_demo.go
 
 {% tab title="Python" %}
 ```bash
-python CreateTokenDemo.py
+python CreateAccountDemo.py
 ```
 {% endtab %}
 {% endtabs %}

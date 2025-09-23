@@ -172,6 +172,8 @@ python --version
 
 If the `python --version` command is not found or shows a version lower than 3.10, install or upgrade Python from [Python Install](https://www.python.org/downloads/).
 
+**Note:** On some systems, you may need to use `python3` instead of `python` for initial setup commands. If `python --version` doesn't work, try `python3 --version` and use `python3` for the virtual environment creation. After activating the virtual environment, always use `python` for all commands.
+
 Open your terminal and create a working directory for your Hedera project. Then navigate into the new directory:
 
 ```bash

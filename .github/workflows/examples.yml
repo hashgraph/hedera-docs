@@ -194,6 +194,11 @@ jobs:
             fi
             echo "</details>"
           } > "$STATUS_FILE"
+          
+      - name: Update branch with latest main
+        run: |
+          git fetch origin main
+          git checkout -B bot/examples-check origin/main
 
       - name: Open/Update PR with status
         uses: peter-evans/create-pull-request@v6
@@ -204,7 +209,6 @@ jobs:
           body: "Automated run of examples"
           branch: "bot/examples-check"
           add-paths: ${{ env.STATUS_FILE }}
-          # If your token can't create labels, remove the next line
           labels: automated-pr
           delete-branch: true
           base: main

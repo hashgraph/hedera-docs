@@ -208,3 +208,4 @@ jobs:
           labels: automated-pr
           delete-branch: true
           base: main
+          reset-branch: true

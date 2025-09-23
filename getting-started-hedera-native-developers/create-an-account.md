@@ -85,6 +85,11 @@ Create a new **Maven** project and name it `HederaExamples`. Add the following d
         <artifactId>gson</artifactId>
         <version>2.10.1</version>
     </dependency>
+    <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-netty-shaded</artifactId>
+        <version>1.73.0</version>
+    </dependency>
 </dependencies>
 ```
 
@@ -703,7 +708,7 @@ node createAccountDemo.js
 
 {% tab title="Java Maven" %}
 ```bash
-mvn compile exec:java -Dexec.mainClass="CreateAccountDemo"
+mvn compile exec:java -Dexec.mainClass="com.example.CreateAccountDemo"
 ```
 {% endtab %}
 

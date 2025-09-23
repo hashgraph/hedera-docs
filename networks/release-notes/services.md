@@ -6,6 +6,94 @@ description: Consensus Node release information
 
 Visit the [Hedera status page](https://status.hedera.com/) for the latest versions supported on each network.
 
+## Release v0.65
+
+{% hint style="info" %}
+**MAINNET UPDATE SCHEDULED: SEPTEMBER 24, 2025**
+{% endhint %}
+
+{% hint style="success" %}
+**TESTNET UPDATE: SEPTEMBER 4, 2025**
+{% endhint %}
+
+### Release Highlights
+
+Release v0.65 highlights include Virtual Mega Map, enforcement of `max_custom_fees` for [HIP-991 ](https://hips.hedera.com/hip/hip-991)scheduled transactions, and Block Stream improvements including forward-compatibility and unified transaction records. Together, these changes introduce powerful new state management capabilities, scheduled transaction fee controls, and continued advancements toward production-ready Block Streams.
+
+<details>
+
+<summary><strong>What's new in Release 0.65?</strong></summary>
+
+#### Virtual Mega Map
+
+The Virtual Mega Map enhances Hedera's internal state data structure by consolidating all entities—including singletons, queues, and maps—into a single virtual map. This ensures the entire state rolls up to one root hash.\
+\
+**Key benefit:**
+
+* Enhanced Verifiability: A unified root hash simplifies  state and block item proofs, used for block streams.
+
+#### HIP-991 Enhancements: max\_custom\_fees for Scheduled Transactions
+
+Release v0.65 adds support for max\_custom\_fees in scheduled transactions with HIP-991 topics.
+
+**Key benefits:**
+
+* Predictable Fees: Ensures maximum custom fee limits are enforced.
+* Alignment with HTS: Extends scheduled transaction functionality to better match Hedera Token Service features.
+* Developer Guardrails: Protects applications and users from unexpected fee outcomes.
+
+#### **Advancements in HIP-1056 & HIP-1127: Block Streams**
+
+Building on the Block Stream work from v0.64, this release delivers major steps toward a unified, verifiable stream layer.
+
+**New developments:**
+
+[HIP-1127](https://hips.hedera.com/hip/hip-1127): Unified Transaction Record in Block Stream: Addresses historical duplication in how transactions are represented and creates a single, unified standard for the block stream. It achieves this while ensuring complete backward compatibility for existing applications, requiring no code changes for developers submitting transactions.
+
+**Key benefits:**
+
+* Performance & Scalability: Improves throughput and reduces latency when handling accounts, tokens, and other stateful data.
+* Future-Proofing: Provides a foundation for ongoing state service optimization.
+* Reduces State: Reduces the size and cost of the data stream
+
+</details>
+
+### [Build 0.65.1](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.65.1)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* fix: Fall back to `parseAndCheck()` if `parseSignedAndCheck()` is `INVALID_TX` by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#20859](https://github.com/hiero-ledger/hiero-consensus-node/pull/20859)
+* chore: state validator fixes (0.65) by [@OlegMazurov](https://github.com/OlegMazurov) in [#20792](https://github.com/hiero-ledger/hiero-consensus-node/pull/20792)
+* feat: 20823 Added progress output to `export` command ([#20825](https://github.com/hiero-ledger/hiero-consensus-node/pull/20825)) by [@imalygin](https://github.com/imalygin) in [#20835](https://github.com/hiero-ledger/hiero-consensus-node/pull/20835)
+
+**Full Changelog**: [v0.65.0...v0.65.1](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.65.0...v0.65.1)
+
+</details>
+
+### [Build 0.65.0](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.65.0)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* test: Edge cases - Smart Contracts Service Tests Part 3 by [@vtronkov](https://github.com/vtronkov) in [#19987](https://github.com/hiero-ledger/hiero-consensus-node/pull/19987)
+* test: Edge cases - Smart Contracts Service Tests Part 4 by [@vtronkov](https://github.com/vtronkov) in [#20014](https://github.com/hiero-ledger/hiero-consensus-node/pull/20014)
+* chore: update test URL for JTR by [@lpetrovic05](https://github.com/lpetrovic05) in [#20067](https://github.com/hiero-ledger/hiero-consensus-node/pull/20067)
+* build(deps): bump testContainers from 1.21.0 to 1.21.1 in /hiero-dependency-versions by [@dependabot](https://github.com/dependabot)\[bot] in [#19445](https://github.com/hiero-ledger/hiero-consensus-node/pull/19445)
+* chore: update hiero gradle conventions to v0.4.9 by [@andrewb1269hg](https://github.com/andrewb1269hg) in [#20062](https://github.com/hiero-ledger/hiero-consensus-node/pull/20062)
+* chore: Move EthereumSuite to long running tests bucket by [@stoyanov-st](https://github.com/stoyanov-st) in [#20066](https://github.com/hiero-ledger/hiero-consensus-node/pull/20066)
+* fix: 19107: Corrected `classId` of `BenchmarkMerkleInternal` to prevent `classId` conflict by [@imalygin](https://github.com/imalygin) in [#19122](https://github.com/hiero-ledger/hiero-consensus-node/pull/19122)
+* chore: Update CODEOWNERS for SC contributions ([#20027](https://github.com/hiero-ledger/hiero-consensus-node/pull/20027)) by [@gkozyryatskyy](https://github.com/gkozyryatskyy) in [#20084](https://github.com/hiero-ledger/hiero-consensus-node/pull/20084)
+
+- chore: Add ability to debug docker nodes by [@timo0](https://github.com/timo0) in [#20051](https://github.com/hiero-ledger/hiero-consensus-node/pull/20051)
+- chore: Rename commonly used Turtle components to Otter by [@timo0](https://github.com/timo0) in [#20100](https://github.com/hiero-ledger/hiero-consensus-node/pull/20100)
+
+**Full Changelog**: [v0.64.2...v0.65.0](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.64.2...v0.65.0)
+
+</details>
+
 ## Release v0.64
 
 {% hint style="success" %}

@@ -2,6 +2,7 @@
 description: >-
   A step-by-step guide on deploying a smart contract to Hedera testnet and Hiero
   Local Node using Hardhat.
+hidden: true
 ---
 
 # Deploy a Smart Contract Using Hardhat and Hiero JSON-RPC Relay
@@ -10,7 +11,7 @@ In this tutorial, you will walk through the step-by-step guide on deploying [sma
 
 The [**Hiero JSON-RPC Relay**](https://github.com/hiero-ledger/hiero-json-rpc-relay) is an implementation of Ethereum JSON-RPC APIs for Hedera and utilizes both Hiero Consensus Nodes and Mirror Nodes to support RPC queries defined in the [JSON-RPC Specification](https://playground.open-rpc.org/?schemaUrl=https://raw.githubusercontent.com/hashgraph/hedera-json-rpc-relay/main/docs/openrpc.json\&uiSchema%5BappBar%5D%5Bui:splitView%5D=false\&uiSchema%5BappBar%5D%5Bui:input%5D=false\&uiSchema%5BappBar%5D%5Bui:examplesDropdown%5D=false). The [**Hiero Local Node**](https://github.com/hashgraph/hedera-local-node) project enables developers to establish their own local network for development and testing. The local network comprises the consensus node, mirror node, JSON-RPC relay, and other Hedera products, and can be set up using the CLI tool and Docker. This setup allows you to seamlessly build and deploy smart contracts from your local environment.
 
-By the end of this tutorial, you'll be equipped to deploy smart contracts on the Hedera Testnet or your local Hedera node, leveraging Hardhat's tools for testing, compiling, and deploying.
+By the end of this tutorial, you'll be equipped to deploy smart contracts on the Hedera testnet or your local Hedera node, leveraging Hardhat's tools for testing, compiling, and deploying.
 
 ***
 

@@ -1,6 +1,6 @@
 # How to Upgrade an ERC-721 Token with OpenZeppelin UUPS Proxies and Hardhat (Part 3)
 
-In this tutorial, you'll learn how to upgrade your ERC-721 smart contract using the [OpenZeppelin UUPS](https://docs.openzeppelin.com/upgrades-plugins/proxies) (Universal Upgradeable Proxy Standard) pattern and Hardhat. We'll first cover how the upgradeable proxy pattern works, then go through step-by-step implementation and upgrade verification, explaining each part clearly.
+In this tutorial, you'll learn how to upgrade your ERC-721 smart contract using the OpenZeppelin UUPS (Universal Upgradeable Proxy Standard) pattern and Hardhat. We'll first cover how the upgradeable proxy pattern works, then go through step-by-step implementation and upgrade verification, explaining each part clearly.
 
 {% hint style="info" %}
 You can take a look at the **complete code** in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hardhat-erc-721-mint-burn).
@@ -10,12 +10,12 @@ You can take a look at the **complete code** in the [**Hedera-Code-Snippets repo
 
 In traditional smart contracts, once deployed, the code is immutable, meaning bugs can't be fixed and new features can't be added. The upgradeable proxy pattern solves this by separating the contract into two components:
 
-1. **Proxy Contract**: Stores the contract’s state (data) and delegates all function calls to a logic contract using `delegatecall`.
+1. **Proxy Contract**: Stores the contract’s state (data) and delegates all function calls to a logic contract using delegatecall.
 2. **Logic Contract**: Contains the actual business logic and can be upgraded.
 
 When you upgrade your smart contract, you deploy a new logic contract and point your proxy contract to this new logic. The proxy stays at the same address, retaining your data and allowing seamless upgrades.
 
-**Important Note:** In upgradeable contracts, constructors aren't used because the proxy doesn't call the constructor of the logic contract. Instead, we use an `initialize` function marked with the `initializer` modifier. This function serves the role of the constructor—setting up initial values and configuring inherited modules like `ERC721` or `Ownable`. The `initializer` modifier ensures this function can only be called once, helping protect against accidental or malicious re-initialization.
+**Important Note**: In upgradeable contracts, constructors aren't used because the proxy doesn't call the constructor of the logic contract. Instead, we use an initialize function marked with the initializer modifier. This function serves the role of the constructor—setting up initial values and configuring inherited modules like ERC721 or Ownable. The initializer modifier ensures this function can only be called once, helping protect against accidental or malicious re-initialization.
 
 ***
 
@@ -24,7 +24,7 @@ When you upgrade your smart contract, you deploy a new logic contract and point 
 * ⚠️ **Complete** [**tutorial part 1**](how-to-mint-and-burn-an-erc-721-token-using-hardhat-and-ethers-part-1.md) **as we continue from this example. Part 2 is optional.**
 * Basic understanding of smart contracts.
 * Basic understanding of [Node.js](https://nodejs.org/en/download) and JavaScript.
-* Basic understanding of [Hardhat EVM Development Tool](https://hardhat.org/hardhat-runner/docs/guides/project-setup) and [Ethers](https://docs.ethers.org/v5/).
+* Basic understanding of [Hardhat EVM Development Tool](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3) and [Ethers](https://docs.ethers.org/v6/).
 * ECDSA account from the [Hedera Portal](https://portal.hedera.com/).
 
 ***
@@ -36,13 +36,16 @@ When you upgrade your smart contract, you deploy a new logic contract and point 
 3. [Deploy Your Upgradeable Contract](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#step-3-deploy-your-upgradeable-contract)
 4. [Upgrade Your ERC-721 Contract](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#step-4-upgrade-your-erc-721-contract)
 5. [Deploy the Upgrade and Verify](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#step-5-deploy-the-upgrade-and-verify)
-6. [Why Use the UUPS Pattern?](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#why-use-the-uups-pattern)
+6. [Run tests](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#step-6-run-tests-optional)
+7. [Why Use the UUPS Pattern?](how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3.md#why-use-the-uups-pattern)
 
 ***
 
 ## Video Tutorial
 
-You can either watch the video tutorial or follow the step-by-step tutorial below.
+You can watch the video tutorial (which uses **Hardhat version 2**) or follow the step-by-step tutorial below (which uses **Hardhat version 3**).
+
+{% include "../../.gitbook/includes/hardhat-2-3.md" %}
 
 {% embed url="https://www.youtube.com/watch?v=vI-9WTFMy7U" %}
 
@@ -50,35 +53,51 @@ You can either watch the video tutorial or follow the step-by-step tutorial belo
 
 ## Step 1: Set Up Your Project
 
-Install necessary dependencies if you haven't done so. For part 3 of this tutorial series, we're adding two extra dependencies:
+Install necessary dependencies if you haven't done so.&#x20;
+
+```bash
+npm install @openzeppelin/contracts-upgradeable
+```
+
+For part 3 of this tutorial series, we're adding one extra dependency:
 
 * `@openzeppelin/contracts-upgradeable` : This is a version of the OpenZeppelin Contracts library designed for upgradeable contracts. It contains modular and reusable smart contract components that are compatible with proxy deployment patterns, such as UUPS.
-* `@openzeppelin/hardhat-upgrades` : This Hardhat plugin simplifies deploying and managing upgradeable contracts. It provides utilities like `deployProxy` and `upgradeProxy` and automatically manages the underlying proxy contracts. This plugin is imported in the `hardhat.config.js` file, so we can use it.
 
-<pre class="language-javascript"><code class="lang-javascript"><strong>// hardhat.config.js
-</strong><strong>require("dotenv").config();
-</strong>require("@nomicfoundation/hardhat-toolbox");
-require("@openzeppelin/hardhat-upgrades"); // Plugin for upgradeable contracts
-require("@nomicfoundation/hardhat-ethers");
-</code></pre>
+**Files overview (what each file does):**
+
+* **`contracts/MyTokenUpgradeable.sol`**
+  * Upgradeable ERC-721 logic (initializer-based), Ownable, UUPS-ready. Holds functions like initialize and safeMint.
+* **`contracts/MyTokenUpgradeableV2.sol`**
+  * Upgrade version that inherits V1 and adds version() for verification. No new storage variables to preserve layout.
+* **`contracts/OZTransparentUpgradeableProxy.sol`**
+  * Thin wrapper so Hardhat has an artifact to deploy the proxy. Constructor takes logic, admin EOA, and initializer calldata.
+* **`scripts/deploy-upgradeable.ts`**
+  * Deploys V1 logic, encodes initialize, deploys the Transparent proxy with your EOA as admin, sanity-checks via proxy, prints PROXY\_ADDRESS.
+* **`scripts/upgrade-upgradeable.ts`**
+  * Deploys V2 logic and upgrades the proxy in-place by calling upgradeToAndCall as the admin EOA, then verifies version().
 
 ***
 
 ## Step 2: Create Your Initial Upgradeable ERC-721 Contract
 
-Create `erc-721-upgrade.sol` in the `contracts/` directory:
+Create `MyTokenUpgradeable.sol` in the `contracts/` directory:
 
 ```solidity
 // SPDX-License-Identifier: MIT
 // Compatible with OpenZeppelin Contracts ^5.0.0
-pragma solidity ^0.8.22;
+pragma solidity ^0.8.28;
 
 import {ERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
-contract MyTokenUpgradeable is Initializable, ERC721Upgradeable, OwnableUpgradeable, UUPSUpgradeable {
+contract MyTokenUpgradeable is
+    Initializable,
+    ERC721Upgradeable,
+    OwnableUpgradeable,
+    UUPSUpgradeable
+{
     uint256 private _nextTokenId;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
@@ -98,150 +117,247 @@ contract MyTokenUpgradeable is Initializable, ERC721Upgradeable, OwnableUpgradea
         return tokenId;
     }
 
-    function _authorizeUpgrade(address newImplementation)
-        internal
-        override
-        onlyOwner
-    {}
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyOwner {}
 }
-
 ```
 
-* **`initialize` function**: Replaces the constructor in upgradeable contracts, setting initial values and calling necessary initializers.
-* **`initializer` modifier**: Ensures the initialize function is only called once.
-* **`_authorizeUpgrade`**: Ensures only the owner can authorize upgrades.
+* Uses initializer pattern; constructor disables initializers and initialize() sets up ERC721, Ownable, and UUPS.
+* UUPS gate: `_authorizeUpgrade` is `onlyOwner`, ensuring only the owner can upgrade when using UUPS flows.
+* `safeMint` increments `_nextTokenId` and mints; keep storage layout stable across future versions.
+* No constructor state writes; all initialization happens via `initialize()`.
 
-Compile the contract:
+We also need to create `OZTransparentUpgradeableProxy.sol` in the `contracts/` directory:
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
+
+contract OZTransparentUpgradeableProxy is TransparentUpgradeableProxy {
+    constructor(
+        address _logic,
+        address admin_,
+        bytes memory _data
+    ) TransparentUpgradeableProxy(_logic, admin_, _data) {}
+}
+```
+
+* Thin wrapper so Hardhat produces an artifact to deploy the Transparent proxy.
+* Constructor takes logic address, admin EOA, and initializer calldata to run once at deployment.
+* We use the Transparent proxy path here for a straightforward upgrade on Hedera; user calls go to logic via delegatecall, admin calls manage upgrades.
+
+Now, let's build the contracts:
 
 ```bash
-npx hardhat compile
+npx hardhat build
 ```
 
 ***
 
 ## Step 3: Deploy Your Upgradeable Contract
 
-Create `deploy-upgradeable.js` under the `scripts` directory:
+Create `deploy-upgradeable.ts` under the `scripts` directory:
 
-```javascript
-const { ethers, upgrades } = require("hardhat");
+```typescript
+import { network } from "hardhat";
+
+const { ethers } = await network.connect({
+  network: "testnet"
+});
 
 async function main() {
   const [deployer] = await ethers.getSigners();
+  console.log("Deploying contract with the account:", deployer.address);
 
-  const Token = await ethers.getContractFactory("MyTokenUpgradeable");
-  const token = await upgrades.deployProxy(Token, [deployer.address], { initializer: "initialize" });
-  await token.waitForDeployment();
+  // 1) Deploy implementation (V1)
+  const Impl = await ethers.getContractFactory("MyTokenUpgradeable", deployer);
+  const implementation = await Impl.deploy();
+  await implementation.waitForDeployment();
+  const implementationAddress = await implementation.getAddress();
+  console.log("Implementation:", implementationAddress);
 
-  console.log("Upgradeable ERC721 deployed to:", await token.getAddress());
+  // 2) Encode initializer
+  const initData = Impl.interface.encodeFunctionData("initialize", [
+    deployer.address
+  ]);
+
+  // 3) Deploy Transparent proxy with EOA admin (your deployer)
+  // Requires wrapper contract OZTransparentUpgradeableProxy in your repo
+  const TransparentProxy = await ethers.getContractFactory(
+    "OZTransparentUpgradeableProxy",
+    deployer
+  );
+  const proxy = await TransparentProxy.deploy(
+    implementationAddress,
+    deployer.address, // admin = EOA
+    initData
+  );
+  await proxy.waitForDeployment();
+  const proxyAddress = await proxy.getAddress();
+  console.log("Proxy address:", proxyAddress);
+
+  // 4) Sanity check via proxy
+  const token = Impl.attach(proxyAddress);
+  console.log("Name/Symbol:", await token.name(), "/", await token.symbol());
+  const mintTx = await token.safeMint(deployer.address);
+  await mintTx.wait();
+  console.log("Minted token 0. Owner:", await token.ownerOf(0n));
+
+  // 6) Output env var for upgrade step
+  console.log("\nPROXY_ADDRESS:", proxyAddress);
 }
 
 main().catch(console.error);
 ```
 
-* **`deployProxy` function**: Deploys the logic contract behind a proxy, calling the initializer function (`initialize`) automatically.
-* **`initializer: "initialize"`**: Explicitly specifies which function initializes the contract.
+* Deploys V1 logic, encodes initialize(initialOwner), and deploys the Transparent proxy with your EOA as admin.
+* Validates the deployment by calling ERC‑721 functions through the proxy and minting a token.
+* Prints the PROXY\_ADDRESS to use in the upgrade step.
 
 Deploy your contract:
 
 ```bash
-npx hardhat run scripts/deploy-upgradeable.js --network testnet
+npx hardhat run scripts/deploy-upgradeable.ts --network testnet
 ```
 
 **Make sure to copy the smart contract address for your ERC-721 token.**
 
-<pre><code><strong>// output
-</strong><strong>Compiled 32 Solidity files successfully (evm target: paris).
-</strong>Upgradeable ERC721 deployed to: 0xb54c97235A7a90004fEb89dDccd68f36066fea8c
-</code></pre>
+```bash
+Deploying contract with the account: 0xA98556A4deeB07f21f8a66093989078eF86faa30
+Implementation: 0x04E2ec2e702C4B74146F5de89310B8CfA2A0a463
+Proxy address: 0x5A69d6fFcd27A4D253B2197A95D8488879Dd8ab5
+Name/Symbol: MyTokenUpgradeable / MTU
+Minted token 0. Owner: 0xA98556A4deeB07f21f8a66093989078eF86faa30
+
+PROXY_ADDRESS: 0x5A69d6fFcd27A4D253B2197A95D8488879Dd8ab5
+```
 
 ***
 
 ## Step 4: Upgrade Your ERC-721 Contract
 
-Let's upgrade your contract by adding a new `version` function. Create `erc-721-upgrade-v2.sol` in your `contracts` folder:
+Let's upgrade your contract by adding a new `version` function. Create `MyTokenUpgradeableV2.sol` in your `contracts` folder:
 
 ```solidity
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.22;
+pragma solidity ^0.8.28;
 
-import "./erc-721-upgrade.sol";
+import {MyTokenUpgradeable} from "./MyTokenUpgradeable.sol";
 
 contract MyTokenUpgradeableV2 is MyTokenUpgradeable {
-
-    // New function for demonstration
+    // Example new function to verify the upgrade worked
     function version() public pure returns (string memory) {
         return "v2";
     }
 }
-
 ```
 
-* Adds a simple `version` method to demonstrate the upgrade. Note that we are extending the "MyTokenUpgradeable" contract.
+* Inherits from V1 and adds only behavior (`version()`); no new storage variables to keep layout compatible.
+* Verifies that after upgrade, calls through the proxy hit the new implementation.
+* Safe pattern for upgrades: extend behavior, avoid touching existing state ordering.
 
-Compile the upgraded version:
+Build the upgraded version:
 
 ```bash
-npx hardhat compile
+npx hardhat build
 ```
 
 ***
 
 ## Step 5: Deploy the Upgrade and Verify
 
-Create `upgrade.js` script to upgrade and verify the new functionality:
+Create `upgrade-upgradeable.ts` script to upgrade and verify the new functionality. Make sure to update `Your_Proxy_Address` to your own from Step 3:
 
 ```javascript
-const { ethers, upgrades } = require("hardhat");
+import { network } from "hardhat";
+
+const { ethers } = await network.connect({
+  network: "testnet"
+});
+
+const PROXY_ADDRESS = "Your_Proxy_Address";
 
 async function main() {
-  const [deployer] = await ethers.getSigners();
+  const [signer] = await ethers.getSigners();
+  console.log("Upgrader (must be proxy admin EOA):", signer.address);
+  console.log("Proxy:", PROXY_ADDRESS);
 
-  console.log("Upgrading contract with the account:", deployer.address);
+  // 1) Deploy the new implementation (V2)
+  const V2 = await ethers.getContractFactory("MyTokenUpgradeableV2", signer);
+  const newImpl = await V2.deploy();
+  await newImpl.waitForDeployment();
+  const newImplAddress = await newImpl.getAddress();
+  console.log("New implementation:", newImplAddress);
 
-  const MyTokenUpgradeableV2 = await ethers.getContractFactory(
-    "MyTokenUpgradeableV2"
-  );
+  // 2) Upgrade directly via proxy (EOA admin path)
+  // Transparent proxy exposes upgradeToAndCall(newImpl, data) to the admin EOA
+  const proxyIface = new ethers.Interface([
+    "function upgradeToAndCall(address newImplementation, bytes data)"
+  ]);
+  const data = proxyIface.encodeFunctionData("upgradeToAndCall", [
+    newImplAddress,
+    "0x" // no initializer
+  ]);
 
-  // REPLACE with your deployed proxy contract address
-  const proxyAddress = "<YOUR-PROXY-CONTRACT-ADDRESS>";
+  const tx = await signer.sendTransaction({
+    to: PROXY_ADDRESS,
+    data
+  });
+  const receipt = await tx.wait();
+  console.log("Upgrade tx status:", receipt?.status);
 
-  const upgraded = await upgrades.upgradeProxy(
-    proxyAddress,
-    MyTokenUpgradeableV2
-  );
-  await upgraded.waitForDeployment();
-
-  console.log(
-    "Contract successfully upgraded at:",
-    await upgraded.getAddress()
-  );
-
-  // Verify the upgrade by calling the new version() function
-  const contractVersion = await upgraded.version();
-  console.log("Contract version after upgrade:", contractVersion);
+  const proxyAsV2 = V2.attach(PROXY_ADDRESS);
+  console.log("version():", await proxyAsV2.version());
 }
 
 main().catch(console.error);
 ```
 
-* **`upgradeProxy`**: Replaces the logic contract behind your existing proxy with the new version.
-* **`proxyAddress`**: Points to the proxy contract that manages storage and delegates calls to logic contracts. Upgrading involves replacing the logic without altering the stored data, since all contract state resides in the proxy, and `delegatecall` ensures the new logic runs in that same storage context. **Make sure to replace the proxy contract address with the address you've copied.**
-* **Verification step**: Calls the new `version` method to ensure the upgrade succeeded.
+* Deploys V2 and constructs `upgradeToAndCall(newImpl, "0x")` calldata via `ethers.Interface`.
+* Sends the upgrade tx directly to the proxy from the admin EOA; this path is reliable on Hedera.
+* Verifies by calling `version()` through the proxy; expect `"v2"` after a successful upgrade.
 
 Run this upgrade script:
 
 ```bash
-npx hardhat run scripts/upgrade.js --network testnet
+npx hardhat run scripts/upgrade-upgradeable.ts --network testnet
 ```
 
 Output confirms the upgrade:
 
 ```bash
-// output
-Upgrading contract with the account: 0x7203b2B56CD700e4Df7C2868216e82bCCA225423
-Contract successfully upgraded at: 0xb54c97235A7a90004fEb89dDccd68f36066fea8c
-Contract version after upgrade: v2
+Upgrader (must be proxy admin EOA): 0xA98556A4deeB07f21f8a66093989078eF86faa30
+Proxy: 0x5A69d6fFcd27A4D253B2197A95D8488879Dd8ab5
+New implementation: 0x17ee29551847de4BE10d882472405F89F361ace7
+Upgrade tx status: 1
+version(): v2
+```
+
+Congratulations! 🎉 You've successfully implemented and upgraded an ERC-721 smart contract using OpenZeppelin’s UUPS proxy pattern with Hardhat.
+
+## Step 6: Run tests(Optional)
+
+You can find both types of tests in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hardhat-erc-721-mint-burn). You will find the following files:
+
+* `contracts/MyTokenUpgradeable.t.sol`
+* `contracts/MyTokenUpgradeableV2.t.sol`
+* `test/MyTokenUpgradeable.ts`
+* `test/MyTokenUpgradeableV2.ts`
+
+Copy these files and then run the tests:
+
+```bash
+npx hardhat test
+```
+
+You can also run tests individually with either of these
+
+```bash
+npx hardhat test solidity
+npx hardhat test mocha
 ```
 
 ## Why Use the UUPS Pattern?
@@ -250,7 +366,11 @@ Contract version after upgrade: v2
 * **Data Retention**: Maintains all token balances and stored data during upgrades.
 * **Flexibility**: Enables easy updates for new features, improvements, or critical fixes without redeploying a completely new contract.
 
-Congratulations! 🎉 You've successfully implemented and upgraded an ERC-721 smart contract using OpenZeppelin’s UUPS proxy pattern with Hardhat.
+{% hint style="info" %}
+#### **Note**
+
+This tutorial’s contracts follow the UUPS initializer and authorization best practices (UUPSUpgradeable + \_authorizeUpgrade), while the example scripts perform the upgrade using a TransparentUpgradeableProxy’s admin function for a straightforward, reliable flow on Hedera. If you later switch to a pure UUPS proxy (ERC1967Proxy), upgrades would be triggered via the logic contract’s UUPS mechanism instead of the Transparent proxy’s admin API.
+{% endhint %}
 
 ***
 
@@ -258,4 +378,4 @@ Congratulations! 🎉 You've successfully implemented and upgraded an ERC-721 sm
 
 * [Proxy Upgrade Pattern (OpenZeppelin)](https://docs.openzeppelin.com/upgrades-plugins/proxies)
 
-<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Michiel, Developer Relations Engineer</p><p><a href="https://github.com/michielmulders">GitHub</a> | <a href="https://www.linkedin.com/in/michielmulders/">LinkedIn</a></p></td><td><a href="https://www.linkedin.com/in/michielmulders/">https://www.linkedin.com/in/michielmulders/</a></td></tr><tr><td align="center"><p>Editor: Luis, Sr Software Developer</p><p><a href="https://github.com/acuarica">GitHub</a></p></td><td><a href="https://github.com/acuarica">https://github.com/acuarica</a></td></tr><tr><td align="center"><p>Editor: Krystal, Technical Writer</p><p><a href="https://github.com/theekrystallee">GitHub</a> | <a href="https://x.com/theekrystallee">X</a></p></td><td><a href="https://x.com/theekrystallee">https://x.com/theekrystallee</a></td></tr></tbody></table>
+<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Michiel, DevRel Engineer</p><p><a href="https://github.com/michielmulders">GitHub</a> | <a href="https://www.linkedin.com/in/michielmulders/">LinkedIn</a></p></td><td><a href="https://www.linkedin.com/in/michielmulders/">https://www.linkedin.com/in/michielmulders/</a></td></tr><tr><td align="center"><p>Editor: Luis, Sr Software Developer</p><p><a href="https://github.com/acuarica">GitHub</a></p></td><td><a href="https://github.com/acuarica">https://github.com/acuarica</a></td></tr><tr><td align="center"><p>Editor: Krystal, Technical Writer</p><p><a href="https://github.com/theekrystallee">GitHub</a> | <a href="https://x.com/theekrystallee">X</a></p></td><td><a href="https://x.com/theekrystallee">https://x.com/theekrystallee</a></td></tr><tr><td align="center"><p>Editor: Kiran, Developer Advocate</p><p><a href="https://github.com/kpachhai">GitHub</a> | <a href="https://www.linkedin.com/in/kiranpachhai/">LinkedIn</a></p></td><td><a href="https://github.com/kpachhai">https://github.com/kpachhai</a></td></tr></tbody></table>

@@ -202,6 +202,7 @@ jobs:
           title: "chore: example run status"
           body: "Automated run of examples"
           branch: "bot/examples-check"
+          branch-suffix: timestamp
           add-paths: ${{ env.STATUS_FILE }}
           labels: automated-pr
           delete-branch: true

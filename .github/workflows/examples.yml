@@ -195,7 +195,7 @@ jobs:
           } > "$STATUS_FILE"
 
       - name: Open/Update PR with status
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           commit-message: "chore: update example run status"
           signoff: true

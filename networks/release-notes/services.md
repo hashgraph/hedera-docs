@@ -8,7 +8,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Release v0.65
 
-{% hint style="info" %}
+{% hint style="success" %}
 **MAINNET UPDATE SCHEDULED: SEPTEMBER 24, 2025**
 {% endhint %}
 
@@ -93,6 +93,10 @@ Building on the Block Stream work from v0.64, this release delivers major steps 
 **Full Changelog**: [v0.64.2...v0.65.0](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.64.2...v0.65.0)
 
 </details>
+
+### Performance Results
+
+<figure><img src="../../.gitbook/assets/0.65_Performance Measurement Results_Extract.001.png" alt=""><figcaption></figcaption></figure>
 
 ## Release v0.64
 

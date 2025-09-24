@@ -3,6 +3,7 @@ description: >-
   Forking lets you interact with contracts and run tests as if on a real
   network. Learn how to fork Hedera Testnet on the latest block and test your
   contracts with the latest state of the network.
+hidden: true
 ---
 
 # How to Fork Testnet on Latest Block

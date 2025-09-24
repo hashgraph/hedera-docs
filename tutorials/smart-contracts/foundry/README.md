@@ -1,4 +1,4 @@
-# Foundry
+# Foundry on Hedera
 
 Foundry empowers developers with tools for smart contract development. One of the three main components of Foundry is Forge. Forge is a Foundry command-line tool that allows developers to run tests, build, and deploy smart contracts.
 
@@ -11,20 +11,20 @@ This series of mini-tutorials demonstrates how to set up Foundry and use Forge f
 
 The tutorials are self-contained and can be done in any order.
 
-{% content-ref url="setup-foundry-and-write-basic-unit-test.md" %}
-[setup-foundry-and-write-basic-unit-test.md](setup-foundry-and-write-basic-unit-test.md)
+{% content-ref url="configuring-foundry-with-hedera-localnet-testnet-a-step-by-step-guide.md" %}
+[configuring-foundry-with-hedera-localnet-testnet-a-step-by-step-guide.md](configuring-foundry-with-hedera-localnet-testnet-a-step-by-step-guide.md)
 {% endcontent-ref %}
 
-{% content-ref url="deploy-and-verify-smart-contract.md" %}
-[deploy-and-verify-smart-contract.md](deploy-and-verify-smart-contract.md)
+{% content-ref url="how-to-mint-and-burn-an-erc-721-token-using-foundry-part-1.md" %}
+[how-to-mint-and-burn-an-erc-721-token-using-foundry-part-1.md](how-to-mint-and-burn-an-erc-721-token-using-foundry-part-1.md)
 {% endcontent-ref %}
 
-{% content-ref url="test-an-event-with-foundry.md" %}
-[test-an-event-with-foundry.md](test-an-event-with-foundry.md)
+{% content-ref url="how-to-write-tests-in-solidity-part-2.md" %}
+[how-to-write-tests-in-solidity-part-2.md](how-to-write-tests-in-solidity-part-2.md)
 {% endcontent-ref %}
 
-{% content-ref url="fork-hedera-testnet-on-latest-block.md" %}
-[fork-hedera-testnet-on-latest-block.md](fork-hedera-testnet-on-latest-block.md)
+{% content-ref url="how-to-fork-the-hedera-network-for-local-testing.md" %}
+[how-to-fork-the-hedera-network-for-local-testing.md](how-to-fork-the-hedera-network-for-local-testing.md)
 {% endcontent-ref %}
 
 ***

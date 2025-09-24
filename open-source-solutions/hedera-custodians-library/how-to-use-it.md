@@ -1,16 +1,16 @@
-# How to use it
+# How to Use the Hedera Custodians Library
 
-## Usage Guide
-
-To install the hedera-custodians-library from NPM, run the following command in your terminal:
+To install the Hedera Custodians Integration package from NPM, run the following command in your terminal:
 
 ```sh
 npm install @hashgraph/hedera-custodians-integration
 ```
 
-This command will install the hedera-custodians-library along with all its necessary dependencies. Ensure you are in your project’s root directory or the appropriate subdirectory where you wish to add the library.
+This command will install the Hedera Custodians Library along with all its necessary dependencies. Ensure you are in your project’s root directory or the appropriate subdirectory where you wish to add the library.
 
-### Creating a Service
+***
+
+## Creating a Service
 
 To create a custodial wallet service:
 
@@ -32,7 +32,17 @@ const config = new FireblocksConfig(
 const service = new CustodialWalletService(config);
 ```
 
-### Signing Transactions
+{% hint style="info" %}
+#### **Using Fireblocks**
+
+For Fireblocks integrations, the recommended approach is the [**Fireblocks Hedera SDK Client and Signer**](https://github.com/fireblocks/hbar-fireblocks-sdk)**,** which implements [**HIP-338: Signature and Wallet Providers**](https://hips.hedera.com/hip/hip-338)**.** It includes complete examples, such as handling multiple nodes with `maxNumberOfPayloadsPerTransaction` and multi-signer flows.
+
+You can still use this library’s `FireblocksConfig` with `CustodialWalletService` if you need a factory/strategy abstraction, but the official client/signer is the recommended route for new builds.
+{% endhint %}
+
+***
+
+## Signing Transactions
 
 To sign a transaction:
 
@@ -48,7 +58,9 @@ const request = new SignatureRequest(transactionBytes);
 const signature = await service.signTransaction(request);
 ```
 
-### Managing Multiple Wallets
+***
+
+## Managing Multiple Wallets
 
 To manage multiple wallets:
 
@@ -63,6 +75,9 @@ const fireblocksService = new CustodialWalletService(fireblocksConfig);
 const dfnsService = new CustodialWalletService(dfnsConfig);
 ```
 
+***
+
 ## Additional Resources
 
-➡ [**Hedera Custodians Library Repository**](https://github.com/hashgraph/hedera-custodians-library)
+* [**Hedera Custodians Library Repository**](https://github.com/hashgraph/hedera-custodians-library)
+* [**Fireblocks Hedera SDK Client and Signer Repository**](https://github.com/fireblocks/hbar-fireblocks-sdk)

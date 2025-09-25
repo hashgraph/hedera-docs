@@ -54,7 +54,6 @@ def exampleFiles = examplesDir.exists()
 /**
  * Run a single example via:
  *   ./gradlew runExample -PexampleClass=<fully.qualified.ClassName>
- * If your example has no 'package' line, use just the class name (e.g., CreateAccountDemo).
  */
 tasks.register('runExample', JavaExec) {
     group = 'examples'
@@ -92,7 +91,7 @@ EOF
 
 echo "rootProject.name = 'docs-examples-runner'" > settings.gradle
 
-# Gradle wrapper (works on GitHub runners)
+# Gradle wrapper
 if [ ! -f gradlew ]; then
   curl -sL https://services.gradle.org/distributions/gradle-8.9-bin.zip -o gradle.zip
   mkdir -p .gradle/wrapper/dists

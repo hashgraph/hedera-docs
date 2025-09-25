@@ -8,7 +8,7 @@ if [[ -z "${OPERATOR_ID:-}" || -z "${OPERATOR_KEY:-}" ]]; then
 fi
 
 OUTFILE="java-output.txt"
-: > "$OUTFILE"  # truncate/create
+: > "$OUTFILE"  
 
 echo "=== Java Examples Runner ==="           | tee -a "$OUTFILE"
 echo "Timestamp (UTC): $(date -u +'%Y-%m-%d %H:%M:%SZ')" | tee -a "$OUTFILE"
@@ -16,19 +16,6 @@ echo "Network: ${HEDERA_NETWORK:-<unset>}"   | tee -a "$OUTFILE"
 echo "Mirror:  ${MIRROR_NODE_URL:-<unset>}"  | tee -a "$OUTFILE"
 echo ""                                       | tee -a "$OUTFILE"
 
-# If you pass an example FQN as an argument, run just that one:
-#   ./.github/scripts/run-java.sh examples.CreateAccountDemo
-if [[ $# -gt 0 ]]; then
-  FQN="$1"
-  echo "▶️  Running single example: $FQN" | tee -a "$OUTFILE"
-  set +e
-  ./gradlew -q runExample -PexampleClass="$FQN" --stacktrace --console=plain | tee -a "$OUTFILE"
-  STATUS=${PIPESTATUS[0]}
-  set -e
-  exit $STATUS
-fi
-
-# Otherwise run ALL discovered examples
 echo "▶️  Running all examples…" | tee -a "$OUTFILE"
 set +e
 ./gradlew -q runAllExamples --stacktrace --console=plain | tee -a "$OUTFILE"

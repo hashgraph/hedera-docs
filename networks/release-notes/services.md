@@ -6,6 +6,39 @@ description: Consensus Node release information
 
 Visit the [Hedera status page](https://status.hedera.com/) for the latest versions supported on each network.
 
+## Release v0.66
+
+{% hint style="info" %}
+**MAINNET UPDATE SCHEDULED: OCTOBER 8, 2025**
+{% endhint %}
+
+{% hint style="success" %}
+**TESTNET UPDATED: SEPTEMBER 25, 2025**
+{% endhint %}
+
+### [**Build 0.66.0**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.66.0)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* test: Edge cases - Smart Contracts Service Tests Part 3 by [@vtronkov](https://github.com/vtronkov) in [#19987](https://github.com/hiero-ledger/hiero-consensus-node/pull/19987)
+* test: Edge cases - Smart Contracts Service Tests Part 4 by [@vtronkov](https://github.com/vtronkov) in [#20014](https://github.com/hiero-ledger/hiero-consensus-node/pull/20014)
+* chore: update test URL for JTR by [@lpetrovic05](https://github.com/lpetrovic05) in [#20067](https://github.com/hiero-ledger/hiero-consensus-node/pull/20067)
+* build(deps): bump testContainers from 1.21.0 to 1.21.1 in /hiero-dependency-versions by [@dependabot](https://github.com/dependabot)\[bot] in [#19445](https://github.com/hiero-ledger/hiero-consensus-node/pull/19445)
+* chore: update hiero gradle conventions to v0.4.9 by [@andrewb1269hg](https://github.com/andrewb1269hg) in [#20062](https://github.com/hiero-ledger/hiero-consensus-node/pull/20062)
+* chore: Move EthereumSuite to long running tests bucket by [@stoyanov-st](https://github.com/stoyanov-st) in [#20066](https://github.com/hiero-ledger/hiero-consensus-node/pull/20066)
+* fix: 19107: Corrected `classId` of `BenchmarkMerkleInternal` to prevent `classId` conflict by [@imalygin](https://github.com/imalygin) in [#19122](https://github.com/hiero-ledger/hiero-consensus-node/pull/19122)
+* chore: Update CODEOWNERS for SC contributions ([#20027](https://github.com/hiero-ledger/hiero-consensus-node/pull/20027)) by [@gkozyryatskyy](https://github.com/gkozyryatskyy) in [#20084](https://github.com/hiero-ledger/hiero-consensus-node/pull/20084)
+* build(deps): bump com.github.docker-java:docker-java-api from 3.5.1 to 3.5.3 in /hiero-dependency-versions by [@dependabot](https://github.com/dependabot)\[bot] in [#20047](https://github.com/hiero-ledger/hiero-consensus-node/pull/20047)
+* build(deps): bump testContainers from 1.21.0 to 1.21.3 in /hiero-dependency-versions by [@dependabot](https://github.com/dependabot)\[bot] in [#20024](https://github.com/hiero-ledger/hiero-consensus-node/pull/20024)
+* build(deps): bump actions/setup-python from 5.5.0 to 5.6.0 by [@dependabot](https://github.com/dependabot)\[bot] in [#19460](https://github.com/hiero-ledger/hiero-consensus-node/pull/19460)
+* build(deps): bump com.esaulpaugh:headlong from 13.2.2 to 13.3.0 in /hiero-dependency-versions by [@dependabot](https://github.com/dependabot)\[bot] in [#19950](https://github.com/hiero-ledger/hiero-consensus-node/pull/19950)
+
+**Full Changelog**: [v0.64.0...v0.66.0](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.64.0...v0.66.0)
+
+</details>
+
 ## Release v0.65
 
 {% hint style="success" %}

@@ -1,0 +1,8 @@
+{
+  "name": "hedera-docs-js-examples",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@hashgraph/sdk": "^2.73.2"
+  }
+}

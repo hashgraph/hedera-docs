@@ -24,11 +24,12 @@ jobs:
     env:
       HEDERA_NETWORK: local
       MIRROR_NODE_URL: http://localhost:5551/api/v1
-      MIRROR_HEALTH_URL: http://localhost:5551/health   
-      MIRROR_HEALTH_TRIES: "180"                      
+      MIRROR_HEALTH_URL: http://localhost:5551/health
+      MIRROR_HEALTH_TRIES: "180"
       MIRROR_HEALTH_INTERVAL: "2"
-      STATUS_DIR: .github/example-status
-      STATUS_FILE: .github/example-status/java-status.md
+      JAVA_DIR: .github/examples/java
+      JS_DIR: .github/examples/javascript
+      STATUS_FILE: .github/example-status.md
 
     steps:
       - name: Harden the runner (Audit all outbound calls)
@@ -55,7 +56,7 @@ jobs:
         env:
           API_BASE: ${{ env.MIRROR_NODE_URL }}
           ACCOUNT_ID: ${{ steps.solo.outputs.ecdsaAccountId }}
-          TRIES: "180"                             
+          TRIES: "180"
           INTERVAL: "2"
         shell: bash
         run: |
@@ -152,7 +153,7 @@ jobs:
             echo "✅ Mirror /balances returned a snapshot balance: ${tinybars} tinybars"
             exit 0
           fi
-
+      #------------------------------Java Example Steps--------------------------------------
       - name: Set up JDK 21
         uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
         with:
@@ -175,39 +176,90 @@ jobs:
           chmod +x ./.github/scripts/run-java.sh
           ./.github/scripts/run-java.sh | tee java-output.txt
 
-      - name: Summarize status
+        #------------------------------JavaScript Example Steps------------------------------
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install JavaScript Dependencies
+        run: |
+          cd "$JS_DIR"
+          if [ -f package-lock.json ]; then
+            npm ci --no-audit --no-fund
+          else
+            npm i --no-audit --no-fund
+          fi
+
+      - name: Run all JavaScript Examples
+        id: run_js
+        env:
+          OPERATOR_ID: ${{ steps.solo.outputs.ecdsaAccountId }}
+          OPERATOR_KEY: ${{ steps.solo.outputs.ecdsaPrivateKey }}
+          HEDERA_NETWORK: ${{ env.HEDERA_NETWORK }}
+          MIRROR_NODE_URL: ${{ env.MIRROR_NODE_URL }}
+        run: |
+          chmod +x ./.github/scripts/run-javascript.sh
+          ./.github/scripts/run-javascript.sh | tee js-output.txt
+
+        #------------------------------Status--------------------------------------------------
+
+      - name: Summarize Example Status
         if: ${{ always() }}
         run: |
-          mkdir -p "$STATUS_DIR"
           ts="$(date -u +'%Y-%m-%d %H:%M:%SZ')"
+          java_ok="${{ steps.run_java.outcome }}"
+          js_ok="${{ steps.run_js.outcome }}"
           {
-            if [ "${{ steps.run_java.outcome }}" = "success" ]; then
-              echo "## ✅ Java example passed"
-            else
-              echo "## ❌ Java example failed"
-            fi
+            echo "# Examples Status"
             echo "- Timestamp (UTC): ${ts}"
             echo "- Network: ${HEDERA_NETWORK}"
             echo ""
-            echo "<details><summary>Output</summary>"
+
+            echo "## Java: ${java_ok}"
+            echo "<details><summary>Show Java output</summary>"
             if [ -f java-output.txt ]; then
               if [ -f ./.github/scripts/redact.sh ]; then
                 bash ./.github/scripts/redact.sh "${{ steps.solo.outputs.ecdsaPrivateKey }}" java-output.txt || cat java-output.txt
               else
                 cat java-output.txt
-              fi
-            else
-              echo "_No output captured._"
             fi
-            echo "</details>"
+          else
+            echo "No Java output captured."
+          fi
+          echo "</details>"
+          echo ""
+
+          echo "## JavaScript: ${js_ok}"
+          echo "<details><summary>Show JavaScript output</summary>"
+          if [ -f js-output.txt ]; then
+           if [ -f ./.github/scripts/redact.sh ]; then
+            bash ./.github/scripts/redact.sh "${{ steps.solo.outputs.ecdsaPrivateKey }}" js-output.txt || cat js-output.txt
+          else
+            cat js-output.txt
+           fi
+          else
+           echo "_No JavaScript output captured._"
+          fi
+           echo "</details>"
+           echo ""
+
+          if [ "$java_ok" = "success" ] && [ "$js_ok" = "success" ]; then
+            echo "**Overall:** ✅ All examples passed."
+          else
+          echo "**Overall:** ❌ One or more example suites failed."
+          fi
           } > "$STATUS_FILE"
+
+        #------------------------------Pull Request--------------------------------------------------
 
       - name: Open/Update PR with status
         uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
         with:
           commit-message: "chore: update example run status"
           signoff: true
-          sign-commits: true  
+          sign-commits: true
           title: "chore: example run status"
           body: "Automated run of examples"
           branch: "bot/examples-check"

@@ -18,10 +18,9 @@ public class CreateAccountDemo {
             throw new IllegalStateException("OPERATOR_ID / OPERATOR_KEY not set");
         }
 
-        Client client =
-            "local".equalsIgnoreCase(network)
-                ? Client.forNetwork(java.util.Map.of("127.0.0.1:50211", new AccountId(3))) 
-                : Client.forTestnet();
+        Client client = Client.forNetwork(
+            java.util.Map.of("127.0.0.1:50211", new AccountId(3))
+    );
 
         client.setOperator(operatorId, operatorKey);
 

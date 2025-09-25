@@ -13,7 +13,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 {% endhint %}
 
 {% hint style="success" %}
-**TESTNET UPDATED: SEPTEMBER 25, 2025**
+**TESTNET UPDATE: SEPTEMBER 25, 2025**
 {% endhint %}
 
 ### [**Build 0.66.0**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.66.0)
@@ -42,7 +42,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 ## Release v0.65
 
 {% hint style="success" %}
-**MAINNET UPDATE SCHEDULED: SEPTEMBER 24, 2025**
+**MAINNET UPDATE: SEPTEMBER 24, 2025**
 {% endhint %}
 
 {% hint style="success" %}
@@ -134,7 +134,7 @@ Building on the Block Stream work from v0.64, this release delivers major steps 
 ## Release v0.64
 
 {% hint style="success" %}
-**MAINNET UPDATE SCHEDULED: AUGUST 20, 2025**
+**MAINNET UPDATE: AUGUST 20, 2025**
 {% endhint %}
 
 {% hint style="success" %}

@@ -165,6 +165,86 @@ go mod tidy
 ```
 {% endcode %}
 {% endtab %}
+
+{% tab title="Python" %}
+**Before you start:** Ensure you have Python 3.10+ installed on your machine. Run this command to verify.
+
+```bash
+python --version
+```
+
+If the `python --version` command is not found or shows a version lower than 3.10, install or upgrade Python from [Python Install](https://www.python.org/downloads/).
+
+**Note:** On some systems, you may need to use `python3` instead of `python` for initial setup commands. If `python --version` doesn't work, try `python3 --version` and use `python3` for the virtual environment creation. After activating the virtual environment, always use `python` for all commands.
+
+Open your terminal and create a working directory for your Hedera project. Then navigate into the new directory:
+
+```bash
+mkdir hedera-examples && cd hedera-examples
+```
+
+**Verify Python and pip:** Ensure you have Python 3.10+ and pip installed on your machine. Run these commands to check:
+
+```bash
+python --version
+```
+
+```bash
+python -m pip --version
+```
+
+Create a virtual environment to isolate your project dependencies (Python best practice):
+
+```bash
+python -m venv .venv
+```
+
+Activate the virtual environment to use the isolated Python installation:
+
+{% tabs %}
+{% tab title="Mac/Linux" %}
+```bash
+source .venv/bin/activate
+```
+{% endtab %}
+
+{% tab title="Windows" %}
+```bash
+.venv\Scripts\activate
+```
+{% endtab %}
+{% endtabs %}
+
+Upgrade pip to ensure you have the latest package installer (recommended):
+
+```bash
+python -m pip install --upgrade pip
+```
+
+Install the [Python SDK](https://github.com/hiero-ledger/hiero-sdk-python):
+
+```bash
+python -m pip install hiero_sdk_python
+```
+
+Create a file named `CreateTokenDemo.py` and add the following imports:
+
+```python
+import os
+import time
+import requests
+
+from hiero_sdk_python import (
+    Client,
+    AccountId,
+    PrivateKey,
+    TokenCreateTransaction,
+)
+
+from hiero_sdk_python.tokens.token_type import TokenType
+from hiero_sdk_python.tokens.supply_type import SupplyType
+```
+{% endtab %}
 {% endtabs %}
 
 ***
@@ -219,6 +299,18 @@ operatorKey, _ := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 // Initialize the client for testnet
 client := hedera.ClientForTestnet()
 client.SetOperator(operatorId, operatorKey)
+```
+{% endtab %}
+
+{% tab title="Python" %}
+```python
+# Load your operator credentials
+operator_id = AccountId.from_string(os.getenv("OPERATOR_ID", ""))
+operator_key = PrivateKey.from_string(os.getenv("OPERATOR_KEY", ""))
+
+# Initialize your testnet client and set operator
+client = Client()
+client.set_operator(operator_id, operator_key)
 ```
 {% endtab %}
 {% endtabs %}

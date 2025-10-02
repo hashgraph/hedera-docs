@@ -15,7 +15,7 @@ permissions:
   contents: read
 
 jobs:
-  run-java-example:
+  run-example:
     runs-on: ubuntu-latest
     permissions:
       contents: write

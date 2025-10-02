@@ -182,6 +182,7 @@ jobs:
         with:
           node-version: "22"
           cache: "npm"
+          cache-dependency-path: ${{ env.JS_DIR }}/package-lock.json
 
       - name: Install JavaScript Dependencies
         run: |

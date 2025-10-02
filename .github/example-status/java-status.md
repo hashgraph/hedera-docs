@@ -1,17 +1,17 @@
 ## ✅ Java example passed
-- Timestamp (UTC): 2025-09-25 15:29:59Z
+- Timestamp (UTC): 2025-09-28 16:11:27Z
 - Network: local
 
 <details><summary>Output</summary>
 === Java Examples Runner ===
-Timestamp (UTC): 2025-09-25 15:29:10Z
+Timestamp (UTC): 2025-09-28 16:10:37Z
 Network: local
 Mirror:  http://localhost:5551/api/v1
 
 ▶️  Running all examples…
 
 Hedera account created: 0.0.1004
-EVM Address: 0x4d90592b6329d2562999491aeaec97a53261bf0c
+EVM Address: 0xea905fcaa49e236bdba79e739a70c825635bd39e
 
 
 Waiting for Mirror Node to update...
@@ -37,8 +37,5 @@ Latest message: Hello, Hedera!
 
 
 ✅ All examples passed.
-o, Hedera!
 
-
-✅ All examples passed.
 </details>

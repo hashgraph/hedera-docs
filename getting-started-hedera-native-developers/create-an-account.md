@@ -4,7 +4,7 @@ Learn how to create a new Hedera **account** on _testnet_ using the JavaScript, 
 
 ***
 
-## Prerequisites
+## **Prerequisites**
 
 * A Hedera testnet **operator account ID** and **ECDSA** **DER-encoded private key** (from the [Quickstart](quickstart.md)).
 * A small amount of testnet **HBAR (ℏ)** to pay the `$0.05` account‑creation fee.
@@ -300,7 +300,6 @@ client.SetOperator(operatorId, operatorKey)
 {% endtab %}
 
 {% tab title="Python" %}
-
 ```python
 # Load your operator credentials
 operatorId = AccountId.from_string(os.getenv("OPERATOR_ID", ""))
@@ -319,7 +318,7 @@ client.set_operator(operatorId, operatorKey)
 
 Generate a new ECDSA private/public key pair for the account you'll create.&#x20;
 
-### **Why keys?**
+### Why keys?
 
 On the Hedera network, a **private key** allows you to sign transactions, ensuring only you control your assets, while a **public key**, shared on-chain, verifies your identity. This key pair is essential for account security.
 
@@ -597,6 +596,7 @@ time.sleep(6)
 
 # Query balance using Mirror Node
 mirrorNodeUrl = f"https://testnet.mirrornode.hedera.com/api/v1/balances?account.id={newAccountId}"
+
 response = requests.get(mirrorNodeUrl, timeout=10)
 response.raise_for_status()
 data = response.json()
@@ -846,7 +846,6 @@ func main() {
 
 {% code overflow="wrap" %}
 ```python
-
 import os
 import time
 import requests

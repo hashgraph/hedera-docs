@@ -389,9 +389,9 @@ transaction = (
 )
 
 receipt = transaction.execute(client)
-topic_id = receipt.topic_id
+topicId = receipt.topic_id
 
-print(f"\nTopic created: {topic_id}")
+print(f"\nTopic created: {topicId}")
 ```
 {% endtab %}
 {% endtabs %}
@@ -464,7 +464,7 @@ message = "Hello, Hedera!"
 
 message_transaction = (
     TopicMessageSubmitTransaction()
-    .set_topic_id(topic_id)
+    .set_topic_id(topicId)
     .set_message(message)
     .freeze_with(client)
     .sign(operatorKey)
@@ -533,7 +533,7 @@ mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/topics/" + topicI
 {% tab title="Python" %}
 {% code overflow="wrap" %}
 ```python
-mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/topics/{topic_id}/messages"
+mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/topics/{topicId}/messages"
 ```
 {% endcode %}
 {% endtab %}
@@ -655,7 +655,7 @@ print("\nWaiting for Mirror Node to update...")
 time.sleep(6)
 
 # query messages using Mirror Node
-mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/topics/{topic_id}/messages"
+mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/topics/{topicId}/messages"
 
 response = requests.get(mirror_node_url, timeout=10)
 response.raise_for_status()
@@ -948,7 +948,6 @@ func main() {
 
 {% code overflow="wrap" %}
 ```python
-
 import os
 import time
 import base64
@@ -981,16 +980,16 @@ transaction = (
 )
 
 receipt = transaction.execute(client)
-topic_id = receipt.topic_id
+topicId = receipt.topic_id
 
-print(f"\nTopic created: {topic_id}")
+print(f"\nTopic created: {topicId}")
 
 # build & execute the message submission transaction
 message = "Hello, Hedera!"
 
 message_transaction = (
     TopicMessageSubmitTransaction()
-    .set_topic_id(topic_id)
+    .set_topic_id(topicId)
     .set_message(message)
     .freeze_with(client)
     .sign(operatorKey)
@@ -1005,7 +1004,7 @@ print("\nWaiting for Mirror Node to update...")
 time.sleep(6)
 
 # query messages using Mirror Node
-mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/topics/{topic_id}/messages"
+mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/topics/{topicId}/messages"
 
 response = requests.get(mirror_node_url, timeout=10)
 response.raise_for_status()

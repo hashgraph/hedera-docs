@@ -906,58 +906,57 @@ from hiero_sdk_python import (
     SupplyType,
 )
 
-def create_token_demo():
-    # Load your operator credentials
-    operatorId = AccountId.from_string(os.getenv("OPERATOR_ID", ""))
-    operatorKey = PrivateKey.from_string(os.getenv("OPERATOR_KEY", ""))
-    
-    # Initialize the client for testnet
-    client = Client()
-    client.set_operator(operatorId, operatorKey)
-    
-    # Generate token keys
-    supply_key = PrivateKey.generate_ecdsa()
-    admin_key = supply_key
-    
-    # Build & execute the token creation transaction
-    transaction = (
-        TokenCreateTransaction()
-        .set_token_name("Demo Token")
-        .set_token_symbol("DEMO")
-        .set_decimals(2)
-        .set_initial_supply(100_000)
-        .set_token_type(TokenType.FUNGIBLE_COMMON)
-        .set_supply_type(SupplyType.FINITE)
-        .set_max_supply(100_000)
-        .set_treasury_account_id(operatorId)
-        .freeze_with(client)
-    )
-    
-    signed_tx = transaction.sign(admin_key)
-    receipt = signed_tx.execute(client)
-    token_id = receipt.token_id
-    
-    print(f"\nFungible token created: {token_id}")
-    
-    # Wait for Mirror Node to populate data
-    print("\nWaiting for Mirror Node to update...")
-    time.sleep(3)
-    
-    # Query balance using Mirror Node
-    mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/accounts/{operatorId}/tokens?token.id={token_id}"
-    
-    response = requests.get(mirror_node_url, timeout=10)
-    response.raise_for_status()
-    data = response.json()
-    
-    tokens = data.get("tokens", [])
-    if tokens:
-        balance = tokens[0].get("balance", 0)
-        print(f"\nTreasury holds: {balance} DEMO\n")
-    else:
-        print("Token balance not yet available in Mirror Node")
-    
-    client.close()
+# Load your operator credentials
+operatorId = AccountId.from_string(os.getenv("OPERATOR_ID", ""))
+operatorKey = PrivateKey.from_string(os.getenv("OPERATOR_KEY", ""))
+
+# Initialize the client for testnet
+client = Client()
+client.set_operator(operatorId, operatorKey)
+
+# Generate token keys
+supply_key = PrivateKey.generate_ecdsa()
+admin_key = supply_key
+
+# Build & execute the token creation transaction
+transaction = (
+    TokenCreateTransaction()
+    .set_token_name("Demo Token")
+    .set_token_symbol("DEMO")
+    .set_decimals(2)
+    .set_initial_supply(100_000)
+    .set_token_type(TokenType.FUNGIBLE_COMMON)
+    .set_supply_type(SupplyType.FINITE)
+    .set_max_supply(100_000)
+    .set_treasury_account_id(operatorId)
+    .freeze_with(client)
+)
+
+signed_tx = transaction.sign(admin_key)
+receipt = signed_tx.execute(client)
+token_id = receipt.token_id
+
+print(f"\nFungible token created: {token_id}")
+
+# Wait for Mirror Node to populate data
+print("\nWaiting for Mirror Node to update...")
+time.sleep(3)
+
+# Query balance using Mirror Node
+mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/accounts/{operatorId}/tokens?token.id={token_id}"
+
+response = requests.get(mirror_node_url, timeout=10)
+response.raise_for_status()
+data = response.json()
+
+tokens = data.get("tokens", [])
+if tokens:
+    balance = tokens[0].get("balance", 0)
+    print(f"\nTreasury holds: {balance} DEMO\n")
+else:
+    print("Token balance not yet available in Mirror Node")
+
+client.close()
 ```
 {% endcode %}
 

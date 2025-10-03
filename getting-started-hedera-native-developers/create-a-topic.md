@@ -1,12 +1,10 @@
 # Create a Topic
 
-
-
-Learn how to create a new topic and submit your first message on Hedera testnet using the JavaScript, Java, or Go SDK. A **topic** on the **Hedera Consensus Service (HCS)** is like a public channel: anyone who knows the topic ID can publish timestamped messages, and anyone can subscribe to the stream from a mirror node.
+Learn how to create a new topic and submit your first message on Hedera testnet using the JavaScript, Java, Go SDK, or Python. A **topic** on the **Hedera Consensus Service (HCS)** is like a public channel: anyone who knows the topic ID can publish timestamped messages, and anyone can subscribe to the stream from a mirror node.
 
 ***
 
-## Prerequisites
+## **Prerequisites**
 
 * A Hedera testnet **operator account ID** and **DER-encoded private key** (from the [Quickstart](quickstart.md)).
 * A small amount of testnet **HBAR (ℏ)** to cover the fees
@@ -167,6 +165,85 @@ go mod tidy
 ```
 {% endcode %}
 {% endtab %}
+
+{% tab title="Python" %}
+**Before you start:** Ensure you have Python 3.10+ installed on your machine. Run this command to verify.
+
+```bash
+python --version
+```
+
+If the `python --version` command is not found or shows a version lower than 3.10, install or upgrade Python from [Python Install](https://www.python.org/downloads/).
+
+**Note:** On some systems, you may need to use `python3` instead of `python` for initial setup commands. If `python --version` doesn't work, try `python3 --version` and use `python3` for the virtual environment creation. After activating the virtual environment, always use `python` for all commands.
+
+Open your terminal and create a working directory for your Hedera project. Then navigate into the new directory:
+
+```bash
+mkdir hedera-examples && cd hedera-examples
+```
+
+**Verify Python and pip:** Ensure you have Python 3.10+ and pip installed on your machine. Run these commands to check:
+
+```bash
+python --version
+```
+
+```bash
+python -m pip --version
+```
+
+Create a virtual environment to isolate your project dependencies (Python best practice):
+
+```bash
+python -m venv .venv
+```
+
+Activate the virtual environment to use the isolated Python installation:
+
+{% tabs %}
+{% tab title="Mac/Linux" %}
+```bash
+source .venv/bin/activate
+```
+{% endtab %}
+
+{% tab title="Windows" %}
+```bash
+.venv\Scripts\activate
+```
+{% endtab %}
+{% endtabs %}
+
+Upgrade pip to ensure you have the latest package installer (recommended):
+
+```bash
+python -m pip install --upgrade pip
+```
+
+Install the [Python SDK](https://github.com/hiero-ledger/hiero-sdk-python):
+
+```bash
+python -m pip install hiero_sdk_python
+```
+
+Create a file named `CreateTopicDemo.py` and add the following imports:
+
+```python
+import os
+import time
+import base64
+import requests
+
+from hiero_sdk_python import (
+    Client,
+    AccountId,
+    PrivateKey,
+    TopicCreateTransaction,
+    TopicMessageSubmitTransaction,
+)
+```
+{% endtab %}
 {% endtabs %}
 
 ***
@@ -221,6 +298,18 @@ operatorKey, _ := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 // Initialize the client for testnet
 client := hedera.ClientForTestnet()
 client.SetOperator(operatorId, operatorKey)
+```
+{% endtab %}
+
+{% tab title="Python" %}
+```python
+# Load your operator credentials
+operatorId = AccountId.from_string(os.getenv("OPERATOR_ID", ""))
+operatorKey = PrivateKey.from_string(os.getenv("OPERATOR_KEY", ""))
+
+# Initialize your testnet client and set operator
+client = Client()
+client.set_operator(operatorId, operatorKey)
 ```
 {% endtab %}
 {% endtabs %}
@@ -286,6 +375,25 @@ topicID := *receipt.TopicID
 fmt.Println("\nTopic created:", topicID.String())
 ```
 {% endtab %}
+
+{% tab title="Python" %}
+```python
+# build & execute the topic creation transaction
+transaction = (
+    TopicCreateTransaction(
+        memo="My first HCS topic",
+        admin_key=operatorKey.public_key()
+    )
+    .freeze_with(client)
+    .sign(operatorKey)
+)
+
+receipt = transaction.execute(client)
+topicId = receipt.topic_id
+
+print(f"\nTopic created: {topicId}")
+```
+{% endtab %}
 {% endtabs %}
 
 ## What just happened?
@@ -348,6 +456,25 @@ if err != nil {
 fmt.Printf("\nMessage submitted: %s\n", message)
 ```
 {% endtab %}
+
+{% tab title="Python" %}
+```python
+# build & execute the message submission transaction
+message = "Hello, Hedera!"
+
+message_transaction = (
+    TopicMessageSubmitTransaction()
+    .set_topic_id(topicId)
+    .set_message(message)
+    .freeze_with(client)
+    .sign(operatorKey)
+)
+
+message_transaction.execute(client)
+
+print(f"\nMessage submitted: {message}")
+```
+{% endtab %}
 {% endtabs %}
 
 {% hint style="info" %}
@@ -402,9 +529,17 @@ mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/topics/" + topicI
 ```
 {% endcode %}
 {% endtab %}
+
+{% tab title="Python" %}
+{% code overflow="wrap" %}
+```python
+mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/topics/{topicId}/messages"
+```
+{% endcode %}
+{% endtab %}
 {% endtabs %}
 
-**Complete  Implementation:**
+**Complete Implementation:**
 
 {% tabs %}
 {% tab title="JavaScript" %}
@@ -511,6 +646,32 @@ if len(data.Messages) > 0 {
 
 client.Close()
 ```
+{% endtab %}
+
+{% tab title="Python" %}
+```python
+# wait for Mirror Node to populate data
+print("\nWaiting for Mirror Node to update...")
+time.sleep(6)
+
+# query messages using Mirror Node
+mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/topics/{topicId}/messages"
+
+response = requests.get(mirror_node_url, timeout=10)
+response.raise_for_status()
+data = response.json()
+
+messages = data.get("messages", [])
+if messages:
+    latest_message = messages[-1]
+    encoded_message = latest_message.get("message", "")
+    message_content = base64.b64decode(encoded_message).decode("utf-8").strip()
+    
+    print(f"\nLatest message: {message_content}\n")
+else:
+    print("No messages found yet in Mirror Node")
+```
+
 {% endtab %}
 {% endtabs %}
 
@@ -781,6 +942,90 @@ func main() {
 
 </details>
 
+<details>
+
+<summary><strong>Python</strong></summary>
+
+{% code overflow="wrap" %}
+```python
+import os
+import time
+import base64
+import requests
+
+from hiero_sdk_python import (
+    Client,
+    AccountId,
+    PrivateKey,
+    TopicCreateTransaction,
+    TopicMessageSubmitTransaction,
+)
+
+# load your operator credentials
+operatorId = AccountId.from_string(os.getenv("OPERATOR_ID", ""))
+operatorKey = PrivateKey.from_string(os.getenv("OPERATOR_KEY", ""))
+
+# initialize the client for testnet
+client = Client()
+client.set_operator(operatorId, operatorKey)
+
+# build & execute the topic creation transaction
+transaction = (
+    TopicCreateTransaction(
+        memo="My first HCS topic",
+        admin_key=operatorKey.public_key()
+    )
+    .freeze_with(client)
+    .sign(operatorKey)
+)
+
+receipt = transaction.execute(client)
+topicId = receipt.topic_id
+
+print(f"\nTopic created: {topicId}")
+
+# build & execute the message submission transaction
+message = "Hello, Hedera!"
+
+message_transaction = (
+    TopicMessageSubmitTransaction()
+    .set_topic_id(topicId)
+    .set_message(message)
+    .freeze_with(client)
+    .sign(operatorKey)
+)
+
+message_transaction.execute(client)
+
+print(f"\nMessage submitted: {message}")
+
+# wait for Mirror Node to populate data
+print("\nWaiting for Mirror Node to update...")
+time.sleep(6)
+
+# query messages using Mirror Node
+mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/topics/{topicId}/messages"
+
+response = requests.get(mirror_node_url, timeout=10)
+response.raise_for_status()
+data = response.json()
+
+messages = data.get("messages", [])
+if messages:
+    latest_message = messages[-1]
+    encoded_message = latest_message.get("message", "")
+    message_content = base64.b64decode(encoded_message).decode("utf-8").strip()
+    
+    print(f"\nLatest message: {message_content}\n")
+else:
+    print("No messages found yet in Mirror Node")
+
+client.close()
+```
+{% endcode %}
+
+</details>
+
 ***
 
 ## Run Your Project
@@ -815,6 +1060,19 @@ mvn compile exec:java -Dexec.mainClass="com.example.CreateTopicDemo"
 ```bash
 go run create_topic_demo.go
 ```
+{% endtab %}
+
+{% tab title="Python" %}
+```bash
+python CreateTopicDemo.py
+```
+
+**When finished, deactivate the virtual environment:**
+
+```bash
+deactivate
+```
+
 {% endtab %}
 {% endtabs %}
 

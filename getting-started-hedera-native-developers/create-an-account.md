@@ -1,10 +1,10 @@
 # Create an Account
 
-Learn how to create a new Hedera **account** on _testnet_ using the JavaScript, Java, or Go SDK. A [`Hedera account`](../core-concepts/accounts/) is your identity on‑chain. It holds your HBAR (the network’s currency) and lets you sign transactions.
+Learn how to create a new Hedera **account** on _testnet_ using the JavaScript, Java, Go, SDK, or Python. A [`Hedera account`](../core-concepts/accounts/) is your identity on‑chain. It holds your HBAR (the network’s currency) and lets you sign transactions.
 
 ***
 
-## Prerequisites
+## **Prerequisites**
 
 * A Hedera testnet **operator account ID** and **ECDSA** **DER-encoded private key** (from the [Quickstart](quickstart.md)).
 * A small amount of testnet **HBAR (ℏ)** to pay the `$0.05` account‑creation fee.
@@ -161,7 +161,87 @@ go mod init create_account_demo
 go get github.com/hiero-ledger/hiero-sdk-go/v2@latest
 go mod tidy
 ```
-{% endcode %}
+{% endtab %}
+
+{% tab title="Python" %}
+**Before you start:** Ensure you have Python 3.10+ installed on your machine. Run this command to verify.
+
+```bash
+python --version
+```
+
+If the `python --version` command is not found or shows a version lower than 3.10, install or upgrade Python from [Python Install](https://www.python.org/downloads/).
+
+**Note:** On some systems, you may need to use `python3` instead of `python` for initial setup commands. If `python --version` doesn't work, try `python3 --version` and use `python3` for the virtual environment creation. After activating the virtual environment, always use `python` for all commands.
+
+Open your terminal and create a working directory for your Hedera project. Then navigate into the new directory:
+
+```bash
+mkdir hedera-examples && cd hedera-examples
+```
+
+**Verify Python and pip:** Ensure you have Python 3.10+ and pip installed on your machine. Run these commands to check:
+
+```bash
+python --version
+```
+
+```bash
+python -m pip --version
+```
+
+Create a virtual environment to isolate your project dependencies (Python best practice):
+
+```bash
+python -m venv .venv
+```
+
+Activate the virtual environment to use the isolated Python installation:
+
+{% tabs %}
+{% tab title="Mac/Linux" %}
+```bash
+source .venv/bin/activate
+```
+{% endtab %}
+
+{% tab title="Windows" %}
+```bash
+.venv\Scripts\activate
+```
+{% endtab %}
+{% endtabs %}
+
+Upgrade pip to ensure you have the latest package installer (recommended):
+
+```bash
+python -m pip install --upgrade pip
+```
+
+Install the [Python SDK](https://github.com/hiero-ledger/hiero-sdk-python):
+
+```bash
+python -m pip install hiero_sdk_python
+```
+
+Create a file named `CreateAccountDemo.py` and add the following imports:
+
+```python
+import os
+import time
+import requests
+
+from hiero_sdk_python import (
+    Client,
+    AccountId,
+    PrivateKey,
+    AccountCreateTransaction,
+    Hbar,
+)
+
+# Used to print the EVM address for the new ECDSA public key
+from hiero_sdk_python.utils.crypto_utils import keccak256
+```
 {% endtab %}
 {% endtabs %}
 
@@ -218,6 +298,18 @@ client := hedera.ClientForTestnet()
 client.SetOperator(operatorId, operatorKey)
 </code></pre>
 {% endtab %}
+
+{% tab title="Python" %}
+```python
+# Load your operator credentials
+operatorId = AccountId.from_string(os.getenv("OPERATOR_ID", ""))
+operatorKey = PrivateKey.from_string(os.getenv("OPERATOR_KEY", ""))
+
+# Initialize your testnet client and set operator
+client = Client()
+client.set_operator(operatorId, operatorKey)
+```
+{% endtab %}
 {% endtabs %}
 
 ***
@@ -226,7 +318,7 @@ client.SetOperator(operatorId, operatorKey)
 
 Generate a new ECDSA private/public key pair for the account you'll create.&#x20;
 
-### **Why keys?**
+### Why keys?
 
 On the Hedera network, a **private key** allows you to sign transactions, ensuring only you control your assets, while a **public key**, shared on-chain, verifies your identity. This key pair is essential for account security.
 
@@ -252,6 +344,14 @@ PublicKey newPublicKey   = newPrivateKey.getPublicKey();
 // generate a new key pair
 newPrivateKey, _ := hedera.PrivateKeyGenerateEcdsa()
 newPublicKey := newPrivateKey.PublicKey()
+```
+{% endtab %}
+
+{% tab title="Python" %}
+```python
+# generate a new ECDSA key pair in memory
+newPrivateKey = PrivateKey.generate_ecdsa()
+newPublicKey = newPrivateKey.public_key()
 ```
 {% endtab %}
 {% endtabs %}
@@ -301,7 +401,7 @@ System.out.println("EVM Address: 0x" + newPublicKey.toEvmAddress());
 ```go
 // build & execute the account creation transaction
 transaction := hedera.NewAccountCreateTransaction().
-    SetECDSAKeyWithAlias(newPublicKey).  // set the account key
+    SetECDSAKeyWithAlias(newPublicKey).     // set the account key
     SetInitialBalance(hedera.NewHbar(20))   // fund with 20 HBAR
 
 // execute the transaction and get response
@@ -320,6 +420,26 @@ newAccountId := *receipt.AccountID
 
 fmt.Printf("Hedera Account created: %s\n", newAccountId.String())
 fmt.Printf("EVM Address: 0x%s\n", newPublicKey.ToEvmAddress())
+```
+{% endtab %}
+
+{% tab title="Python" %}
+```python
+# Build & execute the account creation transaction
+transaction = (
+    AccountCreateTransaction()
+      .set_key(newPublicKey)            # set the account key
+      .set_initial_balance(Hbar(20))    # fund with 20 HBAR
+)
+
+# Get the receipt to extract the new account ID
+receipt = transaction.execute(client)
+newAccountId = receipt.account_id
+
+evm_address = keccak256(newPublicKey.to_bytes_ecdsa(compressed=False)[1:])[-20:].hex()
+
+print(f"\nHedera account created: {newAccountId}")
+print(f"EVM Address: 0x{evm_address}")
 ```
 {% endtab %}
 {% endtabs %}
@@ -370,9 +490,17 @@ mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/balances?account.
 ```
 {% endcode %}
 {% endtab %}
+
+{% tab title="Python" %}
+{% code overflow="wrap" %}
+```python
+mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/balances?account.id={newAccountId}"
+```
+{% endcode %}
+{% endtab %}
 {% endtabs %}
 
-#### Complete  Implementation:
+**Complete Implementation:**
 
 {% tabs %}
 {% tab title="JavaScript" %}
@@ -458,6 +586,30 @@ if len(data.Balances) > 0 {
 
 client.Close()
 ```
+{% endtab %}
+
+{% tab title="Python" %}
+```python
+# Wait for Mirror Node to populate data
+print("\nWaiting for Mirror Node to update...\n")
+time.sleep(6)
+
+# Query balance using Mirror Node
+mirrorNodeUrl = f"https://testnet.mirrornode.hedera.com/api/v1/balances?account.id={newAccountId}"
+
+response = requests.get(mirrorNodeUrl, timeout=10)
+response.raise_for_status()
+data = response.json()
+balances = data.get("balances", [])
+
+if balances:
+    balanceInTinybars = balances[0].get("balance", 0)
+    balanceInHbar = balanceInTinybars / 100_000_000
+    print(f"Account balance: {balanceInHbar:g} ℏ\n")
+else:
+    print("Account balance not yet available in Mirror Node")
+```
+
 {% endtab %}
 {% endtabs %}
 
@@ -688,6 +840,69 @@ func main() {
 
 </details>
 
+<details>
+
+<summary><strong>Python</strong></summary>
+
+{% code overflow="wrap" %}
+```python
+import os
+import time
+import requests
+from hiero_sdk_python import (
+    Client, AccountId, PrivateKey, AccountCreateTransaction, Hbar
+)
+from hiero_sdk_python.utils.crypto_utils import keccak256
+
+# load your operator credentials
+operatorId = AccountId.from_string(os.getenv("OPERATOR_ID", ""))
+operatorKey = PrivateKey.from_string(os.getenv("OPERATOR_KEY", ""))
+
+# initialize the client for testnet
+client = Client()
+client.set_operator(operatorId, operatorKey)
+
+# generate a new key pair
+newPrivateKey = PrivateKey.generate_ecdsa()
+newPublicKey = newPrivateKey.public_key()
+
+# build & execute the account creation transaction
+transaction = (
+    AccountCreateTransaction()
+      .set_key(newPublicKey)            # set the account key
+      .set_initial_balance(Hbar(20))    # fund with 20 HBAR
+)
+receipt = transaction.execute(client)
+newAccountId = receipt.account_id
+evm_address = keccak256(newPublicKey.to_bytes_ecdsa(compressed=False)[1:])[-20:].hex()
+
+print(f"\nHedera account created: {newAccountId}")
+print(f"EVM Address: 0x{evm_address}")
+
+# wait for Mirror Node to populate data
+print("\nWaiting for Mirror Node to update...\n")
+time.sleep(6)
+
+# query balance using Mirror Node
+mirrorNodeUrl = f"https://testnet.mirrornode.hedera.com/api/v1/balances?account.id={newAccountId}"
+response = requests.get(mirrorNodeUrl, timeout=10)
+response.raise_for_status()
+data = response.json()
+balances = data.get("balances", [])
+
+if balances:
+    balanceInTinybars = balances[0].get("balance", 0)
+    balanceInHbar = balanceInTinybars / 100_000_000
+    print(f"Account balance: {balanceInHbar:g} ℏ\n")
+else:
+    print("Account balance not yet available in Mirror Node")
+
+client.close()
+```
+{% endcode %}
+
+</details>
+
 ***
 
 ## Run Your Project
@@ -722,6 +937,19 @@ mvn compile exec:java -Dexec.mainClass="com.example.CreateAccountDemo"
 ```bash
 go run create_account_demo.go
 ```
+{% endtab %}
+
+{% tab title="Python" %}
+```bash
+python CreateAccountDemo.py
+```
+
+**When finished, deactivate the virtual environment:**
+
+```bash
+deactivate
+```
+
 {% endtab %}
 {% endtabs %}
 

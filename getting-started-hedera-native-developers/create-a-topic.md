@@ -1,12 +1,10 @@
 # Create a Topic
 
-
-
 Learn how to create a new topic and submit your first message on Hedera testnet using the JavaScript, Java, Go SDK, or Python. A **topic** on the **Hedera Consensus Service (HCS)** is like a public channel: anyone who knows the topic ID can publish timestamped messages, and anyone can subscribe to the stream from a mirror node.
 
 ***
 
-## Prerequisites
+## **Prerequisites**
 
 * A Hedera testnet **operator account ID** and **DER-encoded private key** (from the [Quickstart](quickstart.md)).
 * A small amount of testnet **HBAR (ℏ)** to cover the fees
@@ -245,7 +243,7 @@ from hiero_sdk_python import (
     TopicMessageSubmitTransaction,
 )
 ```
-
+{% endtab %}
 {% endtabs %}
 
 ***

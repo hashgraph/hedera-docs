@@ -1,6 +1,6 @@
 # Create an Account
 
-Learn how to create a new Hedera **account** on _testnet_ using the JavaScript, Java, or Go SDK. A [`Hedera account`](../core-concepts/accounts/) is your identity on‑chain. It holds your HBAR (the network’s currency) and lets you sign transactions.
+Learn how to create a new Hedera **account** on _testnet_ using the JavaScript, Java, Go, SDK, or Python. A [`Hedera account`](../core-concepts/accounts/) is your identity on‑chain. It holds your HBAR (the network’s currency) and lets you sign transactions.
 
 ***
 
@@ -501,7 +501,7 @@ mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/balances?accoun
 {% endtab %}
 {% endtabs %}
 
-#### Complete  Implementation:
+**Complete Implementation:**
 
 {% tabs %}
 {% tab title="JavaScript" %}
@@ -846,7 +846,6 @@ func main() {
 
 {% code overflow="wrap" %}
 ```python
-# CreateAccountDemo.py
 
 import os
 import time

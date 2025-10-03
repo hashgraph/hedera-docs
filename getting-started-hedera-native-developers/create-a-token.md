@@ -239,10 +239,9 @@ from hiero_sdk_python import (
     AccountId,
     PrivateKey,
     TokenCreateTransaction,
+    TokenType,
+    SupplyType,
 )
-
-from hiero_sdk_python.tokens.token_type import TokenType
-from hiero_sdk_python.tokens.supply_type import SupplyType
 ```
 {% endtab %}
 {% endtabs %}
@@ -305,12 +304,12 @@ client.SetOperator(operatorId, operatorKey)
 {% tab title="Python" %}
 ```python
 # Load your operator credentials
-operator_id = AccountId.from_string(os.getenv("OPERATOR_ID", ""))
-operator_key = PrivateKey.from_string(os.getenv("OPERATOR_KEY", ""))
+operatorId = AccountId.from_string(os.getenv("OPERATOR_ID", ""))
+operatorKey = PrivateKey.from_string(os.getenv("OPERATOR_KEY", ""))
 
 # Initialize your testnet client and set operator
 client = Client()
-client.set_operator(operator_id, operator_key)
+client.set_operator(operatorId, operatorKey)
 ```
 {% endtab %}
 {% endtabs %}
@@ -349,6 +348,14 @@ PrivateKey adminKey = supplyKey; // can update/delete (reuse for simplicity)
 // Generate keys that control your token
 supplyKey, _ := hedera.PrivateKeyGenerateEcdsa() // can mint/burn
 adminKey := supplyKey // can update/delete (reuse for simplicity)
+```
+{% endtab %}
+
+{% tab title="Python" %}
+```python
+# Generate keys that control your token
+supply_key = PrivateKey.generate_ecdsa()  # can mint/burn
+admin_key = supply_key  # can update/delete (reuse for simplicity)
 ```
 {% endtab %}
 {% endtabs %}
@@ -439,6 +446,31 @@ tokenId := *receipt.TokenID
 fmt.Printf("Token created: %s\n", tokenId.String())
 ```
 {% endtab %}
+
+{% tab title="Python" %}
+```python
+# Build the transaction
+transaction = (
+    TokenCreateTransaction()
+    .set_token_name("Demo Token")
+    .set_token_symbol("DEMO")
+    .set_decimals(2)
+    .set_initial_supply(100_000)
+    .set_token_type(TokenType.FUNGIBLE_COMMON)
+    .set_supply_type(SupplyType.FINITE)
+    .set_max_supply(100_000)
+    .set_treasury_account_id(operatorId)
+    .freeze_with(client)
+)
+
+# Sign with the admin key and execute
+signed_tx = transaction.sign(admin_key)
+receipt = signed_tx.execute(client)
+token_id = receipt.token_id
+
+print(f"\nFungible token created: {token_id}")
+```
+{% endtab %}
 {% endtabs %}
 
 ## Step 4: Query the Treasury Balance Using Mirror Node API
@@ -483,6 +515,14 @@ String mirrorNodeUrl = "https://testnet.mirrornode.hedera.com/api/v1/accounts/" 
 {% code overflow="wrap" %}
 ```go
 mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/accounts/" + operatorId.String( ) + "/tokens?token.id=" + tokenId.String()
+```
+{% endcode %}
+{% endtab %}
+
+{% tab title="Python" %}
+{% code overflow="wrap" %}
+```python
+mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/accounts/{operatorId}/tokens?token.id={token_id}"
 ```
 {% endcode %}
 {% endtab %}
@@ -573,6 +613,29 @@ if len(data.Tokens) > 0 {
 }
 
 client.Close()
+```
+{% endtab %}
+{% tab title="Python" %}
+```python
+# Wait for Mirror Node to populate data
+print("\nWaiting for Mirror Node to update...")
+time.sleep(3)
+
+# Query balance using Mirror Node
+mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/accounts/{operatorId}/tokens?token.id={token_id}"
+
+response = requests.get(mirror_node_url, timeout=10)
+response.raise_for_status()
+data = response.json()
+
+tokens = data.get("tokens", [])
+if tokens:
+    balance = tokens[0].get("balance", 0)
+    print(f"\nTreasury holds: {balance} DEMO\n")
+else:
+    print("Token balance not yet available in Mirror Node")
+
+client.close()
 ```
 {% endtab %}
 {% endtabs %}
@@ -824,6 +887,82 @@ func main() {
 
 </details>
 
+<details>
+
+<summary><strong>Python</strong></summary>
+
+{% code overflow="wrap" %}
+```python
+import os
+import time
+import requests
+
+from hiero_sdk_python import (
+    Client,
+    AccountId,
+    PrivateKey,
+    TokenCreateTransaction,
+    TokenType,
+    SupplyType,
+)
+
+def create_token_demo():
+    # Load your operator credentials
+    operatorId = AccountId.from_string(os.getenv("OPERATOR_ID", ""))
+    operatorKey = PrivateKey.from_string(os.getenv("OPERATOR_KEY", ""))
+    
+    # Initialize the client for testnet
+    client = Client()
+    client.set_operator(operatorId, operatorKey)
+    
+    # Generate token keys
+    supply_key = PrivateKey.generate_ecdsa()
+    admin_key = supply_key
+    
+    # Build & execute the token creation transaction
+    transaction = (
+        TokenCreateTransaction()
+        .set_token_name("Demo Token")
+        .set_token_symbol("DEMO")
+        .set_decimals(2)
+        .set_initial_supply(100_000)
+        .set_token_type(TokenType.FUNGIBLE_COMMON)
+        .set_supply_type(SupplyType.FINITE)
+        .set_max_supply(100_000)
+        .set_treasury_account_id(operatorId)
+        .freeze_with(client)
+    )
+    
+    signed_tx = transaction.sign(admin_key)
+    receipt = signed_tx.execute(client)
+    token_id = receipt.token_id
+    
+    print(f"\nFungible token created: {token_id}")
+    
+    # Wait for Mirror Node to populate data
+    print("\nWaiting for Mirror Node to update...")
+    time.sleep(3)
+    
+    # Query balance using Mirror Node
+    mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/accounts/{operatorId}/tokens?token.id={token_id}"
+    
+    response = requests.get(mirror_node_url, timeout=10)
+    response.raise_for_status()
+    data = response.json()
+    
+    tokens = data.get("tokens", [])
+    if tokens:
+        balance = tokens[0].get("balance", 0)
+        print(f"\nTreasury holds: {balance} DEMO\n")
+    else:
+        print("Token balance not yet available in Mirror Node")
+    
+    client.close()
+```
+{% endcode %}
+
+</details>
+
 ***
 
 ## Run Your Project
@@ -858,6 +997,19 @@ mvn compile exec:java -Dexec.mainClass="com.example.CreateTokenDemo"
 ```bash
 go run create_token_demo.go
 ```
+{% endtab %}
+
+{% tab title="Python" %}
+```bash
+python CreateTokenDemo.py
+```
+
+**When finished, deactivate the virtual environment:**
+
+```bash
+deactivate
+```
+
 {% endtab %}
 {% endtabs %}
 

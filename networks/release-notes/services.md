@@ -16,6 +16,55 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **TESTNET UPDATE: SEPTEMBER 25, 2025**
 {% endhint %}
 
+### Release Highlights
+
+With the introduction of batch transactions, Release v0.66 marks a key milestone in enhancing flexibility and certainty when executing complex use cases.
+
+<details>
+
+<summary><strong>What's new in Release v0.66?</strong></summary>
+
+#### Batch Transaction Processing ([HIP-551](https://github.com/hiero-ledger/hiero-improvement-proposals/blob/main/HIP/hip-551.md))
+
+Historically, Hiero developers have been limited to submitting and processing transactions individually.  To create complex flows developers relied on smart contracts to execute the series of transactions and mirror node queries to monitor the status of submitted transactions, leading to increased latency, added code complexity, and greater risk of partial failures or errors.
+
+Release v0.66 introduces [HIP-551](https://github.com/hiero-ledger/hiero-improvement-proposals/blob/main/HIP/hip-551.md) - Batch Transactions, allowing multiple transactions to be bundled and submitted as a single unit that guarantees ACID properties (atomicity, consistency, isolation, and durability).  The network handles the batch atomically, ensuring consistent execution while providing granular receipts for each inner transaction. This new feature unlocks capabilities like streamlined dApp interactions, atomic multi-step operations, and consolidation of multiple transactions into one HAPI call.
+
+**Key benefits:**
+
+* **Efficiency Gains**: Increases efficiency by processing multiple transactions in one submission, ideal for high-volume applications like DeFi or NFTs.
+* **Developer Flexibility**: Enables new use cases, such as batch token minting or multi-account updates, without requiring smart contracts.
+* **User Experience Improvements**: Simplifies interactions for end-users, e.g., executing a series of approvals and transfers in a single step.
+
+To support this, no major client code changes are needed for basic usage, but developers should update to SDKs that support this feature.&#x20;
+
+**SDK Versions Supporting Batch Transactions**
+
+Below are the versions of SDKs that support batch transactions:
+
+| SDK                                                        | Version  |
+| ---------------------------------------------------------- | -------- |
+| [Java](https://github.com/hiero-ledger/hiero-sdk-java)     | v2.55.0+ |
+| [JavaScript](https://github.com/hiero-ledger/hiero-sdk-js) | v2.64.0+ |
+| [Go](https://github.com/hiero-ledger/hiero-sdk-go)         | v2.61.0+ |
+| [Rust](https://github.com/hiero-ledger/hiero-sdk-rust)     | v0.39.0+ |
+| [C++](https://github.com/hiero-ledger/hiero-sdk-cpp)       | v0.40.0+ |
+
+{% hint style="info" %}
+**NOTE**: Batches may fail partially if inner transactions violate rules; always check individual receipts. For full details on batch structure and rules, see[ HIP-551](https://github.com/hiero-ledger/hiero-improvement-proposals/blob/main/HIP/hip-551.md).
+{% endhint %}
+
+#### Advancements in Block Node Communication
+
+The development of Block Nodes ([HIP-1081](https://github.com/hiero-ledger/hiero-improvement-proposals/blob/main/HIP/hip-1081.md)) continues with this release, with the following development being done: \
+\
+**State Export Tools**: New commands and improvements for exporting states (Issue: [#20622](https://github.com/hiero-ledger/hiero-consensus-node/pull/20622)).  This is a part of enabling block nodes to improve state snapshotting.
+
+**Block Node Communication**: Enhancements to the communication protocol between consensus nodes and block nodes.  Provides better recovery and shutdown procedures to minimize downtime during events like freezes. (Issues: [#20858](https://github.com/hiero-ledger/hiero-consensus-node/pull/20858), [#20874](https://github.com/hiero-ledger/hiero-consensus-node/pull/20874))\
+
+
+</details>
+
 ### [**Build 0.66.0**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.66.0)
 
 <details>

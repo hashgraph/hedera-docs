@@ -2,7 +2,7 @@
 
 
 
-Learn how to create a new topic and submit your first message on Hedera testnet using the JavaScript, Java, or Go SDK. A **topic** on the **Hedera Consensus Service (HCS)** is like a public channel: anyone who knows the topic ID can publish timestamped messages, and anyone can subscribe to the stream from a mirror node.
+Learn how to create a new topic and submit your first message on Hedera testnet using the JavaScript, Java, Go SDK, or Python. A **topic** on the **Hedera Consensus Service (HCS)** is like a public channel: anyone who knows the topic ID can publish timestamped messages, and anyone can subscribe to the stream from a mirror node.
 
 ***
 

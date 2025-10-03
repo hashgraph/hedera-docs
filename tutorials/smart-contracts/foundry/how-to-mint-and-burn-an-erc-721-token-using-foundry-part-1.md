@@ -1,0 +1,510 @@
+# How to Mint & Burn an ERC-721 Token using Foundry(Part 1)
+
+In this tutorial, you’ll deploy, mint, and burn ERC‑721 tokens (NFTs) using Foundry and OpenZeppelin on the Hedera Testnet. You’ll set up a Foundry project, write an ERC‑721 contract, deploy it via a Foundry script, mint an NFT to your account, add burn functionality, and burn an NFT.
+
+We’ll connect to Hedera via the JSON‑RPC relay (Hashio) and use Foundry tools:
+
+* `forge`: build and deploy through scripts
+* `cast`: quick RPC interactions
+
+{% hint style="info" %}
+You can take a look at the **complete code** in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/foundry-erc-721-mint-burn).
+{% endhint %}
+
+***
+
+## Prerequisites
+
+* Foundry installed (forge, cast, anvil, chisel):
+  * `curl -L https://foundry.paradigm.xyz | bash`
+  * `foundryup`
+* ECDSA account and 0x‑prefixed private key for Hedera Testnet (create/fund via the [Hedera Portal](https://portal.hedera.com/))
+* Basic Solidity / CLI familiarity
+
+***
+
+## Table of Contents
+
+1. [Step 1: Project Setup](how-to-mint-and-burn-an-erc-721-token-using-foundry-part-1.md#step-1-project-setup)
+2. [Step 2: Creating the ERC-721 Contract](how-to-mint-and-burn-an-erc-721-token-using-foundry-part-1.md#step-2-creating-the-erc-721-contract)
+3. [Step 3: Deploy your ERC-721 Smart Contract](how-to-mint-and-burn-an-erc-721-token-using-foundry-part-1.md#step-3-deploy-your-erc-721-smart-contract)
+4. [Step 4: Minting an NFT](how-to-mint-and-burn-an-erc-721-token-using-foundry-part-1.md#step-4-minting-an-nft)
+5. [Step 5: Adding the Burn Functionality](how-to-mint-and-burn-an-erc-721-token-using-foundry-part-1.md#step-5-adding-the-burn-functionality)
+6. [Step 6: Burning an NFT](how-to-mint-and-burn-an-erc-721-token-using-foundry-part-1.md#step-6-burning-an-nft)
+7. [Step 7: Run tests(Optional)](how-to-mint-and-burn-an-erc-721-token-using-foundry-part-1.md#step-7-run-tests-optional)
+8. [Interacting with the Contract using "cast"](how-to-mint-and-burn-an-erc-721-token-using-foundry-part-1.md#interacting-with-the-contract-using-cast-optional-advanced)
+
+***
+
+## Step 1: Project Setup
+
+#### **Initialize Project**&#x20;
+
+Set up your project by initializing the hardhat project:
+
+```bash
+forge init foundry-erc-721-mint-burn
+cd foundry-erc-721-mint-burn
+```
+
+This creates a new directory with a standard Foundry project structure, including `src`, `test`, and `script` folders.
+
+#### Install Dependencies
+
+Foundry uses git submodules to manage dependencies. We'll install the OpenZeppelin Contracts library, which provides a standard and secure implementation of the ERC20 token.
+
+```bash
+forge install OpenZeppelin/openzeppelin-contracts
+```
+
+This command will download the contracts and add them to your `lib` folder.
+
+**Create `.env` File**
+
+Create an `.env` for your RPC URL and private key.&#x20;
+
+```bash
+touch .env
+```
+
+Put the following into your environment file.
+
+{% code title=".env" %}
+```bash
+HEDERA_RPC_URL=https://testnet.hashio.io/api
+HEDERA_PRIVATE_KEY=0x-your-private-key
+```
+{% endcode %}
+
+Now, let's also load these to the terminal:
+
+```bash
+source .env
+```
+
+{% hint style="warning" %}
+Replace the `0x-your-private-key` environment variable with the **HEX Encoded Private Key** for your **ECDSA** **account** from the [Hedera Portal](https://portal.hedera.com/)
+{% endhint %}
+
+{% hint style="danger" %}
+_**Please note**:_ _that Hashio is intended for development and testing purposes only. For production use cases, it's recommended to use commercial-grade JSON-RPC Relay or host your own instance of the_ [_Hiero JSON-RPC Relay_](https://github.com/hiero-ledger/hiero-json-rpc-relay)_._&#x20;
+{% endhint %}
+
+#### Configure Foundry
+
+Update your `foundry.toml` file in the root directory of your project. Open it and add profiles for the Hedera Testnet RPC endpoint.
+
+{% code title="foundry.toml" %}
+```toml
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+remappings = [
+  "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+  "forge-std/=lib/forge-std/src/"
+]
+
+# Add this section for Hedera testnet
+[rpc_endpoints]
+testnet = "${HEDERA_RPC_URL}"
+```
+{% endcode %}
+
+Note the values in `remappings` field. We need this to import prefix to a filesystem path so both Foundry(forge) and our editor can resolve short, package-like imports instead of long relative paths.
+
+We will be removing the default contracts that comes with foundry default project:
+
+```bash
+rm -rf script/* src/* test/*
+```
+
+***
+
+## Step 2: Creating the ERC-721 Contract
+
+Create a new Solidity file (`MyToken.sol`) in our `contracts` directory:
+
+{% code title="src/MyToken.sol" %}
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.28;
+
+import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+
+contract MyToken is ERC721, Ownable {
+    uint256 private _nextTokenId;
+
+    constructor(address initialOwner)
+        ERC721("MyToken", "MTK")
+        Ownable(initialOwner)
+    {}
+
+    function safeMint(address to) public onlyOwner returns (uint256) {
+        uint256 tokenId = _nextTokenId++;
+        _safeMint(to, tokenId);
+        return tokenId;
+    }
+}
+```
+{% endcode %}
+
+This contract was created using the [OpenZeppelin Contracts Wizard](https://wizard.openzeppelin.com/#erc721) and OpenZeppelin's ERC-721 standard implementation with an ownership model. The ERC-721 token's name has been set to "MyToken." The contract implements the `safeMint` function, which accepts the address of the owner of the new token and uses auto-increment IDs, starting from 0.&#x20;
+
+Let's compile this contract by running:
+
+```bash
+forge build
+```
+
+This command will generate the smart contract artifacts, including the [ABI](https://docs.hedera.com/hedera/core-concepts/smart-contracts/compiling-smart-contracts). We are now ready to deploy the smart contract.
+
+***
+
+## Step 3: Deploy Your ERC-721 Smart Contract
+
+Create a deployment script (`DeployMyToken.s.sol`) in `script` directory:
+
+{% code title="script/DeployMyToken.s.sol" %}
+```typescript
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.28;
+
+import {Script, console} from "forge-std/Script.sol";
+import {MyToken} from "../src/MyToken.sol";
+
+contract MyTokenScript is Script {
+    function run() external returns (address) {
+        // Load the private key from the .env file
+        uint256 deployerPrivateKey = vm.envUint("HEDERA_PRIVATE_KEY");
+
+        // Start broadcasting transactions with the loaded private key
+        vm.startBroadcast(deployerPrivateKey);
+
+        // Get the deployer's address to use as the initial owner
+        address deployerAddress = vm.addr(deployerPrivateKey);
+
+        // Deploy the contract
+        MyToken myToken = new MyToken(deployerAddress);
+
+        // Stop broadcasting
+        vm.stopBroadcast();
+
+        console.log("MyToken deployed to:", address(myToken));
+
+        return address(myToken);
+    }
+}
+```
+{% endcode %}
+
+In this script, we first retrieve your account (the deployer) that's on our `.env` file. This account will own the deployed smart contract. Next, we use this account to deploy the contract by calling `MyToken.deploy(deployerAddress)`. This passes your account address as the initial owner and signer of the deployment transaction.
+
+Deploy your contract by executing the script:
+
+```bash
+forge script script/DeployMyToken.s.sol --rpc-url testnet --broadcast
+```
+
+After a few moments, you will see the address of your newly deployed contract:
+
+```
+Compiler run successful!
+Script ran successfully.
+
+== Return ==
+0: address 0x1112a82254f48e0daEEE3fFD009B4E44a66A7f77
+
+== Logs ==
+  MyToken deployed to: 0x1112a82254f48e0daEEE3fFD009B4E44a66A7f77
+
+## Setting up 1 EVM.
+
+==========================
+
+Chain 296
+
+Estimated gas price: 740.000000001 gwei
+
+Estimated total gas used for script: 2524191
+
+Estimated amount required: 1.867901340002524191 ETH
+
+==========================
+
+##### 296
+✅  [Success] Hash: 0x0679fa510bda823be55600902aaef81b92814c010cee9af818b4c5712e625de2
+Contract Address: 0x4397fa3bD44bb9b2986C9463d794bDD73763A3dE
+Block: 25122524
+Paid: 0.70677355 ETH (2019353 gas * 350 gwei)
+
+✅ Sequence #1 on 296 | Total Paid: 0.70677355 ETH (2019353 gas * avg 350 gwei)
+                                                                                                             
+
+==========================
+
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
+```
+
+{% hint style="success" %}
+Note that Foundry hardcodes “ETH” in its summary. However, even if it says `ETH`, because we're connected to Hedera, the currency used is `HBAR`. &#x20;
+{% endhint %}
+
+Next, set up variables for your contract address and public address to make the next commands easier to read. Please export these variables in your shell.
+
+<pre class="language-bash"><code class="lang-bash"># Replace with the contract address from the previous step
+<strong>export CONTRACT_ADDRESS=&#x3C;your-contract-address>
+</strong>
+# Derive your public address from the private key
+export MY_ADDRESS=$(cast wallet address $HEDERA_PRIVATE_KEY)
+</code></pre>
+
+Let's also verify our contract because it is so easy to do so and it is good practice:
+
+```bash
+forge verify-contract $CONTRACT_ADDRESS src/MyToken.sol:MyToken \
+    --chain-id 296 \
+    --verifier sourcify \
+    --verifier-url "https://server-verify.hashscan.io/" \
+    --constructor-args $(cast abi-encode "constructor(address)" $MY_ADDRESS)
+```
+
+***
+
+## Step 4: Minting an NFT
+
+We will now create a new file `MintMyToken.s.sol` script in our `script` directory to mint an NFT. Don't forget to replace the `<your-contract-address>` with the address you've just copied.&#x20;
+
+{% code title="script/MintMyToken.s.sol" %}
+```typescript
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.28;
+
+import {Script, console} from "forge-std/Script.sol";
+import {MyToken} from "../src/MyToken.sol";
+
+contract MintMyTokenScript is Script {
+    function run() external {
+        // Load the private key from the .env file
+        uint256 deployerPrivateKey = vm.envUint("HEDERA_PRIVATE_KEY");
+
+        address contractAddr = <your-contract-address>; // Replace with your deployed contract address
+        address recipient = vm.addr(deployerPrivateKey); 
+
+        vm.startBroadcast(deployerPrivateKey);
+        MyToken token = MyToken(contractAddr);
+        uint256 beforeBal = token.balanceOf(recipient);
+        uint256 tokenId = token.safeMint(recipient);
+        uint256 afterBal = token.balanceOf(recipient);
+        vm.stopBroadcast();
+
+        console.log("Minted tokenId:", tokenId);
+        console.log("Recipient:", recipient);
+        console.log("Balance before:", beforeBal);
+        console.log("Balance after:", afterBal);
+    }
+}
+```
+{% endcode %}
+
+The code mints a new NFT to your account ( `deployer.address` ). Then we verify the balance to see if we own an ERC-721 token of type `MyToken`.
+
+Mint an NFT:
+
+```bash
+forge script script/MintMyToken.s.sol --rpc-url testnet --broadcast
+```
+
+Expected output:
+
+```json
+Script ran successfully.
+
+== Logs ==
+  Minted tokenId: 0
+  Recipient: 0xA98556A4deeB07f21f8a66093989078eF86faa30
+  Balance before: 0
+  Balance after: 1
+```
+
+***
+
+## Step 5: Adding the Burn Functionality
+
+Update your contract to add NFT burning capability by importing the burnable extension and adding it to the interfaces list for your contract:
+
+```solidity
+// [...]
+import {ERC721Burnable} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
+
+contract MyToken is ERC721, ERC721Burnable, Ownable {
+// [...]
+```
+
+Redeploy:
+
+```bash
+forge script script/DeployMyToken.s.sol --rpc-url testnet --broadcast
+```
+
+Reverify:
+
+```bash
+export CONTRACT_ADDRESS=<your-contract-address>
+forge verify-contract $CONTRACT_ADDRESS src/MyToken.sol:MyToken \
+    --chain-id 296 \
+    --verifier sourcify \
+    --verifier-url "https://server-verify.hashscan.io/" \
+    --constructor-args $(cast abi-encode "constructor(address)" $MY_ADDRESS)
+```
+
+Copy the new smart contract address and replace the address in the `script/MintMyToken.s.sol` script with your new address. Let's mint a new NFT for the redeployed contract:
+
+```bash
+forge script script/MintMyToken.s.sol --rpc-url testnet --broadcast
+```
+
+***
+
+## Step 6: Burning an NFT
+
+Create a burn script (`BurnMyToken.s.sol` ) in your `script` directory. Don't forget to replace the `<your-contract-address>` with your own contract address and `<your-token-id>` with the token Id you want to burn(eg. 0).  &#x20;
+
+{% code title="script/BurnMyToken.s.sol" %}
+```typescript
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.28;
+
+import {Script, console} from "forge-std/Script.sol";
+import {MyToken} from "../src/MyToken.sol";
+
+contract BurnMyTokenScript is Script {
+    function run() external {
+        // Load the private key from the .env file
+        uint256 deployerPrivateKey = vm.envUint("HEDERA_PRIVATE_KEY");
+
+        address contractAddr = 0x4397fa3bD44bb9b2986C9463d794bDD73763A3dE; // Replace with your deployed contract address
+        uint256 tokenId = <your-token-id>; // Replace with the tokenId you want to burn
+        address recipient = vm.addr(deployerPrivateKey);
+
+        vm.startBroadcast(deployerPrivateKey);
+        MyToken token = MyToken(contractAddr);
+        uint256 beforeBal = token.balanceOf(recipient);
+        token.burn(tokenId);
+        uint256 afterBal = token.balanceOf(recipient);
+        vm.stopBroadcast();
+
+        console.log("Burned tokenId:", tokenId);
+        console.log("Recipient:", recipient);
+        console.log("Balance before:", beforeBal);
+        console.log("Balance after:", afterBal);
+    }
+}
+
+```
+{% endcode %}
+
+The script will burn the ERC-721 token with the ID set to 1, which is the ERC-721 token you've just minted. To be sure the token has been deleted, let's print the balance for our account to the terminal. The balance should show a balance of `0`.
+
+Burn the NFT:
+
+```bash
+forge script script/BurnMyToken.s.sol --rpc-url testnet --broadcast
+```
+
+Expected output:
+
+```json
+Script ran successfully.
+
+== Logs ==
+  Burned tokenId: 0
+  Recipient: 0xA98556A4deeB07f21f8a66093989078eF86faa30
+  Balance before: 1
+  Balance after: 0
+```
+
+**Congratulations! 🎉 You have successfully learned how to deploy an ERC-721 smart contract using Foundry and OpenZeppelin. Feel free to reach out in** [**Discord**](https://hedera.com/discord)**!**
+
+## Step 7: Run tests(Optional)
+
+You can find both types of tests in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/foundry-erc-721-mint-burn). You will find the following files:
+
+* `test/MyToken.t.sol`
+
+Copy this file and then run the tests:
+
+```bash
+forge test
+```
+
+To deep dive into how to write these tests from scratch, go to the section under "[How to Write Tests in Solidity (Part 2)"](how-to-write-tests-in-solidity-part-2.md).
+
+## Interacting with the Contract using "cast"(Optional - Advanced)
+
+Apart from interacting with the contract using dedicated scripts like `MintMyToken.s.sol` or `BurnMyToken.s.sol`, we can also use `cast`, Foundry's command-line tool for doing the exact same thing by making RPC calls. We are going to deploy the contract using cast in this section but you should be able to able to perform any other operation such as mint or burn using `cast` as well(even though it might be a little bit more complicated to do so).
+
+To use `cast` and other command-line tools, you need to load the variables from your `.env` file into your current terminal session.
+
+### **Environment Setup**
+
+Run the following command to load the `HEDERA_PRIVATE_KEY` and `HEDERA_RPC_URL` into your shell. In addition, we will derive our address and save it to `MY_ADDRESS`.
+
+```bash
+source .env
+# Derive your EVM address (the deployer/owner for MyToken)
+export MY_ADDRESS=$(cast wallet address "$HEDERA_PRIVATE_KEY")
+# Confirm you’re on Hedera Testnet (chain id 296)
+cast chain-id --rpc-url "$HEDERA_RPC_URL"
+```
+
+{% hint style="info" %}
+Please make sure to have `jq` installed on your machine for the following exercises. You can learn more about it on the [official jq site](https://jqlang.org/download/).
+{% endhint %}
+
+### Compile and fetch creation bytecode&#x20;
+
+We’ll use forge to inspect the creation bytecode of MyToken and cast to encode constructor args.
+
+```bash
+# Compile your project (generates artifacts)
+forge build
+
+# Get creation bytecode (0x…)
+export BYTECODE=$(forge inspect src/MyToken.sol:MyToken bytecode)
+
+# Encode constructor(address initialOwner) with your deployer address
+export CTOR_ARGS=$(cast abi-encode "constructor(address)" "$MY_ADDRESS")
+
+# Concatenate bytecode + constructor args (both hex)
+export DEPLOY_DATA="0x${BYTECODE#0x}${CTOR_ARGS#0x}"
+```
+
+### Deploy the contract with cast&#x20;
+
+`cast` will submit a contract creation transaction. Then we’ll fetch the receipt and extract the deployed contract address.
+
+```bash
+# Send the deployment tx (returns a tx hash)
+export DEPLOY_TX=$(cast send --rpc-url "$HEDERA_RPC_URL" \
+    --private-key "$HEDERA_PRIVATE_KEY" \
+    --json --create "$DEPLOY_DATA" | jq -r .transactionHash)
+echo "Deploy tx: $DEPLOY_TX"
+
+# Capture the contract address
+export CONTRACT_ADDRESS=$(cast receipt "$DEPLOY_TX" --rpc-url "$HEDERA_RPC_URL" \
+    --json | jq -r .contractAddress)
+echo "MyToken deployed to: $CONTRACT_ADDRESS"
+```
+
+## Further Learning & Next Steps
+
+Want to take your local development setup even further? Here are some excellent tutorials to help you dive deeper into smart contract development on Hedera using Foundry:
+
+1. [How to Write Tests in Solidity (Part 2)](how-to-write-tests-in-solidity-part-2.md)\
+   Learn how to start writing tests in Foundry using Solidity
+2. [How to Fork the Hedera Network for Local Testing](how-to-fork-the-hedera-network-for-local-testing.md)\
+   Learn how to fork hedera network(testnet/mainnet) locally so you can start testing against the forked network
+
+<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Kiran, Developer Advocate</p><p><a href="https://github.com/kpachhai">GitHub</a> | <a href="https://www.linkedin.com/in/kiranpachhai/">LinkedIn</a></p></td><td><a href="https://www.linkedin.com/in/kiranpachhai/">https://www.linkedin.com/in/kiranpachhai/</a></td></tr><tr><td align="center"><p>Editor: Krystal, Technical Writer</p><p><a href="https://github.com/theekrystallee">GitHub</a> | <a href="https://x.com/theekrystallee">X</a></p></td><td><a href="https://x.com/theekrystallee">https://x.com/theekrystallee</a></td></tr></tbody></table>

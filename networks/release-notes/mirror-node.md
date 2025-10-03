@@ -8,6 +8,16 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Latest Releases
 
+## [v0.139.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.139.0)
+
+[HIP-1056](https://hips.hedera.com/hip/hip-1056) saw multiple improvements to integrate changes to the block streams from HAPI v0.65 protobufs. The block stream hash root hash calculation was updated to match the latest format. The revamped contract state changes and trace data format is now handled properly. This also includes support for the block stream specific [HIP-1127](https://hips.hedera.com/hip/hip-1127) unified transaction record format. Work will continue on integrating 0.65+ protobuf in the next few releases.
+
+### Breaking Changes
+
+The modularized flow is now enabled by default. The Hedera managed mirror nodes have already rolled this capability out to all environments as per our blog [article](https://hedera.com/blog/hip-1217-important-updates-to-the-hedera-api-v1-contracts-call-endpoint). This change aligns other mirror node operators with the capability of the Hedera managed instances. If any customers complain of impacts to their `/api/v1/contracts/call`, it is recommended operators temporarily disable the feature and refer customers to the blog and Hedera discord for further support.
+
+The rewritten Java-based `/api/v1/network/stake` REST API is now enabled by default in our Docker Compose and Helm deployments. In the next release we will be removing the old JavaScript implementation entirely. Operators should take this time to migrate their routing logic to use the new implementation in the rest-java module.
+
 ## [v0.138.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.138.0)&#x20;
 
 This is a testing focused release with a number of changes that improve our test coverage. A new GitHub Actions workflow was added to build and test our acceptance tests end-to-end. This workflow leverages [Solo](https://github.com/hashgraph/solo/) to stand up a consensus node and mirror node in Kubernetes with the proper configuration. In addition, we also run the same suite of tests but using block node instead of record streams. A similar workflow was added to the consensus node repository as part of their extended test suite to gate their release process.

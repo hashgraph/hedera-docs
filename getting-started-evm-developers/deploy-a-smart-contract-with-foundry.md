@@ -66,7 +66,7 @@ This command will download the contracts and add them to your `lib` folder.
 
 #### Create `.env` File
 
-Create a \`.env\` file in your project's root directory to securely store your private key and the RPC URL for the Hedera Testnet.
+Create a `.env` file in your project's root directory to securely store your private key and the RPC URL for the Hedera Testnet.
 
 ```bash
 touch .env
@@ -76,13 +76,13 @@ Securely store your sensitive data like the `OPERATOR_KEY` in a `.env` file. For
 
 {% code title=".env" %}
 ```bash
-OPERATOR_KEY=your-operator-key
-RPC_URL=https://testnet.hashio.io/api
+HEDERA_RPC_URL=https://testnet.hashio.io/api
+HEDERA_PRIVATE_KEY=0x-your-private-key
 ```
 {% endcode %}
 
 {% hint style="warning" %}
-Replace the `your-operator-key` environment variable with the **HEX Encoded Private Key** for your **ECDSA** **account** from the [Hedera Portal](https://portal.hedera.com/).&#x20;
+Replace the `0x-your-private-key` environment variable with the **HEX Encoded Private Key** for your **ECDSA** **account** from the [Hedera Portal](https://portal.hedera.com/).&#x20;
 {% endhint %}
 
 {% hint style="danger" %}
@@ -102,7 +102,7 @@ libs = ["lib"]
 
 # Add this section for Hedera Testnet
 [rpc_endpoints]
-testnet = "${RPC_URL}"
+testnet = "${HEDERA_RPC_URL}"
 ```
 {% endcode %}
 
@@ -115,7 +115,7 @@ Create a new Solidity file (`HederaToken.sol` ) inside the `src` directory:
 {% code title="src/HederaToken.sol" %}
 ```solidity
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.22;
+pragma solidity ^0.8.28;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
@@ -158,7 +158,7 @@ Using a script is the standard and most reliable way to handle deployments in Fo
 {% code title="script/HederaToken.s.sol" %}
 ```solidity
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.22;
+pragma solidity ^0.8.28;
 
 import {Script, console} from "forge-std/Script.sol";
 import {HederaToken} from "../src/HederaToken.sol";
@@ -166,7 +166,7 @@ import {HederaToken} from "../src/HederaToken.sol";
 contract HederaTokenScript is Script {
     function run() external returns (address) {
         // Load the private key from the .env file
-        uint256 deployerPrivateKey = vm.envUint("OPERATOR_KEY");
+        uint256 deployerPrivateKey = vm.envUint("HEDERA_PRIVATE_KEY");
         
         // Start broadcasting transactions with the loaded private key
         vm.startBroadcast(deployerPrivateKey);
@@ -222,13 +222,13 @@ To use `cast` and other command-line tools, you need to load the variables from 
 
 **Load Environment Variables**
 
-Run the following command to load the `OPERATOR_KEY` and `RPC_URL` into your shell:
+Run the following command to load the `HEDERA_PRIVATE_KEY` and `HEDERA_RPC_URL` into your shell:
 
 ```bash
 source .env
 ```
 
-Now your shell knows the value of `$OPERATOR_KEY` and `$RPC_URL`.
+Now your shell knows the value of `$HEDERA_PRIVATE_KEY` and `$HEDERA_RPC_URL`.
 
 **Set Up Shell Variables**
 
@@ -239,7 +239,7 @@ Next, set up variables for your contract address and public address to make the 
 export CONTRACT_ADDRESS=<your-contract-address>
 
 # Derive your public address from the private key
-export MY_ADDRESS=$(cast wallet address $OPERATOR_KEY)
+export MY_ADDRESS=$(cast wallet address $HEDERA_PRIVATE_KEY)
 ```
 
 **Check Your Balance**
@@ -247,7 +247,7 @@ export MY_ADDRESS=$(cast wallet address $OPERATOR_KEY)
 Let's call the `balanceOf` function to check the token balance of your account.
 
 ```bash
-cast call $CONTRACT_ADDRESS "balanceOf(address)" $MY_ADDRESS --rpc-url $RPC_URL
+cast call $CONTRACT_ADDRESS "balanceOf(address)" $MY_ADDRESS --rpc-url $HEDERA_RPC_URL
 ```
 
 The output will be the balance in its raw form (with 18 decimals):
@@ -278,8 +278,8 @@ Now, send 100 tokens to this new address. Note that `100e18` is a convenient way
 
 ```bash
 cast send $CONTRACT_ADDRESS "transfer(address,uint256)" $RECIPIENT_ADDRESS 100e18 \
-    --private-key $OPERATOR_KEY \
-    --rpc-url $RPC_URL
+    --private-key $HEDERA_PRIVATE_KEY \
+    --rpc-url $HEDERA_RPC_URL
 ```
 
 After the transaction confirms, check the recipient's balance:
@@ -325,3 +325,6 @@ Contract successfully verified
 
 * Check out [OpenZeppelin ERC-20 Documentation](https://docs.openzeppelin.com/contracts/5.x/erc20)
 * See the full code in the [Hedera-Code-Snippets Repository](https://github.com/hedera-dev/hedera-code-snippets/tree/main/foundry-erc20)
+* Follow more [Foundry guides with Hedera](../tutorials/smart-contracts/foundry/).
+
+<table data-card-size="large" data-view="cards"><thead><tr><th align="center"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td align="center"><p>Writer: Kiran, Developer Advocate</p><p><a href="https://github.com/kpachhai">GitHub</a> | <a href="https://www.linkedin.com/in/kiranpachhai/">LinkedIn</a></p></td><td><a href="https://www.linkedin.com/in/kiranpachhai/">https://www.linkedin.com/in/kiranpachhai/</a></td></tr></tbody></table>

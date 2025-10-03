@@ -52,7 +52,7 @@ Standard transactions are individual operations submitted to the network, such a
 
 `0.0.9401@1598924675.82525000` → A transaction paid for by account `0.0.9401` with a valid start time of `1598924675.82525000`.
 
-### Batch Transactions (coming soon...)
+### Batch Transactions ([HIP-551](https://hips.hedera.com/hip/hip-551))
 
 {% hint style="info" %}
 #### **Note**
@@ -62,7 +62,7 @@ Jumbo EthereumTransaction ([HIP-1086](https://hips.hedera.com/hip/hip-1086)) sup
 📣 For detailed gas cost calculation of jumbo Ethereum transactions, refer to the [Gas and Fees page](../smart-contracts/gas-and-fees.md#gas-schedule-and-fee-calculation).
 {% endhint %}
 
-Batch transactions (_to be included in a future release for_ [_HIP-551_](https://hips.hedera.com/hip/hip-551)) allow multiple operations (HAPI calls) to be executed atomically as a single network transaction, ensuring that all operations either succeed together or fail together (upholding ACID properties).&#x20;
+Batch transactions allow multiple operations (HAPI calls) to be executed atomically as a single network transaction, ensuring that all operations either succeed together or fail together (upholding ACID properties).&#x20;
 
 #### **Outer Batch Transaction ID**
 
@@ -79,7 +79,7 @@ _**Example:**_ **`0.0.9401@1598924675.82525000`**
 * Upon processing, each inner transaction record includes a `parentConsensusTimestamp` field, which links it to the consensus timestamp of the outer batch transaction. This linkage preserves the atomicity of the batch by ensuring all inner transactions are tied to the same consensus event.
 * Methods such as `getInnerTransactionIds()` can be used to retrieve the inner transaction IDs after execution.
 
-#### **Batch Key (**&#x63;oming soo&#x6E;**)**
+#### **Batch Key**
 
 To prevent tampering—such as reordering, removing, or adding transactions within the batch a Batch Key is used.
 

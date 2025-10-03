@@ -303,6 +303,7 @@ client.SetOperator(operatorId, operatorKey)
 ```
 {% endtab %}
 
+{% tab title="Python" %}
 ```python
 # Load your operator credentials
 operatorId = AccountId.from_string(os.getenv("OPERATOR_ID", ""))

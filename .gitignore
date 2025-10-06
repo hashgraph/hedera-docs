@@ -1,4 +1,6 @@
 .env
 .env.example
 *.bak
+.venv/
+__pycache__/
 .idea

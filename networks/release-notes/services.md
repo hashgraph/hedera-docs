@@ -6,6 +6,16 @@ description: Consensus Node release information
 
 Visit the [Hedera status page](https://status.hedera.com/) for the latest versions supported on each network.
 
+## Release v0.67
+
+{% hint style="info" %}
+**MAINNET UPDATE: TBD**
+{% endhint %}
+
+{% hint style="info" %}
+**TESTNET UPDATE: OCTOBER 15, 2025**
+{% endhint %}
+
 ## Release v0.66
 
 {% hint style="info" %}

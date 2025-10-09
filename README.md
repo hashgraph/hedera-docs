@@ -1,6 +1,6 @@
 ---
 cover: .gitbook/assets/HH60180_HederaDocs_Final.jpg
-coverY: 0
+coverY: 0.5890242134261285
 ---
 
 # Welcome to Hedera — let’s build the future

@@ -11,7 +11,7 @@ Learn how to create a new topic and submit your first message on Hedera testnet 
   * Topic creation: ≈ `$0.01`
   * Each message: < `$0.001`
 
-> ### _**Note**_&#x20;
+> #### _**Note**_
 >
 > _You can always check the "_✅ [_Code Check_](create-a-topic.md#code-check)_" section at the bottom of each page to view the entire code if you run into issues. You can also post your issue to the respective SDK channel in our Discord community_ [_here_](http://hedera.com/discord)_._
 
@@ -139,7 +139,7 @@ public class CreateTopicDemo {
 {% endtab %}
 
 {% tab title="Go" %}
-Create a new file `create_topic_demo.go`  and import the following packages to your file:
+Create a new file `create_topic_demo.go` and import the following packages to your file:
 
 ```go
 import ( 
@@ -478,7 +478,7 @@ print(f"\nMessage submitted: {message}")
 {% endtabs %}
 
 {% hint style="info" %}
-#### **Note**
+**Note**
 
 Messages can be up to **1 KiB** each. Larger payloads must be chunked automatically by the SDK or split manually
 {% endhint %}
@@ -499,7 +499,7 @@ Use the Mirror Node REST API to verify your message was published to the topic. 
 
 * <sub>**{topicId}**</sub> - Your topic ID from the creation transaction
 
-> #### _Why this endpoint?_&#x20;
+> _**Why this endpoint?**_
 >
 > _This endpoint retrieves all messages published to a specific topic, ordered by consensus timestamp. It returns detailed information including message content, timestamp, and sequence number, making it ideal for verifying your message was published successfully._
 
@@ -671,7 +671,6 @@ if messages:
 else:
     print("No messages found yet in Mirror Node")
 ```
-
 {% endtab %}
 {% endtabs %}
 
@@ -1072,7 +1071,6 @@ python CreateTopicDemo.py
 ```bash
 deactivate
 ```
-
 {% endtab %}
 {% endtabs %}
 

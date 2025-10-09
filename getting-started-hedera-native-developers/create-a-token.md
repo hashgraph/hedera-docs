@@ -7,11 +7,11 @@ Learn how to launch a simple fungible token on Hedera testnet. A fungible token 
 ## **Prerequisites**
 
 * A Hedera testnet **operator account ID** and **DER-encoded private key** (from the [Quickstart](quickstart.md))
-* A few testnet **HBAR (ℏ)** to cover the ≈ `$1` token-creation fee &#x20;
+* A few testnet **HBAR (ℏ)** to cover the ≈ `$1` token-creation fee
 
 We will use the operator account as the token’s **treasury** (the account that initially holds the supply).
 
-> ### _**Note**_
+> #### _**Note**_
 >
 > _You can always check the "_ ✅ [_Code Check_](create-a-token.md#code-check)_" section at the bottom of each page to view the entire code if you run into issues. You can also post your issue to the respective SDK channel in our Discord community_ [_here_](http://hedera.com/discord)_._
 
@@ -140,7 +140,7 @@ public class CreateTokenDemo {
 {% endtab %}
 
 {% tab title="Go" %}
-Create a new file `create_token_demo.go`  and import the following packages to your file:
+Create a new file `create_token_demo.go` and import the following packages to your file:
 
 ```go
 import (
@@ -322,7 +322,7 @@ Generate an ECDSA key and use it for both admin and supply operations.
 
 ### Why keys?
 
-**adminKey** lets you update or delete the token; **supplyKey** authorizes mint and burn operations.  We use the same key for both roles to keep this tutorial simple.
+**adminKey** lets you update or delete the token; **supplyKey** authorizes mint and burn operations. We use the same key for both roles to keep this tutorial simple.
 
 {% tabs %}
 {% tab title="JavaScript" %}
@@ -488,7 +488,7 @@ Use the Mirror Node REST API to check your treasury account's token balance. Mir
 * `{accountId}` - Your treasury account (operator account)
 * `{tokenId}` - Token ID from the creation transaction
 
-> #### _Why this endpoint?_
+> _**Why this endpoint?**_
 >
 > _This endpoint queries the account's token balances, filtered by the specific token ID. It returns detailed information including the balance and token metadata, making it ideal for verifying the treasury account holds the expected initial supply._
 
@@ -615,6 +615,7 @@ if len(data.Tokens) > 0 {
 client.Close()
 ```
 {% endtab %}
+
 {% tab title="Python" %}
 ```python
 # Wait for Mirror Node to populate data
@@ -721,7 +722,7 @@ createTokenDemo().catch(console.error);
 
 <details>
 
-<summary><strong>Java</strong> </summary>
+<summary><strong>Java</strong></summary>
 
 {% code overflow="wrap" %}
 ```java
@@ -801,7 +802,7 @@ public class CreateTokenDemo {
 
 <details>
 
-<summary><strong>Go</strong> </summary>
+<summary><strong>Go</strong></summary>
 
 {% code overflow="wrap" %}
 ```go
@@ -1008,7 +1009,6 @@ python CreateTokenDemo.py
 ```bash
 deactivate
 ```
-
 {% endtab %}
 {% endtabs %}
 
@@ -1022,15 +1022,15 @@ Waiting for Mirror Node to update...
 Treasury holds: 100000 DEMO
 ```
 
-### ‼️ Troubleshooting&#x20;
+### ‼️ Troubleshooting
 
 <details>
 
 <summary><strong>Common ERROR messages and solutions ⬇️</strong></summary>
 
-<table><thead><tr><th width="334.36199951171875">Symptom</th><th>Likely cause</th><th>Fix</th></tr></thead><tbody><tr><td><code>INSUFFICIENT_PAYER_BALANCE</code></td><td>Not enough HBAR for transaction fees</td><td>Top up your operator account on the testnet faucet</td></tr><tr><td><code>INVALID_SIGNATURE</code></td><td>Not signing the transaction with the admin key or treasury account</td><td>Add <code>.sign(privateKey)</code>to the transaction before executing it </td></tr><tr><td><code>TOKEN_ALREADY_ASSOCIATED_TO_ACCOUNT</code></td><td>Account already associated with token</td><td>This is normal for treasury accounts - ignore this error</td></tr><tr><td><code>INVALID_ACCOUNT_ID</code></td><td>Malformed account ID in environment variables</td><td>Verify <code>OPERATOR_ID</code> format is <strong><code>0.0.1234</code></strong></td></tr><tr><td><code>INVALID_PRIVATE_KEY</code></td><td>Malformed private key in environment variables</td><td>Verify OPERATOR_KEY is a valid DER-encoded private key string</td></tr></tbody></table>
+<table><thead><tr><th width="334.36199951171875">Symptom</th><th>Likely cause</th><th>Fix</th></tr></thead><tbody><tr><td><code>INSUFFICIENT_PAYER_BALANCE</code></td><td>Not enough HBAR for transaction fees</td><td>Top up your operator account on the testnet faucet</td></tr><tr><td><code>INVALID_SIGNATURE</code></td><td>Not signing the transaction with the admin key or treasury account</td><td>Add <code>.sign(privateKey)</code>to the transaction before executing it</td></tr><tr><td><code>TOKEN_ALREADY_ASSOCIATED_TO_ACCOUNT</code></td><td>Account already associated with token</td><td>This is normal for treasury accounts - ignore this error</td></tr><tr><td><code>INVALID_ACCOUNT_ID</code></td><td>Malformed account ID in environment variables</td><td>Verify <code>OPERATOR_ID</code> format is <strong><code>0.0.1234</code></strong></td></tr><tr><td><code>INVALID_PRIVATE_KEY</code></td><td>Malformed private key in environment variables</td><td>Verify OPERATOR_KEY is a valid DER-encoded private key string</td></tr></tbody></table>
 
-### Environment Issues:
+#### Environment Issues:
 
 * Environment variables not set or accessible
 * Wrong network (mainnet vs testnet) configuration

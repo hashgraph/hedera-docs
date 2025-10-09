@@ -18,7 +18,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Release v0.66
 
-{% hint style="info" %}
+{% hint style="success" %}
 **MAINNET UPDATE SCHEDULED: OCTOBER 9, 2025**
 {% endhint %}
 
@@ -236,6 +236,12 @@ The development of Block Nodes ([HIP-1081](https://github.com/hiero-ledger/hiero
 **Full Changelog**: [v0.65.1...v0.66.0](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.65.1...v0.66.0)
 
 </details>
+
+## Performance Results
+
+<figure><img src="../../.gitbook/assets/0.66_Performance Measurement Results_Extract.001.png" alt=""><figcaption></figcaption></figure>
+
+
 
 ## Release v0.65
 

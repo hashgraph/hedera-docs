@@ -9,7 +9,7 @@ Learn how to create a new Hedera **account** on _testnet_ using the JavaScript, 
 * A Hedera testnet **operator account ID** and **ECDSA** **DER-encoded private key** (from the [Quickstart](quickstart.md)).
 * A small amount of testnet **HBAR (ℏ)** to pay the `$0.05` account‑creation fee.
 
-> ### _**Note**_&#x20;
+> #### _**Note**_
 >
 > _You can always check the "_✅ [_Code Check_](create-an-account.md#code-check)_" section at the bottom of each page to view the entire code if you run into issues. You can also post your issue to the respective SDK channel in our Discord community_ [_here_](http://hedera.com/discord)_._
 
@@ -156,6 +156,10 @@ import (
 In your project's root directory, initialize modules and pull in the [Go SDK](https://github.com/hiero-ledger/hiero-sdk-go):
 
 {% code overflow="wrap" %}
+```
+```
+{% endcode %}
+
 ```go-module
 go mod init create_account_demo
 go get github.com/hiero-ledger/hiero-sdk-go/v2@latest
@@ -249,7 +253,7 @@ from hiero_sdk_python.utils.crypto_utils import keccak256
 
 ## Environment Variables
 
-Set your testnet operator credentials as environment variables. Your `OPERATOR_ID` is your testnet account ID. Your `OPERATOR_KEY` is your testnet account's corresponding ECDSA private key.&#x20;
+Set your testnet operator credentials as environment variables. Your `OPERATOR_ID` is your testnet account ID. Your `OPERATOR_KEY` is your testnet account's corresponding ECDSA private key.
 
 ```bash
 export OPERATOR_ID="0.0.1234"
@@ -316,7 +320,7 @@ client.set_operator(operatorId, operatorKey)
 
 ## Step 2: Generate a New Key Pair
 
-Generate a new ECDSA private/public key pair for the account you'll create.&#x20;
+Generate a new ECDSA private/public key pair for the account you'll create.
 
 ### Why keys?
 
@@ -460,7 +464,7 @@ Use the Mirror Node REST API to check your new account's HBAR balance. Mirror no
 
 * **`{accountId}`** - Your new account ID from the creation transaction
 
-> #### _Why this endpoint?_
+> _**Why this endpoint?**_
 >
 > _This endpoint queries account balances directly by account ID. It returns detailed information including HBAR balance in tinybars, making it ideal for verifying the new account was funded with the expected initial balance._
 
@@ -609,13 +613,12 @@ if balances:
 else:
     print("Account balance not yet available in Mirror Node")
 ```
-
 {% endtab %}
 {% endtabs %}
 
 ***
 
-## ✅ Code check&#x20;
+## ✅ Code check
 
 Before running your project, verify your code matches the complete example:
 
@@ -949,7 +952,6 @@ python CreateAccountDemo.py
 ```bash
 deactivate
 ```
-
 {% endtab %}
 {% endtabs %}
 
@@ -964,15 +966,13 @@ Waiting for Mirror Node to update...
 Account balance: 20 ℏ
 ```
 
-### ‼️ Troubleshooting&#x20;
+### ‼️ Troubleshooting
 
 <details>
 
 <summary><strong>Common ERROR messages and solutions ⬇️</strong></summary>
 
 <table><thead><tr><th width="252.6632080078125">Error message</th><th>Likely cause</th><th>Fix</th></tr></thead><tbody><tr><td><code>INSUFFICIENT_PAYER_BALANCE</code></td><td>Operator account lacks enough ℏ for the fee.</td><td>Top‑up your testnet account with the <a href="https://portal.hedera.com/signup">HBAR faucet</a>.</td></tr><tr><td><code>INVALID_SIGNATURE</code></td><td>Operator key doesn't match operator account</td><td>Verify OPERATOR_KEY matches your OPERATOR_ID</td></tr><tr><td><code>INVALID_ACCOUNT_ID</code></td><td>Malformed account ID in environment variables</td><td>Verify OPERATOR_ID format is <code>0.0.1234</code></td></tr><tr><td><code>INVALID_PRIVATE_KEY</code></td><td>Malformed private key in environment variables</td><td>Verify OPERATOR_KEY is a valid DER-encoded private key string</td></tr><tr><td><code>KEY_REQUIRED</code></td><td>Missing key in AccountCreateTransaction</td><td>Ensure you call <code>.setECDSAKeyWithAlias(newPublicKey)</code></td></tr><tr><td><code>OPERATOR_ID and OPERATOR_KEY must be set</code></td><td>Environment variables not accessible</td><td>Check environment variables are set and accessible to your application</td></tr><tr><td><code>Cannot read properties of undefined</code></td><td>Missing imports or undefined variables</td><td>Verify all imports are included and variables are defined</td></tr></tbody></table>
-
-
 
 </details>
 

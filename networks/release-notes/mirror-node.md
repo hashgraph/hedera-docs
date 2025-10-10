@@ -8,6 +8,20 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Latest Releases
 
+## [v0.140.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.140.0)
+
+[HIP-1249](https://hips.hedera.com/hip/hip-1249) precise smart contract throttling was implemented in this release. This includes a change to how gas consumed is calculated on the mirror node. Previously consensus nodes would only refund a percentage of the gas limit. This HIP changes the calculation to refund 100% of the actual gas used such that gas consumed and gas used in the API response will now be equal.
+
+A number of testing improvements were implemented to increase our API coverage and dog-food our own APIs. The acceptance tests now invoke read-only gas estimation calls against both the mirror node `/api/v1/contracts/call` API and the consensus node's `ContractCallLocalQuery` to ensure accurate gas estimations. A new acceptance test for `DeleteAllowanceTransaction` was added to ensure we have coverage for this transaction end-to-end. Finally, coverage for three missing token and topic REST APIs acceptance tests were added, bringing us to 100% coverage of our REST APIs.
+
+The transaction hash table was changed to be partitioned by consensus timestamp on our V2 schema. This greatly improves our ingest performance on Citus, with some canonical tests now showing up to 25,000 transactions per second.
+
+Work continues on HIP-1056 with this release adding support for contract state information. The REST Java API now supports the `ETag` header which reduces bandwidth for responses already cached by the client.
+
+### Breaking changes
+
+As forecasted in the release notes for 0.139.0, the network stake JavaScript implementation is now removed in favor of the newer Java implementation. Operators should ensure their routing logic is updated so that requests to `/api/v1/network/stake` are directed to the rest-java process instead of the rest process. If operators use our docker compose or Helm chart this routing change is handled automatically.
+
 ## [v0.139.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.139.0)
 
 [HIP-1056](https://hips.hedera.com/hip/hip-1056) saw multiple improvements to integrate changes to the block streams from HAPI v0.65 protobufs. The block stream hash root hash calculation was updated to match the latest format. The revamped contract state changes and trace data format is now handled properly. This also includes support for the block stream specific [HIP-1127](https://hips.hedera.com/hip/hip-1127) unified transaction record format. Work will continue on integrating 0.65+ protobuf in the next few releases.

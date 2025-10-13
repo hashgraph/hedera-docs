@@ -1,0 +1,83 @@
+---
+title: "Quickstart"
+---
+
+
+This quickstart walks you through submitting your first Hedera transaction using the playground, creating and funding a testnet account via the developer portal, and viewing the transaction on HashScan.
+
+***
+
+## Submit Your First Transaction
+
+<Steps>
+<Step title="Open the Playground">
+
+<Card
+  horizontal
+  title="OPEN PLAYGROUND"
+  href="https://portal.hedera.com/playground"
+  icon="rectangle-terminal"
+/>
+</Step>
+
+<Step title="Transfer HBAR transaction">
+
+Under the **Account & HBAR** native services, click the **Transfer HBAR** transaction from the left navigation
+
+1. Replace `receiverAccount` with account ID "0.0.800"
+2. Then click on **Get Account Balance** under Queries
+</Step>
+
+<Step title="Execute transaction">
+
+Click the **Execute** button to submit your first transaction.
+
+<Frame>
+  <img src="/images/getting-started-hedera-native-developers/quickstart/quickstart-1.png" />
+</Frame>
+</Step>
+
+<Step title="Create a Hedera testnet account">
+
+When you click **Execute**, you’ll be prompted to sign up for a developer portal account. Once logged in, click the **CREATE ACCOUNT** button to complete the testnet account creation flow.
+
+<div><Frame>
+  <img src="/images/getting-started-hedera-native-developers/quickstart/quickstart-2.png" />
+</Frame> <Frame>
+  <img src="/images/getting-started-hedera-native-developers/quickstart/quickstart-3.png" />
+</Frame> <Frame>
+  <img src="/images/getting-started-hedera-native-developers/quickstart/quickstart-4.png" />
+</Frame></div>
+
+Your new testnet account will be automatically funded with **1000 HBAR**. View your account ID and key pair from the portal dashboard.
+
+<Frame>
+  <img src="/images/getting-started-hedera-native-developers/quickstart/quickstart-5.png" />
+</Frame>
+</Step>
+
+<Step title="View the transaction on HashScan">
+
+View and verify the transaction details and success confirmation. Click the HashScan link from the transaction output on the playground. View your transaction details, account history, and network activity.
+
+```
+-------------------------------- Transfer HBAR ------------------------------ 
+Receipt status           : SUCCESS
+Transaction ID           : 0.0.6239936@1751330868.909246536
+<strong>Hashscan URL             : https://hashscan.io/testnet/tx/0.0.6239936@1751330868.909246536
+</strong>-------------------------------- Account Balance ------------------------------
+HBAR account balance     : 995.99724961 ℏ
+Token account balance    : {}
+
+```
+
+</Step>
+</Steps>
+
+***
+
+## Next Step
+
+* [Create an Account](/hedera/getting-started-hedera-native-developers/create-an-account)
+* [Create a Token](/hedera/getting-started-hedera-native-developers/create-a-token)
+* [Create a Topic](/hedera/getting-started-hedera-native-developers/create-a-topic)

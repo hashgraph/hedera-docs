@@ -1,0 +1,40 @@
+---
+title: "TokenGetNftInfo"
+---
+
+
+## NftID
+
+Represents an NFT on the Ledger.
+
+| Field          | Type                                                                                   | Description                                               |
+| -------------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `tokenID`      | [TokenID](/hedera/sdks-and-apis/hedera-api/basic-types/tokenid) | The (non-fungible) token of which this NFT is an instance |
+| `serialNumber` | int64                                                                                  | The unique identifier of this instance                    |
+
+## TokenGetNftInfoQuery
+
+Applicable only to tokens of type `NON_FUNGIBLE_UNIQUE`. Gets info on a NFT for a given TokenID (of type `NON_FUNGIBLE_UNIQUE`) and serial number.
+
+| Field    | Type                                                                                             | Description                                                                                                                                        |
+| -------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `header` | [QueryHeader](/hedera/sdks-and-apis/hedera-api/miscellaneous/queryheader) | Standard info sent from client to node, including the signed payment, and what kind of response is requested (cost, state proof, both, or neither) |
+| `nftID`  | [NftID](#nftid)                                                                                  | The ID of the NFT                                                                                                                                  |
+
+## TokenNftInfo
+
+| Field          | Type                                                                                         | Description                                                                                                                          |
+| -------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `nftID`        | [NftID](#nftid)                                                                              | The ID of the NFT                                                                                                                    |
+| `accountID`    | [AccountID](/hedera/sdks-and-apis/hedera-api/basic-types/accountid)   | The current owner of the NFT                                                                                                         |
+| `creationTime` | [Timestamp](/hedera/sdks-and-apis/hedera-api/miscellaneous/timestamp) | The effective consensus timestamp at which the NFT was minted                                                                        |
+| `metadata`     | bytes                                                                                        | Represents the unique metadata of the NFT                                                                                            |
+| `ledger_id`    | bytes                                                                                        | The ledger ID the response was returned from; please see [HIP-198](https://hips.hedera.com/hip/hip-198) for the network-specific IDs |
+| `spender_id`   | AccountID                                                                                    | If an allowance is granted for the NFT, its corresponding spender account                                                            |
+
+## TokenGetNftInfoResponse
+
+| Field    | Type                                                                                                   | Description                                                                                                      |
+| -------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `header` | [ResponseHeader](/hedera/sdks-and-apis/hedera-api/miscellaneous/responseheader) | Standard response from node to client, including the requested fields: cost, or state proof, or both, or neither |
+| `nft`    | [TokenNftInfo](#tokennftinfo)                                                                          | The information about this NFT                                                                                   |

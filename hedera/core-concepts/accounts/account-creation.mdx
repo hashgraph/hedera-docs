@@ -1,0 +1,49 @@
+---
+title: "Account Creation"
+---
+
+
+New accounts are created on the Hedera ledger by submitting a transaction to the network and paying the transaction fee to create the account. The transaction fee to create the account includes the costs required to use network resources, reach consensus amongst the nodes, and share the data across the network.
+
+You will need access to an existing account with enough HBAR to cover the transaction fee to create the account. Suppose you don't have access to an existing account. In that case, you can use a supported wallet or visit the [Hedera Developer Portal](https://portal.hedera.com/register) to create an account. You can also ask a friend with an existing Hedera account to generously create one for you. Applications can check out the "[Auto Account Creation](/hedera/core-concepts/accounts/auto-account-creation)" feature to make free Hedera user accounts.
+
+When an account is created, it is stored in the state on the Hedera network. The current state can be queried from the ledger and viewed in a [Network Explorer](/hedera/networks/community-mirror-nodes). Each account has at least one public and private key pair. The private key(s) on the account is used to sign and authorize transactions that involve the account. To view the properties that can be set for an account, check out the "[Account Properties](/hedera/core-concepts/accounts/account-properties)" section.
+
+An account can be created through any of the following methods. To create accounts using the SDKs, you will need access to an existing account to pay for the transaction fee to create a new account.
+
+<Warning>
+Supported wallets may or may not support creating testnet and previewnet accounts.
+</Warning>
+
+<Columns cols={3}>
+  <Card
+    title="Hedera Developer Portal"
+    href="https://portal.hedera.com/"
+    arrow
+  >
+    
+❌ mainnet<br/>
+✅ testnet<br/>
+✅ previewnet
+  </Card>
+  <Card
+    title="Wallets"
+    href="/hedera/networks/mainnet/mainnet-access"
+    arrow
+  >
+    
+✅ mainnet<br/>
+🔶 testnet<br/>
+🔶 previewnet
+  </Card>
+  <Card
+    title="SDKs"
+    href="/hedera/core-concepts/accounts/account-creation"
+    arrow
+  >
+    
+✅ mainnet<br/>
+✅ testnet<br/>
+✅ previewnet
+  </Card>
+</Columns>

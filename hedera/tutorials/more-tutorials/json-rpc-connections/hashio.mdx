@@ -1,0 +1,28 @@
+---
+title: "Configuring Hashio RPC endpoints"
+---
+
+How to configure a JSON-RPC endpoint that enables communication between
+EVM-compatible developer tools using Hashio
+
+[Hashio](https://www.hashgraph.com/hashio/)
+is a public RPC endpoint hosted by Swirlds Labs. As a *public* endpoint, it:
+
+* Is free to use
+* Does not have any sign-up requirements
+* Has significantly restrictive rate limits
+
+While this combination may be considered less reliable, it offers the highest levels of ease of use among RPC
+endpoints.
+
+To connect to the Hedera networks via Hashio, simply use this URL when initializing the wallet or web3 provider
+instance:
+
+<CodeGroup>
+</CodeGroup>
+
+
+**Please note**: Hashio is
+For development and testing purposes only. Production use cases are strongly encouraged to use [commercial-grade JSON-RPC relays](/hedera/core-concepts/smart-contracts/json-rpc-relay#community-hosted-json-rpc-relays) or host their own instance of the [Hedera JSON-RPC Relay](https://github.com/hashgraph/hedera-json-rpc-relay?tab=readme-ov-file#hedera-json-rpc-relay).
+
+No further settings or configurations are needed!

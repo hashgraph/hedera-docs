@@ -1,0 +1,15 @@
+---
+title: "FeeData"
+---
+
+
+The total fees charged for a transaction. It contains three parts namely node data, network data and service data
+
+| Field         | Type                                                                                               | Description                                                                                            |
+| ------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `nodedata`    | [FeeComponents](/hedera/sdks-and-apis/hedera-api/basic-types/feecomponents) | Fee charged by Node for this functionality                                                             |
+| `networkdata` | [FeeComponents](/hedera/sdks-and-apis/hedera-api/basic-types/feecomponents) | Fee charged for network operations by Hedera                                                           |
+| `servicedata` | [FeeComponents](/hedera/sdks-and-apis/hedera-api/basic-types/feecomponents) | Fee charged for providing service by Hedera                                                            |
+| `subType`     | [SubType](/hedera/sdks-and-apis/hedera-api/basic-types/subtype)             | SubType distinguishing between different types of FeeData, correlating to the same HederaFunctionality |
+
+####

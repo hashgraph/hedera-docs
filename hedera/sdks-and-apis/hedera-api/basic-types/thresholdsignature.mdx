@@ -1,0 +1,15 @@
+---
+title: "ThresholdSignature"
+---
+
+
+<Info>
+This message is deprecated and succeeded by [SignaturePair](/hedera/sdks-and-apis/hedera-api/basic-types/signature-pair) and [SignatureMap ](/hedera/sdks-and-apis/hedera-api/basic-types/signaturemap)messages.
+</Info>
+
+A signature corresponding to a ThresholdKey. For an N-of-M threshold key, this is a list of M signatures, at least N of which must be non-null.
+
+| Field    | Type                                                                                                  | Description                                                                                       |
+| -------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `option` | ​deprecated=true                                                                                      | ​                                                                                                 |
+| `sigs`   | ​[SignatureList](/hedera/sdks-and-apis/hedera-api/basic-types/signature-list)​ | for an N-of-M threshold key, this is a list of M signatures, at least N of which must be non-null |

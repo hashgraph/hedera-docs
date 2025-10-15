@@ -222,6 +222,8 @@ time.Sleep(30000)
 
 To conclude: The total cost to create a topic and send a message to it is **$0.0101.**
 
+{% include "../../.gitbook/includes/upcoming-price-change-....md" %}
+
 ***
 
 ## Code Check ✅

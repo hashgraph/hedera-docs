@@ -35,8 +35,10 @@ jobs:
     steps:
       - name: Check Docker resources
         run: |
-          docker info --format 'CPUs: {{.NCPU}}, Memory: {{printf "%.1f" (div .MemTotal 1073741824.0)}} GiB'
-
+          mem_bytes=$(docker info --format '{{.MemTotal}}')
+          mem_gib=$(echo "scale=1; $mem_bytes/1073741824" | bc)
+          cpus=$(docker info --format '{{.NCPU}}')
+          echo "CPUs: $cpus, Memory: ${mem_gib} GiB"
 
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a

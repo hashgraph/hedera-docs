@@ -24,14 +24,13 @@ jobs:
     env:
       HEDERA_NETWORK: local
       MIRROR_NODE_URL: http://localhost:5551/api/v1
-      MIRROR_HEALTH_URL: http://localhost:5551/health   
-      MIRROR_HEALTH_TRIES: "180"                      
+      MIRROR_HEALTH_URL: http://localhost:5551/health
+      MIRROR_HEALTH_TRIES: "180"
       MIRROR_HEALTH_INTERVAL: "2"
       STATUS_DIR: .github/example-status
       STATUS_FILE: .github/example-status/java-status.md
       OPERATOR_ID: ${{ secrets.ECDSA_ACCOUNT_SOLO }}
       OPERATOR_KEY: ${{ secrets.ECDSA_ACCOUNT_PRIVATE_KEY_SOLO }}
-
 
     steps:
       - name: Harden the runner (Audit all outbound calls)
@@ -41,7 +40,7 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
-      
+
       - name: Setup Kind
         uses: helm/kind-action@a1b0e391336a6ee6713a0583f8c6240d70863de3 # v1.12.0
         with:
@@ -56,11 +55,10 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22.12.0
-          cache: 'npm'
+          cache: "npm"
           cache-dependency-path: |
             automation/pnpm-lock.yaml
-      
-          
+
       - name: Install Solo CLI
         run: |
           set -euo pipefail
@@ -79,12 +77,10 @@ jobs:
           kind create cluster -n "${SOLO_CLUSTER_NAME}"
           solo one-shot single deploy | tee solo-deploy.log
 
-
-
       - name: Wait for Mirror Node data (/network/nodes)
         env:
           API_BASE: ${{ env.MIRROR_NODE_URL }}
-          TRIES: "180"                             
+          TRIES: "180"
           INTERVAL: "2"
         shell: bash
         run: |
@@ -221,7 +217,7 @@ jobs:
             echo "<details><summary>Output</summary>"
             if [ -f java-output.txt ]; then
               if [ -f ./.github/scripts/redact.sh ]; then
-                bash ./.github/scripts/redact.sh "${{ OPERATOR_KEY }}" java-output.txt || cat java-output.txt
+                bash ./.github/scripts/redact.sh "${OPERATOR_KEY}" java-output.txt || cat java-output.txt
               else
                 cat java-output.txt
               fi
@@ -236,7 +232,7 @@ jobs:
         with:
           commit-message: "chore: update example run status"
           signoff: true
-          sign-commits: true  
+          sign-commits: true
           title: "chore: example run status"
           body: "Automated run of examples"
           branch: "bot/examples-check"

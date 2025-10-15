@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   run-java-example:
-    runs-on: transaction-tools-linux-medium
+    runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
@@ -33,16 +33,21 @@ jobs:
       OPERATOR_KEY: ${{ secrets.ECDSA_ACCOUNT_PRIVATE_KEY_SOLO }}
 
     steps:
+      - name: Check Docker resources
+        run: |
+          docker info --format 'CPUs: {{.NCPU}}, Memory: {{printf "%.1f" (div .MemTotal 1073741824.0)}} GiB'
+
+
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a
         with:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
 
       - name: Setup Kind
-        uses: helm/kind-action@a1b0e391336a6ee6713a0583f8c6240d70863de3 # v1.12.0
+        uses: helm/kind-action@a1b0e391336a6ee6713a0583f8c6240d70863de3
         with:
           install_only: true
           node_image: kindest/node:v1.31.4@sha256:2cb39f7295fe7eafee0842b1052a599a4fb0f8bcf3f83d96c7f4864c357c6c30
@@ -52,7 +57,7 @@ jobs:
           wait: 120s
 
       - name: Set up Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: 22.12.0
 

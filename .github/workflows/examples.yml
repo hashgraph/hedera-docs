@@ -45,6 +45,8 @@ jobs:
         with:
           installMirrorNode: true
           hieroVersion: v0.65.0
+          mirrorNodeVersion: v0.140.0
+          soloVersion: v0.46.0
 
       - name: Show assigned account
         run: |

@@ -40,12 +40,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
 
-      - name: Start Solo
+      - name: Setup Solo 
         id: solo
         uses: hiero-ledger/hiero-solo-action@395fc8fb5df9e91b810e8c9d108afaa4a2d75f39
         with:
           installMirrorNode: true
           hieroVersion: v0.65.0
+          mirrorNodeVersion: v0.139.0
+
 
       - name: Show assigned account
         run: |

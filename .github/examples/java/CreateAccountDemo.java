@@ -11,7 +11,7 @@ public class CreateAccountDemo {
         String network = System.getenv().getOrDefault("HEDERA_NETWORK", "local"); 
         String mirrorNodeUrl = System.getenv().getOrDefault(
             "MIRROR_NODE_URL",
-            "http://localhost:5551/api/v1" 
+            "http://localhost:8080/api/v1" 
         );
 
         if (operatorId == null || operatorKey == null) {

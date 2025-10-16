@@ -23,8 +23,8 @@ jobs:
 
     env:
       HEDERA_NETWORK: local
-      MIRROR_NODE_URL: http://localhost:5551/api/v1
-      MIRROR_HEALTH_URL: http://localhost:5551/health
+      MIRROR_NODE_URL: http://localhost:8080/api/v1
+      MIRROR_HEALTH_URL: http://localhost:8080/health
       MIRROR_HEALTH_TRIES: "180"
       MIRROR_HEALTH_INTERVAL: "2"
       STATUS_DIR: .github/example-status

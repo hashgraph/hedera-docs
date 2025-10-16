@@ -33,11 +33,10 @@ jobs:
       OPERATOR_KEY: ${{ secrets.ECDSA_ACCOUNT_PRIVATE_KEY_SOLO }}
 
     steps:
-      - name: Check Docker resources
+      - name: Check Docker resources (GB)
         run: |
-          mem_bytes=$(docker info --format '{{.MemTotal}}')
-          mem_gb=$(echo "scale=1; $mem_bytes/1000000000" | bc)
-          cpus=$(docker info --format '{{.NCPU}}')
+          read cpus mem <<<"$(docker info --format '{{.NCPU}} {{.MemTotal}}')"
+          mem_gb=$(awk -v m="$mem" 'BEGIN{printf "%.1f", m/1000000000}')
           echo "CPUs: $cpus"
           echo "Memory: ${mem_gb} GB"
 

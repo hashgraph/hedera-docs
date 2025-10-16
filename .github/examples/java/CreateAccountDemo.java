@@ -1,5 +1,7 @@
 import com.hedera.hashgraph.sdk.*;
 import java.net.http.*;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.net.URI;
 import com.google.gson.*;
 
@@ -24,6 +26,9 @@ public class CreateAccountDemo {
                 : Client.forTestnet();
 
         client.setOperator(operatorId, operatorKey);
+
+        System.out.println("OPERATOR_ID=" + System.getenv("OPERATOR_ID"));
+        System.out.println("OPERATOR_KEY=" + System.getenv("OPERATOR_KEY"));
 
         PrivateKey newPrivateKey = PrivateKey.generateECDSA();
         PublicKey newPublicKey = newPrivateKey.getPublicKey();

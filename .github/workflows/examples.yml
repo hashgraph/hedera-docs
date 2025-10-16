@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   run-java-example:
-    runs-on: ubuntu-latest
+    runs-on: hashgraph-docs-linux-medium
     permissions:
       contents: write
       pull-requests: write

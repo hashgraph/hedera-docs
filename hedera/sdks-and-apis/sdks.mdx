@@ -1,0 +1,292 @@
+---
+title: "SDKs"
+sidebarTitle: "Overview"
+description: "Hedera supported and community-maintained SDKs"
+---
+
+There are several options for friendly, language-specific access to the Hedera API and its network services.
+
+## Consensus Node Code SDKs
+
+Hedera and the developer community contribute to and maintain Hiero's Consensus Node SDKs across various languages.
+
+<Info>
+  **Note:** The Hiero JavaScript SDK supports React Native with Expo on Android
+  devices and Android emulators. It does not currently support React Native
+  Bare.
+</Info>
+
+<Columns cols={3}>
+  <Card
+    title="Hiero Java SDK"
+    href="https://github.com/hashgraph/hedera-sdk-java"
+    arrow
+  >
+    Maintainer: Hiero
+
+    License: Apache 2.0
+
+    [GITHUB](https://github.com/hashgraph/hedera-sdk-java)
+
+  </Card>
+  <Card
+    title="Hiero JavaScript SDK"
+    href="https://github.com/hashgraph/hedera-sdk-js"
+    arrow
+  >
+    Maintainer: Hiero
+
+    License: Apache 2.0
+
+    [GITHUB](https://github.com/hashgraph/hedera-sdk-js)
+
+  </Card>
+  <Card
+    title="Hiero Go SDK"
+    href="https://github.com/hashgraph/hedera-sdk-go"
+    arrow
+  >
+    Maintainer: Hiero
+
+    License: Apache 2.0
+
+    [GITHUB](https://github.com/hashgraph/hedera-sdk-go)
+
+  </Card>
+  <Card
+    title="Hiero Swift SDK"
+    href="https://github.com/hashgraph/hedera-sdk-swift"
+    arrow
+  >
+    Maintainer: Hiero
+
+    License: Apache 2.0
+
+    [GITHUB](https://github.com/hashgraph/hedera-sdk-swift)
+
+  </Card>
+  <Card
+    title="Hiero Rust SDK"
+    href="https://github.com/hiero-ledger/hiero-sdk-rust"
+    arrow
+  >
+    Maintainer: Hiero
+
+    License: Apache 2.0
+
+    [GITHUB](https://github.com/hiero-ledger/hiero-sdk-rust)
+
+  </Card>
+  <Card
+    title="Hiero C++ SDK"
+    href="https://github.com/hiero-ledger/hiero-sdk-cpp"
+    arrow
+  >
+    Maintainer: Hiero
+
+    License: Apache 2.0
+
+    [GITHUB](https://github.com/hiero-ledger/hiero-sdk-cpp)
+
+  </Card>
+</Columns>
+
+## Development Tools & SDKs
+
+Hedera and the developer community contribute to and maintain developer tools and SDKs. These can be used to make bootstrapping your own project even easier.
+
+### Hedera Developer Playground
+
+**_ℹ️ Try the_** [**_Hedera Developer Playground_**](https://portal.hedera.com/playground) **_to explore services, transactions, and queries on your own using the Hedera SDKs._**
+
+<div className="flex flex-col justify-center items-center w-full mt-4 mb-8 not-prose">
+  <a
+    href="https://portal.hedera.com/playground"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="no-underline text-center cursor-pointer group"
+    style={{ textAlign: "center" }}
+  >
+    <img
+      src="/images/getting-started-hedera-native-developers/playground-screenshot.png"
+      alt="Hedera Developer Playground"
+      className="mx-auto rounded-lg shadow-sm max-w-[1000px] w-full h-auto mb-0"
+      noZoom
+    />
+    <p className="text-gray-1000 dark:text-gray-500 text-sm font-semibold mt-0 mb-0 text-center underline decoration-[#8853FF] decoration-1 underline-offset-[6px] transition-colors duration-200 group-hover:text-[#8853FF]">
+      Hedera Developer Playground
+    </p>
+  </a>
+</div>
+
+### Additional Language Support
+
+Build a Hedera-powered application using your favorite language with these community-supported SDKs.
+
+<Columns cols={2}>
+  <Card
+    title="Hiero SDK for Python"
+    href="https://github.com/hiero-ledger/hiero-sdk-python"
+    arrow
+  >
+    Maintainer: Community
+
+    License: Apache 2.0
+
+    [DOCUMENTATION](https://github.com/hiero-ledger/hiero-sdk-python)
+    [GITHUB](https://github.com/hiero-ledger/hiero-sdk-python)
+
+  </Card>
+</Columns>
+
+### Ecosystem Wallet Support
+
+If you're building a decentralized application on Hedera that requires wallet connectivity, such as allowing users to connect their [HashPack](https://www.hashpack.app/), [Kabila](https://magic.link/), [Blade](https://bladewallet.io/), or [MetaMask](https://metamask.io/) wallets, check out the easy-to-implement wallet integration SDKs/tutorials found below. In addition, dApp integration tools for account creation and management, such as [Magic Link](https://magic.link/), make it easy for your users to create an account on Hedera and authenticate themselves in no time.
+
+<Columns cols={3}>
+  <Card
+    img="/images/sdks-and-apis/image.jpg"
+    href="https://www.bladewallet.io/"
+    arrow
+  >
+  **[Blade](https://www.bladewallet.io/)** Wallet JS API
+
+Maintainer: Community
+
+License: Apache 2.0
+
+**[DOCUMENTATION](https://blade-labs.github.io/blade-web3.js/)**
+
+  </Card>
+  <Card
+    img="/images/sdks-and-apis/image2.jpg"
+    href="https://www.hashpack.app/"
+    arrow
+  >
+  **[HashPack](https://www.hashpack.app/)** HashConnect
+
+Maintainer: Community
+
+License: MIT
+
+**[DOCUMENTATION](https://www.hashpack.app/hashconnect)**
+
+  </Card>
+  <Card
+    img="/images/sdks-and-apis/image3.jpg"
+    href="https://magic.link/"
+    arrow
+  >
+  **[Magic Link](https://magic.link)** Wallet SDK
+
+Maintainer: Community
+
+License: MIT
+
+**[DOCUMENTATION](https://magic.link/docs/auth/blockchains/hedera)**
+
+  </Card>
+  <Card
+    img="/images/sdks-and-apis/image4.jpg"
+    href="https://metamask.io/"
+    arrow
+  >
+  **[MetaMask](https://metamask.io/)** Integration
+
+Maintainer: Community
+
+License: MIT
+
+**[TUTORIAL](/hedera/tutorials/more-tutorials/develop-a-hedera-dapp-integrated-with-walletconnect)**
+
+  </Card>
+  <Card
+    img="/images/sdks-and-apis/image5.jpg"
+    href="https://www.kabila.app/wallet"
+    arrow
+  >
+  [Kabila](https://www.kabila.app/wallet) WalletConnect
+
+Maintainer: Community
+
+License: Apache 2.0
+
+**[TUTORIAL](https://github.com/Kabila-Tech/hedera-wallet-connect)**
+
+  </Card>
+</Columns>
+
+### Decentralized Identity SDKs
+
+Build decentralized identity directly into your Hedera-powered application. Manage [DID Documents](https://www.w3.org/TR/did-core/) & a [Verifiable Credentials](https://www.w3.org/TR/vc-data-model/) registry, abiding by W3C standards, using the Hedera Consensus Service.
+
+<Columns cols={3}>
+  <Card
+    title="Hedera Java DID SDK"
+    href="https://github.com/hashgraph/did-sdk-java"
+    arrow
+  >
+    Maintainer: Hedera
+    License: Apache 2.0
+
+    [GITHUB](https://github.com/hashgraph/did-sdk-java)
+
+  </Card>
+  <Card
+    title="Hedera JavaScript DID SDK"
+    href="https://github.com/hashgraph/did-sdk-js"
+    arrow
+  >
+    Maintainer: Hedera
+    License: Apache 2.0
+
+    [GITHUB](https://github.com/hashgraph/did-sdk-js)
+
+  </Card>
+  <Card
+    title="Hiero DID SDK Python"
+    href="https://github.com/hiero-ledger/hiero-did-sdk-python"
+    arrow
+  >
+    Maintainer: Hedera
+    License: Apache 2.0
+
+    [GITHUB](https://github.com/hashgraph/did-sdk-python)
+
+  </Card>
+</Columns>
+
+### Serverless SDKs
+
+Build a Hedera-powered application using your own serverless REST client.
+
+<Columns cols={2}>
+  <Card
+    title="Serverless Hedera REST API"
+    href="https://docs.trust.enterprises/"
+    arrow
+  >
+    Maintainer: Hedera REST API
+
+    License: Apache 2.0
+
+    [DOCUMENTATION](https://docs.trust.enterprises/)
+    [GITHUB](https://github.com/trust-enterprises/hedera-rest-api)
+
+  </Card>
+  <Card
+    title="Serverless Hedera Laravel Package"
+    href="https://docs.trust.enterprises/laravel/working-with-laravel"
+    arrow
+  >
+    Maintainer: Hedera REST API
+
+    License: Apache 2.0
+
+    [DOCUMENTATION](https://docs.trust.enterprises/laravel/working-with-laravel)
+    [GITHUB](https://github.com/trust-enterprises/hedera-laravel)
+
+  </Card>
+</Columns>
+
+Want to help contribute or have a project you'd like to see, here? Get in touch in [discord](http://hedera.com/discord) or add a pull request.

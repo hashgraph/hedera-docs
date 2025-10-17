@@ -1,0 +1,14 @@
+---
+title: "TransactionFeeSchedule"
+---
+
+
+The fees for a specific transaction or query based on the fee data.
+
+| Field                 | Type                                                                                                             | Description                                                    |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `hederaFunctionality` | ​[HederaFunctionality](/hedera/sdks-and-apis/hedera-api/basic-types/hederafunctionality)​ | A particular transaction or query                              |
+| `feeData`             | ​[FeeData](/hedera/sdks-and-apis/hedera-api/basic-types/feedata)​                         | <p>Resource price coefficients</p><p>\[deprecated]</p>         |
+| `fees`                | repeated [FeeData](/hedera/sdks-and-apis/hedera-api/basic-types/feedata)                  | Resource price coefficients. Supports subtype price definition |
+
+#### <a href="#undefined" id="undefined"></a>

@@ -1,0 +1,55 @@
+---
+title: "Smart Contract Verification API"
+sidebarTitle: "Overview"
+---
+
+
+## Overview
+
+The Sourcify API enables programmatic access to smart contract verification services, allowing developers to verify contract source code, check verification status, and retrieve verified contract files. This decentralized verification service is essential for developers and auditors who need to ensure smart contract transparency and verify that deployed bytecode matches the provided source code across multiple blockchain networks.
+
+### Key Features
+
+* **Contract Verification**: Submit smart contract source code and metadata for verification against deployed bytecode on various blockchain networks.
+* **Multiple Verification Methods**: Support for direct file upload, Etherscan-verified contract import, and solc-json compilation artifact verification.
+* **Verification Status Checking**: Query the verification status of contracts by address and chain ID, with support for both full and partial matches.
+* **File Retrieval**: Access verified contract source code, metadata, and compilation artifacts for any verified contract.
+* **Multi-Chain Support**: Compatible with Ethereum mainnet, testnets, and other EVM-compatible networks including Hedera.
+* **Repository Access**: Browse and download verified contract files with organized file tree structures.
+
+<Check>
+📣 For interactive API exploration and testing, visit https://server-verify.hashscan.io/api-docs/
+</Check>
+
+## Base URL
+
+```
+https://server-verify.hashscan.io
+```
+
+## Endpoints
+
+#### Stateless Verification
+
+<table><thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead><tbody><tr><td>POST</td><td><code>/verify</code></td><td>verify contracts by uploading source files and metadata</td></tr><tr><td>POST</td><td><code>/verify/etherscan</code></td><td>verify contracts already verified on etherscan</td></tr><tr><td>POST</td><td><code>/verify/solc-json</code></td><td>verify contracts using solc-json compilation artifacts</td></tr></tbody></table>
+
+#### Repository Access
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/check-all-by-addresses` | check verification status (full or partial match) for multiple contracts |
+| GET | `/check-by-addresses` | check verification status (full match only) for multiple contracts |
+| GET | `/files/any/{chain}/{address}` | retrieve all files for a contract (full and partial match) |
+| GET | `/files/{chain}/{address}` | retrieve all files for a contract (full match only) |
+| GET | `/files/contracts/{chain}` | get all verified contract addresses on a specific chain |
+| GET | `/files/tree/any/{chain}/{address}` | get file tree structure (full and partial match) |
+| GET | `/files/tree/{chain}/{address}` | get file tree structure (full match only) |
+| GET | `/repository/contracts/{match_type}/{chain}/{address}/{filePath}` | download specific files from verified contracts |
+
+#### Session Management
+
+<table><thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead><tbody><tr><td>GET</td><td><code>/session/data</code></td><td>retrieve current session verification data</td></tr><tr><td>POST</td><td><code>/session/clear</code></td><td>clear session data</td></tr><tr><td>POST</td><td><code>/session/input-files</code></td><td>add files to verification session</td></tr><tr><td>POST</td><td><code>/session/input-contract</code></td><td>import deployed contract from ipfs</td></tr><tr><td>POST</td><td><code>/session/verify-checked</code></td><td>verify contracts in current session</td></tr><tr><td>POST</td><td><code>/session/input-solc-json</code></td><td>add solc-json to session for verification</td></tr><tr><td>POST</td><td><code>/session/verify/etherscan</code></td><td>verify etherscan contracts in session</td></tr></tbody></table>
+
+#### Administration
+
+<table><thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead><tbody><tr><td>POST</td><td><code>/change-log-level</code></td><td>modify application logging level (requires authentication)</td></tr></tbody></table>

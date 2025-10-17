@@ -1,0 +1,191 @@
+---
+title: "Deploy a Smart Contract with Remix"
+description: "A step-by-step tutorial on how to create and deploy a smart contract on the Hedera network using Remix IDE."
+---
+
+
+## Introduction to Remix IDE
+
+Remix IDE is an open-source tool for developing smart contracts in Solidity. It was originally built for the Ethereum network and supports deploying to EVM-compatible networks like Hedera. Remix includes built-in tools for compiling, debugging, and deploying contracts directly from the browser.
+
+In this tutorial, you’ll use Remix IDE to write and deploy a simple smart contract to the Hedera testnet.
+
+***
+
+## Prerequisites <a href="#prerequisites" id="prerequisites"></a>
+
+* Web browser with access to [Remix IDE](https://remix.ethereum.org/)
+* [Download](https://metamask.io/download/) the MetaMask wallet browser extension
+
+***
+
+## Add Hedera Testnet to MetaMask
+
+Smart contracts deployed on Hedera are compatible with EVM wallets like MetaMask. To interact with the network, you must first add Hedera’s JSON-RPC endpoint as a custom network in your wallet. Click on the button below for a one-click configuration.
+
+<Card
+  title="ADD HEDERA TESTNET"
+  href="https://chainlist.org/chain/296/"
+  icon="plus-large"
+  horizontal
+/> 
+
+<Frame>
+  <img src="/images/getting-started-evm-developers/deploy-a-smart-contract-using-remix/deploy-a-smart-contract-using-remix-1.png" />
+</Frame>
+
+<Accordion title="Alternatively, manually add Hedera's JSON-RPC endpoint ↓ ">
+1. Open MetaMask and click the network selection dropdown at the top of the extension.
+2. Click **Add Network**, then **Add Network Manually**
+3. Enter the following network details:
+   1. **Network Name**: Hedera Testnet
+   2. **New RPC URL**: `https://testnet.hashio.io/api`
+   3. **Chain ID**: `296`
+   4. **Currency Symbol**: `HBAR`
+   5. **Block Explorer URL**: `https://hashscan.io/testnet`
+
+4. Tap the **Save** button to save the Hedera Testnet
+</Accordion>
+
+***
+
+## Fund Your Hedera Testnet Account
+
+Navigate to the [Hedera Faucet](https://portal.hedera.com/faucet) to get testnet HBAR tokens necessary for deploying a smart contract.
+
+***
+
+## Deploy a Smart Contract Using Remix
+
+<Steps>
+<Step title="Open Remix and Create Contract">
+
+Open your web browser and navigate to Remix IDE. Click on the file icon in the **File Explorer** tab to create a new file and name it `HelloHedera.sol` .
+
+<div align="left"><Frame>
+  <img src="/images/getting-started-evm-developers/deploy-a-smart-contract-using-remix/deploy-a-smart-contract-using-remix-2.png" />
+</Frame></div>
+</Step>
+
+<Step title="Add Contract Code">
+
+Copy and paste this sample contract to the new file you created:
+
+```solidity HelloHedera.sol
+//SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.22;
+
+contract SampleContract {
+    string public myString = "Hello Hedera";
+
+    function updateString(string memory _newString) public {
+        myString = _newString;
+    }
+}
+```
+
+</Step>
+
+<Step title="Compile the Contract">
+
+Navigate to the **Solidity Compiler** tab in the left sidebar and check that your compiler version is within the versions specified in the `pragma solidity` statement. Then, compile your `HelloHedera.sol` contract.
+
+<Frame>
+  <img src="/images/getting-started-evm-developers/deploy-a-smart-contract-using-remix/deploy-a-smart-contract-using-remix-3.png" />
+</Frame>
+
+When a compilation for a Solidity file succeeds, Remix creates three JSON files for each compiled contract. **Files can be seen in the `File Explorers plugin` as:**
+
+* *`artifacts/<contractName>.json`: contains the link to the libraries, the bytecode, the deployed bytecode, the gas estimation, the method identifiers, and the ABI. It is used for linking a library address to the file.*
+* *`artifacts/<contractName_metadata>.json`: contains the metadata from the output of Solidity compilation.*
+* *`artifacts/build-info/<dynamic_hash>.json`: contains info about `solc` compiler version, compiler input and output. This file is generated similar to the files generated through Hardhat compilation. You can also try* [*Hardhat compilation*](https://remix-ide.readthedocs.io/en/latest/hardhat.html#enable-hardhat-compilation) *from Remix.*
+
+<Frame>
+  <img src="/images/getting-started-evm-developers/deploy-a-smart-contract-using-remix/deploy-a-smart-contract-using-remix-4.png" />
+</Frame>
+
+<Info>
+*Please note that to generate these artifact files, the **Generate contract metadata** box in the **General settings** section of the **Settings** module needs to be checked. By default, it is checked.*
+</Info>
+</Step>
+
+<Step title="Deploy to Hedera testnet">
+
+* Go to the **Deploy & Run Transactions** tab and
+* Select **Injected Provider - MetaMask** as the environment
+
+If you're not signed into your MetaMask account, a window will pop up prompting you to log in. Sign in and make sure you're connected to the **Hedera Testnet** and verify that the network is configured correctly to **Custom (296) network**.
+
+<Frame>
+  <img src="/images/getting-started-evm-developers/deploy-a-smart-contract-using-remix/deploy-a-smart-contract-using-remix-5.png" />
+</Frame>
+
+Once you click **Deploy** in the **Deploy & Run Transactions** tab, hit **Confirm** in the MetaMask notification window to approve and pay for the contract deployment transaction.
+
+<Frame>
+  <img src="/images/getting-started-evm-developers/deploy-a-smart-contract-using-remix/deploy-a-smart-contract-using-remix-6.png" />
+</Frame>
+</Step>
+
+<Step title="Interact with the Smart Contract on Hedera">
+
+Once the transaction is successful, you can interact with the smart contract through Remix. Select the dropdown on the newly deployed contract at the bottom of the left panel to view the contract's functions under **Deployed Contracts**. Write a new message to the `updateString` function using the input and confirm the write transaction in the MetaMask window to pay.
+
+<div align="left"><Frame>
+  <img src="/images/getting-started-evm-developers/deploy-a-smart-contract-using-remix/deploy-a-smart-contract-using-remix-7.png" />
+</Frame></div>
+</Step>
+
+<Step title="View Contract Details on HashScan Network Explorer">
+
+Copy the contract address from the Deployed Contracts window.
+
+<div align="left"><Frame>
+  <img src="/images/getting-started-evm-developers/deploy-a-smart-contract-using-remix/deploy-a-smart-contract-using-remix-8.png" />
+</Frame></div>
+
+Navigate to the [HashScan](https://hashscan.io/) network explorer and use the contract address to search for your contract to view the details.
+
+<div align="left"><Frame>
+  <img src="/images/getting-started-evm-developers/deploy-a-smart-contract-using-remix/deploy-a-smart-contract-using-remix-9.png" />
+</Frame></div>
+</Step>
+</Steps>
+
+**Congratulations 🎉  Your smart contract is live on Hedera testnet!**
+
+You've successfully:
+
+* Configured MetaMask for Hedera testnet
+* Created and funded a testnet account
+* Deployed a smart contract using Remix
+* Interacted with it on the Hedera testnet
+
+***
+
+## Next Step: Verify Your Smart Contract
+
+If you're up for it, you can verify your deployed contract using the Smart Contract Verifier tool on HashScan network explorer.
+
+<Card
+  title="How To Verify A Smart Contract On Hashscan"
+  href="/hedera/tutorials/smart-contracts/how-to-verify-a-smart-contract-on-hashscan"
+/>
+
+***
+
+## Additional Resources
+
+* [**Remix IDE Documentation**](https://remix-ide.readthedocs.io/en/latest/)
+* [**Hedera Contract Builder**](https://portal.hedera.com/contract-builder)
+* [**Smart Contracts Documentation**](/hedera/core-concepts/smart-contracts)
+
+<Columns cols={2}>
+  <Card
+    title="Writer: Krystal, Technical Writer"
+    arrow
+  >
+    [GitHub](https://github.com/theekrystallee) | [X](https://x.com/theekrystallee)
+  </Card>
+</Columns>

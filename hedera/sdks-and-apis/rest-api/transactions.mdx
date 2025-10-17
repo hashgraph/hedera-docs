@@ -1,0 +1,22 @@
+---
+title: "Transactions"
+sidebarTitle: "Overview"
+---
+
+
+## Overview
+
+The **Transactions endpoints** in the Hedera Mirror Node REST API allows developers to query **transaction history, details, and status** on the Hedera network. These endpoints is essential for tracking payments, token transfers, smart contract executions, and other network activities.
+
+## Endpoints
+
+The following endpoints are available for the Network activity object:
+
+| **Endpoint**                    | **Description**                                              |
+| ------------------------------- | ------------------------------------------------------------ |
+| `GET /api/v1/transactions`      | Retrieves a list of transactions on the network.             |
+| `GET /api/v1/transactions/{id}` | Fetches details of a specific transaction by transaction ID. |
+
+## Fetching Transactions
+
+The **transaction** object represents the transactions processed on the Hedera network. You can retrieve this to view the transaction metadata information including transaction id, timestamp, transaction fee, transfer list, etc. If a transaction was submitted to multiple nodes, the successful transaction and duplicate transaction(s) will be returned as separate entries in the response with the same transaction ID. Duplicate transactions will still be assessed [network fees](https://www.hedera.com/fees).

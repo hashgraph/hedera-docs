@@ -2,7 +2,6 @@
 title: "NFT Rarity Inspector"
 ---
 
-
 The [NFT Rarity Inspector](https://nft-studio.hashgraph.com/nft-rarity-inspector/) allows users to upload a `.zip` file to verify NFT metadata and check for compliance with [HIP-412 standards](https://hips.hedera.com/hip/hip-412). It calculates a rarity score by analyzing the NFT's traits, features, and properties compared to the entire collection. Once the inspection is complete, each NFT is assigned a rarity score based on its uniqueness, helping artists, collectors, and traders understand its value. The higher the score, the rarer and more unique the NFT, making it more valuable than those with lower scores.
 
 <Columns cols={2}>
@@ -11,28 +10,33 @@ The [NFT Rarity Inspector](https://nft-studio.hashgraph.com/nft-rarity-inspector
     href="https://nft-studio.hashgraph.com/nft-rarity-inspector/"
     arrow
     img="/images/open-source-solutions/nft-studio/nft-rarity-inspector/nft-rarity-inspector-5.png"
-  >
-    
-  </Card>
+  ></Card>
   <Card
     title="NFT Rarity Inspector Repo"
     href="https://github.com/hedera-dev/nft-rarity-inspector"
     arrow
     img="/images/open-source-solutions/nft-studio/nft-rarity-inspector/nft-rarity-inspector-6.png"
-  >
-    
-  </Card>
+  ></Card>
 </Columns>
 
-***
+---
 
 ## How to Use the NFT Rarity Inspector
 
-<iframe width="1124" height="632" src="https://www.youtube.com/embed/k6K4V0zZWJE" title="NFT Studio | NFT Rarity Inspector" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe
+  width="761"
+  height="428"
+  src="https://www.youtube.com/embed/k6K4V0zZWJE"
+  title="NFT Studio | NFT Rarity Inspector"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen
+></iframe>
 
 ### Step 1: Upload NFT Collection File
 
-To follow along, download the example NFT collection *`.zip`* file from the [Rarity Inspector](https://www.nfttoolkit.app/nft-rarity-inspector/) web app. Once downloaded, upload the collection to the tool.
+To follow along, download the example NFT collection _`.zip`_ file from the [Rarity Inspector](https://www.nfttoolkit.app/nft-rarity-inspector/) web app. Once downloaded, upload the collection to the tool.
 
 <Frame>
   <img src="/images/open-source-solutions/nft-studio/nft-rarity-inspector/nft-rarity-inspector-1.png" />
@@ -42,12 +46,12 @@ To follow along, download the example NFT collection *`.zip`* file from the [Rar
 
 After uploading the collection file, the tool will process and visually display its rarity distribution. The visualization will show some key highlights, such as:
 
-* The **most rare NFT** in the collection.
-* The **most common** **NFT** in the collection.
-* The **most rare attribute** in the collection.
-* The **most common attribute** found in the collection.
+- The **most rare NFT** in the collection.
+- The **most common** **NFT** in the collection.
+- The **most rare attribute** in the collection.
+- The **most common attribute** found in the collection.
 
-Next, scroll down to view a detailed rarity distribution of the entire collection, providing an overview of how rarity is spread throughout. On the top right-hand side (see image below), you’ll find the **“***Attributes Rarity***”** table, which lists all attributes along with their corresponding rarity percentages, helping you understand how frequently specific traits appear in the collection.
+Next, scroll down to view a detailed rarity distribution of the entire collection, providing an overview of how rarity is spread throughout. On the top right-hand side (see image below), you’ll find the **“\***Attributes Rarity**\*”** table, which lists all attributes along with their corresponding rarity percentages, helping you understand how frequently specific traits appear in the collection.
 
 <Frame>
   <img src="/images/open-source-solutions/nft-studio/nft-rarity-inspector/nft-rarity-inspector-2.png" />
@@ -55,45 +59,49 @@ Next, scroll down to view a detailed rarity distribution of the entire collectio
 
 Click on any NFT within the collection to view comprehensive details for that individual item. Scrolling down on the NFT's page reveals its rank within the collection's rarity curve, offering a clear perspective on its uniqueness relative to other NFTs.
 
-<div><Frame>
-  <img src="/images/open-source-solutions/nft-studio/nft-rarity-inspector/nft-rarity-inspector-3.png" />
-</Frame> <Frame>
-  <img src="/images/open-source-solutions/nft-studio/nft-rarity-inspector/nft-rarity-inspector-4.png" />
-</Frame></div>
+<div>
+  <Frame>
+    <img src="/images/open-source-solutions/nft-studio/nft-rarity-inspector/nft-rarity-inspector-3.png" />
+  </Frame>{" "}
+  <Frame>
+    <img src="/images/open-source-solutions/nft-studio/nft-rarity-inspector/nft-rarity-inspector-4.png" />
+  </Frame>
+</div>
 
 <Accordion title="Understanding the Results">
 The rarity score generated by the NFT Rarity Inspector provides valuable insights into an NFT's relative uniqueness and potential value. Here's how to interpret the results:
 
-* The score typically ranges across a scale, where a higher score indicates a rarer NFT. The value of the score is relative to other NFTs within the same collection.
-* Each NFT is also ranked within the entire collection based on its score, giving you an idea of how unique a particular NFT is compared to others.
-* The tool offers a detailed breakdown of each attribute and its rarity percentage within the collection. For example, if only 5% of NFTs share a specific trait, that trait significantly boosts the NFT’s rarity score.
+- The score typically ranges across a scale, where a higher score indicates a rarer NFT. The value of the score is relative to other NFTs within the same collection.
+- Each NFT is also ranked within the entire collection based on its score, giving you an idea of how unique a particular NFT is compared to others.
+- The tool offers a detailed breakdown of each attribute and its rarity percentage within the collection. For example, if only 5% of NFTs share a specific trait, that trait significantly boosts the NFT’s rarity score.
 
 By understanding the rarity score and the associated ranking, you can make informed decisions about the value of each NFT within the collection.
+
 </Accordion>
 
 <Accordion title="Use Cases &#x26; Best Practices">
 The NFT Rarity Inspector is designed to support various stages of your NFT project, from development to sale. Here are some practical ways to use the tool:
 
-* Use the inspector before minting to ensure a balanced distribution of traits and accurately represent any "rare" items in your collection.
-* Sellers can use the rarity scores to price their NFTs more effectively, highlighting rare traits to potential buyers and setting competitive prices based on uniqueness.
-* Buyers and collectors can analyze rarity scores to make informed purchasing decisions, selecting NFTs that are more rare and potentially have greater resale value.
-* Share the rarity distribution with your community to enhance transparency and generate excitement about your collection's unique aspects.
+- Use the inspector before minting to ensure a balanced distribution of traits and accurately represent any "rare" items in your collection.
+- Sellers can use the rarity scores to price their NFTs more effectively, highlighting rare traits to potential buyers and setting competitive prices based on uniqueness.
+- Buyers and collectors can analyze rarity scores to make informed purchasing decisions, selecting NFTs that are more rare and potentially have greater resale value.
+- Share the rarity distribution with your community to enhance transparency and generate excitement about your collection's unique aspects.
 
 **Best Practices**
 
-* Ensure traits are named consistently across all NFTs in your collection for accurate analysis.
-* Run the tool periodically as your collection evolves or new items are added to keep rarity information current.
-* Include all relevant attributes and properties in your metadata to ensure a thorough analysis and accurate rarity score.
-</Accordion>
+- Ensure traits are named consistently across all NFTs in your collection for accurate analysis.
+- Run the tool periodically as your collection evolves or new items are added to keep rarity information current.
+- Include all relevant attributes and properties in your metadata to ensure a thorough analysis and accurate rarity score.
+  </Accordion>
 
 #### 🎉 Success! You've analyzed the rarity of your NFT collection and uncovered key insights into each token's uniqueness. Now, it's time to manage your community by building targeted lists with the Token Holders List Builder.
 
-***
+---
 
 ## Additional Resources
 
-* [**Other Tools NFT Studio**](https://nft-studio.hashgraph.com/)
-* [**HashScan Network Explorer**](https://hashscan.io/)
-* [**Hedera Testnet HBAR Faucet**](https://portal.hedera.com/faucet)
-* [**Hedera Developer Portal Account**](https://portal.hedera.com/)
-* [**Create and Transfer Your First Hedera NFT**](/hedera/tutorials/token/create-and-transfer-your-first-nft)
+- [**Other Tools NFT Studio**](https://nft-studio.hashgraph.com/)
+- [**HashScan Network Explorer**](https://hashscan.io/)
+- [**Hedera Testnet HBAR Faucet**](https://portal.hedera.com/faucet)
+- [**Hedera Developer Portal Account**](https://portal.hedera.com/)
+- [**Create and Transfer Your First Hedera NFT**](/hedera/tutorials/token/create-and-transfer-your-first-nft)

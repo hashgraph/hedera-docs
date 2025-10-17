@@ -1,12 +1,7 @@
 import com.hedera.hashgraph.sdk.*;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.security.PrivateKey;
+import java.net.http.*;
 import java.net.URI;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonArray;
+import com.google.gson.*;
 
 public class CreateTopicDemo {
     public static void main(String[] args ) throws Exception {

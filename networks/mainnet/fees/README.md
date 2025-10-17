@@ -34,11 +34,7 @@ All fees are subject to change. The fees below reflect a base price for the tran
 
 ### Consensus Service
 
-{% hint style="warning" %}
-#### **⚠️ Upcoming Price Change – ConsensusSubmitMessage**
-
-Starting **January 2026**, the price for the ConsensusSubmitMessage transaction will increase from **$0.0001** to **$0.0008** USD. This change will take effect with the **v0.69 mainnet release** and applies only to **`ConsensusSubmitMessage`** transactions. This update improves the long-term economic sustainability of the Hedera network while preserving predictable and USD-fixed pricing for developers. Read [this blog article](http://hedera.com/blog/price-update-to-consensussubmitmessage-in-consensus-service-january-2026) for more information.
-{% endhint %}
+{% include "../../../.gitbook/includes/upcoming-price-change-....md" %}
 
 <table><thead><tr><th width="484">Operations</th><th>USD ($)</th></tr></thead><tbody><tr><td>ConsensusCreateTopic</td><td>$0.01</td></tr><tr><td>ConsensusUpdateTopic</td><td>$0.00022</td></tr><tr><td>ConsensusDeleteTopic</td><td>$0.005</td></tr><tr><td>ConsensusSubmitMessage</td><td>$0.0001</td></tr><tr><td>ConsensusSubmitMessage (with custom fees)</td><td>$0.05</td></tr><tr><td>ConsensusGetTopicInfo</td><td>$0.0001</td></tr></tbody></table>
 

@@ -2,6 +2,7 @@
 description: >-
   In the dynamic world of decentralized applications (DApps), catering to users
   with diverse wallet preferences is important.
+hidden: true
 ---
 
 # Create a Hedera DApp Integrated with WalletConnect

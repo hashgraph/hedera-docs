@@ -226,7 +226,7 @@ abstract contract HTSConnector is OFTCore, KeyHelper, HederaTokenService {
 
 ## Developer Considerations to Note EVM Differences
 
-Please note the smallest unit of _**HBAR is the tinybar (8 decimal places)**_, while the _**JSON-RPC relay operates 18 decimal places**_ for compatibility with Ethereum tools. This means when dealing with `msg.value`, conversions between tinybars and weibars are necessary. Additionally, [_Hedera’s gas model_](https://docs.hedera.com/hedera/core-concepts/smart-contracts/gas-and-fees#gas-reservation-and-unused-gas-refund) _charges for at least 80% of gas_, regardless of usage, and event handling often requires querying mirror nodes. Please take these differences into account, especially when calling `quote`. Reference the  [Understanding Hedera's EVM Differences and Compatibility: For EVM Developers](../../core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility/for-evm-developers-migrating-to-hedera/) section for a more comprehensive list of differences.
+Please note the smallest unit of _**HBAR is the tinybar (8 decimal places)**_, while the _**JSON-RPC relay operates 18 decimal places**_ for compatibility with Ethereum tools. This means when dealing with `msg.value`, conversions between tinybars and weibars are necessary. Please take these differences into account, especially when calling `quote`. Reference the  [Understanding Hedera's EVM Differences and Compatibility: For EVM Developers](../../core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility/for-evm-developers-migrating-to-hedera/) section for a more comprehensive list of differences.
 
 ***
 

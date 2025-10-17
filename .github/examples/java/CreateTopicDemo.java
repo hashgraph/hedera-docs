@@ -2,6 +2,7 @@ import com.hedera.hashgraph.sdk.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.security.PrivateKey;
 import java.net.URI;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -11,7 +12,7 @@ public class CreateTopicDemo {
     public static void main(String[] args ) throws Exception {
         // .env-provided
         AccountId operatorId = AccountId.fromString(System.getenv("OPERATOR_ID"));
-        PrivateKey operatorKey = PrivateKey.fromString(System.getenv("OPERATOR_KEY"));
+        PrivateKey operatorKey = PrivateKey.fromStringECDSA(System.getenv("OPERATOR_KEY"));
         String network = System.getenv().getOrDefault("HEDERA_NETWORK", "local");
         String mirrorNode = System.getenv().getOrDefault(
             "MIRROR_NODE_URL",

@@ -6,10 +6,9 @@ import com.google.gson.*;
 public class CreateAccountDemo {
     public static void main(String[] args) throws Exception {
         // .env-provided
-        //AccountId operatorId = AccountId.fromString(System.getenv("OPERATOR_ID"));
-        //PrivateKey operatorKey = PrivateKey.fromString(System.getenv("OPERATOR_KEY"));
-        AccountId operatorId = AccountId.fromString("0.0.1013");
-        PrivateKey operatorKey = PrivateKey.fromString("0x2e1d968b041d84dd120a5860cee60cd83f9374ef527ca86996317ada3d0d03e7");
+        AccountId operatorId = AccountId.fromString(System.getenv("OPERATOR_ID"));
+        PrivateKey operatorKey = PrivateKey.fromStringECDSA(System.getenv("OPERATOR_KEY"));
+
         String network = System.getenv().getOrDefault("HEDERA_NETWORK", "local"); 
         String mirrorNodeUrl = System.getenv().getOrDefault(
             "MIRROR_NODE_URL",

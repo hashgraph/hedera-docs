@@ -26,9 +26,6 @@ public class CreateAccountDemo {
 
         client.setOperator(operatorId, operatorKey);
 
-        System.out.println("OPERATOR_ID=" + System.getenv("OPERATOR_ID"));
-        System.out.println("OPERATOR_KEY=" + System.getenv("OPERATOR_KEY"));
-
         PrivateKey newPrivateKey = PrivateKey.generateECDSA();
         PublicKey newPublicKey = newPrivateKey.getPublicKey();
 

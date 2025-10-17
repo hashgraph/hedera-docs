@@ -7,11 +7,12 @@ public class CreateAccountDemo {
     public static void main(String[] args) throws Exception {
         // .env-provided
         AccountId operatorId = AccountId.fromString(System.getenv("OPERATOR_ID"));
-        PrivateKey operatorKey = PrivateKey.fromString(System.getenv("OPERATOR_KEY"));
+        PrivateKey operatorKey = PrivateKey.fromStringECDSA(System.getenv("OPERATOR_KEY"));
+
         String network = System.getenv().getOrDefault("HEDERA_NETWORK", "local"); 
         String mirrorNodeUrl = System.getenv().getOrDefault(
             "MIRROR_NODE_URL",
-            "http://localhost:5551/api/v1" 
+            "http://localhost:8080/api/v1" 
         );
 
         if (operatorId == null || operatorKey == null) {

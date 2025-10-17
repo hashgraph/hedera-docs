@@ -1,21 +1,17 @@
 import com.hedera.hashgraph.sdk.*;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import java.net.http.*;
 import java.net.URI;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonArray;
+import com.google.gson.*;
 
 public class CreateTopicDemo {
     public static void main(String[] args ) throws Exception {
         // .env-provided
         AccountId operatorId = AccountId.fromString(System.getenv("OPERATOR_ID"));
-        PrivateKey operatorKey = PrivateKey.fromString(System.getenv("OPERATOR_KEY"));
+        PrivateKey operatorKey = PrivateKey.fromStringECDSA(System.getenv("OPERATOR_KEY"));
         String network = System.getenv().getOrDefault("HEDERA_NETWORK", "local");
         String mirrorNode = System.getenv().getOrDefault(
             "MIRROR_NODE_URL",
-            "http://localhost:5551/api/v1" 
+            "http://localhost:8080/api/v1" 
         );
 
         if (operatorId == null || operatorKey == null) {

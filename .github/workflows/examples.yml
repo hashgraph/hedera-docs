@@ -16,46 +16,75 @@ permissions:
 
 jobs:
   run-java-example:
-    runs-on: ubuntu-latest
+    runs-on: hashgraph-docs-linux-medium
     permissions:
       contents: write
       pull-requests: write
 
     env:
       HEDERA_NETWORK: local
-      MIRROR_NODE_URL: http://localhost:5551/api/v1
-      MIRROR_HEALTH_URL: http://localhost:5551/health   
-      MIRROR_HEALTH_TRIES: "180"                      
+      MIRROR_NODE_URL: http://localhost:8080/api/v1
+      MIRROR_HEALTH_URL: http://localhost:8080/health
+      MIRROR_HEALTH_TRIES: "180"
       MIRROR_HEALTH_INTERVAL: "2"
       STATUS_DIR: .github/example-status
       STATUS_FILE: .github/example-status/java-status.md
+      OPERATOR_ID: ${{ secrets.ECDSA_ACCOUNT_SOLO }}
+      OPERATOR_KEY: ${{ secrets.ECDSA_ACCOUNT_PRIVATE_KEY_SOLO }}
 
     steps:
+      - name: Check Docker resources (GB)
+        run: |
+          read cpus mem <<<"$(docker info --format '{{.NCPU}} {{.MemTotal}}')"
+          mem_gb=$(awk -v m="$mem" 'BEGIN{printf "%.1f", m/1000000000}')
+          echo "CPUs: $cpus"
+          echo "Memory: ${mem_gb} GB"
+
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a
         with:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
 
-      - name: Start Solo
-        id: solo
-        uses: hiero-ledger/hiero-solo-action@395fc8fb5df9e91b810e8c9d108afaa4a2d75f39
+      - name: Setup Kind
+        uses: helm/kind-action@a1b0e391336a6ee6713a0583f8c6240d70863de3
         with:
-          installMirrorNode: true
-          hieroVersion: v0.65.0
+          install_only: true
+          node_image: kindest/node:v1.31.4@sha256:2cb39f7295fe7eafee0842b1052a599a4fb0f8bcf3f83d96c7f4864c357c6c30
+          version: v0.26.0
+          kubectl_version: v1.31.4
+          verbosity: 3
+          wait: 120s
 
-      - name: Show assigned account
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22.12.0
+
+      - name: Install Solo CLI
         run: |
-          echo "ECDSA Account: ${{ steps.solo.outputs.ecdsaAccountId }}"
-          echo "ECDSA PrivateKey: **** (redacted)"
+          set -euo pipefail
+          npm install -g @hashgraph/solo
+          solo --version
+          kind --version
+
+      - name: Deploy Solo
+        env:
+          SOLO_CLUSTER_NAME: solo
+          SOLO_NAMESPACE: solo
+          SOLO_CLUSTER_SETUP_NAMESPACE: solo-cluster
+          SOLO_DEPLOYMENT: solo-deployment
+        run: |
+          set -euo pipefail
+          kind create cluster -n "${SOLO_CLUSTER_NAME}"
+          solo one-shot single deploy | tee solo-deploy.log
 
       - name: Wait for Mirror Node data (/network/nodes)
         env:
           API_BASE: ${{ env.MIRROR_NODE_URL }}
-          ACCOUNT_ID: ${{ steps.solo.outputs.ecdsaAccountId }}
-          TRIES: "180"                             
+          TRIES: "180"
           INTERVAL: "2"
         shell: bash
         run: |
@@ -167,8 +196,8 @@ jobs:
       - name: Build & Run Java example
         id: run_java
         env:
-          OPERATOR_ID: ${{ steps.solo.outputs.ecdsaAccountId }}
-          OPERATOR_KEY: ${{ steps.solo.outputs.ecdsaPrivateKey }}
+          OPERATOR_ID: ${{ env.OPERATOR_ID }}
+          OPERATOR_KEY: ${{ env.OPERATOR_KEY}}
           HEDERA_NETWORK: ${{ env.HEDERA_NETWORK }}
           MIRROR_NODE_URL: ${{ env.MIRROR_NODE_URL }}
         run: |
@@ -192,7 +221,7 @@ jobs:
             echo "<details><summary>Output</summary>"
             if [ -f java-output.txt ]; then
               if [ -f ./.github/scripts/redact.sh ]; then
-                bash ./.github/scripts/redact.sh "${{ steps.solo.outputs.ecdsaPrivateKey }}" java-output.txt || cat java-output.txt
+                bash ./.github/scripts/redact.sh "${OPERATOR_KEY}" java-output.txt || cat java-output.txt
               else
                 cat java-output.txt
               fi
@@ -207,7 +236,7 @@ jobs:
         with:
           commit-message: "chore: update example run status"
           signoff: true
-          sign-commits: true  
+          sign-commits: true
           title: "chore: example run status"
           body: "Automated run of examples"
           branch: "bot/examples-check"

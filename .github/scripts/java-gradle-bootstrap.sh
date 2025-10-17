@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Create a minimal Gradle project that compiles & runs examples in .github/examples/java
 cat > build.gradle <<'EOF'
 plugins {
     id 'java'
@@ -20,7 +19,6 @@ dependencies {
 
 /**
  * Define an 'examples' source set for .github/examples/java.
- * IMPORTANT: Use resolvable configurations (examplesCompileClasspath/examplesRuntimeClasspath).
  */
 sourceSets {
     examples {
@@ -32,14 +30,13 @@ sourceSets {
 }
 
 configurations {
-    // Let examples inherit dependencies declared on 'implementation'/'runtimeOnly'
     examplesImplementation.extendsFrom implementation
     examplesRuntimeOnly.extendsFrom runtimeOnly
 }
 
 def examplesDir = file('.github/examples/java')
 
-// Derive a fully-qualified class name from a .java file by reading its 'package ...;' line (if present)
+// Derive a fully-qualified class name from a .java file by reading its 'package ...;' line
 def fqnFor = { File f ->
     def pkgLine = f.readLines().find { it =~ /^\s*package\s+[\w\.]+\s*;/ }
     def pkg = pkgLine ? pkgLine.replaceAll(/^\s*package\s+/, '').replace(';','').trim() : null
@@ -52,9 +49,7 @@ def exampleFiles = examplesDir.exists()
         : [] as Set<File>
 
 /**
- * Run a single example via:
- *   ./gradlew runExample -PexampleClass=<fully.qualified.ClassName>
- * If your example has no 'package' line, use just the class name (e.g., CreateAccountDemo).
+ * Run a single example
  */
 tasks.register('runExample', JavaExec) {
     group = 'examples'
@@ -92,18 +87,18 @@ EOF
 
 echo "rootProject.name = 'docs-examples-runner'" > settings.gradle
 
-# Gradle wrapper (works on GitHub runners)
-if [ ! -f gradlew ]; then
+# Gradle wrapper 
+if [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
   curl -sL https://services.gradle.org/distributions/gradle-8.9-bin.zip -o gradle.zip
-  mkdir -p .gradle/wrapper/dists
-  unzip -q gradle.zip -d .gradle >/dev/null || true
+  unzip -q gradle.zip -d .gradle
   rm -f gradle.zip
-  if command -v gradle >/dev/null 2>&1; then
-    gradle wrapper -q
-  else
-    curl -s https://raw.githubusercontent.com/gradle/gradle/master/gradlew -o gradlew
-    chmod +x gradlew
+
+  GRADLE_HOME="$(find .gradle -maxdepth 1 -type d -name 'gradle-8.9' | head -n1)"
+  if [ -z "${GRADLE_HOME:-}" ]; then
+    echo "Failed to locate Gradle distribution in .gradle"; exit 1
   fi
+
+  "${GRADLE_HOME}/bin/gradle" -q wrapper
 fi
 
 chmod +x gradlew

@@ -1,0 +1,22 @@
+---
+title: "NetworkGetVersionInfo"
+---
+
+
+Get the deployed versions of Consensus Node and the HAPI proto in semantic version format
+
+#### NetworkGetVersionInfoQuery
+
+| Field    | Type                                                                                             | Description                                                                                                                                         |
+| -------- | ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `header` | [QueryHeader](/hedera/sdks-and-apis/hedera-api/miscellaneous/queryheader) | Standard info sent from client to node, including the signed payment, and what kind of response is requested (cost, state proof, both, or neither). |
+
+#### NetworkGetVersionInfoResponse
+
+Response when the client sends the node NetworkGetVersionInfoQuery
+
+| Field                   | Type                                                                                                   | Description                                                                                                      |
+| ----------------------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `header`                | [ResponseHeader](/hedera/sdks-and-apis/hedera-api/miscellaneous/responseheader) | Standard response from node to client, including the requested fields: cost, or state proof, or both, or neither |
+| `hapiProtoVersion`      | [SemanticVersion](/hedera/sdks-and-apis/hedera-api/basic-types/semanticversion) | The Hedera API (HAPI) protobuf version recognized by the responding node                                         |
+| `hederaServicesVersion` | [SemanticVersion](/hedera/sdks-and-apis/hedera-api/basic-types/semanticversion) | The version of the Consensus Node software deployed on the responding node                                       |

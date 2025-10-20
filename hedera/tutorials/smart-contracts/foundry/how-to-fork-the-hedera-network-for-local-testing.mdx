@@ -2,42 +2,42 @@
 title: "How to Fork the Hedera Network for Local Testing"
 ---
 
-
 In this tutorial, you’ll fork Hedera mainnet using Foundry and interact with a live Hedera NFT (ERC-721) on the fork and also run tests on this local forked network.
 
 This guide shows how to:
 
-* Fork Hedera mainnet using Foundry
-* Run Foundry tests on a fork of Hedera mainnet
-* Read and interact with an existing NFT (ERC-721) contract by its EVM address (e.g., `ownerOf`, `name`, `symbol`, `tokenURI`), with minimal setup.
+- Fork Hedera mainnet using Foundry
+- Run Foundry tests on a fork of Hedera mainnet
+- Read and interact with an existing NFT (ERC-721) contract by its EVM address (e.g., `ownerOf`, `name`, `symbol`, `tokenURI`), with minimal setup.
 
 References:
 
-* Repo: [hashgraph/hedera-forking](https://github.com/hashgraph/hedera-forking)
-* Readme sections: Foundry library, Running your Tests/Scripts, Hardhat plugin (if you prefer Hardhat)
-* Examples: [`examples/foundry-hts/test/NFT.t.sol`](https://github.com/hashgraph/hedera-forking/blob/main/examples/foundry-hts/test/NFT.t.sol), scripts under [`examples/foundry-hts/script/`](https://github.com/hashgraph/hedera-forking/tree/main/examples/foundry-hts/script)
+- Repo: [hashgraph/hedera-forking](https://github.com/hashgraph/hedera-forking)
+- Readme sections: Foundry library, Running your Tests/Scripts, Hardhat plugin (if you prefer Hardhat)
+- Examples: [`examples/foundry-hts/test/NFT.t.sol`](https://github.com/hashgraph/hedera-forking/blob/main/examples/foundry-hts/test/NFT.t.sol), scripts under [`examples/foundry-hts/script/`](https://github.com/hashgraph/hedera-forking/tree/main/examples/foundry-hts/script)
 
 <Info>
-You can take a look at the **complete code** in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/foundry-mainnet-fork-tutorial).
+  You can take a look at the **complete code** in the [**Hedera-Code-Snippets
+  repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/foundry-mainnet-fork-tutorial).
 </Info>
 
-***
+---
 
 ## Prerequisites
 
-* Foundry installed (forge, cast, anvil, chisel):
-  * `curl -L https://foundry.paradigm.xyz | bash`
-    * `forge-std` >= v1.8.0
-  * `foundryup`
-* curl (Unix) or PowerShell (Windows), so ffi can call Mirror Node
-* A Hedera JSON-RPC endpoint:
-  * mainnet: `https://mainnet.hashio.io/api`
-  * testnet: `https://testnet.hashio.io/api`
-* ECDSA account and 0x‑prefixed private key for Hedera Testnet (create/fund via the [Hedera Portal](https://portal.hedera.com/))
-* Basic Solidity / CLI familiarity
-* If you want to learn how to deploy an ERC-721 token using Foundry, you can read more about that [here](/hedera/tutorials/smart-contracts/foundry/how-to-mint-and-burn-an-erc-721-token-using-foundry-part-1).
+- Foundry installed (forge, cast, anvil, chisel):
+  - `curl -L https://foundry.paradigm.xyz | bash`
+    - `forge-std` >= v1.8.0
+  - `foundryup`
+- curl (Unix) or PowerShell (Windows), so ffi can call Mirror Node
+- A Hedera JSON-RPC endpoint:
+  - mainnet: `https://mainnet.hashio.io/api`
+  - testnet: `https://testnet.hashio.io/api`
+- ECDSA account and 0x‑prefixed private key for Hedera Testnet (create/fund via the [Hedera Portal](https://portal.hedera.com/))
+- Basic Solidity / CLI familiarity
+- If you want to learn how to deploy an ERC-721 token using Foundry, you can read more about that [here](/hedera/tutorials/smart-contracts/foundry/how-to-mint-and-burn-an-erc-721-token-using-foundry-part-1).
 
-***
+---
 
 ## Table of Contents
 
@@ -45,7 +45,7 @@ You can take a look at the **complete code** in the [**Hedera-Code-Snippets repo
 2. [Step 2: Create the contract and scripts and deploy to mainnet](#step-2-create-the-contract-and-scripts-and-deploy-to-mainnet)
 3. [Step 3: Run tests on the forked network](#step-4-run-tests-on-the-forked-network)
 
-***
+---
 
 ## Step 1: Project Setup
 
@@ -91,7 +91,6 @@ HEDERA_RPC_URL="https://mainnet.hashio.io/api"
 HEDERA_PRIVATE_KEY=0x-your-private-key
 ```
 
-
 Now, let's also load these to the terminal:
 
 ```bash
@@ -99,7 +98,9 @@ source .env
 ```
 
 <Warning>
-Replace the `0x-your-private-key` environment variable with the **HEX Encoded Private Key** for your **ECDSA** **account.** Note that this account **MUST** exist on **mainnet** as we're dealing with the mainnet for this exercise.
+  Replace the `0x-your-private-key` environment variable with the **HEX Encoded
+  Private Key** for your **ECDSA** **account.** Note that this account **MUST**
+  exist on **mainnet** as we're dealing with the mainnet for this exercise.
 </Warning>
 
 #### Configure Foundry
@@ -130,10 +131,10 @@ max_test_rejects = 65536
 
 Some things to keep in mind:
 
-* Note the values in `remappings` field. We need this to import prefix to a filesystem path so both Foundry(forge) and our editor can resolve short, package-like imports instead of long relative paths.
-* We have `ffi` to be true because on forked tests, the library uses curl (or PowerShell) to query Hedera Mirror Node for token state so that EVM calls like `IERC721.ownerOf()` can work as if the token were a normal EVM contract.
-* If we run fuzz tests, they may hit our RPC's rate limit so in order to get around that issue, we need to lower the runs so we don't run into any errors that have nothing to do with our contract at all. We are using `10` here but you could technically go much higher before you hit the rate limit.
-* We are adding the field `gas_reports` here so we can do some cool things while testing such as
+- Note the values in `remappings` field. We need this to import prefix to a filesystem path so both Foundry(forge) and our editor can resolve short, package-like imports instead of long relative paths.
+- We have `ffi` to be true because on forked tests, the library uses curl (or PowerShell) to query Hedera Mirror Node for token state so that EVM calls like `IERC721.ownerOf()` can work as if the token were a normal EVM contract.
+- If we run fuzz tests, they may hit our RPC's rate limit so in order to get around that issue, we need to lower the runs so we don't run into any errors that have nothing to do with our contract at all. We are using `10` here but you could technically go much higher before you hit the rate limit.
+- We are adding the field `gas_reports` here so we can do some cool things while testing such as
 
 We will be removing the default contracts that comes with foundry default project:
 
@@ -141,7 +142,7 @@ We will be removing the default contracts that comes with foundry default projec
 rm -rf script/* src/* test/*
 ```
 
-***
+---
 
 ## Step 2: Create the contract and scripts and deploy to mainnet
 
@@ -151,7 +152,7 @@ You can also refer to the code in the [**Hedera-Code-Snippets repository**](http
 
 We have already deployed this ERC-721 contract on mainnet at https://hashscan.io/mainnet/contract/0x07F6D65f9454EA2dff99bF8C2C1De918Fcd27416 so we will be using this for the remainder of this exercise.
 
-***
+---
 
 ## Step 3: Run tests on the forked network
 
@@ -169,7 +170,7 @@ contract MyTokenTest is Test {
     // Your deployed mainnet contract:
     // https://hashscan.io/mainnet/contract/0x07F6D65f9454EA2dff99bF8C2C1De918Fcd27416
     address internal constant DEPLOYED =
-        0x07F6D65f9454EA2dff99bF8C2C1De918Fcd27416; // Please update this value to your 
+        0x07F6D65f9454EA2dff99bF8C2C1De918Fcd27416; // Please update this value to your
                                                     // deployed contract on mainnet
 
     MyToken internal token;
@@ -361,11 +362,11 @@ contract MyTokenTest is Test {
 
 Some things to note:
 
-* Use the deployed contract address instead of deploying a new one.
-* Automatically read the real owner from chain and impersonate it for owner-only actions.
-* Pre-deal balances to addresses to avoid `eth_getBalance` calls on the RPC.
-* Fuzz test no longer checks `to.code.length` (which would trigger an `eth_getCode` per iteration) and pre-deals the target address to avoid RPC balance lookups.
-* Removes assumptions that depend on a freshly deployed local contract (like token IDs starting at 0)
+- Use the deployed contract address instead of deploying a new one.
+- Automatically read the real owner from chain and impersonate it for owner-only actions.
+- Pre-deal balances to addresses to avoid `eth_getBalance` calls on the RPC.
+- Fuzz test no longer checks `to.code.length` (which would trigger an `eth_getCode` per iteration) and pre-deals the target address to avoid RPC balance lookups.
+- Removes assumptions that depend on a freshly deployed local contract (like token IDs starting at 0)
 
 ### Run tests
 
@@ -415,16 +416,12 @@ Want to take your local development setup even further? Here are some excellent 
 4. [Learn more about advanced testing with Foundry](https://getfoundry.sh/forge/advanced-testing/overview)
 
 <Columns cols={2}>
-  <Card
-    title="Writer: Kiran, Developer Advocate"
-    arrow
-  >
-    [GitHub](https://github.com/kpachhai) | [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
+  <Card title="Writer: Kiran, Developer Advocate" arrow>
+    [GitHub](https://github.com/kpachhai) |
+    [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
   </Card>
-  <Card
-    title="Editor: Krystal, Technical Writer"
-    arrow
-  >
-    [GitHub](https://github.com/theekrystallee) | [X](https://x.com/theekrystallee)
+  <Card title="Editor: Krystal, DX Engineer" arrow>
+    [GitHub](https://github.com/theekrystallee) |
+    [X](https://x.com/theekrystallee)
   </Card>
 </Columns>

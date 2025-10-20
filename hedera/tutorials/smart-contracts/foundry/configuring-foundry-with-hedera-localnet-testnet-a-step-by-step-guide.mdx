@@ -2,46 +2,49 @@
 title: "Configuring Foundry with Hedera Localnet/Testnet: A Step-by-Step Guide"
 ---
 
-
 Developers building smart contracts on Hedera often use the **Hedera JSON-RPC Relay** to enable EVM tools like **Foundry**. In this post, we'll walk through how to set up Foundry to work with the **Hiero Local Node**, allowing for local deployment, debugging, and testing of smart contracts without using testnet resources.
 
 <Check>
-Not sure whether to use the Hiero Local Node, Hashio, or a custom relay setup? Read this [blog post](/hedera/tutorials/local-node/how-to-set-up-a-hedera-local-node) comparing the different options.
+  Not sure whether to use the Hiero Local Node, Hashio, or a custom relay setup?
+  Read this [blog
+  post](/hedera/tutorials/local-node/how-to-set-up-a-hedera-local-node)
+  comparing the different options.
 </Check>
 
 <Info>
-You can take a look at the **complete code** in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/tutorial-local-hardhat).
+  You can take a look at the **complete code** in the [**Hedera-Code-Snippets
+  repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/tutorial-local-hardhat).
 </Info>
 
 This guide shows you how to configure Foundry to deploy, interact with, and test Solidity smart contracts on:
 
-* Hedera Localnet (via the Hiero Local Node + JSON-RPC Relay)
-* Hedera Testnet (via Hashio JSON-RPC Relay)
+- Hedera Localnet (via the Hiero Local Node + JSON-RPC Relay)
+- Hedera Testnet (via Hashio JSON-RPC Relay)
 
 You’ll set up environment variables, configure `foundry.toml`, write a simple contract and a Foundry deployment script, and learn how to switch between Localnet and Testnet with a single flag.
 
 If you’re looking for an end-to-end “Hello, ERC-20” tutorial, see: “[Getting started with Foundry](/hedera/getting-started-evm-developers/deploy-a-smart-contract-with-foundry)” (deploy, interact, verify on Hashscan). This guide focuses on environment configuration and workflow for Localnet/Testnet.
 
-***
+---
 
 ## What you will accomplish
 
-* Configure Foundry to talk to the Hedera JSON-RPC Relay (Localnet and Testnet)
-* Deploy and interact with a sample contract using `forge script` and `cast`
-* Verify contracts on Hashscan (Testnet)
+- Configure Foundry to talk to the Hedera JSON-RPC Relay (Localnet and Testnet)
+- Deploy and interact with a sample contract using `forge script` and `cast`
+- Verify contracts on Hashscan (Testnet)
 
-***
+---
 
 ## Prerequisites
 
-* Foundry installed (forge, cast, anvil, chisel):
-  * `curl -L https://foundry.paradigm.xyz | bash`
-  * `foundryup`
-* ECDSA account and private key
-  * For Testnet: create/fund an account via the [Hedera Portal](https://portal.hedera.com/)
-* Basic Solidity / CLI familiarity
+- Foundry installed (forge, cast, anvil, chisel):
+  - `curl -L https://foundry.paradigm.xyz | bash`
+  - `foundryup`
+- ECDSA account and private key
+  - For Testnet: create/fund an account via the [Hedera Portal](https://portal.hedera.com/)
+- Basic Solidity / CLI familiarity
 
-***
+---
 
 ## Table of Contents
 
@@ -57,7 +60,7 @@ If you’re looking for an end-to-end “Hello, ERC-20” tutorial, see: “[Get
 10. [Step 8: Verifying the contract on Hashscan](#step-8-verifying-the-contract-on-hashscan)
 11. [Interact using cast](#interact-using-cast)
 
-***
+---
 
 ## Option A: Run Hedera Localnet (Hiero Local Node)
 
@@ -72,24 +75,26 @@ npm install
 npm run start
 ```
 
-Once all the containers have started, the Hiero Local Node is up and running. This includes a Consensus Node, Mirror Node and explorer, JSON RPC Relay, Block Node, Grafana UI, and Prometheus UI. 
+Once all the containers have started, the Hiero Local Node is up and running. This includes a Consensus Node, Mirror Node and explorer, JSON RPC Relay, Block Node, Grafana UI, and Prometheus UI.
 
 <Info>
-* On startup, the Local Node prints funded ECDSA accounts to the console logs. You can use one of these for local development. Make sure to only use accounts listed under "Accounts list (Alias ECDSA keys)"
-* The JSON-RPC Relay is typically on port 7546. So, the URL would be `http://localhost:7546`
+  * On startup, the Local Node prints funded ECDSA accounts to the console logs.
+  You can use one of these for local development. Make sure to only use accounts
+  listed under "Accounts list (Alias ECDSA keys)" * The JSON-RPC Relay is
+  typically on port 7546. So, the URL would be `http://localhost:7546`
 </Info>
 
-***
+---
 
 ## Option B: Use Hedera Testnet (Hashio)
 
 Hashio is a community relay node suitable for development/testing:
 
-* RPC URL: `https://testnet.hashio.io/api`
+- RPC URL: `https://testnet.hashio.io/api`
 
 **Note**: For production, prefer a commercial-grade JSON-RPC relay or host your own Hiero JSON-RPC Relay.
 
-***
+---
 
 ## Step 1: Initialize a Foundry project
 
@@ -118,12 +123,12 @@ test
 
 Here's a quick overview of these files and directories:
 
-* `foundry.toml`: You can configure Foundry's behavior using this file such as defining RPC URLs
-* `src`: Serves as the default for storing your smart contract source code
-* `script`: This is where you store Solidity scripts for deploying contracts and performing other on-chain operations
-* `test`: Serves as the dedicated location for Solidity-based unit and integration tests for your smart contracts
+- `foundry.toml`: You can configure Foundry's behavior using this file such as defining RPC URLs
+- `src`: Serves as the default for storing your smart contract source code
+- `script`: This is where you store Solidity scripts for deploying contracts and performing other on-chain operations
+- `test`: Serves as the dedicated location for Solidity-based unit and integration tests for your smart contracts
 
-***
+---
 
 ## Step 2: Add environment variables
 
@@ -140,7 +145,6 @@ HEDERA_RPC_URL=your-rpc-url
 HEDERA_PRIVATE_KEY=0x-your-private-key
 ```
 
-
 Now, let's also load these to the terminal:
 
 ```bash
@@ -150,20 +154,24 @@ source .env
 <Warning>
 Replace the `your-rpc-url` environment variable with:
 
-* For Testnet: `https://testnet.hashio.io/api`, or
-* For Localnet: `http://localhost:7546`
+- For Testnet: `https://testnet.hashio.io/api`, or
+- For Localnet: `http://localhost:7546`
 
 Replace the `0x-your-private-key` environment variable with:
 
-* For Testnet: the **HEX Encoded Private Key** for your **ECDSA** **account** from the [Hedera Portal](https://portal.hedera.com/), or
-* For Localnet: the ECDSA private key from the terminal where you are running Hiero Local Node(eg. `0x105d050185ccb907fba04dd92d8de9e32c18305e097ab41dadda21489a211524` )
+- For Testnet: the **HEX Encoded Private Key** for your **ECDSA** **account** from the [Hedera Portal](https://portal.hedera.com/), or
+- For Localnet: the ECDSA private key from the terminal where you are running Hiero Local Node(eg. `0x105d050185ccb907fba04dd92d8de9e32c18305e097ab41dadda21489a211524` )
+
 </Warning>
 
 <Danger>
-***Please note**:* *that Hashio is intended for development and testing purposes only. For production use cases, it's recommended to use commercial-grade JSON-RPC Relay or host your own instance of the* [*Hiero JSON-RPC Relay*](https://github.com/hiero-ledger/hiero-json-rpc-relay)*.*
+  ***Please note**:* *that Hashio is intended for development and testing
+  purposes only. For production use cases, it's recommended to use
+  commercial-grade JSON-RPC Relay or host your own instance of the* [*Hiero
+  JSON-RPC Relay*](https://github.com/hiero-ledger/hiero-json-rpc-relay)*.*
 </Danger>
 
-***
+---
 
 ## Step 3: Configure "foundry.toml"
 
@@ -183,8 +191,7 @@ remappings = [
 hedera = "${HEDERA_RPC_URL}"
 ```
 
-
-***
+---
 
 ## Step 4: Add a simple contract
 
@@ -196,7 +203,7 @@ Compile with:
 forge build
 ```
 
-***
+---
 
 ## Step 5: Update the deploy script
 
@@ -232,8 +239,7 @@ contract CounterScript is Script {
 }
 ```
 
-
-***
+---
 
 ## Step 6: Deploy the contract
 
@@ -277,7 +283,7 @@ Block: 25089799
 Paid: 0.0554489 ETH (163085 gas * 340 gwei)
 
 ✅ Sequence #1 on 296 | Total Paid: 0.0554489 ETH (163085 gas * avg 340 gwei)
-                                                                                                             
+
 
 ==========================
 
@@ -285,12 +291,13 @@ ONCHAIN EXECUTION COMPLETE & SUCCESSFUL
 ```
 
 <Check>
-Note that Foundry hardcodes “ETH” in its summary. However, even if it says `ETH`, because we're connected to Hedera, the currency used is `HBAR`. 
+  Note that Foundry hardcodes “ETH” in its summary. However, even if it says
+  `ETH`, because we're connected to Hedera, the currency used is `HBAR`.
 </Check>
 
 Now, go ahead and update your `.env` values to point to another Hedera Network(Localnet or Testnet) and try again.
 
-***
+---
 
 ## Step 7: Run tests
 
@@ -300,13 +307,13 @@ You can also run the test suite that's included as part of `test/` directory:
 forge test
 ```
 
-***
+---
 
 ## Step 8: Verifying the Contract on Hashscan
 
 Verifying your smart contract makes its source code publicly available on Hashscan.
 
-***Note**: Please note that verification of the contract can not be done on Localnet and this process is relevant only for Hedera Testnet/Mainnet. Also, make sure to replace `<your-contract-address>` with your own contract address you got after the deployment above.*
+**\*Note**: Please note that verification of the contract can not be done on Localnet and this process is relevant only for Hedera Testnet/Mainnet. Also, make sure to replace `<your-contract-address>` with your own contract address you got after the deployment above.\*
 
 Run the following command, using the variables you set earlier.
 
@@ -324,9 +331,9 @@ Submitting verification for [Counter] "0x061A1DdE963792192eA823C2F57285111812630
 Contract successfully verified
 ```
 
-**Congratulations! 🎉 You have successfully deployed, interacted with, and verified a smart contract on the Hedera Testnet using Foundry.  Feel free to reach out in** [**Discord**](https://hedera.com/discord)**!**
+**Congratulations! 🎉 You have successfully deployed, interacted with, and verified a smart contract on the Hedera Testnet using Foundry. Feel free to reach out in** [**Discord**](https://hedera.com/discord)**!**
 
-***
+---
 
 ## Interact using cast
 
@@ -363,7 +370,7 @@ cast call $CONTRACT_ADDRESS "number()(uint256)" --rpc-url hedera
 
 You should get an output of `43` since the counter is at 43 now after having added 42 + 1.
 
-***
+---
 
 ## Further Learning & Next Steps
 
@@ -377,16 +384,12 @@ Want to take your local development setup even further? Here are some excellent 
    Learn how to fork hedera network(testnet/mainnet) locally so you can start testing against the forked network
 
 <Columns cols={2}>
-  <Card
-    title="Writer: Kiran, Developer Advocate"
-    arrow
-  >
-    [GitHub](https://github.com/kpachhai) | [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
+  <Card title="Writer: Kiran, Developer Advocate" arrow>
+    [GitHub](https://github.com/kpachhai) |
+    [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
   </Card>
-  <Card
-    title="Editor: Krystal, Technical Writer"
-    arrow
-  >
-    [GitHub](https://github.com/theekrystallee) | [X](https://x.com/theekrystallee)
+  <Card title="Editor: Krystal, DX Engineer" arrow>
+    [GitHub](https://github.com/theekrystallee) |
+    [X](https://x.com/theekrystallee)
   </Card>
 </Columns>

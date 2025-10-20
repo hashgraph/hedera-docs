@@ -2,32 +2,32 @@
 title: "HTS x EVM - How to Mint NFTs (Part 1)"
 ---
 
-
 On Hedera, we can create, mint, burn and transfer non-fungible tokens(NFTs) without deploying or dealing with any smart contracts. We can do this using only the Hedera Token Service(HTS) and official SDKs available in varrious languages such as Javascript, Rust, Go, Python, Java, etc. If you want to learn how to perform these operations using the SDK, refer to [this documentation](/hedera/tutorials/token/hedera-token-service-part-1-how-to-mint-nfts).
 
 However, it is also possible to create a token on Hedera using a **smart contract** and still benefit from the native Hedera Token Service. However, the contract needs to interact with the [HTS System Contract](/hedera/core-concepts/smart-contracts/system-smart-contracts), which provides Hedera-specific token operations. By combining **HTS** and **Solidity**, you:
 
-* Get all the performance, cost-efficiency, and security of native HTS tokens.
-* Can embed custom, decentralized logic in your contract for advanced use cases.
+- Get all the performance, cost-efficiency, and security of native HTS tokens.
+- Can embed custom, decentralized logic in your contract for advanced use cases.
 
 In this tutorial, you’ll:
 
-* **Create** an NFT collection with a royalty fee schedule.
-* **Mint** new NFTs with metadata pointing to IPFS.
-* **Burn** an existing NFT.
+- **Create** an NFT collection with a royalty fee schedule.
+- **Mint** new NFTs with metadata pointing to IPFS.
+- **Burn** an existing NFT.
 
 <Info>
-You can take a look at the **complete code** in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hts-evm-mint-nfts).
+  You can take a look at the **complete code** in the [**Hedera-Code-Snippets
+  repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hts-evm-mint-nfts).
 </Info>
 
-***
+---
 
 ## Prerequisites
 
-* ECDSA account from the [Hedera Portal](https://portal.hedera.com/).
-* Basic understanding of Solidity.
+- ECDSA account from the [Hedera Portal](https://portal.hedera.com/).
+- Basic understanding of Solidity.
 
-***
+---
 
 ## Table of Contents <a href="#table-of-contents" id="table-of-contents"></a>
 
@@ -41,11 +41,11 @@ You can take a look at the **complete code** in the [**Hedera-Code-Snippets repo
 8. [Conclusion](#conclusion)
 9. [Additional Resources](#additional-resources)
 
-***
+---
 
 ## Setup Project
 
-Set up your project by initializing the hardhat project. 
+Set up your project by initializing the hardhat project.
 
 ```bash
 mkdir hts-evm-mint-nfts
@@ -58,20 +58,21 @@ Make sure to select "**Hardhat 3 -> Typescript Hardhat Project using Mocha and E
 <Accordion title="🚧 What's new: Hardhat 2 → 3 ">
 Key differences in Hardhat 3:
 
-* **compile → build**\
+- **compile → build**\
   `npx hardhat compile` is now `npx hardhat build`. This is the big one. The v3 migration guide explicitly shows using the `build` task.
-* **project init switch**\
+- **project init switch**\
   v2 commonly used `npx hardhat` or `npx hardhat init` to bootstrap. In v3 it’s `npx hardhat --init`.
 
-- **keystore helper commands are new**\
+* **keystore helper commands are new**\
   v3’s recommended flow includes a keystore plugin with commands like `npx hardhat keystore set HEDERA_RPC_URL` and `npx hardhat keystore set HEDERA_PRIVATE_KEY`. These weren’t standard in v2.
-- **Foundry-compatiable Solidity tests**\
+* **Foundry-compatiable Solidity tests**\
   In addition to offering Javascript/Typescript integration tests, Hardhat v3 also integrates Foundry-compatible Solidity tests that allows developers to write unit tests directly in Solidity
 
-* **Enhanced Network Management**\
+- **Enhanced Network Management**\
   v3 allows tasks to create and manage multiple network connections simultaneously which is a significant improvement over the single, fixed connection available in version 2. This provides greater flexibility for scripts and tests that interact with multiple networks.
 
-*📚 Learn more from the official* [*Hardhat documentation*](https://hardhat.org/docs/getting-started)*.*
+_📚 Learn more from the official_ [_Hardhat documentation_](https://hardhat.org/docs/getting-started)_._
+
 </Accordion>
 
 Before we make any changes to our Hardhat configuration file, let's set some configuration variables we will be referring to within the file later.
@@ -95,13 +96,13 @@ For `HEDERA_PRIVATE_KEY`, enter the **HEX Encoded Private Key for your ECDSA acc
 Next, install the required dependencies:
 
 ```bash
-npm install @openzeppelin/contracts 
+npm install @openzeppelin/contracts
 npm install github:hashgraph/hedera-smart-contracts
 ```
 
 Note that we are installing the latest code from the main branch when we install `github:hashgraph/hedera-smart-contracts` . This also gets installed at `@hashgraph/smart-contracts` so we can easily call these contracts from our own contract.
 
-***
+---
 
 ## Step 1: Configure Hardhat
 
@@ -118,31 +119,30 @@ const config: HardhatUserConfig = {
   solidity: {
     profiles: {
       default: {
-        version: "0.8.28"
+        version: "0.8.28",
       },
       production: {
         version: "0.8.28",
         settings: {
           optimizer: {
             enabled: true,
-            runs: 200
-          }
-        }
-      }
-    }
+            runs: 200,
+          },
+        },
+      },
+    },
   },
   networks: {
     testnet: {
       type: "http",
       url: configVariable("HEDERA_RPC_URL"),
-      accounts: [configVariable("HEDERA_PRIVATE_KEY")]
-    }
-  }
+      accounts: [configVariable("HEDERA_PRIVATE_KEY")],
+    },
+  },
 };
 
 export default config;
 ```
-
 
 We won't be using `ignition` and we will be removing the default contracts that comes with hardhat default project so we will remove all the unnecessary directories and files first:
 
@@ -151,7 +151,7 @@ rm -rf contracts/* scripts/* test/*
 rm -rf ignition
 ```
 
-***
+---
 
 ## Step 2. Creating an NFT collection via HTS(similar to ERC721)
 
@@ -389,7 +389,6 @@ contract MyHTSToken is HederaTokenService, KeyHelper, Ownable {
 }
 ```
 
-
 <Info>
 **How It Works**
 
@@ -401,10 +400,13 @@ contract MyHTSToken is HederaTokenService, KeyHelper, Ownable {
 6. **Burning (ERC721Burnable-like)**: Owner or approved operator calls burn(tokenId). If not already in treasury, the contract (when approved) pulls the token from the owner, then burns it via HTS.
 7. **HBAR handling**: Contract can receive HBAR (receive/fallback) and the owner can withdraw any balance with withdrawHBAR().
 8. **HTS nuances**: NFT metadata is limited to 100 bytes per serial; token IDs are HTS serials (start at 1); association is required on Hedera for receiving NFTs.
+
 </Info>
 
 <Info>
-Hedera Native Tokens(created via HTS) are highly interoperable with their corresponding ERC Contracts. Hedera Accounts are able to transfer native NFTs as though they are ERC-721 Smart Contracts!
+  Hedera Native Tokens(created via HTS) are highly interoperable with their
+  corresponding ERC Contracts. Hedera Accounts are able to transfer native NFTs
+  as though they are ERC-721 Smart Contracts!
 </Info>
 
 Let's build this contract by running:
@@ -415,7 +417,7 @@ npx hardhat build
 
 This command will generate the smart contract artifacts, including the [ABI](/hedera/core-concepts/smart-contracts/compiling-smart-contracts). We are now ready to deploy the smart contract.
 
-***
+---
 
 ## Step 3: Deploy Your HTS NFT Smart Contract
 
@@ -446,7 +448,7 @@ async function main() {
   );
   const tx = await contract.createNFTCollection(NAME, SYMBOL, {
     gasLimit: 250_000,
-    value: ethers.parseEther(HBAR_TO_SEND)
+    value: ethers.parseEther(HBAR_TO_SEND),
   });
   await tx.wait();
   console.log("createNFTCollection() tx hash:", tx.hash);
@@ -464,13 +466,13 @@ async function main() {
 main().catch(console.error);
 ```
 
-
 In this script, we first retrieve your account (the deployer) using Ethers.js. This account will own the deployed smart contract. Next, we use this account to deploy the contract by calling `MyHTSToken.deploy()`.
 
 <Info>
 **Note**
 
 For most HTS [System Smart Contract](/hedera/core-concepts/smart-contracts/system-smart-contracts) calls, an HBAR value **is not** required to be sent in the contract call; the gas fee will cover it. However, for expensive transactions, like [Create HTS NFT Collection](#step-3-deploy-your-hts-nft-smart-contract), the gas fee is reduced, and the transaction cost is covered by the payable amount. This is to reduce the gas consumed by the contract call.
+
 </Info>
 
 Deploy your contract by executing the script:
@@ -479,9 +481,7 @@ Deploy your contract by executing the script:
 npx hardhat run scripts/deploy.ts --network testnet
 ```
 
-<Check>
-Copy the deployed address—you'll need this in subsequent steps.
-</Check>
+<Check>Copy the deployed address—you'll need this in subsequent steps.</Check>
 
 The output looks like this:
 
@@ -493,7 +493,7 @@ MyHTSToken contract deployed at: 0xC244Cf8d1c123B1A2C8c12c780ce41d813eb70be
 Underlying HTS NFT Collection (ERC721 facade) address: 0x000000000000000000000000000000000068D3eF
 ```
 
-***
+---
 
 ## Step 4: Minting an HTS NFT
 
@@ -550,7 +550,7 @@ async function main() {
     recipient,
     metadata,
     {
-      gasLimit: 350_000
+      gasLimit: 350_000,
     }
   );
   await tx.wait();
@@ -569,7 +569,6 @@ async function main() {
 main().catch(console.error);
 ```
 
-
 <Info>
 **How It Works**
 
@@ -577,6 +576,7 @@ main().catch(console.error);
 2. Reads the underlying HTS ERC721 facade address (tokenAddress) from the contract.
 3. Constructs \<=100-byte UTF-8 metadata and calls mintNFT(recipient, metadata), then waits for the transaction receipt.
 4. Queries balanceOf(recipient) on the ERC721 facade and logs the current NFT count.
+
 </Info>
 
 The code mints a new NFT to your account ( `signer.address` ). Then we verify the balance to see if we own an HTS NFT.
@@ -599,7 +599,7 @@ Mint tx hash: 0x55fe1d9cb4126913eb07fc2e2d596c0bcb41eab66e0dbcd4c93be9e73c69beed
 Balance: 1 NFTs
 ```
 
-***
+---
 
 ## Step 5: Burning an HTS NFT
 
@@ -634,7 +634,7 @@ async function main() {
       "function approve(address to, uint256 tokenId) external",
       "function getApproved(uint256 tokenId) external view returns (address)",
       "function ownerOf(uint256 tokenId) external view returns (address)",
-      "function balanceOf(address owner) external view returns (uint256)"
+      "function balanceOf(address owner) external view returns (uint256)",
     ],
     signer
   );
@@ -661,7 +661,7 @@ async function main() {
   // Burn via MyHTSToken
   console.log(`Burning tokenId ${tokenId.toString()}...`);
   const burnTx = (await myHTSTokenContract.burnNFT(tokenId, {
-    gasLimit: 200_000
+    gasLimit: 200_000,
   })) as unknown as ContractTransactionResponse;
   await burnTx.wait();
   console.log("Burn tx hash:", burnTx.hash);
@@ -672,9 +672,7 @@ async function main() {
 }
 
 main().catch(console.error);
-
 ```
-
 
 <Info>
 **How It Works**
@@ -683,6 +681,7 @@ main().catch(console.error);
 2. Checks token ownership and existing approval; if needed, approves the MyHTSToken contract for the specific tokenId.
 3. Calls burnNFT(tokenId) on MyHTSToken and waits for the transaction receipt.
 4. Reads and logs the signer’s NFT balance from the ERC721 facade after the burn.
+
 </Info>
 
 The script will burn the HTS NFT with the ID set to `1`, which is the HTS NFT you've just minted. To be sure the token has been deleted, let's print the balance for our account to the terminal. The balance should show a balance of `0`.
@@ -708,18 +707,22 @@ Balance after burn: 0 NFTs
 
 **Congratulations! 🎉 You have successfully learned how to deploy an HTS NFT collection smart contract using Hardhat, OpenZeppelin, and Ethers. Feel free to reach out in** [**Discord**](https://hedera.com/discord)**!**
 
-***
+---
 
 ## Step 6: Run tests(Optional)
 
 You can find both types of tests in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hts-evm-mint-nfts). You will find the following files:
 
-* `contracts/MyHTSToken.t.sol`
+- `contracts/MyHTSToken.t.sol`
 
 <Info>
-* **Ownership and access control**: Ensures constructor sets the correct owner and that onlyOwner is enforced for createNFTCollection (non-owners revert with OwnableUnauthorizedAccount).
-* **Pre-creation guards:** Confirms HTS-dependent functions (mint, burn) revert with "HTS: not created" before the collection is created.
-* **HBAR handling:** Verifies the contract can receive HBAR (HBARReceived event), blocks non-owner withdrawals, and lets the owner withdraw all HBAR (HBARWithdrawn event) leaving the contract balance at zero.
+  * **Ownership and access control**: Ensures constructor sets the correct owner
+  and that onlyOwner is enforced for createNFTCollection (non-owners revert with
+  OwnableUnauthorizedAccount). * **Pre-creation guards:** Confirms HTS-dependent
+  functions (mint, burn) revert with "HTS: not created" before the collection is
+  created. * **HBAR handling:** Verifies the contract can receive HBAR
+  (HBARReceived event), blocks non-owner withdrawals, and lets the owner
+  withdraw all HBAR (HBARWithdrawn event) leaving the contract balance at zero.
 </Info>
 
 - `test/MyHTSToken.ts`
@@ -736,10 +739,10 @@ Copy these files and then run the tests:
 
 ```bash
 # This will run the tests via hardhat
-npx hardhat test solidity 
-# This will run the tests via hedera testnet as the precompiles 
+npx hardhat test solidity
+# This will run the tests via hedera testnet as the precompiles
 # are not available on hardhat locally and we must use the testnet
-npx hardhat test mocha 
+npx hardhat test mocha
 ```
 
 You can also run both the solidity and mocha tests altogether:
@@ -748,15 +751,15 @@ You can also run both the solidity and mocha tests altogether:
 npx hardhat test
 ```
 
-***
+---
 
 ## Conclusion
 
 Using Solidity on Hedera, you can **create**, **mint and** **burn** native NFTs with minimal code thanks to the **HTS System Contract**. In this tutorial, you saw how to:
 
-* **Create** a new NFT class with royalty fees (`createNFTCollection`).
-* **Mint** new tokens (`mintNFT`).
-* **Burn** tokens when they are no longer needed (`burnNFT`).
+- **Create** a new NFT class with royalty fees (`createNFTCollection`).
+- **Mint** new tokens (`mintNFT`).
+- **Burn** tokens when they are no longer needed (`burnNFT`).
 
 Continue exploring our [Part 2: KYC & Update](/hedera/tutorials/smart-contracts/hts-x-evm-part-2-kyc-and-update) to see how advanced compliance flags (e.g., KYC) or updating tokens can be handled natively.
 
@@ -765,37 +768,28 @@ Continue exploring our [Part 2: KYC & Update](/hedera/tutorials/smart-contracts/
   href="/hedera/tutorials/smart-contracts/hts-x-evm-part-2-kyc-and-update"
 />
 
-***
+---
 
 ## Additional Resources
 
 Check out our GitHub repo to find the full contract and Hardhat test scripts, along with the configuration files you need to deploy and test on Hedera!
 
-* [Full Contract and Tests Repository](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hts-evm-mint-nfts)
+- [Full Contract and Tests Repository](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hts-evm-mint-nfts)
 
 <Columns cols={2}>
-  <Card
-    title="Writer: Jake, Developer Relations Engineer"
-    arrow
-  >
+  <Card title="Writer: Jake, DevRel Engineer" arrow>
     [GitHub](https://github.com/jaycoolh) | [X](https://x.com/jaycoolh)
   </Card>
-  <Card
-    title="Editor: Michiel, Developer Relations Engineer"
-    arrow
-  >
-    [GitHub](https://github.com/michielmulders) | [LinkedIn](https://www.linkedin.com/in/michielmulders/)
+  <Card title="Editor: Michiel, DevRel Engineer" arrow>
+    [GitHub](https://github.com/michielmulders) |
+    [LinkedIn](https://www.linkedin.com/in/michielmulders/)
   </Card>
-  <Card
-    title="Editor: Krystal, Technical Writer"
-    arrow
-  >
-    [GitHub](https://github.com/theekrystallee) | [X](https://x.com/theekrystallee)
+  <Card title="Editor: Krystal, DX Engineer" arrow>
+    [GitHub](https://github.com/theekrystallee) |
+    [X](https://x.com/theekrystallee)
   </Card>
-  <Card
-    title="Editor: Kiran, Developer Advocate"
-    arrow
-  >
-    [GitHub](https://github.com/kpachhai) | [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
+  <Card title="Editor: Kiran, Developer Advocate" arrow>
+    [GitHub](https://github.com/kpachhai) |
+    [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
   </Card>
 </Columns>

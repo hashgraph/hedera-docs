@@ -2,24 +2,27 @@
 title: "Deploy a Subgraph Using The Graph and Hedera JSON-RPC Relay"
 ---
 
-
 In this tutorial, you'll learn how to create and deploy a subgraph using The Graph protocol. By indexing specific network data using user-defined data structures called "subgraphs," developers can easily query the indexed data through a GraphQL API, creating robust backends for dApps. Subgraphs simplify the process of obtaining blockchain/network data for developers building dApps. This approach removes the complexities of interacting directly with the network, allowing developers to focus on building. Although Hedera supports subgraphs, its hosted service is currently unavailable, so we'll need to set up and run a local graph node to deploy our subgraph.
 
 By the end of this tutorial, you'll be able to configure a mirror node, query data from your subgraph using the GraphQL API, and integrate it into your dApp. You'll also have a better understanding of how to define custom data schemas, indexing rules, and queries for your subgraph, allowing you to tailor it to your specific use case.
 
 <Info>
-**Note:**  While it is possible to present and interact with HTS tokens in a similar manner as ERC-20/721 tokens, the network is presently unable to capture all the expected ERC-20/721 event logs. In other words, if ERC-like operations are conducted on HTS tokens, not all of them will be captured in smart contract event logging.
+  **Note:** While it is possible to present and interact with HTS tokens in a
+  similar manner as ERC-20/721 tokens, the network is presently unable to
+  capture all the expected ERC-20/721 event logs. In other words, if ERC-like
+  operations are conducted on HTS tokens, not all of them will be captured in
+  smart contract event logging.
 </Info>
 
-***
+---
 
 ## Prerequisites
 
-* Basic understanding of JavaScript and NPM installed.
-* Basic understanding of subgraphs and the [Graph CLI](#graph-cli-installation) installed.
-* The deployed Greeter smart contract address from the [Hardhat tutorial](/hedera/core-concepts/smart-contracts/json-rpc-relay).
-* The [start block](#find-start-block) number of when the Greeter smart contract was first deployed.
-* [Docker](https://www.docker.com/) `>= v20.10.x` installed and open on your machine. Run `docker -v` in your terminal to check the version you have installed.
+- Basic understanding of JavaScript and NPM installed.
+- Basic understanding of subgraphs and the [Graph CLI](#graph-cli-installation) installed.
+- The deployed Greeter smart contract address from the [Hardhat tutorial](/hedera/core-concepts/smart-contracts/json-rpc-relay).
+- The [start block](#find-start-block) number of when the Greeter smart contract was first deployed.
+- [Docker](https://www.docker.com/) `>= v20.10.x` installed and open on your machine. Run `docker -v` in your terminal to check the version you have installed.
 
 <Accordion title="Find start block">
 1. Go to HashScan explorer [here](https://hashscan.io/).
@@ -30,7 +33,8 @@ By the end of this tutorial, you'll be able to configure a mirror node, query da
   <img src="/images/tutorials/smart-contracts/deploy-a-subgraph-using-the-graph-and-json-rpc/deploy-a-subgraph-using-the-graph-and-json-rpc-1.png" />
 </Frame>
 
-***Note:** When searching for contract addresses, there are two types with different formats - the **public** smart contract address (0x....) or **contract ID** (0.0.12345).*
+**\*Note:** When searching for contract addresses, there are two types with different formats - the **public** smart contract address (0x....) or **contract ID** (0.0.12345).\*
+
 </Accordion>
 
 <Accordion title="Graph CLI installation">
@@ -46,10 +50,11 @@ Test to see if it was installed correctly by running:
 graph -v
 ```
 
-***Note**: The Graph CLI will be installed globally, so you can run the command in any directory.*
+**\*Note**: The Graph CLI will be installed globally, so you can run the command in any directory.\*
+
 </Accordion>
 
-***
+---
 
 ## Table of Contents
 
@@ -59,7 +64,7 @@ graph -v
 4. [Code Check](#code-check)
 5. [Additional Resources](#additional-resources)
 
-***
+---
 
 ## Project Setup
 
@@ -94,13 +99,12 @@ In the `testnet.json` file, under the `config` folder, replace the `startBlock` 
 
 ```json testnet.json
 {
-    "startBlock": 1050018,
-    "Greeter": "0xCc0d40EA9d2Dd16Ab5565ae91b121960d5e19e4e"
+  "startBlock": 1050018,
+  "Greeter": "0xCc0d40EA9d2Dd16Ab5565ae91b121960d5e19e4e"
 }
 ```
 
-
-***
+---
 
 ## Project Configuration
 
@@ -120,24 +124,20 @@ dataSources:
     network: testnet
     source:
       # Step 1
-      address: "0xCc0d40EA9d2Dd16Ab5565ae91b121960d5e19e4e" 
+      address: "0xCc0d40EA9d2Dd16Ab5565ae91b121960d5e19e4e"
       abi: IGreeter
       # Step 2
       startBlock: 1050018
-      
 ```
-
 
 The `eventHandlers` field specifies how each mapping connects to various event triggers. Whenever an event defined in this section is emitted from your contract, the corresponding mapping function designated as the handler will be executed.
 
 ```yaml subgraph.yaml
-    eventHandlers:
-      - event: GreetingSet(string)
-        handler: handleGreetingSet
-    file: ./src/mappings.ts
-      
+eventHandlers:
+  - event: GreetingSet(string)
+    handler: handleGreetingSet
+file: ./src/mappings.ts
 ```
-
 
 #### GraphQL Schema
 
@@ -145,45 +145,41 @@ The GraphQL schema (`schema.graphql`) defines the structure of the data you want
 
 ```graphql schema.graphql
 type Greeting @entity {
-    id: ID!
-    currentGreeting: String!
+  id: ID!
+  currentGreeting: String!
 }
 ```
-
 
 #### Event Mappings
 
-The `mappings.ts` file maps events emitted by your smart contract into entities that can be indexed by a subgraph. It uses *AssemblyScript* to connect the events to the data schema. AssemblyScript types for entities and events can be generated in the terminal (by running the `codegen` command) and imported into the mappings file. This allows easy access to the event object's properties in the code editor.
+The `mappings.ts` file maps events emitted by your smart contract into entities that can be indexed by a subgraph. It uses _AssemblyScript_ to connect the events to the data schema. AssemblyScript types for entities and events can be generated in the terminal (by running the `codegen` command) and imported into the mappings file. This allows easy access to the event object's properties in the code editor.
 
 ```typescript mappings.ts
-import { GreetingSet} from '../generated/Greeter/IGreeter';
-import {Greeting} from "../generated/schema";
-
+import { GreetingSet } from "../generated/Greeter/IGreeter";
+import { Greeting } from "../generated/schema";
 
 export function handleGreetingSet(event: GreetingSet): void {
-	// Entities can be loaded from the store using a string ID; this ID
-	// needs to be unique across all entities of the same type
-	let entity = Greeting.load(event.transaction.hash.toHexString());
+  // Entities can be loaded from the store using a string ID; this ID
+  // needs to be unique across all entities of the same type
+  let entity = Greeting.load(event.transaction.hash.toHexString());
 
-	// Entities only exist after they have been saved to the store;
-	// `null` checks allow to create entities on demand
-	if (!entity) {
-		entity = new Greeting(event.transaction.hash.toHex());
-	}
+  // Entities only exist after they have been saved to the store;
+  // `null` checks allow to create entities on demand
+  if (!entity) {
+    entity = new Greeting(event.transaction.hash.toHex());
+  }
 
-	// Entity fields can be set based on event parameters
-	entity.currentGreeting = event.params._greeting;
+  // Entity fields can be set based on event parameters
+  entity.currentGreeting = event.params._greeting;
 
-	// Entities can be written to the store with `.save()`
-	entity.save();
+  // Entities can be written to the store with `.save()`
+  entity.save();
 }
-
 ```
-
 
 #### Graph Node Configuration
 
-To connect a local graph node to a remote network, such as testnet, mainnet, or previewnet, use a [docker-compose](https://github.com/graphprotocol/graph-node/tree/master/docker#docker-compose) setup. The API endpoint that connects the graph node to the network is specified within the `environment` object of the `docker-compose.yaml` file [here](https://github.com/hashgraph/hedera-subgraph-example/blob/main/graph-node/docker-compose.yaml). Add the API endpoint URL in the `ethereum` field in the `environment` object. For this tutorial, we will use the [Hashio Testnet ](https://www.hashgraph.com/hashio/)instance of the Hedera JSON-RPC relay, but *any* [JSON-RPC provider](/hedera/core-concepts/smart-contracts/json-rpc-relay) supported by the community can be used.
+To connect a local graph node to a remote network, such as testnet, mainnet, or previewnet, use a [docker-compose](https://github.com/graphprotocol/graph-node/tree/master/docker#docker-compose) setup. The API endpoint that connects the graph node to the network is specified within the `environment` object of the `docker-compose.yaml` file [here](https://github.com/hashgraph/hedera-subgraph-example/blob/main/graph-node/docker-compose.yaml). Add the API endpoint URL in the `ethereum` field in the `environment` object. For this tutorial, we will use the [Hashio Testnet ](https://www.hashgraph.com/hashio/)instance of the Hedera JSON-RPC relay, but _any_ [JSON-RPC provider](/hedera/core-concepts/smart-contracts/json-rpc-relay) supported by the community can be used.
 
 This is what the `ethereum` field should look like after you enter your API endpoint URL:
 
@@ -191,9 +187,9 @@ This is what the `ethereum` field should look like after you enter your API endp
 ethereum: 'testnet:https://testnet.hashio.io/api
 ```
 
-***Note:** For more info on how to set up an indexer, check out* T\_he Graph\_ [*docs*](https://thegraph.com/docs/en/) *and the* [*official graph-node GitHub repository*](https://github.com/graphprotocol/graph-node)*. For a full subgraph project example, check out* [*this*](https://github.com/hashgraph/hedera-json-rpc-relay/tree/main/tools/subgraph-example) *repo.*
+**\*Note:** For more info on how to set up an indexer, check out* T_he Graph\_ [*docs*](https://thegraph.com/docs/en/) *and the* [*official graph-node GitHub repository*](https://github.com/graphprotocol/graph-node)*. For a full subgraph project example, check out* [*this*](https://github.com/hashgraph/hedera-json-rpc-relay/tree/main/tools/subgraph-example) *repo.\*
 
-***
+---
 
 ## Deploy Subgraph
 
@@ -224,6 +220,7 @@ What your console will return if you run the command more than once:
  ⠿ Container graph-node-ipfs-1        Running     0.0s
  ⠿ Container graph-node-graph-node-1  Running     0.0s
 ```
+
 </Accordion>
 
 #### 2. Generate Types
@@ -252,31 +249,34 @@ graph codegen
 ✔ Generate types for GraphQL schema
 
 Types generated successfully
+
 ```
 </Accordion>
 
 You should have a new folder named `generated` in your project directory. This is what your updated subgraph project structure should look like:
 
 ```
+
 subgraph-name
 └───abis
-│   |  IGreeter.json
+│ | IGreeter.json
 └───config
-│   └──testnet.json
+│ └──testnet.json
 └───generated
-│   └───Greeter
-│       │   IGreeter.ts
-│   │   schema.ts
+│ └───Greeter
+│ │ IGreeter.ts
+│ │ schema.ts
 └───graph-node
-│   └──docker-compose.yaml
+│ └──docker-compose.yaml
 └───src
-│   │   mappings.ts
-│   package-lock.json
-│   package.json
-│   README.md
-│   schema.graphql
-│   subgraph.yaml
-```
+│ │ mappings.ts
+│ package-lock.json
+│ package.json
+│ README.md
+│ schema.graphql
+│ subgraph.yaml
+
+````
 
 #### 3. Create and Deploy
 
@@ -285,7 +285,7 @@ To create and deploy your subgraph to your local graph node, run:
 ```bash
 // create the subgraph
 npm run create-local
-```
+````
 
 <Accordion title="console check ✅">
 ```bash
@@ -293,17 +293,18 @@ npm run create-local
 > graph create --node http://localhost:8020/ Greeter
 
 Created subgraph: Greeter
-```
+
+````
 </Accordion>
 
 ```bash
 // deploy the subgraph
 npm run deploy-local
-```
+````
 
 When you run the `deploy-local` command, your console will prompt you to provide a `Version Label`. Enter any version number you'd like. This is just a way to keep track of different versions of your subgraph. For instance, if you started with version v0.0.1 today, but then made some changes and wanted to deploy an upgraded version, you bump up the version number to v0.0.2.
 
-*For example: ✔ Version Label (e.g. v0.0.1) · v0.0.1*
+_For example: ✔ Version Label (e.g. v0.0.1) · v0.0.1_
 
 <Accordion title="console check ✅">
 ```bash
@@ -313,18 +314,18 @@ When you run the `deploy-local` command, your console will prompt you to provide
 ✔ Version Label (e.g. v0.0.1) · v0.0.1
 ✔ Apply migrations
 ✔ Load subgraph from subgraph.yaml
-  Compile data source: Greeter => build/Greeter/Greeter.wasm
+Compile data source: Greeter => build/Greeter/Greeter.wasm
 ✔ Compile subgraph
-  Copy schema file build/schema.graphql
-  Write subgraph file build/Greeter/abis/IGreeter.json
-  Write subgraph manifest build/subgraph.yaml
+Copy schema file build/schema.graphql
+Write subgraph file build/Greeter/abis/IGreeter.json
+Write subgraph manifest build/subgraph.yaml
 ✔ Write compiled subgraph to build/
-  Add file to IPFS build/schema.graphql
-                .. QmVtZMzbjU6QHEFfrCJ5NhbP5vUNrukaussxXZ4Esf3qCm
-  Add file to IPFS build/Greeter/abis/IGreeter.json
-                .. QmZQbrdhaR2p2EZR6raiLbpgX5hjKW4S5cDgy1VvHKmjtH
-  Add file to IPFS build/Greeter/Greeter.wasm
-                .. QmYz3qFZ4KHiHXhgbTKFxbCNvE9Serhq8yvGuJPK12K5qf
+Add file to IPFS build/schema.graphql
+.. QmVtZMzbjU6QHEFfrCJ5NhbP5vUNrukaussxXZ4Esf3qCm
+Add file to IPFS build/Greeter/abis/IGreeter.json
+.. QmZQbrdhaR2p2EZR6raiLbpgX5hjKW4S5cDgy1VvHKmjtH
+Add file to IPFS build/Greeter/Greeter.wasm
+.. QmYz3qFZ4KHiHXhgbTKFxbCNvE9Serhq8yvGuJPK12K5qf
 ✔ Upload subgraph to IPFS
 
 Build completed: QmbGuuuqtEEqFxjdwSdhiKKpb4GCzqbh3oASAnVVEXRoVW
@@ -332,8 +333,9 @@ Build completed: QmbGuuuqtEEqFxjdwSdhiKKpb4GCzqbh3oASAnVVEXRoVW
 Deployed to http://localhost:8000/subgraphs/name/Greeter/graphql
 
 Subgraph endpoints:
-Queries (HTTP):     http://localhost:8000/subgraphs/name/Greeter
-```
+Queries (HTTP): http://localhost:8000/subgraphs/name/Greeter
+
+````
 
 After the subgraph is successfully deployed, open the [GraphQL playground](http://localhost:8000/subgraphs/name/Greeter/graphql?query=%0A++++%23%0A++++%23+Welcome+to+The+GraphiQL%0A++++%23%0A++++%23+GraphiQL+is+an+in-browser+tool+for+writing%2C+validating%2C+and%0A++++%23+testing+GraphQL+queries.%0A++++%23%0A++++%23+Type+queries+into+this+side+of+the+screen%2C+and+you+will+see+intelligent%0A++++%23+typeaheads+aware+of+the+current+GraphQL+type+schema+and+live+syntax+and%0A++++%23+validation+errors+highlighted+within+the+text.%0A++++%23%0A++++%23+GraphQL+queries+typically+start+with+a+%22%7B%22+character.+Lines+that+start%0A++++%23+with+a+%23+are+ignored.%0A++++%23%0A++++%23+An+example+GraphQL+query+might+look+like%3A%0A++++%23%0A++++%23+++++%7B%0A++++%23+++++++field%28arg%3A+%22value%22%29+%7B%0A++++%23+++++++++subField%0A++++%23+++++++%7D%0A++++%23+++++%7D%0A++++%23%0A++++%23+Keyboard+shortcuts%3A%0A++++%23%0A++++%23++Prettify+Query%3A++Shift-Ctrl-P+%28or+press+the+prettify+button+above%29%0A++++%23%0A++++%23+++++Merge+Query%3A++Shift-Ctrl-M+%28or+press+the+merge+button+above%29%0A++++%23%0A++++%23+++++++Run+Query%3A++Ctrl-Enter+%28or+press+the+play+button+above%29%0A++++%23%0A++++%23+++Auto+Complete%3A++Ctrl-Space+%28or+just+start+typing%29%0A++++%23%0A++), where you can execute queries and fetch indexed data.
 </Accordion>
@@ -370,23 +372,24 @@ dataSources:
         - event: GreetingSet(string)
           handler: handleGreetingSet
       file: ./src/mappings.ts
-```
+````
+
 </Accordion>
 
 <Accordion title="docker-compose.yaml">
 **docker-compose.yaml**
 
 ```yaml
-version: '3'
+version: "3"
 services:
   graph-node:
     image: graphprotocol/graph-node:v0.27.0
     ports:
-      - '8000:8000'
-      - '8001:8001'
-      - '8020:8020'
-      - '8030:8030'
-      - '8040:8040'
+      - "8000:8000"
+      - "8001:8001"
+      - "8020:8020"
+      - "8030:8030"
+      - "8040:8040"
     depends_on:
       - ipfs
       - postgres
@@ -394,57 +397,54 @@ services:
       - host.docker.internal:host-gateway
     environment:
       postgres_host: postgres
-      postgres_user: 'graph-node'
-      postgres_pass: 'let-me-in'
-      postgres_db: 'graph-node'
-      ipfs: 'ipfs:5001'
-      ethereum: 
+      postgres_user: "graph-node"
+      postgres_pass: "let-me-in"
+      postgres_db: "graph-node"
+      ipfs: "ipfs:5001"
+      ethereum:
       GRAPH_LOG: info
       GRAPH_ETHEREUM_GENESIS_BLOCK_NUMBER: 1
   ipfs:
     image: ipfs/go-ipfs:v0.10.0
     ports:
-      - '5001:5001'
+      - "5001:5001"
     volumes:
       - ./data/ipfs:/data/ipfs
   postgres:
     image: postgres
     ports:
-      - '5432:5432'
-    command:
-      [
-          "postgres",
-          "-cshared_preload_libraries=pg_stat_statements"
-      ]
+      - "5432:5432"
+    command: ["postgres", "-cshared_preload_libraries=pg_stat_statements"]
     environment:
-      POSTGRES_USER: 'graph-node'
-      POSTGRES_PASSWORD: 'let-me-in'
-      POSTGRES_DB: 'graph-node'
+      POSTGRES_USER: "graph-node"
+      POSTGRES_PASSWORD: "let-me-in"
+      POSTGRES_DB: "graph-node"
       PGDATA: "/data/postgres"
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
 ```
+
 </Accordion>
 
-#### *Congratulations! You've successfully deployed a subgraph to your local graph node!*&#x20;
+#### _Congratulations! You've successfully deployed a subgraph to your local graph node!_&#x20;
 
 Once the node finishes indexing, you can access the GraphQL API at: http://localhost:8000/subgraphs/name/Greeter
 
 Follow the steps below to execute the query and fetch the indexed data from the subgraph's entities:
 
-1. Enter the following GraphQL query into the left column of the playground *(see Step 1 in the screenshot below)*:
+1. Enter the following GraphQL query into the left column of the playground _(see Step 1 in the screenshot below)_:
 
 ```graphql
 {
   greetings {
     id
-  currentGreeting
+    currentGreeting
   }
 }
 ```
 
-2. Execute the query by clicking on the play button at the top of the playground *(see Step 2 in the screenshot below).*
-3. The query returns the indexed data from the subgraph's entities on the right column of the playground *(see Step 3 in the screenshot below)*:
+2. Execute the query by clicking on the play button at the top of the playground _(see Step 2 in the screenshot below)._
+3. The query returns the indexed data from the subgraph's entities on the right column of the playground _(see Step 3 in the screenshot below)_:
 
 ```graphql
 {
@@ -465,7 +465,7 @@ Follow the steps below to execute the query and fetch the indexed data from the 
 
 #### **Congratulations! 🎉 You have successfully learned how to deploy a Subgraph using The Graph Protocol and JSON-RPC. Feel free to reach out on** [**Discord**](https://hedera.com/discord) **if you have any questions!**
 
-***
+---
 
 ## Additional Resources
 
@@ -474,22 +474,16 @@ Follow the steps below to execute the query and fetch the indexed data from the 
 **➡** [**Subgraph Example**](https://github.com/hashgraph/hedera-json-rpc-relay/tree/main/tools/subgraph-example)
 
 <Columns cols={2}>
-  <Card
-    title="Writer: Krystal, Technical Writer"
-    arrow
-  >
-    [GitHub](https://github.com/theekrystallee) | [Hashnode](https://hashnode.com/@theekrystallee)
+  <Card title="Writer: Krystal, DX Engineer" arrow>
+    [GitHub](https://github.com/theekrystallee) |
+    [Hashnode](https://hashnode.com/@theekrystallee)
   </Card>
-  <Card
-    title="Editor: Simi, Sr. Software Manager"
-    arrow
-  >
-    [GitHub](https://github.com/SimiHunjan) | [LinkedIn](https://www.linkedin.com/in/shunjan/)
+  <Card title="Editor: Simi, Sr. Software Manager" arrow>
+    [GitHub](https://github.com/SimiHunjan) |
+    [LinkedIn](https://www.linkedin.com/in/shunjan/)
   </Card>
-  <Card
-    title="Editor: Georgi, Sr Software Dev (LimeChain)"
-    arrow
-  >
-    [GitHub](https://github.com/georgi-l95) | [LinkedIn](https://www.linkedin.com/in/georgi-dimitorv-lazarov/)
+  <Card title="Editor: Georgi, Sr Software Dev (LimeChain)" arrow>
+    [GitHub](https://github.com/georgi-l95) |
+    [LinkedIn](https://www.linkedin.com/in/georgi-dimitorv-lazarov/)
   </Card>
 </Columns>

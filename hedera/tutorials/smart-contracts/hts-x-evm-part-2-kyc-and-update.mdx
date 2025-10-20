@@ -2,25 +2,25 @@
 title: "HTS x EVM - KYC & Update (Part 2)"
 ---
 
-
 In [Part 1](/hedera/tutorials/smart-contracts/hts-x-evm-part-1-how-to-mint-nfts) of the series, you saw how to mint, transfer, and burn an NFT using Hedera'a EVM and [Hedera Token Service (HTS) System Smart Contracts](/hedera/core-concepts/smart-contracts/system-smart-contracts). In this guide, you’ll learn the basics of how to configure / permission native Hedera Tokens via a Smart Contract. Specifically, you will learn how to:
 
-* **Create** and **configure** an NFT.
-* **Grant** and **revoke** a Know Your Customer (KYC) flag.
-* **Update** the KYC key with an Admin (to rotate compliance keys, for example)
+- **Create** and **configure** an NFT.
+- **Grant** and **revoke** a Know Your Customer (KYC) flag.
+- **Update** the KYC key with an Admin (to rotate compliance keys, for example)
 
 <Info>
-You can take a look at the **complete code** in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hts-evm-mint-nfts)
+  You can take a look at the **complete code** in the [**Hedera-Code-Snippets
+  repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hts-evm-mint-nfts)
 </Info>
 
-***
+---
 
 ## Prerequisites
 
-* ECDSA account from the [Hedera Portal](https://portal.hedera.com/).
-* Basic understanding of Solidity.
+- ECDSA account from the [Hedera Portal](https://portal.hedera.com/).
+- Basic understanding of Solidity.
 
-***
+---
 
 ## Table of Contents <a href="#table-of-contents" id="table-of-contents"></a>
 
@@ -37,20 +37,20 @@ You can take a look at the **complete code** in the [**Hedera-Code-Snippets repo
 11. [Conclusion](#conclusion)
 12. [Additional Resources](#additional-resources)
 
-***
+---
 
 ## Step 1. Add KYC key when creating HTS NFT Collection
 
 The [previous tutorial](/hedera/tutorials/smart-contracts/hts-x-evm-part-1-how-to-mint-nfts#id-2.-minting-an-nft) covered creating NFT collection. Everything remains largely the same except for the following changes:
 
-* We just need to add one additional line for managing the KYC key that is able to grant/remove KYC.
-* We will be using `createNonFungibleToken` instead of `createNonFungibleTokenWithCustomFees` for this exercise.
+- We just need to add one additional line for managing the KYC key that is able to grant/remove KYC.
+- We will be using `createNonFungibleToken` instead of `createNonFungibleTokenWithCustomFees` for this exercise.
 
 #### **Key Code Snippet:**
 
 ```solidity contracts/MyHTSTokenKYC.sol wrap
 contract MyHTSTokenKYC is HederaTokenService, KeyHelper, Ownable {
-    ... 
+    ...
     function createNFTCollection(
         string memory _name,
         string memory _symbol
@@ -104,34 +104,34 @@ contract MyHTSTokenKYC is HederaTokenService, KeyHelper, Ownable {
 }
 ```
 
-
 <Info>
 **How It Works**
 
 1. **Define Token Details** – Provide `name` and `symbol`.
 2. **Set Keys** – We generate three token keys:
-   * **AdminKey**: Grants permission to update token-level properties later.
-   * **SupplyKey**: Permits minting and burning of tokens.
-   * **KYCKey**: Allows the contract (acting as the KYC authority) to grant or revoke KYC on specific accounts.
+   - **AdminKey**: Grants permission to update token-level properties later.
+   - **SupplyKey**: Permits minting and burning of tokens.
+   - **KYCKey**: Allows the contract (acting as the KYC authority) to grant or revoke KYC on specific accounts.
 3. **Create the NFT** – Call the HTS System Contract's `createNonFungibleToken` function from within the contract. If successful, store the resulting HTS token address in `tokenAddress`.
+
 </Info>
 
 We call `createNFTCollection(...)` and expect it to emit an `NFTCollectionCreated` event with a valid token address.
 
-***
+---
 
 ## Step 2. Minting and Burning an NFT
 
 The [previous tutorial](/hedera/tutorials/smart-contracts/hts-x-evm-part-1-how-to-mint-nfts#id-2.-minting-an-nft) covered minting and burning NFTs. Nothing's changed in the code as it's the same as before.
 
-***
+---
 
 ## Step 3. Granting KYC
 
 Let's update our contract by:
 
-* Adding a new function `grantKYC` to enable KYC for a specific account. If a token is configured to enforce KYC, that account must be “granted” KYC before it can receive or send the token.
-* We will also define a new event `KYCGranted` to go along with it.
+- Adding a new function `grantKYC` to enable KYC for a specific account. If a token is configured to enforce KYC, that account must be “granted” KYC before it can receive or send the token.
+- We will also define a new event `KYCGranted` to go along with it.
 
 #### **Key Code Snippet:**
 
@@ -139,7 +139,7 @@ Let's update our contract by:
 contract MyHTSTokenKYC is HederaTokenService, KeyHelper, Ownable {
     ...
     event KYCGranted(address account);
-    ...    
+    ...
     function grantKYC(address account) external {
         require(tokenAddress != address(0), "HTS: not created");
         int response = grantTokenKyc(tokenAddress, account);
@@ -150,25 +150,24 @@ contract MyHTSTokenKYC is HederaTokenService, KeyHelper, Ownable {
 }
 ```
 
-
 <Warning>
-Without this step, the account won’t be able to receive or transact the NFT.
+  Without this step, the account won’t be able to receive or transact the NFT.
 </Warning>
 
-***
+---
 
 ## Step 4. Revoking KYC
 
 Let's update our contract by:
 
-* Adding a new function `revokeKYC` to disable KYC for a specific account. After revocation, that account can no longer receive or transfer the token.
-* We will also define a new event `KYCRevoked` to go along with it.
+- Adding a new function `revokeKYC` to disable KYC for a specific account. After revocation, that account can no longer receive or transfer the token.
+- We will also define a new event `KYCRevoked` to go along with it.
 
 ```solidity contracts/MyHTSTokenKYC.sol wrap
 contract MyHTSTokenKYC is HederaTokenService, KeyHelper, Ownable {
     ...
     event KYCRevoked(address account);
-    ...    
+    ...
     function revokeKYC(address account) external {
         require(tokenAddress != address(0), "HTS: not created");
         int response = revokeTokenKyc(tokenAddress, account);
@@ -184,21 +183,20 @@ contract MyHTSTokenKYC is HederaTokenService, KeyHelper, Ownable {
 }
 ```
 
-
-***
+---
 
 ## Step 5. Updating the KYC Key
 
 Let's update our contract by:
 
-* Adding a new function `updateKYCKey` to change the KYC key on the token. This could be a “key rotation” to maintain compliance or to assign another entity control over KYC status.
-* We will also define a new event `KYCKeyUpdated` to go along with it.
+- Adding a new function `updateKYCKey` to change the KYC key on the token. This could be a “key rotation” to maintain compliance or to assign another entity control over KYC status.
+- We will also define a new event `KYCKeyUpdated` to go along with it.
 
 ```solidity contracts/MyHTSTokenKYC.sol wrap
 contract MyHTSTokenKYC is HederaTokenService, KeyHelper, Ownable {
     ...
     event KYCKeyUpdated(bytes newKey);
-    ...    
+    ...
     function updateKYCKey(bytes memory newKYCKey) external onlyOwner {
         require(tokenAddress != address(0), "HTS: not created");
 
@@ -219,7 +217,6 @@ contract MyHTSTokenKYC is HederaTokenService, KeyHelper, Ownable {
 }
 
 ```
-
 
 After this key rotation, the contract's key is no longer able to perform KYC operations. In the snippet above, we immediately demonstrate that KYC attempts signed by the contract itself will revert.
 
@@ -495,8 +492,7 @@ contract MyHTSTokenKYC is HederaTokenService, KeyHelper, Ownable {
 }
 ```
 
-
-***
+---
 
 ## Step 6: Deploy Your HTS KYC Enabled NFT Smart Contract
 
@@ -530,7 +526,7 @@ async function main() {
   );
   const tx = await contract.createNFTCollection(NAME, SYMBOL, {
     gasLimit: 350_000,
-    value: ethers.parseEther(HBAR_TO_SEND)
+    value: ethers.parseEther(HBAR_TO_SEND),
   });
   await tx.wait();
   console.log("createNFTCollection() tx hash:", tx.hash);
@@ -548,13 +544,13 @@ async function main() {
 main().catch(console.error);
 ```
 
-
 In this script, we first retrieve your account (the deployer) using Ethers.js. This account will own the deployed smart contract. Next, we use this account to deploy the contract by calling `MyHTSTokenKYC.deploy()`.
 
 <Info>
 **Note**
 
 For most HTS [System Smart Contract](/hedera/core-concepts/smart-contracts/system-smart-contracts) calls, an HBAR value **is not** required to be sent in the contract call; the gas fee will cover it. However, for expensive transactions, like [Create HTS NFT Collection](#step-3-deploy-your-hts-nft-smart-contract), the gas fee is reduced, and the transaction cost is covered by the payable amount. This is to reduce the gas consumed by the contract call.
+
 </Info>
 
 Deploy your contract by executing the script:
@@ -563,9 +559,7 @@ Deploy your contract by executing the script:
 npx hardhat run scripts/deployKYC.ts --network testnet
 ```
 
-<Check>
-Copy the deployed address—you'll need this in subsequent steps.
-</Check>
+<Check>Copy the deployed address—you'll need this in subsequent steps.</Check>
 
 The output looks like this:
 
@@ -615,7 +609,7 @@ async function main() {
   try {
     console.log(`Granting KYC to ${recipient} ...`);
     const grantTx = await myHTSTokenKYCContract.grantKYC(recipient, {
-      gasLimit: 75_000
+      gasLimit: 75_000,
     });
     await grantTx.wait();
     console.log("Grant KYC tx hash:", grantTx.hash);
@@ -648,7 +642,7 @@ async function main() {
     recipient,
     metadata,
     {
-      gasLimit: 400_000
+      gasLimit: 400_000,
     }
   );
   await tx.wait();
@@ -667,7 +661,6 @@ async function main() {
 main().catch(console.error);
 ```
 
-
 <Info>
 **How It Works**
 
@@ -678,6 +671,7 @@ main().catch(console.error);
 5. Constructs \<=100-byte UTF-8 metadata and calls mintNFT(recipient, metadata), then waits for the transaction receipt.
 6. Mints NFT to recipient
 7. Queries balanceOf(recipient) on the ERC721 facade and logs the current NFT count.
+
 </Info>
 
 The code mints a new NFT to your account ( `signer.address` ). Then we verify the balance to see if we own an HTS NFT.
@@ -702,7 +696,7 @@ Mint tx hash: 0x1c7f02fb63b6b6add6ebab11bc5137d8289e7ec7576b2b1e394b864b49777a7e
 Balance: 1 NFTs
 ```
 
-***
+---
 
 ## Step 8: Burning an HTS NFT
 
@@ -737,7 +731,7 @@ async function main() {
       "function approve(address to, uint256 tokenId) external",
       "function getApproved(uint256 tokenId) external view returns (address)",
       "function ownerOf(uint256 tokenId) external view returns (address)",
-      "function balanceOf(address owner) external view returns (uint256)"
+      "function balanceOf(address owner) external view returns (uint256)",
     ],
     signer
   );
@@ -764,7 +758,7 @@ async function main() {
   // Burn via MyHTSTokenKYC
   console.log(`Burning tokenId ${tokenId.toString()}...`);
   const burnTx = (await myHTSTokenKYCContract.burnNFT(tokenId, {
-    gasLimit: 200_000
+    gasLimit: 200_000,
   })) as unknown as ContractTransactionResponse;
   await burnTx.wait();
   console.log("Burn tx hash:", burnTx.hash);
@@ -777,7 +771,6 @@ async function main() {
 main().catch(console.error);
 ```
 
-
 <Info>
 **How It Works**
 
@@ -785,6 +778,7 @@ main().catch(console.error);
 2. Checks token ownership and existing approval; if needed, approves the MyHTSTokenKYC contract for the specific tokenId.
 3. Calls burnNFT(tokenId) on MyHTSTokenKYC and waits for the transaction receipt.
 4. Reads and logs the signer’s NFT balance from the ERC721 facade after the burn.
+
 </Info>
 
 The script will burn the HTS NFT with the ID set to `1`, which is the HTS NFT you've just minted. To be sure the token has been deleted, let's print the balance for our account to the terminal. The balance should show a balance of `0`.
@@ -814,32 +808,43 @@ Balance after burn: 0 NFTs
 
 You can find both types of tests in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hts-evm-mint-nfts). You will find the following files:You can find both types of tests in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hts-evm-mint-nfts). You will find the following files:
 
-* `contracts/MyHTSTokenKYC.t.sol`
+- `contracts/MyHTSTokenKYC.t.sol`
 
 <Info>
-* **Ownership and access control**: Ensures the constructor sets the correct owner and enforces onlyOwner for createNFTCollection and updateKYCKey (non-owners revert with OwnableUnauthorizedAccount).
-* **Pre-creation guards:** Confirms HTS-dependent functions (mint, burn, grantKYC, revokeKYC, updateKYCKey) revert with "HTS: not created" before the collection is created.
-* **HBAR handling**: Verifies the contract can receive HBAR (HBARReceived event), blocks non-owner withdrawals, and allows the owner to withdraw all HBAR (HBARWithdrawn event) leaving the contract balance at zero.
+  * **Ownership and access control**: Ensures the constructor sets the correct
+  owner and enforces onlyOwner for createNFTCollection and updateKYCKey
+  (non-owners revert with OwnableUnauthorizedAccount). * **Pre-creation
+  guards:** Confirms HTS-dependent functions (mint, burn, grantKYC, revokeKYC,
+  updateKYCKey) revert with "HTS: not created" before the collection is created.
+  * **HBAR handling**: Verifies the contract can receive HBAR (HBARReceived
+  event), blocks non-owner withdrawals, and allows the owner to withdraw all
+  HBAR (HBARWithdrawn event) leaving the contract balance at zero.
 </Info>
 
 - `test/MyHTSTokenKYC.ts`
 
 <Info>
-* **Deployment and setup**: Deploys the KYC wrapper, creates the HTS NFT collection (with KYC key), and retrieves the ERC721 facade address.
-* **KYC enforcement before mint:** Validates that minting reverts when KYC has not been granted to the recipient.
-* **Association + KYC + mint:** Associates the signer via token.associate(), grants KYC via the wrapper, then mints and extracts the tokenId from the wrapper’s NFTMinted event.
-* **Burn flow:** Approves the wrapper for the minted token if needed and burns it via the wrapper; confirms the operation by checking the signer’s ERC721 balance.
-* **KYC key rotation and effect:** Derives the signer’s compressed public key on-chain and updates the KYC key; verifies subsequent grantKYC calls fail since the wrapper no longer holds the KYC key.
+  * **Deployment and setup**: Deploys the KYC wrapper, creates the HTS NFT
+  collection (with KYC key), and retrieves the ERC721 facade address. * **KYC
+  enforcement before mint:** Validates that minting reverts when KYC has not
+  been granted to the recipient. * **Association + KYC + mint:** Associates the
+  signer via token.associate(), grants KYC via the wrapper, then mints and
+  extracts the tokenId from the wrapper’s NFTMinted event. * **Burn flow:**
+  Approves the wrapper for the minted token if needed and burns it via the
+  wrapper; confirms the operation by checking the signer’s ERC721 balance. *
+  **KYC key rotation and effect:** Derives the signer’s compressed public key
+  on-chain and updates the KYC key; verifies subsequent grantKYC calls fail
+  since the wrapper no longer holds the KYC key.
 </Info>
 
 Copy these files and then run the tests:
 
 ```bash
 # This will run the tests via hardhat
-npx hardhat test solidity 
-# This will run the tests via hedera testnet as the precompiles 
+npx hardhat test solidity
+# This will run the tests via hedera testnet as the precompiles
 # are not available on hardhat locally and we must use the testnet
-npx hardhat test mocha 
+npx hardhat test mocha
 ```
 
 You can also run both the solidity and mocha tests altogether:
@@ -848,27 +853,27 @@ You can also run both the solidity and mocha tests altogether:
 npx hardhat test
 ```
 
-***
+---
 
 ## Token Association in the Tests
 
 Because we’re using a hybrid approach of EVM and the Native Hedera Token Service, you’ll see special logic to:
 
-* **Associate** the newly created token with the signer’s account.
-* **Grant** KYC to the account
-* **Mint NFT** to the account
+- **Associate** the newly created token with the signer’s account.
+- **Grant** KYC to the account
+- **Mint NFT** to the account
 
 This is due to a nuance: In order to grant KYC to an account, it must have the token associated with it. This is the case even if the account has unlimited auto associations.
 
-***
+---
 
 ## Conclusion
 
 Using a Solidity Smart Contract on Hedera, you can replicate many of the native HTS functionalities—granting and revoking KYC, updating token keys, minting and transferring NFTs—while retaining the benefit of contract-driven logic and on-chain state. This approach may be preferable if:
 
-* **You want advanced business logic** in a self-contained contract.
-* **You prefer standard Solidity patterns** and tooling for your Web3 workflows.
-* **You plan** to modularize or integrate your token behavior with other smart contracts.
+- **You want advanced business logic** in a self-contained contract.
+- **You prefer standard Solidity patterns** and tooling for your Web3 workflows.
+- **You plan** to modularize or integrate your token behavior with other smart contracts.
 
 Check out [Part 3: How to Pause, Freeze, Wipe, and Delete NFTs](/hedera/tutorials/smart-contracts/hts-x-evm-part-3-how-to-pause-freeze-wipe-and-delete-nfts) to learn more about configuring Native Tokens with Smart Contracts.
 
@@ -877,37 +882,28 @@ Check out [Part 3: How to Pause, Freeze, Wipe, and Delete NFTs](/hedera/tutorial
   href="/hedera/tutorials/smart-contracts/hts-x-evm-part-3-how-to-pause-freeze-wipe-and-delete-nfts"
 />
 
-***
+---
 
 ## Additional Resources
 
 Check out our GitHub repo to find the full contract and Hardhat test scripts, along with the configuration files you need to deploy and test on Hedera!
 
-* [Full Contract and Tests Repository](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hts-evm-mint-nfts)
+- [Full Contract and Tests Repository](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hts-evm-mint-nfts)
 
 <Columns cols={2}>
-  <Card
-    title="Writer: Jake, Developer Relations Engineer"
-    arrow
-  >
+  <Card title="Writer: Jake, DevRel Engineer" arrow>
     [GitHub](https://github.com/jaycoolh) | [X](https://x.com/jaycoolh)
   </Card>
-  <Card
-    title="Editor: Michiel, Developer Relations Engineer"
-    arrow
-  >
-    [GitHub](https://github.com/michielmulders) | [LinkedIn](https://www.linkedin.com/in/michielmulders/)
+  <Card title="Editor: Michiel, DevRel Engineer" arrow>
+    [GitHub](https://github.com/michielmulders) |
+    [LinkedIn](https://www.linkedin.com/in/michielmulders/)
   </Card>
-  <Card
-    title="Editor: Krystal, Technical Writer"
-    arrow
-  >
-    [GitHub](https://github.com/theekrystallee) | [X](https://x.com/theekrystallee)
+  <Card title="Editor: Krystal, DX Engineer" arrow>
+    [GitHub](https://github.com/theekrystallee) |
+    [X](https://x.com/theekrystallee)
   </Card>
-  <Card
-    title="Editor: Kiran, Developer Advocate"
-    arrow
-  >
-    [GitHub](https://github.com/kpachhai) | [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
+  <Card title="Editor: Kiran, Developer Advocate" arrow>
+    [GitHub](https://github.com/kpachhai) |
+    [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
   </Card>
 </Columns>

@@ -16,6 +16,25 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 **TESTNET UPDATE: OCTOBER 15, 2025**
 {% endhint %}
 
+### [**Build 0.67.1**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.67.1)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* chore: (0.67) Revert `HookDispatch` auth by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#21424](https://github.com/hiero-ledger/hiero-consensus-node/pull/21424)
+
+- chore: cherry-pick: improve BN communication logging ([#20584](https://github.com/hiero-ledger/hiero-consensus-node/pull/20584)) by [@derektriley](https://github.com/derektriley) in [#21486](https://github.com/hiero-ledger/hiero-consensus-node/pull/21486)
+- fix: 21374: Backport the fix for 19574 to release 0.67 by [@artemananiev](https://github.com/artemananiev) in [#21393](https://github.com/hiero-ledger/hiero-consensus-node/pull/21393)
+- chore: cherry-pick return the old debug log message receiving acknowledgements ([#21383](https://github.com/hiero-ledger/hiero-consensus-node/pull/21383)) by [@derektriley](https://github.com/derektriley) in [#21526](https://github.com/hiero-ledger/hiero-consensus-node/pull/21526)
+- chore: cherry-pick Fix BN Comms tests in release candidate ([#21537](https://github.com/hiero-ledger/hiero-consensus-node/pull/21537)) by [@derektriley](https://github.com/derektriley) in [#21547](https://github.com/hiero-ledger/hiero-consensus-node/pull/21547)
+- fix: 21677: (0.67) Virtual pipeline should ignore detached copies by [@artemananiev](https://github.com/artemananiev) in [#21678](https://github.com/hiero-ledger/hiero-consensus-node/pull/21678)
+- fix: 21696: (0.67) Temporary snapshots are not removed from data/saved/swirlds-tmp/ by [@artemananiev](https://github.com/artemananiev) in [#21697](https://github.com/hiero-ledger/hiero-consensus-node/pull/21697)
+
+**Full Changelog**: [v0.67.0...v0.67.1](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.67.0...v0.67.1)
+
+</details>
+
 ### [**Build 0.67.0**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.67.0)
 
 <details>

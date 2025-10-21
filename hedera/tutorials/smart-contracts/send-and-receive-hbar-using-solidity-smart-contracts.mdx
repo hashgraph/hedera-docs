@@ -46,58 +46,56 @@ The Solidity file has functions for getting HBAR to the contract (**_receive_**,
 This portion of **_index.js_** configures and creates the accounts, deploys the contract, and stores the HTS token ID. The functions **_accountCreatorFcn_** and **_contractDeployFcn_** create new accounts and deploy the contract to the network, respectively. These functions simplify the account creation and contract deployment process and are reusable in case you need them in the future. This modular approach is used throughout the tutorial.
 
 <CodeGroup>
-```javascript Index.Js
+
+```js index.js
 // Configure accounts and client
 const operatorId = AccountId.fromString(process.env.OPERATOR_ID);
 const operatorKey = PrivateKey.fromString(process.env.OPERATOR_PVKEY);
 const client = Client.forTestnet().setOperator(operatorId, operatorKey);
 
 async function main() {
-// Create other necessary accounts
-console.log(`\n- Creating accounts...`);
-const initBalance = 100;
-const treasuryKey = PrivateKey.generateECDSA();
-const [treasuryAccSt, treasuryId] = await accountCreatorFcn(
-treasuryKey,
-initBalance
-);
-console.log(
-`- Created Treasury account ${treasuryId} that has a balance of ${initBalance} ℏ`
-);
+  // Create other necessary accounts
+  console.log(`\n- Creating accounts...`);
+  const initBalance = 100;
+  const treasuryKey = PrivateKey.generateECDSA();
+  const [treasuryAccSt, treasuryId] = await accountCreatorFcn(
+    treasuryKey,
+    initBalance
+  );
+  console.log(
+    `- Created Treasury account ${treasuryId} that has a balance of ${initBalance} ℏ`
+  );
 
-const aliceKey = PrivateKey.generateECDSA();
-const [aliceAccSt, aliceId] = await accountCreatorFcn(aliceKey, initBalance);
-console.log(
-`- Created Alice's account ${aliceId} that has a balance of ${initBalance} ℏ`
-);
+  const aliceKey = PrivateKey.generateECDSA();
+  const [aliceAccSt, aliceId] = await accountCreatorFcn(aliceKey, initBalance);
+  console.log(
+    `- Created Alice's account ${aliceId} that has a balance of ${initBalance} ℏ`
+  );
 
-// Import the compiled contract bytecode
-const contractBytecode = fs.readFileSync("hbarToAndFromContract.bin");
+  // Import the compiled contract bytecode
+  const contractBytecode = fs.readFileSync("hbarToAndFromContract.bin");
 
-// Deploy the smart contract on Hedera
-console.log(`\n- Deploying contract...`);
-let gasLimit = 100000;
+  // Deploy the smart contract on Hedera
+  console.log(`\n- Deploying contract...`);
+  let gasLimit = 100000;
 
-const [contractId, contractAddress] = await contractDeployFcn(
-contractBytecode,
-gasLimit
-);
-console.log(`- The smart contract ID is: ${contractId}`);
-console.log(
-`- The smart contract ID in Solidity format is: ${contractAddress}`
-);
+  const [contractId, contractAddress] = await contractDeployFcn(
+    contractBytecode,
+    gasLimit
+  );
+  console.log(`- The smart contract ID is: ${contractId}`);
+  console.log(
+    `- The smart contract ID in Solidity format is: ${contractAddress}`
+  );
 
-const tokenId = AccountId.fromString("0.0.47931765");
-console.log(`\n- Token ID (for association with contract later): ${tokenId}`);
+  const tokenId = AccountId.fromString("0.0.47931765");
+  console.log(`\n- Token ID (for association with contract later): ${tokenId}`);
 }
 
 main();
+```
 
-````
-
-
-
-```javascript HbarToAndFromContract.Sol
+```solidity hbarToAndFromContract.sol
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.7.0 <0.9.0;
 
@@ -145,7 +143,7 @@ contract hbarToAndFromContract is HederaTokenService{
         return address(this).balance;
     }
 }
-````
+```
 
 </CodeGroup>
 These helper functions in ***index.js*** use the [**AccountCreateTransaction()**](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-an-account#create-an-account-via-an-account-alias) and [**ContractCreateFlow()**](/hedera/sdks-and-apis/sdks/smart-contracts/create-a-smart-contract#contractcreateflow) classes of the Hedera SDK. [**ContractCreateFlow()**](/hedera/sdks-and-apis/sdks/smart-contracts/create-a-smart-contract#contractcreateflow) stores the bytecode and deploys the contract on Hedera. This single call handles for you the operations [**FileCreateTransaction()**](/hedera/sdks-and-apis/sdks/file-service/create-a-file), [**FileAppendTransaction()**](/hedera/sdks-and-apis/sdks/file-service/append-to-a-file), and [**ContractCreateTransaction()**](/hedera/sdks-and-apis/sdks/smart-contracts/create-a-smart-contract#contractcreatetransaction).

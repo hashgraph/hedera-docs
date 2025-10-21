@@ -34,12 +34,12 @@ When you upgrade your smart contract, you deploy a new logic contract and point 
 
 ## Table of Contents
 
-1. [Set Up Your Project](#step-1-set-up-your-project)
-2. [Create Your Initial Upgradeable ERC-721 Contract](#step-2-create-your-initial-upgradeable-erc-721-contract)
-3. [Deploy Your Upgradeable Contract](#step-3-deploy-your-upgradeable-contract)
-4. [Upgrade Your ERC-721 Contract](#step-4-upgrade-your-erc-721-contract)
-5. [Deploy the Upgrade and Verify](#step-5-deploy-the-upgrade-and-verify)
-6. [Run tests](#step-6-run-tests-optional)
+1. [Set Up Your Project](#step-1%3A-set-up-your-project)
+2. [Create Your Initial Upgradeable ERC-721 Contract](#step-2%3A-create-your-initial-upgradeable-erc-721-contract)
+3. [Deploy Your Upgradeable Contract](#step-3%3A-deploy-your-upgradeable-contract)
+4. [Upgrade Your ERC-721 Contract](#step-4%3A-upgrade-your-erc-721-contract)
+5. [Deploy the Upgrade and Verify](#step-5%3A-deploy-the-upgrade-and-verify)
+6. [Run tests](#step-6%3A-run-tests-optional)
 7. [Why Use the UUPS Pattern?](#why-use-the-uups-pattern)
 
 ---
@@ -396,12 +396,12 @@ npx hardhat test mocha
 - **Data Retention**: Maintains all token balances and stored data during upgrades.
 - **Flexibility**: Enables easy updates for new features, improvements, or critical fixes without redeploying a completely new contract.
 
-<Info>
+<Note>
 #### **Note**
 
-This tutorial’s contracts follow the UUPS initializer and authorization best practices (UUPSUpgradeable + \_authorizeUpgrade), while the example scripts perform the upgrade using a TransparentUpgradeableProxy’s admin function for a straightforward, reliable flow on Hedera. If you later switch to a pure UUPS proxy (ERC1967Proxy), upgrades would be triggered via the logic contract’s UUPS mechanism instead of the Transparent proxy’s admin API.
+This tutorial’s contracts follow the UUPS initializer and authorization best practices (`UUPSUpgradeable` + `\_authorizeUpgrade`), while the example scripts perform the upgrade using an admin function `TransparentUpgradeableProxy` for a straightforward, reliable flow on Hedera. If you later switch to a pure UUPS proxy (ERC1967Proxy), upgrades would be triggered via the logic contract’s UUPS mechanism instead of the Transparent proxy’s admin API.
 
-</Info>
+</Note>
 
 ---
 

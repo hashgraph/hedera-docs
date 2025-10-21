@@ -32,12 +32,12 @@ In this tutorial, you’ll:
 ## Table of Contents <a href="#table-of-contents" id="table-of-contents"></a>
 
 1. [Setup Project](#setup-project)
-2. [Step 1: Configure Hardhat](#step-1-configure-hardhat)
-3. [Step 2: Creating an NFT collection via HTS(similar to ERC721)](#step-2.-creating-an-nft-collection-via-hts-similar-to-erc721)
-4. [Step 3: Deploy HTS NFT Smart Contract](#step-3-deploy-your-hts-nft-smart-contract)
-5. [Step 4: Minting an HTS NFT](#step-4-minting-an-hts-nft)
-6. [Step 5: Burning an HTS NFT](#step-5-burning-an-hts-nft)
-7. [Step 6: Run tests](#step-6-run-tests-optional)
+2. [Step 1: Configure Hardhat](#step-1%3A-configure-hardhat)
+3. [Step 2: Creating an NFT collection via HTS(similar to ERC721)](#step-2%3A-creating-an-nft-collection-via-hts-similar-to-erc721)
+4. [Step 3: Deploy HTS NFT Smart Contract](#step-3%3A-deploy-your-hts-nft-smart-contract)
+5. [Step 4: Minting an HTS NFT](#step-4%3A-minting-an-hts-nft)
+6. [Step 5: Burning an HTS NFT](#step-5%3A-burning-an-hts-nft)
+7. [Step 6: Run tests](#step-6%3A-run-tests-optional)
 8. [Conclusion](#conclusion)
 9. [Additional Resources](#additional-resources)
 
@@ -153,7 +153,7 @@ rm -rf ignition
 
 ---
 
-## Step 2. Creating an NFT collection via HTS(similar to ERC721)
+## Step 2: Creating an NFT collection via HTS(similar to ERC721)
 
 Create a new Solidity file (`MyHTSToken.sol`) in our `contracts` directory:
 
@@ -471,7 +471,7 @@ In this script, we first retrieve your account (the deployer) using Ethers.js. T
 <Info>
 **Note**
 
-For most HTS [System Smart Contract](/hedera/core-concepts/smart-contracts/system-smart-contracts) calls, an HBAR value **is not** required to be sent in the contract call; the gas fee will cover it. However, for expensive transactions, like [Create HTS NFT Collection](#step-3-deploy-your-hts-nft-smart-contract), the gas fee is reduced, and the transaction cost is covered by the payable amount. This is to reduce the gas consumed by the contract call.
+For most HTS [System Smart Contract](/hedera/core-concepts/smart-contracts/system-smart-contracts) calls, an HBAR value **is not** required to be sent in the contract call; the gas fee will cover it. However, for expensive transactions, like [Create HTS NFT Collection](#step-3%3A-deploy-your-hts-nft-smart-contract), the gas fee is reduced, and the transaction cost is covered by the payable amount. This is to reduce the gas consumed by the contract call.
 
 </Info>
 

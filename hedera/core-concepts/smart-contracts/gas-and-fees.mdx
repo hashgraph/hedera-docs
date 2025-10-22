@@ -7,7 +7,8 @@ title: "Gas and Fees"
 When executing smart contracts, the EVM requires the amount of work paid in gas. The “work” includes computation, state transitions, and storage. Gas is the unit of measurement used to charge a fee per opcode executed by the EVM. Each opcode code has a defined gas cost. Gas reflects the cost necessary to pay for the computational resources used to process transactions.
 
 <Note>
-#### Note
+**Note**
+
 Following HIP-1249, Hedera has replaced gas‑per‑second throttling with an operations‑per‑second (ops/sec) throttle and removed minimum gas charges. Gas is still used to bill users, but throttling now depends on measured ops rather than gas.
 
 </Note>
@@ -46,7 +47,7 @@ A transaction submitted to the smart contract service must be sent with enough g
 If insufficient gas is submitted, the transaction will fail during precheck and no record will be created.
 
 <Note>
-  #### Note
+**Note**
 
 This applies to both **standard transactions** and **jumbo EthereumTransactions** introduced by HIP-1086, which allow larger `callData` payloads.
 
@@ -192,13 +193,13 @@ Transactions still specify a `gasLimit` to reserve gas. This reservation is used
 
 Pre‑check uses the `gasLimit` because the network cannot know how much gas a transaction will consume until it executes; state changes during consensus affect the execution path. Contract query requests bypass consensus entirely: they execute only on the node that receives them and influence only that node’s pre‑check throttle. Standard contract transactions go through both pre‑check and consensus and are subject to the ops‑per‑second throttle at consensus. Pre‑check and consensus throttles may use different limits.
 
-<Note>
+<Info>
 
-##### **Historical context**
+**Historical context**
 
 Hedera previously enforced an 80% minimum gas charge because it does not have a mempool like Ethereum. Without a mempool, the network could not reorder or adjust block contents based on actual gas consumption, so the minimum charge prevented over-reservation abuse.
 
-</Note>
+</Info>
 
 Unused gas is now fully refunded; there is no 80% minimum charge. Users pay exactly for gas used, up to their specified limit. Refunds and gas handling now mirror Ethereum’s behavior (e.g., [EIP-3529](https://eips.ethereum.org/EIPS/eip-3529) refunds).
 

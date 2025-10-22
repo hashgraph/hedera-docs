@@ -1022,14 +1022,20 @@
     "links": [
       {
         "label": "Support",
-        "href": "https://hedera.com/discord"
+        "href": "https://hedera.com/discord",
+        "icon": "discord"
+      },
+      {
+        "label": "Playground",
+        "href": "https://portal.hedera.com/playground",
+        "target": "_blank"
+      },
+      {
+        "label": "Dev Portal",
+        "href": "https://portal.hedera.com",
+        "target": "_blank"
       }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Developer Portal",
-      "href": "https://portal.hedera.com"
-    }
+    ]
   },
   "footer": {
     "socials": {

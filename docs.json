@@ -1028,7 +1028,8 @@
       {
         "label": "Playground",
         "href": "https://portal.hedera.com/playground",
-        "target": "_blank"
+        "target": "_blank",
+        "icon": "/icons/code-solid-full.svg"
       },
       {
         "label": "Dev Portal",

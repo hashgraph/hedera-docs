@@ -36,6 +36,14 @@ nav.text-sm a[href*="portal"] {
   border: none !important;
 }
 
+/* make nav button text bold */
+nav.text-sm a[href*="hedera.com/discord"],
+nav.text-sm a[href*="playground"],
+nav.text-sm a[href*="portal"] {
+  font-weight: 600 !important; /* or 700 for heavier bold */
+}
+
+
 /* support — white */
 nav.text-sm a[href*="hedera.com/discord"] {
   background-color: #ffffff !important;
@@ -50,16 +58,16 @@ nav.text-sm a[href*="hedera.com/discord"]:hover {
 nav.text-sm a[href*="playground"],
 nav.text-sm li a[href*="playground"],
 nav.text-sm ul li a[href*="playground"] {
-  background-color: #2f2e2e !important;
-  color: #ffffff !important;
+  background-color: #ffffff !important;
+  color: #000000 !important;
   border: none !important;
   box-shadow: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 nav.text-sm a[href*="playground"]:hover,
 nav.text-sm li a[href*="playground"]:hover,
 nav.text-sm ul li a[href*="playground"]:hover {
-  background-color: #4d4a4a !important;
-  color: #ffffff !important;
+  background-color: #f2f2f2 !important;
 }
 
 
@@ -90,3 +98,6 @@ nav.text-sm a[href*="portal"]:hover {
 [data-theme='dark'] nav.text-sm a[href*="portal"] {
   background-color: #8259EF !important;
 }
+
+
+

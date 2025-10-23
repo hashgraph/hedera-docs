@@ -27,6 +27,15 @@
     ]
   },
   "navigation": {
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Discord",
+          "icon": "discord",
+          "href": "https://hedera.com/discord"
+        }
+      ]
+    },
     "groups": [
       {
         "group": " ",

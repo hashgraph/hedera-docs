@@ -1030,13 +1030,13 @@
         "href": "https://portal.hedera.com/playground",
         "target": "_blank",
         "icon": "/icons/code-solid-full.svg"
-      },
-      {
-        "label": "Dev Portal",
-        "href": "https://portal.hedera.com",
-        "target": "_blank"
       }
-    ]
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dev Portal",
+      "href": "https://portal.hedera.co"
+    }
   },
   "footer": {
     "socials": {

@@ -28,7 +28,7 @@ Release v0.67 enhances the stability and performance of the Hiero Consensus Node
 
 * **Improved Block Streaming Metrics**: Metrics for communication between consensus and block nodes have been reworked for clarity and utility. Metric names no longer include the self-node ID, as this is now automatically added as a label
 
-- **Block Streaming Service Lifecycle**: The startup and shutdown procedures for the \`BlockBufferService\` and \`BlockNodeConnectionManager\` have been improved to ensure more reliable initialization and termination.
+- **Block Streaming Service Lifecycle**: The startup and shutdown procedures for the `BlockBufferService` and `BlockNodeConnectionManager` have been improved to ensure more reliable initialization and termination.
 - **Enhanced Testing and CI**: A large effort was invested in improving the test infrastructure, including adding test container support for block nodes, increasing test coverage for block node communication, and parallelizing test suite runs to accelerate the development cycle.
 - **Besu Upgrade**: Upgraded Besu EVM to `25.2.2`. The update introduces Besu Native Libraries Verification, which ensures that required native libraries are available on the host operating system. When these libraries are missing, Besu falls back to non-native implementations, which can reduce performance. This verification helps maintain optimal execution efficiency and consistency across nodes.
 

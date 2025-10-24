@@ -1,0 +1,15 @@
+---
+title: "Tokens"
+sidebarTitle: "Overview"
+---
+
+
+## Overview
+
+The **Tokens endpoints** in the Hedera Mirror Node REST API allow developers to retrieve token details, token balances, NFT metadata, and transaction history. These endpoints are essential for tracking tokenized assets and interactions on the Hedera network.
+
+## Endpoints
+
+The following endpoints are available for the Tokens object:
+
+<table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td><strong>Endpoint</strong></td><td><strong>Description</strong></td></tr><tr><td><code>GET /api/v1/tokens</code></td><td>Retrieves a list of all tokens on the network.</td></tr><tr><td><code>GET /api/v1/tokens/balances</code></td><td>Lists token balances across accounts.</td></tr><tr><td><code>GET /api/v1/tokens/{id}</code></td><td>Fetches details of a specific token by ID.</td></tr><tr><td><code>GET /api/v1/tokens/nfts</code></td><td>Retrieves a list of all NFTs on the network.</td></tr><tr><td><code>GET /api/v1/tokens/nfts/{serialNumber}</code></td><td>Fetches metadata and details for a specific NFT.</td></tr><tr><td><code>GET /api/v1/tokens/nfts/{id}/transactions</code></td><td>Retrieves the transaction history of a specific NFT.</td></tr></tbody></table>

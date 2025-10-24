@@ -1,0 +1,35 @@
+---
+title: "Accounts"
+sidebarTitle: "Overview"
+---
+
+
+## Overview
+
+The **Account** endpoints in the Hedera Mirror Node REST API provides endpoints to retrieve account details, crypto allowances, token relationships, NFTs owned by accounts, and staking reward payouts. These endpoints are crucial for tracking account balances, permissions, and historical activity.
+
+## Endpoints
+
+The following endpoints are available for the Accounts object:
+
+| Endpoint                                                            | Description                                                         |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `GET /api/v1/accounts`                                              | Retrieves a list of accounts on the network.                        |
+| `GET /api/v1/accounts/{idOrAliasOrEvmAddress}`                      | Fetches details of a specific account by ID, alias, or EVM address. |
+| `GET /api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/crypto`    | Retrieves hbar allowances granted by an account.                    |
+| `GET /api/v1/accounts/{idOrAliasOrEvmAddress}/rewards`              | Gets past staking reward payouts for an account.                    |
+| `GET /api/v1/accounts/{idOrAliasOrEvmAddress}/airdrops/outstanding` | Fetches the outstanding token airdrops for a given account.         |
+| `GET /api/v1/accounts/{idOrAliasOrEvmAddress}/airdrops/pending`     | Fetech the pending token airdrops for a given account.              |
+| `GET /api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/tokens`    | Retrieves token allowances granted by an account.                   |
+| `GET /api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/nfts`      | Retrieves nft allowances granted by an account.                     |
+| `GET /api/v1/accounts/{idOrAliasOrEvmAddress}/nfts`                 | Fetches the nfts for an account.                                    |
+
+## Accounts <a href="#accounts" id="accounts"></a>
+
+The **accounts** object represents the information associated with an account and returns a list of account information.‌
+
+Account IDs take the following format: **0.0.\<account number>**.‌
+
+Example: 0.0.1000‌
+
+Account IDs can also take the account number as an input value. For example, for account ID 0.0.1000, the number 1000 can be specified in the request.

@@ -1,0 +1,246 @@
+name: Examples Check
+
+on:
+  schedule:
+    - cron: "0 16 * * 0"
+  workflow_dispatch:
+  push:
+    branches:
+      - test-workflows
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  run-java-example:
+    runs-on: hashgraph-docs-linux-medium
+    permissions:
+      contents: write
+      pull-requests: write
+
+    env:
+      HEDERA_NETWORK: local
+      MIRROR_NODE_URL: http://localhost:8080/api/v1
+      MIRROR_HEALTH_URL: http://localhost:8080/health
+      MIRROR_HEALTH_TRIES: "180"
+      MIRROR_HEALTH_INTERVAL: "2"
+      STATUS_DIR: .github/example-status
+      STATUS_FILE: .github/example-status/java-status.md
+      OPERATOR_ID: ${{ secrets.ECDSA_ACCOUNT_SOLO }}
+      OPERATOR_KEY: ${{ secrets.ECDSA_ACCOUNT_PRIVATE_KEY_SOLO }}
+
+    steps:
+      - name: Check Docker resources (GB)
+        run: |
+          read cpus mem <<<"$(docker info --format '{{.NCPU}} {{.MemTotal}}')"
+          mem_gb=$(awk -v m="$mem" 'BEGIN{printf "%.1f", m/1000000000}')
+          echo "CPUs: $cpus"
+          echo "Memory: ${mem_gb} GB"
+
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
+
+      - name: Setup Kind
+        uses: helm/kind-action@a1b0e391336a6ee6713a0583f8c6240d70863de3
+        with:
+          install_only: true
+          node_image: kindest/node:v1.31.4@sha256:2cb39f7295fe7eafee0842b1052a599a4fb0f8bcf3f83d96c7f4864c357c6c30
+          version: v0.26.0
+          kubectl_version: v1.31.4
+          verbosity: 3
+          wait: 120s
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22.12.0
+
+      - name: Install Solo CLI
+        run: |
+          set -euo pipefail
+          npm install -g @hashgraph/solo
+          solo --version
+          kind --version
+
+      - name: Deploy Solo
+        env:
+          SOLO_CLUSTER_NAME: solo
+          SOLO_NAMESPACE: solo
+          SOLO_CLUSTER_SETUP_NAMESPACE: solo-cluster
+          SOLO_DEPLOYMENT: solo-deployment
+        run: |
+          set -euo pipefail
+          kind create cluster -n "${SOLO_CLUSTER_NAME}"
+          solo one-shot single deploy | tee solo-deploy.log
+
+      - name: Wait for Mirror Node data (/network/nodes)
+        env:
+          API_BASE: ${{ env.MIRROR_NODE_URL }}
+          TRIES: "180"
+          INTERVAL: "2"
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Tools
+          if ! command -v jq >/dev/null; then sudo apt-get update -y && sudo apt-get install -y jq >/dev/null; fi
+          if ! command -v timeout >/dev/null; then sudo apt-get update -y && sudo apt-get install -y coreutils >/dev/null; fi
+
+          base_api="${API_BASE%/}"
+          host="$(echo "$base_api" | awk -F[/:] '{print $4}')"
+          port="$(echo "$base_api" | awk -F[/:] '{print $5}')"
+
+          echo "Waiting for TCP ${host}:${port}…"
+          for i in $(seq 1 60); do
+            if (echo >/dev/tcp/"$host"/"$port") >/dev/null 2>&1; then
+              echo "✅ Port ${port} is accepting connections"
+              break
+            fi
+            echo "⏳ TCP not ready (try $i/60)…"
+            sleep 1
+          done
+
+          probe_nodes="${base_api}/network/nodes?limit=1"
+          echo "Probing Mirror REST for data at: ${probe_nodes}"
+
+          # First ensure 200s…
+          for i in $(seq 1 "${TRIES}"); do
+            code="$(curl -m 3 --connect-timeout 2 -sS -o /dev/null -w '%{http_code}' "$probe_nodes" || true)"
+            if [ "$code" = "200" ]; then
+              echo "✅ HTTP 200 from Mirror REST"
+              break
+            fi
+            echo "⏳ Mirror REST not 200 yet (try $i/${TRIES})… (code=$code)"
+            sleep "${INTERVAL}"
+          done
+
+          if [ "${code:-}" != "200" ]; then
+            echo "❌ Mirror REST never returned 200 for ${probe_nodes}"
+            curl -m 3 --connect-timeout 2 -sS -v "$probe_nodes" || true
+            exit 1
+          fi
+
+          for i in $(seq 1 "${TRIES}"); do
+            body="$(curl -fsS "$probe_nodes" || true)"
+            count="$(echo "$body" | jq -r '.nodes | length' 2>/dev/null || echo "0")"
+
+            if [ "$count" -ge 1 ]; then
+              echo "✅ Mirror REST returned ${count} node(s)"
+              echo "Sample response:"
+              echo "$body" | jq '{nodes: (.nodes | .[:1])}' -C
+              ready=1
+              break
+            fi
+
+            echo "⏳ Mirror REST returned empty/invalid data (try $i/${TRIES})…"
+            sleep "${INTERVAL}"
+          done
+
+          if [ "${ready:-0}" -ne 1 ]; then
+            echo "❌ Mirror REST never produced non-empty nodes list at ${probe_nodes}"
+            echo "Last payload (truncated to 500 chars):"
+            echo "$body" | head -c 500 || true
+            exit 1
+          fi
+
+          # ---- Probe account balance for the provided ACCOUNT_ID ----
+          if [ -z "${ACCOUNT_ID:-}" ]; then
+            echo "⚠️  ACCOUNT_ID not provided; skipping balance check."
+            exit 0
+          fi
+
+          echo "Checking balance for ACCOUNT_ID=${ACCOUNT_ID}"
+
+          # 1) Snapshot endpoint (works on public testnet; may be empty on local)
+          bal_url="${base_api}/balances?account.id=${ACCOUNT_ID}&limit=1"
+          echo "Trying snapshot endpoint: ${bal_url}"
+
+          snapshot_ok=0
+          tinybars=""
+          for i in $(seq 1 "${TRIES}"); do
+            resp="$(curl -fsS "$bal_url" || true)"
+            tb="$(echo "$resp" | jq -r '.balances[0].balance // empty' 2>/dev/null || true)"
+            if [ -n "$tb" ]; then
+              tinybars="$tb"
+              snapshot_ok=1
+              break
+            fi
+            echo "⏳ /balances has no snapshot yet (try $i/${TRIES})…"
+            sleep "${INTERVAL}"
+          done
+
+          if [ "$snapshot_ok" -eq 1 ]; then
+            echo "✅ Mirror /balances returned a snapshot balance: ${tinybars} tinybars"
+            exit 0
+          fi
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Bootstrap Gradle for examples/java
+        run: |
+          chmod +x ./.github/scripts/java-gradle-bootstrap.sh
+          ./.github/scripts/java-gradle-bootstrap.sh
+
+      - name: Build & Run Java example
+        id: run_java
+        env:
+          OPERATOR_ID: ${{ env.OPERATOR_ID }}
+          OPERATOR_KEY: ${{ env.OPERATOR_KEY}}
+          HEDERA_NETWORK: ${{ env.HEDERA_NETWORK }}
+          MIRROR_NODE_URL: ${{ env.MIRROR_NODE_URL }}
+        run: |
+          chmod +x ./.github/scripts/run-java.sh
+          ./.github/scripts/run-java.sh | tee java-output.txt
+
+      - name: Summarize status
+        if: ${{ always() }}
+        run: |
+          mkdir -p "$STATUS_DIR"
+          ts="$(date -u +'%Y-%m-%d %H:%M:%SZ')"
+          {
+            if [ "${{ steps.run_java.outcome }}" = "success" ]; then
+              echo "## ✅ Java example passed"
+            else
+              echo "## ❌ Java example failed"
+            fi
+            echo "- Timestamp (UTC): ${ts}"
+            echo "- Network: ${HEDERA_NETWORK}"
+            echo ""
+            echo "<details><summary>Output</summary>"
+            if [ -f java-output.txt ]; then
+              if [ -f ./.github/scripts/redact.sh ]; then
+                bash ./.github/scripts/redact.sh "${OPERATOR_KEY}" java-output.txt || cat java-output.txt
+              else
+                cat java-output.txt
+              fi
+            else
+              echo "_No output captured._"
+            fi
+            echo "</details>"
+          } > "$STATUS_FILE"
+
+      - name: Open/Update PR with status
+        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
+        with:
+          commit-message: "chore: update example run status"
+          signoff: true
+          sign-commits: true
+          title: "chore: example run status"
+          body: "Automated run of examples"
+          branch: "bot/examples-check"
+          add-paths: ${{ env.STATUS_FILE }}
+          labels: automated-pr
+          delete-branch: true
+          base: main

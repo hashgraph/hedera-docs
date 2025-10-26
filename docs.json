@@ -27,6 +27,30 @@
     ]
   },
   "navigation": {
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Status",
+          "href": "http://status.hedera.com/",
+          "icon": "signal"
+        },
+        {
+          "anchor": "Discord",
+          "href": "https://hedera.com/discord",
+          "icon": "discord"
+        },
+        {
+          "anchor": "Playground",
+          "href": "https://portal.hedera.com/playground",
+          "icon": "/icons/code-solid-full.svg"
+        },
+        {
+          "anchor": "Blog",
+          "href": "https://hedera.com/blog",
+          "icon": "newspaper"
+        }
+      ]
+    },
     "groups": [
       {
         "group": " ",
@@ -1019,23 +1043,10 @@
     "href": "https://hedera.com/"
   },
   "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "https://hedera.com/discord",
-        "icon": "discord"
-      },
-      {
-        "label": "Playground",
-        "href": "https://portal.hedera.com/playground",
-        "target": "_blank",
-        "icon": "/icons/code-solid-full.svg"
-      }
-    ],
     "primary": {
       "type": "button",
       "label": "Dev Portal",
-      "href": "https://portal.hedera.co"
+      "href": "https://portal.hedera.com"
     }
   },
   "footer": {

@@ -27,69 +27,96 @@ nav.text-sm a[href*="portal"] {
   justify-content: center;
   border-radius: 12px !important;
   font-size: 14px !important;
-  font-weight: 600 !important; /* keep bold */
+  font-weight: 600 !important;
   line-height: 20px !important;
   height: 32px !important;
   padding: 6px 16px !important;
   text-decoration: none !important;
   transition: all 0.15s ease !important;
-  border: none !important;
+  box-shadow: none !important;
 }
 
-/* support — GitHub-style */
+/* support — transparent in light mode */
 nav.text-sm a[href*="hedera.com/discord"] {
-  background-color: rgba(156, 163, 175, 0.1) !important;
+  background-color: transparent !important;
   color: #1f2937 !important; /* gray-800 */
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 nav.text-sm a[href*="hedera.com/discord"]:hover {
-  background-color: rgba(156, 163, 175, 0.2) !important;
+  background-color: rgba(156, 163, 175, 0.1) !important; /* soft gray hover */
 }
 
-/* dev playground — same GitHub-style */
+/* playground — transparent same as support */
 nav.text-sm a[href*="playground"],
 nav.text-sm li a[href*="playground"],
 nav.text-sm ul li a[href*="playground"] {
-  background-color: rgba(156, 163, 175, 0.1) !important;
+  background-color: transparent !important;
   color: #1f2937 !important;
-  border: none !important;
-  box-shadow: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 nav.text-sm a[href*="playground"]:hover,
 nav.text-sm li a[href*="playground"]:hover,
 nav.text-sm ul li a[href*="playground"]:hover {
-  background-color: rgba(156, 163, 175, 0.2) !important;
+  background-color: rgba(156, 163, 175, 0.1) !important;
 }
 
-/* dev portal — purple (ultraviolet) */
+/* dev portal — solid purple */
 nav.text-sm a[href*="portal"] {
   background-color: #513ae8 !important;
   color: #ffffff !important;
+  border: none !important;
 }
 nav.text-sm a[href*="portal"]:hover {
   background-color: #775fff !important;
 }
 
-/* dark mode adjustments (match base site) */
+/* ===============================
+   DARK MODE — transparent buttons
+   =============================== */
+
+/* Support + Playground */
+.dark nav.text-sm a[href*="hedera.com/discord"],
+.dark nav.text-sm a[href*="playground"],
 [data-theme='dark'] nav.text-sm a[href*="hedera.com/discord"],
 [data-theme='dark'] nav.text-sm a[href*="playground"] {
-  background-color: rgba(75, 85, 99, 0.1) !important;
-  color: #f3f4f6 !important; /* light text */
+  background-color: transparent !important;
+  color: #f3f4f6 !important; /* gray-100 */
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
+.dark nav.text-sm a[href*="hedera.com/discord"]:hover,
+.dark nav.text-sm a[href*="playground"]:hover,
 [data-theme='dark'] nav.text-sm a[href*="hedera.com/discord"]:hover,
 [data-theme='dark'] nav.text-sm a[href*="playground"]:hover {
-  background-color: rgba(75, 85, 99, 0.2) !important;
-}
-
-/* dev portal — purple in dark mode */
-[data-theme='dark'] nav.text-sm a[href*="portal"] {
-  background-color: #8259EF !important;
+  background-color: rgba(255, 255, 255, 0.08) !important; /* subtle glow */
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
   color: #ffffff !important;
 }
+
+/* dev portal — stays vibrant */
+.dark nav.text-sm a[href*="portal"],
+[data-theme='dark'] nav.text-sm a[href*="portal"] {
+  background-color: transparent !important;
+  color: #ffffff !important;
+}
+.dark nav.text-sm a[href*="portal"]:hover,
 [data-theme='dark'] nav.text-sm a[href*="portal"]:hover {
-  background-color: #9d7dff !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
+
 }
 
-/* fix icon visibility in dark mode */
+/* icon fix — ensure visibility in dark mode */
+.dark nav.text-sm a svg,
 [data-theme='dark'] nav.text-sm a svg {
-  filter: brightness(1.2) !important;
+  filter: brightness(1.5) contrast(1.3) !important;
+  opacity: 1 !important;
 }
+
+/* make playground icon white only in dark mode */
+.dark nav.text-sm a[href*="playground"] img,
+.dark nav.text-sm a[href*="playground"] svg,
+[data-theme='dark'] nav.text-sm a[href*="playground"] img,
+[data-theme='dark'] nav.text-sm a[href*="playground"] svg {
+  filter: brightness(0) invert(1) !important; /* turns dark icons white */
+  opacity: 1 !important;
+}
+

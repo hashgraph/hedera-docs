@@ -1,0 +1,50 @@
+name: Auto-generate consensus-node release notes
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-release-notes:
+    runs-on: hashgraph-docs-linux-medium
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout docs repo
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3.9.1
+        with:
+          node-version: "20"
+
+      - name: Run update script
+        env:
+          CONSENSUS_TOKEN: ${{ secrets.CONSENSUS_TOKEN }}
+        run: |
+          node .github/scripts/update-services.js \
+            --md-path networks/release-notes/services.md
+
+      - name: Create Pull Request
+        if: ${{ steps.git-check.outputs.changes == 'true' }}
+        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
+        with:
+          commit-message: "chore: update release notes"
+          sign-commits: true
+          branch: update-release-notes
+          title: "chore: update release notes"
+          body: "Automated update of consensus-node release notes."
+          labels: automated-pr
+          delete-branch: true

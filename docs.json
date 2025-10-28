@@ -7,6 +7,23 @@
     "light": "#614ff4",
     "dark": "#614ff4"
   },
+  "style": {
+    "path": "style.css"
+  },
+  "fonts": {
+    "heading": {
+      "family": "Styrene A",
+      "source": "/public/fonts/styrene/StyreneA-Regular-Web.woff2",
+      "format": "woff2",
+      "weight": 400
+    },
+    "body": {
+      "family": "Styrene A",
+      "source": "/public/fonts/styrene/StyreneA-Regular-Web.woff2",
+      "format": "woff2",
+      "weight": 400
+    }
+  },
   "background": {
     "decoration": "gradient"
   },
@@ -42,7 +59,7 @@
         {
           "anchor": "Playground",
           "href": "https://portal.hedera.com/playground",
-          "icon": "/icons/code-solid-full.svg"
+          "icon": "code"
         },
         {
           "anchor": "Blog",

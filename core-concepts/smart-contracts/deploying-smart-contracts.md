@@ -34,8 +34,8 @@ Reference: [https://ethervm.io/](https://ethervm.io/)
 
 You can use a [Hedera SDK](../../sdks-and-apis/sdks/) to deploy your smart contract bytecode to the network. This approach does not require using any EVM tools like Hardhat or an instance of the Hedera JSON-RPC Relay.
 
-{% content-ref url="broken-reference" %}
-[Broken link](broken-reference)
+{% content-ref url="https://github.com/hashgraph/hedera-docs/blob/test-workflows/core-concepts/smart-contracts/broken-reference/README.md" %}
+[https://github.com/hashgraph/hedera-docs/blob/test-workflows/core-concepts/smart-contracts/broken-reference/README.md](https://github.com/hashgraph/hedera-docs/blob/test-workflows/core-concepts/smart-contracts/broken-reference/README.md)
 {% endcontent-ref %}
 
 **Hardhat**

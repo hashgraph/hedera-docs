@@ -1,5 +1,5 @@
 ---
-title: ℹ️ Try the Hedera Contract ...
+title: Try the Hedera Contract ...
 ---
 
 _**ℹ️ Try the**_ [_**Hedera Contract Builder**_](https://portal.hedera.com/contract-builder) _**to bring your smart contract ideas to life. Start building and. testing on the Hedera testnet with the Contract Builder now!**_

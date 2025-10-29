@@ -45,7 +45,7 @@ TopicMessageSubmitTransaction()
 * Use the [query fees table](https://docs.hedera.com/hedera/networks/mainnet/fees#consensus-service) for the base transaction fee and the [Hedera Fee Estimator](https://hedera.com/fees) to estimate standard network fees.
 
 {% hint style="danger" %}
-### **⚠️ Warning**
+#### **⚠️ Warning**
 
 Messages submitted to topics that enforce a custom fee have a higher cost ($0.05–$0.06 per message) compared to topics without custom fees (≈$0.0001). Be sure to factor this into your budget when targeting custom-fee topics, as the added complexity and extra compute overhead for custom fees is reflected in the higher transaction cost. Because fees are calculated by kilobyte with up to a 20% buffer, a single `TopicMessageSubmitTransaction` charge may reach a maximum of $0.06.
 {% endhint %}

@@ -12,8 +12,8 @@ Given your HTS token address, you can invoke these functions:
 
 #### Example
 
-{% content-ref url="broken-reference" %}
-[Broken link](broken-reference)
+{% content-ref url="https://github.com/hashgraph/hedera-docs/blob/test-workflows/core-concepts/smart-contracts/tokens-managed-by-smart-contracts/broken-reference/README.md" %}
+[https://github.com/hashgraph/hedera-docs/blob/test-workflows/core-concepts/smart-contracts/tokens-managed-by-smart-contracts/broken-reference/README.md](https://github.com/hashgraph/hedera-docs/blob/test-workflows/core-concepts/smart-contracts/tokens-managed-by-smart-contracts/broken-reference/README.md)
 {% endcontent-ref %}
 
 #### Additional References

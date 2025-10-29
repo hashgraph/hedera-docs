@@ -39,7 +39,7 @@ When creating a **new batch transaction** using the `BatchTransaction()` API you
 
 ## BatchKey Mechanism
 
-The `batchKey` that is set during the creation of an inner transaction is a required signature for the encompassing batch transaction. This key ensures only authorized users can submit the batch and keeps all transactions together. When you set a batchKey, the system automatically marks the transaction as part of a batch by setting `nodeAccountId` to `0.0.0`, which helps the network process it correctly.&#x20;
+The `batchKey` that is set during the creation of an inner transaction is a required signature for the encompassing batch transaction. This key ensures only authorized users can submit the batch and keeps all transactions together. When you set a batchKey, the system automatically marks the transaction as part of a batch by setting `nodeAccountId` to `0.0.0`, which helps the network process it correctly.
 
 {% tabs %}
 {% tab title="Java" %}
@@ -123,7 +123,7 @@ for _, txId := range innerTxIds {
 {% endtabs %}
 
 {% hint style="success" %}
-### Batchify Helper Method
+#### Batchify Helper Method
 
 The `batchify()` method is the recommended way to prepare transactions for inclusion in a batch. This helper method simplifies the process by handling multiple steps in a single call, reducing code complexity and potential errors.
 
@@ -135,8 +135,6 @@ The `batchify()` method is the recommended way to prepare transactions for inclu
 ## Get transaction values
 
 <table><thead><tr><th>Method</th><th width="227.31597900390625">Type</th><th>Description</th></tr></thead><tbody><tr><td><code>getInnerTransactions()</code></td><td>List&#x3C;Transaction></td><td>Returns the list of transactions in the batch</td></tr><tr><td><code>getInnerTransactionIds()</code></td><td>List&#x3C;TransactionId></td><td>Returns the generated IDs of the inner transactions</td></tr><tr><td><code>getBatchKey()</code></td><td>Key</td><td>Returns the batch key on an inner transaction</td></tr></tbody></table>
-
-
 
 {% tabs %}
 {% tab title="Java" %}

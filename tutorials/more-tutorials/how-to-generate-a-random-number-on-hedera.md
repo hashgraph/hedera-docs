@@ -6,15 +6,15 @@ With Hedera, you have a transaction and Solidity library available to generate p
 
 In this tutorial, you will learn how to generate random numbers on Hedera using the [JavaScript SDK](../../sdks-and-apis/sdks/#hedera-services-code-sdks) and Solidity. Keep in mind that the random number generator covered here is secure enough for practical applications, but you should carefully consider whether it is secure enough for your specific purpose. For details on limitations and security considerations, see [HIP-351](https://hips.hedera.com/hip/hip-351) (special mention and thanks to LG Electronics for the help and input in formulating this Hedera Improvement Proposal).
 
-This[ resource](https://www.wolfssl.com/true-random-vs-pseudorandom-number-generation/) is helpful if you want to learn more about the difference between pseudorandom and random numbers. For simplicity, we’ll use both terms interchangeably throughout this tutorial.&#x20;
+This[ resource](https://www.wolfssl.com/true-random-vs-pseudorandom-number-generation/) is helpful if you want to learn more about the difference between pseudorandom and random numbers. For simplicity, we’ll use both terms interchangeably throughout this tutorial.
 
 ***
 
 ## **Prerequisites**
 
-* Get a [Hedera Testnet](https://portal.hedera.com/register) account [here](create-and-fund-your-hedera-testnet-account.md).&#x20;
+* Get a [Hedera Testnet](https://portal.hedera.com/register) account [here](create-and-fund-your-hedera-testnet-account.md).
 * Get the [example code from GitHub](https://github.com/ed-marquez/hedera-example-random-number/blob/master/index.js).
-* Set up your environment and create a client [here](broken-reference).&#x20;
+* Set up your environment and create a client [here](https://github.com/hashgraph/hedera-docs/blob/test-workflows/tutorials/more-tutorials/broken-reference/README.md).
 
 _**📣 Note:** This tutorial requires the use of the following tools: Hedera_ [_JavaScript SDK_](../../sdks-and-apis/sdks/)_, Solidity with libraries for random number generation (_[_HIP-351_](https://hips.hedera.com/hip/hip-351)_), and the Mirror Node REST API (_[_learn more_](https://hedera.com/blog/how-to-look-up-transaction-history-on-hedera-using-mirror-nodes-back-to-the-basics)_) and explorer (_[_HashScan_](https://hashscan.io/#/mainnet/dashboard)_)._
 
@@ -222,7 +222,7 @@ You will learn various ways to obtain the random number from the Solidity contra
 * Output to the console:
   * The random number obtained using both the transaction record and using the contract function
   * A message indicating if the random number obtained with the two methods above matches or not
-  * The mirror node explorer URL with more details about the transaction&#x20;
+  * The mirror node explorer URL with more details about the transaction
 
 ```javascript
 // Query the transaction record to get the random number from bytes

@@ -1,5 +1,5 @@
 ---
-title: ⚠️ Upcoming Price Change – ...
+title: Upcoming Price Change – ...
 ---
 
 {% hint style="warning" %}

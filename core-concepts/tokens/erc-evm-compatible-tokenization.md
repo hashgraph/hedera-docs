@@ -33,13 +33,13 @@ These standards enable the deployment of any smart contract, including DeFi appl
 
 Hedera provides a JSON-RPC relay, making it easy for developers to interact with smart contracts using EVM-native tools. These tools provide standard EVM developer workflows on Hedera's EVM environment. Developers can use the same JSON-RPC methods as Ethereum, ensuring compatibility with dApps, wallets, and DeFi protocols.
 
-<table><thead><tr><th width="205.6319580078125">Tools</th><th>Description</th></tr></thead><tbody><tr><td><a href="https://hardhat.org/hardhat-runner/docs/getting-started#overview"><strong>Hardhat</strong></a></td><td>Deploy and test smart contracts.</td></tr><tr><td><a href="https://web3js.readthedocs.io/en/v1.10.0/"><strong>Web3.js</strong></a> <strong>/</strong> <a href="https://docs.ethers.org/v5/"><strong>ethers.js</strong></a> </td><td>Query and interact with contracts.</td></tr><tr><td><a href="https://remix.ethereum.org/"><strong>Remix IDE</strong></a></td><td>Deploy smart contracts using a browser-based IDE.</td></tr></tbody></table>
+<table><thead><tr><th width="205.6319580078125">Tools</th><th>Description</th></tr></thead><tbody><tr><td><a href="https://hardhat.org/hardhat-runner/docs/getting-started#overview"><strong>Hardhat</strong></a></td><td>Deploy and test smart contracts.</td></tr><tr><td><a href="https://web3js.readthedocs.io/en/v1.10.0/"><strong>Web3.js</strong></a> <strong>/</strong> <a href="https://docs.ethers.org/v5/"><strong>ethers.js</strong></a></td><td>Query and interact with contracts.</td></tr><tr><td><a href="https://remix.ethereum.org/"><strong>Remix IDE</strong></a></td><td>Deploy smart contracts using a browser-based IDE.</td></tr></tbody></table>
 
 <figure><img src="../../.gitbook/assets/SmartContractsAndHTS.drawio.png" alt=""><figcaption></figcaption></figure>
 
 ### **HTS Tokens as ERC-20/ERC-721 via Facade Contracts**
 
-Hedera provides facade contracts (per HIP-218 and HIP-376) that allow HTS-native tokens to function as ERC-20 or ERC-721 tokens. With these contracts, developers can leverage Hedera’s efficiency while maintaining EVM compatibility.&#x20;
+Hedera provides facade contracts (per HIP-218 and HIP-376) that allow HTS-native tokens to function as ERC-20 or ERC-721 tokens. With these contracts, developers can leverage Hedera’s efficiency while maintaining EVM compatibility.
 
 ​A facade contract on Hedera acts as a built-in adapter, allowing Hedera Token Service (HTS) tokens to function seamlessly as standard ERC-20 or ERC-721 tokens within EVM-compatible (EVM) environments. This integration enables developers to interact with HTS tokens using familiar Ethereum interfaces, such as `transfer()`, `approve()`, and `transferFrom()`, without requiring modifications to existing Ethereum wallets or decentralized applications (dApps).
 
@@ -50,14 +50,14 @@ In summary, facade contracts provide a bridge between Hedera's native token serv
 <table><thead><tr><th width="242.2333984375">Facade Contracts</th><th>Description</th></tr></thead><tbody><tr><td><strong>IHRC904AccountFacade.sol</strong></td><td><a href="https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/hedera-account-service/IHRC904AccountFacade.sol">https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/hedera-account-service/IHRC904AccountFacade.sol</a></td></tr><tr><td><strong>IHRC906AccountFacade.sol</strong></td><td><a href="https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/hedera-account-service/IHRC906AccountFacade.sol">https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/hedera-account-service/IHRC906AccountFacade.sol</a></td></tr><tr><td><strong>IHRC755ScheduleFacade.sol</strong></td><td><a href="https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/hedera-schedule-service/IHRC755ScheduleFacade.sol">https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/hedera-schedule-service/IHRC755ScheduleFacade.sol</a></td></tr><tr><td><strong>IHRC904TokenFacade.sol</strong></td><td><a href="https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/hedera-token-service/IHRC904TokenFacade.sol">https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/hedera-token-service/IHRC904TokenFacade.sol</a></td></tr></tbody></table>
 
 {% hint style="info" %}
-### Token Associations
+#### Token Associations
 
 When transferring HTS tokens on Hedera, recipients must associate the token with their account before receiving it. [Learn more about token auto associations and fees](hedera-token-service-hts-native-tokenization/token-airdrops.md#auto-associations-and-fees).
 {% endhint %}
 
 ### **Synthetic Events for Tokens Managed by Smart Contracts**
 
-Smart contract tokens like ERC-20 and ERC-721 emit events, creating contract logs that developers can query or subscribe to. Hedera Token Service (HTS) tokens do not natively generate such event logs.  As a solution to this limitation, Hedera Mirror Nodes generate synthetic event logs, enabling event-driven workflows to mimic the behavior of smart contract tokens for HTS transactions. Synthetic events are generated for transactions such as:
+Smart contract tokens like ERC-20 and ERC-721 emit events, creating contract logs that developers can query or subscribe to. Hedera Token Service (HTS) tokens do not natively generate such event logs. As a solution to this limitation, Hedera Mirror Nodes generate synthetic event logs, enabling event-driven workflows to mimic the behavior of smart contract tokens for HTS transactions. Synthetic events are generated for transactions such as:
 
 * `CryptoTransfer`
 * `CryptoApproveAllowance`
@@ -73,8 +73,6 @@ This feature enables developers to effectively monitor HTS token activities as i
 ## Video Resource
 
 {% embed url="https://youtu.be/B23aVhaCARU?si=kOx79FdLexzdTcde" %}
-
-
 
 <details>
 

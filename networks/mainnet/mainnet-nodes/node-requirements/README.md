@@ -166,7 +166,7 @@ A proxy is required to expose the node’s public APIs.
 
 The following ports must be configured for **public internet access** unless otherwise stated:
 
-<table><thead><tr><th width="136.35546875">Port</th><th width="115.03515625">Protocol</th><th width="171.6953125">Direction</th><th>Description</th></tr></thead><tbody><tr><td><code>50111</code></td><td>TCP</td><td>Ingress/Egress</td><td>gRPC (public) API access</td></tr><tr><td><code>50211</code></td><td>TCP</td><td>Ingress</td><td>Gossip protocol</td></tr><tr><td><code>50212</code></td><td>TCP</td><td>Ingress</td><td>TLS-encrypted Gossip protocol</td></tr><tr><td><code>80</code></td><td>TCP</td><td>Egress only</td><td>OS package repository connectivity</td></tr><tr><td><code>443</code></td><td>TCP</td><td>Egress only</td><td>Secure package &#x26; system update access</td></tr><tr><td><code>123</code></td><td>UDP</td><td>Ingress/Egress</td><td>Time sync via NTP pool</td></tr></tbody></table>
+<table><thead><tr><th width="136.35546875">Port</th><th width="115.03515625">Protocol</th><th width="171.6953125">Direction</th><th>Description</th></tr></thead><tbody><tr><td><code>50111</code></td><td>TCP</td><td>Ingress/Egress</td><td>Gossip protocol </td></tr><tr><td><code>50211</code></td><td>TCP</td><td>Ingress</td><td>gRPC (public) API access (HAPI)</td></tr><tr><td><code>50212</code></td><td>TCP</td><td>Ingress</td><td>TLS-encrypted gRPC</td></tr><tr><td><code>80</code></td><td>TCP</td><td>Egress only</td><td>OS package repository connectivity</td></tr><tr><td><code>443</code></td><td>TCP</td><td>Egress only</td><td>Secure package &#x26; system update access</td></tr><tr><td><code>123</code></td><td>UDP</td><td>Ingress/Egress</td><td>Time sync via NTP pool</td></tr></tbody></table>
 
 </details>
 
@@ -180,7 +180,7 @@ The following ports must be configured for **public internet access** unless oth
 
 **📡 Port Configuration**
 
-<table><thead><tr><th width="132.375">Port</th><th width="129.4921875">Protocol</th><th width="170.046875">Direction</th><th>Purpose</th></tr></thead><tbody><tr><td><code>50211</code></td><td>TCP</td><td>Ingress/Egress</td><td>Gossip protocol</td></tr><tr><td><code>50212</code></td><td>TCP</td><td>Ingress/Egress</td><td>TLS-encrypted gossip</td></tr><tr><td><code>80</code></td><td>TCP</td><td>Egress only</td><td>OS package repository</td></tr><tr><td><code>443</code></td><td>TCP</td><td>Egress only</td><td>Secure updates</td></tr></tbody></table>
+<table><thead><tr><th width="132.375">Port</th><th width="129.4921875">Protocol</th><th width="170.046875">Direction</th><th>Purpose</th></tr></thead><tbody><tr><td><code>50211</code></td><td>TCP</td><td>Ingress/Egress</td><td>gRPC (public) API access (HAPI)</td></tr><tr><td><code>50212</code></td><td>TCP</td><td>Ingress/Egress</td><td>TLS-encrypted gRPC</td></tr><tr><td><code>80</code></td><td>TCP</td><td>Egress only</td><td>OS package repository</td></tr><tr><td><code>443</code></td><td>TCP</td><td>Egress only</td><td>Secure updates</td></tr></tbody></table>
 
 </details>
 

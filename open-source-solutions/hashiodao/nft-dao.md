@@ -2,11 +2,11 @@
 
 ## NFT DAO Creation
 
-[After creating and funding a Hedera account](./#getting-started-with-hashiodao), navigate to the HashioDAO web application dashboard and connect your wallet. Once your wallet is connected, click **Create a new DAO** and this will guide you through a series of setup steps where you will define the details of your DAO including name and governance type.&#x20;
+[After creating and funding a Hedera account](./#getting-started-with-hashiodao), navigate to the HashioDAO web application dashboard and connect your wallet. Once your wallet is connected, click **Create a new DAO** and this will guide you through a series of setup steps where you will define the details of your DAO including name and governance type.
 
-<figure><img src="../../.gitbook/assets/hashiodao-landing (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/hashiodao-landing (1) (1).png" alt=""><figcaption></figcaption></figure>
 
-Read and and accept the disclaimer and click  **Next**.
+Read and and accept the disclaimer and click **Next**.
 
 <figure><img src="../../.gitbook/assets/hashiodao-accept-disclaimer.png" alt="" width="563"><figcaption></figcaption></figure>
 
@@ -18,17 +18,17 @@ Define the details of your DAO by filling out each field. These details are impo
 
 ## Governance Models
 
-Choose the governance model that works best with your organizations's goals. There are three models to choose from: governance token, multisig, and NFT.&#x20;
+Choose the governance model that works best with your organizations's goals. There are three models to choose from: governance token, multisig, and NFT.
 
 <figure><img src="../../.gitbook/assets/hashiodao-nft-create.png" alt="" width="563"><figcaption></figcaption></figure>
 
-The **`createDAO()`** function is called on the [NFTDaoFactory](https://github.com/hashgraph/hedera-accelerator-defi-dex/blob/main/contracts/dao/NFTDAOFactory.sol) factory contract when you create an NFT DAO. This initiates a new DAO treasury smart contract based on the parameters you set for you token. These parameters will be set in the next step.&#x20;
+The **`createDAO()`** function is called on the [NFTDaoFactory](https://github.com/hashgraph/hedera-accelerator-defi-dex/blob/main/contracts/dao/NFTDAOFactory.sol) factory contract when you create an NFT DAO. This initiates a new DAO treasury smart contract based on the parameters you set for you token. These parameters will be set in the next step.
 
 ***
 
 ## Define NFT and Voting Details
 
-Define the DAO's NFT and voting details. You have the option to create a new governance token or use an existing one. For the purposes of this tutorial, we will create a new one. Define the details for your new governance token:&#x20;
+Define the DAO's NFT and voting details. You have the option to create a new governance token or use an existing one. For the purposes of this tutorial, we will create a new one. Define the details for your new governance token:
 
 <figure><img src="../../.gitbook/assets/hashiodao-governance-token-details.png" alt="" width="563"><figcaption></figcaption></figure>
 
@@ -39,7 +39,7 @@ Once you click **Create Token** and approve the transaction in your wallet a Gov
 Set the voting quorum percentage, voting duration, and delay period for votes. To avoid delays, starting with a low quorum percentage is recommended. This can adjusted over time as the community's needs change.
 
 {% hint style="info" %}
-DAOs set their quorum percentage depending on their goals and needs. If the quorum is set too high, decisions are only made with a large number of participation from the members. If the quorum is set low, this allows more flexibility in decision making and the chances of proposals being approved would be higher than with a higher quorum.&#x20;
+DAOs set their quorum percentage depending on their goals and needs. If the quorum is set too high, decisions are only made with a large number of participation from the members. If the quorum is set low, this allows more flexibility in decision making and the chances of proposals being approved would be higher than with a higher quorum.
 {% endhint %}
 
 <figure><img src="../../.gitbook/assets/hashiodao-voting-quorum.png" alt="" width="563"><figcaption></figcaption></figure>
@@ -50,7 +50,7 @@ Be cautious when depositing governance tokens into the treasury since it does no
 
 ## Review and Submit to Create New DAO
 
-Review the DAO details, governance type, and submit the transaction. Approve the DAO creation transaction in your wallet to proceed.&#x20;
+Review the DAO details, governance type, and submit the transaction. Approve the DAO creation transaction in your wallet to proceed.
 
 <figure><img src="../../.gitbook/assets/hashiodao-review-details.png" alt="" width="563"><figcaption></figcaption></figure>
 
@@ -79,4 +79,3 @@ Congrats on successfully creating your first DAO using the NFT governance model!
 ➡ [**HashioDAO Repository**](https://github.com/hashgraph/hedera-accelerator-defi-dex-ui)
 
 ➡ [**HashScan Network Explorer**](https://hashscan.io/testnet/dashboard)
-

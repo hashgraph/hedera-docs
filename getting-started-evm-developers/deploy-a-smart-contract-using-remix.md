@@ -25,13 +25,13 @@ In this tutorial, you’ll use Remix IDE to write and deploy a simple smart cont
 
 Smart contracts deployed on Hedera are compatible with EVM wallets like MetaMask. To interact with the network, you must first add Hedera’s JSON-RPC endpoint as a custom network in your wallet. Click on the button below for a one-click configuration.
 
-<a href="https://chainlist.org/chain/296/" class="button primary" data-icon="plus-large">ADD HEDERA TESTNET</a> &#x20;
+<a href="https://chainlist.org/chain/296/" class="button primary" data-icon="plus-large">ADD HEDERA TESTNET</a>
 
 <div align="left"><figure><img src="../.gitbook/assets/metamask-testnet-config.png" alt="" width="370"><figcaption></figcaption></figure></div>
 
 <details>
 
-<summary><strong>Alternatively, manually add Hedera's JSON-RPC endpoint ↓</strong> </summary>
+<summary><strong>Alternatively, manually add Hedera's JSON-RPC endpoint ↓</strong></summary>
 
 1. Open MetaMask and click the network selection dropdown at the top of the extension.
 2. Click **Add Network**, then **Add Network Manually**
@@ -41,8 +41,7 @@ Smart contracts deployed on Hedera are compatible with EVM wallets like MetaMask
    3. **Chain ID**: `296`
    4. **Currency Symbol**: `HBAR`
    5. **Block Explorer URL**: `https://hashscan.io/testnet`
-
-4) Tap the **Save** button to save the Hedera Testnet
+4. Tap the **Save** button to save the Hedera Testnet
 
 </details>
 
@@ -50,7 +49,7 @@ Smart contracts deployed on Hedera are compatible with EVM wallets like MetaMask
 
 ## Fund Your Hedera Testnet Account
 
-Navigate to the [Hedera Faucet](https://portal.hedera.com/faucet) to get testnet HBAR tokens necessary for deploying a smart contract.&#x20;
+Navigate to the [Hedera Faucet](https://portal.hedera.com/faucet) to get testnet HBAR tokens necessary for deploying a smart contract.
 
 ***
 
@@ -58,15 +57,15 @@ Navigate to the [Hedera Faucet](https://portal.hedera.com/faucet) to get testnet
 
 {% stepper %}
 {% step %}
-### Open Remix and Create Contract
+#### Open Remix and Create Contract
 
-Open your web browser and navigate to Remix IDE. Click on the file icon in the **File Explorer** tab to create a new file and name it `HelloHedera.sol` .&#x20;
+Open your web browser and navigate to Remix IDE. Click on the file icon in the **File Explorer** tab to create a new file and name it `HelloHedera.sol` .
 
 <div align="left"><figure><img src="../.gitbook/assets/remix-create-new-file.png" alt="" width="375"><figcaption></figcaption></figure></div>
 {% endstep %}
 
 {% step %}
-### Add Contract Code
+#### Add Contract Code
 
 Copy and paste this sample contract to the new file you created:
 
@@ -88,9 +87,9 @@ contract SampleContract {
 {% endstep %}
 
 {% step %}
-### Compile the Contract
+#### Compile the Contract
 
-Navigate to the **Solidity Compiler** tab in the left sidebar and check that your compiler version is within the versions specified in the `pragma solidity` statement. Then, compile your `HelloHedera.sol` contract.&#x20;
+Navigate to the **Solidity Compiler** tab in the left sidebar and check that your compiler version is within the versions specified in the `pragma solidity` statement. Then, compile your `HelloHedera.sol` contract.
 
 <figure><img src="../.gitbook/assets/remix-compile-contract-button.png" alt=""><figcaption></figcaption></figure>
 
@@ -108,32 +107,32 @@ _Please note that to generate these artifact files, the **Generate contract meta
 {% endstep %}
 
 {% step %}
-### Deploy to Hedera testnet
+#### Deploy to Hedera testnet
 
-* Go to the **Deploy & Run Transactions** tab and&#x20;
+* Go to the **Deploy & Run Transactions** tab and
 * Select **Injected Provider - MetaMask** as the environment
 
-If you're not signed into your MetaMask account, a window will pop up prompting you to log in. Sign in and make sure you're connected to the **Hedera Testnet** and verify that the network is configured correctly to **Custom (296) network**.&#x20;
+If you're not signed into your MetaMask account, a window will pop up prompting you to log in. Sign in and make sure you're connected to the **Hedera Testnet** and verify that the network is configured correctly to **Custom (296) network**.
 
 <div align="left"><figure><img src="../.gitbook/assets/remix-injected-metamask-dark.png" alt=""><figcaption></figcaption></figure></div>
 
-Once you click **Deploy** in the **Deploy & Run Transactions** tab, hit **Confirm** in the MetaMask notification window to approve and pay for the contract deployment transaction.&#x20;
+Once you click **Deploy** in the **Deploy & Run Transactions** tab, hit **Confirm** in the MetaMask notification window to approve and pay for the contract deployment transaction.
 
 <figure><img src="../.gitbook/assets/remix-deploy-run-confirm.png" alt=""><figcaption></figcaption></figure>
 {% endstep %}
 
 {% step %}
-### Interact with the Smart Contract on Hedera
+#### Interact with the Smart Contract on Hedera
 
-Once the transaction is successful, you can interact with the smart contract through Remix. Select the dropdown on the newly deployed contract at the bottom of the left panel to view the contract's functions under **Deployed Contracts**. Write a new message to the `updateString` function using the input and confirm the write transaction in the MetaMask window to pay.&#x20;
+Once the transaction is successful, you can interact with the smart contract through Remix. Select the dropdown on the newly deployed contract at the bottom of the left panel to view the contract's functions under **Deployed Contracts**. Write a new message to the `updateString` function using the input and confirm the write transaction in the MetaMask window to pay.
 
 <div align="left"><figure><img src="../.gitbook/assets/interact-smart-contract-remix.png" alt="" width="375"><figcaption></figcaption></figure></div>
 {% endstep %}
 
 {% step %}
-### View Contract Details on HashScan Network Explorer
+#### View Contract Details on HashScan Network Explorer
 
-Copy the contract address from the Deployed Contracts window.&#x20;
+Copy the contract address from the Deployed Contracts window.
 
 <div align="left"><figure><img src="../.gitbook/assets/deployed-contract-address-remix-copy-address.png" alt="" width="563"><figcaption></figcaption></figure></div>
 
@@ -143,7 +142,7 @@ Navigate to the [HashScan](https://hashscan.io/) network explorer and use the co
 {% endstep %}
 {% endstepper %}
 
-**Congratulations 🎉  Your smart contract is live on Hedera testnet!**&#x20;
+**Congratulations 🎉 Your smart contract is live on Hedera testnet!**
 
 You've successfully:
 

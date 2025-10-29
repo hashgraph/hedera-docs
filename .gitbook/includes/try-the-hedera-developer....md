@@ -1,5 +1,5 @@
 ---
-title: ℹ️ Try the Hedera Developer...
+title: Try the Hedera Developer...
 ---
 
 {% hint style="info" %}

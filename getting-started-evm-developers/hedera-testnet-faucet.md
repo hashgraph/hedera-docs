@@ -1,24 +1,24 @@
 # Hedera Testnet Faucet
 
-The Hedera faucet allows you to quickly create and fund a testnet account without creating a developer portal account. The faucet flow auto-creates an account when you enter an EVM wallet address to receive testnet HBAR.&#x20;
+The Hedera faucet allows you to quickly create and fund a testnet account without creating a developer portal account. The faucet flow auto-creates an account when you enter an EVM wallet address to receive testnet HBAR.
 
 {% stepper %}
 {% step %}
-### Step 1: Visit the faucet
+#### Step 1: Visit the faucet
 
 To use the faucet, head to the [faucet](https://portal.hedera.com/faucet) landing page.
 
-&#x20;    <a href="https://portal.hedera.com/faucet" class="button primary" data-icon="faucet-drip">VISIT HEDERA FAUCET</a>
+<a href="https://portal.hedera.com/faucet" class="button primary" data-icon="faucet-drip">VISIT HEDERA FAUCET</a>
 {% endstep %}
 
 {% step %}
-### Step 2: Fund your testnet account
+#### Step 2: Fund your testnet account
 
-* Enter your EVM wallet address in the **Enter Wallet Address** field and&#x20;
+* Enter your EVM wallet address in the **Enter Wallet Address** field and
 * Click the **RECEIVE 100 TESTNET HBAR** button to initiate an [auto account creation](../core-concepts/accounts/auto-account-creation.md) flow that creates and funds a new testnet account
 
 {% hint style="info" %}
-#### ⚠️ **Important**
+**⚠️ Important**
 
 When you use an EVM wallet address for the first time, **Auto Account Creation** kicks in to establish a new Hedera account linked to your EVM address.
 
@@ -39,7 +39,7 @@ This section is for developers who want to set up their environment for producti
 
 <details>
 
-<summary><strong>Setup <code>.env</code> file</strong> </summary>
+<summary><strong>Setup <code>.env</code> file</strong></summary>
 
 If you plan to use Hardhat, Foundry, or other development frameworks, you'll want to set up environment variables:
 
@@ -51,7 +51,7 @@ If you plan to use Hardhat, Foundry, or other development frameworks, you'll wan
     <img src="../.gitbook/assets/metamask-show-private-key (1).png" alt="" data-size="original">
 
 {% hint style="success" %}
-For detailed instructions on exporting your private key, refer to [this how-to guide](https://support.metamask.io/managing-my-wallet/secret-recovery-phrase-and-private-keys/how-to-export-an-accounts-private-key/). Keep your private keys secure. Anyone with access to them can control your wallet and any funds.&#x20;
+For detailed instructions on exporting your private key, refer to [this how-to guide](https://support.metamask.io/managing-my-wallet/secret-recovery-phrase-and-private-keys/how-to-export-an-accounts-private-key/). Keep your private keys secure. Anyone with access to them can control your wallet and any funds.
 {% endhint %}
 
 2. **Create a `.env` file** in your project directory with your account credentials
@@ -68,7 +68,7 @@ RPC_URL=https://testnet.hashio.io/api
 ```
 
 {% hint style="danger" %}
-#### Warning
+**Warning**
 
 Storing private keys in a `.env` file is not considered best practice. There is always a risk of accidentally committing and pushing to a public GitHub repo and exposing your keys. Make it a habit to add `.env` to your `.gitignore` file as a precautionary measure.
 

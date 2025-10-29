@@ -8,22 +8,22 @@ This quickstart walks you through submitting your first Hedera transaction using
 
 {% stepper %}
 {% step %}
-### Open the Playground
+#### Open the Playground
 
 <a href="https://portal.hedera.com/playground" class="button primary" data-icon="rectangle-terminal">OPEN PLAYGROUND</a>
 {% endstep %}
 
 {% step %}
-### Transfer HBAR transaction
+#### Transfer HBAR transaction
 
 Under the **Account & HBAR** native services, click the **Transfer HBAR** transaction from the left navigation
 
 1. Replace `receiverAccount` with account ID "0.0.800"
-2. Then click on **Get Account Balance** under Queries&#x20;
+2. Then click on **Get Account Balance** under Queries
 {% endstep %}
 
 {% step %}
-### Execute transaction
+#### Execute transaction
 
 Click the **Execute** button to submit your first transaction.
 
@@ -31,19 +31,19 @@ Click the **Execute** button to submit your first transaction.
 {% endstep %}
 
 {% step %}
-### Create a Hedera testnet account
+#### Create a Hedera testnet account
 
 When you click **Execute**, you’ll be prompted to sign up for a developer portal account. Once logged in, click the **CREATE ACCOUNT** button to complete the testnet account creation flow.
 
 <div><figure><img src="../.gitbook/assets/portal-login-popup.png" alt=""><figcaption></figcaption></figure> <figure><img src="../.gitbook/assets/new-portal-register.png" alt=""><figcaption></figcaption></figure> <figure><img src="../.gitbook/assets/portal-create-testnet-account-setup.png" alt=""><figcaption></figcaption></figure></div>
 
-Your new testnet account will be automatically funded with **1000 HBAR**. View your account ID and key pair from the portal dashboard.&#x20;
+Your new testnet account will be automatically funded with **1000 HBAR**. View your account ID and key pair from the portal dashboard.
 
 <figure><img src="../.gitbook/assets/portal-account-creation.png" alt="" width="375"><figcaption></figcaption></figure>
 {% endstep %}
 
 {% step %}
-### View the transaction on HashScan
+#### View the transaction on HashScan
 
 View and verify the transaction details and success confirmation. Click the HashScan link from the transaction output on the playground. View your transaction details, account history, and network activity.
 

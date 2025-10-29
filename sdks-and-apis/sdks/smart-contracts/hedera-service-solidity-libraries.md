@@ -518,6 +518,6 @@ Airdrop one or more tokens to one or more accounts.
 
 ## Examples
 
-{% content-ref url="broken-reference" %}
-[Broken link](broken-reference)
+{% content-ref url="https://github.com/hashgraph/hedera-docs/blob/test-workflows/sdks-and-apis/sdks/smart-contracts/broken-reference/README.md" %}
+[https://github.com/hashgraph/hedera-docs/blob/test-workflows/sdks-and-apis/sdks/smart-contracts/broken-reference/README.md](https://github.com/hashgraph/hedera-docs/blob/test-workflows/sdks-and-apis/sdks/smart-contracts/broken-reference/README.md)
 {% endcontent-ref %}

@@ -27,10 +27,9 @@ Release v0.67 enhances the stability and performance of the Hiero Consensus Node
 **Updates:**
 
 * **Improved Block Streaming Metrics**: Metrics for communication between consensus and block nodes have been reworked for clarity and utility. Metric names no longer include the self-node ID, as this is now automatically added as a label
-
-- **Block Streaming Service Lifecycle**: The startup and shutdown procedures for the `BlockBufferService` and `BlockNodeConnectionManager` have been improved to ensure more reliable initialization and termination.
-- **Enhanced Testing and CI**: A large effort was invested in improving the test infrastructure, including adding test container support for block nodes, increasing test coverage for block node communication, and parallelizing test suite runs to accelerate the development cycle.
-- **Besu Upgrade**: Upgraded Besu EVM to `25.2.2`. The update introduces Besu Native Libraries Verification, which ensures that required native libraries are available on the host operating system. When these libraries are missing, Besu falls back to non-native implementations, which can reduce performance. This verification helps maintain optimal execution efficiency and consistency across nodes.
+* **Block Streaming Service Lifecycle**: The startup and shutdown procedures for the `BlockBufferService` and `BlockNodeConnectionManager` have been improved to ensure more reliable initialization and termination.
+* **Enhanced Testing and CI**: A large effort was invested in improving the test infrastructure, including adding test container support for block nodes, increasing test coverage for block node communication, and parallelizing test suite runs to accelerate the development cycle.
+* **Besu Upgrade**: Upgraded Besu EVM to `25.2.2`. The update introduces Besu Native Libraries Verification, which ensures that required native libraries are available on the host operating system. When these libraries are missing, Besu falls back to non-native implementations, which can reduce performance. This verification helps maintain optimal execution efficiency and consistency across nodes.
 
 **Summary:**
 
@@ -47,13 +46,12 @@ For developers, no breaking changes or immediate actions required. Existing cont
 <summary><strong>What's Changed</strong></summary>
 
 * chore: (0.67) Revert `HookDispatch` auth by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#21424](https://github.com/hiero-ledger/hiero-consensus-node/pull/21424)
-
-- chore: cherry-pick: improve BN communication logging ([#20584](https://github.com/hiero-ledger/hiero-consensus-node/pull/20584)) by [@derektriley](https://github.com/derektriley) in [#21486](https://github.com/hiero-ledger/hiero-consensus-node/pull/21486)
-- fix: 21374: Backport the fix for 19574 to release 0.67 by [@artemananiev](https://github.com/artemananiev) in [#21393](https://github.com/hiero-ledger/hiero-consensus-node/pull/21393)
-- chore: cherry-pick return the old debug log message receiving acknowledgements ([#21383](https://github.com/hiero-ledger/hiero-consensus-node/pull/21383)) by [@derektriley](https://github.com/derektriley) in [#21526](https://github.com/hiero-ledger/hiero-consensus-node/pull/21526)
-- chore: cherry-pick Fix BN Comms tests in release candidate ([#21537](https://github.com/hiero-ledger/hiero-consensus-node/pull/21537)) by [@derektriley](https://github.com/derektriley) in [#21547](https://github.com/hiero-ledger/hiero-consensus-node/pull/21547)
-- fix: 21677: (0.67) Virtual pipeline should ignore detached copies by [@artemananiev](https://github.com/artemananiev) in [#21678](https://github.com/hiero-ledger/hiero-consensus-node/pull/21678)
-- fix: 21696: (0.67) Temporary snapshots are not removed from data/saved/swirlds-tmp/ by [@artemananiev](https://github.com/artemananiev) in [#21697](https://github.com/hiero-ledger/hiero-consensus-node/pull/21697)
+* chore: cherry-pick: improve BN communication logging ([#20584](https://github.com/hiero-ledger/hiero-consensus-node/pull/20584)) by [@derektriley](https://github.com/derektriley) in [#21486](https://github.com/hiero-ledger/hiero-consensus-node/pull/21486)
+* fix: 21374: Backport the fix for 19574 to release 0.67 by [@artemananiev](https://github.com/artemananiev) in [#21393](https://github.com/hiero-ledger/hiero-consensus-node/pull/21393)
+* chore: cherry-pick return the old debug log message receiving acknowledgements ([#21383](https://github.com/hiero-ledger/hiero-consensus-node/pull/21383)) by [@derektriley](https://github.com/derektriley) in [#21526](https://github.com/hiero-ledger/hiero-consensus-node/pull/21526)
+* chore: cherry-pick Fix BN Comms tests in release candidate ([#21537](https://github.com/hiero-ledger/hiero-consensus-node/pull/21537)) by [@derektriley](https://github.com/derektriley) in [#21547](https://github.com/hiero-ledger/hiero-consensus-node/pull/21547)
+* fix: 21677: (0.67) Virtual pipeline should ignore detached copies by [@artemananiev](https://github.com/artemananiev) in [#21678](https://github.com/hiero-ledger/hiero-consensus-node/pull/21678)
+* fix: 21696: (0.67) Temporary snapshots are not removed from data/saved/swirlds-tmp/ by [@artemananiev](https://github.com/artemananiev) in [#21697](https://github.com/hiero-ledger/hiero-consensus-node/pull/21697)
 
 **Full Changelog**: [v0.67.0...v0.67.1](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.67.0...v0.67.1)
 
@@ -66,16 +64,15 @@ For developers, no breaking changes or immediate actions required. Existing cont
 <summary><strong>What's Changed</strong></summary>
 
 * ci: Update SDPT and SDLT workflow to only tag when build ID is present by [@andrewb1269hg](https://github.com/andrewb1269hg) in [#20984](https://github.com/hiero-ledger/hiero-consensus-node/pull/20984)
-
-- fix: Add `scheduling.maxExpirySecsToCheckPerUserTxn` by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#20987](https://github.com/hiero-ledger/hiero-consensus-node/pull/20987)
-- chore: Update incident\_types by [@rbarker-dev](https://github.com/rbarker-dev) in [#21055](https://github.com/hiero-ledger/hiero-consensus-node/pull/21055)
-- chore: replace input.ref with github.ref in single day controllers by [@andrewb1269hg](https://github.com/andrewb1269hg) in [#20988](https://github.com/hiero-ledger/hiero-consensus-node/pull/20988)
-- chore: Minor Version Roll to 0.67.0-SNAPSHOT by [@andrewb1269hg](https://github.com/andrewb1269hg) in [#21072](https://github.com/hiero-ledger/hiero-consensus-node/pull/21072)
-- feat: 17002: A concept of default MerkleDb instance seems redundant by [@artemananiev](https://github.com/artemananiev) in [#19700](https://github.com/hiero-ledger/hiero-consensus-node/pull/19700)
-- chore: state validator rehash is too slow by [@OlegMazurov](https://github.com/OlegMazurov) in [#21013](https://github.com/hiero-ledger/hiero-consensus-node/pull/21013)
-- chore(20698): Invert PlatformWiring and PlatformCoordinator relationship by [@mxtartaglia-sl](https://github.com/mxtartaglia-sl) in [#20758](https://github.com/hiero-ledger/hiero-consensus-node/pull/20758)
-- chore: Fix `BalanceValidation` flake by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#21306](https://github.com/hiero-ledger/hiero-consensus-node/pull/21306)
-- feat: CryptoTransfer changes for HookExecution by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#21279](https://github.com/hiero-ledger/hiero-consensus-node/pull/21279)
+* fix: Add `scheduling.maxExpirySecsToCheckPerUserTxn` by [@tinker-michaelj](https://github.com/tinker-michaelj) in [#20987](https://github.com/hiero-ledger/hiero-consensus-node/pull/20987)
+* chore: Update incident\_types by [@rbarker-dev](https://github.com/rbarker-dev) in [#21055](https://github.com/hiero-ledger/hiero-consensus-node/pull/21055)
+* chore: replace input.ref with github.ref in single day controllers by [@andrewb1269hg](https://github.com/andrewb1269hg) in [#20988](https://github.com/hiero-ledger/hiero-consensus-node/pull/20988)
+* chore: Minor Version Roll to 0.67.0-SNAPSHOT by [@andrewb1269hg](https://github.com/andrewb1269hg) in [#21072](https://github.com/hiero-ledger/hiero-consensus-node/pull/21072)
+* feat: 17002: A concept of default MerkleDb instance seems redundant by [@artemananiev](https://github.com/artemananiev) in [#19700](https://github.com/hiero-ledger/hiero-consensus-node/pull/19700)
+* chore: state validator rehash is too slow by [@OlegMazurov](https://github.com/OlegMazurov) in [#21013](https://github.com/hiero-ledger/hiero-consensus-node/pull/21013)
+* chore(20698): Invert PlatformWiring and PlatformCoordinator relationship by [@mxtartaglia-sl](https://github.com/mxtartaglia-sl) in [#20758](https://github.com/hiero-ledger/hiero-consensus-node/pull/20758)
+* chore: Fix `BalanceValidation` flake by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#21306](https://github.com/hiero-ledger/hiero-consensus-node/pull/21306)
+* feat: CryptoTransfer changes for HookExecution by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#21279](https://github.com/hiero-ledger/hiero-consensus-node/pull/21279)
 
 **Full Changelog**: [v0.66.0...v0.67.0](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.66.0...v0.67.0)
 
@@ -99,19 +96,19 @@ With the introduction of batch transactions, Release v0.66 marks a key milestone
 
 <summary><strong>What's new in Release v0.66?</strong></summary>
 
-#### Batch Transaction Processing ([HIP-551](https://github.com/hiero-ledger/hiero-improvement-proposals/blob/main/HIP/hip-551.md))
+**Batch Transaction Processing (**[**HIP-551**](https://github.com/hiero-ledger/hiero-improvement-proposals/blob/main/HIP/hip-551.md)**)**
 
 Historically, Hiero developers have been limited to submitting and processing transactions to one service at a time. To create complex flows developers relied on smart contracts to execute the series of transactions and mirror node queries to monitor the status of submitted transactions, leading to increased latency, added code complexity, and greater risk of partial failures or errors.
 
-Release v0.66 introduces [HIP-551](https://github.com/hiero-ledger/hiero-improvement-proposals/blob/main/HIP/hip-551.md) - Batch Transactions, allowing multiple transactions to be bundled and submitted as a single unit that guarantees ACID properties (atomicity, consistency, isolation, and durability).  The network handles the batch atomically, ensuring consistent execution while providing granular receipts for each inner transaction. This new feature unlocks capabilities like streamlined dApp interactions, atomic multi-step operations, and consolidation of multiple transactions into one HAPI call.
+Release v0.66 introduces [HIP-551](https://github.com/hiero-ledger/hiero-improvement-proposals/blob/main/HIP/hip-551.md) - Batch Transactions, allowing multiple transactions to be bundled and submitted as a single unit that guarantees ACID properties (atomicity, consistency, isolation, and durability). The network handles the batch atomically, ensuring consistent execution while providing granular receipts for each inner transaction. This new feature unlocks capabilities like streamlined dApp interactions, atomic multi-step operations, and consolidation of multiple transactions into one HAPI call.
 
 **Key benefits:**
 
-* **Efficiency Gains**: New ability to atomically execute multiple transactions across different Hiero services that will be executed in order.&#x20;
-* **Developer Flexibility**: Enables new use cases, such as batch token minting or multi-account updates, without requiring smart contracts.&#x20;
+* **Efficiency Gains**: New ability to atomically execute multiple transactions across different Hiero services that will be executed in order.
+* **Developer Flexibility**: Enables new use cases, such as batch token minting or multi-account updates, without requiring smart contracts.
 * **Stronger governance & coordination via batchKey + unified submission**: A trusted approver must sign the whole batch, ensuring no one can add/reorder/remove inner transactions. There is a single submission/response, correlated receipts for each inner transaction, and clear failure semantics
 
-To support this, no major client code changes are needed for basic usage, but developers should update to SDKs that support this feature.&#x20;
+To support this, no major client code changes are needed for basic usage, but developers should update to SDKs that support this feature.
 
 **SDK Versions Supporting Batch Transactions**
 
@@ -129,14 +126,13 @@ Below are the versions of SDKs that support batch transactions:
 **NOTE**: Batches may fail partially if inner transactions violate rules; always check individual receipts. For full details on batch structure and rules, see[ HIP-551](https://github.com/hiero-ledger/hiero-improvement-proposals/blob/main/HIP/hip-551.md).
 {% endhint %}
 
-#### Advancements in Block Node Communication
+**Advancements in Block Node Communication**
 
-The development of Block Nodes ([HIP-1081](https://github.com/hiero-ledger/hiero-improvement-proposals/blob/main/HIP/hip-1081.md)) continues with this release, with the following development being done: \
+The development of Block Nodes ([HIP-1081](https://github.com/hiero-ledger/hiero-improvement-proposals/blob/main/HIP/hip-1081.md)) continues with this release, with the following development being done:\
 \
-**State Export Tools**: New commands and improvements for exporting states (Issue: [#20622](https://github.com/hiero-ledger/hiero-consensus-node/pull/20622)).  This is a part of enabling block nodes to improve state snapshotting.
+**State Export Tools**: New commands and improvements for exporting states (Issue: [#20622](https://github.com/hiero-ledger/hiero-consensus-node/pull/20622)). This is a part of enabling block nodes to improve state snapshotting.
 
-**Block Node Communication**: Enhancements to the communication protocol between consensus nodes and block nodes.  Provides better recovery and shutdown procedures to minimize downtime during events like freezes. (Issues: [#20858](https://github.com/hiero-ledger/hiero-consensus-node/pull/20858), [#20874](https://github.com/hiero-ledger/hiero-consensus-node/pull/20874))\
-
+**Block Node Communication**: Enhancements to the communication protocol between consensus nodes and block nodes. Provides better recovery and shutdown procedures to minimize downtime during events like freezes. (Issues: [#20858](https://github.com/hiero-ledger/hiero-consensus-node/pull/20858), [#20874](https://github.com/hiero-ledger/hiero-consensus-node/pull/20874))\\
 
 </details>
 
@@ -164,8 +160,6 @@ The development of Block Nodes ([HIP-1081](https://github.com/hiero-ledger/hiero
 
 <figure><img src="../../.gitbook/assets/0.66_Performance Measurement Results_Extract.001.png" alt=""><figcaption></figcaption></figure>
 
-
-
 ## Release v0.65
 
 {% hint style="success" %}
@@ -184,15 +178,15 @@ Release v0.65 highlights include Virtual Mega Map, enforcement of `max_custom_fe
 
 <summary><strong>What's new in Release 0.65?</strong></summary>
 
-#### Virtual Mega Map
+**Virtual Mega Map**
 
 The Virtual Mega Map enhances Hedera's internal state data structure by consolidating all entities—including singletons, queues, and maps—into a single virtual map. This ensures the entire state rolls up to one root hash.\
 \
 **Key benefit:**
 
-* Enhanced Verifiability: A unified root hash simplifies  state and block item proofs, used for block streams.
+* Enhanced Verifiability: A unified root hash simplifies state and block item proofs, used for block streams.
 
-#### HIP-991 Enhancements: max\_custom\_fees for Scheduled Transactions
+**HIP-991 Enhancements: max\_custom\_fees for Scheduled Transactions**
 
 Release v0.65 adds support for max\_custom\_fees in scheduled transactions with HIP-991 topics.
 
@@ -202,7 +196,7 @@ Release v0.65 adds support for max\_custom\_fees in scheduled transactions with 
 * Alignment with HTS: Extends scheduled transaction functionality to better match Hedera Token Service features.
 * Developer Guardrails: Protects applications and users from unexpected fee outcomes.
 
-#### **Advancements in HIP-1056 & HIP-1127: Block Streams**
+**Advancements in HIP-1056 & HIP-1127: Block Streams**
 
 Building on the Block Stream work from v0.64, this release delivers major steps toward a unified, verifiable stream layer.
 
@@ -246,9 +240,8 @@ Building on the Block Stream work from v0.64, this release delivers major steps 
 * chore: Move EthereumSuite to long running tests bucket by [@stoyanov-st](https://github.com/stoyanov-st) in [#20066](https://github.com/hiero-ledger/hiero-consensus-node/pull/20066)
 * fix: 19107: Corrected `classId` of `BenchmarkMerkleInternal` to prevent `classId` conflict by [@imalygin](https://github.com/imalygin) in [#19122](https://github.com/hiero-ledger/hiero-consensus-node/pull/19122)
 * chore: Update CODEOWNERS for SC contributions ([#20027](https://github.com/hiero-ledger/hiero-consensus-node/pull/20027)) by [@gkozyryatskyy](https://github.com/gkozyryatskyy) in [#20084](https://github.com/hiero-ledger/hiero-consensus-node/pull/20084)
-
-- chore: Add ability to debug docker nodes by [@timo0](https://github.com/timo0) in [#20051](https://github.com/hiero-ledger/hiero-consensus-node/pull/20051)
-- chore: Rename commonly used Turtle components to Otter by [@timo0](https://github.com/timo0) in [#20100](https://github.com/hiero-ledger/hiero-consensus-node/pull/20100)
+* chore: Add ability to debug docker nodes by [@timo0](https://github.com/timo0) in [#20051](https://github.com/hiero-ledger/hiero-consensus-node/pull/20051)
+* chore: Rename commonly used Turtle components to Otter by [@timo0](https://github.com/timo0) in [#20100](https://github.com/hiero-ledger/hiero-consensus-node/pull/20100)
 
 **Full Changelog**: [v0.64.2...v0.65.0](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.64.2...v0.65.0)
 
@@ -276,7 +269,7 @@ Release v0.64 significantly improves the developer experience for frontend appli
 
 <summary><strong>What's new in Release 0.64?</strong></summary>
 
-#### **HIP-1046: gRPC-Web Proxy Endpoint Support To the Address Book**
+**HIP-1046: gRPC-Web Proxy Endpoint Support To the Address Book**
 
 Historically, connecting frontend applications to Hedera using the JavaScript SDK has been challenging due to browser security restrictions. gRPC-Web was used as a workaround, but the necessary endpoints were hardcoded into the SDK. This approach required manual updates and coordination, which could become problematic as Hedera grows and more independent nodes operate.
 
@@ -293,7 +286,7 @@ To address this issue, release v0.64.0 introduces dynamic endpoint discovery for
 * Update to the latest Hedera JavaScript SDK to leverage this feature. The SDK will now automatically retrieve gRPC-Web endpoints from the address book.
 * Applications or tools that manually maintained lists of gRPC-Web endpoints should now query the mirror node for the latest list.
 
-#### **Advancements in HIP-1056: Block Streams**
+**Advancements in HIP-1056: Block Streams**
 
 Version 0.64 introduces substantial progress on [HIP-1056](https://hips.hedera.com/hip/hip-1056), which aims to create Block Streams—a unified, verifiable data stream that combines Hedera's existing event, record, and sidecar streams into a single efficient output. These enhancements focus on making Block Streams production-ready by prioritizing efficiency, cost-effectiveness, and security.
 
@@ -303,7 +296,7 @@ Key developments in this release include:
 * **Batch Transaction Support:** Added functionality to include batch transactions into the block stream.
 * **Consensus Node-to-Block Node Communication:** Established secure and reliable communication channels between consensus nodes and block nodes including features like acknowledgments and resend mechanisms. This release represents a partial update, with more enhancements to follow.
 
-#### **Other updates:**
+**Other updates:**
 
 In addition to the aforementioned features, release 0.64 introduces other updates:
 
@@ -358,7 +351,7 @@ In addition to the aforementioned features, release 0.64 introduces other update
 * replace hashmap with an array to improve performace for ops duration lookups ([#19836](https://github.com/hiero-ledger/hiero-consensus-node/pull/19836))
 * Apply EIP-3529 refund limits ([#19769](https://github.com/hiero-ledger/hiero-consensus-node/pull/19769)) ([#19821](https://github.com/hiero-ledger/hiero-consensus-node/pull/19821))
 
-#### Bug Fixes
+**Bug Fixes**
 
 * remove workflow dispatch inputs when calling integration workflow ([#20046](https://github.com/hiero-ledger/hiero-consensus-node/pull/20046))
 * **18458** Pces file writer rollback ([#20038](https://github.com/hiero-ledger/hiero-consensus-node/pull/20038))
@@ -404,7 +397,7 @@ Release .63 introduces a gRPC interceptor that aggregates methods into `gRPC_usa
 
 Shard and realm default values on Hiero have previously assumed 0 values, sometimes with hardcoded logic limiting our ability to test future multi value shard and realm network implementations. All APIs and services now accept arbitrary shard and realm IDs. Moving forward we can consistently test future network upgrades in a way that validates non zero realm and shard network configurations.
 
-#### Summary
+**Summary**
 
 Release 0.63 aligns ancient event handling with consensus time, adds actionable higher resolution SDK telemetry, and removes limitations to implementing non zero realm and shard value tests. This improves Hiero network operational robustness, and expands test configurations.
 
@@ -548,7 +541,7 @@ Release 0.62 represents an important milestone toward making Hedera a highly com
 
 </details>
 
-### [Build 0.62.3](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.3)&#x20;
+### [Build 0.62.3](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.3)
 
 <details>
 
@@ -563,7 +556,7 @@ Release 0.62 represents an important milestone toward making Hedera a highly com
 
 </details>
 
-### [Build 0.62.2](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.2)&#x20;
+### [Build 0.62.2](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.2)
 
 <details>
 
@@ -581,7 +574,7 @@ Release 0.62 represents an important milestone toward making Hedera a highly com
 
 </details>
 
-### &#x20;[**Build 0.62.1**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.1)
+### [**Build 0.62.1**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.62.1)
 
 <details>
 
@@ -687,8 +680,6 @@ Release 0.62 represents an important milestone toward making Hedera a highly com
 
 </details>
 
-
-
 ### Performance Results
 
 <figure><img src="../../.gitbook/assets/‎‎0.62_Performance Measurement Results_Extract.‎001.‎001.png" alt=""><figcaption></figcaption></figure>
@@ -709,14 +700,14 @@ This release focuses on enhancing network incentivization and improving overall 
 
 #### Hiero Improvement Proposals (HIPs)
 
-* **Daily rewards for active nodes** [HIP-1064](https://github.com/hiero-ledger/hiero-improvement-proposals/issues/1064): Full implementation of a daily reward mechanism for active consensus nodes, including an option for node operators to decline these rewards. This enhances network health by incentivizing consistent node uptime and participation, while providing operators flexibility in managing their rewards and improving network decentralization.  Please note this feature will be disabled until a July 1, 2025 launch date.
-*   **HIP-551 (Atomic Batch Transactions)**: [HIP-551](https://hips.hedera.com/hip/551) This release includes the implementation of Atomic Batch Transactions; however, due to technical challenges identified in testing, this feature has been temporarily disabled.&#x20;
+* **Daily rewards for active nodes** [HIP-1064](https://github.com/hiero-ledger/hiero-improvement-proposals/issues/1064): Full implementation of a daily reward mechanism for active consensus nodes, including an option for node operators to decline these rewards. This enhances network health by incentivizing consistent node uptime and participation, while providing operators flexibility in managing their rewards and improving network decentralization. Please note this feature will be disabled until a July 1, 2025 launch date.
+*   **HIP-551 (Atomic Batch Transactions)**: [HIP-551](https://hips.hedera.com/hip/551) This release includes the implementation of Atomic Batch Transactions; however, due to technical challenges identified in testing, this feature has been temporarily disabled.
 
     As a result, users attempting to submit Atomic Batch Transactions will receive a status code of `BUSY` from the network. We are actively working to resolve these issues and plan to enable this feature in a future update.
 
 #### New Features
 
-* **Node Reward Opt-Out (HIP-1064)**: Node operators can now decline daily node rewards using a new decline\_reward boolean flag in NodeCreateTransactionBody and NodeUpdateTransactionBody. This offers greater control and flexibility for node operators based on their specific requirements.  The default value for this flag will be set to true to decline rewards by default.&#x20;
+* **Node Reward Opt-Out (HIP-1064)**: Node operators can now decline daily node rewards using a new decline\_reward boolean flag in NodeCreateTransactionBody and NodeUpdateTransactionBody. This offers greater control and flexibility for node operators based on their specific requirements. The default value for this flag will be set to true to decline rewards by default.
   * ```
     // Example: Opting out of node rewards during node creation
     NodeCreateTransactionBody createBody = NodeCreateTransactionBody.newBuilder()
@@ -854,7 +845,7 @@ This release focuses on enhancing network incentivization and improving overall 
 
 <summary><strong>What's Changed</strong></summary>
 
-#### What's Changed
+**What's Changed**
 
 * chore: Remove the entityCounts migration code in 0.61 ([#18500](https://github.com/hiero-ledger/hiero-consensus-node/pull/18500)) by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli) in [#18511](https://github.com/hiero-ledger/hiero-consensus-node/pull/18511)
 * refactor: cherry-pick "Use a list of signed bytes for transactions in AtomicBatchTransaction" by [@ibankov](https://github.com/ibankov) in [#18522](https://github.com/hiero-ledger/hiero-consensus-node/pull/18522)
@@ -2705,7 +2696,7 @@ Changes from services v0.35.2 have also been ported to v0.36.0.
 
 ### Performance Results
 
-<figure><img src="../../.gitbook/assets/0.36_Performance Measurement Results_Extract.001 (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/0.36_Performance Measurement Results_Extract.001 (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 ## [v0.35](https://github.com/hashgraph/hedera-services/releases)
 

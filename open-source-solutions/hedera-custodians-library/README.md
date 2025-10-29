@@ -19,12 +19,12 @@ By leveraging the Hedera Custodians Library, developers can efficiently implemen
 
 Custodial wallet management is the practice of a third party being trusted with storage and security concerning the private keys that are associated with the cryptocurrency. Within the Hedera ecosystem, custodial wallet management is essential for the following reasons:
 
-* **Security**: Custodial services have robust security and safety mechanisms to maintain digital assets.&#x20;
-* **Institutional Adoption**: Many institutional investors require custodial solutions to comply with regulatory requirements and internal risk management policies.&#x20;
-* **Simplified User Experience**: Custodial services may abstract the complexities of key management, making the user's interaction with the Hedera network much easier.&#x20;
-* **Integration with Traditional Finance**: This often bridges cryptocurrency and traditional finance, furthering adoption.&#x20;
-* **Multi-signature Support**: It can be done in various ways through custodial implementations with multi-signature wallets, which contribute to higher security and make more complex governance structures possible.&#x20;
-* **Regulatory Compliance**: Custodial services typically have some in-built compliance features to assist users in conforming to KYC/AML.&#x20;
+* **Security**: Custodial services have robust security and safety mechanisms to maintain digital assets.
+* **Institutional Adoption**: Many institutional investors require custodial solutions to comply with regulatory requirements and internal risk management policies.
+* **Simplified User Experience**: Custodial services may abstract the complexities of key management, making the user's interaction with the Hedera network much easier.
+* **Integration with Traditional Finance**: This often bridges cryptocurrency and traditional finance, furthering adoption.
+* **Multi-signature Support**: It can be done in various ways through custodial implementations with multi-signature wallets, which contribute to higher security and make more complex governance structures possible.
+* **Regulatory Compliance**: Custodial services typically have some in-built compliance features to assist users in conforming to KYC/AML.
 
 The Custodians Library makes it easier to integrate custodial services, providing access to these benefits without custom implementations. It currently supports two providers: **Fireblocks** and **DFNS**.
 
@@ -32,13 +32,13 @@ The Custodians Library makes it easier to integrate custodial services, providin
 
 ## Fireblocks
 
-If you’re integrating [Fireblocks](https://www.fireblocks.com/), use the official [Fireblocks Hedera SDK Client and Signer](https://github.com/fireblocks/hbar-fireblocks-sdk), which implements [HIP-338](https://hips.hedera.com/hip/hip-338). It provides a drop-in Hedera `Client` and a signer for raw-signing via Fireblocks, plus examples for single and multi-signer flows.&#x20;
+If you’re integrating [Fireblocks](https://www.fireblocks.com/), use the official [Fireblocks Hedera SDK Client and Signer](https://github.com/fireblocks/hbar-fireblocks-sdk), which implements [HIP-338](https://hips.hedera.com/hip/hip-338). It provides a drop-in Hedera `Client` and a signer for raw-signing via Fireblocks, plus examples for single and multi-signer flows.
 
 In the context of the Hedera ecosystem:
 
 * **Secure Storage**: HBAR is stored securely on Fireblocks alongside Hedera tokens, using a combination of MPC (Multi-Party Computation) technology and hardware isolation.
-* **Securing Transactions**: It offers a policy engine that enables the setup of custom approval flows for every transaction conducted on the Hedera network.&#x20;
-* **Integration**: Fireblocks can be integrated into the Hedera network, allowing seamless transactions with Hedera-based assets and their custodial management.&#x20;
+* **Securing Transactions**: It offers a policy engine that enables the setup of custom approval flows for every transaction conducted on the Hedera network.
+* **Integration**: Fireblocks can be integrated into the Hedera network, allowing seamless transactions with Hedera-based assets and their custodial management.
 * **API Access**: The Hedera Custodian Library has full access to the API, which it uses for wallet automation and signing transactions.
 
 {% hint style="warning" %}
@@ -66,7 +66,7 @@ Both Fireblocks and DFNS provide secure, compliant custodial solutions. By suppo
 
 The `CustodialWalletService` class is the main entry point for interacting with custodial wallets.
 
-### Constructor
+#### Constructor
 
 ```typescript
 constructor(config: FireblocksConfig | DFNSConfig)
@@ -74,7 +74,7 @@ constructor(config: FireblocksConfig | DFNSConfig)
 
 Creates a new instance of the CustodialWalletService with the specified configuration.
 
-### Methods
+#### Methods
 
 ```typescript
 async signTransaction(request: SignatureRequest): Promise<Uint8Array>
@@ -94,7 +94,7 @@ Signs a transaction using the configured custodial service.
 
 The `FireblocksConfig` class represents the configuration for the Fireblocks custodial service. This configuration is used to initialize the `CustodialWalletService` for Fireblocks integration.
 
-### Constructor
+#### Constructor
 
 ```typescript
 constructor(
@@ -108,14 +108,13 @@ constructor(
 
 Creates a new `FireblocksConfig` instance.
 
-### Properties
+#### Properties
 
 * `apiKey`: The API key for Fireblocks.
 * `apiSecretKey`: The API secret key for Fireblocks.
-
-- `baseUrl`: The base URL for the Fireblocks API.
-- `vaultAccountId`: The Fireblocks vault account ID.
-- `assetId`: The asset ID for the Hedera token in Fireblocks.
+* `baseUrl`: The base URL for the Fireblocks API.
+* `vaultAccountId`: The Fireblocks vault account ID.
+* `assetId`: The asset ID for the Hedera token in Fireblocks.
 
 </details>
 
@@ -125,7 +124,7 @@ Creates a new `FireblocksConfig` instance.
 
 The `DFNSConfig` class represents the configuration for the DFNS custodial service.
 
-### Constructor
+#### Constructor
 
 ```typescript
 constructor(
@@ -140,7 +139,7 @@ constructor(
 
 Creates a new DFNSConfig instance.
 
-### Properties
+#### Properties
 
 * `serviceAccountAuthorizationToken`: The authorization token for the DFNS service account.
 * `serviceAccountCredentialId`: The credential ID for the DFNS service account.
@@ -157,7 +156,7 @@ Creates a new DFNSConfig instance.
 
 The `SignatureRequest` class represents a request to sign a transaction.
 
-### Constructor
+#### Constructor
 
 ```typescript
 constructor(transactionBytes: Uint8Array)
@@ -165,7 +164,7 @@ constructor(transactionBytes: Uint8Array)
 
 Creates a new SignatureRequest instance.
 
-### Properties
+#### Properties
 
 * `transactionBytes`: A `Uint8Array` containing the transaction bytes to be signed.
 

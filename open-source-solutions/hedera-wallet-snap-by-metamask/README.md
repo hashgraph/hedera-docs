@@ -26,7 +26,7 @@ The Hedera JSON RPC Relay supports only the methods defined at [Hedera JSON RPC 
 
 <summary><strong>How can I deploy a smart contract on Hedera using MetaMask?</strong></summary>
 
-To deploy a smart contract on Hedera using MetaMask, you will need to use the [Hedera JSON RPC relay](https://docs.hedera.com/hedera/core-concepts/smart-contracts/deploying-smart-contracts/json-rpc-relay). You can deploy using tools compatible with EVM-based chains. For detailed steps, refer to [Deploying Smart Contracts on Hedera](broken-reference).
+To deploy a smart contract on Hedera using MetaMask, you will need to use the [Hedera JSON RPC relay](https://docs.hedera.com/hedera/core-concepts/smart-contracts/deploying-smart-contracts/json-rpc-relay). You can deploy using tools compatible with EVM-based chains. For detailed steps, refer to [Deploying Smart Contracts on Hedera](https://github.com/hashgraph/hedera-docs/blob/test-workflows/open-source-solutions/hedera-wallet-snap-by-metamask/broken-reference/README.md).
 
 </details>
 

@@ -39,6 +39,21 @@ For developers, no breaking changes or immediate actions required. Existing cont
 
 </details>
 
+### [**Build 0.67.2**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.67.2)
+
+<details>
+
+<summary><strong>What's Changed</strong></summary>
+
+* feat: Block Node communication cherry-picks by [@derektriley](https://github.com/derektriley) in [#21742](https://github.com/hiero-ledger/hiero-consensus-node/pull/21742)
+* fix(bug): (cherry-pick) Fix typo in GitHub release step ([#21563](https://github.com/hiero-ledger/hiero-consensus-node/pull/21563)) by [@andrewb1269hg](https://github.com/andrewb1269hg) in [#21760](https://github.com/hiero-ledger/hiero-consensus-node/pull/21760)
+* fix: Disable RPC sync by [@abies](https://github.com/abies) in [#21841](https://github.com/hiero-ledger/hiero-consensus-node/pull/21841)
+* fix: Re-enable gas throttle; disable ops duration throttle by [@lukasz-hashgraph](https://github.com/lukasz-hashgraph) in [#21845](https://github.com/hiero-ledger/hiero-consensus-node/pull/21845)
+
+**Full Changelog**: [v0.67.1...v0.67.2](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.67.1...v0.67.2)
+
+</details>
+
 ### [**Build 0.67.1**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.67.1)
 
 <details>

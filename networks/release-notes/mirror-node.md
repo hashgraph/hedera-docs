@@ -8,6 +8,20 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Latest Releases
 
+## [v0.141.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.141.0)
+
+Repository: [hiero-ledger/hiero-mirror-node](https://github.com/hiero-ledger/hiero-mirror-node) · Tag: [v0.141.0](https://github.com/hiero-ledger/hiero-mirror-node/tree/v0.141.0) · Commit: [7cf0978](https://github.com/hiero-ledger/hiero-mirror-node/commit/7cf097828b963777a3fbd53521c652f4d3d0a8ec) · Released by: [github-actions\[bot\]](https://github.com/apps/github-actions)
+
+This release includes progress on a number of HIPs. First up, we have [HIP-1261](https://hips.hedera.com/hip/hip-1261) Simple Fees. A new experimental gRPC `getFeeEstimate` API was added that returns a stubbed response. This alpha API is not intended to be used in production as it's not fully implemented and just returns dummy data. Developers can use this API to start integrating against with the expectation that it will be fully implemented in the near future.
+
+[HIP-1299](https://hips.hedera.com/hip/hip-1299) Node Account ID Refinements for Dynamic Address Book saw initial work completed. The importer now detects node transactions with a changed node account ID and persists the updated value. The REST API will now reflect this updated node account ID immediately instead of waiting for the next consensus node upgrade. In the next release, a similar change will be made to the gRPC and Rosetta APIs.
+
+[HIP 1195](https://hips.hedera.com/hip/hip-1195) Hiero hooks saw initial database and domain work completed. The next release will add persistence and a new hook REST API.
+
+[HIP-1056](https://hips.hedera.com/hip/hip-1056) Block streams continues to make progress every release. We finalized the integration of the major protobuf changes in consensus node v0.65+ by integrating intermediate topic message trace data. A bug was addressed around linking scheduled transactions and its triggering transaction.
+
+The `/api/v1/network/exchangerate` API was rewritten from JavaScript to Java. Besides a cleaner, more maintainable implementation, it shows a major performance boost. Our testing shows it went from 850 requests per second to 18,000 requests per second as a result of this change. The JavaScript API will persist for another release as we finalize testing on the new API.
+
 ## [v0.140.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.140.0)
 
 [HIP-1249](https://hips.hedera.com/hip/hip-1249) precise smart contract throttling was implemented in this release. This includes a change to how gas consumed is calculated on the mirror node. Previously consensus nodes would only refund a percentage of the gas limit. This HIP changes the calculation to refund 100% of the actual gas used such that gas consumed and gas used in the API response will now be equal.
@@ -32,7 +46,7 @@ The modularized flow is now enabled by default. The Hedera managed mirror nodes 
 
 The rewritten Java-based `/api/v1/network/stake` REST API is now enabled by default in our Docker Compose and Helm deployments. In the next release we will be removing the old JavaScript implementation entirely. Operators should take this time to migrate their routing logic to use the new implementation in the rest-java module.
 
-## [v0.138.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.138.0)&#x20;
+## [v0.138.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.138.0)
 
 This is a testing focused release with a number of changes that improve our test coverage. A new GitHub Actions workflow was added to build and test our acceptance tests end-to-end. This workflow leverages [Solo](https://github.com/hashgraph/solo/) to stand up a consensus node and mirror node in Kubernetes with the proper configuration. In addition, we also run the same suite of tests but using block node instead of record streams. A similar workflow was added to the consensus node repository as part of their extended test suite to gate their release process.
 

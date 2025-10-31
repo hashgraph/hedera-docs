@@ -143,7 +143,7 @@ Toggle the permissions you want to enable for your new bond:
 * **Blocklist**: Enables access control to the security using a list of blocked accounts.
 * **Approval list**: Enables access control to the security using a list of approved/allowed accounts.
 
-<figure><img src="../../.gitbook/assets/asset-tokenization-bond-creation.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/asset-tokenization-studio-create-bond-configuration.png" alt=""><figcaption></figcaption></figure>
 
 ### Bond Details
 
@@ -154,7 +154,7 @@ Enter the bond details, such as the nominal value, number of bond units, startin
 * **Starting Date**: The issuance or minting date of the bond, marking the official start of the bond's term. It is the date from which interest (coupon) payments start to accrue.
 * **Maturity Date**: The date when the bond reaches its full term, and the issuer is obligated to repay the bondholders the nominal value of the bond units, along with any remaining interest payments.
 
-<figure><img src="../../.gitbook/assets/asset-tokenization-bond-creation-configuration.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/asset-tokenization-studio-create-bond-details.png" alt=""><figcaption></figcaption></figure>
 
 ### Coupons
 
@@ -169,6 +169,46 @@ Define the bond's interest payment structure, including coupon type (fixed or cu
 
 <figure><img src="../../.gitbook/assets/asset-tokenization-bond-creation-coupon.png" alt=""><figcaption></figcaption></figure>
 
+### Proceed Recipients
+
+Define the recipients who will receive the bond proceeds from the offering. This step allows you to specify one or more Hedera accounts that will receive the funds raised from the bond issuance.
+
+* **Address**: The Hedera account ID of the recipient who will receive bond proceeds. This must be a valid Hedera account ID format.
+* **Data**: Optional additional data or notes associated with the recipient for record-keeping purposes.
+
+You can add multiple proceed recipients by entering each address and clicking "Add Proceed Recipient". The recipients table will display all configured recipients, and you can remove any entry using the delete action.
+
+<figure><img src="../../.gitbook/assets/asset-tokenization-studio-create-bond-proceed-recipients.png" alt=""><figcaption></figcaption></figure>
+
+### ERC-3643
+
+Configure ERC-3643 compliance settings for your bond. ERC-3643 is a standard for permissioned tokens that enables compliance with securities regulations through on-chain compliance rules and identity verification.
+
+* **Compliance ID**: The Hedera account ID of the compliance smart contract that will enforce the regulatory rules for this bond. This is optional and can be left empty if not using ERC-3643 compliance.
+* **Identity Registry ID**: The Hedera account ID of the identity registry contract that manages investor identities and their compliance status. This is optional and can be left empty if not using ERC-3643 identity management.
+
+Both fields accept valid Hedera account IDs and are used to integrate with existing ERC-3643 compliance infrastructure.
+
+<figure><img src="../../.gitbook/assets/asset-tokenization-studio-create-bond-erc3643.png" alt=""><figcaption></figcaption></figure>
+
+### External Lists
+
+Configure external management lists for enhanced control over your bond. These external lists provide additional layers of security and compliance by integrating with external smart contracts.
+
+* **External Pause List**: Select from available external pause contracts that can trigger emergency pauses of token operations. Multiple pause contracts can be selected to provide redundant safety mechanisms.
+* **External Control List**: Choose external control contracts that provide additional governance and control capabilities over the bond token. This allows for sophisticated multi-party control structures.
+* **External KYC List**: Select external KYC (Know Your Customer) verification contracts that validate investor identities and compliance status. This enables integration with third-party KYC providers.
+
+For each list type, you can select multiple contracts from the available options. Selected contracts will appear as tags that can be removed if needed.
+
+<figure><img src="../../.gitbook/assets/asset-tokenization-studio-create-external-lists.png" alt=""><figcaption></figcaption></figure>
+
+### Regulation
+
+Select the applicable regulation for your bond offering. The regulation determines the legal framework and compliance requirements that will govern the issuance and trading of your digital security.
+
+<figure><img src="../../.gitbook/assets/asset-tokenization-studio-create-bond-regulation.png" alt=""><figcaption></figcaption></figure>
+
 #### Blocklist
 
 The blocklist is responsible for prohibiting specific investors from participating in a tokenized offering. Investors from the countries mentioned on this blocklist would not be able to invest in the digital security. This functionality allows an issuer to adhere to particular legal, regulatory, or operational constraints applied to specific jurisdictions. For this, the issuer can select a country and then blocklist it to ensure that residents of that country do not create or participate in an offering.
@@ -181,13 +221,13 @@ The blocklist is responsible for prohibiting specific investors from participati
 
 ### Review
 
-Review the details of the new equity you are creating. Once you have confirmed that all the information is correct, click <mark style="background-color:purple;">**Create Bond**</mark> and then <mark style="background-color:purple;">**Accept**</mark> to finalize bond creation.&#x20;
+Review the details of the new bond you are creating. Once you have confirmed that all the information is correct, click <mark style="background-color:purple;">**Create Bond**</mark> and then <mark style="background-color:purple;">**Accept**</mark> to finalize bond creation.&#x20;
 
 {% hint style="warning" %}
 Please note that you will not be able to edit the details after the bond is created, so take your time to review them carefully.
 {% endhint %}
 
-<figure><img src="../../.gitbook/assets/asset-tokenization-create-bond-review.png" alt="" width="563"><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/asset-tokenization-studio-create-bond-review.png" alt="" width="563"><figcaption></figcaption></figure>
 
 ***
 
@@ -210,7 +250,7 @@ Toggle the permissions you want to enable for your new equity:
 * **Blocklist**: Enables access control to the security using a list of blocked accounts.
 * **Approval list**: Enables access control to the security using a list of approved/allowed accounts.
 
-<figure><img src="../../.gitbook/assets/asset-tokenization-create-equity.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/asset-tokenization-studio-create-equity-create.png" alt=""><figcaption></figcaption></figure>
 
 ### Equity Details
 
@@ -252,6 +292,35 @@ Types of dividends available for equity holders, including none, preferred, and 
 
 <figure><img src="../../.gitbook/assets/asset-tokenization-dividend-type.png" alt="" width="563"><figcaption></figcaption></figure>
 
+### External Lists
+
+Configure external management lists for enhanced control over your equity. These external lists provide additional layers of security and compliance by integrating with external smart contracts.
+
+* **External Pause List**: Select from available external pause contracts that can trigger emergency pauses of token operations. Multiple pause contracts can be selected to provide redundant safety mechanisms.
+* **External Control List**: Choose external control contracts that provide additional governance and control capabilities over the equity token. This allows for sophisticated multi-party control structures.
+* **External KYC List**: Select external KYC (Know Your Customer) verification contracts that validate investor identities and compliance status. This enables integration with third-party KYC providers.
+
+For each list type, you can select multiple contracts from the available options. Selected contracts will appear as tags that can be removed if needed.
+
+<figure><img src="../../.gitbook/assets/asset-tokenization-studio-create-external-lists.png" alt=""><figcaption></figcaption></figure>
+
+### ERC-3643
+
+Configure ERC-3643 compliance settings for your equity. ERC-3643 is a standard for permissioned tokens that enables compliance with securities regulations through on-chain compliance rules and identity verification.
+
+* **Compliance ID**: The Hedera account ID of the compliance smart contract that will enforce the regulatory rules for this equity. This is optional and can be left empty if not using ERC-3643 compliance.
+* **Identity Registry ID**: The Hedera account ID of the identity registry contract that manages investor identities and their compliance status. This is optional and can be left empty if not using ERC-3643 identity management.
+
+Both fields accept valid Hedera account IDs and are used to integrate with existing ERC-3643 compliance infrastructure.
+
+<figure><img src="../../.gitbook/assets/asset-tokenization-studio-create-bond-erc3643.png" alt=""><figcaption></figcaption></figure>
+
+### Regulation
+
+Select the applicable regulation for your equity offering. The regulation determines the legal framework and compliance requirements that will govern the issuance and trading of your digital security.
+
+<figure><img src="../../.gitbook/assets/asset-tokenization-studio-create-bond-regulation.png" alt=""><figcaption></figcaption></figure>
+
 #### Blocklist
 
 The blocklist prohibits specific investors from participating in a tokenized offering. Investors from the countries mentioned on this blocklist cannot invest in digital security. This functionality allows an issuer to adhere to particular legal, regulatory, or operational constraints applied to specific jurisdictions. For this, the issuer can select a country and then blocklist it to ensure that residents of that country do not create or participate in an offering.
@@ -270,7 +339,7 @@ Review the details of the new equity you are creating. Once you have confirmed t
 Please note that you will not be able to edit the information after the equity is created, so take your time to carefully review the details.
 {% endhint %}
 
-<figure><img src="../../.gitbook/assets/asset-tokenization-create-equity-review.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/asset-tokenization-studio-create-bond-review.png" alt="" width="563"><figcaption></figcaption></figure>
 
 ***
 

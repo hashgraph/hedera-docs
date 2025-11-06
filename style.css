@@ -121,7 +121,7 @@ nav.text-sm a[href*="portal"] {
   font-size: 14px !important;
   font-weight: 400 !important;
   line-height: 20px !important;
-  height: 32px !important;
+  height: 34px !important;
   padding: 6px 16px !important;
   text-decoration: none !important;
   transition: all 0.15s ease !important;
@@ -135,13 +135,15 @@ nav.text-sm li a[href*="hackathon"],
 nav.text-sm ul li a[href*="hackathon"] {
   background-color: transparent !important;
   color: #000000 !important;
-  border: 2px solid rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid rgba(0, 0, 0, 0.3) !important; /* darker gray border */
 }
 nav.text-sm a[href*="hackathon"]:hover,
 nav.text-sm li a[href*="hackathon"]:hover,
 nav.text-sm ul li a[href*="hackathon"]:hover {
-  background-color: rgba(156, 163, 175, 0.1) !important;
+  background-color: rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid rgba(0, 0, 0, 0.5) !important; /* darker hover border */
 }
+
 
 /* ===============================
    DARK MODE — transparent buttons
@@ -152,7 +154,7 @@ nav.text-sm ul li a[href*="hackathon"]:hover {
 [data-theme='dark'] nav.text-sm a[href*="hackathon"] {
   background-color: transparent !important;
   color: #f3f4f6 !important; /* gray-100 */
-  border: 2px solid rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 .dark nav.text-sm a[href*="hackathon"]:hover,
 [data-theme='dark'] nav.text-sm a[href*="hackathon"]:hover {

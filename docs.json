@@ -14,7 +14,7 @@
     },
     {
       "source": "/guardian",
-      "destination": "https://guardian.hedera.com/docs"
+      "destination": "https://guardian.hedera.com/"
     },
     {
       "source": "/guardian-dev-1",

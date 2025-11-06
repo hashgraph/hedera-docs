@@ -13,8 +13,8 @@
       "destination": "/"
     },
     {
-      "source": "/guides/:slug*",
-      "destination": "/:slug"
+      "source": "/guides/*",
+      "destination": "https://docs.hedera.com/*"
     },
     {
       "source": "/guardian/*",

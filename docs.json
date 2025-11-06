@@ -14,7 +14,7 @@
     },
     {
       "source": "/guardian",
-      "destination": "https://guardian.hedera.com/"
+      "destination": "https://guardian.hedera.com"
     },
     {
       "source": "/guardian-dev-1",
@@ -22,7 +22,7 @@
     },
     {
       "source": "/hedera-transaction-tool-v2",
-      "destination": "https://transactiontool.hedera.com/docs"
+      "destination": "https://transactiontool.hedera.com"
     }
   ],
   "style": {

@@ -112,15 +112,14 @@ nav.text-sm ul > * {
 }
 
 /* shared button styling */
-nav.text-sm a[href*="hedera.com/discord"],
-nav.text-sm a[href*="playground"],
+nav.text-sm a[href*="hackathon"],
 nav.text-sm a[href*="portal"] {
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
   border-radius: 12px !important;
   font-size: 14px !important;
-  font-weight: 600 !important;
+  font-weight: 400 !important;
   line-height: 20px !important;
   height: 32px !important;
   padding: 6px 16px !important;
@@ -129,71 +128,37 @@ nav.text-sm a[href*="portal"] {
   box-shadow: none !important;
 }
 
-/* support — transparent in light mode */
-nav.text-sm a[href*="hedera.com/discord"] {
-  background-color: transparent !important;
-  color: #1f2937 !important; /* gray-800 */
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
-}
-nav.text-sm a[href*="hedera.com/discord"]:hover {
-  background-color: rgba(156, 163, 175, 0.1) !important; /* soft gray hover */
-}
 
-/* playground — transparent same as support */
-nav.text-sm a[href*="playground"],
-nav.text-sm li a[href*="playground"],
-nav.text-sm ul li a[href*="playground"] {
+/* hackathon — transparent */
+nav.text-sm a[href*="hackathon"],
+nav.text-sm li a[href*="hackathon"],
+nav.text-sm ul li a[href*="hackathon"] {
   background-color: transparent !important;
   color: #1f2937 !important;
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
-nav.text-sm a[href*="playground"]:hover,
-nav.text-sm li a[href*="playground"]:hover,
-nav.text-sm ul li a[href*="playground"]:hover {
+nav.text-sm a[href*="hackathon"]:hover,
+nav.text-sm li a[href*="hackathon"]:hover,
+nav.text-sm ul li a[href*="hackathon"]:hover {
   background-color: rgba(156, 163, 175, 0.1) !important;
-}
-
-/* dev portal — solid purple */
-nav.text-sm a[href*="portal"] {
-  background-color: #513ae8 !important;
-  color: #ffffff !important;
-  border: none !important;
-}
-nav.text-sm a[href*="portal"]:hover {
-  background-color: #775fff !important;
 }
 
 /* ===============================
    DARK MODE — transparent buttons
    =============================== */
 
-/* Support + Playground */
-.dark nav.text-sm a[href*="hedera.com/discord"],
-.dark nav.text-sm a[href*="playground"],
-[data-theme='dark'] nav.text-sm a[href*="hedera.com/discord"],
-[data-theme='dark'] nav.text-sm a[href*="playground"] {
+/* hackathon */
+.dark nav.text-sm a[href*="hackathon"],
+[data-theme='dark'] nav.text-sm a[href*="hackathon"] {
   background-color: transparent !important;
   color: #f3f4f6 !important; /* gray-100 */
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
-.dark nav.text-sm a[href*="hedera.com/discord"]:hover,
-.dark nav.text-sm a[href*="playground"]:hover,
-[data-theme='dark'] nav.text-sm a[href*="hedera.com/discord"]:hover,
-[data-theme='dark'] nav.text-sm a[href*="playground"]:hover {
+.dark nav.text-sm a[href*="hackathon"]:hover,
+[data-theme='dark'] nav.text-sm a[href*="hackathon"]:hover {
   background-color: rgba(255, 255, 255, 0.08) !important; /* subtle glow */
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
   color: #ffffff !important;
-}
-
-/* dev portal — stays vibrant */
-.dark nav.text-sm a[href*="portal"],
-[data-theme='dark'] nav.text-sm a[href*="portal"] {
-  background-color: transparent !important;
-  color: #ffffff !important;
-}
-.dark nav.text-sm a[href*="portal"]:hover,
-[data-theme='dark'] nav.text-sm a[href*="portal"]:hover {
-  background-color: rgba(255, 255, 255, 0.08) !important;
 }
 
 /* icon fix — ensure visibility in dark mode */
@@ -203,11 +168,11 @@ nav.text-sm a[href*="portal"]:hover {
   opacity: 1 !important;
 }
 
-/* make playground icon white only in dark mode */
-.dark nav.text-sm a[href*="playground"] img,
-.dark nav.text-sm a[href*="playground"] svg,
-[data-theme='dark'] nav.text-sm a[href*="playground"] img,
-[data-theme='dark'] nav.text-sm a[href*="playground"] svg {
+/* make hackathon icon white only in dark mode */
+.dark nav.text-sm a[href*="hackathon"] img,
+.dark nav.text-sm a[href*="hackathon"] svg,
+[data-theme='dark'] nav.text-sm a[href*="hackathon"] img,
+[data-theme='dark'] nav.text-sm a[href*="hackathon"] svg {
   filter: brightness(0) invert(1) !important; /* turns dark icons white */
   opacity: 1 !important;
 }

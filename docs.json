@@ -7,6 +7,24 @@
     "light": "#614ff4",
     "dark": "#614ff4"
   },
+  "redirects": [
+    {
+      "source": "/hedera",
+      "destination": "/"
+    },
+    {
+      "source": "/guardian",
+      "destination": "https://guardian.hedera.com/docs"
+    },
+    {
+      "source": "/guardian-dev-1",
+      "destination": "https://guardian.hedera.com/docs-dev"
+    },
+    {
+      "source": "/hedera-transaction-tool-v2",
+      "destination": "https://transactiontool.hedera.com/docs"
+    }
+  ],
   "style": {
     "path": "style.css"
   },

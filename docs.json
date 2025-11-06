@@ -10,6 +10,12 @@
   "style": {
     "path": "style.css"
   },
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "https://guardian.hedera.com/docs"
+    }
+  ],
   "fonts": {
     "heading": {
       "family": "Styrene A",

@@ -27,10 +27,6 @@
     {
       "source": "/hedera-transaction-tool-v2/*",
       "destination": "https://transactiontool.hedera.com/*"
-    },
-    {
-      "source": "/hedera-transaction-tool-v2",
-      "destination": "https://transactiontool.hedera.com"
     }
   ],
   "style": {

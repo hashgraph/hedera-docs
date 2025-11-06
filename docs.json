@@ -13,6 +13,10 @@
       "destination": "/"
     },
     {
+      "source": "/*",
+      "destination": "/"
+    },
+    {
       "source": "/guardian/*",
       "destination": "https://guardian.hedera.com/*"
     },

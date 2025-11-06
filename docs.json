@@ -17,8 +17,8 @@
       "destination": "https://guardian.hedera.com/*"
     },
     {
-      "source": "/guardian-dev-1",
-      "destination": "https://guardian.hedera.com/docs-dev"
+      "source": "/guardian-dev-1/*",
+      "destination": "https://dev.guardian.hedera.com/*"
     },
     {
       "source": "/hedera-transaction-tool-v2",

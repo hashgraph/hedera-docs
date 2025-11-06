@@ -13,8 +13,8 @@
       "destination": "/"
     },
     {
-      "source": "/guides/*",
-      "destination": "/"
+      "source": "/guides/:slug*",
+      "destination": "/:slug"
     },
     {
       "source": "/guardian/*",

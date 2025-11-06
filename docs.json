@@ -13,8 +13,8 @@
       "destination": "/"
     },
     {
-      "source": "/guardian",
-      "destination": "https://guardian.hedera.com"
+      "source": "/guardian/*",
+      "destination": "https://guardian.hedera.com/*"
     },
     {
       "source": "/guardian-dev-1",

@@ -134,8 +134,8 @@ nav.text-sm a[href*="hackathon"],
 nav.text-sm li a[href*="hackathon"],
 nav.text-sm ul li a[href*="hackathon"] {
   background-color: transparent !important;
-  color: #1f2937 !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: #000000 !important;
+  border: 2px solid rgba(0, 0, 0, 0.1) !important;
 }
 nav.text-sm a[href*="hackathon"]:hover,
 nav.text-sm li a[href*="hackathon"]:hover,
@@ -152,7 +152,7 @@ nav.text-sm ul li a[href*="hackathon"]:hover {
 [data-theme='dark'] nav.text-sm a[href*="hackathon"] {
   background-color: transparent !important;
   color: #f3f4f6 !important; /* gray-100 */
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border: 2px solid rgba(255, 255, 255, 0.15) !important;
 }
 .dark nav.text-sm a[href*="hackathon"]:hover,
 [data-theme='dark'] nav.text-sm a[href*="hackathon"]:hover {

@@ -416,11 +416,9 @@ After assigning roles, ATS will display all operations available for each digita
 
 ## KYC Management
 
-You have two ways to manage KYC. Choose based on your needs:
+You have two ways to manage KYC. Choose based on your needs.
 
-### Approach 1: External KYC List
-
-**Best for**: Quick testing, shared KYC across tokens
+### External KYC List
 
 #### Step 1: Create External KYC Contract
 
@@ -428,6 +426,8 @@ You have two ways to manage KYC. Choose based on your needs:
 2. Click **"Create New External KYC"**
 3. Add Account ID (of yourself or other account)
 4. Note the contract ID (`0.0.xxx`)
+
+<figure><img src="../../.gitbook/assets/asset-tokenization-kyc-external-create.png" alt=""><figcaption></figcaption></figure>
 
 #### Step 2: Grant KYC to Accounts
 
@@ -437,7 +437,7 @@ You have two ways to manage KYC. Choose based on your needs:
 4. Click **"Grant KYC"**
 5. Sign transaction
 
-**That's it!** No VC files, no complex setup.
+<figure><img src="../../.gitbook/assets/asset-tokenization-kyc-external-grant-kyc.png" alt=""><figcaption></figcaption></figure>
 
 #### Step 3: Link to Your Token
 
@@ -450,16 +450,18 @@ You have two ways to manage KYC. Choose based on your needs:
 
 Now any account KYC'd in that external contract is KYC'd for your token!
 
+<figure><img src="../../.gitbook/assets/asset-tokenization-kyc-external-link-token.png" alt=""><figcaption></figcaption></figure>
+
 ---
 
-### Approach 2: Internal KYC with VC Files
-
-**Best for**: Token-specific KYC, testing SSI features
+### Internal KYC with VC Files
 
 #### Step 1: Enable Internal KYC (if not already done during Token creation)
 
 1. Go to token detail → **"Danger Zone"**
 2. Toggle **"Internal KYC"** to **Active**
+
+<figure><img src="../../.gitbook/assets/asset-tokenization-kyc-activate.png" alt=""><figcaption></figcaption></figure>
 
 #### Step 2: Add Yourself as SSI Issuer
 
@@ -470,15 +472,9 @@ The **SSI Manager** manages the list of **trusted issuers** - entities authorize
 - **SSI Manager Role** (`SSI_MANAGER_ROLE`): Can add/remove trusted issuers
 - **Issuer**: An account that signs Verifiable Credentials
   - Can be you (self-issued KYC)
-  - Can be a KYC service (Onfido, Jumio, etc.)
+  - Can be a KYC service
   - Can be a financial institution (bank, broker)
   - Can be a regulatory authority
-
-    **Why add yourself as an issuer?**
-
-  - For testing/development, you can issue VCs to yourself and others
-  - Acts as your own "KYC authority"
-  - In production, you'd add legitimate KYC providers instead
 
 **How to add:**
 
@@ -490,7 +486,11 @@ The **SSI Manager** manages the list of **trusted issuers** - entities authorize
 
 Now your account is authorized to issue Verifiable Credentials that this token will trust for KYC.
 
+<figure><img src="../../.gitbook/assets/asset-tokenization-kyc-ssi-add.png" alt=""><figcaption></figcaption></figure>
+
 #### Step 3: Grant KYC via UI
+
+<figure><img src="../../.gitbook/assets/asset-tokenization-kyc-internal.png" alt=""><figcaption></figcaption></figure>
 
 1. Go to token detail → **"KYC" tab**
 2. Click **"Add"** button
@@ -499,6 +499,8 @@ Now your account is authorized to issue Verifiable Credentials that this token w
    - **VC File**: Upload the `.vc` file (can be generated in the ATS repository - needs hardhat)
 4. Click **"Create"**
 5. Sign transaction
+
+<figure><img src="../../.gitbook/assets/asset-tokenization-kyc-vc.png" alt=""><figcaption></figcaption></figure>
 
 ***
 

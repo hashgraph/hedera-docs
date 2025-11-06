@@ -135,7 +135,11 @@ To initiate the creation of a new bond, choose New Bond and enter the basic deta
 * **Decimals**: Number of decimals units (default is 6).
 * **ISIN**: International Security Identification Number - this can be any 12 alphanumeric characters.
 
+<figure><img src="../../.gitbook/assets/asset-tokenization-studio-create-bond-details.png" alt=""><figcaption></figcaption></figure>
+
 #### Bond Permissions
+
+<figure><img src="../../.gitbook/assets/asset-tokenization-studio-create-bond-permissions.png" alt=""><figcaption></figcaption></figure>
 
 Toggle the permissions you want to enable for your new bond:
 
@@ -143,9 +147,31 @@ Toggle the permissions you want to enable for your new bond:
 * **Blocklist**: Enables access control to the security using a list of blocked accounts.
 * **Approval list**: Enables access control to the security using a list of approved/allowed accounts.
 
-<figure><img src="../../.gitbook/assets/asset-tokenization-studio-create-bond-configuration.png" alt=""><figcaption></figcaption></figure>
+#### Bond Configuration
 
-### Bond Details
+* **Clearing Mode** (Default: Unchecked)
+  - **What it does**: Enables two-step settlement requiring validator approval
+  - **How it works**:
+    1. User initiates transfer/redemption/hold → Operation created (pending)
+    2. Clearing Validator reviews operation → Approves or Cancels
+    3. If approved → Operation executes
+    4. If cancelled/expired → User can reclaim tokens
+
+* **Internal KYC Activated**
+  - **What it does**: Simplified KYC system without external dependencies
+  - **How it works**:
+    - KYC managed directly within the token contract
+    - No need for External KYC List contracts
+    - SSI Manager grants/revokes KYC
+    - Requires VC files for compliance tracking
+  - **Impact**: KYC managed in token vs separate contract
+
+  **Note**: You can add Internal KYC later from the token's detail page.
+
+
+### Configuration
+
+<figure><img src="../../.gitbook/assets/asset-tokenization-studio-create-bond-configuration.png" alt=""><figcaption></figcaption></figure>
 
 Enter the bond details, such as the nominal value, number of bond units, starting (mint) date, and maturity date.
 
@@ -156,18 +182,6 @@ Enter the bond details, such as the nominal value, number of bond units, startin
 
 <figure><img src="../../.gitbook/assets/asset-tokenization-studio-create-bond-details.png" alt=""><figcaption></figcaption></figure>
 
-### Coupons
-
-Define the bond's interest payment structure, including coupon type (fixed or custom), rate, payment frequency, and the first coupon date.
-
-* **Coupon Type**: The structure of the interest payments (coupons) that the bond will provide.
-  * **Fixed**: A bond with a fixed coupon pays a set interest rate over its lifetime, regardless of market fluctuations.
-  * **Custom**: A bond with zero coupons by default, but flexible or floating coupon rates can be added later. This option allows for custom interest structures through the "Set Coupons" tab.
-* **Coupon Rate**: The interest rate paid on each coupon. It is expressed as a percentage of the bond's nominal value and determines the periodic payments made to bondholders.
-* **Coupon Frequency**: Defines the interval between two consecutive coupon payments, measured in months (each month is assumed to have 30 days). For example, a frequency of 6 months means that bondholders will receive interest payments every six months.
-* **First Coupon Date**: The first date when a coupon payment will be recorded and made to bondholders. All subsequent coupon payment dates are automatically calculated based on the coupon frequency and the first coupon's date.
-
-<figure><img src="../../.gitbook/assets/asset-tokenization-bond-creation-coupon.png" alt=""><figcaption></figcaption></figure>
 
 ### Proceed Recipients
 
@@ -397,6 +411,94 @@ After assigning roles, ATS will display all operations available for each digita
 🎉 Congrats on creating and managing your first digital security with Asset Tokenization Studio! You can view the transaction details on HashScan by looking up your new security token ID.
 
 <figure><img src="../../.gitbook/assets/asset-tokenization-token-details-hashscan.png" alt=""><figcaption></figcaption></figure>
+
+***
+
+## KYC Management
+
+You have two ways to manage KYC. Choose based on your needs:
+
+### Approach 1: External KYC List
+
+**Best for**: Quick testing, shared KYC across tokens
+
+#### Step 1: Create External KYC Contract
+
+1. Navigate to **"External KYC"** in main menu
+2. Click **"Create New External KYC"**
+3. Add Account ID (of yourself or other account)
+4. Note the contract ID (`0.0.xxx`)
+
+#### Step 2: Grant KYC to Accounts
+
+1. In External KYC page, select your contract
+2. Click **"Add Account"**
+3. Enter **Account ID of external KYC contract**: `0.0.xxx`
+4. Click **"Grant KYC"**
+5. Sign transaction
+
+**That's it!** No VC files, no complex setup.
+
+#### Step 3: Link to Your Token
+
+1. Go to your token's detail page
+2. Navigate to **"External KYC" tab**
+3. Click **"Add External KYC"**
+4. Select your external KYC contract
+5. Click **"Add"**
+6. Sign transaction
+
+Now any account KYC'd in that external contract is KYC'd for your token!
+
+---
+
+### Approach 2: Internal KYC with VC Files
+
+**Best for**: Token-specific KYC, testing SSI features
+
+#### Step 1: Enable Internal KYC (if not already done during Token creation)
+
+1. Go to token detail → **"Danger Zone"**
+2. Toggle **"Internal KYC"** to **Active**
+
+#### Step 2: Add Yourself as SSI Issuer
+
+**What is an SSI Manager/Issuer?**
+
+The **SSI Manager** manages the list of **trusted issuers** - entities authorized to sign Verifiable Credentials (VCs) that your token will accept for KYC purposes. Think of it like a whitelist of "trusted KYC providers."
+
+- **SSI Manager Role** (`SSI_MANAGER_ROLE`): Can add/remove trusted issuers
+- **Issuer**: An account that signs Verifiable Credentials
+  - Can be you (self-issued KYC)
+  - Can be a KYC service (Onfido, Jumio, etc.)
+  - Can be a financial institution (bank, broker)
+  - Can be a regulatory authority
+
+    **Why add yourself as an issuer?**
+
+  - For testing/development, you can issue VCs to yourself and others
+  - Acts as your own "KYC authority"
+  - In production, you'd add legitimate KYC providers instead
+
+**How to add:**
+
+1. Make sure you have assigned yourself the SSI Role under 'Roles'
+2. Go to token detail → **"SSI Manager" tab**
+3. Click **"Add Issuer"**
+4. Enter your **Hedera Account ID**: `0.0.xxx` (the account that will sign VCs)
+5. Click **"Add"**
+
+Now your account is authorized to issue Verifiable Credentials that this token will trust for KYC.
+
+#### Step 3: Grant KYC via UI
+
+1. Go to token detail → **"KYC" tab**
+2. Click **"Add"** button
+3. **Fill Form**:
+   - **Account ID**: `0.0.1234567`
+   - **VC File**: Upload the `.vc` file (can be generated in the ATS repository - needs hardhat)
+4. Click **"Create"**
+5. Sign transaction
 
 ***
 

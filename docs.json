@@ -10,11 +10,11 @@
   "redirects": [
     {
       "source": "/hedera/*",
-      "destination": "/*"
+      "destination": "/"
     },
     {
       "source": "/*",
-      "destination": "/"
+      "destination": "/*"
     },
     {
       "source": "/guardian/*",

@@ -9,11 +9,7 @@
   },
   "redirects": [
     {
-      "source": "/hedera",
-      "destination": "/"
-    },
-    {
-      "source": "/guides/*",
+      "source": "/*",
       "destination": "/"
     },
     {

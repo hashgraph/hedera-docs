@@ -13,6 +13,14 @@
       "destination": "/"
     },
     {
+      "source": "/hedera",
+      "destination": "/"
+    },
+    {
+      "source": "/guides",
+      "destination": "/"
+    },
+    {
       "source": "/guardian/*",
       "destination": "https://guardian.hedera.com/*"
     },

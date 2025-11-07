@@ -9,6 +9,10 @@
   },
   "redirects": [
     {
+      "source": "/hedera/*",
+      "destination": "/*"
+    },
+    {
       "source": "/*",
       "destination": "/"
     },

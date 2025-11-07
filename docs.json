@@ -32,7 +32,7 @@
     "source": "/guides",
     "destination": "/"
   },
- {
+{
     "source": "/transaction-tool/:slug*",
     "destination": "https://transactiontool.hedera.com/:slug*"
   },
@@ -42,15 +42,15 @@
   },
   {
     "source": "/guardian/:slug*",
-    "destination": "https://guardian.hedera.com/:slug*"
+    "destination": "https://guardian.hedera.com/guardian/:slug*"
   },
   {
     "source": "/guardian",
-    "destination": "https://guardian.hedera.com"
+    "destination": "https://guardian.hedera.com/guardian/"
   },
   {
     "source": "/guardian-dev-1/:slug*",
-    "destination": "https://dev.guardian.hedera.com/:slug*"
+    "destination": "https://dev.guardian.hedera.com/guardian/:slug*"
   },
   {
     "source": "/hedera-transaction-tool-v2/:slug*",

@@ -9,12 +9,16 @@
   },
   "redirects": [
     {
-      "source": "/hedera/*",
+      "source": "/hedera/",
       "destination": "/"
     },
     {
+      "source": "/hedera/getting-started/*",
+      "destination": "/getting-started-hedera-native-developers/*"
+    },
+    {
       "source": "/*",
-      "destination": "/*"
+      "destination": "/"
     },
     {
       "source": "/guardian/*",

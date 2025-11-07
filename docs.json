@@ -33,32 +33,32 @@
       "destination": "/"
     },
     {
+      "source": "/transaction-tool/:slug*",
+      "destination": "https://transactiontool.hedera.com/:slug*"
+    },
+    {
       "source": "/transaction-tool",
       "destination": "https://transactiontool.hedera.com"
     },
     {
-      "source": "/transaction-tool/*",
-      "destination": "https://transactiontool.hedera.com/*"
+      "source": "/guardian/:slug*",
+      "destination": "https://guardian.hedera.com/guardian/:slug*"
     },
     {
       "source": "/guardian",
-      "destination": "https://guardian.hedera.com"
+      "destination": "https://guardian.hedera.com/guardian/"
     },
     {
-      "source": "/guardian/*",
-      "destination": "https://guardian.hedera.com/*"
+      "source": "/guardian-dev-1/:slug*",
+      "destination": "https://dev.guardian.hedera.com/guardian/:slug*"
     },
     {
-      "source": "/guardian-dev-1/*",
-      "destination": "https://dev.guardian.hedera.com/*"
+      "source": "/hedera-transaction-tool-v2/:slug*",
+      "destination": "https://transactiontool.hedera.com/:slug*"
     },
     {
       "source": "/hedera-transaction-tool-v2",
       "destination": "https://transactiontool.hedera.com"
-    },
-    {
-      "source": "/hedera-transaction-tool-v2/*",
-      "destination": "https://transactiontool.hedera.com/*"
     }
   ],
   "style": {

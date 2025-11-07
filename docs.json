@@ -13,6 +13,10 @@
       "destination": "/"
     },
     {
+      "source": "/hedera/getting-started/*",
+      "destination": "/"
+    },
+    {
       "source": "/guides/*",
       "destination": "/"
     },

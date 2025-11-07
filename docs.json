@@ -9,11 +9,11 @@
   },
   "redirects": [
     {
-      "source": "/hedera",
+      "source": "/hedera/*",
       "destination": "/"
     },
     {
-      "source": "/hedera/getting-started/*",
+      "source": "/*",
       "destination": "/"
     },
     {

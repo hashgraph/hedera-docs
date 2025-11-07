@@ -14,7 +14,7 @@
     },
     {
       "source": "/*",
-      "destination": "https://docs.hedera.com/*"
+      "destination": "/"
     },
     {
       "source": "/guides/*",

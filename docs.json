@@ -13,12 +13,8 @@
       "destination": "/"
     },
     {
-      "source": "/*",
-      "destination": "/"
-    },
-    {
       "source": "/guides/*",
-      "destination": "/*"
+      "destination": "/"
     },
     {
       "source": "/guardian/*",

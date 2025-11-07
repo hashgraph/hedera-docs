@@ -8,10 +8,14 @@
     "dark": "#614ff4"
   },
   "redirects": [
-    {
+{
   "source": "/hedera/getting-started",
-  "destination": "/"
+  "destination": "/#getting-started"
 },
+{
+  "source": "/hedera/getting-started/:slug*",
+  "destination": "/#getting-started"
+},    
   {
     "source": "/hedera/:slug*",
     "destination": "/:slug*"

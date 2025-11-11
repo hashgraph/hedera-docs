@@ -3,7 +3,7 @@ title: "Frequently Asked Questions (FAQs)"
 ---
 
 <AccordionGroup>
-<Accordion title="w Can I Access the Source Code for Asset Tokenization Studi">
+<Accordion title="Can I Access the Source Code for Asset Tokenization Studi">
 
 Check out the public [GitHub repo](https://github.com/hashgraph/asset-tokenization-studio) for the full source code. Alternatively, you can try out the[ interactive sandbox (demo)](https://tokenization-studio.hedera.com/) to explore the Asset Tokenization Studio (ATS) features.
 </Accordion>
@@ -52,6 +52,17 @@ Yes, the smart contracts used by Asset Tokenization Studio are audited by [A&D F
 
 Yes, ATS allows certain [updates to tokenized assets using proxy contracts](/hedera/open-source-solutions/asset-tokenization-studio-ats/..#in-depth-architecture-of-ats). This design pattern allows you to change the logic or functionality of the token without altering the underlying asset data. When an update is needed, the proxy contract can point to a new logic contract (resolver) that defines the new rules or behaviors.
 </Accordion>
+
+<Accordion title="Does Asset Tokenization Studio Support ERC-3643 Compliance?">
+
+Yes, Asset Tokenization Studio supports optional integration with [ERC-3643](https://docs.hedera.com/hedera/support-and-community/glossary#erc-3643), a standard for permissioned tokens that enables compliance with securities regulations through on-chain compliance rules and identity verification. During bond or equity creation, issuers can configure ERC-3643 by specifying a Compliance ID (the smart contract enforcing regulatory rules) and an Identity Registry ID (the contract managing investor identities and compliance status). This integration allows ATS to work seamlessly with existing ERC-3643 compliance infrastructure for enhanced regulatory compliance.
+</Accordion>
+
+<Accordion title="What Are External Management Lists and How Do They Work?">
+
+External Management Lists in Asset Tokenization Studio allow issuers to integrate with external smart contracts for enhanced control and compliance. These include External Pause Lists (for emergency token operation pauses), External Control Lists (for additional governance capabilities), and External KYC Lists (for third-party identity verification). Issuers can select multiple contracts from each list type during the creation process, enabling sophisticated multi-party control structures and integration with external compliance providers.
+</Accordion>
+
 
 <Accordion title="What Wallets Are Supported by Asset Tokenization Studio?">
 

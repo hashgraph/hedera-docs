@@ -2,42 +2,42 @@
 title: "How to Mint & Burn an ERC-721 Token using Foundry(Part 1)"
 ---
 
-
 In this tutorial, you’ll deploy, mint, and burn ERC‑721 tokens (NFTs) using Foundry and OpenZeppelin on the Hedera Testnet. You’ll set up a Foundry project, write an ERC‑721 contract, deploy it via a Foundry script, mint an NFT to your account, add burn functionality, and burn an NFT.
 
 We’ll connect to Hedera via the JSON‑RPC relay (Hashio) and use Foundry tools:
 
-* `forge`: build and deploy through scripts
-* `cast`: quick RPC interactions
+- `forge`: build and deploy through scripts
+- `cast`: quick RPC interactions
 
 <Info>
-You can take a look at the **complete code** in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/foundry-erc-721-mint-burn).
+  You can take a look at the **complete code** in the [**Hedera-Code-Snippets
+  repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/foundry-erc721-mint-burn).
 </Info>
 
-***
+---
 
 ## Prerequisites
 
-* Foundry installed (forge, cast, anvil, chisel):
-  * `curl -L https://foundry.paradigm.xyz | bash`
-  * `foundryup`
-* ECDSA account and 0x‑prefixed private key for Hedera Testnet (create/fund via the [Hedera Portal](https://portal.hedera.com/))
-* Basic Solidity / CLI familiarity
+- Foundry installed (forge, cast, anvil, chisel):
+  - `curl -L https://foundry.paradigm.xyz | bash`
+  - `foundryup`
+- ECDSA account and 0x‑prefixed private key for Hedera Testnet (create/fund via the [Hedera Portal](https://portal.hedera.com/))
+- Basic Solidity / CLI familiarity
 
-***
+---
 
 ## Table of Contents
 
-1. [Step 1: Project Setup](#step-1-project-setup)
-2. [Step 2: Creating the ERC-721 Contract](#step-2-creating-the-erc-721-contract)
-3. [Step 3: Deploy your ERC-721 Smart Contract](#step-3-deploy-your-erc-721-smart-contract)
-4. [Step 4: Minting an NFT](#step-4-minting-an-nft)
-5. [Step 5: Adding the Burn Functionality](#step-5-adding-the-burn-functionality)
-6. [Step 6: Burning an NFT](#step-6-burning-an-nft)
-7. [Step 7: Run tests(Optional)](#step-7-run-tests-optional)
+1. [Step 1: Project Setup](#step-1%3A-project-setup)
+2. [Step 2: Creating the ERC-721 Contract](#step-2%3A-creating-the-erc-721-contract)
+3. [Step 3: Deploy your ERC-721 Smart Contract](#step-3%3A-deploy-your-erc-721-smart-contract)
+4. [Step 4: Minting an NFT](#step-4%3A-minting-an-nft)
+5. [Step 5: Adding the Burn Functionality](#step-5%3A-adding-the-burn-functionality)
+6. [Step 6: Burning an NFT](#step-6%3A-burning-an-nft)
+7. [Step 7: Run tests(Optional)](#step-7%3A-run-tests-optional)
 8. [Interacting with the Contract using "cast"](#interacting-with-the-contract-using-cast-optional-advanced)
 
-***
+---
 
 ## Step 1: Project Setup
 
@@ -77,7 +77,6 @@ HEDERA_RPC_URL=https://testnet.hashio.io/api
 HEDERA_PRIVATE_KEY=0x-your-private-key
 ```
 
-
 Now, let's also load these to the terminal:
 
 ```bash
@@ -85,11 +84,16 @@ source .env
 ```
 
 <Warning>
-Replace the `0x-your-private-key` environment variable with the **HEX Encoded Private Key** for your **ECDSA** **account** from the [Hedera Portal](https://portal.hedera.com/)
+  Replace the `0x-your-private-key` environment variable with the **HEX Encoded
+  Private Key** for your **ECDSA** **account** from the [Hedera
+  Portal](https://portal.hedera.com/)
 </Warning>
 
 <Danger>
-***Please note**:* *that Hashio is intended for development and testing purposes only. For production use cases, it's recommended to use commercial-grade JSON-RPC Relay or host your own instance of the* [*Hiero JSON-RPC Relay*](https://github.com/hiero-ledger/hiero-json-rpc-relay)*.*
+  ***Please note**:* *that Hashio is intended for development and testing
+  purposes only. For production use cases, it's recommended to use
+  commercial-grade JSON-RPC Relay or host your own instance of the* [*Hiero
+  JSON-RPC Relay*](https://github.com/hiero-ledger/hiero-json-rpc-relay)*.*
 </Danger>
 
 #### Configure Foundry
@@ -111,7 +115,6 @@ remappings = [
 testnet = "${HEDERA_RPC_URL}"
 ```
 
-
 Note the values in `remappings` field. We need this to import prefix to a filesystem path so both Foundry(forge) and our editor can resolve short, package-like imports instead of long relative paths.
 
 We will be removing the default contracts that comes with foundry default project:
@@ -120,7 +123,7 @@ We will be removing the default contracts that comes with foundry default projec
 rm -rf script/* src/* test/*
 ```
 
-***
+---
 
 ## Step 2: Creating the ERC-721 Contract
 
@@ -149,7 +152,6 @@ contract MyToken is ERC721, Ownable {
 }
 ```
 
-
 This contract was created using the [OpenZeppelin Contracts Wizard](https://wizard.openzeppelin.com/#erc721) and OpenZeppelin's ERC-721 standard implementation with an ownership model. The ERC-721 token's name has been set to "MyToken." The contract implements the `safeMint` function, which accepts the address of the owner of the new token and uses auto-increment IDs, starting from 0.
 
 Let's compile this contract by running:
@@ -160,7 +162,7 @@ forge build
 
 This command will generate the smart contract artifacts, including the [ABI](/hedera/core-concepts/smart-contracts/compiling-smart-contracts). We are now ready to deploy the smart contract.
 
-***
+---
 
 ## Step 3: Deploy Your ERC-721 Smart Contract
 
@@ -196,7 +198,6 @@ contract MyTokenScript is Script {
     }
 }
 ```
-
 
 In this script, we first retrieve your account (the deployer) that's on our `.env` file. This account will own the deployed smart contract. Next, we use this account to deploy the contract by calling `MyToken.deploy(deployerAddress)`. This passes your account address as the initial owner and signer of the deployment transaction.
 
@@ -239,7 +240,7 @@ Block: 25122524
 Paid: 0.70677355 ETH (2019353 gas * 350 gwei)
 
 ✅ Sequence #1 on 296 | Total Paid: 0.70677355 ETH (2019353 gas * avg 350 gwei)
-                                                                                                             
+
 
 ==========================
 
@@ -247,7 +248,8 @@ ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
 ```
 
 <Check>
-Note that Foundry hardcodes “ETH” in its summary. However, even if it says `ETH`, because we're connected to Hedera, the currency used is `HBAR`. 
+  Note that Foundry hardcodes “ETH” in its summary. However, even if it says
+  `ETH`, because we're connected to Hedera, the currency used is `HBAR`.
 </Check>
 
 Next, set up variables for your contract address and public address to make the next commands easier to read. Please export these variables in your shell.
@@ -271,7 +273,7 @@ forge verify-contract $CONTRACT_ADDRESS src/MyToken.sol:MyToken \
     --constructor-args $(cast abi-encode "constructor(address)" $MY_ADDRESS)
 ```
 
-***
+---
 
 ## Step 4: Minting an NFT
 
@@ -290,7 +292,7 @@ contract MintMyTokenScript is Script {
         uint256 deployerPrivateKey = vm.envUint("HEDERA_PRIVATE_KEY");
 
         address contractAddr = <your-contract-address>; // Replace with your deployed contract address
-        address recipient = vm.addr(deployerPrivateKey); 
+        address recipient = vm.addr(deployerPrivateKey);
 
         vm.startBroadcast(deployerPrivateKey);
         MyToken token = MyToken(contractAddr);
@@ -306,7 +308,6 @@ contract MintMyTokenScript is Script {
     }
 }
 ```
-
 
 The code mints a new NFT to your account ( `deployer.address` ). Then we verify the balance to see if we own an ERC-721 token of type `MyToken`.
 
@@ -328,7 +329,7 @@ Script ran successfully.
   Balance after: 1
 ```
 
-***
+---
 
 ## Step 5: Adding the Burn Functionality
 
@@ -365,11 +366,11 @@ Copy the new smart contract address and replace the address in the `script/MintM
 forge script script/MintMyToken.s.sol --rpc-url testnet --broadcast
 ```
 
-***
+---
 
 ## Step 6: Burning an NFT
 
-Create a burn script (`BurnMyToken.s.sol` ) in your `script` directory. Don't forget to replace the `<your-contract-address>` with your own contract address and `<your-token-id>` with the token Id you want to burn(eg. 0).  
+Create a burn script (`BurnMyToken.s.sol` ) in your `script` directory. Don't forget to replace the `<your-contract-address>` with your own contract address and `<your-token-id>` with the token Id you want to burn(eg. 0).
 
 ```typescript script/BurnMyToken.s.sol
 // SPDX-License-Identifier: MIT
@@ -403,7 +404,6 @@ contract BurnMyTokenScript is Script {
 
 ```
 
-
 The script will burn the ERC-721 token with the ID set to 1, which is the ERC-721 token you've just minted. To be sure the token has been deleted, let's print the balance for our account to the terminal. The balance should show a balance of `0`.
 
 Burn the NFT:
@@ -430,7 +430,7 @@ Script ran successfully.
 
 You can find both types of tests in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/foundry-erc-721-mint-burn). You will find the following files:
 
-* `test/MyToken.t.sol`
+- `test/MyToken.t.sol`
 
 Copy this file and then run the tests:
 
@@ -459,7 +459,9 @@ cast chain-id --rpc-url "$HEDERA_RPC_URL"
 ```
 
 <Info>
-Please make sure to have `jq` installed on your machine for the following exercises. You can learn more about it on the [official jq site](https://jqlang.org/download/).
+  Please make sure to have `jq` installed on your machine for the following
+  exercises. You can learn more about it on the [official jq
+  site](https://jqlang.org/download/).
 </Info>
 
 ### Compile and fetch creation bytecode
@@ -507,16 +509,12 @@ Want to take your local development setup even further? Here are some excellent 
    Learn how to fork hedera network(testnet/mainnet) locally so you can start testing against the forked network
 
 <Columns cols={2}>
-  <Card
-    title="Writer: Kiran, Developer Advocate"
-    arrow
-  >
-    [GitHub](https://github.com/kpachhai) | [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
+  <Card title="Writer: Kiran, Developer Advocate" arrow>
+    [GitHub](https://github.com/kpachhai) |
+    [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
   </Card>
-  <Card
-    title="Editor: Krystal, Technical Writer"
-    arrow
-  >
-    [GitHub](https://github.com/theekrystallee) | [X](https://x.com/theekrystallee)
+  <Card title="Editor: Krystal, DX Engineer" arrow>
+    [GitHub](https://github.com/theekrystallee) |
+    [X](https://x.com/theekrystallee)
   </Card>
 </Columns>

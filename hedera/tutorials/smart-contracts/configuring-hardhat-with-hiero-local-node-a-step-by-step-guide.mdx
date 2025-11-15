@@ -2,25 +2,28 @@
 title: "Configuring Hardhat with Hedera Localnet/Testnet: A Step-by-Step Guide"
 ---
 
-
 Developers building smart contracts on Hedera often use the **Hedera JSON-RPC Relay** to enable EVM tools like **Hardhat**. In this post, we'll walk through how to set up Hardhat to work with the **Hiero Local Node**, allowing for local deployment, debugging, and testing of smart contracts without using testnet resources.
 
 <Check>
-Not sure whether to use the Hiero Local Node, Hashio, or a custom relay setup? Read this [blog post](/hedera/tutorials/local-node/how-to-set-up-a-hedera-local-node) comparing the different options.
+  Not sure whether to use the Hiero Local Node, Hashio, or a custom relay setup?
+  Read this [blog
+  post](/hedera/tutorials/local-node/how-to-set-up-a-hedera-local-node)
+  comparing the different options.
 </Check>
 
 <Info>
-You can take a look at the **complete code** in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/tutorial-local-hardhat).
+  You can take a look at the **complete code** in the [**Hedera-Code-Snippets
+  repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/tutorial-local-hardhat).
 </Info>
 
 ## Prerequisites
 
-* Basic understanding of smart contracts.
-* Basic understanding of [Node.js](https://nodejs.org/en/download) and JavaScript/TypeScript.
-* Basic understanding of [Hardhat EVM Development Tool](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3) and [Ethers](https://docs.ethers.org/v6/).
-* ECDSA account from the [Hedera Portal](https://portal.hedera.com/).
+- Basic understanding of smart contracts.
+- Basic understanding of [Node.js](https://nodejs.org/en/download) and JavaScript/TypeScript.
+- Basic understanding of [Hardhat EVM Development Tool](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3) and [Ethers](https://docs.ethers.org/v6/).
+- ECDSA account from the [Hedera Portal](https://portal.hedera.com/).
 
-***
+---
 
 ## Video Tutorial
 
@@ -29,25 +32,34 @@ You can watch the video tutorial (which uses **Hardhat version 2**) or follow th
 <Accordion title="🚧 What's new: Hardhat 2 → 3 ">
 Key differences in Hardhat 3:
 
-* **compile → build**\
+- **compile → build**\
   `npx hardhat compile` is now `npx hardhat build`. This is the big one. The v3 migration guide explicitly shows using the `build` task.
-* **project init switch**\
+- **project init switch**\
   v2 commonly used `npx hardhat` or `npx hardhat init` to bootstrap. In v3 it’s `npx hardhat --init`.
 
-- **keystore helper commands are new**\
+* **keystore helper commands are new**\
   v3’s recommended flow includes a keystore plugin with commands like `npx hardhat keystore set HEDERA_RPC_URL` and `npx hardhat keystore set HEDERA_PRIVATE_KEY`. These weren’t standard in v2.
-- **Foundry-compatiable Solidity tests**\
+* **Foundry-compatiable Solidity tests**\
   In addition to offering Javascript/Typescript integration tests, Hardhat v3 also integrates Foundry-compatible Solidity tests that allows developers to write unit tests directly in Solidity
 
-* **Enhanced Network Management**\
+- **Enhanced Network Management**\
   v3 allows tasks to create and manage multiple network connections simultaneously which is a significant improvement over the single, fixed connection available in version 2. This provides greater flexibility for scripts and tests that interact with multiple networks.
 
-*📚 Learn more from the official* [*Hardhat documentation*](https://hardhat.org/docs/getting-started)*.*
+_📚 Learn more from the official_ [_Hardhat documentation_](https://hardhat.org/docs/getting-started)_._
+
 </Accordion>
 
-<iframe width="1124" height="632" src="https://www.youtube.com/embed/F34uHc0hVAg" title="Configuring Hardhat With Hiero Local Node" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe
+  width="720"
+  height="405"
+  src="https://www.youtube.com/embed/F34uHc0hVAg"
+  title="Configuring Hardhat With Hiero Local Node"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
+></iframe>
 
-***
+---
 
 ## Step 1: Set Up the Hiero Local Node
 
@@ -62,7 +74,7 @@ npm install
 npm run start
 ```
 
-Once all the containers have started, the Hiero Local Node is up and running. This includes a Consensus Node, Mirror Node and explorer, JSON RPC Relay, Block Node, Grafana UI, and Prometheus UI. 
+Once all the containers have started, the Hiero Local Node is up and running. This includes a Consensus Node, Mirror Node and explorer, JSON RPC Relay, Block Node, Grafana UI, and Prometheus UI.
 
 This command will also generate accounts on startup, which we will use later in our `hardhat.config.ts`.
 
@@ -70,7 +82,7 @@ This command will also generate accounts on startup, which we will use later in 
   <img src="/images/tutorials/smart-contracts/configuring-hardhat-with-hiero-local-node-a-step-by-step-guide/configuring-hardhat-with-hiero-local-node-a-step-by-step-guide-1.png" />
 </Frame>
 
-***
+---
 
 ## Step 2: Create a Hardhat Project
 
@@ -109,13 +121,13 @@ scripts
 
 Here's a quick overview of these files and directories:
 
-* `hardhat.config.ts`: The main configuration file for your project. It defines settings like the Solidity compiler version, network configurations, and the plugins and tasks your project uses.
-* `contracts`: Contains your project's Solidity contracts. You can also include Solidity test files here by using the `.t.sol` extension.
-* `test`: Used for TypeScript integration tests. You can also include Solidity test files here.
-* `ignition`: Holds your [Hardhat Ignition](https://hardhat.org/ignition) deployment modules, which describe how your contracts should be deployed.
-* `scripts`: A place for any custom scripts that automate parts of your workflow. Scripts have full access to Hardhat's runtime and can use plugins, connect to networks, deploy contracts, and more.
+- `hardhat.config.ts`: The main configuration file for your project. It defines settings like the Solidity compiler version, network configurations, and the plugins and tasks your project uses.
+- `contracts`: Contains your project's Solidity contracts. You can also include Solidity test files here by using the `.t.sol` extension.
+- `test`: Used for TypeScript integration tests. You can also include Solidity test files here.
+- `ignition`: Holds your [Hardhat Ignition](https://hardhat.org/ignition) deployment modules, which describe how your contracts should be deployed.
+- `scripts`: A place for any custom scripts that automate parts of your workflow. Scripts have full access to Hardhat's runtime and can use plugins, connect to networks, deploy contracts, and more.
 
-***
+---
 
 ## Step 3: Configure "hardhat.config.ts"
 
@@ -133,10 +145,11 @@ For `HEDERA_RPC_URL`, we'll have `https://localhost:7546`
 npx hardhat keystore set HEDERA_PRIVATE_KEY
 ```
 
-For `HEDERA_PRIVATE_KEY`, enter  `0x105d050185ccb907fba04dd92d8de9e32c18305e097ab41dadda21489a211524`
+For `HEDERA_PRIVATE_KEY`, enter `0x105d050185ccb907fba04dd92d8de9e32c18305e097ab41dadda21489a211524`
 
 <Info>
-**Note:** We got this private key from our console when we started our Hiero Local Node.
+  **Note:** We got this private key from our console when we started our Hiero
+  Local Node.
 </Info>
 
 Now, we can update our Hardhat config file to include the Hiero Local Node as a custom network:
@@ -152,52 +165,51 @@ const config: HardhatUserConfig = {
   solidity: {
     profiles: {
       default: {
-        version: "0.8.28"
+        version: "0.8.28",
       },
       production: {
         version: "0.8.28",
         settings: {
           optimizer: {
             enabled: true,
-            runs: 200
-          }
-        }
-      }
-    }
+            runs: 200,
+          },
+        },
+      },
+    },
   },
   networks: {
     hedera: {
       type: "http",
       url: configVariable("HEDERA_RPC_URL"),
-      accounts: [configVariable("HEDERA_PRIVATE_KEY")]
+      accounts: [configVariable("HEDERA_PRIVATE_KEY")],
     },
     hardhatMainnet: {
       type: "edr-simulated",
-      chainType: "l1"
+      chainType: "l1",
     },
     hardhatOp: {
       type: "edr-simulated",
-      chainType: "op"
+      chainType: "op",
     },
-  }
+  },
 };
 
 export default config;
 ```
 
-
 🔍 **Key Highlights**
 
-* **Network config: `local`**
-  * `url`:
+- **Network config: `local`**
+  - `url`:
     ➤ This is the **Hedera JSON-RPC Relay** endpoint provided by the local node (via Docker). It enables EVM-compatible tools like Hardhat and Ethers.js to interact with the Hedera network.
-  * `accounts`:
+  - `accounts`:
     ➤ One predefined **ECDSA private key** provided by the Hiero Local Node.\
     ➤ This account is already **funded**, and can be used immediately to deploy and interact with smart contracts.
-* **Set paths**:
-  * `./cache` & `./artifacts`: Manage build outputs and compilation caching to speed up repeated runs.
+- **Set paths**:
+  - `./cache` & `./artifacts`: Manage build outputs and compilation caching to speed up repeated runs.
 
-***
+---
 
 ## Step 4: Build and Deploy
 
@@ -222,7 +234,7 @@ We won't be using `ignition` so we will remove all the unnecessary directories a
 
 ```bash
 rm -rf ignition
-# Let's rename the existing script 
+# Let's rename the existing script
 mv scripts/send-op-tx.ts scripts/send-tx.ts
 ```
 
@@ -232,7 +244,7 @@ Update the script `scripts/send-tx.ts`
 import { network } from "hardhat";
 
 const { ethers } = await network.connect({
-  network: "hedera"
+  network: "hedera",
 });
 
 console.log("Sending transaction on Hedera network");
@@ -244,13 +256,12 @@ console.log("Sending 10_000_000_000 wei from", sender.address, "to itself");
 console.log("Sending transaction");
 const tx = await sender.sendTransaction({
   to: sender.address,
-  value: 10_000_000_000n
+  value: 10_000_000_000n,
 });
 
 await tx.wait();
 
 console.log("Transaction sent successfully");
-
 ```
 
 Let's run our script to make sure everything works:
@@ -276,7 +287,7 @@ The `scripts/deploy.ts` will have the following code:
 import { network } from "hardhat";
 
 const { ethers } = await network.connect({
-  network: "hedera"
+  network: "hedera",
 });
 
 async function main(): Promise<void> {
@@ -299,7 +310,7 @@ main().catch(console.error);
 Now, let's go ahead and deploy the contract:
 
 ```bash
-~/projects/tutorial-local-hardhat >> npx hardhat run scripts/deploy.ts 
+~/projects/tutorial-local-hardhat >> npx hardhat run scripts/deploy.ts
 Compiling your Solidity contracts...
 Compiled 1 Solidity file with solc 0.8.28 (evm target: cancun)
 
@@ -307,7 +318,7 @@ Deploying contract with the account: 0x67D8d32E9Bf1a9968a5ff53B87d777Aa8EBBEe69
 Contract deployed at: 0xB3e022eBC7D5C5B1f4ca50b3D4A55173b34ceD49
 ```
 
-***
+---
 
 ## Step 5: Deploy on Testnet
 
@@ -331,24 +342,16 @@ Want to take your local development setup even further? Here are some excellent 
    Learn how to add upgradability to your smart contracts using OpenZeppelin’s UUPS proxy pattern on Hedera.
 
 <Columns cols={2}>
-  <Card
-    title="Writer: Michiel, DevRel Engineer"
-    arrow
-  >
-    [GitHub](https://github.com/michielmulders) | [LinkedIn](https://www.linkedin.com/in/michielmulders/)
+  <Card title="Writer: Michiel, DevRel Engineer" arrow>
+    [GitHub](https://github.com/michielmulders) |
+    [LinkedIn](https://www.linkedin.com/in/michielmulders/)
   </Card>
-  <Card
-    title="Editor: Krystal, Technical Writer"
-    arrow
-  >
-    [GitHub](https://github.com/theekrystallee) | [X](https://x.com/theekrystallee)
+  <Card title="Editor: Krystal, DX Engineer" arrow>
+    [GitHub](https://github.com/theekrystallee) |
+    [X](https://x.com/theekrystallee)
   </Card>
-  <Card
-    title="Editor: Kiran, Developer Advocate"
-    arrow
-  >
-    [GitHub](https://github.com/kpachhai) | [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
+  <Card title="Editor: Kiran, Developer Advocate" arrow>
+    [GitHub](https://github.com/kpachhai) |
+    [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
   </Card>
 </Columns>
-
-  

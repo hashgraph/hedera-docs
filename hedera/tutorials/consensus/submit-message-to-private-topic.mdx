@@ -2,22 +2,21 @@
 title: "Submit Message to Private Topic"
 ---
 
-
 ## Summary
 
 In the previous tutorial, "Submit Your First Message," you have learned how to submit a message to a **public topic**. It means anyone can send a message to the topic you created because you didn't set a [Submit Key](/hedera/sdks-and-apis/sdks/consensus-service/create-a-topic#private-topic).
 
-When setting a *Submit Key,* your topic becomes a **private topic** because each message needs to be signed by the Submit Key. Therefore, you can control who can submit messages to your topic. Of course, the data is still public, as is all data on a public ledger, but we say the topic is private because the topic is restricted by who can submit messages to it.
+When setting a _Submit Key,_ your topic becomes a **private topic** because each message needs to be signed by the Submit Key. Therefore, you can control who can submit messages to your topic. Of course, the data is still public, as is all data on a public ledger, but we say the topic is private because the topic is restricted by who can submit messages to it.
 
-***
+---
 
 ## Prerequisites
 
 We recommend you complete the "Submit Your First Message" tutorial [here](/hedera/tutorials/consensus/submit-your-first-message) to get a basic understanding of the Hedera Consensus Service. This example does not build upon the previous examples.
 
-✅ *You can find a full* [*code check*](#code-check) *for this tutorial at the bottom of this page.*
+✅ _You can find a full_ [_code check_](#code-check) _for this tutorial at the bottom of this page._
 
-***
+---
 
 ## Table of Contents
 
@@ -26,11 +25,11 @@ We recommend you complete the "Submit Your First Message" tutorial [here](/heder
 3. [Submit Message](#3.-submit-a-message)
 4. [Code Check](#code-check)
 
-***
+---
 
 ## 1. Create a private topic
 
-To create a private topic, you will use [***`setSubmitKey()`***](/hedera/sdks-and-apis/sdks/consensus-service/create-a-topic#methods) to set a Submit Key. This key needs to sign all messages someone sends to the topic. A message will be rejected if you don't sign the message or sign with an incorrect key. The cost of creating a private topic is the same as a public topic: [**$0.01**](/hedera/networks/mainnet/fees#consensus-service).
+To create a private topic, you will use [**_`setSubmitKey()`_**](/hedera/sdks-and-apis/sdks/consensus-service/create-a-topic#methods) to set a Submit Key. This key needs to sign all messages someone sends to the topic. A message will be rejected if you don't sign the message or sign with an incorrect key. The cost of creating a private topic is the same as a public topic: [**$0.01**](/hedera/networks/mainnet/fees#consensus-service).
 
 <CodeGroup>
 
@@ -42,7 +41,7 @@ TransactionResponse txResponse = new TopicCreateTransaction()
 
 // Get the receipt
 TransactionReceipt receipt = txResponse.getReceipt(client);
-        
+
 // Get the topic ID
 TopicId topicId = receipt.topicId;
 
@@ -53,12 +52,11 @@ System.out.println("Your topic ID is: " +topicId);
 Thread.sleep(5000);
 ```
 
-
 ```javascript JavaScript
 // Create a new topic
 const txResponse = await new TopicCreateTransaction()
-    .setSubmitKey(operatorKey.publicKey)
-    .execute(client);
+  .setSubmitKey(operatorKey.publicKey)
+  .execute(client);
 
 // Grab the newly generated topic ID
 const receipt = await txResponse.getReceipt(client);
@@ -67,7 +65,6 @@ console.log(`Your topic ID is: ${receipt.topicId}`);
 // Wait 5 seconds between consensus topic creation and subscription creation
 await new Promise((resolve) => setTimeout(resolve, 5000));
 ```
-
 
 ```go Go
 // Create a new topic
@@ -97,11 +94,11 @@ fmt.Printf("topicID: %v\n", topicID)
 
 </CodeGroup>
 
-***
+---
 
 ## 2. Subscribe to a topic
 
-The code used to subscribe to a public or private topic doesn't change. Anyone can listen to the messages you send to your private topic. You need to provide the [***`TopicMessageQuery()`***](/hedera/sdks-and-apis/sdks/consensus-service/get-topic-message) with your topic ID to subscribe to it.
+The code used to subscribe to a public or private topic doesn't change. Anyone can listen to the messages you send to your private topic. You need to provide the [**_`TopicMessageQuery()`_**](/hedera/sdks-and-apis/sdks/consensus-service/get-topic-message) with your topic ID to subscribe to it.
 
 <CodeGroup>
 
@@ -115,7 +112,6 @@ new TopicMessageQuery()
     });
 ```
 
-
 ```javascript JavaScript
 // Subscribe to the topic
 new TopicMessageQuery()
@@ -128,7 +124,6 @@ new TopicMessageQuery()
   });
 ```
 
-
 ```go Go
 // Subscribe to the topic
 _, err = hedera.NewTopicMessageQuery().
@@ -140,11 +135,11 @@ _, err = hedera.NewTopicMessageQuery().
 
 </CodeGroup>
 
-***
+---
 
 ## 3. Submit a message
 
-Now you are ready to submit a message to your private topic. To do this, you will use [***`TopicMessageSubmitTransaction()`***](/hedera/sdks-and-apis/sdks/consensus-service/submit-a-message). However, you need to sign this transaction with your Submit Key. The cost for sending a message to a private topic is the same as a public topic: [**$0.0001**](/hedera/networks/mainnet/fees#consensus-service).
+Now you are ready to submit a message to your private topic. To do this, you will use [**_`TopicMessageSubmitTransaction()`_**](/hedera/sdks-and-apis/sdks/consensus-service/submit-a-message). However, you need to sign this transaction with your Submit Key. The cost for sending a message to a private topic is the same as a public topic: [**$0.0001**](/hedera/networks/mainnet/fees#consensus-service).
 
 <CodeGroup>
 
@@ -164,15 +159,14 @@ TransactionReceipt receipt2 = submitMessage.getReceipt(client);
 Thread.sleep(30000);
 ```
 
-
 ```javascript JavaScript
 // Send message to private topic
 const submitMsgTx = await new TopicMessageSubmitTransaction({
   topicId: topicId,
   message: "Submitkey set!",
 })
-.freezeWith(client)
-.sign(operatorKey);
+  .freezeWith(client)
+  .sign(operatorKey);
 
 const submitMsgTxSubmit = await submitMsgTx.execute(client);
 
@@ -183,7 +177,6 @@ const getReceipt = await submitMsgTxSubmit.getReceipt(client);
 const transactionStatus = getReceipt.status;
 console.log("The message transaction status " + transactionStatus.toString());
 ```
-
 
 ```go Go
 // Prepare message to send to private topic
@@ -222,7 +215,14 @@ time.Sleep(30 * time.Second)
 
 To conclude: The total cost to create a topic and send a message to it is **$0.0101.**
 
-***
+<Warning>
+ **⚠️ Upcoming Price Change – ConsensusSubmitMessage**
+
+Starting **January 2026**, the price for the ConsensusSubmitMessage transaction will increase from `$0.0001` to `$0.0008` USD. This change will take effect with the **v0.69 mainnet release** and applies only to **`ConsensusSubmitMessage`** transactions. This update improves the long-term economic sustainability of the Hedera network while preserving predictable and USD-fixed pricing for developers. Read [this blog article](http://hedera.com/blog/price-update-to-consensussubmitmessage-in-consensus-service-january-2026) for more information.
+
+</Warning>
+
+---
 
 ## Code Check ✅
 
@@ -235,7 +235,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
 
 public class CreateTopicTutorial {
-    public static void main(String[] args) throws TimeoutException, PrecheckStatusException, ReceiptStatusException, InterruptedException {
+public static void main(String[] args) throws TimeoutException, PrecheckStatusException, ReceiptStatusException, InterruptedException {
 
         // Grab your Hedera testnet account ID and private key
         AccountId operatorId = AccountId.fromString(Dotenv.load().get("OPERATOR_ID"));
@@ -284,8 +284,10 @@ public class CreateTopicTutorial {
         // Wait before the main thread exits to return the topic message to the console
         Thread.sleep(30000);
     }
+
 }
-```
+
+````
 </Accordion>
 
 <Accordion title="JavaScript">
@@ -356,7 +358,8 @@ async function submitPrivateMessage() {
 }
 
 submitPrivateMessage();
-```
+````
+
 </Accordion>
 
 <Accordion title="Go">
@@ -368,95 +371,97 @@ import (
 	"os"
 	"time"
 
-	hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
-	"github.com/joho/godotenv"
+    hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
+    "github.com/joho/godotenv"
+
 )
 
 func main() {
 
-	// Loads the .env file and throws an error if it cannot load the variables from that file corectly
-	err := godotenv.Load(".env")
-	if err != nil {
-		panic(fmt.Errorf("Unable to load enviroment variables from .env file. Error:n%v\n", err))
-	}
-
-	// Grab your testnet account ID and private key from the .env file
-	operatorId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
-	if err != nil {
-		panic(err)
-	}
-
-	operatorKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
-	if err != nil {
-		panic(err)
-	}
-
-	// Create your testnet client
-	client := hedera.ClientForTestnet()
-	client.SetOperator(operatorId, operatorKey)
-
-	// Create a new topic
-	transactionResponse, err := hedera.NewTopicCreateTransaction().
-		SetSubmitKey(operatorKey.PublicKey()).
-		Execute(client)
-
-	if err != nil {
-		println(err.Error(), ": error creating topic")
-		return
-	}
-
-	// Get the topic create transaction receipt
-	transactionReceipt, err := transactionResponse.GetReceipt(client)
-
-	if err != nil {
-		println(err.Error(), ": error getting topic create receipt")
-		return
-	}
-
-	// Get the topic ID from the transaction receipt
-	topicID := *transactionReceipt.TopicID
-
-	// Log the topic ID to the console
-	fmt.Printf("topicID: %v\n", topicID)
-
-	//Create the query to subscribe to a topic
-	_, err = hedera.NewTopicMessageQuery().
-		SetTopicID(topicID).
-		Subscribe(client, func(message hedera.TopicMessage) {
-			fmt.Println(message.ConsensusTimestamp.String(), "received topic message ", string(message.Contents), "\r")
-		})
-        
-        // Prepare message to send to private topic
-	submitMessageTx, err := hedera.NewTopicMessageSubmitTransaction().
-		SetMessage([]byte("Submitkey set!")).
-		SetTopicID(topicID).
-		FreezeWith(client)
-	
-	if err != nil {
-		println(err.Error(), ": error freezing topic message submit transaction")
-		return
-	}
-	
-	// Sign message with submit key
-	submitMessageTx.Sign(operatorKey)
-	
-	// Submit message
-	submitTxResponse, err := submitMessageTx.Execute(client)
-	if err != nil {
-		println(err.Error(), ": error submitting to topic")
-		return
-	}
-	
-	// Get the receipt of the transaction
-	receipt, err := submitTxResponse.GetReceipt(client)
-	
-	// Get the transaction status
-	transactionStatus := receipt.Status
-	fmt.Println("The message transaction status " + transactionStatus.String())
-	
-	// Prevent the program from exiting to display the message from the mirror node to the console
-	time.Sleep(30 * time.Second)
+    // Loads the .env file and throws an error if it cannot load the variables from that file corectly
+    err := godotenv.Load(".env")
+    if err != nil {
+    	panic(fmt.Errorf("Unable to load enviroment variables from .env file. Error:n%v\n", err))
     }
+
+    // Grab your testnet account ID and private key from the .env file
+    operatorId, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
+    if err != nil {
+    	panic(err)
+    }
+
+    operatorKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
+    if err != nil {
+    	panic(err)
+    }
+
+    // Create your testnet client
+    client := hedera.ClientForTestnet()
+    client.SetOperator(operatorId, operatorKey)
+
+    // Create a new topic
+    transactionResponse, err := hedera.NewTopicCreateTransaction().
+    	SetSubmitKey(operatorKey.PublicKey()).
+    	Execute(client)
+
+    if err != nil {
+    	println(err.Error(), ": error creating topic")
+    	return
+    }
+
+    // Get the topic create transaction receipt
+    transactionReceipt, err := transactionResponse.GetReceipt(client)
+
+    if err != nil {
+    	println(err.Error(), ": error getting topic create receipt")
+    	return
+    }
+
+    // Get the topic ID from the transaction receipt
+    topicID := *transactionReceipt.TopicID
+
+    // Log the topic ID to the console
+    fmt.Printf("topicID: %v\n", topicID)
+
+    //Create the query to subscribe to a topic
+    _, err = hedera.NewTopicMessageQuery().
+    	SetTopicID(topicID).
+    	Subscribe(client, func(message hedera.TopicMessage) {
+    		fmt.Println(message.ConsensusTimestamp.String(), "received topic message ", string(message.Contents), "\r")
+    	})
+
+        // Prepare message to send to private topic
+    submitMessageTx, err := hedera.NewTopicMessageSubmitTransaction().
+    	SetMessage([]byte("Submitkey set!")).
+    	SetTopicID(topicID).
+    	FreezeWith(client)
+
+    if err != nil {
+    	println(err.Error(), ": error freezing topic message submit transaction")
+    	return
+    }
+
+    // Sign message with submit key
+    submitMessageTx.Sign(operatorKey)
+
+    // Submit message
+    submitTxResponse, err := submitMessageTx.Execute(client)
+    if err != nil {
+    	println(err.Error(), ": error submitting to topic")
+    	return
+    }
+
+    // Get the receipt of the transaction
+    receipt, err := submitTxResponse.GetReceipt(client)
+
+    // Get the transaction status
+    transactionStatus := receipt.Status
+    fmt.Println("The message transaction status " + transactionStatus.String())
+
+    // Prevent the program from exiting to display the message from the mirror node to the console
+    time.Sleep(30 * time.Second)
+    }
+
 ```
 </Accordion>
 
@@ -474,11 +479,12 @@ Have a question? [Ask it on StackOverflow](https://stackoverflow.com/questions/t
     [GitHub](https://github.com/michielmulders) | [LinkedIn](https://www.linkedin.com/in/michielmulders/)
   </Card>
   <Card
-    title="Editor: Krystal, Technical Writer"
-    title="Editor: Krystal, Technical Writer"
+    title="Editor: Krystal, DX Engineer"
+    title="Editor: Krystal, DX Engineer"
     arrow
   >
     [GitHub](https://github.com/theekrystallee) | [X](https://x.com/theekrystallee)
     [GitHub](https://github.com/theekrystallee) | [X](https://x.com/theekrystallee)
   </Card>
 </Columns>
+```

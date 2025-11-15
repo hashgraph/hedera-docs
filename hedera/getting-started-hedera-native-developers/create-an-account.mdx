@@ -2,23 +2,23 @@
 title: "Create an Account"
 ---
 
+Learn how to create a new Hedera **account** on _testnet_ using the JavaScript, Java, Go, SDK, or Python. A [`Hedera account`](/hedera/core-concepts/accounts) is your identity on‑chain. It holds your HBAR (the network’s currency) and lets you sign transactions.
 
-Learn how to create a new Hedera **account** on *testnet* using the JavaScript, Java, Go, SDK, or Python. A [`Hedera account`](/hedera/core-concepts/accounts) is your identity on‑chain. It holds your HBAR (the network’s currency) and lets you sign transactions.
+---
 
-***
+## Prerequisites
 
-## **Prerequisites**
-
-* A Hedera testnet **operator account ID** and **ECDSA** **DER-encoded private key** (from the [Quickstart](/hedera/getting-started-hedera-native-developers/quickstart)).
-* A small amount of testnet **HBAR (ℏ)** to pay the `$0.05` account‑creation fee.
+- A Hedera testnet **operator account ID** and **ECDSA** **DER-encoded private key** (from the [Quickstart](/hedera/getting-started-hedera-native-developers/quickstart)).
+- A small amount of testnet **HBAR (ℏ)** to pay the `$0.05` account‑creation fee.
 
 <Note>
     ***Note***
 
-*You can always check the "*✅ [*Code Check*](#code-check)*" section at the bottom of each page to view the entire code if you run into issues. You can also post your issue to the respective SDK channel in our Discord community* [*here*](http://hedera.com/discord)*.*
+*You can always check the "*✅ [_Code Check_](#code-check)_" section at the bottom of each page to view the entire code if you run into issues. You can also post your issue to the respective SDK channel in our Discord community_ [_here_](http://hedera.com/discord)_._
+
 </Note>
 
-***
+---
 
 ## Install the SDK
 
@@ -60,7 +60,6 @@ Update your `package.json` file to enable ES6 modules and configure the project:
     "@hashgraph/sdk": "^2.69.0"
   }
 }
-
 ```
 
 Create a `createAccountDemo.js` file and add the following imports:
@@ -70,7 +69,7 @@ import {
   Client,
   PrivateKey,
   AccountCreateTransaction,
-  Hbar
+  Hbar,
 } from "@hashgraph/sdk";
 ```
 
@@ -120,7 +119,7 @@ dependencies {
 }
 
 application {
-    mainClass = 'CreateAccountDemo' 
+    mainClass = 'CreateAccountDemo'
     // or 'com.example.CreateAccountDemo' if it's in a package
 }
 ```
@@ -164,9 +163,9 @@ import (
 
 In your project's root directory, initialize modules and pull in the [Go SDK](https://github.com/hiero-ledger/hiero-sdk-go):
 
-``` wrap
-```
+```wrap
 
+```
 
 ```go-module
 go mod init create_account_demo
@@ -263,7 +262,7 @@ from hiero_sdk_python.utils.crypto_utils import keccak256
 </Tab>
 </Tabs>
 
-***
+---
 
 ## Environment Variables
 
@@ -274,7 +273,7 @@ export OPERATOR_ID="0.0.1234"
 export OPERATOR_KEY="3030020100300506032b657004220420..."
 ```
 
-***
+---
 
 ## Step 1: Initialize Hedera Client
 
@@ -288,17 +287,18 @@ const operatorKey = process.env.OPERATOR_KEY;
 
 // Initialize your testnet client and set operator
 const client = Client.forTestnet()
-    .setOperator(operatorId, operatorKey);
-```
+.setOperator(operatorId, operatorKey);
+
+````
 
 ```java Java
-// Load your operator credentials 
+// Load your operator credentials
 AccountId operatorId = AccountId.fromString(System.getenv("OPERATOR_ID"));
 PrivateKey operatorKey = PrivateKey.fromString(System.getenv("OPERATOR_KEY"));
 
 // Initialize your testnet client and set operator
 Client client = Client.forTestnet().setOperator(operatorId, operatorKey);
-```
+````
 
 ```go Go highlight={1}
 // load your operator credentials
@@ -320,10 +320,10 @@ operatorKey = PrivateKey.from_string(os.getenv("OPERATOR_KEY", ""))
 client = Client()
 client.set_operator(operatorId, operatorKey)
 ```
+
 </CodeGroup>
 
-
-***
+---
 
 ## Step 2: Generate a New Key Pair
 
@@ -357,16 +357,19 @@ newPublicKey := newPrivateKey.PublicKey()
 newPrivateKey = PrivateKey.generate_ecdsa()
 newPublicKey = newPrivateKey.public_key()
 ```
+
 </CodeGroup>
 
+<Warning>
+  **‼️ Security reminder**: Keep your private keys secure - anyone with access
+  can control your account and funds.
+</Warning>
 
-**‼️ Security reminder**: Keep your private keys secure - anyone with access can control your account and funds.
-
-***
+---
 
 ## Step 3: Create Your First Account on Hedera
 
-Build an `AccountCreateTransaction` with the *new public key* and initial balance, then execute it. Specify the public key , an optional initial HBAR balance, and once you execute it, the network creates the account and returns the new `AccountId` in the receipt.
+Build an `AccountCreateTransaction` with the _new public key_ and initial balance, then execute it. Specify the public key , an optional initial HBAR balance, and once you execute it, the network creates the account and returns the new `AccountId` in the receipt.
 
 <CodeGroup>
 ```js JavaScript
@@ -381,7 +384,8 @@ const newAccountId = receipt.accountId;
 
 console.log(`\nHedera Account created: ${newAccountId}`);
 console.log(`EVM Address: 0x${newPublicKey.toEvmAddress()}`);
-```
+
+````
 
 
 ```java Java
@@ -396,8 +400,7 @@ AccountId newAccountId = receipt.accountId;
 
 System.out.println("\nHedera Account created: " + newAccountId);
 System.out.println("EVM Address: 0x" + newPublicKey.toEvmAddress());
-```
-
+````
 
 ```go Go
 // build & execute the account creation transaction
@@ -423,7 +426,6 @@ fmt.Printf("Hedera Account created: %s\n", newAccountId.String())
 fmt.Printf("EVM Address: 0x%s\n", newPublicKey.ToEvmAddress())
 ```
 
-
 ```python Python
 # Build & execute the account creation transaction
 transaction = (
@@ -444,7 +446,7 @@ print(f"EVM Address: 0x{evm_address}")
 
 </CodeGroup>
 
-***
+---
 
 ## Step 4: Query the Account Balance Using Mirror Node API
 
@@ -458,11 +460,11 @@ Use the Mirror Node REST API to check your new account's HBAR balance. Mirror no
 
 **Replace the placeholder:**
 
-* **`{accountId}`** - Your new account ID from the creation transaction
+- **`{accountId}`** - Your new account ID from the creation transaction
 
-> ***Why this endpoint?***
+> **_Why this endpoint?_**
 >
-> *This endpoint queries account balances directly by account ID. It returns detailed information including HBAR balance in tinybars, making it ideal for verifying the new account was funded with the expected initial balance.*
+> _This endpoint queries account balances directly by account ID. It returns detailed information including HBAR balance in tinybars, making it ideal for verifying the new account was funded with the expected initial balance._
 
 **Example URLs:**
 
@@ -482,6 +484,7 @@ mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/balances?account.
 ```python Python
 mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/balances?account.id={newAccountId}"
 ```
+
 </CodeGroup>
 
 **Complete Implementation:**
@@ -491,12 +494,12 @@ mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/balances?accoun
 ```js JavaScript
 // Wait for Mirror Node to populate data
 console.log("\nWaiting for Mirror Node to update...");
-await new Promise(resolve => setTimeout(resolve, 6000));
+await new Promise((resolve) => setTimeout(resolve, 6000));
 
 // Query balance using Mirror Node
 const mirrorNodeUrl = `https://testnet.mirrornode.hedera.com/api/v1/balances?account.id=${newAccountId}`;
 
-const response = await fetch(mirrorNodeUrl );
+const response = await fetch(mirrorNodeUrl);
 const data = await response.json();
 
 if (data.balances && data.balances.length > 0) {
@@ -587,14 +590,15 @@ if balances:
 else:
     print("Account balance not yet available in Mirror Node")
 ```
+
 </CodeGroup>
 
-
-***
+---
 
 ## ✅ Code check
 
 Before running your project, verify your code matches the complete example:
+
 <AccordionGroup>
 <Accordion title="JavaScript">
 ```javascript wrap
@@ -606,54 +610,56 @@ import {
 } from "@hashgraph/sdk";
 
 async function createAccountDemo() {
-  // load your operator credentials
-  const operatorId = process.env.OPERATOR_ID;
-  const operatorKey = process.env.OPERATOR_KEY;
+// load your operator credentials
+const operatorId = process.env.OPERATOR_ID;
+const operatorKey = process.env.OPERATOR_KEY;
 
-  // initialize the client for testnet
-  const client = Client.forTestnet()
-    .setOperator(operatorId, operatorKey);
+// initialize the client for testnet
+const client = Client.forTestnet()
+.setOperator(operatorId, operatorKey);
 
-  // generate a new key pair
-  const newPrivateKey = PrivateKey.generateECDSA();
-  const newPublicKey = newPrivateKey.publicKey;
+// generate a new key pair
+const newPrivateKey = PrivateKey.generateECDSA();
+const newPublicKey = newPrivateKey.publicKey;
 
-  // build & execute the account creation transaction
-  const transaction = new AccountCreateTransaction()
-    .setECDSAKeyWithAlias(newPublicKey)          // set the account key with alias
-    .setInitialBalance(new Hbar(20));           // fund with 20 HBAR
+// build & execute the account creation transaction
+const transaction = new AccountCreateTransaction()
+.setECDSAKeyWithAlias(newPublicKey) // set the account key with alias
+.setInitialBalance(new Hbar(20)); // fund with 20 HBAR
 
-  const txResponse = await transaction.execute(client);
-  const receipt = await txResponse.getReceipt(client);
-  const newAccountId = receipt.accountId;
+const txResponse = await transaction.execute(client);
+const receipt = await txResponse.getReceipt(client);
+const newAccountId = receipt.accountId;
 
-  console.log(`\nHedera account created: ${newAccountId}`);
-  console.log(`EVM Address: 0x${newPublicKey.toEvmAddress()}`);
+console.log(`\nHedera account created: ${newAccountId}`);
+console.log(`EVM Address: 0x${newPublicKey.toEvmAddress()}`);
 
-  // Wait for Mirror Node to populate data
-  console.log("\nWaiting for Mirror Node to update...");
-  await new Promise(resolve => setTimeout(resolve, 6000));
+// Wait for Mirror Node to populate data
+console.log("\nWaiting for Mirror Node to update...");
+await new Promise(resolve => setTimeout(resolve, 6000));
 
-  // query balance using Mirror Node
-  const mirrorNodeUrl = `https://testnet.mirrornode.hedera.com/api/v1/balances?account.id=${newAccountId}`;
+// query balance using Mirror Node
+const mirrorNodeUrl = `https://testnet.mirrornode.hedera.com/api/v1/balances?account.id=${newAccountId}`;
 
-  const response = await fetch(mirrorNodeUrl);
-  const data = await response.json();
+const response = await fetch(mirrorNodeUrl);
+const data = await response.json();
 
-  if (data.balances && data.balances.length > 0) {
-    const balanceInTinybars = data.balances[0].balance;
-    const balanceInHbar = balanceInTinybars / 100000000;
-    
+if (data.balances && data.balances.length > 0) {
+const balanceInTinybars = data.balances[0].balance;
+const balanceInHbar = balanceInTinybars / 100000000;
+
     console.log(`\nAccount balance: ${balanceInHbar} ℏ\n`);
-  } else {
-    console.log("Account balance not yet available in Mirror Node");
-  }
 
-  client.close();
+} else {
+console.log("Account balance not yet available in Mirror Node");
+}
+
+client.close();
 }
 
 createAccountDemo().catch(console.error);
-```
+
+````
 </Accordion>
 
 <Accordion title="Java">
@@ -684,8 +690,8 @@ public class CreateAccountDemo {
         // build & execute the account creation transaction
         AccountCreateTransaction transaction = new AccountCreateTransaction()
             // set the account key with alias
-            .setKeyWithAlias(newPublicKey)          
-            .setInitialBalance(new Hbar(20)); // fund with 20 HBAR           
+            .setKeyWithAlias(newPublicKey)
+            .setInitialBalance(new Hbar(20)); // fund with 20 HBAR
 
         TransactionResponse txResponse = transaction.execute(client);
         TransactionReceipt receipt = txResponse.getReceipt(client);
@@ -715,7 +721,7 @@ public class CreateAccountDemo {
             JsonObject accountBalance = balances.get(0).getAsJsonObject();
             long balanceInTinybars = accountBalance.get("balance").getAsLong();
             double balanceInHbar = balanceInTinybars / 100000000.0;
-            
+
             System.out.println("Account balance: " + balanceInHbar + " ℏ\n");
         } else {
             System.out.println("Account balance not yet available in Mirror Node");
@@ -724,7 +730,8 @@ public class CreateAccountDemo {
         client.close();
     }
 }
-```
+````
+
 </Accordion>
 
 <Accordion title="Go">
@@ -739,64 +746,67 @@ import (
 	"os"
 	"time"
 
-	hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
+    hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
+
 )
 
 func main() {
-	// load your operator credentials
-	operatorId, _ := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
-	operatorKey, _ := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
+// load your operator credentials
+operatorId, _ := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
+operatorKey, _ := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 
-	// initialize the client for testnet
-	client := hedera.ClientForTestnet()
-	client.SetOperator(operatorId, operatorKey)
+    // initialize the client for testnet
+    client := hedera.ClientForTestnet()
+    client.SetOperator(operatorId, operatorKey)
 
-	// generate a new key pair
-	newPrivateKey, _ := hedera.PrivateKeyGenerateEcdsa()
-	newPublicKey := newPrivateKey.PublicKey()
+    // generate a new key pair
+    newPrivateKey, _ := hedera.PrivateKeyGenerateEcdsa()
+    newPublicKey := newPrivateKey.PublicKey()
 
-	// build & execute the account creation transaction
-	transaction := hedera.NewAccountCreateTransaction().
-		SetECDSAKeyWithAlias(newPublicKey).   // set the account key with alias
-		SetInitialBalance(hedera.NewHbar(20)) // fund with 20 HBAR
+    // build & execute the account creation transaction
+    transaction := hedera.NewAccountCreateTransaction().
+    	SetECDSAKeyWithAlias(newPublicKey).   // set the account key with alias
+    	SetInitialBalance(hedera.NewHbar(20)) // fund with 20 HBAR
 
-	txResponse, _ := transaction.Execute(client)
-	receipt, _ := txResponse.GetReceipt(client)
-	newAccountId := *receipt.AccountID
+    txResponse, _ := transaction.Execute(client)
+    receipt, _ := txResponse.GetReceipt(client)
+    newAccountId := *receipt.AccountID
 
-	fmt.Printf("\nHedera account created: %s\n", newAccountId.String())
-	fmt.Printf("EVM Address: 0x%s\n", newPublicKey.ToEvmAddress())
+    fmt.Printf("\nHedera account created: %s\n", newAccountId.String())
+    fmt.Printf("EVM Address: 0x%s\n", newPublicKey.ToEvmAddress())
 
-	// wait for Mirror Node to populate data
-	fmt.Println("\nWaiting for Mirror Node to update...")
-	time.Sleep(6 * time.Second)
+    // wait for Mirror Node to populate data
+    fmt.Println("\nWaiting for Mirror Node to update...")
+    time.Sleep(6 * time.Second)
 
-	// query balance using Mirror Node
-	mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/balances?account.id=" + newAccountId.String()
-	resp, _ := http.Get(mirrorNodeUrl)
-	defer resp.Body.Close()
+    // query balance using Mirror Node
+    mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/balances?account.id=" + newAccountId.String()
+    resp, _ := http.Get(mirrorNodeUrl)
+    defer resp.Body.Close()
 
-	body, _ := io.ReadAll(resp.Body)
+    body, _ := io.ReadAll(resp.Body)
 
-	var data struct {
-		Balances []struct {
-			Balance int64 `json:"balance"`
-		} `json:"balances"`
-	}
+    var data struct {
+    	Balances []struct {
+    		Balance int64 `json:"balance"`
+    	} `json:"balances"`
+    }
 
-	json.Unmarshal(body, &data)
+    json.Unmarshal(body, &data)
 
-	if len(data.Balances) > 0 {
-		balanceInTinybars := data.Balances[0].Balance
-		balanceInHbar := float64(balanceInTinybars) / 100000000.0
-		fmt.Printf("\nAccount balance: %g ℏ\n\n", balanceInHbar)
-	} else {
-		fmt.Println("\nAccount balance not yet available in Mirror Node")
-	}
+    if len(data.Balances) > 0 {
+    	balanceInTinybars := data.Balances[0].Balance
+    	balanceInHbar := float64(balanceInTinybars) / 100000000.0
+    	fmt.Printf("\nAccount balance: %g ℏ\n\n", balanceInHbar)
+    } else {
+    	fmt.Println("\nAccount balance not yet available in Mirror Node")
+    }
 
-	client.Close()
+    client.Close()
+
 }
-```
+
+````
 </Accordion>
 
 <Accordion title="Python">
@@ -853,11 +863,12 @@ else:
     print("Account balance not yet available in Mirror Node")
 
 client.close()
-```
+````
+
 </Accordion>
 </AccordionGroup>
 
-***
+---
 
 ## Run Your Project
 
@@ -930,10 +941,78 @@ Account balance: 20 ℏ
 ### ‼️ Troubleshooting
 
 <Accordion title="Common ERROR messages and solutions ⬇️">
-<table><thead><tr><th>Error message</th><th>Likely cause</th><th>Fix</th></tr></thead><tbody><tr><td><code>INSUFFICIENT_PAYER_BALANCE</code></td><td>Operator account lacks enough ℏ for the fee.</td><td>Top‑up your testnet account with the <a href="https://portal.hedera.com/signup">HBAR faucet</a>.</td></tr><tr><td><code>INVALID_SIGNATURE</code></td><td>Operator key doesn't match operator account</td><td>Verify OPERATOR_KEY matches your OPERATOR_ID</td></tr><tr><td><code>INVALID_ACCOUNT_ID</code></td><td>Malformed account ID in environment variables</td><td>Verify OPERATOR_ID format is <code>0.0.1234</code></td></tr><tr><td><code>INVALID_PRIVATE_KEY</code></td><td>Malformed private key in environment variables</td><td>Verify OPERATOR_KEY is a valid DER-encoded private key string</td></tr><tr><td><code>KEY_REQUIRED</code></td><td>Missing key in AccountCreateTransaction</td><td>Ensure you call <code>.setECDSAKeyWithAlias(newPublicKey)</code></td></tr><tr><td><code>OPERATOR_ID and OPERATOR_KEY must be set</code></td><td>Environment variables not accessible</td><td>Check environment variables are set and accessible to your application</td></tr><tr><td><code>Cannot read properties of undefined</code></td><td>Missing imports or undefined variables</td><td>Verify all imports are included and variables are defined</td></tr></tbody></table>
+  <table>
+    <thead>
+      <tr>
+        <th>Error message</th>
+        <th>Likely cause</th>
+        <th>Fix</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <code>INSUFFICIENT_PAYER_BALANCE</code>
+        </td>
+        <td>Operator account lacks enough ℏ for the fee.</td>
+        <td>
+          Top‑up your testnet account with the{" "}
+          <a href="https://portal.hedera.com/signup">HBAR faucet</a>.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <code>INVALID_SIGNATURE</code>
+        </td>
+        <td>Operator key doesn't match operator account</td>
+        <td>Verify OPERATOR_KEY matches your OPERATOR_ID</td>
+      </tr>
+      <tr>
+        <td>
+          <code>INVALID_ACCOUNT_ID</code>
+        </td>
+        <td>Malformed account ID in environment variables</td>
+        <td>
+          Verify OPERATOR_ID format is <code>0.0.1234</code>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <code>INVALID_PRIVATE_KEY</code>
+        </td>
+        <td>Malformed private key in environment variables</td>
+        <td>Verify OPERATOR_KEY is a valid DER-encoded private key string</td>
+      </tr>
+      <tr>
+        <td>
+          <code>KEY_REQUIRED</code>
+        </td>
+        <td>Missing key in AccountCreateTransaction</td>
+        <td>
+          Ensure you call <code>.setECDSAKeyWithAlias(newPublicKey)</code>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <code>OPERATOR_ID and OPERATOR_KEY must be set</code>
+        </td>
+        <td>Environment variables not accessible</td>
+        <td>
+          Check environment variables are set and accessible to your application
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <code>Cannot read properties of undefined</code>
+        </td>
+        <td>Missing imports or undefined variables</td>
+        <td>Verify all imports are included and variables are defined</td>
+      </tr>
+    </tbody>
+  </table>
 </Accordion>
 
-***
+---
 
 ## What just happened?
 
@@ -943,28 +1022,23 @@ Account balance: 20 ℏ
 4. The account was funded with **20 HBAR** from your operator account.
 5. The Mirror Node API confirmed your new account exists with the expected balance.
 
-***
+---
 
 ## Next steps
 
-* [Learn more about accounts](/hedera/core-concepts/accounts)
-* [Create a Token](/hedera/getting-started-hedera-native-developers/create-a-token)
-* Explore more examples in the SDK repos ([JavaScript](https://github.com/hiero-ledger/hiero-sdk-js), [Java](https://github.com/hiero-ledger/hiero-sdk-java), [Go](https://github.com/hiero-ledger/hiero-sdk-go))
+- [Learn more about accounts](/hedera/core-concepts/accounts)
+- [Create a Token](/hedera/getting-started-hedera-native-developers/create-a-token)
+- Explore more examples in the SDK repos ([JavaScript](https://github.com/hiero-ledger/hiero-sdk-js), [Java](https://github.com/hiero-ledger/hiero-sdk-java), [Go](https://github.com/hiero-ledger/hiero-sdk-go))
 
-***
-
-***
+---
 
 🎉 **Great work!** You now control a brand new Hedera account secured by your fresh key pair. Keep the private key safe and never commit it to source control.
 
 <Info>
-Have a question? [Ask it on StackOverflow](https://stackoverflow.com/questions/tagged/hedera-hashgraph)
+  Have a question? [Ask it on
+  StackOverflow](https://stackoverflow.com/questions/tagged/hedera-hashgraph)
 </Info>
 
 ## Additional resources
 
-<Card
-    title="Accounts | Hedera"
-    href="/hedera/core-concepts/accounts"
-    arrow
-/>
+<Card title="Accounts | Hedera" href="/hedera/core-concepts/accounts" arrow />

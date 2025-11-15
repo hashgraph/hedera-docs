@@ -1,7 +1,180 @@
+/* =========================
+   Hedera Styrene Webfonts
+   ========================= */
+@font-face {
+  font-family: "Styrene A";
+  src: url("/public/fonts/styrene/StyreneA-Thin-Web.woff2") format("woff2");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Styrene A";
+  src: url("/public/fonts/styrene/StyreneA-Light-Web.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Styrene A";
+  src: url("/public/fonts/styrene/StyreneA-Regular-Web.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Styrene A";
+  src: url("/public/fonts/styrene/StyreneA-Medium-Web.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Styrene A";
+  src: url("/public/fonts/styrene/StyreneA-Bold-Web.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Styrene A";
+  src: url("/public/fonts/styrene/StyreneA-Black-Web.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* =========================
+   Global Font Setup
+   ========================= */
+:root {
+  --font-body: "Styrene A", "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-heading: "Styrene A", "Inter", "Helvetica Neue", Arial, sans-serif;
+}
+
+html, body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* =========================
+   Hedera type weight rules
+   ========================= */
+
+/* headings should use Styrene A Medium (not bold) */
+h1, h2, h3, h4, h5, h6,
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  font-family: "Styrene A", "Inter", "Helvetica Neue", Arial, sans-serif !important;
+  font-weight: 500 !important; /* medium, per Hedera style guide */
+  letter-spacing: -0.015em !important;
+  line-height: 1.3 !important;
+  color: inherit;
+}
+
+/* body and list text stay light */
+p, li, span, .prose p, .prose li {
+  font-weight: 300 !important; /* light */
+  letter-spacing: -0.01em;
+}
+
+
+/* =========================
+   Existing Layout + Color Rules
+   ========================= */
+
+/* card image sizing */
 .card img {
   max-height: 200px;
 }
 
 .sm\:grid-cols-3 .card img {
   max-height: 120px;
+}
+
+/* normalize layout and spacing */
+nav.text-sm {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+nav.text-sm ul > * {
+  margin: 4px !important;
+}
+
+/* shared button styling */
+nav.text-sm a[href*="hackathon"],
+nav.text-sm a[href*="portal"] {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 20px !important;
+  height: 34px !important;
+  padding: 6px 16px !important;
+  text-decoration: none !important;
+  transition: all 0.15s ease !important;
+  box-shadow: none !important;
+}
+
+
+/* hackathon — transparent */
+nav.text-sm a[href*="hackathon"],
+nav.text-sm li a[href*="hackathon"],
+nav.text-sm ul li a[href*="hackathon"] {
+  background-color: transparent !important;
+  color: #000000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.3) !important; /* darker gray border */
+}
+nav.text-sm a[href*="hackathon"]:hover,
+nav.text-sm li a[href*="hackathon"]:hover,
+nav.text-sm ul li a[href*="hackathon"]:hover {
+  background-color: rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid rgba(0, 0, 0, 0.5) !important; /* darker hover border */
+}
+
+
+/* ===============================
+   DARK MODE — transparent buttons
+   =============================== */
+
+/* hackathon */
+.dark nav.text-sm a[href*="hackathon"],
+[data-theme='dark'] nav.text-sm a[href*="hackathon"] {
+  background-color: transparent !important;
+  color: #f3f4f6 !important; /* gray-100 */
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+.dark nav.text-sm a[href*="hackathon"]:hover,
+[data-theme='dark'] nav.text-sm a[href*="hackathon"]:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important; /* subtle glow */
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+}
+
+/* icon fix — ensure visibility in dark mode */
+.dark nav.text-sm a svg,
+[data-theme='dark'] nav.text-sm a svg {
+  filter: brightness(1.5) contrast(1.3) !important;
+  opacity: 1 !important;
+}
+
+/* make hackathon icon white only in dark mode */
+.dark nav.text-sm a[href*="hackathon"] img,
+.dark nav.text-sm a[href*="hackathon"] svg,
+[data-theme='dark'] nav.text-sm a[href*="hackathon"] img,
+[data-theme='dark'] nav.text-sm a[href*="hackathon"] svg {
+  filter: brightness(0) invert(1) !important; /* turns dark icons white */
+  opacity: 1 !important;
 }

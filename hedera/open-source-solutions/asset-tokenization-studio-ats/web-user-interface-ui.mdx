@@ -47,7 +47,7 @@ Choose the type of digital security to start the tokenization process and follow
     img="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/web-user-interface-ui-21.png"
   >
     New bonds are debt securities issued by entities (corporate or government) to raise money. Investors receive periodic interest (coupons) and the principal at maturity. Tokenizing a bond digitally represents it on the blockchain or other form of distributed ledger, allowing fractional ownership and easier transferability of tokens.
-    
+
   </Card>
   <Card
     title="Create New Equity"
@@ -152,6 +152,10 @@ To initiate the creation of a new bond, choose New Bond and enter the basic deta
 * **Decimals**: Number of decimals units (default is 6).
 * **ISIN**: International Security Identification Number - this can be any 12 alphanumeric characters.
 
+<Frame>
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/asset-tokenization-studio-create-bond-details.png" />
+</Frame>
+
 #### Bond Permissions
 
 Toggle the permissions you want to enable for your new bond:
@@ -161,7 +165,31 @@ Toggle the permissions you want to enable for your new bond:
 * **Approval list**: Enables access control to the security using a list of approved/allowed accounts.
 
 <Frame>
-  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/web-user-interface-ui-6.png" />
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/asset-tokenization-studio-create-bond-permissions.png" />
+</Frame>
+
+### Bond Configuration
+
+* **Clearing Mode**: (Default: Unchecked)
+  * **What it does**: Enables two-step settlement requiring validator approval
+  * **How it works**:
+    1. User initiates transfer/redemption/hold – Operation created (pending)
+    2. Clearing Validator reviews operation – Approves or Cancels
+    3. If approved – operation executes
+    4. If cancelled/expired – User can reclaim tokens
+* **Internal KYC Activated**
+  * **What it does**: Simplified KYC system without external dependencies
+  * **How it works**:
+    * KYC managed directly within the token contract
+    * No need for External KYC List contracts
+    * SSI Manager grants/revokes KYC
+    * Requires VC files for compliance tracking
+  * **Impact**: KYC managed in token vs separate contract
+
+**Note**: You can add Internal KYC later from the token's detail page.
+
+<Frame>
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/asset-tokenization-studio-create-bond-configuration.png" />
 </Frame>
 
 ### Bond Details
@@ -174,46 +202,75 @@ Enter the bond details, such as the nominal value, number of bond units, startin
 * **Maturity Date**: The date when the bond reaches its full term, and the issuer is obligated to repay the bondholders the nominal value of the bond units, along with any remaining interest payments.
 
 <Frame>
-  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/web-user-interface-ui-7.png" />
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/asset-tokenization-studio-create-bond-details.png" />
 </Frame>
 
-### Coupons
+### Proceed Recipients
 
-Define the bond's interest payment structure, including coupon type (fixed or custom), rate, payment frequency, and the first coupon date.
+Define the recipients who will receive the bond proceeds from the offering. This step allows you to specify one or more Hedera accounts that will receive the funds raised from the bond issuance.
 
-* **Coupon Type**: The structure of the interest payments (coupons) that the bond will provide.
-  * **Fixed**: A bond with a fixed coupon pays a set interest rate over its lifetime, regardless of market fluctuations.
-  * **Custom**: A bond with zero coupons by default, but flexible or floating coupon rates can be added later. This option allows for custom interest structures through the "Set Coupons" tab.
-* **Coupon Rate**: The interest rate paid on each coupon. It is expressed as a percentage of the bond's nominal value and determines the periodic payments made to bondholders.
-* **Coupon Frequency**: Defines the interval between two consecutive coupon payments, measured in months (each month is assumed to have 30 days). For example, a frequency of 6 months means that bondholders will receive interest payments every six months.
-* **First Coupon Date**: The first date when a coupon payment will be recorded and made to bondholders. All subsequent coupon payment dates are automatically calculated based on the coupon frequency and the first coupon's date.
+* **Address**: The Hedera account ID of the recipient who will receive bond proceeds. This must be a valid Hedera account ID format.
+* **Data**: Optional additional data or notes associated with the recipient for record-keeping purposes.
+
+You can add multiple proceed recipients by entering each address and clicking "Add Proceed Recipient". The recipients table will display all configured recipients, and you can remove any entry using the delete action.
 
 <Frame>
-  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/web-user-interface-ui-8.png" />
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/asset-tokenization-studio-create-bond-proceed-recipients.png" />
+</Frame>
+
+### ERC-3643
+
+Configure ERC-3643 compliance settings for your bond. ERC-3643 is a standard for permissioned tokens that enables compliance with securities regulations through on-chain compliance rules and identity verification.
+
+* **Compliance ID**: The Hedera account ID of the compliance smart contract that will enforce the regulatory rules for this bond. This is optional and can be left empty if not using ERC-3643 compliance.
+* **Identity Registry ID**: The Hedera account ID of the identity registry contract that manages investor identities and their compliance status. This is optional and can be left empty if not using ERC-3643 identity management.
+
+Both fields accept valid Hedera account IDs and are used to integrate with existing ERC-3643 compliance infrastructure.
+
+<Frame>
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/asset-tokenization-studio-create-bond-erc3643.png" />
+</Frame>
+
+### External Lists
+
+Configure external management lists for enhanced control over your bond. These external lists provide additional layers of security and compliance by integrating with external smart contracts.
+
+* **External Pause List**: Select from available external pause contracts that can trigger emergency pauses of token operations. Multiple pause contracts can be selected to provide redundant safety mechanisms.
+* **External Control List**: Choose external control contracts that provide additional governance and control capabilities over the equity token. This allows for sophisticated multi-party control structures.
+* **External KYC List**: Select external KYC (Know Your Customer) verification contracts that validate investor identities and compliance status. This enables integration with third-party KYC providers.
+
+For each list type, you can select multiple contracts from the available options. Selected contracts will appear as tags that can be removed if needed.
+
+<Frame>
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/asset-tokenization-studio-create-external-lists.png" />
+</Frame>
+
+### Regulation
+
+Select the applicable regulation for your bond offering. The regulation determines the legal framework and compliance requirements that will govern the issuance and trading of your digital security.
+
+<Frame>
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/asset-tokenization-studio-create-bond-regulation.png" />
 </Frame>
 
 #### Blocklist
 
-The blocklist is responsible for prohibiting specific investors from participating in a tokenized offering. Investors from the countries mentioned on this blocklist would not be able to invest in the digital security. This functionality allows an issuer to adhere to particular legal, regulatory, or operational constraints applied to specific jurisdictions. For this, the issuer can select a country and then blocklist it to ensure that residents of that country do not create or participate in an offering.
-
-<Info>
-**Important**: Investors from only the countries specified below will not be allowed to invest.
-</Info>
+The blocklist prohibits specific investors from participating in a tokenized offering. Investors from the countries mentioned on this blocklist cannot invest in digital security. This functionality allows an issuer to adhere to particular legal, regulatory, or operational constraints applied to specific jurisdictions. For this, the issuer can select a country and then blocklist it to ensure that residents of that country do not create or participate in an offering.
 
 <Frame>
-  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/web-user-interface-ui-9.png" />
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/web-user-interface-ui-5.png" />
 </Frame>
 
 ### Review
 
-Review the details of the new equity you are creating. Once you have confirmed that all the information is correct, click **Create Bond** and then **Accept** to finalize bond creation.
+Review the details of the new bond you are creating. Once you have confirmed that all the information is correct, click **Create Bond** and then **Accept** to finalize bond creation.
 
 <Warning>
 Please note that you will not be able to edit the details after the bond is created, so take your time to review them carefully.
 </Warning>
 
 <Frame>
-  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/web-user-interface-ui-10.png" />
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/asset-tokenization-studio-create-bond-review.png" />
 </Frame>
 
 ***
@@ -281,28 +338,54 @@ Types of dividends available for equity holders, including none, preferred, and 
   <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/web-user-interface-ui-13.png" />
 </Frame>
 
+### External Lists
+Configure external management lists for enhanced control over your equity. These external lists provide additional layers of security and compliance by integrating with external smart contracts.
+
+* **External Pause List**: Select from available external pause contracts that can trigger emergency pauses of token operations. Multiple pause contracts can be selected to provide redundant safety mechanisms.
+* **External Control List**: Choose external control contracts that provide additional governance and control capabilities over the equity token. This allows for sophisticated multi-party control structures.
+* **External KYC List**: Select external KYC (Know Your Customer) verification contracts that validate investor identities and compliance status. This enables integration with third-party KYC providers.
+
+For each list type, you can select multiple contracts from the available options. Selected contracts will appear as tags that can be removed if needed.
+
+<Frame>
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/asset-tokenization-studio-create-external-lists.png" />
+</Frame>
+
+### ERC-3643
+
+Configure ERC-3643 compliance settings for your equity. ERC-3643 is a standard for permissioned tokens that enables compliance with securities regulations through on-chain compliance rules and identity verification.
+
+* **Compliance ID**: The Hedera account ID of the compliance smart contract that will enforce the regulatory rules for this equity. This is optional and can be left empty if not using ERC-3643 compliance.
+* **Identity Registry ID**: The Hedera account ID of the identity registry contract that manages investor identities and their compliance status. This is optional and can be left empty if not using ERC-3643 identity management.
+
+<Frame>
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/asset-tokenization-studio-create-bond-erc3643.png" />
+</Frame>
+
+### Regulation
+
+Select the applicable regulation for your equity offering. The regulation determines the legal framework and compliance requirements that will govern the issuance and trading of your digital security.
+
+<Frame>
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/asset-tokenization-studio-create-bond-regulation.png" />
+</Frame>
+
 #### Blocklist
 
 The blocklist prohibits specific investors from participating in a tokenized offering. Investors from the countries mentioned on this blocklist cannot invest in digital security. This functionality allows an issuer to adhere to particular legal, regulatory, or operational constraints applied to specific jurisdictions. For this, the issuer can select a country and then blocklist it to ensure that residents of that country do not create or participate in an offering.
 
-<Info>
-**Important**: Investors from only the countries specified below will not be allowed to invest.
-</Info>
-
 <Frame>
-  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/web-user-interface-ui-14.png" />
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/web-user-interface-ui-5.png" />
 </Frame>
 
 ### Review
 
-Review the details of the new equity you are creating. Once you have confirmed that all the information is correct, click **Create equity** and then **Accept** to finalize equity creation.
+Review the details of the new equity you are creating. Once you have confirmed that all the information is correct, click **Create Equity** and then **Accept** to finalize equity creation.
 
-<Warning>
-Please note that you will not be able to edit the information after the equity is created, so take your time to carefully review the details.
-</Warning>
+Please note that you will not be able to edit the details after the equity is created, so take your time to review them carefully.
 
 <Frame>
-  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/web-user-interface-ui-15.png" />
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/asset-tokenization-studio-create-bond-review.png" />
 </Frame>
 
 ***
@@ -370,6 +453,108 @@ After assigning roles, ATS will display all operations available for each digita
 
 <Frame>
   <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/web-user-interface-ui-20.png" />
+</Frame>
+
+***
+
+## KYC Management
+
+You have two ways to manage KYC. Choose based on your needs.
+
+### External KYC List
+
+#### Step 1: Create External KYC Contract
+
+1. Navigate to **External KYC** in the main menu
+2. Click **Create New External KYC**
+3. Add Account ID (of yourself or other account)
+4. Note the contract ID (`0.0.xxx`)
+
+<Frame>
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/asset-tokenization-kyc-external-create.png" />
+</Frame>
+
+#### Step 2: Grant KYC to Accounts
+
+1. In the External KYC page, select your contract
+2. Click **Add Account**
+3. Enter **Account ID of external KYC contract**: `0.0.xxx`
+4. Click **Grant KYC**
+5. Sign transaction
+
+<Frame>
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/asset-tokenization-kyc-external-grant-kyc.png" />
+</Frame>
+
+#### Step 3: Link to Your Token
+
+1. Go to your token's detail page
+2. Navigate to the **External KYC** tab
+3. Click **Add External KYC**
+4. Select your external KYC contract
+5. Click **Add**
+6. Sign transaction
+
+Now any account KYC'd in that external contract is KYC'd for your token!
+
+<Frame>
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/asset-tokenization-kyc-external-link-token.png" />
+</Frame>
+
+### Internal KYC with VC Files
+
+#### Step 1: Enable Internal KYC (if not already done during Token creation)
+
+1. Go to token detail → **Danger Zone**
+2. Toggle **Internal KYC** to **Active**
+
+<Frame>
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/asset-tokenization-kyc-activate.png" />
+</Frame>
+
+#### Step 2: Add Yourself as SSI Issuer
+
+**What is an SSI Manager/Issuer?**
+
+The **SSI Manager** manages the list of **trusted issuers** * entities authorized to sign Verifiable Credentials (VCs) that your token will accept for KYC purposes. Think of it like a whitelist of "trusted KYC providers."
+
+* **SSI Manager Role** (`SSI_MANAGER_ROLE`): Can add/remove trusted issuers
+* **Issuer**: An account that signs Verifiable Credentials
+  * Can be you (self-issued KYC)
+  * Can be a KYC service
+  * Can be a financial institution (bank, broker)
+  * Can be a regulatory authority
+
+**How to add:**
+
+1. Make sure you have assigned yourself the SSI Role under 'Roles'
+2. Go to token detail → **SST Manager** tab
+3. Click **Add Issuer**
+4. Enter your **Hedera Account ID**: `0.0.xxx` (the account that will sign VCs)
+5. Click **Add**
+
+Now your account is authorized to issue Verifiable Credentials that this token will trust for KYC.
+
+<Frame>
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/asset-tokenization-kyc-ssi-add.png" />
+</Frame>
+
+#### Step 3: Grant KYC via UI
+
+1. Go to token detail → **KYC** tab
+2. Click **Add** button
+3. **Fill Form**:
+   * **Account ID**: `0.0.1234567`
+   * **VC File**: Upload the `.vc` file (can be generated in the ATS repository - needs hardhat)
+4. Click **Create**
+5. Sign transaction
+
+<Frame>
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/asset-tokenization-kyc-vc.png" />
+</Frame>
+
+<Frame>
+  <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/asset-tokenization-kyc-internal.png" />
 </Frame>
 
 ***

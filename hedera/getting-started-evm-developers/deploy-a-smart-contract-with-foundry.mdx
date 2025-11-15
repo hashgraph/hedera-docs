@@ -2,27 +2,26 @@
 title: "Deploy a Smart Contract with Foundry"
 ---
 
-
 ## Deploying a Contract Using Foundry
 
-This tutorial will walk you through writing and compiling an ERC-20  Solidity smart contract. You'll then deploy and interact with it on the Hedera network using the [Hedera Smart Contract Service (HSCS)](/hedera/support-and-community/glossary#hedera-smart-contract-service-hscs) and [Foundry](https://getfoundry.sh/), connecting via the [JSON-RPC relay](/hedera/core-concepts/smart-contracts/json-rpc-relay).
+This tutorial will walk you through writing and compiling an ERC-20 Solidity smart contract. You'll then deploy and interact with it on the Hedera network using the [Hedera Smart Contract Service (HSCS)](/hedera/support-and-community/glossary#hedera-smart-contract-service-hscs) and [Foundry](https://getfoundry.sh/), connecting via the [JSON-RPC relay](/hedera/core-concepts/smart-contracts/json-rpc-relay).
 
 #### What you will accomplish
 
 By the end of this tutorial, you will be able to:
 
-* Compile and deploy a smart contract using Foundry
-* Interact with a smart contract using Foundry's `cast` command
-* Verify your smart contract on [Hashscan](https://hashscan.io/)
+- Compile and deploy a smart contract using Foundry
+- Interact with a smart contract using Foundry's `cast` command
+- Verify your smart contract on [Hashscan](https://hashscan.io/)
 
-***
+---
 
 ## Prerequisites
 
 Before you begin, you should have **completed** the following tutorial:
 
-* [x] [Create and Fund a Testnet Account via the Hedera Faucet](/hedera/getting-started-evm-developers/hedera-testnet-faucet)
-* [x] [Install Foundry](https://getfoundry.sh/)
+- [x] [Create and Fund a Testnet Account via the Hedera Faucet](/hedera/getting-started-evm-developers/hedera-testnet-faucet)
+- [x] [Install Foundry](https://getfoundry.sh/)
 
 ```bash
 curl -L https://foundry.paradigm.xyz | bash
@@ -31,7 +30,7 @@ foundryup
 
 This will install `forge`, `cast`, `anvil`, and `chisel`.
 
-***
+---
 
 ## Table of Contents
 
@@ -42,7 +41,7 @@ This will install `forge`, `cast`, `anvil`, and `chisel`.
 5. [Step 5: Interacting with the Contract](#step-5%3A-interacting-with-the-contract)
 6. [Step 6: Verifying the Contract on Hashscan](#step-6%3A-verifying-the-contract-on-hashscan)
 
-***
+---
 
 ## Step 1: Project Setup
 
@@ -82,13 +81,17 @@ HEDERA_RPC_URL=https://testnet.hashio.io/api
 HEDERA_PRIVATE_KEY=0x-your-private-key
 ```
 
-
 <Warning>
-Replace the `0x-your-private-key` environment variable with the **HEX Encoded Private Key** for your **ECDSA** **account** from the [Hedera Portal](https://portal.hedera.com/).
+  Replace the `0x-your-private-key` environment variable with the **HEX Encoded
+  Private Key** for your **ECDSA** **account** from the [Hedera
+  Portal](https://portal.hedera.com/).
 </Warning>
 
 <Danger>
-***Please note**:* *that Hashio is intended for development and testing purposes only. For production use cases, it's recommended to use commercial-grade JSON-RPC Relay or host your own instance of the* [*Hiero JSON-RPC Relay*](https://github.com/hiero-ledger/hiero-json-rpc-relay)*.*
+  ***Please note**:* *that Hashio is intended for development and testing
+  purposes only. For production use cases, it's recommended to use
+  commercial-grade JSON-RPC Relay or host your own instance of the* [*Hiero
+  JSON-RPC Relay*](https://github.com/hiero-ledger/hiero-json-rpc-relay)*.*
 </Danger>
 
 #### Configure Foundry
@@ -106,8 +109,7 @@ libs = ["lib"]
 testnet = "${HEDERA_RPC_URL}"
 ```
 
-
-***
+---
 
 ## Step 2: Creating the ERC20 Contract
 
@@ -134,12 +136,11 @@ contract HederaToken is ERC20, Ownable {
 }
 ```
 
-
 The contract uses the OpenZeppelin ERC20 and Ownable implementations.
 
-* The token is named "HederaToken" with the symbol "HEDT"
-* The `constructor` mints an initial supply of 1,000 tokens to the deployer of the contract
-* An `onlyOwner` `mint` function is included to allow the contract owner to mint more tokens in the future.
+- The token is named "HederaToken" with the symbol "HEDT"
+- The `constructor` mints an initial supply of 1,000 tokens to the deployer of the contract
+- An `onlyOwner` `mint` function is included to allow the contract owner to mint more tokens in the future.
 
 Now, compile the contract:
 
@@ -149,7 +150,7 @@ forge build
 
 This command compiles your contracts and places the artifacts(including the [ABI](/hedera/core-concepts/smart-contracts/compiling-smart-contracts) and bytecode) into the `out` directory. We are now ready to deploy the smart contract.
 
-***
+---
 
 ## Step 3: Create a Deployment Script
 
@@ -166,7 +167,7 @@ contract HederaTokenScript is Script {
     function run() external returns (address) {
         // Load the private key from the .env file
         uint256 deployerPrivateKey = vm.envUint("HEDERA_PRIVATE_KEY");
-        
+
         // Start broadcasting transactions with the loaded private key
         vm.startBroadcast(deployerPrivateKey);
 
@@ -186,8 +187,7 @@ contract HederaTokenScript is Script {
 }
 ```
 
-
-***
+---
 
 ## Step 4: Deploy Your ERC20 Smart Contract
 
@@ -208,10 +208,10 @@ After a few moments, you will see the address of your newly deployed contract:
 ```
 
 <Check>
-Copy the deployed contract address—you'll need this in subsequent steps.
+  Copy the deployed contract address—you'll need this in subsequent steps.
 </Check>
 
-***
+---
 
 ## Step 5: Interacting with the Contract
 
@@ -293,7 +293,7 @@ The output will show the 100 tokens you sent:
 0x0000000000000000000000000000000000000000000000056bc75e2d63100000
 ```
 
-***
+---
 
 ## Step 6: Verifying the Contract on Hashscan
 
@@ -312,19 +312,19 @@ forge verify-contract $CONTRACT_ADDRESS src/HederaToken.sol:HederaToken \
 After running the command, you should see a success message.
 
 ```
-Submitting verification for [HederaToken] "0x047F8c7569B9beECaB790902BA29DaAD143041d7". 
+Submitting verification for [HederaToken] "0x047F8c7569B9beECaB790902BA29DaAD143041d7".
 Contract successfully verified
 ```
 
-**Congratulations! 🎉 You have successfully deployed, interacted with, and verified an ERC20 smart contract on the Hedera Testnet using Foundry.  Feel free to reach out in** [**Discord**](https://hedera.com/discord)**!**
+**Congratulations! 🎉 You have successfully deployed, interacted with, and verified an ERC20 smart contract on the Hedera Testnet using Foundry. Feel free to reach out in** [**Discord**](https://hedera.com/discord)**!**
 
-***
+---
 
 ## Next Steps
 
-* Check out [OpenZeppelin ERC-20 Documentation](https://docs.openzeppelin.com/contracts/5.x/erc20)
-* See the full code in the [Hedera-Code-Snippets Repository](https://github.com/hedera-dev/hedera-code-snippets/tree/main/foundry-erc20)
-* Follow more [Foundry guides with Hedera](/hedera/tutorials/smart-contracts/foundry).
+- Check out [OpenZeppelin ERC-20 Documentation](https://docs.openzeppelin.com/contracts/5.x/erc20)
+- See the full code in the [Hedera-Code-Snippets Repository](https://github.com/hedera-dev/hedera-code-snippets/tree/main/foundry-erc20)
+- Follow more [Foundry guides with Hedera](/hedera/tutorials/smart-contracts/foundry).
 
 <Columns cols={2}>
   <Card

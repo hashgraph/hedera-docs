@@ -2,35 +2,35 @@
 title: "How to Set Access Control, a Token URI, Pause, and Transfer an ERC-721 Token Using Hardhat (Part 2)"
 ---
 
-
 In this tutorial, you'll learn how to create and manage an advanced ERC-721 token smart contract using Hardhat and OpenZeppelin. We'll cover deploying the contract, minting NFTs, pausing and unpausing the contract, and transferring tokens. You'll gain experience with [Access Control](https://docs.openzeppelin.com/contracts/5.x/access-control#using-access-control) (admin, minting, pausing roles), URI storage, and Pausable functionalities.
 
 <Info>
-You can take a look at the **complete code** in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hardhat-erc-721-mint-burn).
+  You can take a look at the **complete code** in the [**Hedera-Code-Snippets
+  repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hardhat-erc-721-mint-burn).
 </Info>
 
-***
+---
 
 ## Prerequisites
 
-* ⚠️ **Complete** [**tutorial part 1**](/hedera/tutorials/smart-contracts/how-to-mint-and-burn-an-erc-721-token-using-hardhat-and-ethers-part-1) **as we continue from this example.**
-* Basic understanding of smart contracts.
-* Basic understanding of [Node.js](https://nodejs.org/en/download) and JavaScript.
-* Basic understanding of [Hardhat EVM Development Tool](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3) and [Ethers](https://docs.ethers.org/v6/).
-* ECDSA account from the [Hedera Portal](https://portal.hedera.com/).
+- ⚠️ **Complete** [**tutorial part 1**](/hedera/tutorials/smart-contracts/how-to-mint-and-burn-an-erc-721-token-using-hardhat-and-ethers-part-1) **as we continue from this example.**
+- Basic understanding of smart contracts.
+- Basic understanding of [Node.js](https://nodejs.org/en/download) and JavaScript.
+- Basic understanding of [Hardhat EVM Development Tool](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3) and [Ethers](https://docs.ethers.org/v6/).
+- ECDSA account from the [Hedera Portal](https://portal.hedera.com/).
 
-***
+---
 
 ## Table of Contents
 
-1. [Create and Compile the Solidity Contract](#step-1-create-and-compile-the-solidity-contract)
-2. [Deploying the Smart Contract and Minting a Token](#step-2-deploying-the-smart-contract-and-minting-a-token)
-3. [Fixing Permissions, Redeploying, and Minting](#step-3-fixing-permissions-redeploying-and-minting)
-4. [Pausing the Contract](#step-4-pausing-the-contract)[Pausing the Contract](#step-4-pausing-the-contract)
-5. [Transferring NFTs](#step-5-transferring-nfts)
-6. [Run tests](#step-6-run-tests-optional)
+1. [Create and Compile the Solidity Contract](#step-1%3A-create-and-compile-the-solidity-contract)
+2. [Deploying the Smart Contract and Minting a Token](#step-2%3A-deploying-the-smart-contract-and-minting-a-token)
+3. [Fixing Permissions, Redeploying, and Minting](#step-3%3A-fixing-permissions-redeploying-and-minting)
+4. [Pausing the Contract](#step-4%3A-pausing-the-contract)[Pausing the Contract](#step-4%3A-pausing-the-contract)
+5. [Transferring NFTs](#step-5%3A-transferring-nfts)
+6. [Run tests](#step-6%3A-run-tests-optional)
 
-***
+---
 
 ## Video Tutorial
 
@@ -39,25 +39,35 @@ You can watch the video tutorial (which uses **Hardhat version 2**) or follow th
 <Accordion title="🚧 What's new: Hardhat 2 → 3 ">
 Key differences in Hardhat 3:
 
-* **compile → build**\
+- **compile → build**\
   `npx hardhat compile` is now `npx hardhat build`. This is the big one. The v3 migration guide explicitly shows using the `build` task.
-* **project init switch**\
+- **project init switch**\
   v2 commonly used `npx hardhat` or `npx hardhat init` to bootstrap. In v3 it’s `npx hardhat --init`.
 
-- **keystore helper commands are new**\
+* **keystore helper commands are new**\
   v3’s recommended flow includes a keystore plugin with commands like `npx hardhat keystore set HEDERA_RPC_URL` and `npx hardhat keystore set HEDERA_PRIVATE_KEY`. These weren’t standard in v2.
-- **Foundry-compatiable Solidity tests**\
+* **Foundry-compatiable Solidity tests**\
   In addition to offering Javascript/Typescript integration tests, Hardhat v3 also integrates Foundry-compatible Solidity tests that allows developers to write unit tests directly in Solidity
 
-* **Enhanced Network Management**\
+- **Enhanced Network Management**\
   v3 allows tasks to create and manage multiple network connections simultaneously which is a significant improvement over the single, fixed connection available in version 2. This provides greater flexibility for scripts and tests that interact with multiple networks.
 
-*📚 Learn more from the official* [*Hardhat documentation*](https://hardhat.org/docs/getting-started)*.*
+_📚 Learn more from the official_ [_Hardhat documentation_](https://hardhat.org/docs/getting-started)_._
+
 </Accordion>
 
-<iframe width="1124" height="632" src="https://www.youtube.com/embed/UBlppu3sJVg" title="Managing an ERC-721 Token Using Hardhat - Access Control, Token URI, Pausing, &amp; Transferring" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe
+  width="720"
+  height="405"
+  src="https://www.youtube.com/embed/UBlppu3sJVg"
+  title="Managing an ERC-721 Token Using Hardhat - Access Control, Token URI, Pausing, &amp; Transferring"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen
+></iframe>
 
-***
+---
 
 ## Step 1: Create and Compile the Solidity Contract
 
@@ -135,7 +145,6 @@ contract MyTokenAdvanced is ERC721, ERC721URIStorage, ERC721Pausable, AccessCont
 }
 ```
 
-
 The contract implements the `ERC721URIStorage`, `ERC721Pausable`, and `AccessControl` interfaces from OpenZeppelin. You can create the contract yourself using the OpenZeppelin Wizard and enable "Mintable," "Pausable," "URI Storage," and "Access Control → Roles."
 
 Compile your new contract:
@@ -144,7 +153,7 @@ Compile your new contract:
 npx hardhat build
 ```
 
-***
+---
 
 ## Step 2: Deploying the Smart Contract and Minting a Token
 
@@ -154,7 +163,7 @@ Create `deploy-advanced.ts` in your `scripts` folder:
 import { network } from "hardhat";
 
 const { ethers } = await network.connect({
-  network: "testnet"
+  network: "testnet",
 });
 
 async function main() {
@@ -182,14 +191,13 @@ async function main() {
 main().catch(console.error);
 ```
 
-
 Note that we are providing three arguments to the `MyTokenAdvanced.deploy()` function. When we look at the constructor of our smart contract, we can provide the admin, pauser, and minter roles.
 
 ```javascript
 constructor(address defaultAdmin, address pauser, address minter)
 ```
 
-The `deploy-advanced.ts` script sets the minter role to an unknown (*random*) address. This should prevent the deployer account from minting new tokens in the next step. First, let's run the deployer script:
+The `deploy-advanced.ts` script sets the minter role to an unknown (_random_) address. This should prevent the deployer account from minting new tokens in the next step. First, let's run the deployer script:
 
 ```bash
 npx hardhat run scripts/deploy-advanced.ts --network testnet
@@ -208,7 +216,7 @@ Contract deployed at: 0x5f41411477b506FA32DFe3B73BEE52a3D80B755f
 import { network } from "hardhat";
 
 const { ethers } = await network.connect({
-  network: "testnet"
+  network: "testnet",
 });
 
 async function main() {
@@ -242,7 +250,6 @@ async function main() {
 main().catch(console.error);
 ```
 
-
 This contract tries to mint a new token and sets the token URI to `https://myserver.com/8bitbeard/8bitbeard-tokens/tokens/1` . This transaction will fail because our deployer account doesn't have the `minter` permission. Run the script:
 
 ```bash
@@ -251,16 +258,19 @@ npx hardhat run scripts/mint-advanced.ts --network testnet
 
 ‼️ Notice minting fails due to incorrect permissions. Let's fix this in the next step.
 
-***
+---
 
 ## Step 3: Fixing Permissions, Redeploying, and Minting
 
 Update the minting role to your deployer account by modifying the following line of code in your `deploy-advanced.ts` script:
 
 ```typescript scripts/deploy-advanced.ts wrap
-const contract = await MyTokenAdvanced.deploy(deployer.address, deployer.address, deployer.address); // Deployer account gets all roles
+const contract = await MyTokenAdvanced.deploy(
+  deployer.address,
+  deployer.address,
+  deployer.address
+); // Deployer account gets all roles
 ```
-
 
 Now that the deployer account has all the roles, redeploy the contract:
 
@@ -278,7 +288,7 @@ npx hardhat run scripts/mint-advanced.ts --network testnet
 
 The new token will be minted with token ID `0` and the corresponding token URI is printed to your terminal.
 
-***
+---
 
 ## Step 4: Pausing the Contract
 
@@ -288,7 +298,7 @@ Create a new `pause-advanced.ts` script and make sure to replace the `contractAd
 import { network } from "hardhat";
 
 const { ethers } = await network.connect({
-  network: "testnet"
+  network: "testnet",
 });
 
 async function main() {
@@ -318,7 +328,6 @@ async function main() {
 main().catch(console.error);
 ```
 
-
 The script calls the pause function on your contract. As we have the correct role, the token will be paused, and its paused state will be printed to the terminal. Execute the script:
 
 ```bash
@@ -328,10 +337,14 @@ npx hardhat run scripts/pause-advanced.ts --network testnet
 The contract will return `true` when it is paused. Now, nobody can mint new tokens.
 
 <Check>
-Pausing an ERC-721 contract temporarily disables critical functions, including minting, transferring, and burning tokens. While the contract is paused, users cannot perform these operations, making it particularly useful in emergency scenarios or maintenance periods. However, read operations, such as checking token balances or URIs, are still possible.
+  Pausing an ERC-721 contract temporarily disables critical functions, including
+  minting, transferring, and burning tokens. While the contract is paused, users
+  cannot perform these operations, making it particularly useful in emergency
+  scenarios or maintenance periods. However, read operations, such as checking
+  token balances or URIs, are still possible.
 </Check>
 
-***
+---
 
 ## Step 5: Transferring NFTs
 
@@ -367,15 +380,16 @@ async function main() {
 
   await transferTx.wait();
 
-  const balance = await contract.balanceOf("0x5FbDB2315678afecb367f032d93F642f64180aa3");
+  const balance = await contract.balanceOf(
+    "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  );
   console.log("Balance:", balance.toString(), "NFTs");
 }
 
 main().catch(console.error);
 ```
 
-
-This script will first unpause your contract and then transfer the token to a random address `0x5FbDB2315678afecb367f032d93F642f64180aa3` using the [`transferFrom` function](https://docs.openzeppelin.com/contracts/2.x/api/token/erc721#ERC721-transferFrom-address-address-uint256-) on your contract. This function accepts the sender address, receiver address, and the token ID you want to transfer.  Next, we check if the account has actually received the token by verifying its balance.
+This script will first unpause your contract and then transfer the token to a random address `0x5FbDB2315678afecb367f032d93F642f64180aa3` using the [`transferFrom` function](https://docs.openzeppelin.com/contracts/2.x/api/token/erc721#ERC721-transferFrom-address-address-uint256-) on your contract. This function accepts the sender address, receiver address, and the token ID you want to transfer. Next, we check if the account has actually received the token by verifying its balance.
 
 Execute the script to transfer the token:
 
@@ -383,16 +397,16 @@ Execute the script to transfer the token:
 npx hardhat run scripts/transfer-advanced.ts --network testnet
 ```
 
-**If the balance for the****`0x5FbDB2315678afecb367f032d93F642f64180aa3`****account shows `1` , then you've successfully transferred the NFT and completed this tutorial! 🎉**
+**If the balance for the\*\***`0x5FbDB2315678afecb367f032d93F642f64180aa3`\***\*account shows `1` , then you've successfully transferred the NFT and completed this tutorial! 🎉**
 
-***
+---
 
 ## Step 6: Run tests(Optional)
 
 You can find both types of tests in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hardhat-erc-721-mint-burn). You will find the following files:
 
-* `contracts/MyTokenAdvanced.t.sol`
-* `test/MyTokenAdvanced.ts`
+- `contracts/MyTokenAdvanced.t.sol`
+- `test/MyTokenAdvanced.ts`
 
 Copy these files and then run the tests:
 
@@ -407,36 +421,27 @@ npx hardhat test solidity
 npx hardhat test mocha
 ```
 
-***
+---
 
 ## Additional Resources
 
-* [OpenZeppelin ERC-721 Docs](https://docs.openzeppelin.com/contracts/5.x/erc721)
-* [Access Control Docs](https://docs.openzeppelin.com/contracts/5.x/access-control#using-access-control)
+- [OpenZeppelin ERC-721 Docs](https://docs.openzeppelin.com/contracts/5.x/erc721)
+- [Access Control Docs](https://docs.openzeppelin.com/contracts/5.x/access-control#using-access-control)
 
 <Columns cols={2}>
-  <Card
-    title="Writer: Michiel, DevRel Engineer"
-    arrow
-  >
-    [GitHub](https://github.com/michielmulders) | [LinkedIn](https://www.linkedin.com/in/michielmulders/)
+  <Card title="Writer: Michiel, DevRel Engineer" arrow>
+    [GitHub](https://github.com/michielmulders) |
+    [LinkedIn](https://www.linkedin.com/in/michielmulders/)
   </Card>
-  <Card
-    title="Editor: Luis, Sr Software Developer"
-    arrow
-  >
+  <Card title="Editor: Luis, Sr Software Developer" arrow>
     [GitHub](https://github.com/acuarica)
   </Card>
-  <Card
-    title="Editor: Krystal, Technical Writer"
-    arrow
-  >
-    [GitHub](https://github.com/theekrystallee) | [X](https://x.com/theekrystallee)
+  <Card title="Editor: Krystal, DX Engineer" arrow>
+    [GitHub](https://github.com/theekrystallee) |
+    [X](https://x.com/theekrystallee)
   </Card>
-  <Card
-    title="Editor: Kiran, Developer Advocate"
-    arrow
-  >
-    [GitHub](https://github.com/kpachhai) | [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
+  <Card title="Editor: Kiran, Developer Advocate" arrow>
+    [GitHub](https://github.com/kpachhai) |
+    [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
   </Card>
 </Columns>

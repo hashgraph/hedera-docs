@@ -2,40 +2,41 @@
 title: "Deploy a Smart Contract with Hardhat"
 ---
 
-
 ## Deploying a Contract Using Hardhat Scripts
 
-This tutorial will walk you through writing and compiling an ERC-721  Solidity smart contract. You'll then deploy and interact with it on the Hedera network using the [Hedera Smart Contract Service (HSCS)](/hedera/support-and-community/glossary#hedera-smart-contract-service-hscs) and familiar EVM tools like Ethers.js, connecting via the [JSON-RPC relay](/hedera/core-concepts/smart-contracts/json-rpc-relay).
+This tutorial will walk you through writing and compiling an ERC-721 Solidity smart contract. You'll then deploy and interact with it on the Hedera network using the [Hedera Smart Contract Service (HSCS)](/hedera/support-and-community/glossary#hedera-smart-contract-service-hscs) and familiar EVM tools like Ethers.js, connecting via the [JSON-RPC relay](/hedera/core-concepts/smart-contracts/json-rpc-relay).
 
 #### What you will accomplish
 
 By the end of this tutorial, you will be able to:
 
-* Compile and deploy a smart contract using Hardhat
-* Interact with a smart contract using Hardhat
+- Compile and deploy a smart contract using Hardhat
+- Interact with a smart contract using Hardhat
 
 <Info>
-**Note:** This tutorial is currently supported only in the Getting Started [JavaScript](https://github.com/hedera-dev/hello-future-world-js) series and is not available for other languages.
+  **Note:** This tutorial is currently supported only in the Getting Started
+  [JavaScript](https://github.com/hedera-dev/hello-future-world-js) series and
+  is not available for other languages.
 </Info>
 
-***
+---
 
 ## Prerequisites
 
 Before you begin, you should have **completed** the following tutorial:
 
-* [x] [Create and Fund a Testnet Account via the Hedera Faucet](/hedera/getting-started-evm-developers/hedera-testnet-faucet)
+- [x] [Create and Fund a Testnet Account via the Hedera Faucet](/hedera/getting-started-evm-developers/hedera-testnet-faucet)
 
-***
+---
 
 ## Table of Contents
 
-1. [Step 1: Project Setup](#step-1-project-setup)
-2. [Step 2: Creating the ERC-721 Contract](#step-2-creating-the-erc-721-contract)
-3. [Step 3: Deploy Your ERC-721 Smart Contract](#step-3-deploy-your-erc-721-smart-contract)
-4. [Step 4: Minting an ERC-721 Token](#step-4-minting-an-erc-721-token)
+1. [Step 1: Project Setup](#step-1%3A-project-setup)
+2. [Step 2: Creating the ERC-721 Contract](#step-2%3A-creating-the-erc-721-contract)
+3. [Step 3: Deploy Your ERC-721 Smart Contract](#step-3%3A-deploy-your-erc-721-smart-contract)
+4. [Step 4: Minting an ERC-721 Token](#step-4%3A-minting-an-erc-721-token)
 
-***
+---
 
 ## Step 1: Project Setup
 
@@ -54,20 +55,21 @@ Make sure to select "**Hardhat 3 → Typescript Hardhat Project using Mocha and 
 <Accordion title="🚧 What's new: Hardhat 2 → 3 ">
 Key differences in Hardhat 3:
 
-* **compile → build**\
+- **compile → build**\
   `npx hardhat compile` is now `npx hardhat build`. This is the big one. The v3 migration guide explicitly shows using the `build` task.
-* **project init switch**\
+- **project init switch**\
   v2 commonly used `npx hardhat` or `npx hardhat init` to bootstrap. In v3 it’s `npx hardhat --init`.
 
-- **keystore helper commands are new**\
+* **keystore helper commands are new**\
   v3’s recommended flow includes a keystore plugin with commands like `npx hardhat keystore set HEDERA_RPC_URL` and `npx hardhat keystore set HEDERA_PRIVATE_KEY`. These weren’t standard in v2.
-- **Foundry-compatiable Solidity tests**\
+* **Foundry-compatiable Solidity tests**\
   In addition to offering Javascript/Typescript integration tests, Hardhat v3 also integrates Foundry-compatible Solidity tests that allows developers to write unit tests directly in Solidity
 
-* **Enhanced Network Management**\
+- **Enhanced Network Management**\
   v3 allows tasks to create and manage multiple network connections simultaneously which is a significant improvement over the single, fixed connection available in version 2. This provides greater flexibility for scripts and tests that interact with multiple networks.
 
-*📚 Learn more from the official* [*Hardhat documentation*](https://hardhat.org/docs/getting-started)*.*
+_📚 Learn more from the official_ [_Hardhat documentation_](https://hardhat.org/docs/getting-started)_._
+
 </Accordion>
 
 #### Install Dependencies
@@ -97,7 +99,8 @@ For `HEDERA_PRIVATE_KEY`, enter the **HEX Encoded Private Key for your ECDSA acc
 <Danger>
 #### Note
 
-[*Hashio*](https://www.hashgraph.com/hashio/) *is intended for development and testing purposes only. For production use cases, it's recommended to use commercial-grade JSON-RPC Relay or host your own instance of the* [*Hiero JSON-RPC Relay*](https://github.com/hiero-ledger/hiero-json-rpc-relay)*.*
+[_Hashio_](https://www.hashgraph.com/hashio/) _is intended for development and testing purposes only. For production use cases, it's recommended to use commercial-grade JSON-RPC Relay or host your own instance of the_ [_Hiero JSON-RPC Relay_](https://github.com/hiero-ledger/hiero-json-rpc-relay)_._
+
 </Danger>
 
 #### Configure Hardhat
@@ -115,31 +118,30 @@ const config: HardhatUserConfig = {
   solidity: {
     profiles: {
       default: {
-        version: "0.8.28"
+        version: "0.8.28",
       },
       production: {
         version: "0.8.28",
         settings: {
           optimizer: {
             enabled: true,
-            runs: 200
-          }
-        }
-      }
-    }
+            runs: 200,
+          },
+        },
+      },
+    },
   },
   networks: {
     testnet: {
       type: "http",
       url: configVariable("HEDERA_RPC_URL"),
-      accounts: [configVariable("HEDERA_PRIVATE_KEY")]
-    }
-  }
+      accounts: [configVariable("HEDERA_PRIVATE_KEY")],
+    },
+  },
 };
 
 export default config;
 ```
-
 
 You can verify the connection by running:
 
@@ -156,7 +158,7 @@ rm -rf contracts/* scripts/* test/*
 rm -rf ignition
 ```
 
-***
+---
 
 ## Step 2: Creating the ERC-721 Contract
 
@@ -186,7 +188,6 @@ contract MyToken is ERC721, Ownable {
 }
 ```
 
-
 This contract was created using the [OpenZeppelin Contracts Wizard](https://wizard.openzeppelin.com/#erc721) and OpenZeppelin's ERC-721 standard implementation with an ownership model. The ERC-721 token's name has been set to "MyToken." The contract implements the `safeMint` function, which accepts the address of the owner of the new token and uses auto-increment IDs, starting from 0.
 
 Let's compile this contract by running:
@@ -197,7 +198,7 @@ npx hardhat build
 
 This command will generate the smart contract artifacts, including the [ABI](/hedera/core-concepts/smart-contracts/compiling-smart-contracts). We are now ready to deploy the smart contract.
 
-***
+---
 
 ## Step 3: Deploy Your ERC-721 Smart Contract
 
@@ -207,7 +208,7 @@ Create a deployment script (`deploy.ts`) in `scripts` directory:
 import { network } from "hardhat";
 
 const { ethers } = await network.connect({
-  network: "testnet"
+  network: "testnet",
 });
 
 async function main() {
@@ -228,7 +229,6 @@ async function main() {
 main().catch(console.error);
 ```
 
-
 In this script, we first retrieve your account (the deployer) using Ethers.js. This account will own the deployed smart contract. Next, we use this account to deploy the contract by calling `MyToken.deploy(deployer.address)`. This passes your account address as the initial owner and signer of the deployment transaction.
 
 Deploy your contract by executing the script:
@@ -237,9 +237,7 @@ Deploy your contract by executing the script:
 npx hardhat run scripts/deploy.ts --network testnet
 ```
 
-<Check>
-Copy the deployed address—you'll need this in subsequent steps.
-</Check>
+<Check>Copy the deployed address—you'll need this in subsequent steps.</Check>
 
 The output looks like this:
 
@@ -252,7 +250,7 @@ Deploying contract with the account: 0xA98556A4deeB07f21f8a66093989078eF86faa30
 Contract deployed at: 0x6035bA3BCa9595637B463Aa514c3a1cE3f67f3de
 ```
 
-***
+---
 
 ## Step 4: Minting an ERC-721 Token
 
@@ -262,7 +260,7 @@ Create a `mint.ts` script in your `scripts` directory to mint an NFT. Don't forg
 import { network } from "hardhat";
 
 const { ethers } = await network.connect({
-  network: "testnet"
+  network: "testnet",
 });
 
 async function main() {
@@ -290,7 +288,6 @@ async function main() {
 
 main().catch(console.error);
 ```
-
 
 The code mints a new NFT to your account ( `deployer.address` ). Then we verify the balance to see if we own an ERC-721 token of type `MyToken`.
 
@@ -348,16 +345,15 @@ Minted token ID: 0x0000000000000000000000000000000000000000000000000000000000000
 Balance: 1 NFTs
 ```
 
-
 **Congratulations! 🎉 You have successfully learned how to deploy an ERC-721 smart contract using Hardhat, OpenZeppelin, and Ethers. Feel free to reach out in** [**Discord**](https://hedera.com/discord)**!**
 
-***
+---
 
 ## Next Steps
 
-* Learn how to add [Access Control, Pause, and Transfer ERC-721 ](/hedera/tutorials/smart-contracts/how-to-set-access-control-a-token-uri-pause-and-transfer-an-erc-721-token-using-hardhat-part-2)tokens
-* Check out [OpenZeppelin ERC-721 Documentation](https://docs.openzeppelin.com/contracts/5.x/erc721)
-* See the full code in the [Hedera-Code-Snippets Repository](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hardhat-erc-721-mint-burn)
+- Learn how to add [Access Control, Pause, and Transfer ERC-721 ](/hedera/tutorials/smart-contracts/how-to-set-access-control-a-token-uri-pause-and-transfer-an-erc-721-token-using-hardhat-part-2)tokens
+- Check out [OpenZeppelin ERC-721 Documentation](https://docs.openzeppelin.com/contracts/5.x/erc721)
+- See the full code in the [Hedera-Code-Snippets Repository](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hardhat-erc-721-mint-burn)
 
 <Columns cols={2}>
   <Card
@@ -365,12 +361,11 @@ Balance: 1 NFTs
     title="Writer: Kiran, Developer Advocate"
     arrow
   >
-    [Github](https://github.com/kpachhai) | [Linkedin](https://www.linkedin.com/in/kiranpachhai/)
+    [Github](https://github.com/kpachhai) |
+    [Linkedin](https://www.linkedin.com/in/kiranpachhai/)
   </Card>
-    <Card
-    title="Editor: Krystal, Technical Writer"
-    arrow
-  >
-    [Github](https://github.com/theekrystallee) | [X](https://x.com/theekrystallee)
+  <Card title="Editor: Krystal, DX Engineer" arrow>
+    [Github](https://github.com/theekrystallee) |
+    [X](https://x.com/theekrystallee)
   </Card>
 </Columns>

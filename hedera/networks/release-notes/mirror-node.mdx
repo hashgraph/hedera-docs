@@ -3,10 +3,47 @@ title: "Hedera Mirror Node"
 description: "Hedera mirror node release notes"
 ---
 
-
 Visit the [Hedera status page](https://status.hedera.com/) for the latest versions supported on each network.
 
 ## Latest Releases
+
+## [v0.142.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.142.0)
+
+Support for [<u>HIP-1299</u>](https://hips.hedera.com/hip/hip-1299) node account ID updates was finalized in this release. When a node updates their account ID, it will now be reflected instantly in all APIs including the `getNodes` gRPC API, the `/network/status` Rosetta API, and the `/api/v1/network/nodes` REST API.
+
+We now include support for [<u>HIP-1215</u>](https://hips.hedera.com/hip/hip-1215) generalized scheduled contract calls. The importer was adapted to handle scheduled contract calls that can be triggered in isolation without another unrelated user transaction preceding it. The latest consensus node library v0.68 was integrated, bringing with it support for the new system contracts defined in HIP-1215. This includes the `scheduleCall`, `scheduleCallWithPayer`, `executeCallOnPayerSignature`, `deleteSchedule`, and `hasScheduleCapacity` functions defined in `IHederaScheduleService`.
+
+[<u>HIP-1056</u>](https://hips.hedera.com/hip/hip-1056) block streams continues to see progress with support for calculating the ethereum transaction hash and reconstructing the contract bytecode added. A large number of other bugs were addressed as a result of our differential testing.
+
+The code base now integrates the [<u>JSpecify</u>](https://jspecify.dev/) standard. JSpecify provides standard nullability annotations and static code analysis tools to help reduce the use of nulls in your code. Existing null annotations from javax, Jakarta, Spring, findbugs, etc. were converted to the equivalent JSpecify annotation. The Gradle build was updated to integrate [<u>NullAway</u>](https://github.com/uber/NullAway) which will fail the build if a potential `NullPointerException` is detected. Currently it's set to assume null by default as we work towards a non-null by default throughout the code base.
+
+## **Breaking Changes**
+
+The web3 API now defaults to the modularized code flow regardless if the operator explicitly disabled it. As a result, the values of the `hiero.mirror.web3.evm.modularizedServices` and `hiero.mirror.web3.evm.modularizedTrafficPercent` properties are now ignored. This was necessary due to incompatibilities between maintaining both code bases after upgraded to the 0.68 EVM library. We plan to remove the legacy code entirely next month.
+
+## [v0.141.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.141.0)
+
+Repository: [hiero-ledger/hiero-mirror-node](https://github.com/hiero-ledger/hiero-mirror-node) · Tag: [v0.141.0](https://github.com/hiero-ledger/hiero-mirror-node/tree/v0.141.0) · Commit: [7cf0978](https://github.com/hiero-ledger/hiero-mirror-node/commit/7cf097828b963777a3fbd53521c652f4d3d0a8ec) · Released by: [github-actions[bot]](https://github.com/apps/github-actions)
+
+This release includes progress on a number of HIPs. First up, we have [HIP-1261](https://hips.hedera.com/hip/hip-1261) Simple Fees. A new experimental gRPC `getFeeEstimate` API was added that returns a stubbed response. This alpha API is not intended to be used in production as it's not fully implemented and just returns dummy data. Developers can use this API to start integrating against with the expectation that it will be fully implemented in the near future.
+
+[HIP-1299](https://hips.hedera.com/hip/hip-1299) Node Account ID Refinements for Dynamic Address Book saw initial work completed. The importer now detects node transactions with a changed node account ID and persists the updated value. The REST API will now reflect this updated node account ID immediately instead of waiting for the next consensus node upgrade. In the next release, a similar change will be made to the gRPC and Rosetta APIs.
+
+[HIP 1195](https://hips.hedera.com/hip/hip-1195) Hiero hooks saw initial database and domain work completed. The next release will add persistence and a new hook REST API.
+
+[HIP-1056](https://hips.hedera.com/hip/hip-1056) Block streams continues to make progress every release. We finalized the integration of the major protobuf changes in consensus node v0.65+ by integrating intermediate topic message trace data. A bug was addressed around linking scheduled transactions and its triggering transaction.
+
+The `/api/v1/network/exchangerate` API was rewritten from JavaScript to Java. Besides a cleaner, more maintainable implementation, it shows a major performance boost. Our testing shows it went from 850 requests per second to 18,000 requests per second as a result of this change. The JavaScript API will persist for another release as we finalize testing on the new API.
+
+## [v0.140.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.140.0)
+
+[HIP-1249](https://hips.hedera.com/hip/hip-1249) precise smart contract throttling was implemented in this release. This includes a change to how gas consumed is calculated on the mirror node. Previously consensus nodes would only refund a percentage of the gas limit. This HIP changes the calculation to refund 100% of the actual gas used such that gas consumed and gas used in the API response will now be equal.
+
+A number of testing improvements were implemented to increase our API coverage and dog-food our own APIs. The acceptance tests now invoke read-only gas estimation calls against both the mirror node `/api/v1/contracts/call` API and the consensus node's `ContractCallLocalQuery` to ensure accurate gas estimations. A new acceptance test for `DeleteAllowanceTransaction` was added to ensure we have coverage for this transaction end-to-end. Finally, coverage for three missing token and topic REST APIs acceptance tests were added, bringing us to 100% coverage of our REST APIs.
+
+The transaction hash table was changed to be partitioned by consensus timestamp on our V2 schema. This greatly improves our ingest performance on Citus, with some canonical tests now showing up to 25,000 transactions per second.
+
+Work continues on HIP-1056 with this release adding support for contract state information. The REST Java API now supports the `ETag` header which reduces bandwidth for responses already cached by the client.
 
 ## [v0.139.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.139.0)
 
@@ -82,7 +119,7 @@ Support for non-zero realms and shards saw continued test support. Tests in grpc
 
 ### Breaking Changes
 
-The [pg\_notify](https://www.postgresql.org/docs/current/sql-notify.html) capability in both the importer and gRPC modules was removed in this release . This capability allowed the importer to notify the gRPC module of new topic messages via the PostgreSQL database's NOTIFY messaging. It's recommended to use the Redis-based notification for high throughput streaming or the shared polling listener for low throughput and ease of use. Similarly, the `hiero.mirror.importer.parser.record.entity.notify.*` and `hiero.mirror.grpc.listener.type=NOTIFY` properties were removed.
+The [pg_notify](https://www.postgresql.org/docs/current/sql-notify.html) capability in both the importer and gRPC modules was removed in this release . This capability allowed the importer to notify the gRPC module of new topic messages via the PostgreSQL database's NOTIFY messaging. It's recommended to use the Redis-based notification for high throughput streaming or the shared polling listener for low throughput and ease of use. Similarly, the `hiero.mirror.importer.parser.record.entity.notify.*` and `hiero.mirror.grpc.listener.type=NOTIFY` properties were removed.
 
 The GCP Pub/Sub integration in the importer was removed as it has been unused for years. This capability allowed the mirror node to publish transaction data to GCP BigQuery for the [Hedera ETL](https://github.com/blockchain-etl/hedera-etl) effort. The `hiero.mirror.importer.parser.record.pubsub.*` properties were removed as part of this effort.
 
@@ -118,7 +155,7 @@ With the exception of the protobuf package, all packages were renamed from `com.
 
 ## [v0.129.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.129.0)
 
-Repository: [hiero-ledger/hiero-mirror-node](https://github.com/hiero-ledger/hiero-mirror-node) · Tag: [v0.129.0](https://github.com/hiero-ledger/hiero-mirror-node/tree/v0.129.0) · Commit: [24976d9](https://github.com/hiero-ledger/hiero-mirror-node/commit/24976d9800e6fae9961e18288b49a320e58b9cf8) · Released by: [github-actions\[bot\]](https://github.com/apps/github-actions)
+Repository: [hiero-ledger/hiero-mirror-node](https://github.com/hiero-ledger/hiero-mirror-node) · Tag: [v0.129.0](https://github.com/hiero-ledger/hiero-mirror-node/tree/v0.129.0) · Commit: [24976d9](https://github.com/hiero-ledger/hiero-mirror-node/commit/24976d9800e6fae9961e18288b49a320e58b9cf8) · Released by: [github-actions[bot]](https://github.com/apps/github-actions)
 
 This release begins the design effort for HIP-1081 Block Node. Next sprint the initial support for connecting to a block node will be started. Additionally, all of the `/api/v1/tokens/{id}` endpoints now support an ID in the form of a 40 character hexadecimal EVM address.
 
@@ -126,7 +163,7 @@ The integration of the latest consensus node EVM library into`/api/v1/contracts/
 
 ## [v0.128.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.128.0)
 
-Repository: [hiero-ledger/hiero-mirror-node](https://github.com/hiero-ledger/hiero-mirror-node) · Tag: [v0.128.0](https://github.com/hiero-ledger/hiero-mirror-node/tree/v0.128.0) · Commit: [4607dc9](https://github.com/hiero-ledger/hiero-mirror-node/commit/4607dc92a0c7226b0f68319d1b4662a79c8046bc) · Released by: [github-actions\[bot\]](https://github.com/apps/github-actions)
+Repository: [hiero-ledger/hiero-mirror-node](https://github.com/hiero-ledger/hiero-mirror-node) · Tag: [v0.128.0](https://github.com/hiero-ledger/hiero-mirror-node/tree/v0.128.0) · Commit: [4607dc9](https://github.com/hiero-ledger/hiero-mirror-node/commit/4607dc92a0c7226b0f68319d1b4662a79c8046bc) · Released by: [github-actions[bot]](https://github.com/apps/github-actions)
 
 This release sees support for [HIP-551](https://hips.hedera.com/hip/hip-551) Batch Transactions. This includes ingest support for the new batch transaction type and the corresponding REST API changes. The `/api/v1/transactions/{id}` REST API was changed to return the inner transactions when given the transaction ID of the outer batch transaction.
 
@@ -150,7 +187,7 @@ The alpha GraphQL API module was converted from reactive Spring WebFlux to synch
 
 ## [v0.126.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.126.0)
 
-Repository: [hiero-ledger/hiero-mirror-node](https://github.com/hiero-ledger/hiero-mirror-node) · Tag: [v0.126.0](https://github.com/hiero-ledger/hiero-mirror-node/tree/v0.126.0) · Commit: [8ff0933](https://github.com/hiero-ledger/hiero-mirror-node/commit/8ff0933f946b8552ef21a05abf8f3cf48f4c96d0) · Released by: [github-actions\[bot\]](https://github.com/apps/github-actions)
+Repository: [hiero-ledger/hiero-mirror-node](https://github.com/hiero-ledger/hiero-mirror-node) · Tag: [v0.126.0](https://github.com/hiero-ledger/hiero-mirror-node/tree/v0.126.0) · Commit: [8ff0933](https://github.com/hiero-ledger/hiero-mirror-node/commit/8ff0933f946b8552ef21a05abf8f3cf48f4c96d0) · Released by: [github-actions[bot]](https://github.com/apps/github-actions)
 
 A large focus of this release was to support non-zero realms and shards. To that end, the gRPC API was updated to properly validate the file ID in the address book API against the configured realm and shard. The REST API now uses the `hedera.mirror.common.shard` and `hedera.mirror.common.realm` properties instead of the now deleted `hedera.mirror.rest.shard` property. This includes a change to now look up the alias and EVM address using either the user provided or configured shard and realm. The database encoding of `shard.realm.num` identifiers was tweaked to increase the number of bits to `num` from 32 to 38 bits and decrease the shard from 15 to 10 bits. This change should not impact current mirror node deployments. Balance snapshot and pending reward calculation was updated to not hardcode system accounts with `0.0`. The default operator in the acceptance tests and monitor was changed from `0.0.2` to use the configured shard and realm. Finally, the web3 API now uses the configured realm and shard as well.
 
@@ -170,7 +207,7 @@ Support for non-zero realms is being explored starting with this release. New pr
 
 ## [v0.124.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.124.0)
 
-The Hedera Mirror node is now the Hiero Mirror Node! The GitHub repository was migrated to the [hiero-ledger](https://github.com/hiero-ledger) organization and can now be found at https://github.com/hiero-ledger/hiero-mirror-node. To facilitate the Hiero migration, the docs were updated to reference the new git repository and the workflows update to use the new Hiero GitHub runners. Unfortunately, since our Helm repository is located at https://hashgraph.github.io/hedera-mirror-node/charts> and served via GitHub Pages we could not automatically redirect all requests from Hashgraph to the Hiero repository. We're working on setting up an OCI registry and once that is available we'll ask people to start migrating away from the old Helm repository.
+The Hedera Mirror node is now the Hiero Mirror Node! The GitHub repository was migrated to the [hiero-ledger](https://github.com/hiero-ledger) organization and can now be found at https://github.com/hiero-ledger/hiero-mirror-node. To facilitate the Hiero migration, the docs were updated to reference the new git repository and the workflows update to use the new Hiero GitHub runners. Unfortunately, since our Helm repository is located at https://hashgraph.github.io/hedera-mirror-node/charts\> and served via GitHub Pages we could not automatically redirect all requests from Hashgraph to the Hiero repository. We're working on setting up an OCI registry and once that is available we'll ask people to start migrating away from the old Helm repository.
 
 The block stream ([HIP-1056](https://hips.hedera.com/hip/hip-1056)) saw major progress this release including the addition of a block stream poller. This poller polls the S3 bucket for newer block streams, downloads them, and verifies their contents. In addition, block stream to record stream transformers for accounts, topics, and other system transactions were completed. A number of changes were made as a result of changes upstream in the consensus nodes. This includes the previous hash now read from the block proof, the `BlockHeader` and `RoundHeader` used for block root hash calculation, and changing to use the `BlockHeader.firstTransactionConsensusTime`.
 
@@ -314,7 +351,7 @@ A number of important test improvements were completed. The web3 module continue
 
 ### Upgrading
 
-This release requires the [pg\_trgm](https://www.postgresql.org/docs/current/pgtrgm.html) PostgreSQL extension to be installed to support querying for tokens by name. Failure to install the extension before upgrading the mirror node will cause the importer to fail on startup. First, verify with your SQL provider that it supports the `pg_trgm` extension. Then run the following SQL on the `mirror_node` database as the owner:
+This release requires the [pg_trgm](https://www.postgresql.org/docs/current/pgtrgm.html) PostgreSQL extension to be installed to support querying for tokens by name. Failure to install the extension before upgrading the mirror node will cause the importer to fail on startup. First, verify with your SQL provider that it supports the `pg_trgm` extension. Then run the following SQL on the `mirror_node` database as the owner:
 
 ```
 create extension if not exists pg_trgm;
@@ -446,7 +483,8 @@ Our Citus deployment saw a number of improvements. Performance was optimized for
 
 \
 [v0.97.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.97.0)
--------------------------------------------------------------------------------
+
+---
 
 This release sees some incremental changes to the REST API. The REST API now supports a [RFC5988](https://www.rfc-editor.org/rfc/rfc5988) compliant `Link` header in its response as an alternative to the `links.next`in the response body. Either link can now be used for pagination, but the `Link` header provides a standard approach that's supported by more tools. The `/api/v1/accounts/{id}?timestamp` endpoint now shows historically accurate staking information in its response so that users can view their past pending rewards. The timestamp in the response of the `/api/v1/tokens/{id}/balances` endpoint is now more accurate by reflecting the max balance timestamp of the tokens in its response.
 
@@ -465,7 +503,7 @@ To improve ingest performance of entity tables when used with a distributed SQL 
 As previously mentioned, a new database schema was introduced to handle the processing of upsertable entities. This change\
 doesn't require any manual steps for new operators that use one of our initialization scripts or helm charts to\
 configure the database. However, existing operators upgrading to 0.96.0 or later are required to create the schema by\
-configuring and executing a [script](https://github.com/hashgraph/hedera-mirror-node/blob/v0.96.0/hedera-mirror-importer/src/main/resources/db/scripts/init-temp-schema.sh) ***before*** the upgrade.
+configuring and executing a [script](https://github.com/hashgraph/hedera-mirror-node/blob/v0.96.0/hedera-mirror-importer/src/main/resources/db/scripts/init-temp-schema.sh) **_before_** the upgrade.
 
 ```
 PGHOST=127.0.0.1 ./init-temp-schema.sh
@@ -567,27 +605,27 @@ Support for Ethereum transaction type 1 as specified in [EIP-2930](https://eips.
 
 [HIP-584](https://hips.hedera.com/hip/hip-584) EVM Archive node saw a large number of precompiles implemented. This includes all of the following:
 
-* `approve`
-* `approveNFT`
-* `associateToken`
-* `associateTokens`
-* `burnToken`
-* `createFungibleToken`
-* `createFungibleTokenWithCustomFees`
-* `createNonFungibleToken`
-* `createNonFungibleTokenWithCustomFees`
-* `deleteToken`
-* `freezeToken`
-* `pauseToken`
-* `setApprovalForAll`
-* `transferFrom`
-* `transferFromNFT`
-* `transferNFT`
-* `transferNFTs`
-* `transferToken`
-* `transferTokens`
-* `unfreezeToken`
-* `unpauseToken`
+- `approve`
+- `approveNFT`
+- `associateToken`
+- `associateTokens`
+- `burnToken`
+- `createFungibleToken`
+- `createFungibleTokenWithCustomFees`
+- `createNonFungibleToken`
+- `createNonFungibleTokenWithCustomFees`
+- `deleteToken`
+- `freezeToken`
+- `pauseToken`
+- `setApprovalForAll`
+- `transferFrom`
+- `transferFromNFT`
+- `transferNFT`
+- `transferNFTs`
+- `transferToken`
+- `transferTokens`
+- `unfreezeToken`
+- `unpauseToken`
 
 ## [v0.85](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.85.0)
 
@@ -612,11 +650,11 @@ Our [goal](https://github.com/hashgraph/hedera-mirror-node/issues/6110) of captu
 ## [v0.83](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.83.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: JULY 7, 2023**
+  **MAINNET UPDATE COMPLETED: JULY 7, 2023**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: JUNE 29, 2023**
+  **TESTNET UPDATE COMPLETED: JUNE 29, 2023**
 </Check>
 
 In this release we made the highly requested change to show the list of NFT transfers on the transactions list REST API. Originally, only the `/api/v1/transactions/{id}` showed the list of `nft_transfers` due to performance concerns with joining on another large table for such a heavily used and heavyweight API. To show this information while staying performant, we had to denormalize the NFT transfer information to nest it under the `transaction` table as a JSONB column. This avoids an extra join and allows us to return the given information with the existing query.
@@ -634,11 +672,11 @@ Expect upgrading to take about an hour due to the large NFT transfer migration i
 ## [v0.82](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.82.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: JUNE 22, 2023**
+  **MAINNET UPDATE COMPLETED: JUNE 22, 2023**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: JUNE 8, 2023**
+  **TESTNET UPDATE COMPLETED: JUNE 8, 2023**
 </Check>
 
 [HIP-679](https://hips.hedera.com/HIP/hip-679.html) saw its initial work completed in this release to support a restructured bucket. The importer now supports the existing account ID-based bucket path along with a future node ID-based bucket path. It also adds a path type property that can automatically switch between the two so the transition between the two formats is transparent to mirror node operators. For now, the default path type will stay as account ID until node ID becomes a reality to reduce the S3 costs.
@@ -650,11 +688,11 @@ Finally, a topic message lookup table was added to optimize finding topic messag
 ## [v0.81](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.81.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: JUNE 1, 2023**
+  **MAINNET UPDATE COMPLETED: JUNE 1, 2023**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: MAY 24, 2023**
+  **TESTNET UPDATE COMPLETED: MAY 24, 2023**
 </Check>
 
 This release comes with a number of improvements to support the JSON-RPC Relay. We now support alias and EVM address lookups for the `account.id` parameter on the balances endpoint. We optimized the transaction nonce filtering in `/api/v1/contracts/{id}/results` by denormalizing the data. Finally, an issue with empty `function_parameters` in `/api/v1/contracts/results/{id}` response was addressed.
@@ -666,11 +704,11 @@ Other areas of improvement include improving documentation around disaster recov
 ## [v0.80](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.80.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: MAY 17, 2023**
+  **MAINNET UPDATE COMPLETED: MAY 17, 2023**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: MAY 11, 2023**
+  **TESTNET UPDATE COMPLETED: MAY 11, 2023**
 </Check>
 
 Work continues on [HIP-584](https://hips.hedera.com/HIP/hip-584.html) with this release the first to support non-static contract state reads for non-precompile functions. Please see the Swagger UI [table](https://github.com/hashgraph/hedera-mirror-node/pull/5949/files) for `/api/v1/contracts/call` for a breakdown of which functionality is supported in what release. More estimate gas functionality was copied from services code to make progress on estimation. A new stacked state frame functionality was added to be used in the future to support contract writes and cached reads.
@@ -682,11 +720,11 @@ Finally, there were a large number of bug fixes and performance improvements. Se
 ## [v0.79](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.79.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: MAY 9, 2023**
+  **MAINNET UPDATE COMPLETED: MAY 9, 2023**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: MAY 2, 2023**
+  **TESTNET UPDATE COMPLETED: MAY 2, 2023**
 </Check>
 
 [HIP-584](https://hips.hedera.com/HIP/hip-584.html) EVM archive node saw further progress this release with a focus on testing and establishing the foundation for estimate gas functionality in the next release. While consensus nodes undergo a modularization effort that will pay dividends down the road, the archive node needs functionality for estimate gas before that process could be completed. To make progress on HIP-584, the necessary EVM logic was temporarily copied from consensus nodes into the mirror node web3 module. A large focus was placed on increasing acceptance test coverage for contract call with precompiles.
@@ -706,11 +744,11 @@ There is a [bug](https://github.com/hashgraph/hedera-mirror-node/issues/5944) in
 ## [v0.78](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.78.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: APRIL 21, 2023**
+  **MAINNET UPDATE COMPLETED: APRIL 21, 2023**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: APRIL 13, 2023**
+  **TESTNET UPDATE COMPLETED: APRIL 13, 2023**
 </Check>
 
 [HIP-584](https://hips.hedera.com/HIP/hip-584.html) Mirror Evm Archive Node now has token precompile support. This was the last major piece of functionality needed for the `/api/v1/contracts/call` to be considered `eth_call` equivalent. The new API was added to the REST API's OpenAPI documentation so that it appears on our [Swagger UI](https://mainnet.mirrornode.hedera.com/api/v1/docs). A number of performance optimizations were worked on to make it scalable as well as various test improvements to verify its correctness. Various bugs were addressed including the proper handling of reverts. In the next few releases, we plan to fine tune contract call and implement contract gas estimation.
@@ -724,11 +762,11 @@ There were a few important bugs fixed in this release that are worth noting. A f
 ## [v0.77](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.77.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: APRIL 4, 2023**
+  **MAINNET UPDATE COMPLETED: APRIL 4, 2023**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: MARCH 29, 2023**
+  **TESTNET UPDATE COMPLETED: MARCH 29, 2023**
 </Check>
 
 This release fixes the tracking of NFT balances. Historically, these came from the balance file sent by the consensus nodes every 15 minutes. When we started tracking the live fungible token balances and moved away from using this balance file we unfortunately broke the NFT balance calculation. We not only fixed the issue but went ahead and took the time to track the up-to-date NFT balance as well.
@@ -740,11 +778,11 @@ The `/api/v1/contracts/{id}/state` REST API shows the current state of a contrac
 ## [v0.76](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.76.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: MARCH 23, 2023**
+  **MAINNET UPDATE COMPLETED: MARCH 23, 2023**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: MARCH 13, 2023**
+  **TESTNET UPDATE COMPLETED: MARCH 13, 2023**
 </Check>
 
 The new `/api/v1/contracts/call` REST API as specified in [HIP-584](https://hips.hedera.com/HIP/hip-584.html) is finally ready for initial production use. This release adds support for rate limiting the API with an initial value of 100 requests per second per instance. Tags were added to the gas per second metric to indicate if the request was a call, an estimate, or resulted in an error for increased observability. Various bug fixes were also addressed.
@@ -783,7 +821,7 @@ kubectl apply --server-side --force-conflicts=true -f https://raw.githubusercont
 ## [v0.75](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.75.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: MARCH 2, 2023**
+  **MAINNET UPDATE COMPLETED: MARCH 2, 2023**
 </Check>
 
 Work continues on [HIP-584](https://hips.hedera.com/HIP/hip-584.html) to get it closer to production ready for simple contract calls. Caching logic was added to the repository layer to optimize its capability along with performance tests to verify those improvements. A metric was added to track the gas per second being used along with various other bug fixes.
@@ -795,11 +833,11 @@ Finally, there were a number of query optimizations as part of our Citus effort.
 ## [v0.74](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.74.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: FEBRUARY 18, 2023**
+  **MAINNET UPDATE COMPLETED: FEBRUARY 18, 2023**
 </Check>
 
 <Check>
-**MAINNET UPDATE COMPLETED: FEBRUARY 14, 2023**
+  **MAINNET UPDATE COMPLETED: FEBRUARY 14, 2023**
 </Check>
 
 This release switches the testnet bucket to the new one created for the [testnet reset](/hedera/networks/testnet#test-network-resets) that occurred on January 26, 2023. It also updates the address book to reflect the additional nodes added to testnet since the last reset. If you're running a testnet mirror node, please see the [reset instructions](https://github.com/hashgraph/hedera-mirror-node/blob/main/docs/database.md#reset) for help getting your node updated.
@@ -811,11 +849,11 @@ Finally, a number of query optimizations were implemented for Citus while ensuri
 ## [**v0.73**](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.73.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: FEBRUARY 10, 2023**
+  **MAINNET UPDATE COMPLETED: FEBRUARY 10, 2023**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: FEBRUARY 3, 2022**
+  **TESTNET UPDATE COMPLETED: FEBRUARY 3, 2022**
 </Check>
 
 This release is the first one with support for [HIP-584](https://hips.hedera.com/HIP/hip-584.html) EVM Archive Node. HIP-584 allows mirror nodes to act as a read only EVM for free execution of smart contracts. This new feature is considered alpha with much of the work still to be implemented like support for precompiled contracts, gas estimation, etc. This functionality requires the mirror node to be configured to ingest the optional traceability sidecar files and it requires a network where those files are generated. Currently only previewnet has contract traceability enabled.
@@ -827,11 +865,11 @@ The remaining work targeted significant testing improvements and bug fixes. Our 
 ## [**v0.72**](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.72.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: JANUARY 25, 2022**
+  **MAINNET UPDATE COMPLETED: JANUARY 25, 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: JANUARY 18, 2022**
+  **TESTNET UPDATE COMPLETED: JANUARY 18, 2022**
 </Check>
 
 This release is a smaller release as most of the team took time off for the holidays. Still, we managed to implement [HIP-583](https://hips.hedera.com/HIP/hip-583.html) Expand alias support in CryptoCreate & CryptoTransfer Transactions. We now allow hollow accounts to be later finalized into a contract when it is fully created.
@@ -843,7 +881,7 @@ There were also a number of bug fixes in this release, mainly focused on fixing 
 ## [v0.71](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.71.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: JANUARY 19, 2023**
+  **MAINNET UPDATE COMPLETED: JANUARY 19, 2023**
 </Check>
 
 As of this release, all account and token balances in the REST API will reflect their real time balance information. Historically, the mirror node has relied upon the balance file uploaded by consensus nodes every 15 minutes for its balance information. We've been working towards this milestone for many releases gradually rolling out real-time balance tracking to more entities and more APIs. This release completes this migration with the addition of real time token balances to both the accounts and the balances REST APIs.
@@ -852,7 +890,7 @@ The mirror node now implements support for [HIP-583](https://hips.hedera.com/HIP
 
 This release completes the migration from Maven to Gradle for our build process. A lot of work has been put into the new build to improve its performance and stability both locally and in continuous integration (CI). GitHub Actions workflows have been consolidated from one workflow per module to a single Gradle build workflow with a matrix strategy running them in parallel for each module and database schema. This greatly simplifies the workflow configuration making it easier to maintain and debug.
 
-We continue to make progress on our Citus exploration. The v2 schema for Citus now does timestamp based partitioning of data and automates this process via pg\_cron. A Citus specific environment was created and we're currently conducting performance tests against it at scale to verify it meets our requirements.
+We continue to make progress on our Citus exploration. The v2 schema for Citus now does timestamp based partitioning of data and automates this process via pg_cron. A Citus specific environment was created and we're currently conducting performance tests against it at scale to verify it meets our requirements.
 
 This release adds automation to keep our GCP Marketplace application up to date with each release. While not fully automatic due to the manual nature of Marketplace version submission, now any new production tag will trigger the generation and verification of the marketplace images.
 
@@ -861,11 +899,11 @@ This was a big release and there were a lot of other various improvements and fi
 ## [v0.70](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.70.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: DECEMBER 29, 2022**
+  **MAINNET UPDATE COMPLETED: DECEMBER 29, 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: DECEMBER 14, 2022**
+  **TESTNET UPDATE COMPLETED: DECEMBER 14, 2022**
 </Check>
 
 As part of [HIP-406](https://hips.hedera.com/HIP/hip-406.html), the mirror node is adding a new account staking rewards REST API. This API will show the staking rewards paid to an account over time. The mirror node now also shows staking reward transfers in the transaction REST APIs (e.g. `/api/v1/transactions`, `/api/v1/transactions/{id}`, and the list of transactions in `/api/v1/accounts/{id}`). This can be useful to show which transaction involving your account after the staking period ended triggered the lazy reward payout.
@@ -892,11 +930,11 @@ This release makes progress on being able to execute contract calls on the mirro
 ## [v0.69](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.69.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: DECEMBER 5, 2022**
+  **MAINNET UPDATE COMPLETED: DECEMBER 5, 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: NOVEMBER 29, 2022**
+  **TESTNET UPDATE COMPLETED: NOVEMBER 29, 2022**
 </Check>
 
 As noted in previous releases, [HIP-367](https://hips.hedera.com/hip/hip-367) is deprecating the token relationship information returned from HAPI queries. In this release, its mirror node replacement is now feature complete. We now track and show the current fungible token balance in the token relationships API instead of relying upon the 15 minute balance export from consensus nodes. In a future release, the accounts and balances REST APIs will be updated to show the current fungible token balance.
@@ -910,11 +948,11 @@ We continue to make progress on converting our build process to Gradle. This rel
 ## [v0.68](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.68.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: NOVEMBER 18, 2022**
+  **MAINNET UPDATE COMPLETED: NOVEMBER 18, 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: NOVEMBER 18, 2022**
+  **TESTNET UPDATE COMPLETED: NOVEMBER 18, 2022**
 </Check>
 
 Besides the usual round of bug fixes, this release focuses on some internal enhancements to lay the groundwork for some upcoming features. We now track and persist the current fungible token balance in the database. This information is not yet exposed on any API but will be rolled out to the token relationships, accounts and balances REST APIs in the near future.
@@ -926,11 +964,11 @@ Finally, we implemented initial Gradle support to improve build times and provid
 ## [v0.67](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.67.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: NOVEMBER 10, 2022**
+  **MAINNET UPDATE COMPLETED: NOVEMBER 10, 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: NOVEMBER 10, 2022**
+  **TESTNET UPDATE COMPLETED: NOVEMBER 10, 2022**
 </Check>
 
 [HIP-367](https://hips.hedera.com/hip/hip-367) deprecated the list of token balances for an account returned via HAPI. The mirror node has been working on its replacement for a few releases by [storing](https://github.com/hashgraph/hedera-mirror-node/issues/4030) the current account balance, [combining](https://github.com/hashgraph/hedera-mirror-node/issues/4150) contract and entity tables, and [adding a history table](https://github.com/hashgraph/hedera-mirror-node/issues/3251) for `token_account`. This work has paved the way for a new token relationships REST API that will list all fungible and non-fungible tokens associated with a particular account. This API also returns some metadata like balance, KYC status, freeze status, and whether it's an automatic association or not. Currently the fungible token balance being returned is from the 15 minute account balance file. We are [actively](https://github.com/hashgraph/hedera-mirror-node/issues/4402) working towards tracking the real-time fungible token balance and it will be updated to reflect that in a future release.
@@ -979,11 +1017,11 @@ On the testing front, we enhanced various test and monitoring tools to add suppo
 ## [v0.66](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.66.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: OCTOBER 24, 2022**
+  **MAINNET UPDATE COMPLETED: OCTOBER 24, 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: OCTOBER 17, 2022**
+  **TESTNET UPDATE COMPLETED: OCTOBER 17, 2022**
 </Check>
 
 Continuing our goal of having up to date balances everywhere, this release now shows the current hbar balance on the balances REST API. If you provide a `timestamp` parameter, it will fallback to the previous behavior and use the 15 minute balance file. This allows us to continue to provide a historical view of your balance over time, while also showing the latest balance if no specific time range is requested. Live fungible token balance is actively being worked on for an upcoming release.
@@ -1025,11 +1063,11 @@ If you're writing stream files to disk after downloading by enabling the `writeF
 ## [v0.65](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.65.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: OCTOBER 11, 2022**
+  **MAINNET UPDATE COMPLETED: OCTOBER 11, 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: OCTOBER 6, 2022**
+  **TESTNET UPDATE COMPLETED: OCTOBER 6, 2022**
 </Check>
 
 The mirror node now calculates consensus using the staking weight of all the nodes as outlined in [HIP-406](https://hips.hedera.com/HIP/hip-406.html). If staking is not yet activated, it falls back to the previous behavior of counting each node as `1/N` weight where `N` is the number of consensus nodes running on the network. The `/api/v1/accounts` and `/api/v1/accounts/{id}`REST APIs now expose a `pending_reward` field that provides an estimate of the staking reward payout in tinybars as of the last staking period. The `/api/v1/network/supply` REST API updated its configured list of unreleased supply accounts to accurately reflect the separation of accounts done for staking purposes by Hedera.
@@ -1072,11 +1110,11 @@ The Rosetta module saw a large number of improvements this release. Rosetta now 
 ## [v0.64](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.64.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: SEPTEMBER 26 2022**
+  **MAINNET UPDATE COMPLETED: SEPTEMBER 26 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: SEPTEMBER 12, 2022**
+  **TESTNET UPDATE COMPLETED: SEPTEMBER 12, 2022**
 </Check>
 
 In the last release, we began keeping track of the current balance of every account and contract instead of solely relying upon the balance file written every 15 minutes by consensus nodes. In this release, we now show this up-to-date balance on the `/api/v1/accounts` and `/api/v1/accounts/{id}` REST APIs in the existing `balance` field. Token balances and the balances REST API still shows the balance information from the 15 minute balance file. In a future release, we'll look at changing those to track the current balance.
@@ -1088,11 +1126,11 @@ The [reconciliation](https://github.com/hashgraph/hedera-mirror-node/tree/main/d
 ## [v0.63](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.63.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: SEPTEMBER 7 2022**
+  **MAINNET UPDATE COMPLETED: SEPTEMBER 7 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: SEPTEMBER 2, 2022**
+  **TESTNET UPDATE COMPLETED: SEPTEMBER 2, 2022**
 </Check>
 
 This release adds a highly requested feature: the mirror node now tracks the current account balance. Previously, the mirror node would store balance information whose source was a balance file that consensus nodes generate and upload every 15 minutes. As a result, balance information was always behind by up to 15 minutes for active accounts. We were able to figure out a way to track this information at scale with SQL in this release. The next release will actually expose this up to date account balance information on both `/api/v1/accounts` or `/api/v1/accounts/{id}`. In future releases, will look at adding live balances to `/api/v1/balances` when no timestamp parameter is provided and track up to date token balances.
@@ -1104,11 +1142,11 @@ The network supply REST API saw an update to adjust the unreleased supply accoun
 ## [v0.62](https://github.com/hashgraph/hedera-mirror-node/releases?page=2)
 
 <Check>
-**MAINNET UPDATE COMPLETED: AUGUST 29, 2022**
+  **MAINNET UPDATE COMPLETED: AUGUST 29, 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: AUGUST 22, 2022**
+  **TESTNET UPDATE COMPLETED: AUGUST 22, 2022**
 </Check>
 
 Mirror Node 0.62 saw [HIP-406](https://hips.hedera.com/HIP/hip-406.html) staking related improvements to its REST API and partial support for HIP-513 contract traceability.
@@ -1147,11 +1185,11 @@ In a recent release, we added the `stake_total` field to the `/api/v1/network/no
 ## [v0.61](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.61.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: AUGUST 2, 2022**
+  **MAINNET UPDATE COMPLETED: AUGUST 2, 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: JULY 27, 2022**
+  **TESTNET UPDATE COMPLETED: JULY 27, 2022**
 </Check>
 
 This release adds initial support for [HIP-513](https://hips.hedera.com/hip/hip-513) Smart Contract Traceability Extension. Contract traceability information is now available inside an optional sidecar file uploaded separately to cloud storage. Mirror node operators can choose whether to download this extra information by configuring the `hedera.mirror.importer.parser.record.sidecar` properties on the importer. By default, sidecar files will not be downloaded. Enabling it will permit contract state, actions, and bytecode data to be persisted by the mirror node. HIP-513 support is incomplete in this release and the next release will enable full persistence of all sidecar types.
@@ -1165,11 +1203,11 @@ The monitor components saw an option added to retrieve the address book on start
 ## [v0.60](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.60.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: JULY 18, 2022**
+  **MAINNET UPDATE COMPLETED: JULY 18, 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: JULY 14, 2022**
+  **TESTNET UPDATE COMPLETED: JULY 14, 2022**
 </Check>
 
 The two big features of this release are support for a data retention period and HIP-351 pseudorandom number generation.
@@ -1183,7 +1221,7 @@ There were various other improvements in this release. Block numbers are now mig
 ## [v0.59](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.59.0)
 
 <Check>
-**TESTNET UPDATE COMPLETED: JUNE 29, 2022**
+  **TESTNET UPDATE COMPLETED: JUNE 29, 2022**
 </Check>
 
 The previous release saw support for the persistence of [HIP-406](https://hips.hedera.com/HIP/hip-406.html) staking-related data. Staking persistence saw further fine-tuning in this release to adapt to changes in the `NodeStakeUpdateTransaction` protobuf. The `decline_reward`, `staked_account_id`, `staked_node_id` fields were added to `/api/v1/accounts` and `/api/v1/accounts/{id}` to show account-level staking properties. We also added staking related fields to the existing `/api/v1/network/nodes` REST API (see example below).
@@ -1231,11 +1269,11 @@ Rosetta saw a number of improvements this release to better align it with the Ro
 ## [v0.58](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.58.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: JUNE 22, 2022**
+  **MAINNET UPDATE COMPLETED: JUNE 22, 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: JUNE 16, 2022**
+  **TESTNET UPDATE COMPLETED: JUNE 16, 2022**
 </Check>
 
 This release contains support for HIP-406 Staking, HIP-410 Wrapped Ethereum Transaction, and HIP-482 JSON-RPC Relay as well as a long overdue upgrade to Java 17.
@@ -1271,11 +1309,11 @@ Since mirror node's inception in 2019, it has used Java 11 to build and run due 
 ## [v0.57](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.57.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: MAY 25, 2022**
+  **MAINNET UPDATE COMPLETED: MAY 25, 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: MAY 25, 2022**
+  **TESTNET UPDATE COMPLETED: MAY 25, 2022**
 </Check>
 
 This release is focused on adding the necessary data and APIs needed for the JSON-RPC Relay defined in [HIP-482](https://hips.hedera.com/hip/hip-482). The JSON-RPC Relay implements the Ethereum JSON-RPC [standard](https://playground.open-rpc.org/?schemaUrl=https://raw.githubusercontent.com/ethereum/eth1.0-apis/assembled-spec/openrpc.json) and relays [HIP-410 Ethereum transactions](https://hips.hedera.com/HIP/hip-410) to consensus nodes. Since the concept of a block is crucial for JSON-RPC APIs, this release also contains the implementation of [HIP-415 Introduction of Blocks](https://hips.hedera.com/hip/hip-415).
@@ -1348,7 +1386,7 @@ A number of changes were made in support of [HIP-410 Ethereum Transactions](http
 }
 ```
 
-*Note: Existing fields omitted for brevity.*
+_Note: Existing fields omitted for brevity._
 
 A new exchange rate REST API `/api/v1/network/exchangerate` was added that returns the [exchange rate](https://github.com/hashgraph/hedera-protobufs/blob/main/services/exchange_rate.proto) network file stored in `0.0.112`. It supports a `timestamp` parameter to retrieve the exchange rate at a certain time in the past.
 
@@ -1375,11 +1413,11 @@ Finally, this releases completes our implementation of [HIP-423 Long Term Schedu
 ## [v0.56](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.56.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: MAY 18, 2022**
+  **MAINNET UPDATE COMPLETED: MAY 18, 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: MAY 17, 2022**
+  **TESTNET UPDATE COMPLETED: MAY 17, 2022**
 </Check>
 
 This is a big release with support for six different Hedera Improvement Proposals. Most of these changes are on the ingest side of things and future releases will work on adding them to our APIs.
@@ -1405,7 +1443,7 @@ The migrations in this release are estimated to take up to 2 hours against a mai
 ## [v0.55](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.55.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: MAY 4, 2022**
+  **MAINNET UPDATE COMPLETED: MAY 4, 2022**
 </Check>
 
 This release is mainly focused on finishing out our support for [HIP-336](https://hips.hedera.com/hip/hip-336) Approval and Allowance API for Tokens. We added support for the new `CryptoDeleteAllowance` transaction and removed support for the `CryptoAdjustAllowance` transaction that didn't make it into the final design. NFT allowances are tracked at the NFT transfer granularity allowing for up to date allowance information on the mirror node. Current spender information will show up in both `/api/v1/accounts/{id}/nfts` and `/api/v1/tokens/{id}/nfts` REST APIs. We also added the `is_approval` flag to APIs that show transfers.
@@ -1417,11 +1455,11 @@ We also updated our [GCP Marketplace](https://console.cloud.google.com/marketpla
 ## [v0.54](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.54.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: APRIL 25, 2022**
+  **MAINNET UPDATE COMPLETED: APRIL 25, 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: APRIL 19, 2022**
+  **TESTNET UPDATE COMPLETED: APRIL 19, 2022**
 </Check>
 
 This release adds support for three new REST APIs and four HIPs.
@@ -1532,11 +1570,11 @@ This release has a long migration that is expected to take around 75 minutes to 
 ## [v0.53](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.53.1)
 
 <Check>
-**MAINNET UPDATE COMPLETED: APRIL 7, 2022**
+  **MAINNET UPDATE COMPLETED: APRIL 7, 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: MARCH 29, 2022**
+  **TESTNET UPDATE COMPLETED: MARCH 29, 2022**
 </Check>
 
 This release is mainly focused around the area of data integrity and ensuring the data in the mirror node is consistent with consensus nodes. To this end, we added an errata database migration that only runs for mainnet and corrects three [known issues](https://github.com/hashgraph/hedera-mirror-node/blob/main/docs/database.md#errata) that impacted the stream files. The state of the consensus nodes was never impacted, only the externalization of these changes to the stream files that the mirror node consumes.
@@ -1554,11 +1592,11 @@ This release contains a couple medium sized database migrations to correct the e
 ## [v0.52](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.52.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: MARCH 18, 2022**
+  **MAINNET UPDATE COMPLETED: MARCH 18, 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: MARCH 15, 2022**
+  **TESTNET UPDATE COMPLETED: MARCH 15, 2022**
 </Check>
 
 [HIP-331](https://hips.hedera.com/HIP/hip-331.html) is a community contributed improvement proposal requesting the addition of a new REST API to retrieve an account's list of owned non-fungible tokens (NFTs). The mirror node has an existing `/api/v1/tokens/{tokenId}/nfts` API to retrieve all NFTs for a given token, but it didn't satisfy the requirement to show NFTs across token classes. This release adds the new `/api/v1/accounts/{accountId}/nfts` API to satisfy this need. It is our first API with multiple query parameters required for paging and as such has a few restrictions around their use. Please see the OpenAPI [description](https://github.com/hashgraph/hedera-mirror-node/blob/21c6c464f77d555619af5955843e7d798fcd17b4/hedera-mirror-rest/api/v1/openapi.yml#L51) for this API for further details.
@@ -1602,11 +1640,11 @@ We continue to fine tune our Rosetta implementation with a number of performance
 ## [v0.51](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.51.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: FEBRUARY 28, 2022**
+  **MAINNET UPDATE COMPLETED: FEBRUARY 28, 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: FEBRUARY 25, 2022**
+  **TESTNET UPDATE COMPLETED: FEBRUARY 25, 2022**
 </Check>
 
 This is a smaller release focusing on observability improvements and Rosetta API fixes.
@@ -1618,11 +1656,11 @@ For the Rosetta API, we added a workaround for the missing disappearing token tr
 ## [v0.50](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.50.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: FEBRUARY 23, 2022**
+  **MAINNET UPDATE COMPLETED: FEBRUARY 23, 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: FEBRUARY 15, 2022**
+  **TESTNET UPDATE COMPLETED: FEBRUARY 15, 2022**
 </Check>
 
 This release adds support for three new improvement proposals: HIP-260 Smart Contract Traceability, HIP-329 CREATE2 Opcode, and HIP-336 Allowance APIs. It also updates the REST API to reflect the latest phases of HIP-226 and HIP-227 and updates the Rosetta API for HIP-31.
@@ -1666,11 +1704,11 @@ As part of HIP-329 CREATE2, we renamed the existing `solidity_address` in the co
 ## [v0.49](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.49.1)
 
 <Check>
-**MAINNET UPDATE COMPLETED: FEBRUARY 15, 2022**
+  **MAINNET UPDATE COMPLETED: FEBRUARY 15, 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: FEBRUARY 4, 2022**
+  **TESTNET UPDATE COMPLETED: FEBRUARY 4, 2022**
 </Check>
 
 This release implements three Hedera Improvement Proposals (HIPs) and upgrades the mirror node database to the latest version.
@@ -1719,11 +1757,11 @@ A lot of testing was done to ensure that PostgreSQL 14 functions correctly with 
 ## [v0.48](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.48.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: JANUARY 26, 2022**
+  **MAINNET UPDATE COMPLETED: JANUARY 26, 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: JANUARY 18, 2022**
+  **TESTNET UPDATE COMPLETED: JANUARY 18, 2022**
 </Check>
 
 [HIP-206](https://hips.hedera.com/hip/hip-206) adds a parent consensus timestamp to the transaction record for internal transactions that occur like HTS precompiles invoked from a smart contract. To round out the `nonce` support in the last release we added `parent_consensus_timestamp` to `/api/v1/accounts/{id}` and `/api/v1/transactions`. This field helps define the parent/child relationships between transactions.
@@ -1787,11 +1825,11 @@ kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-oper
 ## [v0.47](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.47.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: JANUARY 3, 2022**
+  **MAINNET UPDATE COMPLETED: JANUARY 3, 2022**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: DECEMBER 30, 2021**
+  **TESTNET UPDATE COMPLETED: DECEMBER 30, 2021**
 </Check>
 
 This release continues the focus on Smart Contracts 2.0. The mirror node is useful for debugging a smart contract execution and our focus has been on providing APIs to make developers' lives easier. To that end, we added support for transaction ID nonce, a new contract logs REST API, and a new web3 API component.
@@ -1805,18 +1843,18 @@ The new `/api/v1/contracts/{id}/results/logs` REST API provides a search API to 
 ## [v0.46](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.46.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: DECEMBER 20, 2021**
+  **MAINNET UPDATE COMPLETED: DECEMBER 20, 2021**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: DECEMBER 17, 2021**
+  **TESTNET UPDATE COMPLETED: DECEMBER 17, 2021**
 </Check>
 
 0.46 is a feature-packed release and includes support for three new HIPs, three new REST APIs, a redesigned monitor dashboard, a new BDD test suite for the Rosetta API, and one new module. Let’s dive in!
 
 [HIP-222](https://hips.hedera.com/hip/hip-222) adds support for ECDSA (secp256k1) keys to the Hedera network to help improve the developer experience of migrating a dApp to Hedera. The mirror node was updated to be able to parse and store the new key type along with its corresponding new signature. Since this key type is also considered a primitive key like ED25519 (e.g. not a complex key list or threshold key), you can now search for accounts and tokens by their 66-character ECDSA public key. As an added bonus, we now also allow searching by complex public keys that are a key list or threshold key with exactly one primitive key.
 
-[HIP-32](https://hips.hedera.com/hip/hip-32) auto-account creation lets a new user receive ℏ via a CryptoTransfer *without* having already created an account on the network. The mirror node was updated to store the user's alias and map transfers that contain an alias to the newly created account ID. In an upcoming release, we'll add the ability to query for an account by its alias.
+[HIP-32](https://hips.hedera.com/hip/hip-32) auto-account creation lets a new user receive ℏ via a CryptoTransfer _without_ having already created an account on the network. The mirror node was updated to store the user's alias and map transfers that contain an alias to the newly created account ID. In an upcoming release, we'll add the ability to query for an account by its alias.
 
 [HIP-206](https://hips.hedera.com/hip/hip-206) integrates the Hedera Token Service (HTS) into the Hedera Smart Contract Service (HSCS), allowing contracts to transfer, mint, burn, associate, and dissociate tokens programmatically. While support for consensus nodes is still being worked on, the mirror node now has preliminary support for HTS precompiled transactions. This adds a new `nonce` field to the transaction ID as well as the concept of parent/child relationships between transactions. In an upcoming release, we'll add `nonce` support and expose parent/child relationships to the REST API.
 
@@ -1826,20 +1864,20 @@ The REST API saw three new REST APIs created to support the new Smart Contracts 
 
 ```json
 {
-    "amount": 30,
-    "block_hash": "0x6ceecd8bb224da491",
-    "block_number": 17,
-    "call_result": "0x0606",
-    "contract_id": "0.0.5001",
-    "created_contract_ids": ["0.0.7001"],
-    "error_message": "",
-    "from": "0x0000000000000000000000000000000000001f41",
-    "function_parameters": "0x0707",
-    "gas_limit": 987654,
-    "gas_used": 123,
-    "hash": "0x3531396130303866616264653464",
-    "timestamp": "167654.000123456",
-    "to": "0x0000000000000000000000000000000000001389"
+  "amount": 30,
+  "block_hash": "0x6ceecd8bb224da491",
+  "block_number": 17,
+  "call_result": "0x0606",
+  "contract_id": "0.0.5001",
+  "created_contract_ids": ["0.0.7001"],
+  "error_message": "",
+  "from": "0x0000000000000000000000000000000000001f41",
+  "function_parameters": "0x0707",
+  "gas_limit": 987654,
+  "gas_used": 123,
+  "hash": "0x3531396130303866616264653464",
+  "timestamp": "167654.000123456",
+  "to": "0x0000000000000000000000000000000000001389"
 }
 ```
 
@@ -1852,11 +1890,11 @@ Due to the aforementioned features, we had to make changes to the database schem
 ## [v0.45.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.45.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: DECEMBER 8, 2021**
+  **MAINNET UPDATE COMPLETED: DECEMBER 8, 2021**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: DECEMBER 6, 2021**
+  **TESTNET UPDATE COMPLETED: DECEMBER 6, 2021**
 </Check>
 
 The mirror node now captures the full history of changes that occur to accounts and contracts over time. Prior to this, the mirror node would only maintain the current state of a Hedera entity. With this change, all create, update and delete transactions that occur for an entity will cause a snapshot to be created to represent how it appeared at each of those points in time. This information can be used to query the API for an entity at a particular consensus timestamp in the past.
@@ -1882,11 +1920,11 @@ The maximum number of rows the REST API can return was changed from 500 to 100. 
 ## [v0.43.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.43.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: NOVEMBER 18, 2021**
+  **MAINNET UPDATE COMPLETED: NOVEMBER 18, 2021**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: NOVEMBER 12, 2021**
+  **TESTNET UPDATE COMPLETED: NOVEMBER 12, 2021**
 </Check>
 
 ### Smart Contracts
@@ -1934,11 +1972,11 @@ As is usually the case, we took the time to optimize various pieces of the syste
 ## [v0.42.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.42.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: OCTOBER 22, 2021**
+  **MAINNET UPDATE COMPLETED: OCTOBER 22, 2021**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: OCTOBER 18, 2021**
+  **TESTNET UPDATE COMPLETED: OCTOBER 18, 2021**
 </Check>
 
 This release saw a lot of improvements to the mirror node's Hedera Token Service functionality. Support for [HIP-24](https://github.com/hashgraph/hedera-improvement-proposal/blob/master/HIP/hip-24.md) pause feature on Hedera Token Service was completed. The importer can ingest the new token pause and unpause transaction types and update the token appropriately. Likewise, the token REST API was updated to show the new pause key and pause status.
@@ -1962,11 +2000,11 @@ Continuing our theme of improving the Rosetta API, NFT support was added to the 
 ## [v0.41.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.41.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: OCTOBER 6, 2021**
+  **MAINNET UPDATE COMPLETED: OCTOBER 6, 2021**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: SEPTEMBER 30, 2021**
+  **TESTNET UPDATE COMPLETED: SEPTEMBER 30, 2021**
 </Check>
 
 This release focuses our efforts on improving our [Rosetta API](https://www.rosetta-api.org/) and making it ready for production use. A new Rosetta Helm chart was added for production deployments to Kubernetes. Observability improvements include health probes, metrics, request logs, alerts, and a Grafana dashboard. Postman integration tests were added to verify post-deployment functionality. Finally, a few important bugs were fixed including missing peer IP addresses and a token balance reconciliation failure.
@@ -1978,11 +2016,11 @@ Other enhancements include revalidating main nodes periodically in the monitor a
 ## [v0.40.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.40.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: SEPTEMBER 27, 2021**
+  **MAINNET UPDATE COMPLETED: SEPTEMBER 27, 2021**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: SEPTEMBER 16, 2021**
+  **TESTNET UPDATE COMPLETED: SEPTEMBER 16, 2021**
 </Check>
 
 This release adds support for [HIP-23](https://github.com/hashgraph/hedera-improvement-proposal/blob/master/HIP/hip-23.md) Automatic Token Association. This feature allows users to opt-in to receiving fungible or non-fungible tokens automatically as part of a transfer without having to be previously associated with the token. The mirror node now stores these implicitly created associations and returns them via its REST API. Additionally, we show the `max_automatic_token_associations` in the accounts REST API.
@@ -1994,11 +2032,11 @@ On the monitoring side, we enhanced our Grafana dashboards to make them compatib
 ## [v0.39.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.39.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: AUGUST 31, 2021**
+  **MAINNET UPDATE COMPLETED: AUGUST 31, 2021**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: AUGUST 30, 2021**
+  **TESTNET UPDATE COMPLETED: AUGUST 30, 2021**
 </Check>
 
 This release provides compatibility with Consensus Node 0.17 including support for Non-Fungible Tokens (NFTs) and its enhancement to custom fees. For the latter, an NFT creator can set a royalty fee to be charged when fungible value is exchanged for one of their creations and the mirror node has been updated to track this new type of custom fees. Support was also added for effective payer accounts in assessed custom fees and for storing net-of-transfers in fractional fees.
@@ -2010,11 +2048,11 @@ A good amount of bugs were fixed including a crash on REST API startup if the da
 ## [v0.38.1](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.38.1)
 
 <Check>
-**MAINNET UPDATE COMPLETED: AUGUST 17, 2021**
+  **MAINNET UPDATE COMPLETED: AUGUST 17, 2021**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: AUGUST 17, 2021**
+  **TESTNET UPDATE COMPLETED: AUGUST 17, 2021**
 </Check>
 
 This release is a small bug fix release that contains some important fixes for our mirror node monitoring component. We added a new cluster health check to the monitor that takes into account publishing status. The load balancer uses this health check to determine which cluster to route traffic to. The old health check endpoint didn't take into account whether transaction publishing was active or successful and so would not route traffic to the public mirror node during main node upgrades.
@@ -2026,11 +2064,11 @@ There were also a number of other fixes to clean up code and fix tests. We've ma
 ## [v0.38.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.38.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: AUGUST 16, 2021**
+  **MAINNET UPDATE COMPLETED: AUGUST 16, 2021**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: AUGUST 13, 2021**
+  **TESTNET UPDATE COMPLETED: AUGUST 13, 2021**
 </Check>
 
 This release wraps up NFT and custom fee support by adding additional test coverage and fixing any remaining bugs. Specifically, NFT support was added to our monitor tool and our acceptance tests. Custom fees was also added to the acceptance tests and had some bug fixes.
@@ -2046,11 +2084,11 @@ The payer account ID in transaction assessed custom fee REST API response was re
 ## [v0.37.2](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.37.2)
 
 <Check>
-**MAINNET UPDATE COMPLETED: AUGUST 4, 2021**
+  **MAINNET UPDATE COMPLETED: AUGUST 4, 2021**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: AUGUST 5, 2021**
+  **TESTNET UPDATE COMPLETED: AUGUST 5, 2021**
 </Check>
 
 A small bug fix release that addresses some issues with our [HIP-18](https://github.com/hashgraph/hedera-improvement-proposal/blob/master/HIP/hip-18.md) support.
@@ -2058,11 +2096,11 @@ A small bug fix release that addresses some issues with our [HIP-18](https://git
 ## [v0.37.1](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.37.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: JULY 29, 2021**
+  **MAINNET UPDATE COMPLETED: JULY 29, 2021**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: JULY 15, 2021**
+  **TESTNET UPDATE COMPLETED: JULY 15, 2021**
 </Check>
 
 This release broadens our support for [non-fungible tokens](https://github.com/hashgraph/hedera-improvement-proposal/blob/master/HIP/hip-17.md) (NFTs) with new NFT-specific REST APIs. A new API was added to return a list of NFTs for a particular token ID. We also added a new API to return a single NFT by its token ID and serial number. Finally, we added an API to see the transaction history for a particular NFT. In an effort to have more manageable REST API code, we now adopt a more object-oriented approach by utilizing models, view-models and services. Below is an example of the three new APIs:
@@ -2134,7 +2172,7 @@ This release broadens our support for [non-fungible tokens](https://github.com/h
 ## [v0.36.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.36.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: JULY 19, 2021**
+  **MAINNET UPDATE COMPLETED: JULY 19, 2021**
 </Check>
 
 We are happy to [announce](https://hedera.com/blog/now-available-public-mainnet-mirror-node-managed-by-hedera) the availability of a publicly accessible, free-to-use, mainnet Mirror Node operated by the Hedera team. As part of this, we put a large amount of effort into fine-tuning our Kubernetes deployment. We migrated to [Flux 2](https://fluxcd.io/), a GitOps-based deployment tool that allows us to declaratively specify the expected state of the Mirror Node in git and manage our rollouts. You can browse our [deploy branch](https://github.com/hashgraph/hedera-mirror-node/tree/deploy) and see the exact config and versions rolled out to various clusters and environments. The Helm chart was updated to add `PodDisruptionBudgets`, adjust alert rules and other improvements to make it easier to automate the deployment.
@@ -2179,24 +2217,24 @@ git remote set-head origin -a
 
 As part of our optimization to reduce memory usage, we now process some things earlier in the lifecycle. Due to this we had to rename some properties to reflect this change. We also changed the disk structure if you are using the `keepFiles` (now renamed to `writeFiles`) properties to write the stream files to disk after download. It is no longer archived into folders by day. Instead, the folder structure will exactly match the structure in the bucket. This opens the possibility for a mirror node to download and mirror the bucket itself using a S3 compatible API like [MinIO](https://min.io/). Below is a summary of the renamed properties:
 
-* Renamed `hedera.mirror.importer.downloader.balance.keepSignatures` to `hedera.mirror.importer.downloader.balance.writeSignatures`
-* Renamed `hedera.mirror.importer.parser.balance.keepFiles` to `hedera.mirror.importer.downloader.balance.writeFiles`
-* Renamed `hedera.mirror.importer.parser.balance.persistBytes` to `hedera.mirror.importer.downloader.balance.persistBytes`
-* Renamed `hedera.mirror.importer.downloader.event.keepSignatures` to `hedera.mirror.importer.downloader.event.writeSignatures`
-* Renamed `hedera.mirror.importer.parser.event.keepFiles` to `hedera.mirror.importer.downloader.event.writeFiles`
-* Renamed `hedera.mirror.importer.parser.event.persistBytes` to `hedera.mirror.importer.downloader.event.persistBytes`
-* Renamed `hedera.mirror.importer.downloader.record.keepSignatures` to `hedera.mirror.importer.downloader.record.writeSignatures`
-* Renamed `hedera.mirror.importer.parser.record.keepFiles` to `hedera.mirror.importer.downloader.record.writeFiles`
-* Renamed `hedera.mirror.importer.parser.record.persistBytes` to `hedera.mirror.importer.downloader.record.persistBytes`
+- Renamed `hedera.mirror.importer.downloader.balance.keepSignatures` to `hedera.mirror.importer.downloader.balance.writeSignatures`
+- Renamed `hedera.mirror.importer.parser.balance.keepFiles` to `hedera.mirror.importer.downloader.balance.writeFiles`
+- Renamed `hedera.mirror.importer.parser.balance.persistBytes` to `hedera.mirror.importer.downloader.balance.persistBytes`
+- Renamed `hedera.mirror.importer.downloader.event.keepSignatures` to `hedera.mirror.importer.downloader.event.writeSignatures`
+- Renamed `hedera.mirror.importer.parser.event.keepFiles` to `hedera.mirror.importer.downloader.event.writeFiles`
+- Renamed `hedera.mirror.importer.parser.event.persistBytes` to `hedera.mirror.importer.downloader.event.persistBytes`
+- Renamed `hedera.mirror.importer.downloader.record.keepSignatures` to `hedera.mirror.importer.downloader.record.writeSignatures`
+- Renamed `hedera.mirror.importer.parser.record.keepFiles` to `hedera.mirror.importer.downloader.record.writeFiles`
+- Renamed `hedera.mirror.importer.parser.record.persistBytes` to `hedera.mirror.importer.downloader.record.persistBytes`
 
 ## [v0.35.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.35.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: JULY 8, 2021**
+  **MAINNET UPDATE COMPLETED: JULY 8, 2021**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: JUNE 21, 2021**
+  **TESTNET UPDATE COMPLETED: JUNE 21, 2021**
 </Check>
 
 Most of the changes in this release were operational improvements around our Kubernetes deployment. These changes were necessary as we begin to convert more environments from virtual machines to Kubernetes-based. We added our acceptance tests to the Helm chart so that it can trigger automatically during upgrades and verify the deployment was successful. On the importer, we added a new health check to the probes that verifies that stream files are successfully being parsed. And we fixed the importer so that the probes are started before long-running database migrations, allowing us to finally enable its liveness probe. There were a lot of smaller fixes to the charts, so please see the linked PRs for further details.
@@ -2212,11 +2250,11 @@ The REST API maximum and default limit was lowered from 1000 to 500. If you expl
 ## [v0.34.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.34.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: JUNE 16, 2021**
+  **MAINNET UPDATE COMPLETED: JUNE 16, 2021**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: JUNE 11, 2021**
+  **TESTNET UPDATE COMPLETED: JUNE 11, 2021**
 </Check>
 
 In Hedera Mirror Node v0.34.0, we started work on [designing](https://github.com/hashgraph/hedera-mirror-node/blob/master/docs/design/nft.md) support for [NFTs](https://github.com/hashgraph/hedera-improvement-proposal/blob/master/HIP/hip-17.md) that will come in a future Consensus Node release.
@@ -2232,11 +2270,11 @@ We made some operational improvements to our helm chart including alert dependen
 ## [v0.33.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.33.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: JUNE 10, 2021**
+  **MAINNET UPDATE COMPLETED: JUNE 10, 2021**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: MAY 21, 2021**
+  **TESTNET UPDATE COMPLETED: MAY 21, 2021**
 </Check>
 
 This release adds support for HAPI 0.13.2. This brings with it a new address book file format that is more compact and doesn't duplicate IP address and port information. We took the time to adjust our database to reflect the newer format while maintaining compatibility with the older format.
@@ -2248,11 +2286,11 @@ Some internal improvements saw us automating our release process so that version
 ## [v0.32.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.32.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: MAY 19, 2021**
+  **MAINNET UPDATE COMPLETED: MAY 19, 2021**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: MAY 11, 2021**
+  **TESTNET UPDATE COMPLETED: MAY 11, 2021**
 </Check>
 
 In this release we took the time to do some performance optimizations of both the importer and the monitor. If you're using a containerized mirror node, the Java applications now uses more of the available memory that's already been allocated to it. We optimized the size of some internal queues to reduce the likelihood of out of memory errors. And we now use a more efficient streaming method to write entities to the database and avoid large memory allocations. All these combine to greatly reducing overall memory usage and improve overall performance for the importer. The monitor also saw performance improvements to allow it to publish transactions at a rate of 10,000 TPS.
@@ -2264,11 +2302,11 @@ We now expose the raw transaction bytes encoded in Base64 format in the REST API
 ## [v0.31.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.31.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: APRIL 30, 2021**
+  **MAINNET UPDATE COMPLETED: APRIL 30, 2021**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: APRIL 26, 2021**
+  **TESTNET UPDATE COMPLETED: APRIL 26, 2021**
 </Check>
 
 After scheduled transactions were made available in previewnet, we listened to user feedback and further iterated on the design to make it easier to use. This release adds support for this [revised scheduled transactions](https://github.com/hashgraph/hedera-services/blob/master/docs/scheduled-transactions/revised-spec.md) design planned to be released in HAPI v0.13. There was no impact to our REST API format, only the importer needed to be updated to parse and ingest the new proto format. Our monitor API and acceptance tests will be adjusted in the next release once the SDKs add support for the new design.
@@ -2319,11 +2357,11 @@ The REST API also saw some bug fixes including a fix to queries with a credit/de
 ## [v0.29.1](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.29.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: APRIL 5, 2021**
+  **MAINNET UPDATE COMPLETED: APRIL 5, 2021**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: MARCH 26, 2021**
+  **TESTNET UPDATE COMPLETED: MARCH 26, 2021**
 </Check>
 
 This release brings an assortment of under the hood improvements across modules and refinements of multiple REST API's.
@@ -2414,16 +2452,16 @@ The REST API now also supports repeatable `account.id` query parameters when fil
 
 Multiple modules have also seen security and standardization improvements by the addition of more robust automated analysis tools such as `gosec` as-well as the implementation of suggestions from a 3rd party code audit.
 
-This release also saw a step to support the new and improved v2 offerings of the (Java SDK)\[[https://github.com/hashgraph/hedera-sdk-java\\](https://github.com/hashgraph/hedera-sdk-java/)]. Both the monitor module and acceptance tests were updated to use the new SDK and utilize features such as in-built retry and support for scheduled transactions.
+This release also saw a step to support the new and improved v2 offerings of the (Java SDK)[[https://github.com/hashgraph/hedera-sdk-java\\](https://github.com/hashgraph/hedera-sdk-java/)]. Both the monitor module and acceptance tests were updated to use the new SDK and utilize features such as in-built retry and support for scheduled transactions.
 
 ## [v0.28.2](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.28.2)
 
 <Check>
-**MAINNET UPDATE COMPLETED: MARCH 17, 2021**
+  **MAINNET UPDATE COMPLETED: MARCH 17, 2021**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: MARCH 10, 2021**
+  **TESTNET UPDATE COMPLETED: MARCH 10, 2021**
 </Check>
 
 This releases finalizes support for scheduled transactions and HAPI protobuf v0.12. Two new schedule specific REST APIs were added including `/api/v1/schedules` and `/api/v1/schedules/:id`. The former lists all schedules with various filtering options available and the latter returns a specific schedule by its schedule ID.
@@ -2471,11 +2509,11 @@ Other changes include adding an `index` field to `record_file` table to simulate
 ## [0.27.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.27.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: FEBRUARY 22, 2021**
+  **MAINNET UPDATE COMPLETED: FEBRUARY 22, 2021**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: FEBRUARY 11, 2021**
+  **TESTNET UPDATE COMPLETED: FEBRUARY 11, 2021**
 </Check>
 
 This release adds a new REST API component that implements the [Rosetta API](https://www.rosetta-api.org/). The Rosetta API is an open standard for integrating with blockchain-oriented systems. Implementing the Rosetta AP provides a number of advantages. It reduces the time and effort it takes for wallets, exchanges, etc. to integrate with the Hedera network if they have integrated with Rosetta in the past. Even if the systems integrator has not used Rosetta previously, using the Rosetta API in lieu of our separate [REST API](https://docs.hedera.com/guides/docs/mirror-node-api/cryptocurrency-api) might be useful to reduce the friction with using a non-blockchain DLT like Hedera.
@@ -2487,11 +2525,11 @@ We made a concerted effort this release to improve our tests. Most of our flaky 
 ## [v0.26.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.26.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: FEBRUARY 1, 2021**
+  **MAINNET UPDATE COMPLETED: FEBRUARY 1, 2021**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: JANUARY 22, 2021**
+  **TESTNET UPDATE COMPLETED: JANUARY 22, 2021**
 </Check>
 
 This release is mainly focused on adding support for the upcoming features in the main nodes. We added support for the `newTotalSupply` field to the transaction record in HAPI `0.10.0`. We also documented our [design](https://github.com/hashgraph/hedera-mirror-node/blob/master/docs/design/scheduled-transactions.md) for the upcoming [scheduled transactions](https://github.com/hashgraph/hedera-services/blob/master/docs/scheduled-transactions/spec.md) services that's coming in a future release of HAPI. Our next minor version will have preliminary support for that.
@@ -2505,11 +2543,11 @@ We continued our progress on switching to TimescaleDB. We integrated a Timescale
 ## [v0.25.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.25.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: JANUARY 12, 2021**
+  **MAINNET UPDATE COMPLETED: JANUARY 12, 2021**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: JANUARY 8, 2021**
+  **TESTNET UPDATE COMPLETED: JANUARY 8, 2021**
 </Check>
 
 This release saw a slew of enhancements to our new monitoring module. The [monitor](https://github.com/hashgraph/hedera-mirror-node/blob/v0.25.0/docs/monitor.md) is a standalone component that can publish and subscribe to transactions from various Hedera APIs to gauge the health of the system. New in this release is the ability to automatically create entities on startup using a new expression syntax. This is useful to avoid boilerplate configuration and manual entity creation steps that vary per environment.
@@ -2521,11 +2559,11 @@ We made progress towards our goal of replacing PostgreSQL with [TimescaleDB](htt
 ## [v0.24.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.24.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: DECEMBER 28, 2020**
+  **MAINNET UPDATE COMPLETED: DECEMBER 28, 2020**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: DECEMBER 10, 2020**
+  **TESTNET UPDATE COMPLETED: DECEMBER 10, 2020**
 </Check>
 
 This release adds [OpenAPI 3.0](https://swagger.io/specification) specification support to our REST API. The OpenAPI specification is available at `/api/v1/openapi.yml`and serves as a formal specification of our API. Clients can use the specification to shorten the amount of time it takes to integrate with our API by generating code or tests harnesses. It also provides us with a new auto-generated API documentation site viewable at `/api/v1/docs`.
@@ -2537,11 +2575,11 @@ We've enhanced our monitoring tools to provide greater observability into the mi
 ## [v0.23.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.23.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: DECEMBER 2, 2020**
+  **MAINNET UPDATE COMPLETED: DECEMBER 2, 2020**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: NOVEMBER 20, 2020**
+  **TESTNET UPDATE COMPLETED: NOVEMBER 20, 2020**
 </Check>
 
 This release focuses on finalizing our support for the new Hedera Token Service (HTS) provided by the Hedera API [v0.9.0](https://github.com/hashgraph/hedera-services/releases/tag/v0.9.0). There are no new HTS features, just various fixes to make it compatible with the latest protobuf. HTS is currently enabled in previewnet and should be enabled in testnet very soon, so please try it out and let us know if you have any feedback.
@@ -2564,11 +2602,11 @@ We also extended our REST API support to include case insensitive support query 
 ## [v0.21.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.21.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: NOVEMBER 24, 2020**
+  **MAINNET UPDATE COMPLETED: NOVEMBER 24, 2020**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: NOVEMBER 13, 2020**
+  **TESTNET UPDATE COMPLETED: NOVEMBER 13, 2020**
 </Check>
 
 This release continues our focus on the Hedera Token Service (HTS) by adding three new token REST APIs. A token discovery REST API `/api/v1/tokens` shows available tokens on the network. A token REST API `/api/v1/tokens/${tokenId}` shows details for a token on the network. A token supply distribution REST API `/api/v1/tokens/${tokenId}/balances` shows token distribution across accounts. These APIs have already made their way to previewnet so check them out!
@@ -2582,11 +2620,11 @@ We improved our Kubernetes support with AlertManager integration. There are now 
 ## [v0.20.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.20.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: NOVEMBER 11, 2020**
+  **MAINNET UPDATE COMPLETED: NOVEMBER 11, 2020**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: NOVEMBER 3, 2020**
+  **TESTNET UPDATE COMPLETED: NOVEMBER 3, 2020**
 </Check>
 
 This is a big release that contains support for a new HAPI service and whole new runtime component to dramatically improve performance. Due to the magnitude of the changes, it did take us a little longer to mark it as generally available as we wanted to ensure it was tested as much as possible beforehand.
@@ -2602,11 +2640,11 @@ We also added support for the HAPI protobuf [changes](https://hedera.com/blog/ch
 ## [v0.19.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.19.0)
 
 <Check>
-**MAINNET UPDATE COMPLETED: OCTOBER 6, 2020**
+  **MAINNET UPDATE COMPLETED: OCTOBER 6, 2020**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: SEPTEMBER 29, 2020**
+  **TESTNET UPDATE COMPLETED: SEPTEMBER 29, 2020**
 </Check>
 
 This release finishes the State Proof alpha REST API and makes it [generally available](http://www.hedera.com/blog/introducing-state-proof-alpha). As part of this, we made a lot of improvements to the check-state-proof command line tool that queries the API and validates the files locally. We also now store the node account used to verify record file, ensuring greater accuracy as to the provenance of the state proof.
@@ -2618,11 +2656,11 @@ We added proper liveness and readiness probe endpoints for all our components. I
 ## [v0.18.2](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.18.2)
 
 <Check>
-**MAINNET UPDATE COMPLETED: SEPTEMBER 22, 2020**
+  **MAINNET UPDATE COMPLETED: SEPTEMBER 22, 2020**
 </Check>
 
 <Check>
-**TESTNET UPDATE COMPLETED: SEPTEMBER 15, 2020**
+  **TESTNET UPDATE COMPLETED: SEPTEMBER 15, 2020**
 </Check>
 
 Fix two regressions in the 0.18 release train.
@@ -2646,11 +2684,11 @@ The aforementioned `startDate` property does change how the mirror node operator
 ## [v0.17.3](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.17.3)
 
 <Check>
-**MAINNET UPGRADE COMPLETED: SEPTEMBER 14. 2020**
+  **MAINNET UPGRADE COMPLETED: SEPTEMBER 14. 2020**
 </Check>
 
 <Check>
-**TESTNET UPGRADE COMPLETED: SEPTEMBER 3, 2020**
+  **TESTNET UPGRADE COMPLETED: SEPTEMBER 3, 2020**
 </Check>
 
 This release contains the port of a bug fix to better manage the `VertxException: Thread blocked` issue seen in [#945](https://github.com/hashgraph/hedera-mirror-node/issues/945)
@@ -2676,7 +2714,7 @@ Other changes include support for continuous deployment (CD) using [Github Actio
 ## [v0.16.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.16.0)
 
 <Check>
-**TESTNET UPGRADE COMPLETED: AUGUST 18, 2020**
+  **TESTNET UPGRADE COMPLETED: AUGUST 18, 2020**
 </Check>
 
 This release includes the foundation for some larger features to come. Notably, cloud bucket names are now set based on network specifications and users no longer need to explicitly state bucket names for demo, test and main networks. The `record_file` table contents are also expanded to include the start and end consensus timestamps of their containing transactions. The `record_file` table also saw a clean up to remove the path to the file.
@@ -2688,19 +2726,19 @@ Memory improvements were also made in the parser to improve ingestion performanc
 ## [v0.15.3](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.15.3)
 
 <Check>
-**MAINNET UPGRADE COMPLETED: JULY 29, 2020**
+  **MAINNET UPGRADE COMPLETED: JULY 29, 2020**
 </Check>
 
-Works around an issue sending large JSON payloads via pg\_notify by ignoring them for now. This occurs when a consensus message is sent with a message that exceeds 5824 bytes, which is also very close to the protobuf limit.
+Works around an issue sending large JSON payloads via pg_notify by ignoring them for now. This occurs when a consensus message is sent with a message that exceeds 5824 bytes, which is also very close to the protobuf limit.
 
 ## [v0.15.2](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.15.2)
 
 <Check>
-**MAINNET UPGRADE COMPLETED: JULY 29, 2020**
+  **MAINNET UPGRADE COMPLETED: JULY 29, 2020**
 </Check>
 
 <Check>
-**TESTNET UPGRADE COMPLETED: JULY 20, 2020**
+  **TESTNET UPGRADE COMPLETED: JULY 20, 2020**
 </Check>
 
 This release improves the topic message ingest rate that regressed in the previous release. This is just a stop gap and future releases will increase this further.
@@ -2708,11 +2746,11 @@ This release improves the topic message ingest rate that regressed in the previo
 ## [v0.15.1](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.15.1)
 
 <Check>
-**MAINNET UPGRADE COMPLETED: JULY 29, 2020**
+  **MAINNET UPGRADE COMPLETED: JULY 29, 2020**
 </Check>
 
 <Check>
-**TESTNET UPGRADE COMPLETED: JULY 15, 2020**
+  **TESTNET UPGRADE COMPLETED: JULY 15, 2020**
 </Check>
 
 A hot fix release to address two high priority parsing errors with the new consensus message chunk header.
@@ -2720,11 +2758,11 @@ A hot fix release to address two high priority parsing errors with the new conse
 ## [v0.15.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.15.0)
 
 <Check>
-**MAINNET UPGRADE COMPLETED: JULY 29, 2020**
+  **MAINNET UPGRADE COMPLETED: JULY 29, 2020**
 </Check>
 
 <Check>
-**TESTNET UPGRADE COMPLETED: JULY 15, 2020**
+  **TESTNET UPGRADE COMPLETED: JULY 15, 2020**
 </Check>
 
 This release adds support for HCS topic fragmentation that will soon be rolled out to main nodes in the 0.6.0 release. For larger consensus messages that don't fit in the max transaction size of 6144 bytes, a standard chunk info header can be supplied to indicate how that message should be split into smaller messages. The Mirror Node now understands this chunk information and stores it in the database. Additionally, it will return this [data](https://github.com/hashgraph/hedera-mirror-node/blob/a2f69ee1243fbbbfbc133549f9162bfc3a08f464/hedera-mirror-protobuf/src/main/proto/com/hedera/mirror/api/proto/ConsensusService.proto#L58) when subscribing to the topic via the gRPC API. The Java SDK is being updated to automatically split and reconstruct this message as appropriate.
@@ -2734,11 +2772,11 @@ Other changes include optimizations around end to end latency of the gRPC API. T
 ## [v0.14.1](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.14.1)
 
 <Check>
-**MAINNET UPGRADE COMPLETED: JULY 29, 2020**
+  **MAINNET UPGRADE COMPLETED: JULY 29, 2020**
 </Check>
 
 <Check>
-**TESTNET UPGRADE COMPLETED: JULY 15, 2020**
+  **TESTNET UPGRADE COMPLETED: JULY 15, 2020**
 </Check>
 
 This release further optimizes the ingestion rate. Initial tests indicate a 2x to 3x improvement.
@@ -2746,11 +2784,11 @@ This release further optimizes the ingestion rate. Initial tests indicate a 2x t
 ## [v0.14.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.14.0)
 
 <Check>
-**MAINNET UPGRADE COMPLETED: JULY 29, 2020**
+  **MAINNET UPGRADE COMPLETED: JULY 29, 2020**
 </Check>
 
 <Check>
-**TESTNET UPGRADE COMPLETED: JULY 15, 2020**
+  **TESTNET UPGRADE COMPLETED: JULY 15, 2020**
 </Check>
 
 This release is all about performance optimizations. We reworked some of the foreign keys to improve the ingestion performance by a few thousand transactions per second. We also fixed an out of memory issue with the gRPC API and did some optimizations in that area.
@@ -2766,11 +2804,11 @@ We also renamed some tables and columns which would affect you if you directly u
 ## [v0.13.2](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.13.2)
 
 <Check>
-**MAINNET UPGRADE COMPLETED: JULY 2, 2020**
+  **MAINNET UPGRADE COMPLETED: JULY 2, 2020**
 </Check>
 
 <Check>
-**TESTNET UPGRADE COMPLETED: JUNE 23, 2020**
+  **TESTNET UPGRADE COMPLETED: JUNE 23, 2020**
 </Check>
 
 Bug fix release to fix an out of memory issue with the gRPC API.
@@ -2778,11 +2816,11 @@ Bug fix release to fix an out of memory issue with the gRPC API.
 ## [v0.13.1](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.13.1)
 
 <Check>
-**MAINNET UPGRADE COMPLETED: JULY 2, 2020**
+  **MAINNET UPGRADE COMPLETED: JULY 2, 2020**
 </Check>
 
 <Check>
-**TESTNET UPGRADE COMPLETED: JUNE 23, 2020**
+  **TESTNET UPGRADE COMPLETED: JUNE 23, 2020**
 </Check>
 
 Small bug fix release to address grpc NETTY issue blocking acceptance tests
@@ -2790,11 +2828,11 @@ Small bug fix release to address grpc NETTY issue blocking acceptance tests
 ## [v0.13.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.13.0)
 
 <Check>
-**MAINNET UPGRADE COMPLETED: JULY 2, 2020**
+  **MAINNET UPGRADE COMPLETED: JULY 2, 2020**
 </Check>
 
 <Check>
-**TESTNET UPGRADE COMPLETED: JUNE 23, 2020**
+  **TESTNET UPGRADE COMPLETED: JUNE 23, 2020**
 </Check>
 
 This release is a smaller release mainly focused on bug fixes with some minor enhancements. We added a new property `hedera.mirror.importer.downloader.endpointOverride` for testing. We also added `hedera.mirror.importer.downloader.gcpProjectId` to support specifying requester pays credentials with a personal account. Finally, we improved our Marketplace support getting us one closer to making it available.
@@ -2802,7 +2840,7 @@ This release is a smaller release mainly focused on bug fixes with some minor en
 ## [v0.12.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.12.0)
 
 <Check>
-**TESTNET UPGRADE COMPLETED: MAY 29, 2020**
+  **TESTNET UPGRADE COMPLETED: MAY 29, 2020**
 </Check>
 
 This feature release contains a few nice additions while fixing a few critical bugs. We made good progress on adding our application to [Google Cloud Platform Marketplace](https://console.cloud.google.com/marketplace). This should be wrapping up soon and enable a "one click to deploy" of the mirror node to Google's Cloud. Additionally, some extra fields were added to our APIs. We added `runningHashVersion` to the REST and GRPC APIs. Finally, we added `transactionHash` to the transaction REST API.
@@ -2818,11 +2856,11 @@ We changed the bypass hash mismatch behavior in this release. Bypassing hash mis
 ## [v0.11.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.11.0)
 
 <Check>
-**MAINNET UPGRADE COMPLETED: JUNE 10, 2020**
+  **MAINNET UPGRADE COMPLETED: JUNE 10, 2020**
 </Check>
 
 <Check>
-**TESTNET UPGRADE COMPLETED: MAY 29, 2020**
+  **TESTNET UPGRADE COMPLETED: MAY 29, 2020**
 </Check>
 
 This release was mainly focused on refactoring code and properties as a necessary step for future enhancements. We also continued making improvements to our Kubernetes support. To that end, we added Prometheus REST metrics, Helm tests and Mirror Node can now run in GKE.
@@ -2915,8 +2953,8 @@ Also, we moved the persist properties to be grouped under a new path. That is we
 
 ## [v0.6.0](https://github.com/hashgraph/hedera-mirror-node/releases/tag/v0.6.0)
 
-* Release focused on stability and performance improvements.
-* End to end test coverage.
+- Release focused on stability and performance improvements.
+- End to end test coverage.
 
 This release was mainly focused on enhancing the stability and performance of the mirror node. We improved the transaction ingestion speed from 600 to about 4000 transactions per second. At the same time, we greatly improved the resiliency and performance of the GRPC module. We also added acceptance tests to test out HCS end to end.
 
@@ -2926,9 +2964,9 @@ Please note that one potentially breaking change in this release is to reject su
 
 ## v0.5.3
 
-* Now supports all HCS functionality including a streaming gRPC API for message topic subscription.
-* Changed how the mirror node verifies mainnet consensus. Mirror node now waits for at least third of node signatures rather than greater than two thirds to verify consensus.
-* Added new mainnet nodes to the mirror node address book.
-* Access still restricted to a white listed set of IP addresses. Request access [here](https://learn.hedera.com/l/576593/2020-01-13/7z5jb).
-* Please see the Mirror Node releases page for the full list of changes [here](https://github.com/hashgraph/hedera-mirror-node/releases).
-* We occasionally may encounter a situation where an additional 15-20 second delay in message round trip time is experienced and subscriber connections are dropped. No messages are lost, and the consensus time is not affected. Clients are encouraged to reconnect. This issue will be fixed in a subsequent release of the Hedera mirror node. Some third-party mirror nodes should not be affected by this issue. We also don't expect it to impact the exchanges using the REST end point for the mirror node.
+- Now supports all HCS functionality including a streaming gRPC API for message topic subscription.
+- Changed how the mirror node verifies mainnet consensus. Mirror node now waits for at least third of node signatures rather than greater than two thirds to verify consensus.
+- Added new mainnet nodes to the mirror node address book.
+- Access still restricted to a white listed set of IP addresses. Request access [here](https://learn.hedera.com/l/576593/2020-01-13/7z5jb).
+- Please see the Mirror Node releases page for the full list of changes [here](https://github.com/hashgraph/hedera-mirror-node/releases).
+- We occasionally may encounter a situation where an additional 15-20 second delay in message round trip time is experienced and subscriber connections are dropped. No messages are lost, and the consensus time is not affected. Clients are encouraged to reconnect. This issue will be fixed in a subsequent release of the Hedera mirror node. Some third-party mirror nodes should not be affected by this issue. We also don't expect it to impact the exchanges using the REST end point for the mirror node.

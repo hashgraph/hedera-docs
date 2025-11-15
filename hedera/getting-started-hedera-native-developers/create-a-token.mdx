@@ -2,22 +2,21 @@
 title: "Create a Token"
 ---
 
-
 Learn how to launch a simple fungible token on Hedera testnet. A fungible token is a divisible digital asset (think loyalty points, stablecoins, or stocks) created by the **Hedera Token Service (HTS)**.
 
-***
+---
 
-## **Prerequisites**
+## Prerequisites
 
-* A Hedera testnet **operator account ID** and **DER-encoded private key** (from the [Quickstart](/hedera/getting-started-hedera-native-developers/quickstart))
-* A few testnet **HBAR (ℏ)** to cover the ≈ `$1` token-creation fee
+- A Hedera testnet **operator account ID** and **DER-encoded private key** (from the [Quickstart](/hedera/getting-started-hedera-native-developers/quickstart))
+- A few testnet **HBAR (ℏ)** to cover the ≈ `$1` token-creation fee
 
 We will use the operator account as the token’s **treasury** (the account that initially holds the supply).
 
 <Note>
     ***Note***
 
-*You can always check the "* ✅ [*Code Check*](#code-check)*" section at the bottom of each page to view the entire code if you run into issues. You can also post your issue to the respective SDK channel in our Discord community* [*here*](http://hedera.com/discord)*.*
+_You can always check the "_ ✅ [_Code Check_](#code-check)_" section at the bottom of each page to view the entire code if you run into issues. You can also post your issue to the respective SDK channel in our Discord community_ [_here_](http://hedera.com/discord)_._
 
 </Note>
 
@@ -61,7 +60,6 @@ Update your `package.json` file to enable ES6 modules and configure the project:
     "@hashgraph/sdk": "^2.69.0"
   }
 }
-
 ```
 
 Create a `createTokenDemo.js` file and add the following imports:
@@ -71,7 +69,7 @@ import {
   Client,
   PrivateKey,
   TokenCreateTransaction,
-  TokenSupplyType
+  TokenSupplyType,
 } from "@hashgraph/sdk";
 ```
 
@@ -121,7 +119,7 @@ dependencies {
 }
 
 application {
-    mainClass = 'CreateTokenDemo' 
+    mainClass = 'CreateTokenDemo'
     // or 'com.example.CreateTokenDemo' if it's in a package
 }
 ```
@@ -258,7 +256,7 @@ from hiero_sdk_python import (
 </Tab>
 </Tabs>
 
-***
+---
 
 ## Environment Variables
 
@@ -269,7 +267,7 @@ export OPERATOR_ID="0.0.1234"
 export OPERATOR_KEY="3030020100300506032b657004220420..."
 ```
 
-***
+---
 
 ## Step 1: Initialize Hedera client
 
@@ -279,16 +277,15 @@ Load your operator credentials from environment variables and initialize your He
 
 ```js JavaScript wrap
 // Load your operator credentials
-const operatorId  = process.env.OPERATOR_ID;
+const operatorId = process.env.OPERATOR_ID;
 const operatorKey = process.env.OPERATOR_KEY;
 
 // Initialize your testnet client and set operator
-const client = Client.forTestnet()
-    .setOperator(operatorId, operatorKey);
+const client = Client.forTestnet().setOperator(operatorId, operatorKey);
 ```
 
 ```java Java wrap
-// Load your operator credentials 
+// Load your operator credentials
 AccountId operatorId = AccountId.fromString(System.getenv("OPERATOR_ID"));
 PrivateKey operatorKey = PrivateKey.fromString(System.getenv("OPERATOR_KEY"));
 
@@ -315,6 +312,7 @@ operatorKey = PrivateKey.from_string(os.getenv("OPERATOR_KEY", ""))
 client = Client()
 client.set_operator(operatorId, operatorKey)
 ```
+
 </CodeGroup>
 ***
 
@@ -350,12 +348,12 @@ adminKey := supplyKey // can update/delete (reuse for simplicity)
 supply_key = PrivateKey.generate_ecdsa()  # can mint/burn
 admin_key = supply_key  # can update/delete (reuse for simplicity)
 ```
-</CodeGroup>
 
+</CodeGroup>
 
 **‼️ Security reminder**: Keep your private keys secure - anyone with access can control your token.
 
-***
+---
 
 ## Step 3: Create Your First Token on Hedera
 
@@ -384,7 +382,8 @@ const receipt = await txResponse.getReceipt(client);
 const tokenId = receipt.tokenId;
 
 console.log(`\nFungible token created: ${tokenId.toString()}`)
-```
+
+````
 
 ```java Java
 // Build the transaction
@@ -408,7 +407,7 @@ TransactionReceipt receipt = txResponse.getReceipt(client);
 TokenId tokenId = receipt.tokenId;
 
 System.out.println("\nFungible token created: " + tokenId);
-```
+````
 
 ```go Go
 // Build the transaction
@@ -456,8 +455,10 @@ token_id = receipt.token_id
 
 print(f"\nFungible token created: {token_id}")
 ```
+
 </CodeGroup>
 
+---
 
 ## Step 4: Query the Treasury Balance Using Mirror Node API
 
@@ -471,12 +472,12 @@ Use the Mirror Node REST API to check your treasury account's token balance. Mir
 
 **Replace the placeholders:**
 
-* `{accountId}` - Your treasury account (operator account)
-* `{tokenId}` - Token ID from the creation transaction
+- `{accountId}` - Your treasury account (operator account)
+- `{tokenId}` - Token ID from the creation transaction
 
-> ***Why this endpoint?***
+> **_Why this endpoint?_**
 >
-> *This endpoint queries the account's token balances, filtered by the specific token ID. It returns detailed information including the balance and token metadata, making it ideal for verifying the treasury account holds the expected initial supply.*
+> _This endpoint queries the account's token balances, filtered by the specific token ID. It returns detailed information including the balance and token metadata, making it ideal for verifying the treasury account holds the expected initial supply._
 
 **Example URLs:**
 
@@ -496,6 +497,7 @@ mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/accounts/" + oper
 ```python Python
 mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/accounts/{operatorId}/tokens?token.id={token_id}"
 ```
+
 </CodeGroup>
 
 **Complete Implementation:**
@@ -513,14 +515,15 @@ const response = await fetch(mirrorNodeUrl);
 const data = await response.json();
 
 if (data.tokens && data.tokens.length > 0) {
-  const balance = data.tokens[0].balance;
-  console.log(`\nTreasury holds: ${balance} DEMO\n`);
+const balance = data.tokens[0].balance;
+console.log(`\nTreasury holds: ${balance} DEMO\n`);
 } else {
-  console.log("Token balance not yet available in Mirror Node");
+console.log("Token balance not yet available in Mirror Node");
 }
 
 client.close();
-```
+
+````
 
 ```java Java
 // Wait for Mirror Node to populate data
@@ -528,7 +531,7 @@ System.out.println("\nWaiting for Mirror Node to update...");
 Thread.sleep(3000);
 
 // Query balance using Mirror Node
-String mirrorNodeUrl = "https://testnet.mirrornode.hedera.com/api/v1/accounts/" + 
+String mirrorNodeUrl = "https://testnet.mirrornode.hedera.com/api/v1/accounts/" +
                        operatorId + "/tokens?token.id=" + tokenId;
 
 HttpClient httpClient = HttpClient.newHttpClient();
@@ -546,7 +549,7 @@ if (tokens.size() > 0) {
 }
 
 client.close();
-```
+````
 
 ```go Go
 // wait for Mirror Node to populate data
@@ -554,7 +557,7 @@ fmt.Println("Waiting for Mirror Node to update...")
 time.Sleep(3 * time.Second)
 
 // query balance using Mirror Node
-mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/accounts/" + 
+mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/accounts/" +
                  operatorId.String() + "/tokens?token.id=" + tokenId.String()
 
 response, _ := http.Get(mirrorNodeUrl)
@@ -601,9 +604,10 @@ else:
 
 client.close()
 ```
+
 </CodeGroup>
 
-***
+---
 
 ## ✅ Code check
 
@@ -620,61 +624,62 @@ import {
 } from "@hashgraph/sdk";
 
 async function createTokenDemo() {
-  // load your operator credentials
-  const operatorId = process.env.OPERATOR_ID;
-  const operatorKey = process.env.OPERATOR_KEY;
+// load your operator credentials
+const operatorId = process.env.OPERATOR_ID;
+const operatorKey = process.env.OPERATOR_KEY;
 
-  // initialize the client for testnet
-  const client = Client.forTestnet()
-    .setOperator(operatorId, operatorKey);
+// initialize the client for testnet
+const client = Client.forTestnet()
+.setOperator(operatorId, operatorKey);
 
-  // generate token keys
-  const supplyKey = PrivateKey.generateECDSA();
-  const adminKey = supplyKey;
+// generate token keys
+const supplyKey = PrivateKey.generateECDSA();
+const adminKey = supplyKey;
 
-  // build & execute the token creation transaction
-  const transaction = new TokenCreateTransaction()
-    .setTokenName("Demo Token")
-    .setTokenSymbol("DEMO")
-    .setDecimals(2)
-    .setInitialSupply(100_000)
-    .setSupplyType(TokenSupplyType.Finite)
-    .setMaxSupply(100_000)
-    .setTreasuryAccountId(operatorId)
-    .setAdminKey(adminKey.publicKey)
-    .setSupplyKey(supplyKey.publicKey)
-    .setTokenMemo("Created via tutorial")
-    .freezeWith(client);
+// build & execute the token creation transaction
+const transaction = new TokenCreateTransaction()
+.setTokenName("Demo Token")
+.setTokenSymbol("DEMO")
+.setDecimals(2)
+.setInitialSupply(100_000)
+.setSupplyType(TokenSupplyType.Finite)
+.setMaxSupply(100_000)
+.setTreasuryAccountId(operatorId)
+.setAdminKey(adminKey.publicKey)
+.setSupplyKey(supplyKey.publicKey)
+.setTokenMemo("Created via tutorial")
+.freezeWith(client);
 
-  const signedTx = await transaction.sign(adminKey);
-  const txResponse = await signedTx.execute(client);
-  const receipt = await txResponse.getReceipt(client);
-  const tokenId = receipt.tokenId;
+const signedTx = await transaction.sign(adminKey);
+const txResponse = await signedTx.execute(client);
+const receipt = await txResponse.getReceipt(client);
+const tokenId = receipt.tokenId;
 
-  console.log(`\nFungible token created: ${tokenId}`);
+console.log(`\nFungible token created: ${tokenId}`);
 
-  // Wait for Mirror Node to populate data
-  console.log("\nWaiting for Mirror Node to update...");
-  await new Promise(resolve => setTimeout(resolve, 3000));
+// Wait for Mirror Node to populate data
+console.log("\nWaiting for Mirror Node to update...");
+await new Promise(resolve => setTimeout(resolve, 3000));
 
-  // query balance using Mirror Node
-  const mirrorNodeUrl = `https://testnet.mirrornode.hedera.com/api/v1/accounts/${operatorId}/tokens?token.id=${tokenId}`;
+// query balance using Mirror Node
+const mirrorNodeUrl = `https://testnet.mirrornode.hedera.com/api/v1/accounts/${operatorId}/tokens?token.id=${tokenId}`;
 
-  const response = await fetch(mirrorNodeUrl);
-  const data = await response.json();
-  
-  if (data.tokens && data.tokens.length > 0) {
-    const balance = data.tokens[0].balance;
-    console.log(`\nTreasury holds: ${balance} DEMO\n`);
-  } else {
-    console.log("Token balance not yet available in Mirror Node");
-  }
+const response = await fetch(mirrorNodeUrl);
+const data = await response.json();
 
-  client.close();
+if (data.tokens && data.tokens.length > 0) {
+const balance = data.tokens[0].balance;
+console.log(`\nTreasury holds: ${balance} DEMO\n`);
+} else {
+console.log("Token balance not yet available in Mirror Node");
+}
+
+client.close();
 }
 
 createTokenDemo().catch(console.error);
-```
+
+````
 </Accordion>
 
 <Accordion title="Java">
@@ -686,7 +691,7 @@ import java.net.http.HttpResponse;
 import java.net.URI;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonArray; 
+import com.google.gson.JsonArray;
 
 public class CreateTokenDemo {
     public static void main(String[] args ) throws Exception {
@@ -727,16 +732,16 @@ public class CreateTokenDemo {
         Thread.sleep(3000);
 
         // query balance using Mirror Node
-        String mirrorNodeUrl = "https://testnet.mirrornode.hedera.com/api/v1/accounts/" + 
+        String mirrorNodeUrl = "https://testnet.mirrornode.hedera.com/api/v1/accounts/" +
                                operatorId + "/tokens?token.id=" + tokenId;
-        
+
         HttpClient httpClient = HttpClient.newHttpClient( );
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(mirrorNodeUrl)).build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString( ));
-        
+
         JsonObject data = new Gson().fromJson(response.body(), JsonObject.class);
         JsonArray tokens = data.getAsJsonArray("tokens");
-        
+
         if (tokens.size() > 0) {
             long balance = tokens.get(0).getAsJsonObject().get("balance").getAsLong();
             System.out.println("\nTreasury holds: " + balance + " DEMO\n");
@@ -748,7 +753,8 @@ public class CreateTokenDemo {
     }
 }
 
-```
+````
+
 </Accordion>
 
 <Accordion title="Go">
@@ -764,73 +770,76 @@ import (
     "time"
 
     hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
+
 )
 
 func main() {
-	// load your operator credentials
-	operatorId, _ := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
-	operatorKey, _ := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
+// load your operator credentials
+operatorId, _ := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
+operatorKey, _ := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 
-	// initialize the client for testnet
-	client := hedera.ClientForTestnet()
-	client.SetOperator(operatorId, operatorKey)
+    // initialize the client for testnet
+    client := hedera.ClientForTestnet()
+    client.SetOperator(operatorId, operatorKey)
 
-	// generate token keys
-	supplyKey, _ := hedera.PrivateKeyGenerateEcdsa()
-	adminKey := supplyKey
+    // generate token keys
+    supplyKey, _ := hedera.PrivateKeyGenerateEcdsa()
+    adminKey := supplyKey
 
-	// build & execute the token creation transaction
-	transaction, _ := hedera.NewTokenCreateTransaction().
-		SetTokenName("Demo Token").
-		SetTokenSymbol("DEMO").
-		SetDecimals(2).
-		SetInitialSupply(100_000).
-		SetSupplyType(hedera.TokenSupplyTypeFinite).
-		SetMaxSupply(100_000).
-		SetTreasuryAccountID(operatorId).
-		SetAdminKey(adminKey.PublicKey()).
-		SetSupplyKey(supplyKey.PublicKey()).
-		SetTokenMemo("Created via tutorial").
-		FreezeWith(client)
+    // build & execute the token creation transaction
+    transaction, _ := hedera.NewTokenCreateTransaction().
+    	SetTokenName("Demo Token").
+    	SetTokenSymbol("DEMO").
+    	SetDecimals(2).
+    	SetInitialSupply(100_000).
+    	SetSupplyType(hedera.TokenSupplyTypeFinite).
+    	SetMaxSupply(100_000).
+    	SetTreasuryAccountID(operatorId).
+    	SetAdminKey(adminKey.PublicKey()).
+    	SetSupplyKey(supplyKey.PublicKey()).
+    	SetTokenMemo("Created via tutorial").
+    	FreezeWith(client)
 
-	signedTx := transaction.Sign(adminKey)
-	txResponse, _ := signedTx.Execute(client)
-	receipt, _ := txResponse.GetReceipt(client)
-	tokenId := *receipt.TokenID
+    signedTx := transaction.Sign(adminKey)
+    txResponse, _ := signedTx.Execute(client)
+    receipt, _ := txResponse.GetReceipt(client)
+    tokenId := *receipt.TokenID
 
-	fmt.Printf("\nToken created: %s\n", tokenId.String())
+    fmt.Printf("\nToken created: %s\n", tokenId.String())
 
-	// Wait for Mirror Node to populate data
-	fmt.Println("\nWaiting for Mirror Node to update...")
-	time.Sleep(3 * time.Second)
+    // Wait for Mirror Node to populate data
+    fmt.Println("\nWaiting for Mirror Node to update...")
+    time.Sleep(3 * time.Second)
 
-	// query balance using Mirror Node
-	mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/accounts/" +
-		operatorId.String() + "/tokens?token.id=" + tokenId.String()
+    // query balance using Mirror Node
+    mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/accounts/" +
+    	operatorId.String() + "/tokens?token.id=" + tokenId.String()
 
-	response, _ := http.Get(mirrorNodeUrl)
-	defer response.Body.Close()
+    response, _ := http.Get(mirrorNodeUrl)
+    defer response.Body.Close()
 
-	body, _ := io.ReadAll(response.Body)
+    body, _ := io.ReadAll(response.Body)
 
-	var data struct {
-		Tokens []struct {
-			Balance int64 `json:"balance"`
-		} `json:"tokens"`
-	}
+    var data struct {
+    	Tokens []struct {
+    		Balance int64 `json:"balance"`
+    	} `json:"tokens"`
+    }
 
-	json.Unmarshal(body, &data)
+    json.Unmarshal(body, &data)
 
-	if len(data.Tokens) > 0 {
-		balance := data.Tokens[0].Balance
-		fmt.Printf("\nTreasury holds: %d DEMO\n\n", balance)
-	} else {
-		fmt.Println("Token balance not yet available in Mirror Node")
-	}
+    if len(data.Tokens) > 0 {
+    	balance := data.Tokens[0].Balance
+    	fmt.Printf("\nTreasury holds: %d DEMO\n\n", balance)
+    } else {
+    	fmt.Println("Token balance not yet available in Mirror Node")
+    }
 
-	client.Close()
+    client.Close()
+
 }
-```
+
+````
 </Accordion>
 
 <Accordion title="Python">
@@ -899,11 +908,12 @@ else:
     print("Token balance not yet available in Mirror Node")
 
 client.close()
-```
+````
+
 </Accordion>
 </AccordionGroup>
 
-***
+---
 
 ## Run Your Project
 
@@ -979,12 +989,13 @@ Treasury holds: 100000 DEMO
 
 #### Environment Issues:
 
-* Environment variables not set or accessible
-* Wrong network (mainnet vs testnet) configuration
-* SDK version compatibility issues
+- Environment variables not set or accessible
+- Wrong network (mainnet vs testnet) configuration
+- SDK version compatibility issues
+
 </Accordion>
 
-***
+---
 
 ## What just happened?
 
@@ -994,21 +1005,18 @@ Treasury holds: 100000 DEMO
 4. The full initial supply now sits in your treasury account and is ready to transfer.
 5. The Mirror Node API confirmed your treasury account holds the token balance.
 
-***
+---
 
 ## Next steps
 
-* [Create a Topic](/hedera/getting-started-hedera-native-developers/create-a-topic)
-* Try out our [3-part NFT tutorial](/hedera/tutorials/token/hedera-token-service-part-1-how-to-mint-nfts)
-* Explore more examples in the SDK repos ([JavaScript](https://github.com/hiero-ledger/hiero-sdk-js), [Java](https://github.com/hiero-ledger/hiero-sdk-java), [Go](https://github.com/hiero-ledger/hiero-sdk-go))
+- [Create a Topic](/hedera/getting-started-hedera-native-developers/create-a-topic)
+- Try out our [3-part NFT tutorial](/hedera/tutorials/token/hedera-token-service-part-1-how-to-mint-nfts)
+- Explore more examples in the SDK repos ([JavaScript](https://github.com/hiero-ledger/hiero-sdk-js), [Java](https://github.com/hiero-ledger/hiero-sdk-java), [Go](https://github.com/hiero-ledger/hiero-sdk-go))
 
-***
+---
 
 🎉 **Great work!** You've successfully created your first fungible token on Hedera and verified its balance using the Mirror Node API. Guard your private keys and happy building!
 
 ## Additional Resources
 
-<Card
-  title="Tokens"
-  href="/hedera/core-concepts/tokens"
-/>
+<Card title="Tokens" href="/hedera/core-concepts/tokens" />

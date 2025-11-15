@@ -2,34 +2,33 @@
 title: "Create Your First Frictionless Airdrop Campaign"
 ---
 
-
 ## Summary
 
 In this tutorial, we’ll guide you through Hedera’s **Frictionless Airdrop** flow, which streamlines token distribution while giving recipients greater control over the tokens they receive. Throughout the tutorial, you’ll work with four new transaction types designed to simplify the airdrop process and safeguard users' token holdings. Each transaction type plays a unique role in enabling frictionless, user-friendly airdrops.
 
 Before diving into the step-by-step guide, here’s a quick overview of the transaction types you’ll encounter:
 
-* [**TokenAirdropTransaction**](/hedera/sdks-and-apis/sdks/token-service/airdrop-a-token): This transaction allows you to distribute tokens to multiple recipients in a single transaction, even if the receiving accounts haven’t pre-associated with the token. It also supports pending transfers when accounts don’t have the necessary token associations.
-* [**TokenClaimAirdropTransaction**](/hedera/sdks-and-apis/sdks/token-service/claim-a-token): When a **recipient** doesn’t have available token associations, this transaction allows them to claim their tokens from a pending airdrop, ensuring full control over which tokens they want to accept.
-* [**TokenRejectTransaction**](/hedera/sdks-and-apis/sdks/token-service/reject-an-airdrop): If a user **receives** unwanted tokens, they can use this transaction to transfer them back to the token’s treasury without incurring any custom fees or royalties.
-* [**TokenCancelAirdropTransaction**](/hedera/sdks-and-apis/sdks/token-service/cancel-a-token): This transaction allows the **sender** to cancel a pending airdrop if the recipient hasn’t claimed it yet. It gives the sender flexibility to manage unclaimed token transfers.
+- [**TokenAirdropTransaction**](/hedera/sdks-and-apis/sdks/token-service/airdrop-a-token): This transaction allows you to distribute tokens to multiple recipients in a single transaction, even if the receiving accounts haven’t pre-associated with the token. It also supports pending transfers when accounts don’t have the necessary token associations.
+- [**TokenClaimAirdropTransaction**](/hedera/sdks-and-apis/sdks/token-service/claim-a-token): When a **recipient** doesn’t have available token associations, this transaction allows them to claim their tokens from a pending airdrop, ensuring full control over which tokens they want to accept.
+- [**TokenRejectTransaction**](/hedera/sdks-and-apis/sdks/token-service/reject-an-airdrop): If a user **receives** unwanted tokens, they can use this transaction to transfer them back to the token’s treasury without incurring any custom fees or royalties.
+- [**TokenCancelAirdropTransaction**](/hedera/sdks-and-apis/sdks/token-service/cancel-a-token): This transaction allows the **sender** to cancel a pending airdrop if the recipient hasn’t claimed it yet. It gives the sender flexibility to manage unclaimed token transfers.
 
 Now that we have a basic understanding of the transaction types, let’s move on to the step-by-step implementation of a Frictionless Airdrop on Hedera. The full code solution is provided at the end of the tutorial if you want to see it.
 
-***
+---
 
 ## Prerequisites
 
 We recommend you complete the following introduction to get a basic understanding of Hedera transactions. This example does not build upon the previous examples.
 
-* Get a [Hedera testnet account](/hedera/tutorials/more-tutorials/create-and-fund-your-hedera-testnet-account).
-* Set up your environment [here](/hedera/getting-started-hedera-native-developers).
-* `.env` file with this additional variable added:
-    ``` highlight={1}
-    HEDERA_NETWORK=testnet
-    ```
+- Get a [Hedera testnet account](/hedera/tutorials/more-tutorials/create-and-fund-your-hedera-testnet-account).
+- Set up your environment [here](/hedera/getting-started-hedera-native-developers).
+- `.env` file with this additional variable added:
+  ```highlight={1}
+  HEDERA_NETWORK=testnet
+  ```
 
-***
+---
 
 In this tutorial, we would like to airdrop a fungible token, "GameGold," and a non-fungible token to our gaming community. We would like to send an equal amount of tokens to the top three players in our community without them knowing about the upcoming airdrop. Let's learn!
 
@@ -37,10 +36,10 @@ In this tutorial, we would like to airdrop a fungible token, "GameGold," and a n
 
 First, we need to create the three accounts that will receive our airdrop and a treasury account. Each account will have a different configuration for automatic token association slots:
 
-* **Alice:** Unlimited token association slots by setting the value to `-1` which means she can receive as many tokens as she wants, and they will be automatically associated with her account.
-* **Bob:** Only has 1 free token association slot.
-* **Charlie:** Has no free token association slots.
-* **Treasury**: This account will send the airdrop as it controls the treasury of our token collections.
+- **Alice:** Unlimited token association slots by setting the value to `-1` which means she can receive as many tokens as she wants, and they will be automatically associated with her account.
+- **Bob:** Only has 1 free token association slot.
+- **Charlie:** Has no free token association slots.
+- **Treasury**: This account will send the airdrop as it controls the treasury of our token collections.
 
 The setup code imports the required functions from the Hedera SDK and the `dotenv` package to load the required environment variables. Further, it creates the accounts for Alice, Bob, and Charlie.
 
@@ -48,7 +47,7 @@ The setup code imports the required functions from the Hedera SDK and the `doten
 
 ```javascript JavaScript
 import {
-    Client, PrivateKey, AccountId, AccountCreateTransaction, Hbar, NftId, 
+    Client, PrivateKey, AccountId, AccountCreateTransaction, Hbar, NftId,
     TokenCreateTransaction, TokenType, TokenMintTransaction, AccountBalanceQuery,
     TokenAirdropTransaction,
     TokenClaimAirdropTransaction,
@@ -102,7 +101,7 @@ async function main() {
             .execute(client)
     ).getReceipt(client);
 
- 
+
     const charliePrivateKey = PrivateKey.generateECDSA();
     const charliePublicKey = charliePrivateKey.publicKey;
     const { accountId: charlieId } = await (
@@ -223,7 +222,6 @@ func createAccount(client *hedera.Client, newAccountPrivateKey hedera.PrivateKey
 
 </CodeGroup>
 
-
 ### Step 2: Create a New Token
 
 Let's create a new token called "GameGold" that we will airdrop to our gaming community. We’ll mint `300` tokens in total and distribute them equally among our top three players, Alice, Bob, and Charlie, with each player receiving `100` tokens.
@@ -231,28 +229,27 @@ Let's create a new token called "GameGold" that we will airdrop to our gaming co
 <CodeGroup>
 
 ```javascript JavaScript highlight={5}
-    /**
-     * Step 2: Create FT and NFT mint
-     */
-    const INITIAL_SUPPLY = 300;
-    const tokenCreateTx = await new TokenCreateTransaction()
-        .setTokenName("GameGold")
-        .setTokenSymbol("GG")
-        .setDecimals(3)
-        .setInitialSupply(INITIAL_SUPPLY)
-        .setTreasuryAccountId(treasuryAccount)
-        .setAdminKey(client.operatorPublicKey)
-        .setFreezeKey(client.operatorPublicKey)
-        .setSupplyKey(client.operatorPublicKey)
-        .setMetadataKey(client.operatorPublicKey)
-        .setPauseKey(client.operatorPublicKey)
-        .freezeWith(client)
-        .sign(treasuryKey);
+/**
+ * Step 2: Create FT and NFT mint
+ */
+const INITIAL_SUPPLY = 300;
+const tokenCreateTx = await new TokenCreateTransaction()
+  .setTokenName("GameGold")
+  .setTokenSymbol("GG")
+  .setDecimals(3)
+  .setInitialSupply(INITIAL_SUPPLY)
+  .setTreasuryAccountId(treasuryAccount)
+  .setAdminKey(client.operatorPublicKey)
+  .setFreezeKey(client.operatorPublicKey)
+  .setSupplyKey(client.operatorPublicKey)
+  .setMetadataKey(client.operatorPublicKey)
+  .setPauseKey(client.operatorPublicKey)
+  .freezeWith(client)
+  .sign(treasuryKey);
 
-    const { tokenId } = await (
-        await tokenCreateTx.execute(client)
-    ).getReceipt(client);
-
+const { tokenId } = await (
+  await tokenCreateTx.execute(client)
+).getReceipt(client);
 ```
 
 ```go Go
@@ -287,7 +284,7 @@ Let's create a new token called "GameGold" that we will airdrop to our gaming co
 	tokenId := *receipt.TokenID
 	fmt.Printf("Created fungible token with ID: %v\n", tokenId.String())
 ```
-    
+
 </CodeGroup>
 
 ### Step 3: Airdrop Tokens with Frictionless Airdrop
@@ -297,78 +294,53 @@ Ok, we are ready to airdrop the `GameGold` token to the top 3 players Alice, Bob
 <CodeGroup>
 
 ```javascript JavaScript highlight={7}
-    /**
-     * Step 3: Airdrop fungible tokens to 3 accounts
-     */
-    const AIRDROP_SUPPLY_PER_ACCOUNT = INITIAL_SUPPLY / 3;
-    const airdropRecord = await (
-        await (
-            await new TokenAirdropTransaction()
-                .addTokenTransfer(
-                    tokenId,
-                    treasuryAccount,
-                    -AIRDROP_SUPPLY_PER_ACCOUNT,
-                )
-                .addTokenTransfer(
-                    tokenId,
-                    aliceId,
-                    AIRDROP_SUPPLY_PER_ACCOUNT,
-                )
-                .addTokenTransfer(
-                    tokenId,
-                    treasuryAccount,
-                    -AIRDROP_SUPPLY_PER_ACCOUNT,
-                )
-                .addTokenTransfer(
-                    tokenId,
-                    bobId,
-                    AIRDROP_SUPPLY_PER_ACCOUNT,
-                )
-                .addTokenTransfer(
-                    tokenId,
-                    treasuryAccount,
-                    -AIRDROP_SUPPLY_PER_ACCOUNT,
-                )
-                .addTokenTransfer(
-                    tokenId,
-                    charlieId,
-                    AIRDROP_SUPPLY_PER_ACCOUNT,
-                )
-                .freezeWith(client)
-                .sign(treasuryKey)
-        ).execute(client)
-    ).getRecord(client);
+/**
+ * Step 3: Airdrop fungible tokens to 3 accounts
+ */
+const AIRDROP_SUPPLY_PER_ACCOUNT = INITIAL_SUPPLY / 3;
+const airdropRecord = await (
+  await (
+    await new TokenAirdropTransaction()
+      .addTokenTransfer(tokenId, treasuryAccount, -AIRDROP_SUPPLY_PER_ACCOUNT)
+      .addTokenTransfer(tokenId, aliceId, AIRDROP_SUPPLY_PER_ACCOUNT)
+      .addTokenTransfer(tokenId, treasuryAccount, -AIRDROP_SUPPLY_PER_ACCOUNT)
+      .addTokenTransfer(tokenId, bobId, AIRDROP_SUPPLY_PER_ACCOUNT)
+      .addTokenTransfer(tokenId, treasuryAccount, -AIRDROP_SUPPLY_PER_ACCOUNT)
+      .addTokenTransfer(tokenId, charlieId, AIRDROP_SUPPLY_PER_ACCOUNT)
+      .freezeWith(client)
+      .sign(treasuryKey)
+  ).execute(client)
+).getRecord(client);
 
-    // Get the transaction record and see the pending airdrops
-    const { newPendingAirdrops } = airdropRecord;
-    console.log("Pending airdrop", newPendingAirdrops[0]);
+// Get the transaction record and see the pending airdrops
+const { newPendingAirdrops } = airdropRecord;
+console.log("Pending airdrop", newPendingAirdrops[0]);
 
-    // Query to verify Alice and Bob have received the airdrops and Charlie has not
-    let aliceBalance = await new AccountBalanceQuery()
-        .setAccountId(aliceId)
-        .execute(client);
+// Query to verify Alice and Bob have received the airdrops and Charlie has not
+let aliceBalance = await new AccountBalanceQuery()
+  .setAccountId(aliceId)
+  .execute(client);
 
-    let bobBalance = await new AccountBalanceQuery()
-        .setAccountId(bobId)
-        .execute(client);
+let bobBalance = await new AccountBalanceQuery()
+  .setAccountId(bobId)
+  .execute(client);
 
-    let charlieBalance = await new AccountBalanceQuery()
-        .setAccountId(charlieId)
-        .execute(client);
+let charlieBalance = await new AccountBalanceQuery()
+  .setAccountId(charlieId)
+  .execute(client);
 
-    console.log(
-        "Alice balance after airdrop: ",
-        aliceBalance.tokens.get(tokenId).toInt(),
-    );
-    console.log(
-        "Bob balance after airdrop: ",
-        bobBalance.tokens.get(tokenId).toInt(),
-    );
-    console.log(
-        "Charlie balance after airdrop: ",
-        charlieBalance.tokens.get(tokenId),
-    );
-
+console.log(
+  "Alice balance after airdrop: ",
+  aliceBalance.tokens.get(tokenId).toInt()
+);
+console.log(
+  "Bob balance after airdrop: ",
+  bobBalance.tokens.get(tokenId).toInt()
+);
+console.log(
+  "Charlie balance after airdrop: ",
+  charlieBalance.tokens.get(tokenId)
+);
 ```
 
 ```go Go
@@ -407,7 +379,6 @@ Ok, we are ready to airdrop the `GameGold` token to the top 3 players Alice, Bob
 
 </CodeGroup>
 
-
 The output we expect here is that Alice and Bob have received 100 units of our token, and the balance for Charlie shows `null`.
 
 ### Step 4: Charlie Claims the Airdrop
@@ -417,30 +388,29 @@ Alright, Charlie still needs to claim his tokens. Let's do this first using the 
 <CodeGroup>
 
 ```javascript JavaScript highlight={5}
-    /**
-     * Step 4: Claim the airdrop for Charlie's account
-     */
-    console.log("Pending airdrop ID: ", newPendingAirdrops[0].airdropId);
-    const tokenClaimTx = await new TokenClaimAirdropTransaction()
-        .addPendingAirdropId(newPendingAirdrops[0].airdropId)
-        .freezeWith(client)
-        .sign(charliePrivateKey);
-    const tokenClaimTxResponse = await tokenClaimTx.execute(client);
-    const tokenClaimTxReceipt = await tokenClaimTxResponse.getReceipt(client);
+/**
+ * Step 4: Claim the airdrop for Charlie's account
+ */
+console.log("Pending airdrop ID: ", newPendingAirdrops[0].airdropId);
+const tokenClaimTx = await new TokenClaimAirdropTransaction()
+  .addPendingAirdropId(newPendingAirdrops[0].airdropId)
+  .freezeWith(client)
+  .sign(charliePrivateKey);
+const tokenClaimTxResponse = await tokenClaimTx.execute(client);
+const tokenClaimTxReceipt = await tokenClaimTxResponse.getReceipt(client);
 
-    console.log(
-        `Status of token claim airdrop transaction: ${tokenClaimTxReceipt.status.toString()}`,
-    );
+console.log(
+  `Status of token claim airdrop transaction: ${tokenClaimTxReceipt.status.toString()}`
+);
 
-    const charlieBalanceAfterClaim = await new AccountBalanceQuery()
-        .setAccountId(charlieId)
-        .execute(client);
+const charlieBalanceAfterClaim = await new AccountBalanceQuery()
+  .setAccountId(charlieId)
+  .execute(client);
 
-    console.log(
-        "Charlie balance after airdrop claim",
-        charlieBalanceAfterClaim.tokens.get(tokenId).toInt(),
-    );
-
+console.log(
+  "Charlie balance after airdrop claim",
+  charlieBalanceAfterClaim.tokens.get(tokenId).toInt()
+);
 ```
 
 ```go Go
@@ -460,8 +430,8 @@ Alright, Charlie still needs to claim his tokens. Let's do this first using the 
 	charlieBalance, _ = hedera.NewAccountBalanceQuery().SetAccountID(charlieId).Execute(client)
 	fmt.Println("Charlie's balance: ", charlieBalance.Tokens.Get(tokenId))
 ```
-</CodeGroup>
 
+</CodeGroup>
 
 ### Step 5: Airdrop NFTs to Alice, Bob, and Charlie
 
@@ -511,7 +481,7 @@ First, we need to create the NFT collection and mint new NFts. Then, we can aird
 
         serialsNfts.push(serials[0]);
     }
-    
+
     // Airdrop NFTs
     const { newPendingAirdrops: newPendingAirdropsNfts } = await (
         await (
@@ -544,7 +514,7 @@ First, we need to create the NFT collection and mint new NFts. Then, we can aird
     console.log("Pending airdrop for Bob:", newPendingAirdropsNfts[0]);
     console.log("Pending airdrop for Charlie:", newPendingAirdropsNfts[1]);
 
-```
+````
 
 ```go Go
 	// Step 5: Airdrop the NFTs to Alice, Bob, and Charlie
@@ -616,7 +586,7 @@ First, we need to create the NFT collection and mint new NFts. Then, we can aird
 	fmt.Println("Pending airdrops length: ", len(nftAirdropTxRecord.PendingAirdropRecords))
 	fmt.Println("Pending airdrop for Bob: ", nftAirdropTxRecord.PendingAirdropRecords[0].String())
 	fmt.Println("Pending airdrop for Charlie: ", nftAirdropTxRecord.PendingAirdropRecords[1].String())
-```
+````
 
 </CodeGroup>
 
@@ -634,7 +604,7 @@ When airdropping the NFTs, we realized we made a mistake: Charlie is not actuall
         .addPendingAirdropId(newPendingAirdropsNfts[1].airdropId) // Charlie's airdrop
         .execute(client);
 
-```
+````
 
 ```go Go highlight={1}
 	// Step 6: Cancel Airdrop for Charlie
@@ -642,7 +612,8 @@ When airdropping the NFTs, we realized we made a mistake: Charlie is not actuall
 		AddPendingAirdropId(nftAirdropTxRecord.PendingAirdropRecords[1].GetPendingAirdropId()).
 		Execute(client)
 
-```
+````
+
 </CodeGroup>
 
 ### Step 7: Token Reject Already Received Airdrop
@@ -650,7 +621,9 @@ When airdropping the NFTs, we realized we made a mistake: Charlie is not actuall
 And lastly, as Charlie is not the rightful owner of the received fungible token, we've asked him if he wants to return the 100 units of our `GameGold` token. Charlie has agreed and can return the token without paying any fees or royalties using the `TokenRejectTransaction`.
 
 <Check>
-The `reject` functionality can be used to return an already claimed or a successful airdrop into your account. It can't be used to reject a pending airdrop.
+  The `reject` functionality can be used to return an already claimed or a
+  successful airdrop into your account. It can't be used to reject a pending
+  airdrop.
 </Check>
 
 Here's the code for step 7. The rejected `GameGold` tokens will be returned to the treasury account.
@@ -678,13 +651,14 @@ Here's the code for step 7. The rejected `GameGold` tokens will be returned to t
         "Charlie's balance after reject: ",
         charlieBalance.tokens.get(tokenId).toInt(),
     );
-    
+
     client.close();
+
 }
 
 void main();
 
-```
+````
 
 ```go Go
 	// Step 7: Reject the fungible tokens for Charlie
@@ -707,7 +681,8 @@ void main();
 	fmt.Println("Charlie's balance: ", charlieBalance.Tokens.Get(tokenId))
 	client.Close()
 }
-```
+````
+
 </CodeGroup>
 
 And that's it. The next section examines the fees for each of the parties involved a bit more thoroughly.
@@ -723,7 +698,7 @@ When working with Frictionless Airdrops on Hedera, it’s important to consider 
 
 By understanding these costs and who is responsible for them, you can build efficient, user-friendly token distribution systems while maintaining cost efficiency for both developers and end-users.
 
-## Code Check [✅](https://emojigraph.org/check-mark-button/)
+## Code Check ✅
 
 <AccordionGroup>
 <Accordion title=".env file example">
@@ -748,15 +723,15 @@ import {
 import "dotenv/config";
 
 async function main() {
-    if (
-        process.env.OPERATOR_ID == null ||
-        process.env.OPERATOR_KEY == null ||
-        process.env.HEDERA_NETWORK == null
-    ) {
-        throw new Error(
-            "Environment variables OPERATOR_ID, HEDERA_NETWORK, and OPERATOR_KEY are required.",
-        );
-    }
+if (
+process.env.OPERATOR_ID == null ||
+process.env.OPERATOR_KEY == null ||
+process.env.HEDERA_NETWORK == null
+) {
+throw new Error(
+"Environment variables OPERATOR_ID, HEDERA_NETWORK, and OPERATOR_KEY are required.",
+);
+}
 
     const client = Client.forName(process.env.HEDERA_NETWORK).setOperator(
         AccountId.fromString(process.env.OPERATOR_ID),
@@ -790,7 +765,7 @@ async function main() {
             .execute(client)
     ).getReceipt(client);
 
- 
+
     const charliePrivateKey = PrivateKey.generateECDSA();
     const charliePublicKey = charliePrivateKey.publicKey;
     const { accountId: charlieId } = await (
@@ -815,7 +790,7 @@ async function main() {
             .setMaxAutomaticTokenAssociations(-1)
             .execute(client)
     ).getReceipt(client);
-    
+
     /**
      * Step 2: Create FT and NFT mint
      */
@@ -837,7 +812,7 @@ async function main() {
     const { tokenId } = await (
         await tokenCreateTx.execute(client)
     ).getReceipt(client);
-    
+
     /**
      * Step 3: Airdrop fungible tokens to 3 accounts
      */
@@ -909,7 +884,7 @@ async function main() {
         "Charlie balance after airdrop: ",
         charlieBalance.tokens.get(tokenId),
     );
-    
+
     /**
      * Step 4: Claim the airdrop for Charlie's account
      */
@@ -944,7 +919,7 @@ async function main() {
         "Qmd3kGgSrAwwSrhesYcY7K54f3qD7MDo38r7Po2dChtQx5",
         "QmWgkKz3ozgqtnvbCLeh7EaR1H8u5Sshx3ZJzxkcrT3jbw",
     ];
-    
+
     // Create Game NFT
     const { tokenId: nftId } = await (
         await (
@@ -974,7 +949,7 @@ async function main() {
 
         serialsNfts.push(serials[0]);
     }
-    
+
     // Airdrop NFTs
     const { newPendingAirdrops: newPendingAirdropsNfts } = await (
         await (
@@ -1006,7 +981,7 @@ async function main() {
     console.log("Pending airdrops length", newPendingAirdropsNfts.length);
     console.log("Pending airdrop for Bob:", newPendingAirdropsNfts[0]);
     console.log("Pending airdrop for Charlie:", newPendingAirdropsNfts[1]);
-    
+
     /**
      * Step 6: Cancel the airdrop for Charlie
      * No signature is needed as the operator account is the admin of the token
@@ -1014,7 +989,7 @@ async function main() {
     await new TokenCancelAirdropTransaction()
         .addPendingAirdropId(newPendingAirdropsNfts[1].airdropId) // Charlie's airdrop
         .execute(client);
-        
+
     /**
      * Step 7: Reject the fungible tokens for Charlie
      */
@@ -1038,10 +1013,12 @@ async function main() {
     );
 
     client.close();
+
 }
 
 void main();
-```
+
+````
 </Accordion>
 
 <Accordion title="Go">
@@ -1306,13 +1283,14 @@ func createAccount(client *hedera.Client, newAccountPrivateKey hedera.PrivateKey
 
 	return newAccountId
 }
-```
+````
+
 </Accordion>
 </AccordionGroup>
 
-***
+---
 
 ## Additional Resources
 
-* [**Airdrop List Verifier (NFT Studio)**](/hedera/open-source-solutions/nft-studio/airdrop-list-verifier)
-* [**Token Holders List Builder (NFT Studio)**](/hedera/open-source-solutions/nft-studio/nft-token-holders-list-builder)
+- [**Airdrop List Verifier (NFT Studio)**](/hedera/open-source-solutions/nft-studio/airdrop-list-verifier)
+- [**Token Holders List Builder (NFT Studio)**](/hedera/open-source-solutions/nft-studio/nft-token-holders-list-builder)

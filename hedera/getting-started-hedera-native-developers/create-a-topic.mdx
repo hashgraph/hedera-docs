@@ -2,24 +2,23 @@
 title: "Create a Topic"
 ---
 
-
 Learn how to create a new topic and submit your first message on Hedera testnet using the JavaScript, Java, Go SDK, or Python. A **topic** on the **Hedera Consensus Service (HCS)** is like a public channel: anyone who knows the topic ID can publish timestamped messages, and anyone can subscribe to the stream from a mirror node.
 
-***
+---
 
-## **Prerequisites**
+## Prerequisites
 
-* A Hedera testnet **operator account ID** and **DER-encoded private key** (from the [Quickstart](/hedera/getting-started-hedera-native-developers/quickstart)).
-* A small amount of testnet **HBAR (ℏ)** to cover the fees
-  * Topic creation: ≈ `$0.01`
-  * Each message: < `$0.001`
+- A Hedera testnet **operator account ID** and **DER-encoded private key** (from the [Quickstart](/hedera/getting-started-hedera-native-developers/quickstart)).
+- A small amount of testnet **HBAR (ℏ)** to cover the fees
+  - Topic creation: ≈ `$0.01`
+  - Each message: < `$0.001`
 
 <Note>
   ***Note***
 
-*You can always check the "*✅ [*Code Check*](#code-check)*" section at the bottom of each page to view the entire code if you run into issues. You can also post your issue to the respective SDK channel in our Discord community* [*here*](http://hedera.com/discord)*.*
-</Note>
+*You can always check the "*✅ [_Code Check_](#code-check)_" section at the bottom of each page to view the entire code if you run into issues. You can also post your issue to the respective SDK channel in our Discord community_ [_here_](http://hedera.com/discord)_._
 
+</Note>
 
 ## Install the SDK
 
@@ -61,7 +60,6 @@ Update your `package.json` file to enable ES6 modules and configure the project:
     "@hashgraph/sdk": "^2.69.0"
   }
 }
-
 ```
 
 Create a `createTopicDemo.js` file and add the following imports:
@@ -70,7 +68,7 @@ Create a `createTopicDemo.js` file and add the following imports:
 import {
   Client,
   TopicCreateTransaction,
-  TopicMessageSubmitTransaction
+  TopicMessageSubmitTransaction,
 } from "@hashgraph/sdk";
 ```
 
@@ -120,7 +118,7 @@ dependencies {
 }
 
 application {
-    mainClass = 'CreateTopicDemo' 
+    mainClass = 'CreateTopicDemo'
     // or 'com.example.CreateTopicDemo' if it's in a package
 }
 ```
@@ -150,15 +148,15 @@ public class CreateTopicDemo {
 Create a new file `create_topic_demo.go` and import the following packages to your file:
 
 ```go
-import ( 
-    "encoding/base64" 
-    "encoding/json" 
-    "fmt" 
-    "io" 
-    "net/http" 
-    "os" 
+import (
+    "encoding/base64"
+    "encoding/json"
+    "fmt"
+    "io"
+    "net/http"
+    "os"
     "time"
-    
+
     hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
 )
 ```
@@ -220,7 +218,6 @@ source .venv/bin/activate
 
 </CodeGroup>
 
-
 Upgrade pip to ensure you have the latest package installer (recommended):
 
 ```bash
@@ -253,7 +250,7 @@ from hiero_sdk_python import (
 </Tab>
 </Tabs>
 
-***
+---
 
 ## Environment Variables
 
@@ -264,7 +261,7 @@ export OPERATOR_ID="0.0.1234"
 export OPERATOR_KEY="3030020100300506032b657004220420..."
 ```
 
-***
+---
 
 ## Step 1: Initialize Hedera Client
 
@@ -278,17 +275,18 @@ const operatorKey = process.env.OPERATOR_KEY;
 
 // Initialize your testnet client and set operator
 const client = Client.forTestnet()
-    .setOperator(operatorId, operatorKey);
-```
+.setOperator(operatorId, operatorKey);
+
+````
 
 ```java Java
-// Load your operator credentials 
+// Load your operator credentials
 AccountId operatorId = AccountId.fromString(System.getenv("OPERATOR_ID"));
 PrivateKey operatorKey = PrivateKey.fromString(System.getenv("OPERATOR_KEY"));
 
 // Initialize your testnet client and set operator
 Client client = Client.forTestnet().setOperator(operatorId, operatorKey);
-```
+````
 
 ```go Go
 // Load your operator credentials
@@ -309,9 +307,10 @@ operatorKey = PrivateKey.from_string(os.getenv("OPERATOR_KEY", ""))
 client = Client()
 client.set_operator(operatorId, operatorKey)
 ```
+
 </CodeGroup>
 
-***
+---
 
 ## Step 2: Create a new topic
 
@@ -332,7 +331,8 @@ const receipt = await txResponse.getReceipt(client);
 const topicId = receipt.topicId;
 
 console.log(`\nTopic created: ${topicId.toString()}`);
-```
+
+````
 
 ```java Java
 // Build and send the create‐topic transaction
@@ -345,7 +345,7 @@ TransactionReceipt receipt = txResponse.getReceipt(client);
 TopicId topicId = receipt.topicId;
 
 System.out.println("Topic created: " + topicId);
-```
+````
 
 ```go Go
 // build & execute the topic creation transaction
@@ -383,7 +383,7 @@ topicId = receipt.topic_id
 
 print(f"\nTopic created: {topicId}")
 ```
-  
+
 </CodeGroup>
 
 ## What just happened?
@@ -392,7 +392,7 @@ print(f"\nTopic created: {topicId}")
 2. Your operator key signed and paid the fee.
 3. Hedera nodes reached consensus and returned a unique topic ID (`shard.realm.num`).
 
-***
+---
 
 ## Step 3: Submit Message to Topic
 
@@ -404,13 +404,14 @@ print(f"\nTopic created: {topicId}")
 const message = "Hello, Hedera!";
 
 const messageTransaction = new TopicMessageSubmitTransaction()
-  .setTopicId(topicId)
-  .setMessage(message);
+.setTopicId(topicId)
+.setMessage(message);
 
 await messageTransaction.execute(client);
 
 console.log(`\nMessage submitted: ${message}\n`);
-```
+
+````
 
 ```java Java
 // build & execute the message submission transaction
@@ -423,7 +424,7 @@ TopicMessageSubmitTransaction messageTransaction = new TopicMessageSubmitTransac
 messageTransaction.execute(client);
 
 System.out.println("\nMessage submitted: " + message);
-```
+````
 
 ```go Go
 // build & execute the message submission transaction
@@ -457,16 +458,17 @@ message_transaction.execute(client)
 
 print(f"\nMessage submitted: {message}")
 ```
-</CodeGroup>
 
+</CodeGroup>
 
 <Note>
 **Note**
 
 Messages can be up to **1 KiB** each. Larger payloads must be chunked automatically by the SDK or split manually
+
 </Note>
 
-***
+---
 
 ## Step 4: Query Messages Using Mirror Node API
 
@@ -480,11 +482,11 @@ Use the Mirror Node REST API to verify your message was published to the topic. 
 
 **Replace the placeholder:**
 
-* <sub>**`{topicId}`**</sub> - Your topic ID from the creation transaction
+- <sub>**`{topicId}`**</sub> - Your topic ID from the creation transaction
 
-> ***Why this endpoint?***
+> **_Why this endpoint?_**
 >
-> *This endpoint retrieves all messages published to a specific topic, ordered by consensus timestamp. It returns detailed information including message content, timestamp, and sequence number, making it ideal for verifying your message was published successfully.*
+> _This endpoint retrieves all messages published to a specific topic, ordered by consensus timestamp. It returns detailed information including message content, timestamp, and sequence number, making it ideal for verifying your message was published successfully._
 
 **Example URLs:**
 
@@ -504,6 +506,7 @@ mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/topics/" + topicI
 ```python Python
 mirror_node_url = f"https://testnet.mirrornode.hedera.com/api/v1/topics/{topicId}/messages"
 ```
+
 </CodeGroup>
 
 **Complete Implementation:**
@@ -521,18 +524,19 @@ const response = await fetch(mirrorNodeUrl);
 const data = await response.json();
 
 if (data.messages && data.messages.length > 0) {
-  const latestMessage = data.messages[data.messages.length - 1];
-  const messageContent = Buffer.from(latestMessage.message, "base64")
-    .toString("utf8")
-    .trim();
+const latestMessage = data.messages[data.messages.length - 1];
+const messageContent = Buffer.from(latestMessage.message, "base64")
+.toString("utf8")
+.trim();
 
-  console.log(`\nLatest message: ${messageContent}\n`);
+console.log(`\nLatest message: ${messageContent}\n`);
 } else {
-  console.log("No messages found yet in Mirror Node");
+console.log("No messages found yet in Mirror Node");
 }
 
 client.close();
-```
+
+````
 
 ```java Java
 // wait for Mirror Node to populate data
@@ -556,14 +560,14 @@ if (data.has("messages") && data.getAsJsonArray("messages").size() > 0) {
     JsonObject latestMessage = messages.get(messages.size() - 1).getAsJsonObject();
     String encodedMessage = latestMessage.get("message").getAsString();
     String messageContent = new String(java.util.Base64.getDecoder().decode(encodedMessage)).trim();
-            
+
     System.out.println("\nLatest message: " + messageContent + "\n");
   } else {
     System.out.println("No messages found yet in Mirror Node");
   }
 
 client.close();
-```
+````
 
 ```go Go
 // wait for Mirror Node to populate data
@@ -624,14 +628,15 @@ if messages:
     latest_message = messages[-1]
     encoded_message = latest_message.get("message", "")
     message_content = base64.b64decode(encoded_message).decode("utf-8").strip()
-    
+
     print(f"\nLatest message: {message_content}\n")
 else:
     print("No messages found yet in Mirror Node")
 ```
+
 </CodeGroup>
 
-***
+---
 
 ## ✅ Code check
 
@@ -647,61 +652,63 @@ import {
 } from "@hashgraph/sdk";
 
 async function createTopicDemo() {
-  // load your operator credentials
-  const operatorId = process.env.OPERATOR_ID;
-  const operatorKey = process.env.OPERATOR_KEY;
+// load your operator credentials
+const operatorId = process.env.OPERATOR_ID;
+const operatorKey = process.env.OPERATOR_KEY;
 
-  // initialize the client for testnet
-  const client = Client.forTestnet().setOperator(operatorId, operatorKey);
+// initialize the client for testnet
+const client = Client.forTestnet().setOperator(operatorId, operatorKey);
 
-  // build & execute the topic creation transaction
-  const transaction = new TopicCreateTransaction().setTopicMemo(
-    "My first HCS topic"
-  );
+// build & execute the topic creation transaction
+const transaction = new TopicCreateTransaction().setTopicMemo(
+"My first HCS topic"
+);
 
-  const txResponse = await transaction.execute(client);
-  const receipt = await txResponse.getReceipt(client);
-  const topicId = receipt.topicId;
+const txResponse = await transaction.execute(client);
+const receipt = await txResponse.getReceipt(client);
+const topicId = receipt.topicId;
 
-  console.log(`\nTopic created: ${topicId}`);
+console.log(`\nTopic created: ${topicId}`);
 
-  // build & execute the message submission transaction
-  const message = "Hello, Hedera!";
+// build & execute the message submission transaction
+const message = "Hello, Hedera!";
 
-  const messageTransaction = new TopicMessageSubmitTransaction()
-    .setTopicId(topicId)
-    .setMessage(message);
+const messageTransaction = new TopicMessageSubmitTransaction()
+.setTopicId(topicId)
+.setMessage(message);
 
-  await messageTransaction.execute(client);
+await messageTransaction.execute(client);
 
-  console.log(`\nMessage submitted: ${message}`);
+console.log(`\nMessage submitted: ${message}`);
 
-  // wait for Mirror Node to populate data
-  console.log("\nWaiting for Mirror Node to update...");
-  await new Promise((resolve) => setTimeout(resolve, 6000));
+// wait for Mirror Node to populate data
+console.log("\nWaiting for Mirror Node to update...");
+await new Promise((resolve) => setTimeout(resolve, 6000));
 
-  // query messages using Mirror Node
-  const mirrorNodeUrl = `https://testnet.mirrornode.hedera.com/api/v1/topics/${topicId}/messages`;
+// query messages using Mirror Node
+const mirrorNodeUrl = `https://testnet.mirrornode.hedera.com/api/v1/topics/${topicId}/messages`;
 
-  const response = await fetch(mirrorNodeUrl);
-  const data = await response.json();
+const response = await fetch(mirrorNodeUrl);
+const data = await response.json();
 
-  if (data.messages && data.messages.length > 0) {
-    const latestMessage = data.messages[data.messages.length - 1];
-    const messageContent = Buffer.from(latestMessage.message, "base64")
-      .toString("utf8")
-      .trim();
+if (data.messages && data.messages.length > 0) {
+const latestMessage = data.messages[data.messages.length - 1];
+const messageContent = Buffer.from(latestMessage.message, "base64")
+.toString("utf8")
+.trim();
 
     console.log(`\nLatest message: ${messageContent}\n`);
-  } else {
-    console.log("No messages found yet in Mirror Node");
-  }
 
-  client.close();
+} else {
+console.log("No messages found yet in Mirror Node");
+}
+
+client.close();
 }
 
 createTopicDemo().catch(console.error);
-```
+
+````
 </Accordion>
 
 <Accordion title="Java">
@@ -767,7 +774,7 @@ public class CreateTopicDemo {
             JsonObject latestMessage = messages.get(messages.size() - 1).getAsJsonObject();
             String encodedMessage = latestMessage.get("message").getAsString();
             String messageContent = new String(java.util.Base64.getDecoder().decode(encodedMessage)).trim();
-            
+
             System.out.println("\nLatest message: " + messageContent + "\n");
         } else {
             System.out.println("No messages found yet in Mirror Node");
@@ -777,7 +784,8 @@ public class CreateTopicDemo {
     }
 }
 
-```
+````
+
 </Accordion>
 
 <Accordion title="Go">
@@ -794,91 +802,94 @@ import (
 	"strings"
 	"time"
 
-	hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
+    hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
+
 )
 
 func main() {
-	// load your operator credentials
-	operatorId, _ := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
-	operatorKey, _ := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
+// load your operator credentials
+operatorId, _ := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
+operatorKey, _ := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
 
-	// initialize the client for testnet
-	client := hedera.ClientForTestnet()
-	client.SetOperator(operatorId, operatorKey)
+    // initialize the client for testnet
+    client := hedera.ClientForTestnet()
+    client.SetOperator(operatorId, operatorKey)
 
-	// build & execute the topic creation transaction
-	transaction := hedera.NewTopicCreateTransaction().
-		SetTopicMemo("My first HCS topic")
+    // build & execute the topic creation transaction
+    transaction := hedera.NewTopicCreateTransaction().
+    	SetTopicMemo("My first HCS topic")
 
-	txResponse, err := transaction.Execute(client)
-	if err != nil {
-		panic(err)
-	}
+    txResponse, err := transaction.Execute(client)
+    if err != nil {
+    	panic(err)
+    }
 
-	receipt, err := txResponse.GetReceipt(client)
-	if err != nil {
-		panic(err)
-	}
+    receipt, err := txResponse.GetReceipt(client)
+    if err != nil {
+    	panic(err)
+    }
 
-	topicID := *receipt.TopicID
+    topicID := *receipt.TopicID
 
-	fmt.Println("\nTopic created:", topicID.String())
+    fmt.Println("\nTopic created:", topicID.String())
 
-	// build & execute the message submission transaction
-	message := "Hello, Hedera!"
+    // build & execute the message submission transaction
+    message := "Hello, Hedera!"
 
-	messageTransaction := hedera.NewTopicMessageSubmitTransaction().
-		SetTopicID(topicID).
-		SetMessage([]byte(message))
+    messageTransaction := hedera.NewTopicMessageSubmitTransaction().
+    	SetTopicID(topicID).
+    	SetMessage([]byte(message))
 
-	_, err = messageTransaction.Execute(client)
-	if err != nil {
-		panic(err)
-	}
+    _, err = messageTransaction.Execute(client)
+    if err != nil {
+    	panic(err)
+    }
 
-	fmt.Printf("\nMessage submitted: %s\n", message)
+    fmt.Printf("\nMessage submitted: %s\n", message)
 
-	// Wait for Mirror Node to populate data
-	fmt.Println("\nWaiting for Mirror Node to update...")
-	time.Sleep(6 * time.Second)
+    // Wait for Mirror Node to populate data
+    fmt.Println("\nWaiting for Mirror Node to update...")
+    time.Sleep(6 * time.Second)
 
-	// query messages using Mirror Node
-	mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/topics/" + topicID.String() + "/messages"
+    // query messages using Mirror Node
+    mirrorNodeUrl := "https://testnet.mirrornode.hedera.com/api/v1/topics/" + topicID.String() + "/messages"
 
-	resp, err := http.Get(mirrorNodeUrl)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
+    resp, err := http.Get(mirrorNodeUrl)
+    if err != nil {
+    	panic(err)
+    }
+    defer resp.Body.Close()
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		panic(err)
-	}
+    body, err := io.ReadAll(resp.Body)
+    if err != nil {
+    	panic(err)
+    }
 
-	var data struct {
-		Messages []struct {
-			Message string `json:"message"`
-		} `json:"messages"`
-	}
+    var data struct {
+    	Messages []struct {
+    		Message string `json:"message"`
+    	} `json:"messages"`
+    }
 
-	err = json.Unmarshal(body, &data)
-	if err != nil {
-		panic(err)
-	}
+    err = json.Unmarshal(body, &data)
+    if err != nil {
+    	panic(err)
+    }
 
-	if len(data.Messages) > 0 {
-		latestMessage := data.Messages[len(data.Messages)-1]
-		decodedMessage, _ := base64.StdEncoding.DecodeString(latestMessage.Message)
+    if len(data.Messages) > 0 {
+    	latestMessage := data.Messages[len(data.Messages)-1]
+    	decodedMessage, _ := base64.StdEncoding.DecodeString(latestMessage.Message)
 
-		fmt.Println("\nLatest message:", strings.TrimSpace(string(decodedMessage)))
-	} else {
-		fmt.Println("No messages found yet in Mirror Node")
-	}
+    	fmt.Println("\nLatest message:", strings.TrimSpace(string(decodedMessage)))
+    } else {
+    	fmt.Println("No messages found yet in Mirror Node")
+    }
 
-	client.Close()
+    client.Close()
+
 }
-```
+
+````
 </Accordion>
 
 <Accordion title="Python">
@@ -950,13 +961,14 @@ if messages:
     latest_message = messages[-1]
     encoded_message = latest_message.get("message", "")
     message_content = base64.b64decode(encoded_message).decode("utf-8").strip()
-    
+
     print(f"\nLatest message: {message_content}\n")
 else:
     print("No messages found yet in Mirror Node")
 
 client.close()
-```
+````
+
 </Accordion>
 </AccordionGroup>
 ***
@@ -1033,17 +1045,22 @@ Latest message: Hello, Hedera!
 ### ‼️ Troubleshooting
 
 <Accordion title="Common ERROR messages and solutions ⬇️">
-| Error message                | Likely cause                                   | Fix                                                            |
-| ---------------------------- | ---------------------------------------------- | -------------------------------------------------------------- |
-| `INSUFFICIENT_PAYER_BALANCE` | Not enough HBAR for topic creation fee         | Top up your operator account on the testnet faucet             |
-| `INVALID_SIGNATURE`          | Operator key doesn't match operator account    | Verify OPERATOR\_KEY matches your OPERATOR\_ID                 |
-| `INVALID_ACCOUNT_ID`         | Malformed account ID in environment variables  | Verify OPERATOR\_ID format is 0.0.1234                         |
-| `INVALID_PRIVATE_KEY`        | Malformed private key in environment variables | Verify OPERATOR\_KEY is a valid DER-encoded private key string |
-| `INVALID_TOPIC_ID`           | Topic ID not found or malformed                | Ensure topic was created successfully and ID is correct        |
-| `No messages found yet`      | Mirror Node sync delay                         | Wait a few more seconds and try again - this is normal         |
+  | Error message | Likely cause | Fix | | ---------------------------- |
+  ---------------------------------------------- |
+  -------------------------------------------------------------- | |
+  `INSUFFICIENT_PAYER_BALANCE` | Not enough HBAR for topic creation fee | Top up
+  your operator account on the testnet faucet | | `INVALID_SIGNATURE` | Operator
+  key doesn't match operator account | Verify OPERATOR\_KEY matches your
+  OPERATOR\_ID | | `INVALID_ACCOUNT_ID` | Malformed account ID in environment
+  variables | Verify OPERATOR\_ID format is 0.0.1234 | | `INVALID_PRIVATE_KEY` |
+  Malformed private key in environment variables | Verify OPERATOR\_KEY is a
+  valid DER-encoded private key string | | `INVALID_TOPIC_ID` | Topic ID not
+  found or malformed | Ensure topic was created successfully and ID is correct |
+  | `No messages found yet` | Mirror Node sync delay | Wait a few more seconds
+  and try again - this is normal |
 </Accordion>
 
-***
+---
 
 ## What Just Happened?
 
@@ -1053,21 +1070,18 @@ Latest message: Hello, Hedera!
 4. Your message was submitted to the topic and became part of the immutable record.
 5. The Mirror Node API confirmed your message was published with consensus timestamp
 
-***
+---
 
 ## Next steps
 
-* Subscribe to the topic from your backend or front-end to process messages as they come in
-* Encrypt messages if you need privacy before publishing
-* Explore more examples in the SDK repos ([JavaScript](https://github.com/hiero-ledger/hiero-sdk-js), [Java](https://github.com/hiero-ledger/hiero-sdk-java), [Go](https://github.com/hiero-ledger/hiero-sdk-go))
+- Subscribe to the topic from your backend or front-end to process messages as they come in
+- Encrypt messages if you need privacy before publishing
+- Explore more examples in the SDK repos ([JavaScript](https://github.com/hiero-ledger/hiero-sdk-js), [Java](https://github.com/hiero-ledger/hiero-sdk-java), [Go](https://github.com/hiero-ledger/hiero-sdk-go))
 
-***
+---
 
 🎉 **Great work**! You have created a new topic and broadcasted your first message on Hedera testnet. Keep building!
 
 ## Additional Resources
 
-<Card
-  title="Consensus"
-  href="/hedera/tutorials/consensus"
-/>
+<Card title="Consensus" href="/hedera/tutorials/consensus" />

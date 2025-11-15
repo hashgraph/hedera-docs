@@ -2,8 +2,7 @@
 title: "Metadata Validator"
 ---
 
-
-The [Metadata Validator](https://nft-studio.hashgraph.com/metadata-validator/) is built to check your NFT metadata against the [HIP-412](https://hips.hedera.com/hip/hip-412) *(NFT Token Metadata JSON Schema v2)* standards, ensuring proper representation. You can validate metadata by uploading a CSV file, a single JSON file, or a zip file containing multiple JSON files. The tool identifies errors or missing fields, allowing for easy corrections and ensuring compliance with standards. This tutorial will guide you through uploading, validating, and correcting your NFT metadata for seamless compliance.
+The [Metadata Validator](https://nft-studio.hashgraph.com/metadata-validator/) is built to check your NFT metadata against the [HIP-412](https://hips.hedera.com/hip/hip-412) _(NFT Token Metadata JSON Schema v2)_ standards, ensuring proper representation. You can validate metadata by uploading a CSV file, a single JSON file, or a zip file containing multiple JSON files. The tool identifies errors or missing fields, allowing for easy corrections and ensuring compliance with standards. This tutorial will guide you through uploading, validating, and correcting your NFT metadata for seamless compliance.
 
 <Columns cols={3}>
   <Card
@@ -11,33 +10,35 @@ The [Metadata Validator](https://nft-studio.hashgraph.com/metadata-validator/) i
     href="https://nft-studio.hashgraph.com/metadata-validator/"
     arrow
     img="/images/open-source-solutions/nft-studio/metadata-validator/metadata-validator-6.png"
-  >
- 
-  </Card>
+  ></Card>
   <Card
     title="Metadata Validator Repo"
     href="https://github.com/hedera-dev/metadata-validator"
     arrow
     img="/images/open-source-solutions/nft-studio/metadata-validator/metadata-validator-7.png"
-  >
-    
-  </Card>
+  ></Card>
   <Card
     title="HIP-412: Metadata Standard"
     href="https://hips.hedera.com/hip/hip-412"
     arrow
     img="/images/open-source-solutions/nft-studio/metadata-validator/metadata-validator-8.png"
-  >
-    
-  </Card>
+  ></Card>
 </Columns>
 
-***
+---
 
 ## How to Use the NFT Metadata Validator
 
-<iframe width="768" height="432" src="https://www.youtube.com/embed/Ovyrcc1oLGw" title="NFT Studio | Metadata Validator" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
+<iframe
+  width="768"
+  height="432"
+  src="https://www.youtube.com/embed/Ovyrcc1oLGw"
+  title="NFT Studio | Metadata Validator"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen
+></iframe>
 
 ### Step 1: Download the Example Files
 
@@ -49,7 +50,7 @@ The [Metadata Validator](https://nft-studio.hashgraph.com/metadata-validator/) i
 
 ### Step 2: Upload Metadata for Validation
 
-If you're validating JSON metadata, drag the zip file with the JSON files into the "upload a file" drop area. Once the zip file is successfully uploaded, the tool will process all the JSON files included in it. 
+If you're validating JSON metadata, drag the zip file with the JSON files into the "upload a file" drop area. Once the zip file is successfully uploaded, the tool will process all the JSON files included in it.
 
 <Accordion title="JSON metadata example">
 ```json5 7.json
@@ -67,7 +68,7 @@ If you're validating JSON metadata, drag the zip file with the JSON files into t
   ]
 }
 
-```
+````
 </Accordion>
 
 Alternatively, you can upload the example CSV file downloaded earlier. If you are unfamiliar with JSON, using a CSV file can be a simpler way to format your metadata. When you upload the CSV file, the tool provides an option to convert the CSV into JSON files, which is the standard format for NFT metadata. This feature helps you create valid JSON files to use with your NFTs.
@@ -87,7 +88,8 @@ Cowboy Cat #8,,,"Embodying the spirit of the Wild West, this cat cowboy stands a
 Cowboy Cat #9,,,"A confident cat cowboy standing in a desert landscape with cacti and a sunset in the background.",QmQZoDMLtoqrsDBCPy3bALCAfrNbAvNJqSmwBssACX13ya,image/webp,,,wide-brimmed,bandana,sheriff,desert sunset,confident
 Cowboy Cat #10,,,"A playful cat cowboy with a calico or tortoiseshell fur pattern, holding a lasso in a typical western town.",QmcMjDcbysgnv9SKy48H7zXQfgEXQZK6QxQMRj9vG19Y8Z,image/webp,,,tilted cowboy,playful smirk,calico/tortoiseshell,western town,nice
 Cowboy Cat #11,,,"A futuristic cat cowboy with cybernetic enhancements and neon lights, in a sci-fi western town.",QmcWCoXrXMyLcZ24hn8Wca87RMBEfDwUeE5CTfmhLGgvx5,image/webp,,,high-tech cowboy,cloak,calico/tortoiseshell,neon-lit western town,cybernetic
-```
+````
+
 </Accordion>
 
 <Frame>
@@ -96,7 +98,7 @@ Cowboy Cat #11,,,"A futuristic cat cowboy with cybernetic enhancements and neon 
 
 ### Step 3: Review Validation Results
 
-After processing, the tool will return a list of the validation results for each NFT in the file (see the above image in [Step 2](#step-2-upload-metadata-for-validation)). It will indicate whether the metadata passes or fails the [HIP-412](https://hips.hedera.com/hip/hip-412)  standards tests.
+After processing, the tool will return a list of the validation results for each NFT in the file (see the above image in [Step 2](#step-2%3A-upload-metadata-for-validation)). It will indicate whether the metadata passes or fails the [HIP-412](https://hips.hedera.com/hip/hip-412) standards tests.
 
 <Frame>
   <img src="/images/open-source-solutions/nft-studio/metadata-validator/metadata-validator-3.png" />
@@ -104,13 +106,12 @@ After processing, the tool will return a list of the validation results for each
 
 If an NFT fails validation, you can download an [error log](#error-log) for a complete list of validation errors.
 
-``` error\_log.txt
+```error_log.txt
 File Name: 7.json
 Errors:
 - The required "type" field is missing.
 - The required "image" field is missing.
 ```
-
 
 Or click the [Details](#details) link to see the specific errors for each NFT in the validation results list. For example, in the video demo, one NFT fails validation due to a missing **"type"** field and an absent **"image"** field. You will use these results to correct the errors in your NFT's metadata in the next step.
 
@@ -127,20 +128,24 @@ Before proceeding with your NFTs, ensure all required fields are present and mee
 </Frame>
 
 <Accordion title="Use Cases">
-* Before minting your NFTs on Hedera, use the Metadata Validator to ensure all metadata meets HIP-412 standards, preventing errors during token creation.
-* If you have a large collection, you can validate multiple JSON files simultaneously by uploading them as a `.zip` file, saving time in verifying consistency across all NFTs.
-* The tool provides a step-by-step report on any errors or missing fields, allowing you to make corrections and re-upload your file until compliance is achieved, ensuring a smooth minting process.
+  * Before minting your NFTs on Hedera, use the Metadata Validator to ensure all
+  metadata meets HIP-412 standards, preventing errors during token creation. *
+  If you have a large collection, you can validate multiple JSON files
+  simultaneously by uploading them as a `.zip` file, saving time in verifying
+  consistency across all NFTs. * The tool provides a step-by-step report on any
+  errors or missing fields, allowing you to make corrections and re-upload your
+  file until compliance is achieved, ensuring a smooth minting process.
 </Accordion>
 
 #### 🎉 Awesome! Your NFT metadata is now fully validated and compliant with HIP-412 standards. Up next, assess the uniqueness of your NFTs with the Rarity Inspector.
 
-***
+---
 
 ## Additional Resources
 
-* [**Download Metadata CSV Template**](https://nft-studio.hashgraph.com/metadata-validator/templates/csv-template.csv)
-* [**HashScan Network Explorer**](https://hashscan.io/)
-* [**Hedera Testnet HBAR Faucet**](https://portal.hedera.com/faucet)
-* [**Hedera Developer Portal Account**](https://portal.hedera.com/)
-* [**Hedera Improvement Proposals (HIPs)**](https://hips.hedera.com/)
-* [**Create and Transfer Your First Hedera NFT**](/hedera/tutorials/token/create-and-transfer-your-first-nft)
+- [**Download Metadata CSV Template**](https://nft-studio.hashgraph.com/metadata-validator/templates/csv-template.csv)
+- [**HashScan Network Explorer**](https://hashscan.io/)
+- [**Hedera Testnet HBAR Faucet**](https://portal.hedera.com/faucet)
+- [**Hedera Developer Portal Account**](https://portal.hedera.com/)
+- [**Hedera Improvement Proposals (HIPs)**](https://hips.hedera.com/)
+- [**Create and Transfer Your First Hedera NFT**](/hedera/tutorials/token/create-and-transfer-your-first-nft)

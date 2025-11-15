@@ -2,40 +2,40 @@
 title: "How to Mint & Burn an ERC-721 Token Using Hardhat and Ethers (Part 1)"
 ---
 
-
 In this tutorial, you'll learn how to deploy, mint, and burn [ERC-721](/hedera/support-and-community/glossary#erc-721) tokens (NFTs) using Hardhat, Ethers, and OpenZeppelin contracts on the Hedera Testnet. We'll cover setting up your project, writing and deploying an ERC-721 smart contract, minting an NFT to your account, and finally, burning an NFT.
 
 By the end, you'll have hands-on experience with essential ERC-721 operations and interacting with smart contracts on Hedera.
 
 <Info>
-You can take a look at the **complete code** in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hardhat-erc-721-mint-burn).
+  You can take a look at the **complete code** in the [**Hedera-Code-Snippets
+  repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hardhat-erc-721-mint-burn).
 </Info>
 
-***
+---
 
 ## Prerequisites
 
-* Complete Tutorial: [Configure Hardhat with Hedera localnet/testnet](/hedera/tutorials/smart-contracts/configuring-hardhat-with-hiero-local-node-a-step-by-step-guide)
-* Basic understanding of smart contracts.
-* Basic understanding of [Node.js](https://nodejs.org/en/download) and JavaScript.
-* Basic understanding of [Hardhat EVM Development Tool](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3) and [Ethers](https://docs.ethers.org/v6/).
-* ECDSA account from the [Hedera Portal](https://portal.hedera.com/).
+- Complete Tutorial: [Configure Hardhat with Hedera localnet/testnet](/hedera/tutorials/smart-contracts/configuring-hardhat-with-hiero-local-node-a-step-by-step-guide)
+- Basic understanding of smart contracts.
+- Basic understanding of [Node.js](https://nodejs.org/en/download) and JavaScript.
+- Basic understanding of [Hardhat EVM Development Tool](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3) and [Ethers](https://docs.ethers.org/v6/).
+- ECDSA account from the [Hedera Portal](https://portal.hedera.com/).
 
-***
+---
 
 ## Table of Contents
 
-1. [Project Setup](#step-1-project-setup)
+1. [Project Setup](#step-1%3A-project-setup)
    1. [Initialize Project](#initialize-project)
    2. [Configure Hardhat](#configure-hardhat)
-2. [Creating the ERC-721 Contract](#step-2-creating-the-erc-721-contract)
-3. [Deploy Your Smart Contract](#step-3-deploy-your-erc-721-smart-contract)
-4. [Minting an NFT](#step-4-minting-an-nft)
-5. [Adding the Burn Functionality](#step-5-adding-the-burn-functionality)
-6. [Burning an NFT](#step-6-burning-an-nft)
-7. [Run tests](#step-7-run-tests-optional)
+2. [Creating the ERC-721 Contract](#step-2%3A-creating-the-erc-721-contract)
+3. [Deploy Your Smart Contract](#step-3%3A-deploy-your-erc-721-smart-contract)
+4. [Minting an NFT](#step-4%3A-minting-an-nft)
+5. [Adding the Burn Functionality](#step-5%3A-adding-the-burn-functionality)
+6. [Burning an NFT](#step-6%3A-burning-an-nft)
+7. [Run tests](#step-7%3A-run-tests-optional)
 
-***
+---
 
 ## Video Tutorial
 
@@ -44,25 +44,35 @@ You can watch the video tutorial (which uses **Hardhat version 2**) or follow th
 <Accordion title="🚧 What's new: Hardhat 2 → 3 ">
 Key differences in Hardhat 3:
 
-* **compile → build**\
+- **compile → build**\
   `npx hardhat compile` is now `npx hardhat build`. This is the big one. The v3 migration guide explicitly shows using the `build` task.
-* **project init switch**\
+- **project init switch**\
   v2 commonly used `npx hardhat` or `npx hardhat init` to bootstrap. In v3 it’s `npx hardhat --init`.
 
-- **keystore helper commands are new**\
+* **keystore helper commands are new**\
   v3’s recommended flow includes a keystore plugin with commands like `npx hardhat keystore set HEDERA_RPC_URL` and `npx hardhat keystore set HEDERA_PRIVATE_KEY`. These weren’t standard in v2.
-- **Foundry-compatiable Solidity tests**\
+* **Foundry-compatiable Solidity tests**\
   In addition to offering Javascript/Typescript integration tests, Hardhat v3 also integrates Foundry-compatible Solidity tests that allows developers to write unit tests directly in Solidity
 
-* **Enhanced Network Management**\
+- **Enhanced Network Management**\
   v3 allows tasks to create and manage multiple network connections simultaneously which is a significant improvement over the single, fixed connection available in version 2. This provides greater flexibility for scripts and tests that interact with multiple networks.
 
-*📚 Learn more from the official* [*Hardhat documentation*](https://hardhat.org/docs/getting-started)*.*
+_📚 Learn more from the official_ [_Hardhat documentation_](https://hardhat.org/docs/getting-started)_._
+
 </Accordion>
 
-<iframe width="1124" height="632" src="https://www.youtube.com/embed/B23aVhaCARU" title="How to Mint &amp; Burn an ERC-721 Token Using Hardhat &amp; Ethers" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe
+  width="720"
+  height="405"
+  src="https://www.youtube.com/embed/B23aVhaCARU"
+  title="How to Mint &amp; Burn an ERC-721 Token Using Hardhat &amp; Ethers"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen
+></iframe>
 
-***
+---
 
 ## Step 1: Project Setup
 
@@ -105,7 +115,8 @@ For `HEDERA_PRIVATE_KEY`, enter the **HEX Encoded Private Key for your ECDSA acc
 <Danger>
 #### Note
 
-[*Hashio*](https://www.hashgraph.com/hashio/) *is intended for development and testing purposes only. For production use cases, it's recommended to use commercial-grade JSON-RPC Relay or host your own instance of the* [*Hiero JSON-RPC Relay*](https://github.com/hiero-ledger/hiero-json-rpc-relay)*.*
+[_Hashio_](https://www.hashgraph.com/hashio/) _is intended for development and testing purposes only. For production use cases, it's recommended to use commercial-grade JSON-RPC Relay or host your own instance of the_ [_Hiero JSON-RPC Relay_](https://github.com/hiero-ledger/hiero-json-rpc-relay)_._
+
 </Danger>
 
 #### Configure Hardhat
@@ -123,31 +134,30 @@ const config: HardhatUserConfig = {
   solidity: {
     profiles: {
       default: {
-        version: "0.8.28"
+        version: "0.8.28",
       },
       production: {
         version: "0.8.28",
         settings: {
           optimizer: {
             enabled: true,
-            runs: 200
-          }
-        }
-      }
-    }
+            runs: 200,
+          },
+        },
+      },
+    },
   },
   networks: {
     testnet: {
       type: "http",
       url: configVariable("HEDERA_RPC_URL"),
-      accounts: [configVariable("HEDERA_PRIVATE_KEY")]
-    }
-  }
+      accounts: [configVariable("HEDERA_PRIVATE_KEY")],
+    },
+  },
 };
 
 export default config;
 ```
-
 
 You can verify the connection by running:
 
@@ -164,7 +174,7 @@ rm -rf contracts/* scripts/* test/*
 rm -rf ignition
 ```
 
-***
+---
 
 ## Step 2: Creating the ERC-721 Contract
 
@@ -194,7 +204,6 @@ contract MyToken is ERC721, Ownable {
 }
 ```
 
-
 This contract was created using the [OpenZeppelin Contracts Wizard](https://wizard.openzeppelin.com/#erc721) and OpenZeppelin's ERC-721 standard implementation with an ownership model. The ERC-721 token's name has been set to "MyToken." The contract implements the `safeMint` function, which accepts the address of the owner of the new token and uses auto-increment IDs, starting from 0.
 
 Let's compile this contract by running:
@@ -205,7 +214,7 @@ npx hardhat build
 
 This command will generate the smart contract artifacts, including the [ABI](/hedera/core-concepts/smart-contracts/compiling-smart-contracts). We are now ready to deploy the smart contract.
 
-***
+---
 
 ## Step 3: Deploy Your ERC-721 Smart Contract
 
@@ -215,7 +224,7 @@ Create a deployment script (`deploy.ts`) in `scripts` directory:
 import { network } from "hardhat";
 
 const { ethers } = await network.connect({
-  network: "testnet"
+  network: "testnet",
 });
 
 async function main() {
@@ -236,7 +245,6 @@ async function main() {
 main().catch(console.error);
 ```
 
-
 In this script, we first retrieve your account (the deployer) using Ethers.js. This account will own the deployed smart contract. Next, we use this account to deploy the contract by calling `MyToken.deploy(deployer.address)`. This passes your account address as the initial owner and signer of the deployment transaction.
 
 Deploy your contract by executing the script:
@@ -245,9 +253,7 @@ Deploy your contract by executing the script:
 npx hardhat run scripts/deploy.ts --network testnet
 ```
 
-<Check>
-Copy the deployed address—you'll need this in subsequent steps.
-</Check>
+<Check>Copy the deployed address—you'll need this in subsequent steps.</Check>
 
 The output looks like this:
 
@@ -260,7 +266,7 @@ Deploying contract with the account: 0xA98556A4deeB07f21f8a66093989078eF86faa30
 Contract deployed at: 0x6035bA3BCa9595637B463Aa514c3a1cE3f67f3de
 ```
 
-***
+---
 
 ## Step 4: Minting an NFT
 
@@ -270,7 +276,7 @@ Create a `mint.ts` script in your `scripts` directory to mint an NFT. Don't forg
 import { network } from "hardhat";
 
 const { ethers } = await network.connect({
-  network: "testnet"
+  network: "testnet",
 });
 
 async function main() {
@@ -298,7 +304,6 @@ async function main() {
 
 main().catch(console.error);
 ```
-
 
 The code mints a new NFT to your account ( `deployer.address` ). Then we verify the balance to see if we own an ERC-721 token of type `MyToken`.
 
@@ -356,7 +361,7 @@ Minted token ID: 0x0000000000000000000000000000000000000000000000000000000000000
 Balance: 1 NFTs
 ```
 
-***
+---
 
 ## Step 5: Adding the Burn Functionality
 
@@ -382,7 +387,7 @@ Copy the new smart contract address and replace the address in the `scripts/mint
 npx hardhat run scripts/mint.ts --network testnet
 ```
 
-***
+---
 
 ## Step 6: Burning an NFT
 
@@ -392,7 +397,7 @@ Create a burn script (`burn.ts` ) in your `scripts` directory:
 import { network } from "hardhat";
 
 const { ethers } = await network.connect({
-  network: "testnet"
+  network: "testnet",
 });
 
 async function main() {
@@ -421,7 +426,6 @@ async function main() {
 main().catch(console.error);
 ```
 
-
 Again, ensure you update `<your-contract-address>` to interact with your correct contract. The script will burn the ERC-721 token with the ID set to `0`, which is the ERC-721 token you've just minted. To be sure the token has been deleted, let's print the balance for our account to the terminal. The balance should show a balance of `0`.
 
 Burn the NFT:
@@ -436,8 +440,8 @@ npx hardhat run scripts/burn.ts --network testnet
 
 You can find both types of tests in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hardhat-erc-721-mint-burn). You will find the following files:
 
-* `contracts/MyToken.t.sol`
-* `test/MyToken.ts`
+- `contracts/MyToken.t.sol`
+- `test/MyToken.ts`
 
 Copy these files and then run the tests:
 
@@ -452,12 +456,12 @@ npx hardhat test solidity
 npx hardhat test mocha
 ```
 
-***
+---
 
 ## Additional Resources
 
-* [OpenZeppelin ERC-721 Documentation](https://docs.openzeppelin.com/contracts/5.x/erc721)
-* [Full Code in Hedera-Code-Snippets Repository](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hardhat-erc-721-mint-burn)
+- [OpenZeppelin ERC-721 Documentation](https://docs.openzeppelin.com/contracts/5.x/erc721)
+- [Full Code in Hedera-Code-Snippets Repository](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hardhat-erc-721-mint-burn)
 
 <Columns cols={2}>
   <Card
@@ -470,13 +474,13 @@ npx hardhat test mocha
     title="Editor: Editor: Luis, Sr Software Developer"
     arrow
   >
-    [Github](https://github.com/acuarica) 
+    [Github](https://github.com/acuarica)
 
-  >
-    
+>
+
   </Card>
   <Card
-    title="Editor: Krystal, Technical Writer"
+    title="Editor: Krystal, DX Engineer"
     arrow
   >
     [GitHub](https://github.com/theekrystallee) | [X](https://x.com/theekrystallee)

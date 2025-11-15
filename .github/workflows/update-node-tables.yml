@@ -1,0 +1,63 @@
+name: Update Node Tables
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * *" # daily at 06:00 UTC
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-tables:
+    runs-on: hashgraph-docs-linux-medium
+    steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+
+      - name: Install dependencies (jq)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - name: Make script executable
+        run: chmod +x ./update_node_tables.sh
+
+      - name: Run update script
+        run: ./update_node_tables.sh
+
+      - name: Detect and log changes
+        id: git-check
+        run: |
+          echo "=== git status ==="
+          git status --porcelain
+          if git diff --quiet; then
+            echo "changes=false" >> "$GITHUB_OUTPUT"
+            echo "no changes detected."
+          else
+            echo "changes=true" >> "$GITHUB_OUTPUT"
+            echo "=== diffstat ==="
+            git --no-pager diff --stat
+            echo "=== first 200 lines of diff ==="
+            git --no-pager diff | head -n 200
+          fi
+
+      - name: Create Pull Request
+        if: ${{ steps.git-check.outputs.changes == 'true' }}
+        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e
+        with:
+          commit-message: "chore: update node tables"
+          sign-commits: true
+          branch: update-node-tables
+          title: "chore: update node tables"
+          body: "automated update of node tables."
+          labels: automated-pr
+          delete-branch: true

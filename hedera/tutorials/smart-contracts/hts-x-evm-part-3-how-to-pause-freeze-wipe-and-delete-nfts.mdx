@@ -2,42 +2,41 @@
 title: "HTS x EVM - How to Pause, Freeze, Wipe, and Delete NFTs (Part 3)"
 ---
 
-
 In [HTS x EVM - Part 2](/hedera/tutorials/smart-contracts/hts-x-evm-part-2-kyc-and-update), you learned how to grant / revoke KYC and manage a token using the [Hedera Token Service (HTS) System Smart Contract](/hedera/core-concepts/smart-contracts/system-smart-contracts#hedera-token-service). But those aren't all the token operations you can do!
 
 In this guide, you will learn how to:
 
-* **Pause** a token (stop all operations)
-* **Freeze** a token for a specific account
-* **Wipe** NFTs from a specific account
-* **Delete** a token
+- **Pause** a token (stop all operations)
+- **Freeze** a token for a specific account
+- **Wipe** NFTs from a specific account
+- **Delete** a token
 
-***
+---
 
 ## Prerequisites
 
-* ECDSA account from the [Hedera Portal](https://portal.hedera.com/).
-* Basic understanding of Solidity.
+- ECDSA account from the [Hedera Portal](https://portal.hedera.com/).
+- Basic understanding of Solidity.
 
-***
+---
 
 ## Table of Contents <a href="#table-of-contents" id="table-of-contents"></a>
 
-1. [Step 1: Creating, minting, and transferring an NFT](#step-2.-creating-minting-and-transferring-an-nft)
-2. [Step 2: Pause a Token](#step-3.-pause-a-token)
-3. [Step 3: Unpause a Token](#step-4.-unpause-a-token)
+1. [Step 1: Creating, minting, and transferring an NFT](#step-2%3A.-creating-minting-and-transferring-an-nft)
+2. [Step 2: Pause a Token](#step-3%3A.-pause-a-token)
+3. [Step 3: Unpause a Token](#step-4%3A.-unpause-a-token)
 4. [Step 4: Freeze a Token for a Specific Account](#step-5.-freeze-a-token-for-a-specific-account)
-5. [Step 5: Unfreeze a Token for a Specific Account](#step-6.-unfreeze-a-token-for-a-specific-account)
-6. [Step 6: Wipe a Token](#step-7.-wipe-a-token)
-7. [Step 7: Delete a Token](#step-8.-delete-a-token)
-8. [Step 8: Deploy Your HTS NFT Smart Contract](#step-8-deploy-your-hts-nft-smart-contract)
+5. [Step 5: Unfreeze a Token for a Specific Account](#step-6%3A.-unfreeze-a-token-for-a-specific-account)
+6. [Step 6: Wipe a Token](#step-7%3A.-wipe-a-token)
+7. [Step 7: Delete a Token](#step-8%3A.-delete-a-token)
+8. [Step 8: Deploy Your HTS NFT Smart Contract](#step-8%3A-deploy-your-hts-nft-smart-contract)
 9. [Step 9: Minting an HTS NFT ](#step-9-minting-an-hts-nft-with-kyc)
 10. [Step 10: Burning an HTS NFT](#step-10-burning-an-hts-nft)
 11. [Step 11: Run tests](#step-11-run-tests-optional)
 12. [Conclusion](#conclusion)
 13. [Additional Resources](#additional-resources)
 
-***
+---
 
 ## Step 1. Creating, minting, and burning an NFT
 
@@ -45,16 +44,16 @@ These steps of the flow have been covered in the [Part 1](/hedera/tutorials/smar
 
 The previous tutorials covered creating NFT collection. Everything remains largely the same except for the following changes:
 
-* Add one additional line for managing the PAUSE key that can be used to prevent the token from being involved in any kind of operation.
-* Add one additional line for managing the FREEZE key that can be used to freeze transfers of the specified token for the account.
-* Add one additional line for managing the WIPE key that can be used to wipe the provided amount of fungible or non-fungible tokens from the specified Hedera account. This transaction does not delete tokens from the treasury account. Wiping an account's tokens burns the tokens and decreases the total supply.
-* Add one additional line for managing the DELETE key that can be used to mark a token as deleted, though it will remain in the ledger. Once deleted update, mint, burn, wipe, freeze, unfreeze, grant KYC, revoke KYC and token transfer transactions will resolve to TOKEN\_WAS\_DELETED. You cannot delete a specific NFT. You can delete the class of the NFT specified by the token ID after you have burned all associated NFTs associated with the token class
+- Add one additional line for managing the PAUSE key that can be used to prevent the token from being involved in any kind of operation.
+- Add one additional line for managing the FREEZE key that can be used to freeze transfers of the specified token for the account.
+- Add one additional line for managing the WIPE key that can be used to wipe the provided amount of fungible or non-fungible tokens from the specified Hedera account. This transaction does not delete tokens from the treasury account. Wiping an account's tokens burns the tokens and decreases the total supply.
+- Add one additional line for managing the DELETE key that can be used to mark a token as deleted, though it will remain in the ledger. Once deleted update, mint, burn, wipe, freeze, unfreeze, grant KYC, revoke KYC and token transfer transactions will resolve to TOKEN_WAS_DELETED. You cannot delete a specific NFT. You can delete the class of the NFT specified by the token ID after you have burned all associated NFTs associated with the token class
 
 #### **Key Code Snippet:**
 
 ```solidity contracts/MyHTSTokenPFWD.sol wrap
 contract MyHTSTokenPFWD is HederaTokenService, KeyHelper, Ownable {
-    ... 
+    ...
     function createNFTCollection(
         string memory _name,
         string memory _symbol
@@ -116,21 +115,20 @@ contract MyHTSTokenPFWD is HederaTokenService, KeyHelper, Ownable {
 }
 ```
 
-
-***
+---
 
 ## Step 2. Pause a Token
 
 Let's update our contract by:
 
-* Adding a new function `pauseToken` to pause the token so it prevents the token from being involved in any kind of operation.
-* We will also define a new event `TokenPaused`.  
+- Adding a new function `pauseToken` to pause the token so it prevents the token from being involved in any kind of operation.
+- We will also define a new event `TokenPaused`.
 
 #### **Key Code Snippet:**
 
 ```solidity contracts/MyHTSTokenPFWD.sol wrap
 contract MyHTSTokenPFWD is HederaTokenService, KeyHelper, Ownable {
-    ... 
+    ...
     event TokenPaused();
     ...
     function pauseToken() external onlyOwner {
@@ -146,21 +144,20 @@ contract MyHTSTokenPFWD is HederaTokenService, KeyHelper, Ownable {
 }
 ```
 
-
-***
+---
 
 ## Step 3. Unpause a Token
 
 Let's update our contract by:
 
-* Adding a new function `unpauseToken` to unpause the token so the token operations can be executed again.
-* We will also define a new event `TokenPaused`.  
+- Adding a new function `unpauseToken` to unpause the token so the token operations can be executed again.
+- We will also define a new event `TokenPaused`.
 
 #### **Key Code Snippet:**
 
 ```solidity contracts/MyHTSTokenPFWD.sol wrap
 contract MyHTSTokenPFWD is HederaTokenService, KeyHelper, Ownable {
-    ... 
+    ...
     event TokenUnpaused();
     ...
     function unpauseToken() external onlyOwner {
@@ -176,21 +173,20 @@ contract MyHTSTokenPFWD is HederaTokenService, KeyHelper, Ownable {
 }
 ```
 
-
-***
+---
 
 ## Step 4. Freeze a Token for a Specific Account
 
 Let's update our contract by:
 
-* Adding a new function `freezeAccount` to freezes a specific account, meaning it can neither send nor receive the token. Freezing is more granular than pausing; it only affects a specific account. This is useful for making soul-bound tokens.
-* We will also define a new event `AccountFrozen`.
+- Adding a new function `freezeAccount` to freezes a specific account, meaning it can neither send nor receive the token. Freezing is more granular than pausing; it only affects a specific account. This is useful for making soul-bound tokens.
+- We will also define a new event `AccountFrozen`.
 
 #### **Key Code Snippet:**
 
 ```solidity contracts/MyHTSTokenPFWD.sol wrap
 contract MyHTSTokenPFWD is HederaTokenService, KeyHelper, Ownable {
-    ... 
+    ...
     event AccountFrozen(address indexed account);
     ...
     function freezeAccount(address account) external onlyOwner {
@@ -206,21 +202,20 @@ contract MyHTSTokenPFWD is HederaTokenService, KeyHelper, Ownable {
 }
 ```
 
-
-***
+---
 
 ## Step 5. Unfreeze a Token for a Specific Account
 
 Let's update our contract by:
 
-* Adding a new function `unfreezeAccount` to unfreeze the token for a specific account.
-* We will also define a new event `AccountUnFrozen`.
+- Adding a new function `unfreezeAccount` to unfreeze the token for a specific account.
+- We will also define a new event `AccountUnFrozen`.
 
 #### **Key Code Snippet:**
 
 ```solidity contracts/MyHTSTokenPFWD.sol wrap
 contract MyHTSTokenPFWD is HederaTokenService, KeyHelper, Ownable {
-    ... 
+    ...
     event AccountUnFrozen(address indexed account);
     ...
     function unfreezeAccount(address account) external onlyOwner {
@@ -236,25 +231,25 @@ contract MyHTSTokenPFWD is HederaTokenService, KeyHelper, Ownable {
 }
 ```
 
-
 After unfreezing, the `owner` account can transact freely again.
 
-***
+---
 
 ## Step 6. Wipe a Token
 
 Let's update our contract by:
 
-* Adding a new function `wipeTokenFromAccount` to wipe the NFT from an account. This effectively burns that token (i.e., reduces the total supply) from a non-treasury account.
+- Adding a new function `wipeTokenFromAccount` to wipe the NFT from an account. This effectively burns that token (i.e., reduces the total supply) from a non-treasury account.
 
   For [**fungible tokens**](/hedera/support-and-community/glossary#fungible-token), specify an amount to wipe; for [**non-fungible tokens (NFTs)**](/hedera/support-and-community/glossary#non-fungible-token-nft), we specify the serial numbers to be wiped.
-* We will also define a new event `TokenWiped`.
+
+- We will also define a new event `TokenWiped`.
 
 #### **Key Code Snippet:**
 
 ```solidity contracts/MyHTSTokenPFWD.sol
 contract MyHTSTokenPFWD is HederaTokenService, KeyHelper, Ownable {
-    ... 
+    ...
     event TokenWiped(address indexed account, int64[] serialNumbers);
     ...
     function wipeTokenFromAccount(
@@ -277,21 +272,20 @@ contract MyHTSTokenPFWD is HederaTokenService, KeyHelper, Ownable {
 }
 ```
 
-
-***
+---
 
 ## Step 7. Delete a Token
 
 Let's update our contract by:
 
-* Adding a new function `deleteToken` to delete the token. This renders a token completely unusable for future operations. The token still exists on the ledger (you can query it), but all transactions (e.g., minting, transfers, etc.) will fail. The **ADMIN** key is required to delete.
-* We will also define a new event `TokenDeleted`.
+- Adding a new function `deleteToken` to delete the token. This renders a token completely unusable for future operations. The token still exists on the ledger (you can query it), but all transactions (e.g., minting, transfers, etc.) will fail. The **ADMIN** key is required to delete.
+- We will also define a new event `TokenDeleted`.
 
 #### **Key Code Snippet**:
 
 ```solidity contracts/MyHTSTokenPFWD.sol
 contract MyHTSTokenPFWD is HederaTokenService, KeyHelper, Ownable {
-    ... 
+    ...
     event TokenDeleted();
     ...
     function deleteToken() external onlyOwner {
@@ -307,7 +301,6 @@ contract MyHTSTokenPFWD is HederaTokenService, KeyHelper, Ownable {
     ...
 }
 ```
-
 
 Once deleted, attempting further operations like minting will fail.
 
@@ -618,8 +611,7 @@ contract MyHTSTokenPFWD is HederaTokenService, KeyHelper, Ownable {
 }
 ```
 
-
-***
+---
 
 ## Step 8: Deploy Your HTS NFT Smart Contract
 
@@ -652,7 +644,7 @@ async function main() {
   );
   const tx = await contract.createNFTCollection(NAME, SYMBOL, {
     gasLimit: 350_000,
-    value: ethers.parseEther(HBAR_TO_SEND)
+    value: ethers.parseEther(HBAR_TO_SEND),
   });
   await tx.wait();
   console.log("createNFTCollection() tx hash:", tx.hash);
@@ -670,13 +662,13 @@ async function main() {
 main().catch(console.error);
 ```
 
-
 In this script, we first retrieve your account (the deployer) using Ethers.js. This account will own the deployed smart contract. Next, we use this account to deploy the contract by calling `MyHTSTokenPFWD.deploy()`.
 
 <Info>
 **Note**
 
-For most HTS [System Smart Contract](/hedera/core-concepts/smart-contracts/system-smart-contracts) calls, an HBAR value **is not** required to be sent in the contract call; the gas fee will cover it. However, for expensive transactions, like [Create HTS NFT Collection](#step-3-deploy-your-hts-nft-smart-contract), the gas fee is reduced, and the transaction cost is covered by the payable amount. This is to reduce the gas consumed by the contract call.
+For most HTS [System Smart Contract](/hedera/core-concepts/smart-contracts/system-smart-contracts) calls, an HBAR value **is not** required to be sent in the contract call; the gas fee will cover it. However, for expensive transactions, like [Create HTS NFT Collection](#step-3%3A-deploy-your-hts-nft-smart-contract), the gas fee is reduced, and the transaction cost is covered by the payable amount. This is to reduce the gas consumed by the contract call.
+
 </Info>
 
 Deploy your contract by executing the script:
@@ -685,9 +677,7 @@ Deploy your contract by executing the script:
 npx hardhat run scripts/deployPFWD.ts --network testnet
 ```
 
-<Check>
-Copy the deployed address—you'll need this in subsequent steps.
-</Check>
+<Check>Copy the deployed address—you'll need this in subsequent steps.</Check>
 
 The output looks like this:
 
@@ -755,7 +745,7 @@ async function main() {
     recipient,
     metadata,
     {
-      gasLimit: 400_000
+      gasLimit: 400_000,
     }
   );
   await tx.wait();
@@ -774,7 +764,6 @@ async function main() {
 main().catch(console.error);
 ```
 
-
 <Info>
 **How It Works**
 
@@ -784,6 +773,7 @@ main().catch(console.error);
 4. Constructs \<=100-byte UTF-8 metadata and calls mintNFT(recipient, metadata), then waits for the transaction receipt.
 5. Mints NFT to recipient
 6. Queries balanceOf(recipient) on the ERC721 facade and logs the current NFT count.
+
 </Info>
 
 The code mints a new NFT to your account ( `signer.address` ). Then we verify the balance to see if we own an HTS NFT.
@@ -806,7 +796,7 @@ Mint tx hash: 0x71e5e810ef098ceb45542e29a2c2f88dedf078f92b35847021e982ef5059c6cc
 Balance: 1 NFTs
 ```
 
-***
+---
 
 ## Step 10: Burning an HTS NFT
 
@@ -842,7 +832,7 @@ async function main() {
       "function approve(address to, uint256 tokenId) external",
       "function getApproved(uint256 tokenId) external view returns (address)",
       "function ownerOf(uint256 tokenId) external view returns (address)",
-      "function balanceOf(address owner) external view returns (uint256)"
+      "function balanceOf(address owner) external view returns (uint256)",
     ],
     signer
   );
@@ -871,7 +861,7 @@ async function main() {
   // Burn via MyHTSTokenPFWD
   console.log(`Burning tokenId ${tokenId.toString()}...`);
   const burnTx = (await myHTSTokenPFWDContract.burnNFT(tokenId, {
-    gasLimit: 200_000
+    gasLimit: 200_000,
   })) as unknown as ContractTransactionResponse;
   await burnTx.wait();
   console.log("Burn tx hash:", burnTx.hash);
@@ -882,9 +872,7 @@ async function main() {
 }
 
 main().catch(console.error);
-
 ```
-
 
 <Info>
 **How It Works**
@@ -893,6 +881,7 @@ main().catch(console.error);
 2. Checks token ownership and existing approval; if needed, approves the MyHTSTokenPFWD contract for the specific tokenId.
 3. Calls burnNFT(tokenId) on MyHTSTokenPFWD and waits for the transaction receipt.
 4. Reads and logs the signer’s NFT balance from the ERC721 facade after the burn.
+
 </Info>
 
 The script will burn the HTS NFT with the ID set to `1`, which is the HTS NFT you've just minted. To be sure the token has been deleted, let's print the balance for our account to the terminal. The balance should show a balance of `0`.
@@ -922,32 +911,47 @@ Balance after burn: 0 NFTs
 
 You can find both types of tests in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hts-evm-mint-nfts). You will find the following files:
 
-* `contracts/MyHTSTokenPFWD.t.sol`
+- `contracts/MyHTSTokenPFWD.t.sol`
 
 <Info>
-* **Ownership and access control:** Verifies the constructor sets owner correctly and onlyOwner is enforced for create/pause/unpause/freeze/unfreeze/wipe/delete (non-owners revert with OwnableUnauthorizedAccount).
-* **Pre-creation guards and validation:** Ensures all HTS-dependent functions revert with "HTS: not created" before collection setup, and rejects minting when metadata exceeds 100 bytes.
-* **Native HBAR flow:** Confirms the contract can receive HBAR (HBARReceived event), blocks non-owner withdrawals, and allows the owner to withdraw all HBAR (HBARWithdrawn event) leaving balance at zero.
+  * **Ownership and access control:** Verifies the constructor sets owner
+  correctly and onlyOwner is enforced for
+  create/pause/unpause/freeze/unfreeze/wipe/delete (non-owners revert with
+  OwnableUnauthorizedAccount). * **Pre-creation guards and validation:** Ensures
+  all HTS-dependent functions revert with "HTS: not created" before collection
+  setup, and rejects minting when metadata exceeds 100 bytes. * **Native HBAR
+  flow:** Confirms the contract can receive HBAR (HBARReceived event), blocks
+  non-owner withdrawals, and allows the owner to withdraw all HBAR
+  (HBARWithdrawn event) leaving balance at zero.
 </Info>
 
 - `test/MyHTSTokenPFWD.ts`
 
 <Info>
-* **End-to-end setup:** Deploys the PFWD wrapper, creates the HTS NFT collection (with PAUSE/FREEZE/WIPE/ADMIN keys), retrieves the ERC721 facade address, generates/funds a second wallet, and associates both accounts on-chain via token.associate().
-* **Minting and event parsing**: Mints NFT to deployer (tokenIdA) and to user2 (tokenIdB), parsing the NFTMinted event from wrapper logs; validates ownership/balances via the ERC721 facade.
-* **Pause/unpause lifecycle:** Asserts transfers revert while paused and succeed after unpausing, confirming correct enforcement of the PAUSE key.
-* **Freeze/unfreeze enforcement:** Freezes user2 to block outgoing transfers, then unfreezes and verifies transfers succeed again, demonstrating account-level restrictions.
-* **Cleanup and failure handling:** Attempts a wipe of user2’s token (freezing if necessary) and falls back to user-approved burn if wipe isn’t permitted; then approves and burns the remaining token, deletes the token (when supply is zero), and verifies subsequent mints fail.
+  * **End-to-end setup:** Deploys the PFWD wrapper, creates the HTS NFT
+  collection (with PAUSE/FREEZE/WIPE/ADMIN keys), retrieves the ERC721 facade
+  address, generates/funds a second wallet, and associates both accounts
+  on-chain via token.associate(). * **Minting and event parsing**: Mints NFT to
+  deployer (tokenIdA) and to user2 (tokenIdB), parsing the NFTMinted event from
+  wrapper logs; validates ownership/balances via the ERC721 facade. *
+  **Pause/unpause lifecycle:** Asserts transfers revert while paused and succeed
+  after unpausing, confirming correct enforcement of the PAUSE key. *
+  **Freeze/unfreeze enforcement:** Freezes user2 to block outgoing transfers,
+  then unfreezes and verifies transfers succeed again, demonstrating
+  account-level restrictions. * **Cleanup and failure handling:** Attempts a
+  wipe of user2’s token (freezing if necessary) and falls back to user-approved
+  burn if wipe isn’t permitted; then approves and burns the remaining token,
+  deletes the token (when supply is zero), and verifies subsequent mints fail.
 </Info>
 
 Copy these files and then run the tests:
 
 ```bash
 # This will run the tests via hardhat
-npx hardhat test solidity 
-# This will run the tests via hedera testnet as the precompiles 
+npx hardhat test solidity
+# This will run the tests via hedera testnet as the precompiles
 # are not available on hardhat locally and we must use the testnet
-npx hardhat test mocha 
+npx hardhat test mocha
 ```
 
 You can also run both the solidity and mocha tests altogether:
@@ -956,7 +960,7 @@ You can also run both the solidity and mocha tests altogether:
 npx hardhat test
 ```
 
-***
+---
 
 ## Conclusion
 
@@ -964,43 +968,34 @@ In this guide, you saw how to replicate key HTS operations (pause, freeze, wipe,
 
 **Key Takeaways:**
 
-* If you want to perform the respective operations later, you must set the **ADMIN**, **FREEZE**, **PAUSE**, **WIPE**, and **SUPPLY** keys when creating a token via a contract.
-* Any account that needs to receive or send the token must be associated with it.
-* Pausing affects **all** operations globally while freezing targets a **single** account.
-* Wiping NFTs effectively burns them, reducing total supply.
-* Deleting a token makes it unusable for future operations but remains queryable on the ledger.
+- If you want to perform the respective operations later, you must set the **ADMIN**, **FREEZE**, **PAUSE**, **WIPE**, and **SUPPLY** keys when creating a token via a contract.
+- Any account that needs to receive or send the token must be associated with it.
+- Pausing affects **all** operations globally while freezing targets a **single** account.
+- Wiping NFTs effectively burns them, reducing total supply.
+- Deleting a token makes it unusable for future operations but remains queryable on the ledger.
 
-***
+---
 
 ## Additional Resources
 
 Check out our GitHub repo to find the full contract and Hardhat test scripts, along with the configuration files you need to deploy and test on Hedera!
 
-* [Full Contract and Tests Repository](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hts-evm-mint-nfts)
+- [Full Contract and Tests Repository](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hts-evm-mint-nfts)
 
 <Columns cols={2}>
-  <Card
-    title="Writer: Jake, Developer Relations Engineer"
-    arrow
-  >
+  <Card title="Writer: Jake, DevRel Engineer" arrow>
     [GitHub](https://github.com/jaycoolh) | [X](https://x.com/jaycoolh)
   </Card>
-  <Card
-    title="Editor: Michiel, Developer Relations Engineer"
-    arrow
-  >
-    [GitHub](https://github.com/michielmulders) | [LinkedIn](https://www.linkedin.com/in/michielmulders/)
+  <Card title="Editor: Michiel, DevRel Engineer" arrow>
+    [GitHub](https://github.com/michielmulders) |
+    [LinkedIn](https://www.linkedin.com/in/michielmulders/)
   </Card>
-  <Card
-    title="Editor: Krystal, Technical Writer"
-    arrow
-  >
-    [GitHub](https://github.com/theekrystallee) | [X](https://x.com/theekrystallee)
+  <Card title="Editor: Krystal, DX Engineer" arrow>
+    [GitHub](https://github.com/theekrystallee) |
+    [X](https://x.com/theekrystallee)
   </Card>
-  <Card
-    title="Editor: Kiran, Developer Advocate"
-    arrow
-  >
-    [GitHub](https://github.com/kpachhai) | [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
+  <Card title="Editor: Kiran, Developer Advocate" arrow>
+    [GitHub](https://github.com/kpachhai) |
+    [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
   </Card>
 </Columns>

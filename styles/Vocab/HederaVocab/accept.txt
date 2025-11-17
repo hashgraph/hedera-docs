@@ -286,6 +286,3 @@ nav
 prev
 next
 toc
-
-
-

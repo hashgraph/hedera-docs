@@ -24,11 +24,6 @@ Once your PR is reviewed and merged, the updated docs will automatically appear 
    ```bash
    npm i -g mint
    ```
-3. Install project dependencies:
-
-   ```bash
-   npm install
-   ```
 
 Reference the official [Mintlify docs](https://www.mintlify.com/docs/quickstart) for more details.
 

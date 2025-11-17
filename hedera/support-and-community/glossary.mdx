@@ -9,7 +9,7 @@ This glossary intends to provide a reference for Hedera and general web3 key ter
 
 ---
 
-## \#
+## 
 
 ### 51% and 1/3 Attacks
 
@@ -420,6 +420,19 @@ A technical standard used on the Ethereum blockchain to propose improvements, de
 
 The runtime environment in Ethereum, where smart contracts are executed. It is a [Turing-complete](#turing-complete) [virtual machine](#virtual-machine) that executes scripts used to implement certain operations on the Ethereum blockchain. The EVM is contained within the client software needed to run a node on Ethereum, and it manages the state of the blockchain and enables smart contract functionality.
 
+### EVM Address
+
+---
+
+Every Hedera account has an EVM address, which allows it to interact with smart contracts and EVM-based tools. This address can be derived in two ways:
+
+- **From the account’s public key**: This is a standard EVM address, computed as the last 20 bytes of the Keccak-256 hash of an ECDSA secp256k1 public key.
+- **From the account’s ID**: This is a 20-byte, hex-encoded version of the account number, prefixed with 12 bytes of zeros.
+
+To maximize EVM compatibility, it is recommended to create accounts with ECDSA keys and use the EVM address derived from the public key as the primary identifier.
+
+📒 For more information, refer to the [EVM Address section](/hedera/core-concepts/accounts/account-properties#evm-address) on the [Account Properties](/hedera/core-concepts/accounts/account-properties) page.
+
 ### Event Files
 
 ---
@@ -545,10 +558,9 @@ Several [DLTs](#distributed-ledger-technology-dlt), such as [blockchains](#block
 The system of proposing, managing, and implementing changes to distributed ledgers, including management of transaction fee allocation, user interface changes, developer recruitment, licensing, product roadmaps, development fund distribution, and other policies.
 
 <Accordion title="There are two types of DLT governance: on-chain and off-chain">
-***On-chain governance:** stakeholders can vote on changes via rules encoded into the blockchain protocol. Stakeholders typically hold governance tokens, including miners, developers, and investors. Developers propose changes through code updates, and each node votes to accept or reject the proposed changes. Voting mechanisms for on-chain governance vary but likely include smart contract functionality.* [*Decentralized Autonomous Organizations (DAOs)*](#decentralized-autonomous-organization-dao) *utilize on-chain governance to run operations without a central authority.*
+  **_On-chain governance: stakeholders can vote on changes via rules encoded into the blockchain protocol. Stakeholders typically hold governance tokens, including miners, developers, and investors. Developers propose changes through code updates, and each node votes to accept or reject the proposed changes. Voting mechanisms for on-chain governance vary but likely include smart contract functionality._** [_Decentralized Autonomous Organizations (DAOs)_](#decentralized-autonomous-organization-dao) _utilize on-chain governance to run operations without a central authority._
 
-**\*Off-chain governance:** changes are made in online forums, social media, conferences, email groups, and other public spaces. Off-chain governance is successful when all stakeholders agree and make all updates and implementations in unison. If consensus cannot be reached, the network can split, or fork, into two chains running different versions of the software, and the chain with the most transactional hashing power is considered to be the successor to the original chain.\*
-
+  **\*Off-chain governance:** changes are made in online forums, social media, conferences, email groups, and other public spaces. Off-chain governance is successful when all stakeholders agree and make all updates and implementations in unison. If consensus cannot be reached, the network can split, or fork, into two chains running different versions of the software, and the chain with the most transactional hashing power is considered to be the successor to the original chain.\*
 </Accordion>
 
 ### Governance Token
@@ -1270,7 +1282,7 @@ In the DLT world, a white paper is a document containing technical information a
 
 ---
 
-zk-SNARK is an acronym for Zero-Knowledge *S*uccinct Non-Interactive Argument of Knowledge. In a ledger, zk-SNARK is a multi-theorem proof system that grants the power to control access to validated transaction information. This means that ledger data can be gated.
+zk-SNARK is an acronym for Zero-Knowledge \_S_uccinct Non-Interactive Argument of Knowledge. In a ledger, zk-SNARK is a multi-theorem proof system that grants the power to control access to validated transaction information. This means that ledger data can be gated.
 
 ---
 

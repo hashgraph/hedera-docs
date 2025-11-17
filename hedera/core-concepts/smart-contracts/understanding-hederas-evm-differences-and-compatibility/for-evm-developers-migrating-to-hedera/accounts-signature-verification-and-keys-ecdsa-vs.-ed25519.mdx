@@ -2,46 +2,52 @@
 title: "Accounts, Signature Verification & Keys (ECDSA vs. ED25519)"
 ---
 
-
 ## Overview
 
-Migrating to Hedera’s EVM implementation involves understanding key differences in account models, signature verification, and key types. On Ethereum, addresses are derived from ECDSA public keys, and `ECRECOVER` is commonly used to validate signatures. Hedera, however, supports both ECDSA and ED25519 (Hedera-native account) keys, with dynamic key rotation and aliases that may not directly align with Ethereum’s static address model.
+Migrating to Hedera’s EVM implementation involves understanding key differences in account models, signature verification, and key types. On Ethereum, addresses are derived from ECDSA public keys, and `ECRECOVER` is commonly used to validate signatures. Hedera, however, supports both ECDSA and ED25519 keys, with dynamic key rotation and multiple account identifiers that may not directly align with Ethereum’s static address model.
 
-This section helps you navigate ECDSA and ED25519 signature workflows, introduces the `isAuthorized` function from the system contract from [HIP-632](https://hips.hedera.com/hip/hip-632), and clarify how different account key scenarios map onto Hedera’s environment.
+This section helps you navigate ECDSA and ED25519 signature workflows, introduces the `isAuthorized` function from the system contract from [HIP-632](https://hips.hedera.com/hip/hip-632), and clarifies how different account key scenarios map onto Hedera’s environment.
 
-## Understanding Account Models and Aliases
+## Understanding Account Models and Identifiers
 
-Hedera’s account model supports both ED25519 and ECDSA keys by identifying accounts by aliases instead of static addresses. This allows dynamic key rotation without changing an account’s ID, unlike EVM's static ECDSA-only approach. Signature validation varies accordingly: ED25519 keys use `isAuthorized` or `isAuthorizedRaw`, while Hedera's ECDSA accounts with aliases can still rely on `ECRECOVER`.
+Hedera’s account model supports both ED25519 and ECDSA keys and allows for dynamic key rotation without changing an account’s ID. This differs from the EVM's static, ECDSA-only approach. Signature validation methods vary accordingly: ED25519 keys use `isAuthorized` or `isAuthorizedRaw`, while accounts with ECDSA keys can rely on `ECRECOVER`.
 
-### **Clarifying Account Number Alias vs. EVM Address Alias**
+### **EVM Addresses on Hedera**
 
-Hedera accounts can have both a native "Hedera account number alias" (e.g., `0.0.xxxx`) and a derived EVM address alias (a 20-byte address similar to Ethereum). The EVM alias makes the account compatible with `ECRECOVER` and other familiar EVM tools. For more details, see the [Smart Contract Addresses](/hedera/core-concepts/smart-contracts/smart-contract-addresses) page.
+Every Hedera account has an **EVM address** that makes it compatible with EVM tools like `ECRECOVER`. This address can be derived in two ways:
 
-### **Working With ECDSA Account Aliases in Testing**
+1.  **EVM Address Derived from Public Key:** A standard 20-byte address derived from an `ECDSA secp256k1` public key (the last 20 bytes of the Keccak-256 hash).
+2.  **EVM Address Derived from Account ID:** A 20-byte address derived from the account’s number (e.g., `0.0.xxxx`), which is hex-encoded and prefixed with 12 bytes of zeros.
 
-If you are writing an Ethereum smart contract and need to interact with an ECDSA Hedera account—particularly one identified by a Hedera account number alias—you must convert that alias into a format compatible with EVM tools. This ensures that when you call functions like `ECRECOVER`, you reference the correct account. Here are some considerations:
+For more details, see the [Account Properties](/hedera/core-concepts/accounts/account-properties) page.
 
-* During testing, confirm that your test scripts and configuration files convert the Hedera account number alias (e.g., `0.0.xxxx`) into the corresponding 20-byte alias derived from `Keccak-256(publicKey)`. Doing so allows your EVM testing environment (Hardhat, Truffle) to interact with Hedera accounts like standard EVM addresses.
-* Including this conversion step in your test setup saves time and confusion, ensuring your EVM-style smart contracts can reliably work with Hedera’s ECDSA accounts.
+### **Working With EVM Addresses in Smart Contracts**
+
+When writing smart contracts that interact with Hedera accounts, you must use the correct EVM address to ensure functions like `ECRECOVER` work as expected.
+
+*   **For accounts with an ECDSA key**, use the **EVM address derived from the public key**.
+*   **For accounts without an ECDSA key**, use the **EVM address derived from the account ID**.
+
+During testing with tools like Hardhat or Truffle, ensure your scripts use the correct EVM address for the corresponding Hedera account. This allows your EVM-style smart contracts to reliably interact with Hedera’s account model.
 
 ### **Key Permutations & Scenarios on Hedera**
 
-* **ECDSA Accounts:**
-  * Behave similarly to standard EVM accounts.
-  * Allow validation of ECDSA signatures with `ECRECOVER`.
-  * Provide smooth interoperability with EVM tools and dApps.
-* **ED25519 Accounts:**
-  * Require `isAuthorized` or `isAuthorizedRaw` for signature validation.
-  * Support complex configurations like multi-key or threshold-based approval.
-  * Enhance security and adaptability, but differ from EVM's static address.
+*   **Accounts with ECDSA Keys:**
+    *   Behave similarly to standard EVM accounts.
+    *   Allow validation of ECDSA signatures with `ECRECOVER`.
+    *   Provide smooth interoperability with EVM tools and dApps.
+*   **Accounts with ED25519 Keys:**
+    *   Require `isAuthorized` or `isAuthorizedRaw` for signature validation.
+    *   Support complex configurations like multi-key or threshold-based approval.
+    *   Enhance security and adaptability but differ from the EVM's static address model.
 
-This flexibility enables interoperability and more robust security models than standard EVM environments.
+This flexibility enables both interoperability and more robust security models than standard EVM environments.
 
 ***
 
-## Using ECRECOVER for ECDSA Accounts on Hedera
+## Using ECRECOVER for Accounts with ECDSA Keys
 
-Hedera supports ECDSA accounts, allowing EVM developers to validate ECDSA signatures using familiar tools like `ECRECOVER`. ECDSA accounts on Hedera use aliases derived from `Keccak-256(publicKey)`, ensuring compatibility with Ethereum’s signature workflows.
+Hedera supports accounts with ECDSA keys, allowing EVM developers to validate ECDSA signatures using familiar tools like `ECRECOVER`. These accounts use an EVM address derived from the public key, ensuring compatibility with Ethereum’s signature workflows.
 
 **Example: Verifying ECDSA Signatures Using ECRECOVER**
 
@@ -49,49 +55,47 @@ Hedera supports ECDSA accounts, allowing EVM developers to validate ECDSA signat
 function verifyECDSASignature(bytes32 messageHash, uint8 v, bytes32 r, bytes32 s) public pure returns (address) {
     return ecrecover(messageHash, v, r, s);
 }
-
 ```
 
 **Key Considerations:**
 
-* ECDSA accounts on Hedera behave just like EVM accounts when validating signatures with `ECRECOVER`.
-* **Use ECDSA accounts when interacting with EVM-compatible dApps, wallets, or bridges for minimal friction.**
+*   Accounts with ECDSA keys on Hedera behave just like EVM accounts when validating signatures with `ECRECOVER`.
+*   **Use accounts with ECDSA keys when interacting with EVM-compatible dApps, wallets, or bridges for minimal friction.**
 
 ***
 
-## Using System Contract Functions for ED25519 Accounts
+## Using System Contract Functions for Accounts with ED25519 Keys
 
-Hedera’s native key type is ED25519, which is not compatible with `ECRECOVER`. To accommodate ED25519 (Hedera-native) accounts and more complex configurations, HIP-632 introduces Hedera Account Service system contract functions:
+Hedera’s native key type is ED25519, which is not compatible with `ECRECOVER`. To accommodate accounts with ED25519 keys and more complex configurations, HIP-632 introduces Hedera Account Service system contract functions:
 
-* [**isAuthorized**](/hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-account-service#isauthorized-address-message-signatureblob)**:** Validates multiple signatures, supporting threshold or multi-key accounts.
-* [**isAuthorizedRaw**](/hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-account-service#isauthorizedraw-address-messagehash-signatureblob)**:** Validates a single raw ED25519 signature, analogous to `ECRECOVER` but for ED25519 keys.
+*   [**isAuthorized**](/hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-account-service#isauthorized-address-message-signatureblob)**:** Validates multiple signatures, supporting threshold or multi-key accounts.
+*   [**isAuthorizedRaw**](/hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-account-service#isauthorizedraw-address-messagehash-signatureblob)**:** Validates a single raw ED25519 signature, analogous to `ECRECOVER` but for ED25519 keys.
 
 **Example: Validating ED25519 Signatures**
 
 ```solidity highlight={4}
-function verifyED25519Signature(address accountAlias, bytes32 messageHash, bytes memory signatureBlob) public returns (bool) {
+function verifyED25519Signature(address accountAddress, bytes32 messageHash, bytes memory signatureBlob) public returns (bool) {
     (bool success, ) = address(0x167).call(
         abi.encodeWithSignature(
             "isAuthorizedRaw(address,bytes32,bytes)",
-            accountAlias,
+            accountAddress,
             messageHash,
             signatureBlob
         )
     );
     return success;
 }
-
 ```
 
 **Why This Matters for EVM Developers:**
 
-* **Hedera-Native Accounts:**\
-  Most Hedera accounts use ED25519 keys, so `isAuthorizedRaw` is essential for verifying their signatures.
-* **Multi-Key and Threshold Accounts:**\
-  Use `isAuthorized` for scenarios requiring multiple signatures, ensuring only properly authorized actions occur.
+*   **Hedera-Native Accounts:**
+    Most Hedera accounts use ED25519 keys, so `isAuthorizedRaw` is essential for verifying their signatures.
+*   **Multi-Key and Threshold Accounts:**
+    Use `isAuthorized` for scenarios requiring multiple signatures, ensuring only properly authorized actions occur.
 
 <Info>
-***Note**:* For detailed parameter formats, consult the [HIP-632](https://hips.hedera.com/hip/hip-632) specification and the Hedera Account Service [documentation](/hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-account-service). Ensure that `accountAlias`, `messageHash`, and `signatureBlob` adhere to the required formats outlined there.
+***Note**:* For detailed parameter formats, consult the [HIP-632](https://hips.hedera.com/hip/hip-632) specification and the Hedera Account Service [documentation](/hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-account-service). Ensure that `accountAddress`, `messageHash`, and `signatureBlob` adhere to the required formats outlined there.
 </Info>
 
 ***
@@ -103,13 +107,12 @@ Hedera supports advanced account configurations like multi-sig and threshold acc
 **Example: DAO Governance Using Multi-Sig**
 
 ```solidity highlight={3}
-function validateDAOProposal(address accountAlias, bytes memory proposalData, bytes memory signatureBlob) public returns (bool) {
+function validateDAOProposal(address accountAddress, bytes memory proposalData, bytes memory signatureBlob) public returns (bool) {
     (bool success, ) = address(0x167).call(
-        abi.encodeWithSignature("isAuthorized(address,bytes,bytes)", accountAlias, proposalData, signatureBlob)
+        abi.encodeWithSignature("isAuthorized(address,bytes,bytes)", accountAddress, proposalData, signatureBlob)
     );
     return success;
 }
-
 ```
 
 This example demonstrates how you might require multiple signatures to approve a DAO proposal, enhancing the security and trustworthiness of your governance mechanisms.
@@ -122,8 +125,8 @@ Standard EVM addresses are static since they are derived from a public key hash.
 
 **Why This Matters for EVM Developers:**
 
-* Your applications must dynamically validate the current set of keys each time rather than relying on a static key-to-address mapping.
-* By rotating keys, you can enhance security without migrating to a new address.
+*   Your applications must dynamically validate the current set of keys each time rather than relying on a static key-to-address mapping.
+*   By rotating keys, you can enhance security without migrating to a new address.
 
 **Example: Key Rotation in Smart Contracts**
 
@@ -148,7 +151,7 @@ This simple pattern allows you to change the trusted signer as needed, reflectin
 
 ### Additional References and Resources
 
-* [**Hedera SDKs**](/hedera/sdks-and-apis/sdks)
-* [**Hedera Account Service**](/hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-account-service)
-* [**HIP-632 Specification**](https://hips.hedera.com/hip/hip-632)
-* [**Hedera Account Service System Contract**](https://github.com/hashgraph/hedera-smart-contracts/tree/main/contracts/system-contracts/hedera-account-service)
+*   [**Hedera SDKs**](/hedera/sdks-and-apis/sdks)
+*   [**Hedera Account Service**](/hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-account-service)
+*   [**HIP-632 Specification**](https://hips.hedera.com/hip/hip-632)
+*   [**Hedera Account Service System Contract**](https://github.com/hashgraph/hedera-smart-contracts/tree/main/contracts/system-contracts/hedera-account-service)

@@ -1,6 +1,6 @@
 ---
-title: Accounts
-sidebarTitle: Overview
+title: "Accounts"
+sidebarTitle: "Overview"
 ---
 
 Accounts are the central starting point when interacting with the Hedera network and using Consensus Node services. A Hedera account is an entity, a distinct object type, stored in the ledger, that holds tokens. Accounts can hold the native Hedera fungible token (HBAR), custom fungible, and custom non-fungible tokens (NFTs) created on the Hedera network.
@@ -10,46 +10,60 @@ The Hedera native token HBAR (ℏ) is a utility token primarily used to pay for 
 You interact with the network by submitting transactions that modify the ledger's state or submitting query requests that read data from the ledger. Most transactions and queries have a [transaction fee](/hedera/networks/mainnet/fees) that is charged in HBAR. Unlike custom tokens users create on the Hedera network, no token ID represents the native HBAR token.
 
 <Columns cols={2}>
-  <Card
-    title="Account Creation"
-    href="/hedera/core-concepts/accounts/account-creation"
-    arrow
-  ></Card>
-  <Card
-    title="Auto Account Creation"
-    href="/hedera/core-concepts/accounts/auto-account-creation"
-    arrow
-  ></Card>
-  <Card
-    title="Account Properties"
-    href="/hedera/core-concepts/accounts/account-properties"
-    arrow
-  ></Card>
+  <Card title="Account Creation" href="/hedera/core-concepts/accounts/account-creation">
+    
+  </Card>
+  <Card title="Auto Account Creation" href="/hedera/core-concepts/accounts/auto-account-creation">
+    
+  </Card>
+  <Card title="Account Properties" href="/hedera/core-concepts/accounts/account-properties">
+    
+  </Card>
 </Columns>
+
+## EVM Addresses and EVM Compatibility
+
+Every Hedera account has an **EVM address**, which is an address compatible with the Ethereum Virtual Machine (EVM). This is a critical feature that allows Hedera accounts to interact seamlessly with EVM-based tools, wallets like MetaMask, and smart contracts.
+
+The EVM address for a Hedera account can be derived in two ways:
+
+1. **From the account's public key**: This creates a standard EVM address, computed as the last 20 bytes of the Keccak-256 hash of the account's ECDSA public key. This is the recommended approach for maximum EVM compatibility.
+2. **From the account's ID**: This creates a hexadecimal representation of the account ID (e.g., `0.0.123` becomes `0x000000000000000000000000000000000000007b`). This is also known as the **EVM address derived from the Account ID**.
+
+<Info>
+  The Hedera Mirror Node REST API exposes the EVM address for any account via the `evm_address` field in the `/accounts` endpoint.
+</Info>
+
+### Recommended Usage for Maximum EVM Compatibility
+
+To ensure your Hedera accounts work seamlessly with EVM-based tools, wallets, and smart contracts, follow this recommended approach:
+
+1. **Create accounts with ECDSA keys** - ECDSA (secp256k1) is the standard key type used in the Ethereum ecosystem.
+2. **`Set the account's alias field to the EVM address derived from the public key`** - This creates a standard, Ethereum-native address that is compatible with all EVM tooling.
+
+This approach is ideal for applications that need to interact with MetaMask, Hardhat, or other EVM developer tools.
+
+<Warning>
+  **Important Note on Key Rotation**: If your use case requires the ability to rotate keys, you should avoid creating an account with an alias that is an EVM address derived from a public key. EVM-address-based aliases are permanently tied to the original public key and cannot be changed. For applications requiring key rotation, use an account structure that supports key updates without relying on an alias that is an EVM address derived from a public key.
+</Warning>
 
 ## FAQ
 
 <AccordionGroup>
-<Accordion title="What is a Hedera account?">
-A Hedera account is a unique entity in the Hedera Network that can hold tokens. These can be Hedera's native fungible token (HBAR), custom fungible, or [non-fungible tokens (NFTs)](/hedera/support-and-community/glossary#non-fungible-token-nft).
-</Accordion>
-
-<Accordion title="How are new accounts created on Hedera?">
-  New accounts are created by submitting a transaction to the network and paying
-  the transaction fee. You'll need access to an existing account with sufficient
-  HBAR to cover this fee. If you don't have access to an existing account, you
-  can use a supported wallet, visit the [Hedera Developer
-  Portal](https://portal.hedera.com/), or use the "Auto Account Creation"
-  feature for applications.
-</Accordion>
-
-<Accordion title="What is the 'Auto Account Creation' feature?">
-  [Auto Account Creation](/hedera/core-concepts/accounts/auto-account-creation)
-  allows applications to generate free user accounts instantly, even without an
-  internet connection, by creating an account alias.
-</Accordion>
-
-<Accordion title="What is a 'hollow' account?">
-If an account is created with an [EVM address](/hedera/core-concepts/accounts/auto-account-creation#evm-address) via [Auto Account Creation](/hedera/core-concepts/accounts/auto-account-creation), it results in a "hollow" account. This account has an account number and alias but no account key. It can accept token transfers but cannot transfer tokens or modify account properties until the account key has been added, completing the account.
-</Accordion>
+  <Accordion title="What is a Hedera account?">
+    A Hedera account is a unique entity in the Hedera Network that can hold tokens. These can be Hedera's native fungible token (HBAR), custom fungible, or [non-fungible tokens (NFTs)](/hedera/support-and-community/glossary#non-fungible-token-nft).
+  </Accordion>
+  <Accordion title="What is an EVM Address and why is it important?">
+    Every Hedera account has an EVM-compatible address. This allows it to be used with popular Ethereum tools and wallets like MetaMask. The EVM address can be derived from the account's public key (recommended for compatibility) or its account ID. This feature is key to Hedera's EVM compatibility.
+  </Accordion>
+  <Accordion title="How are new accounts created on Hedera?">
+    New accounts are created by submitting a transaction to the network and paying the transaction fee. You'll need access to an existing account with sufficient HBAR to cover this fee. If you don't have access to an existing account, you can use a supported wallet, visit the [Hedera Developer
+    Portal](https://portal.hedera.com/), or use the "Auto Account Creation" feature for applications.
+  </Accordion>
+  <Accordion title="What is the 'Auto Account Creation' feature?">
+    [Auto Account Creation](/hedera/core-concepts/accounts/auto-account-creation) allows applications to generate free user accounts instantly, even without an internet connection, by creating an alias.
+  </Accordion>
+  <Accordion title="What is a 'hollow' account?">
+    If an account is created via [Auto Account Creation](/hedera/core-concepts/accounts/auto-account-creation) using an EVM address derived from a public key as the alias, it results in a "hollow" account. This account has an account number and an alias that is an EVM address derived from a public key, but no key is formally associated with it on-chain yet. It can receive token transfers, but cannot initiate transfers or modify account properties until the account key has been added by signing a transaction, which "completes" the account.
+  </Accordion>
 </AccordionGroup>

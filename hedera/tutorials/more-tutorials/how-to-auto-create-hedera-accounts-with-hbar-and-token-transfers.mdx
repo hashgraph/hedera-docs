@@ -2,7 +2,9 @@
 title: "How to Auto-Create Hedera Accounts with HBAR and Token Transfers"
 ---
 
-[HIP-32](https://hips.hedera.com/hip/hip-32) introduced the ability to auto-create accounts when sending HBAR to an [alias](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-an-account#create-an-account-via-an-account-alias) that does not exist on the network. When HBAR is sent to an alias that does not exist on the network, the account creation fee is deducted from the HBAR sent and the account is auto-created. The new account's initial balance is (sent HBAR - account creation fee). This new method of account creation allowed wallet providers to create free "accounts" to users. However, if a user sends fungible tokens or NFT's to an alias, it would result in an _INVALID_ACCOUNT_ID_ error because the alias does not exist on the network. The auto-account creation flow could not deduct the account creation fee from an HTS token; the account creation fee must be paid in HBAR.
+[HIP-32](https://hips.hedera.com/hip/hip-32) introduced the ability to auto-create accounts when sending HBAR to a public key or EVM address that does not yet exist on the network. When HBAR is sent to one of these identifiers, the account creation fee is deducted from the amount sent, and the account is auto-created. The new account's initial balance is the amount of HBAR sent minus the account creation fee.
+
+This method of account creation allowed wallet providers to offer free accounts to users. However, sending fungible tokens or NFTs to an identifier that does not exist on the network would result in an `INVALID_ACCOUNT_ID` error because the account creation fee must be paid in HBAR.
 
 [HIP-542](https://hips.hedera.com/hip/hip-542) provides a solution to allow sending HTS tokens to an alias that does not exist on the network. This is achieved by charging the account creation fee to the transfer transaction payer. In addition, there will be one auto-association slot included in the transaction for the new account to associate with the HTS token. You won't have to first create the account, complete a token association, and then finally do a token transfer.
 
@@ -11,7 +13,7 @@ Furthermore, this change also applies to sending HBAR to an alias. Instead of de
 The figure below highlights the transaction flow before HIP-542 and after.
 
 <Frame>
-  <img src="/images/tutorials/more-tutorials/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers-1.png" />
+  ![](/images/tutorials/more-tutorials/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers-1.png)
 </Frame>
 
 In this tutorial, a treasury account will be created to transfer HTS tokens to Bob's ECDSA public key alias, involving a transfer of 10 FT and 1 NFT. The tutorial will also cover creating fungible tokens and an NFT collection (1000 FT / 5 NFT), creating Bob's ECDSA public key alias, and returning Bob's new account ID while confirming their ownership of the transferred tokens and NFT.
@@ -24,10 +26,9 @@ In this tutorial, a treasury account will be created to transfer HTS tokens to B
 - Set up your environment and create a client here.
 
 <Accordion title="Get the example code on GitHub:">
-  * [auto-create account by sending
-  FT](https://github.com/a-ridley/hedera-auto-account-creation-with-ft) *
-  [auto-create account by sending
-  NFT](https://github.com/a-ridley/hedera-auto-create-account-with-nft)
+  - [auto-create account by sending
+    FT](https://github.com/a-ridley/hedera-auto-account-creation-with-ft) \* [auto-create account by sending
+    NFT](https://github.com/a-ridley/hedera-auto-create-account-with-nft)
 </Accordion>
 
 ---
@@ -73,6 +74,7 @@ const createAccount = async (client: Client, initialBalance: number) => {
 };
 ```
 
+
 ```javascript Create Simple Fungible Token
 export const createFungibleToken = async (
   client: Client,
@@ -115,6 +117,7 @@ export const createFungibleToken = async (
   return tokenId;
 };
 ```
+
 
 ```javascript Create Simple Non-Fungible Token
 export const createNonFungibleToken = async (
@@ -162,6 +165,7 @@ export const createNonFungibleToken = async (
   return [tokenId, tokenIdInSolidityFormat];
 };
 ```
+
 
 ```javascript Mint Token And Create NFT Collection
  const mintTokenTxn = new TokenMintTransaction()
@@ -232,6 +236,7 @@ const tokenId = await createFungibleToken(
 );
 ```
 
+
 ```javascript CreateNewNftCollection
 // IPFS content identifiers for the NFT metadata
 const metadataIPFSUrls: Buffer[] = [
@@ -272,7 +277,7 @@ const nftCreateTxnResponse = await createNewNftCollection(
 
 ## Create Bob's ECDSA Public Key Alias
 
-An alias is an initial public key that will convert into a Hedera account through auto-account creation. An alias consists of \<shard>.\<realm>.\<bytes>.
+An alias is an initial public key that will convert into a Hedera account through auto-account creation. An alias consists of \<shard\>.\<realm\>.\<bytes\>.
 
 To learn more about accounts created via an account alias go [here](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-an-account).
 
@@ -292,7 +297,7 @@ console.log(`- Just the aliasKey: ${aliasAccountId.aliasKey.toString()}\n`);
 ```
 
 <Frame>
-  <img src="/images/tutorials/more-tutorials/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers-2.png" />
+  ![](/images/tutorials/more-tutorials/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers-2.png)
 </Frame>
 
 #### Set up helper functions for transferring HTS tokens
@@ -327,6 +332,7 @@ export const sendToken = async (
   await tokenTransferSubmit.getReceipt(client);
 };
 ```
+
 
 ```javascript TransferNft
 export const transferNft = async (
@@ -373,6 +379,7 @@ await sendToken(
 );
 ```
 
+
 ```javascript Send Bob An NFT
 const nftTokenId = nftCreateTxnResponse.tokenId;
 const exampleNftId = 1;
@@ -415,7 +422,7 @@ console.log(`The normal account ID of the given alias: ${accountId}`);
 ```
 
 <Frame>
-  <img src="/images/tutorials/more-tutorials/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers-3.png" />
+  ![](/images/tutorials/more-tutorials/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers-3.png)
 </Frame>
 
 #### Show Bob's new account owns the 5 FT tokens
@@ -451,7 +458,7 @@ client.close();
 ```
 
 <Frame>
-  <img src="/images/tutorials/more-tutorials/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers-4.png" />
+  ![](/images/tutorials/more-tutorials/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers-4.png)
 </Frame>
 
 #### Show Bob's new account owns the NFT
@@ -498,13 +505,13 @@ client.close();
 ```
 
 <Frame>
-  <img src="/images/tutorials/more-tutorials/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers-5.png" />
+  ![](/images/tutorials/more-tutorials/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers-5.png)
 </Frame>
 
 #### Console Output ✅
 
 <Frame>
-  <img src="/images/tutorials/more-tutorials/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers-6.png" />
+  ![](/images/tutorials/more-tutorials/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers-6.png)
 </Frame>
 
 And that's a wrap! 🎬 You've completed sending HTS tokens to an alias and triggering an auto-account creation! As well as learned that the account creation fee is paid by the payer of the transfer transaction.
@@ -514,13 +521,10 @@ Join and collaborate with Hedera Developers on the [Hedera Discord Server](https
 Happy Building! 🛠️
 
 <Columns cols={2}>
-  <Card title="Writer: Abi, DevRel Engineer" arrow>
-    [GitHub](https://github.com/a-ridley) |
-    [LinkedIn](https://www.linkedin.com/in/a-ridley/)
+  <Card title="Writer: Abi, DevRel Engineer">
+    [GitHub](https://github.com/a-ridley) | [LinkedIn](https://www.linkedin.com/in/a-ridley/)
   </Card>
-  <Card title="Editor: Krystal, DX Engineer" arrow>
-    [GitHub](https://github.com/theekrystallee) |
-    [X](https://X.com/theekrystallee) |
-    [Hashnode](https://hashnode.com/@theekrystallee)
+  <Card title="Editor: Krystal, DX Engineer">
+    [GitHub](https://github.com/theekrystallee) | [X](https://X.com/theekrystallee) | [Hashnode](https://hashnode.com/@theekrystallee)
   </Card>
 </Columns>

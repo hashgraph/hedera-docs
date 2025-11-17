@@ -2,13 +2,13 @@
 title: "Deploy Smart Contracts on Hedera Using Truffle"
 ---
 
-The [Hedera JSON RPC Relay](/hedera/core-concepts/smart-contracts/json-rpc-relay) enables developers to use their favorite EVM-compatible tools such as Truffle, Hardhat, Web3JS, EthersJS, to deploy and interact with smart contracts on the Hedera network. As highlighted in a [previous article](https://hedera.com/blog/anything-you-can-do-you-can-do-on-hedera-introducing-the-json-rpc-relay), the relay provides applications and tools seamless access to Hedera while masking implementation complexities and preventing reductions in performance, security, and scalability.
+The [Hedera JSON RPC Relay](/hedera/core-concepts/smart-contracts/json-rpc-relay) enables developers to use their favorite EVM-compatible tools such as Truffle, Hardhat, Web3JS, and EthersJS to deploy and interact with smart contracts on the Hedera network. As highlighted in a [previous article](https://hedera.com/blog/anything-you-can-do-you-can-do-on-hedera-introducing-the-json-rpc-relay), the relay provides applications and tools seamless access to Hedera while masking implementation complexities and preventing reductions in performance, security, and scalability.
 
 This tutorial shows you how to deploy smart contracts on Hedera using Truffle and the [JSON RPC Relay](/hedera/core-concepts/smart-contracts/json-rpc-relay) with the following steps:
 
-1. Create an account that has ECDSA keys using the Javascript SDK
-2. Compile a contract using Truffle
-3. Deploy the smart contract to Hedera network through the JSON RPC Relay
+1. Create an account that has an ECDSA key.
+2. Compile a contract using Truffle.
+3. Deploy the smart contract to the Hedera network through the JSON RPC Relay.
 
 You can find more examples using Truffle, Web3JS, and Hardhat in [this GitHub repository](https://github.com/hashgraph/hedera-json-rpc-relay/tree/main/tools).
 
@@ -16,31 +16,31 @@ You can find more examples using Truffle, Web3JS, and Hardhat in [this GitHub re
 
 ## Prerequisites
 
-- Get a[ ](https://portal.hedera.com/register)[Hedera testnet account](https://portal.hedera.com/register)
-- This[ Codesandbox](https://codesandbox.io/s/hedera-example-json-rpc-truffle-q6kibt?file=/create-account.js) is already setup for you to try this example
-  - Fork the sandbox
-  - Remember to provide your testnet account credentials for the **_operator_** in the **_.env_** file
+- Get a [Hedera testnet account](https://portal.hedera.com/register).
+- This [Codesandbox](https://codesandbox.io/s/hedera-example-json-rpc-truffle-q6kibt?file=/create-account.js) is already set up for you to try this example.
+  - Fork the sandbox.
+  - Remember to provide your testnet account credentials for the **operator** in the **.env** file.
   - Open a new terminal and run:
-    - **_npm install -g truffle_** (this installation may take a few minutes)
-    - **_node create-account.js_**
-- Get[ ](https://github.com/ed-marquez/hedera-example-staking)[the example code from GitHub](https://github.com/ed-marquez/hedera-example-json-rpc-truffle)
+    - **npm install -g truffle** (this installation may take a few minutes)
+    - **node create-account.js**
+- Get [the example code from GitHub](https://github.com/ed-marquez/hedera-example-json-rpc-truffle).
 
 ---
 
 ## Table of Contents
 
-1. [Create an ECDSA Account](#create-an-account-that-has-ecdsa-keys)
+1. [Create an Account with an ECDSA Key](#create-an-account-with-an-ecdsa-key)
 2. [Compile Smart Contract](#compile-a-smart-contract-using-truffle)
 3. [Deploy Smart Contract](#deploy-the-smart-contract-to-hedera-using-truffle)
 4. [Additional Resources](#additional-resources)
 
 ---
 
-## Create an Account that Has ECDSA Keys
+## Create an Account with an ECDSA Key
 
-Hedera supports two popular types of signature algorithms, ED25519 and ECDSA. Both are used in many blockchain platforms, including Bitcoin and Ethereum. **Currently, the JSON RPC Relay only supports Hedera accounts with an alias set (i.e. public address) based on its ECDSA public key.** To deploy a smart contract using Truffle, we first have to create a new account that meets these criteria. The **_main()_** function in **_create-account.js_** helps us do just that.
+Hedera supports two popular signature algorithms: ED25519 and ECDSA. **Currently, the JSON RPC Relay only supports Hedera accounts with an EVM address derived from an ECDSA public key.** To deploy a smart contract using Truffle, we first have to create a new account that meets this criterion. The `main()` function in `create-account.js` helps us do just that.
 
-In case you’re interested in more details about auto account creation and alias, check out the [documentation](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-an-account#create-an-account-via-an-account-alias#create-an-account-via-an-account-alias) and [HIP-32](https://hips.hedera.com/hip/hip-32).
+For more details about auto account creation, see the [documentation](/hedera/core-concepts/accounts/auto-account-creation) and [HIP-32](https://hips.hedera.com/hip/hip-32).
 
 ```javascript
 async function main() {
@@ -48,24 +48,20 @@ async function main() {
   console.log("- Generating a new key pair... \n");
   const newPrivateKey = PrivateKey.generateECDSA();
   const newPublicKey = newPrivateKey.publicKey;
-  const newAliasAccountId = newPublicKey.toAccountId(0, 0);
+  const newEvmAddress = newPublicKey.toEvmAddress();
 
-  console.log(`- New account alias: ${newAliasAccountId} \n`);
+  console.log(`- New EVM address: ${newEvmAddress} \n`);
   console.log(`- New private key (Hedera): ${newPrivateKey} \n`);
   console.log(`- New public key (Hedera): ${newPublicKey} \n`);
   console.log(
     `- New private key (RAW EVM): 0x${newPrivateKey.toStringRaw()} \n`
   );
   console.log(`- New public key (RAW): 0x${newPublicKey.toStringRaw()} \n`);
-  console.log(
-    `- New public key (EVM): 0x${newPublicKey.toEthereumAddress()} \n\n`
-  );
 
-  // Transfer HBAR to newAliasAccountId to auto-create the new account
-  // Get account information from a transaction record query
+  // Transfer HBAR to the EVM address to auto-create the new account
   const [txReceipt, txRecQuery] = await autoCreateAccountFcn(
     operatorId,
-    newAliasAccountId,
+    newEvmAddress,
     100
   );
   console.log(`- HBAR Transfer to new account: ${txReceipt.status} \n\n`);
@@ -85,44 +81,44 @@ async function main() {
 }
 ```
 
-Executing this code generates a new ECDSA key pair, displays the information about the keys in Hedera and EVM formats, and transfers HBAR to the account alias (**_newAliasAccountId_**) to auto-create a Hedera account that meets the criteria mentioned before. Information about the new account is obtained in two ways, a [transaction record query](/hedera/sdks-and-apis/sdks/transactions/get-a-transaction-record) and a [mirror node query](https://hedera.com/blog/how-to-look-up-transaction-history-on-hedera-using-mirror-nodes-back-to-the-basics).
+Executing this code generates a new ECDSA key pair, displays information about the keys in Hedera and EVM formats, and transfers HBAR to the EVM address to auto-create a Hedera account. Information about the new account is obtained in two ways: a [transaction record query](/hedera/sdks-and-apis/sdks/transactions/get-a-transaction-record) and a [mirror node query](https://hedera.com/blog/how-to-look-up-transaction-history-on-hedera-using-mirror-nodes-back-to-the-basics).
 
-**_Console Output:_**
+**Console Output:**
 
 <Frame>
   <img src="/images/tutorials/smart-contracts/deploy-smart-contracts-on-hedera-using-truffle/deploy-smart-contracts-on-hedera-using-truffle-1.png" />
 </Frame>
 
-**IMPORTANT NOTE**: Private keys for Testnet are displayed here for educational purposes only. Never share your private key(s) with others, as that may result in lost funds, or loss of control over your account.
+**IMPORTANT NOTE**: Private keys for Testnet are displayed here for educational purposes only. Never share your private key(s) with others, as that may result in lost funds or loss of control over your account.
 
-The next step is to deploy a smart contract using Truffle and the newly created Hedera account. Copy the value from “**_New private key (RAW EVM)_**” in the console output and paste it into the **_ETH_PRIVATE_KEY_** variable in the **_.env_** file (if you cloned the repository, you may need to rename the file from **_.env_sample_** to **_.env_**).
+The next step is to deploy a smart contract using Truffle and the newly created Hedera account. Copy the value from “**New private key (RAW EVM)**” in the console output and paste it into the **ETH_PRIVATE_KEY** variable in the **.env** file (if you cloned the repository, you may need to rename the file from **.env_sample** to **.env**).
 
 #### Helper Functions
 
-The functions **_autoCreateAccountFcn()_** and **_mirrorQueryFcn()_** perform the auto account creation and mirror query, respectively.
+The functions `autoCreateAccountFcn()` and `mirrorQueryFcn()` perform the auto account creation and mirror query, respectively.
 
 ```javascript
 async function autoCreateAccountFcn(
   senderAccountId,
-  receiverAccountId,
+  receiverEvmAddress,
   hbarAmount
 ) {
-  //Transfer hbar to the account alias to auto-create account
-  const transferToAliasTx = new TransferTransaction()
+  //Transfer hbar to the EVM address to auto-create the account
+  const transferTx = new TransferTransaction()
     .addHbarTransfer(senderAccountId, new Hbar(-hbarAmount))
-    .addHbarTransfer(receiverAccountId, new Hbar(hbarAmount))
+    .addHbarTransfer(receiverEvmAddress, new Hbar(hbarAmount))
     .freezeWith(client);
-  const transferToAliasSign = await transferToAliasTx.sign(operatorKey);
-  const transferToAliasSubmit = await transferToAliasSign.execute(client);
-  const transferToAliasRx = await transferToAliasSubmit.getReceipt(client);
+  const transferSign = await transferTx.sign(operatorKey);
+  const transferSubmit = await transferSign.execute(client);
+  const transferRx = await transferSubmit.getReceipt(client);
 
   // Get a transaction record and query the record to get information about the account creation
-  const transferToAliasRec = await transferToAliasSubmit.getRecord(client);
+  const transferRec = await transferSubmit.getRecord(client);
   const txRecordQuery = await new TransactionRecordQuery()
-    .setTransactionId(transferToAliasRec.transactionId)
+    .setTransactionId(transferRec.transactionId)
     .setIncludeChildren(true)
     .execute(client);
-  return [transferToAliasRx, txRecordQuery];
+  return [transferRx, txRecordQuery];
 }
 ```
 
@@ -142,7 +138,7 @@ async function mirrorQueryFcn(publicKey) {
 
 ## Compile a Smart Contract Using Truffle
 
-Now it’s time to compile **_SimpleStorage_**, which is a basic smart contract that allows anyone to set and get data.
+Now it’s time to compile **SimpleStorage**, which is a basic smart contract that allows anyone to set and get data.
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -167,7 +163,7 @@ Use the following command to perform the compilation:
 truffle compile
 ```
 
-**_Console Output:_**
+**Console Output:**
 
 <Frame>
   <img src="/images/tutorials/smart-contracts/deploy-smart-contracts-on-hedera-using-truffle/deploy-smart-contracts-on-hedera-using-truffle-2.png" />
@@ -177,7 +173,7 @@ truffle compile
 
 ## Deploy the Smart Contract to Hedera Using Truffle
 
-Finally, deploy the contract on Hedera through the JSON RPC Relay. Be sure to configure the following parameters in your **_.env_** file to be able to deploy to the Hedera testnet with Truffle.
+Finally, deploy the contract on Hedera through the JSON RPC Relay. Be sure to configure the following parameters in your **.env** file to be able to deploy to the Hedera testnet with Truffle.
 
 ```javascript
 NETWORK_ID = 296
@@ -193,7 +189,7 @@ Deploy the contract with the following command:
 truffle migrate
 ```
 
-**_Console Output ✅_**
+**Console Output ✅**
 
 <Frame>
   <img src="/images/tutorials/smart-contracts/deploy-smart-contracts-on-hedera-using-truffle/deploy-smart-contracts-on-hedera-using-truffle-3.png" />

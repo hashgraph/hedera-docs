@@ -54,7 +54,7 @@ The account ID is the unique identifier for an account on the Hedera network, fo
 
 Each realm maintains a single counter for assigning entity numbers to ensure uniqueness across accounts, files, and smart contracts within that realm.
 
-### **Account Number**
+### Account Number
 
 Each Hedera account is assigned a system-generated **account number** upon creation. This non-negative, 8-byte number is unique and immutable. The account number is returned in the transaction receipt or record and can be used to specify the account in all Hedera transactions and queries. The format is `<shardNum>.<realmNum>.<accountNum>`.
 
@@ -62,14 +62,14 @@ Each Hedera account is assigned a system-generated **account number** upon creat
 | :-------------------- | :------------------------------------------------- |
 | `0.0.10`              | The account number 10 in account number ID format. |
 
-## EVM Address
+##  EVM Address 
 
 Every Hedera account has an **EVM address**, which allows it to interact with smart contracts and EVM-based tools. This address is exposed by the Hedera Mirror Node REST API as the `evm_address` field in the `/accounts` endpoint. An EVM address can be derived in two ways:
 
 1. **From the account’s public key**
 2. **From the account’s ID**
 
-### EVM Address Derived from Public Key
+###  EVM Address Derived from Public Key 
 
 An EVM address can be derived from an account’s `ECDSA secp256k1` public key. This is a standard EVM address, computed as the last 20 bytes of the Keccak-256 hash of the public key, as described in the [Ethereum Yellow Paper](https://ethereum.github.io/yellowpaper/paper.pdf). The recovery ID is not included in the hash.
 
@@ -87,7 +87,7 @@ This type of EVM address is assigned to an account during the [auto account crea
   Account ID Format: `0.0.b794f5ea0ba39494ce839613fffba74279579268`
 </Accordion>
 
-### EVM Address Derived from Account ID
+###  EVM Address Derived from Account ID 
 
 An EVM address can also be derived from an account ID. This address is a 20-byte, hex-encoded version of the account number, prefixed with 12 bytes of zeros. This format is automatically available for all accounts and ensures EVM compatibility even for accounts without an explicit EVM address set.
 
@@ -105,7 +105,7 @@ The account alias ID has the following format: `<shardNum>.<realmNum>.<alias>`.
 
 This format is only acceptable when specified in the `TransferTransaction`, `AccountInfoQuery`, and `AccountBalanceQuery` transaction types. If this format is used to reference an account in any other transaction type, the transaction will not succeed.
 
-### Recommended Usage for EVM Compatibility
+### **Recommended Usage for EVM Compatibility**
 
 To maximize EVM compatibility, the recommended approach is to:
 
@@ -118,29 +118,6 @@ This ensures that accounts can interact seamlessly with EVM-based tools, wallets
 
 Reference Hedera Improvement Proposal: [HIP-583](https://hips.hedera.com/hip/hip-583)
 
-## Auto Renewals & **Expiration**
-
-<Warning>
-  Auto-renewals and expiration (rent) are currently not enabled.
-</Warning>
-
-Like the other Hedera entities, accounts take up network storage. To cover the cost of storing an account, a renewal fee will be charged for the storage utilized on the network. This feature is not enabled on the network today; however, in the future, when it is enabled, the account must have sufficient funds to pay for the renewal fees.
-
-The amount charged for renewal will be charged every pre-determined period in seconds. The interval of time the account will be charged is the auto-renew period. The system will automatically charge the account renewal fees. If the account does not have an HBAR balance, it will be suspended for one week before it is deleted from the ledger. You can renew an account during the suspension period.
-
-<AccordionGroup>
-  <Accordion title=" Expiration Time">
-    The effective consensus timestamp at (and after) which the entity is set to expire.
-  </Accordion>
-  <Accordion title="Auto Renew Account">
-    The auto-renewal account is the account that will be charged for the auto-renewal fee when the account expires. By default, the auto-renewal account is the account itself. The auto-renewal account can be updated to another account by the account owner. The auto-renewal account must sign the transaction to update the auto-renewal account.
-  </Accordion>
-  <Accordion title="Auto Renew Period">
-    The interval at which this account will be charged the auto renewal fees. The maximum auto renew period for an account is be limited to 3 months (8000001 sec seconds). The minimum auto renew period is 30 days. The auto renew period is mutable and can be updated at any time. If there are insufficient funds, then it extends as long as possible. If it is empty when it expires, then it is deleted.
-  </Accordion>
-</AccordionGroup>
-
-Reference: [HIP-16](https://hips.hedera.com/hip/hip-16)
 
 ## Account Memo
 
@@ -162,7 +139,7 @@ Hedera accounts must generally approve custom tokens before transferring them in
 
 Accounts can automatically approve up to 5,000 tokens without manually preauthorizing each custom token. Suppose an account needs to hold a balance for custom tokens greater than 5,000. In that case, the account must manually approve each additional token using the transaction to associate the tokens. There is no limit on the total number of tokens an account can hold. This property is mutable and can be changed after it is set.
 
-## **Maximum Auto-Associations**
+## Maximum Auto-Associations
 
 The property`maxAutoAssociations`defines how many tokens an account can automatically associate with.
 
@@ -172,7 +149,7 @@ The property`maxAutoAssociations`defines how many tokens an account can automati
 | `-1`           | Unlimited automatic token associations are allowed. this is the default for accounts created via **auto account creation** and for accounts that originated as hollow accounts (created from EVM aliases) and have since been completed. a value of `-1` allows the account to receive new tokens without manually associating them |
 | `> 0`          | the account can automatically associate up to that number of tokens. the sender covers the `maxAutoAssociations` fee and the first auto‑renewal rent for the association.                                                                                                                                                           |
 
-## **Balances**
+## Balances
 
 When a new account is created, you can specify an initial HBAR balance for the account. The initial HBAR balance for the token is deducted from the account that is paying to create the new account. Creating an account with an initial balance is optional.A Hedera account can hold a balance of HBAR and custom fungible and non-fungible tokens (NFTs). Account balances can be viewed on a [Network Explorer](https://docs.hedera.com/hedera/networks/community-mirror-nodes)and queried from mirror node REST APIs or consensus nodes.
 
@@ -200,7 +177,7 @@ Accounts can optionally have more than one key associated with them. These kinds
 
 Accounts can optionally require the account to sign any transactions depositing tokens into the account. This feature is set to false by default. If this feature is set to true, the account will be required to sign all transactions that deposit tokens into the account. This property is mutable and can be updated after the account is created.
 
-## **Staking**
+## Staking
 
 Staking in Hedera is taking an account and associating the HBAR balance to a node in the network. Custom fungible or non-fungible token balances an account holds do not contribute to staking on the network. The purpose of staking accounts to a node on the network is to strengthen the security of the network. To contribute to the security of the network, staked accounts can earn rewards in HBAR. Please see this [guide](https://docs.hedera.com/hedera/core-concepts/staking)for additional information about the staking rewards program. Contracts can also stake their accounts to earn rewards.
 
@@ -250,7 +227,7 @@ Staking in Hedera is taking an account and associating the HBAR balance to a nod
   For node operators: To opt out of receiving rewards, use the `setDeclineReward(true)` method when creating or updating your node.**_Reference:_** [**_HIP-1064_**](https://hips.hedera.com/hip/hip-1064)
 </Check>
 
-## **Staking Information**
+## Staking Information
 
 The network stores the staking metadata for an account and contract accounts. This information is returned in account information query requests (`AccountInfoQuery`or`ContractInfoQuery`). The staking metadata for an account includes the following information:
 
@@ -263,3 +240,27 @@ The network stores the staking metadata for an account and contract accounts. Th
   - **staked_node_id:** The ID of the node this account or contract is staked to
 
 Reference Hedera Improvement Proposal:[HIP-406](https://hips.hedera.com/hip/hip-406)
+
+## Auto Renewals & Expiration
+
+<Warning>
+  Auto-renewals and expiration (rent) are currently not enabled.
+</Warning>
+
+Like the other Hedera entities, accounts take up network storage. To cover the cost of storing an account, a renewal fee will be charged for the storage utilized on the network. This feature is not enabled on the network today; however, in the future, when it is enabled, the account must have sufficient funds to pay for the renewal fees.
+
+The amount charged for renewal will be charged every pre-determined period in seconds. The interval of time the account will be charged is the auto-renew period. The system will automatically charge the account renewal fees. If the account does not have an HBAR balance, it will be suspended for one week before it is deleted from the ledger. You can renew an account during the suspension period.
+
+<AccordionGroup>
+  <Accordion title=" Expiration Time">
+    The effective consensus timestamp at (and after) which the entity is set to expire.
+  </Accordion>
+  <Accordion title="Auto Renew Account">
+    The auto-renewal account is the account that will be charged for the auto-renewal fee when the account expires. By default, the auto-renewal account is the account itself. The auto-renewal account can be updated to another account by the account owner. The auto-renewal account must sign the transaction to update the auto-renewal account.
+  </Accordion>
+  <Accordion title="Auto Renew Period">
+    The interval at which this account will be charged the auto renewal fees. The maximum auto renew period for an account is be limited to 3 months (8000001 sec seconds). The minimum auto renew period is 30 days. The auto renew period is mutable and can be updated at any time. If there are insufficient funds, then it extends as long as possible. If it is empty when it expires, then it is deleted.
+  </Accordion>
+</AccordionGroup>
+
+Reference: [HIP-16](https://hips.hedera.com/hip/hip-16)

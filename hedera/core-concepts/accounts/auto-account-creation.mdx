@@ -36,13 +36,13 @@ The `<shardNum>.<realmNum>.<alias>` format is only acceptable when specified in 
 
 Reference Hedera Improvement Proposal: [HIP-583](https://hips.hedera.com/hip/hip-583)
 
-## **Auto Account Creation Flow**
+## Auto Account Creation Flow 
 
-### **1. Create an account alias**
+###  1. Create an account alias 
 
 Create an account alias and convert it to the alias account ID format. The alias account ID format requires appending the shard and realm numbers to the account alias. This form of account is purely a local account, i.e., not registered with the Hedera network.
 
-### **2. Deposit tokens to the account alias**
+###  2. Deposit tokens to the account alias 
 
 Once the account alias exists, create a **TransferTransaction** that sends HBAR or HTS tokens to that alias. Sending tokens triggers auto account creation on the network, and the first token transferred is automatically associated with the new account.
 
@@ -66,7 +66,7 @@ The **payer** of the transfer covers both the token transfer fee and the account
   To retrieve the new Account ID, either request the parent record with child records included or query the child record directly by incrementing the nonce.
 </Info>
 
-### **3. Get the new account number**
+###  3. Get the new account number 
 
 You can obtain the new account number in any of the following ways:
 
@@ -74,6 +74,8 @@ You can obtain the new account number in any of the following ways:
 - Request the transaction receipt or record of the account create transaction by using the transaction ID of the parent transfer transaction and incrementing the nonce value from 0 to 1.
 - Specify the account alias in an `AccountInfoQuery` transaction request. The response will return the account's account number.
 - Inspect the parent transfer transaction record transfer list for the account with a transfer equal to the token transfer value.
+
+---
 
 ## Auto Account Creation with an EVM Address
 
@@ -88,18 +90,20 @@ To complete a hollow account, submit a Hedera transaction that:
 
 If either condition is missing, the transaction is rejected. After completion, the account behaves like a regular Hedera account.
 
-#### **Using HAPI (SDKs)**
+#### Using HAPI (SDKs)
 
 - Build a transaction (for example, a small [`TransferTransaction`](/hedera/sdks-and-apis/sdks/accounts-and-hbar/transfer-cryptocurrency)).
 - Set the transaction’s payer to the hollow account in your SDK.
 - Sign with the corresponding ECDSA key and execute.
 
-#### **Using EVM Wallets via JSON-RPC**
+#### Using EVM Wallets via JSON-RPC
 
 - Send the first transaction from the new account in the wallet.
 - EVM wallets will set the new account as the transaction fee payer when users sign transactions to complete the account. No further action is required as the RPC will set the user's account ID as the fee payer.
 
-## **Automatic Token Associations for Completed Accounts**
+---
+
+## Automatic Token Associations for Completed Accounts
 
 Once a hollow account has been converted into a complete account by acting as the payer for a transaction and signing with its ECDSA private key, it inherits the default automatic association settings. Specifically, the account’s `maxAutoAssociations` property defaults to `–1`, enabling unlimited automatic token associations. This means that any subsequent HTS tokens transferred to the completed account will be automatically associated, and the recipient does not need to manually associate with each token. This behavior is part of frictionless airdrops ([HIP‑904](https://hips.hedera.com/hip/hip-904)) and differs from earlier network versions where auto‑association for new tokens was not available.
 

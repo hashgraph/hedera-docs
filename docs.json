@@ -7,77 +7,6 @@
     "light": "#614ff4",
     "dark": "#614ff4"
   },
-  "redirects": [
-    {
-      "source": "/hedera/getting-started",
-      "destination": "/#getting-started"
-    },
-    {
-      "source": "/hedera/getting-started/:slug*",
-      "destination": "/#getting-started"
-    },
-    {
-      "source": "/hedera/:slug*",
-      "destination": "/:slug*"
-    },
-    {
-      "source": "/hedera",
-      "destination": "/"
-    },
-    {
-      "source": "/guides/:slug*",
-      "destination": "/:slug*"
-    },
-    {
-      "source": "/guides",
-      "destination": "/"
-    },
-    {
-      "source": "/transaction-tool/:slug*",
-      "destination": "https://transactiontool.hedera.com/:slug*"
-    },
-    {
-      "source": "/transaction-tool",
-      "destination": "https://transactiontool.hedera.com"
-    },
-    {
-      "source": "/guardian/:slug*",
-      "destination": "https://guardian.hedera.com/guardian/:slug*"
-    },
-    {
-      "source": "/guardian",
-      "destination": "https://guardian.hedera.com/guardian/"
-    },
-    {
-      "source": "/guardian-dev-1/:slug*",
-      "destination": "https://dev.guardian.hedera.com/guardian/:slug*"
-    },
-    {
-      "source": "/hedera-transaction-tool-v2/:slug*",
-      "destination": "https://transactiontool.hedera.com/:slug*"
-    },
-    {
-      "source": "/hedera-transaction-tool-v2",
-      "destination": "https://transactiontool.hedera.com"
-    }
-  ],
-  "style": {
-    "path": "style.css"
-  },
-  "fonts": {
-    "heading": {
-      "family": "Styrene A",
-      "source": "/public/fonts/styrene/StyreneA-Regular-Web.woff2",
-      "format": "woff2",
-      "weight": 400
-    },
-    "body": {
-      "family": "Styrene A",
-      "source": "/public/fonts/styrene/StyreneA-Regular-Web.woff2",
-      "format": "woff2",
-      "weight": 400
-    }
-  },
   "background": {
     "decoration": "gradient"
   },
@@ -98,30 +27,6 @@
     ]
   },
   "navigation": {
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Status",
-          "href": "http://status.hedera.com/",
-          "icon": "signal"
-        },
-        {
-          "anchor": "Discord",
-          "href": "https://hedera.com/discord",
-          "icon": "discord"
-        },
-        {
-          "anchor": "Playground",
-          "href": "https://portal.hedera.com/playground",
-          "icon": "code"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://hedera.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    },
     "groups": [
       {
         "group": " ",
@@ -240,7 +145,8 @@
                     ]
                   },
                   "hedera/tutorials/more-tutorials/schedule-your-first-transaction",
-                  "hedera/tutorials/more-tutorials/javascript-testing"
+                  "hedera/tutorials/more-tutorials/javascript-testing",
+                  "hedera/tutorials/more-tutorials/develop-a-hedera-dapp-integrated-with-walletconnect"
                 ]
               },
               "hedera/tutorials/demo-applications",
@@ -516,8 +422,7 @@
                 "group": "Interoperability and Bridging",
                 "pages": [
                   "hedera/open-source-solutions/interoperability-and-bridging",
-                  "hedera/open-source-solutions/interoperability-and-bridging/layerzero",
-                  "hedera/open-source-solutions/interoperability-and-bridging/chainlink"
+                  "hedera/open-source-solutions/interoperability-and-bridging/layerzero"
                 ]
               },
               {
@@ -720,7 +625,6 @@
               {
                 "group": "Mirror Node REST API",
                 "pages": [
-                  "hedera/sdks-and-apis/rest-api",
                   {
                     "group": "Accounts",
                     "pages": [
@@ -1118,16 +1022,14 @@
   "navbar": {
     "links": [
       {
-        "label": "Join Hackathon",
-        "href": "https://hackathon.stackup.dev/web/events/hedera-hello-future-ascension-hackathon-2025?utm_campaign=26710962-2025-11-03%20Campaign%3A%20Hackathon%20-%20Ascension&utm_source=Docs&utm_medium=Home%20Banner",
-        "target": "_blank",
-        "icon": "code"
+        "label": "Support",
+        "href": "https://hedera.zendesk.com/hc/en-us"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dev Portal",
-      "href": "https://portal.hedera.com"
+      "label": "Quickstart",
+      "href": "https://hedera.com/getting-started"
     }
   },
   "footer": {
@@ -1138,7 +1040,7 @@
       "medium": "https://medium.com/hashgraph",
       "reddit": "https://www.reddit.com/r/Hedera/",
       "telegram": "https://t.me/hederahashgraph",
-      "x": "https://X.com/hedera",
+      "x": "https://twitter.com/hedera",
       "youtube": "https://www.youtube.com/hederahashgraph"
     }
   }

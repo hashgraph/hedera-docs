@@ -15,6 +15,21 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
   **TESTNET UPDATE SCHEDULED: NOVEMBER 20, 2025**
 </Info>
 
+### [**Build 0.68.1**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.68.1)
+
+<Accordion title="What's Changed">
+  - feat: Cherry-pick (v68): Use streaming merkle trees for block proof hashes by @mhess-swl in #21994
+  - chore: (Cherry-pick) Add executed_hook_id to EvmTransactionResult by @Neeharika-Sompalli in #22017
+  - chore: cherry-pick PR #22019 (changing block item overhead to 5 bytes) by @timfn-hg in #22038
+  - fix: Always clear state when exiting RPC sync protocol (#22081) by @abies in #22089
+  - fix: BlockBufferService forceful BN Switch (#21803) by @derektriley in #21998
+  - ci(bug-fix): Get the tag for the release labeled latest (#22157) by @rbarker-dev in #22163
+  - fix: cherry-pick Block merkle tree optimizations by @derektriley in #22162
+  - fix: Re-enable gas throttle; disable ops duration throttle by @lukelee-sl in #22164
+  
+  **Full Changelog**: [v0.68.0...v0.68.1](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.68.0...v0.68.1)
+</Accordion>
+
 ### [**Build 0.68.0**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.68.0)
 
 <Accordion title="What's Changed">

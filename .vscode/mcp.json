@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "Hedera": {
+      "type": "http",
+      "url": "https://docs.hedera.com/mcp"
+    }
+  }
+}

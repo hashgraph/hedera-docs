@@ -26,6 +26,60 @@
       "vscode"
     ]
   },
+  "redirects": [
+    {
+      "source": "/hedera/getting-started",
+      "destination": "/#getting-started"
+    },
+    {
+      "source": "/hedera/getting-started/:slug*",
+      "destination": "/#getting-started"
+    },
+    {
+      "source": "/hedera/:slug*",
+      "destination": "/:slug*"
+    },
+    {
+      "source": "/hedera",
+      "destination": "/"
+    },
+    {
+      "source": "/guides/:slug*",
+      "destination": "/:slug*"
+    },
+    {
+      "source": "/guides",
+      "destination": "/"
+    },
+    {
+      "source": "/transaction-tool/:slug*",
+      "destination": "https://transactiontool.hedera.com/:slug*"
+    },
+    {
+      "source": "/transaction-tool",
+      "destination": "https://transactiontool.hedera.com"
+    },
+    {
+      "source": "/guardian/:slug*",
+      "destination": "https://guardian.hedera.com/guardian/:slug*"
+    },
+    {
+      "source": "/guardian",
+      "destination": "https://guardian.hedera.com/guardian/"
+    },
+    {
+      "source": "/guardian-dev-1/:slug*",
+      "destination": "https://dev.guardian.hedera.com/guardian/:slug*"
+    },
+    {
+      "source": "/hedera-transaction-tool-v2/:slug*",
+      "destination": "https://transactiontool.hedera.com/:slug*"
+    },
+    {
+      "source": "/hedera-transaction-tool-v2",
+      "destination": "https://transactiontool.hedera.com"
+    }
+  ],
   "navigation": {
     "groups": [
       {

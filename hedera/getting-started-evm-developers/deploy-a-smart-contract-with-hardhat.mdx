@@ -81,6 +81,10 @@ npm install @openzeppelin/contracts
 
 Before we make any changes to our Hardhat configuration file, let's set some configuration variables we will be referring to within the file later.
 
+<Note>
+  When you set up your keystore for the first time, you’ll be asked to create a keystore password. Save this password securely because you’ll need it anytime you set or reset a variable.
+</Note>
+
 ```bash
 # If you have already set this before, please use the --force flag
 npx hardhat keystore set HEDERA_RPC_URL
@@ -367,7 +371,18 @@ Import the plugin in your `hardhat.config.ts` file:
 ```typescript
 import '@hashgraph/hashscan-verify'; // <--- ADD THIS LINE
 import type { HardhatUserConfig } from "hardhat/config";
+
+const config: HardhatUserConfig = {
+  plugins: [hardhatToolboxMochaEthersPlugin, hashscanVerify], // ADD IT HERE
+  solidity: {
+    profiles: {
+      default: {
+        version: "0.8.28",
+      },
+    }}}
 // ... rest of your imports and configuration ...
+
+
 ```
 
 ### Run the Verification Command
@@ -420,9 +435,15 @@ The plugin will handle uploading the source code and metadata to the HashScan ve
   <Card title="Editor: Krystal, DX Engineer">
     [Github](https://github.com/theekrystallee) | [X](https://x.com/theekrystallee)
   </Card>
-
   <Card title="Editor: Logan, Software Engineer II" arrow>
     [GitHub](https://github.com/quiet-node) | [LinkedIn](https://www.linkedin.com/in/logann131/)
+  </Card>
+  <Card title="Editor: Jake, DevRel Engineer" arrow>
+    [GitHub](https://github.com/jaycoolh) | [X](https://x.com/jaycoolh)
+  </Card>
+   <Card title="Editor: Michiel, DevRel Engineer" arrow>
+    [GitHub](https://github.com/michielmulders) |
+    [LinkedIn](https://www.linkedin.com/in/michielmulders/)
   </Card>
 </Columns>
 

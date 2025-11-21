@@ -33,6 +33,7 @@ Before you begin, you should have **completed** the following tutorial:
 2. [Step 2: Creating the ERC-721 Contract](#step-2%3A-creating-the-erc-721-contract)
 3. [Step 3: Deploy Your ERC-721 Smart Contract](#step-3%3A-deploy-your-erc-721-smart-contract)
 4. [Step 4: Minting an ERC-721 Token](#step-4%3A-minting-an-erc-721-token)
+5. [Step 5: Verify Your Smart Contract on HashScan](#step-5%3A-verify-your-smart-contract-on-hashscan)
 
 ---
 
@@ -370,23 +371,39 @@ Import the plugin in your `hardhat.config.ts` file:
 
 ```typescript
 import hashscanVerify from "hashscan-verify"; // <--- ADD THIS LINE
+
 import type { HardhatUserConfig } from "hardhat/config";
+import hardhatToolboxMochaEthersPlugin from "@nomicfoundation/hardhat-toolbox-mocha-ethers";
+import { configVariable } from "hardhat/config";
 
 const config: HardhatUserConfig = {
-  plugins: [hardhatToolboxMochaEthersPlugin, hashscanVerify], // ADD IT HERE
-   networks: {
-    mainnet:     { url: "https://mainnet.hashio.io/api" },
-    testnet:     { url: "https://testnet.hashio.io/api" },
-    previewnet:  { url: "https://previewnet.hashio.io/api" },
-    local:       { url: "http://localhost:7546" },
-  },
+  plugins: [hardhatToolboxMochaEthersPlugin, hashscanVerify], // ADD TO PLUGIN LIST
   solidity: {
     profiles: {
       default: {
-        version: "0.8.28",
+        version: "0.8.28"
       },
-    }}}
-// ... rest of your imports and configuration ...
+      production: {
+        version: "0.8.28",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200
+          }
+        }
+      }
+    }
+  },
+  networks: {
+    testnet: {
+      type: "http",
+      url: configVariable("HEDERA_RPC_URL"),
+      accounts: [configVariable("HEDERA_PRIVATE_KEY")]
+    }
+  }
+};
+
+export default config;
 ```
 
 ### Run the Verification Command

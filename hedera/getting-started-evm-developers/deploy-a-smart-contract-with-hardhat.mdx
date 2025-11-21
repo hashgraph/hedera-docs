@@ -369,11 +369,17 @@ npm i -D hashscan-verify
 Import the plugin in your `hardhat.config.ts` file:
 
 ```typescript
-import '@hashgraph/hashscan-verify'; // <--- ADD THIS LINE
+import hashscanVerify from "hashscan-verify"; // <--- ADD THIS LINE
 import type { HardhatUserConfig } from "hardhat/config";
 
 const config: HardhatUserConfig = {
   plugins: [hardhatToolboxMochaEthersPlugin, hashscanVerify], // ADD IT HERE
+   networks: {
+    mainnet:     { url: "https://mainnet.hashio.io/api" },
+    testnet:     { url: "https://testnet.hashio.io/api" },
+    previewnet:  { url: "https://previewnet.hashio.io/api" },
+    local:       { url: "http://localhost:7546" },
+  },
   solidity: {
     profiles: {
       default: {

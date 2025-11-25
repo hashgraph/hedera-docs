@@ -1,5 +1,5 @@
 ---
-title: "Deploy a Smart Contract with Hardhat"
+title: "Deploy and Verify a Smart Contract with Hardhat"
 ---
 
 ## Deploying a Contract Using Hardhat Scripts
@@ -14,9 +14,7 @@ By the end of this tutorial, you will be able to:
 - Interact with a smart contract using Hardhat
 
 <Info>
-  **Note:** This tutorial is currently supported only in the Getting Started
-  [JavaScript](https://github.com/hedera-dev/hello-future-world-js) series and
-  is not available for other languages.
+  **Note:** This tutorial is currently supported only in the Getting Started [JavaScript](https://github.com/hedera-dev/hello-future-world-js) series and is not available for other languages.
 </Info>
 
 ---
@@ -25,7 +23,7 @@ By the end of this tutorial, you will be able to:
 
 Before you begin, you should have **completed** the following tutorial:
 
-- [x] [Create and Fund a Testnet Account via the Hedera Faucet](/hedera/getting-started-evm-developers/hedera-testnet-faucet)
+- [Create and Fund a Testnet Account via the Hedera Faucet](/hedera/getting-started-evm-developers/hedera-testnet-faucet)
 
 ---
 
@@ -35,6 +33,7 @@ Before you begin, you should have **completed** the following tutorial:
 2. [Step 2: Creating the ERC-721 Contract](#step-2%3A-creating-the-erc-721-contract)
 3. [Step 3: Deploy Your ERC-721 Smart Contract](#step-3%3A-deploy-your-erc-721-smart-contract)
 4. [Step 4: Minting an ERC-721 Token](#step-4%3A-minting-an-erc-721-token)
+5. [Step 5: Verify Your Smart Contract on HashScan](#step-5%3A-verify-your-smart-contract-on-hashscan)
 
 ---
 
@@ -53,23 +52,24 @@ npx hardhat --init
 Make sure to select "**Hardhat 3 → Typescript Hardhat Project using Mocha and Ethers.js"** and accept the default values. Hardhat will configure your project correctly and install the required dependencies.
 
 <Accordion title="🚧 What's new: Hardhat 2 → 3 ">
-Key differences in Hardhat 3:
+  Key differences in Hardhat 3:
 
-- **compile → build**\
-  `npx hardhat compile` is now `npx hardhat build`. This is the big one. The v3 migration guide explicitly shows using the `build` task.
-- **project init switch**\
-  v2 commonly used `npx hardhat` or `npx hardhat init` to bootstrap. In v3 it’s `npx hardhat --init`.
+  - **compile → build**\
+    `npx hardhat compile` is now `npx hardhat build`. This is the big one. The v3 migration guide explicitly shows using the `build` task.
+  - **project init switch**\
+    v2 commonly used `npx hardhat` or `npx hardhat init` to bootstrap. In v3 it’s `npx hardhat --init`.
 
-* **keystore helper commands are new**\
-  v3’s recommended flow includes a keystore plugin with commands like `npx hardhat keystore set HEDERA_RPC_URL` and `npx hardhat keystore set HEDERA_PRIVATE_KEY`. These weren’t standard in v2.
-* **Foundry-compatiable Solidity tests**\
-  In addition to offering Javascript/Typescript integration tests, Hardhat v3 also integrates Foundry-compatible Solidity tests that allows developers to write unit tests directly in Solidity
 
-- **Enhanced Network Management**\
-  v3 allows tasks to create and manage multiple network connections simultaneously which is a significant improvement over the single, fixed connection available in version 2. This provides greater flexibility for scripts and tests that interact with multiple networks.
+  - **keystore helper commands are new**\
+    v3’s recommended flow includes a keystore plugin with commands like `npx hardhat keystore set HEDERA_RPC_URL` and `npx hardhat keystore set HEDERA_PRIVATE_KEY`. These weren’t standard in v2.
+  - **Foundry-compatiable Solidity tests**\
+    In addition to offering Javascript/Typescript integration tests, Hardhat v3 also integrates Foundry-compatible Solidity tests that allows developers to write unit tests directly in Solidity
 
-_📚 Learn more from the official_ [_Hardhat documentation_](https://hardhat.org/docs/getting-started)_._
 
+  - **Enhanced Network Management**\
+    v3 allows tasks to create and manage multiple network connections simultaneously which is a significant improvement over the single, fixed connection available in version 2. This provides greater flexibility for scripts and tests that interact with multiple networks.
+
+  _📚 Learn more from the official_ [_Hardhat documentation_](https://hardhat.org/docs/getting-started)_._
 </Accordion>
 
 #### Install Dependencies
@@ -81,6 +81,10 @@ npm install @openzeppelin/contracts
 ```
 
 Before we make any changes to our Hardhat configuration file, let's set some configuration variables we will be referring to within the file later.
+
+<Note>
+  When you set up your keystore for the first time, you’ll be asked to create a keystore password. Save this password securely because you’ll need it anytime you set or reset a variable.
+</Note>
 
 ```bash
 # If you have already set this before, please use the --force flag
@@ -97,10 +101,9 @@ npx hardhat keystore set HEDERA_PRIVATE_KEY
 For `HEDERA_PRIVATE_KEY`, enter the **HEX Encoded Private Key for your ECDSA account** from the [Hedera Portal.](https://portal.hedera.com/)
 
 <Danger>
-#### Note
+  #### Note
 
-[_Hashio_](https://www.hashgraph.com/hashio/) _is intended for development and testing purposes only. For production use cases, it's recommended to use commercial-grade JSON-RPC Relay or host your own instance of the_ [_Hiero JSON-RPC Relay_](https://github.com/hiero-ledger/hiero-json-rpc-relay)_._
-
+  [_Hashio_](https://www.hashgraph.com/hashio/) _is intended for development and testing purposes only. For production use cases, it's recommended to use commercial-grade JSON-RPC Relay or host your own instance of the_ [_Hiero JSON-RPC Relay_](https://github.com/hiero-ledger/hiero-json-rpc-relay)_._
 </Danger>
 
 #### Configure Hardhat
@@ -237,7 +240,9 @@ Deploy your contract by executing the script:
 npx hardhat run scripts/deploy.ts --network testnet
 ```
 
-<Check>Copy the deployed address—you'll need this in subsequent steps.</Check>
+<Check>
+  Copy the deployed address—you'll need this in subsequent steps.
+</Check>
 
 The output looks like this:
 
@@ -344,8 +349,97 @@ receipt:  {
 Minted token ID: 0x0000000000000000000000000000000000000000000000000000000000000000
 Balance: 1 NFTs
 ```
+---
 
-**Congratulations! 🎉 You have successfully learned how to deploy an ERC-721 smart contract using Hardhat, OpenZeppelin, and Ethers. Feel free to reach out in** [**Discord**](https://hedera.com/discord)**!**
+## Step 5: Verify Your Smart Contract on HashScan
+
+After deploying your smart contract, you should verify the source code on HashScan. Programmatic verification is the most reliable and efficient method, especially for complex or upgradeable contracts.
+
+### Install the Verification Plugin
+
+Hardhat uses the dedicated [`hashscan-verify`](https://www.npmjs.com/package/hashscan-verify) plugin to interface with the HashScan Smart Contract Verifier API (which is based on the Sourcify standard).
+
+Install the plugin in your project:
+
+```bash
+npm i -D hashscan-verify
+```
+
+### Configure Hardhat for Verification
+
+Import the plugin in your `hardhat.config.ts` file:
+
+```typescript
+import hashscanVerify from "hashscan-verify"; // <--- ADD THIS LINE
+
+import type { HardhatUserConfig } from "hardhat/config";
+import hardhatToolboxMochaEthersPlugin from "@nomicfoundation/hardhat-toolbox-mocha-ethers";
+import { configVariable } from "hardhat/config";
+
+const config: HardhatUserConfig = {
+  plugins: [hardhatToolboxMochaEthersPlugin, hashscanVerify], // ADD TO PLUGIN LIST
+  solidity: {
+    profiles: {
+      default: {
+        version: "0.8.28"
+      },
+      production: {
+        version: "0.8.28",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200
+          }
+        }
+      }
+    }
+  },
+  networks: {
+    testnet: {
+      type: "http",
+      url: configVariable("HEDERA_RPC_URL"),
+      accounts: [configVariable("HEDERA_PRIVATE_KEY")]
+    }
+  }
+};
+
+export default config;
+```
+
+### Run the Verification Command
+
+The plugin adds the `hashscan-verify` task to Hardhat. The basic command structure is:
+
+```bash
+npx hardhat hashscan-verify <CONTRACT_ADDRESS> \
+  --contract "<PATH_TO_CONTRACT>:<CONTRACT_NAME>" \
+  --network <NETWORK_NAME>
+```
+
+### Example: Verifying Your MyToken Contract
+
+Using the contract address from your deployment:
+
+```bash
+# Replace with your actual deployed contract address
+CONTRACT_ADDRESS="0x6035bA3BCa9595637B463Aa514c3a1cE3f67f3de"
+
+npx hardhat hashscan-verify "$CONTRACT_ADDRESS" \
+  --contract "contracts/MyToken.sol:MyToken" \
+  --network testnet
+```
+
+The plugin will handle uploading the source code and metadata to the HashScan verifier. You should receive a **Full Match** verification status.
+
+**Troubleshooting Verification**
+
+| **Issue**                        | **Solution**                                                                                                                                                                                     |
+| :------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Verification Fails/Mismatch      | Ensure your local compilation settings (Solidity version, optimizer runs, viaIR) exactly match the settings used for deployment. Run `npx hardhat clean && npx hardhat compile` before retrying. |
+| Constructor Arguments Error      | If your contract has constructor arguments, pass them as positional arguments after the contract name in the verification command.                                                               |
+| Hardhat Keystore Password Prompt | The task may prompt for your Hardhat keystore password if it needs to sign a transaction to read deployment details. Enter it when prompted.                                                     |
+
+**Congratulations! 🎉 You have successfully learned how to deploy and verify an ERC-721 smart contract using Hardhat, OpenZeppelin, and Ethers. Feel free to reach out in** [**Discord**](https://hedera.com/discord)**!**
 
 ---
 
@@ -356,16 +450,22 @@ Balance: 1 NFTs
 - See the full code in the [Hedera-Code-Snippets Repository](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hardhat-erc-721-mint-burn)
 
 <Columns cols={2}>
-  <Card
-    title="Writer: Kiran, Developer Advocate"
-    title="Writer: Kiran, Developer Advocate"
-    arrow
-  >
-    [Github](https://github.com/kpachhai) |
-    [Linkedin](https://www.linkedin.com/in/kiranpachhai/)
+  <Card title="Writer: Kiran, Developer Advocate">
+    [Github](https://github.com/kpachhai) | [Linkedin](https://www.linkedin.com/in/kiranpachhai/)
   </Card>
-  <Card title="Editor: Krystal, DX Engineer" arrow>
-    [Github](https://github.com/theekrystallee) |
-    [X](https://x.com/theekrystallee)
+  <Card title="Editor: Krystal, DX Engineer">
+    [Github](https://github.com/theekrystallee) | [X](https://x.com/theekrystallee)
+  </Card>
+  <Card title="Editor: Logan, Software Engineer II" arrow>
+    [GitHub](https://github.com/quiet-node) | [LinkedIn](https://www.linkedin.com/in/logann131/)
+  </Card>
+  <Card title="Editor: Jake, DevRel Engineer" arrow>
+    [GitHub](https://github.com/jaycoolh) | [X](https://x.com/jaycoolh)
+  </Card>
+   <Card title="Editor: Michiel, DevRel Engineer" arrow>
+    [GitHub](https://github.com/michielmulders) |
+    [LinkedIn](https://www.linkedin.com/in/michielmulders/)
   </Card>
 </Columns>
+
+

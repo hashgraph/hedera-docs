@@ -1,5 +1,5 @@
 ---
-title: "Deploy a Smart Contract with Foundry"
+title: "Deploy and Verify a Smart Contract with Foundry"
 ---
 
 ## Deploying a Contract Using Foundry
@@ -103,11 +103,17 @@ Foundry uses the `foundry.toml` file for configuration. Open it and add profiles
 src = "src"
 out = "out"
 libs = ["lib"]
+remappings = [
+  "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+  "forge-std/=lib/forge-std/src/"
+]
 
-# Add this section for Hedera Testnet
+# Add this section for Hedera testnet
 [rpc_endpoints]
 testnet = "${HEDERA_RPC_URL}"
 ```
+
+Note the values in `remappings` field. We need this to import prefix to a filesystem path so both Foundry(forge) and our editor can resolve short, package-like imports instead of long relative paths.
 
 ---
 

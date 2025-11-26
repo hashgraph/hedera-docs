@@ -7,6 +7,18 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Latest Releases
 
+## [v0.143.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.143.0)
+
+HIP-1195 hooks saw the majority of work completed in this release. The importer now fully supports ingesting hook transactions and persisting the data including the new LambdaSStoreTransaction. A new `/api/v1/accounts/{id}/hooks` REST API was added to support listing the hooks owned by an account. In the next release, we plan to add an API to list the hook's storage.
+
+HIP-1056 block streams saw further testing and bug fixes. Support for the major changes in the 0.68 block stream specification was incorporated to ensure we support the latest version. A temporary workaround was put in place to skip block stream hash chain verification for the upcoming new hash algorithm. Differential tests were added that compare the record and block stream to find discrepancies. A number of bugs were found and fixed as a result of these tests including not setting receipt.AccountID for crypto update transactions, fixing contract initcode not including constructor parameters, and atomic batch handling.
+
+We converted another JavaScript REST API to Java in this release. The `/api/v1/network/fees` REST API was rewritten from scratch in Java and shows a 8x improvement in performance as a result. Like the others, it will be rolled out first to previewnet and testnet for a release to ensure it does not have any regressions.
+
+### Breaking Changes
+The `/api/v1/network/exchangerate` JavaScript implementation is now removed in favor of the newer Java implementation. Operators should ensure their routing logic is updated so that requests to `/api/v1/network/exchangerate` are directed to the rest-java process instead of the rest process. If operators use our docker compose or Helm chart this routing change is handled automatically.
+
+
 ## [v0.142.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.142.0)
 
 Support for [<u>HIP-1299</u>](https://hips.hedera.com/hip/hip-1299) node account ID updates was finalized in this release. When a node updates their account ID, it will now be reflected instantly in all APIs including the `getNodes` gRPC API, the `/network/status` Rosetta API, and the `/api/v1/network/nodes` REST API.
@@ -17,7 +29,7 @@ We now include support for [<u>HIP-1215</u>](https://hips.hedera.com/hip/hip-121
 
 The code base now integrates the [<u>JSpecify</u>](https://jspecify.dev/) standard. JSpecify provides standard nullability annotations and static code analysis tools to help reduce the use of nulls in your code. Existing null annotations from javax, Jakarta, Spring, findbugs, etc. were converted to the equivalent JSpecify annotation. The Gradle build was updated to integrate [<u>NullAway</u>](https://github.com/uber/NullAway) which will fail the build if a potential `NullPointerException` is detected. Currently it's set to assume null by default as we work towards a non-null by default throughout the code base.
 
-## **Breaking Changes**
+### Breaking Changes
 
 The web3 API now defaults to the modularized code flow regardless if the operator explicitly disabled it. As a result, the values of the `hiero.mirror.web3.evm.modularizedServices` and `hiero.mirror.web3.evm.modularizedTrafficPercent` properties are now ignored. This was necessary due to incompatibilities between maintaining both code bases after upgraded to the 0.68 EVM library. We plan to remove the legacy code entirely next month.
 
@@ -1282,7 +1294,7 @@ This release contains support for HIP-406 Staking, HIP-410 Wrapped Ethereum Tran
 
 [HIP-410](https://hips.hedera.com/HIP/hip-410.html) and [HIP-482](https://hips.hedera.com/HIP/hip-482.html) are both intended to improve the onramp for existing Ethereum developers. Towards that end, we added pagination support to both of the contract logs REST APIs. You can now page through logs via a combination of a consensus timestamp and log index parameters. The new blocks REST APIs also saw new `gas_used` and `logs_bloom` fields added that show the aggregated values for all transactions within the block. Finally, we added a new network fee schedule REST API. Currently, it only exposes the gas price for `ContractCall`, `ContractCreate`, and `EthereumTransaction` types in tinybars.
 
-`GET /api/v1/network/fees`
+`GET `/api/v1/network/fees``
 
 ```
 {

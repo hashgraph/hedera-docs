@@ -15,6 +15,35 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
   **TESTNET UPDATE: NOVEMBER 25, 2025**
 </Check>
 
+## Release Highlights
+
+Release v0.68 prepares the Hiero Consensus Node for [Dynamic Address Book (DAB)](https://hips.hedera.com/hip/hip-1299) node account ID changes as well as scheduled contract calls on Hiero Consensus Node. These changes are now live on Hedera testnet (Nov 13, 2025) and are scheduled for mainnet on Dec 10, 2025
+
+<Accordion title="What's new in Release v0.68?">
+  
+**Dynamic Address Book node account ID updates (HIP-1299)**
+Release v0.68 introduces the consensus-node changes needed for **HIP-1299 Dynamic Address Book node account ID updates**.
+Updatable node account IDs: Node operators will be able to change their node’s nodeAccountId without redeploying the network or creating a brand-new node entry, aligning on-chain identity with operational realities (e.g., custody changes, account migration).
+
+**Developer impact:** 
+For dApps, existing HAPI flows remain unchanged; however, infrastructure and tooling should avoid hard-coding node account ID's, or at a minimum take extra consideration when hard-coding node account IDs as immutable they can now be changed and hard coding them into applications will introduce a failure mode. On testnet, mainnet, and previewnet you may observe some nodes’ nodeAccountId values changing over time as operators and the Council exercise the new capabilities.
+
+**Generalized Scheduled Contract Calls (HIP-1215)**
+Release v0.68 enables HIP-1215 Generalized Scheduled Contract Calls on the Hiero Consensus Node. Smart contracts can now schedule future contract calls directly through the Hedera Schedule Service system contract, without relying on external bots or separate “follow-up” user transactions.
+
+**Key Benefits:**
+New IHederaScheduleService.sol entry points, scheduleCall, scheduleCallWithPayer, executeCallOnPayerSignature, deleteSchedule, hasScheduleCapacity. These let contracts create, trigger, cancel and capacity check scheduled calls entirely on chain.
+
+Contracts can schedule calls to themselves or other contracts with a chosen expiry and gas limit, optionally designate a different payer.
+
+**Developer Impact:** Existing HAPI transaction types and receipts remain unchanged but smart contract developers now have an onchain method to express time or event driven workflows with their smart contracts using the Hedera Schedule service system contract.
+
+
+For developers and operators, the main impact from release v0.68 is more reliable block/RPC synchronization on testnet; client APIs and semantics remain unchanged. Release v0.68 prepares the network for Dynamic Address Book node account ID changes and enables new methods of leveraging scheduled smart contract calls with the Hedera Schedule Service system contract.
+
+
+</Accordion>
+
 ### [**Build 0.68.2**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.68.2)
 
 <Accordion title="What's Changed">
@@ -70,7 +99,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 Release v0.67 enhances the stability and performance of the Hiero Consensus Node and updates. Continued progress was made on [HIP-1081](https://hips.hedera.com/hip/hip-1081) Block Nodes, adding features to improve connectivity and metrics.
 
-<Accordion title="What's new in Release v0.67?" icon="sparkles">
+<Accordion title="What's new in Release v0.67?">
   **Updates:**
 
   - **Improved Block Streaming Metrics:** Metrics for communication between consensus and block nodes have been reworked for clarity and utility. Metric names no longer include the self-node ID, as this is now automatically added as a label

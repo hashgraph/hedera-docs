@@ -20,6 +20,17 @@ title: "Get schedule info"
 | **Deletion Time**              | The consensus time the schedule transaction was deleted. If the schedule transaction was not deleted, this field will be left null. |
 | **Memo**                       | Publicly visible information about the Schedule entity, up to 100 bytes. No guarantee of uniqueness.                                |
 
+
+<Note>
+#### **Consider Using Mirror Node REST API**
+
+For obtaining schedule information and historical data, consider using the Mirror Node REST API endpoint [**Get Schedule by ID**](https://docs.hedera.com/api-reference/schedules/get-schedule-by-id) which offers several advantages:
+
+* **Cost-effective and scalable:** [Mirror node providers](/hedera/core-concepts/mirror-nodes/hedera-mirror-node#mainnet) offer paid plans with a large number of queries included. The Hedera-hosted mirror node offers free queries with specific throttles for testing. While some SDK queries are currently free, these are subject to change in the future.
+* **Performance:** Mirror nodes don't burden consensus nodes, allowing them to focus on processing transactions and providing efficient access to historical data without impacting network performance.
+* **Historical data:** Mirror nodes store complete transaction history, records, and events - ideal for analytics, auditing, and monitoring past activity.
+</Note>
+
 **Query Signing Requirements**
 
 * The transaction fee payer account key is required to sign

@@ -8,7 +8,7 @@ A query that returns the account balance for the specified account. Requesting a
 In Services release 0.50, returning token balance from the consensus node was deprecated with HIP-367. This query returns token information by requesting the information from the Hedera Mirror Node APIs via [/api/v1/accounts/\{id\}/tokens](https://mainnet.mirrornode.hedera.com/api/v1/docs/#/accounts/listTokenRelationshipByAccountId). Token symbol is not returned in the response.
 
 <Note>
-#### **Consider Using Mirror Node REST API**
+#### **Recommend Using Mirror Node REST API**
 
 For obtaining account balance and historical balance information, consider using the Mirror Node REST API endpoint [**List Account Balances**](https://docs.hedera.com/api-reference/balances/list-account-balances) which offers several advantages:
 

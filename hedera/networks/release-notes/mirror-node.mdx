@@ -16,7 +16,7 @@ HIP-1056 block streams saw further testing and bug fixes. Support for the major 
 We converted another JavaScript REST API to Java in this release. The `/api/v1/network/fees` REST API was rewritten from scratch in Java and shows a 8x improvement in performance as a result. Like the others, it will be rolled out first to previewnet and testnet for a release to ensure it does not have any regressions.
 
 ### Breaking Changes
-The `/api/v1/network/exchangerate` JavaScript implementation is now removed in favor of the newer Java implementation. Operators should ensure their routing logic is updated so that requests to /api/v1/network/exchangerate are directed to the rest-java process instead of the rest process. If operators use our docker compose or Helm chart this routing change is handled automatically.
+The `/api/v1/network/exchangerate` JavaScript implementation is now removed in favor of the newer Java implementation. Operators should ensure their routing logic is updated so that requests to `/api/v1/network/exchangerate` are directed to the rest-java process instead of the rest process. If operators use our docker compose or Helm chart this routing change is handled automatically.
 
 
 ## [v0.142.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.142.0)

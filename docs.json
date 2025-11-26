@@ -1116,14 +1116,6 @@
     "href": "https://hedera.com/"
   },
   "navbar": {
-    "links": [
-      {
-        "label": "Join Hackathon",
-        "href": "https://hackathon.stackup.dev/web/events/hedera-hello-future-ascension-hackathon-2025?utm_campaign=26710962-2025-11-03%20Campaign%3A%20Hackathon%20-%20Ascension&utm_source=Docs&utm_medium=Home%20Banner",
-        "target": "_blank",
-        "icon": "code"
-      }
-    ],
     "primary": {
       "type": "button",
       "label": "Dev Portal",

@@ -1,0 +1,131 @@
+name: Sync OpenAPI Specification
+
+on:
+  # Run daily at 2 AM UTC to check for updates
+  schedule:
+    - cron: '0 2 * * *'
+  
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      network:
+        description: 'Network to sync from'
+        required: true
+        default: 'testnet'
+        type: choice
+        options:
+          - mainnet
+          - testnet
+      create_pr:
+        description: 'Create pull request if changes detected'
+        required: true
+        default: true
+        type: boolean
+
+jobs:
+  sync-openapi:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Run OpenAPI sync script
+        id: sync
+        run: |
+          NETWORK="${{ github.event.inputs.network || 'mainnet' }}"
+          echo "Syncing from $NETWORK network..."
+          
+          # Run the sync script
+          node sync-openapi.js --network=$NETWORK --output=openapi.yaml --verbose
+          
+          # Check if there are changes
+          if git diff --quiet openapi.yaml; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No changes detected"
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "Changes detected"
+            
+            # Extract version from the new file
+            VERSION=$(grep -m 1 "version:" openapi.yaml | sed 's/.*version: *//;s/["\x27]//g')
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+            echo "Detected version: $VERSION"
+          fi
+      
+      - name: Create Pull Request
+        if: steps.sync.outputs.has_changes == 'true' && (github.event.inputs.create_pr != 'false' || github.event_name == 'schedule')
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore: update OpenAPI spec to v${{ steps.sync.outputs.version }}'
+          title: 'Update Mirror Node OpenAPI Specification to v${{ steps.sync.outputs.version }}'
+          body: |
+            ## 🔄 Automated OpenAPI Sync
+            
+            This PR updates the OpenAPI specification from the Hedera Mirror Node API.
+            
+            **Details:**
+            - **Network:** ${{ github.event.inputs.network || 'mainnet' }}
+            - **Version:** ${{ steps.sync.outputs.version }}
+            - **Source:** https://${{ github.event.inputs.network || 'mainnet' }}.mirrornode.hedera.com/api/v1/docs/openapi.yml
+            - **Triggered by:** ${{ github.event_name }}
+            
+            **Changes:**
+            This automated sync detected changes in the Mirror Node OpenAPI specification. Please review the changes to ensure they align with the documentation requirements.
+            
+            **Review Checklist:**
+            - [ ] Verify new endpoints are documented
+            - [ ] Check for breaking changes
+            - [ ] Update related documentation if needed
+            - [ ] Validate YAML syntax
+            
+            ---
+            
+            🤖 This PR was automatically created by the OpenAPI sync workflow.
+            
+            **Related Links:**
+            - [Mirror Node Release Notes](https://docs.hedera.com/hedera/networks/release-notes/mirror-node)
+            - [Mirror Node API Docs](https://docs.hedera.com/hedera/sdks-and-apis/rest-api)
+          branch: automated/sync-openapi-${{ steps.sync.outputs.version }}
+          delete-branch: true
+          labels: |
+            automated
+            documentation
+            mirror-node
+            openapi
+      
+      - name: Commit changes directly (if no PR)
+        if: steps.sync.outputs.has_changes == 'true' && github.event.inputs.create_pr == 'false' && github.event_name != 'schedule'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add openapi.yaml
+          git commit -m "chore: update OpenAPI spec to v${{ steps.sync.outputs.version }}"
+          git push
+      
+      - name: Summary
+        run: |
+          echo "## OpenAPI Sync Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Network:** ${{ github.event.inputs.network || 'mainnet' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Has Changes:** ${{ steps.sync.outputs.has_changes }}" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.sync.outputs.has_changes }}" == "true" ]; then
+            echo "- **New Version:** ${{ steps.sync.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "✅ OpenAPI specification has been updated." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "ℹ️ No changes detected. OpenAPI specification is up to date." >> $GITHUB_STEP_SUMMARY
+          fi

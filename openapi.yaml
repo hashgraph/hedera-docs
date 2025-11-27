@@ -29,9 +29,8 @@ paths:
     get:
       summary: Get account by alias, id, or evm address
       description: |
-        Return the account transactions and balance information given an account alias, an account id, or an evm address. 
-        The information will be limited to at most 1000 token balances for the account as outlined in HIP-367.
-        When the timestamp parameter is supplied, we will return transactions and account state for the relevant timestamp query.
+        Return the account transactions and balance information given an account alias, an account id, or an evm address. The information will be limited to at most 1000 token balances for the account as outlined in HIP-367.
+        When the timestamp parameter is supplied, we will return transactions and account state for the relevant timestamp query. Balance information will be accurate to within 15 minutes of the provided timestamp query.
         Historical ethereum nonce information is currently not available and may not be the exact value at a provided timestamp.
       operationId: getAccount
       parameters:
@@ -51,6 +50,29 @@ paths:
         400:
           $ref: "#/components/responses/InvalidParameterError"
         404:
+          $ref: "#/components/responses/NotFoundError"
+      tags:
+        - accounts
+  /api/v1/accounts/{idOrAliasOrEvmAddress}/hooks:
+    get:
+      summary: List hooks for an account
+      description: Returns a list of hooks associated with a given account ID, alias, or EVM address.
+      operationId: getHooks
+      parameters:
+        - $ref: "#/components/parameters/accountIdOrAliasOrEvmAddressPathParam"
+        - $ref: "#/components/parameters/hookIdQueryParam"
+        - $ref: "#/components/parameters/limitQueryParam"
+        - $ref: "#/components/parameters/orderQueryParamDesc"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HooksResponse"
+        "400":
+          $ref: "#/components/responses/InvalidParameterError"
+        "404":
           $ref: "#/components/responses/NotFoundError"
       tags:
         - accounts
@@ -345,11 +367,12 @@ paths:
     get:
       summary: List account balances
       description:
-        Returns a list of account and token balances on the network. This information is limited to
-        at most 50 token balances per account as outlined in HIP-367. As such, it's not recommended for general use and
-        we instead recommend using either `/api/v1/accounts/{id}/tokens` or `/api/v1/tokens/{id}/balances` to obtain
-        the current token balance information and `/api/v1/accounts/{id}` to return the current account balance.
-
+        Returns a list of account and token balances on the network. The latest balance information is returned when
+        there is no timestamp query parameter, otherwise, the information is retrieved from snapshots with 15-minute
+        granularity. This information is limited to at most 50 token balances per account as outlined in HIP-367.
+        As such, it's not recommended for general use and we instead recommend using either
+        `/api/v1/accounts/{id}/tokens` or `/api/v1/tokens/{id}/balances` to obtain the current token balance information
+        and `/api/v1/accounts/{id}` to return the current account balance.
       operationId: getBalances
       parameters:
         - $ref: "#/components/parameters/accountIdOrAliasOrEvmAddressQueryParam"
@@ -902,7 +925,7 @@ paths:
         400:
           $ref: "#/components/responses/InvalidParameterError"
         404:
-          $ref: "#/components/responses/NotFoundError"
+          $ref: "#/components/responses/NetworkStakeNotFound"
         500:
           $ref: "#/components/responses/ServiceUnavailableError"
       tags:
@@ -1399,22 +1422,22 @@ tags:
   - name: tokens
     description: The tokens object represents the information associated with a token entity and returns a list of token information.The tokens list endpoint is cached and not updated as frequently as the token lookup by a specific ID.
 info:
-  title: Hedera Mirror Node REST API
-  version: 0.129.1
+  title: Mirror Node REST API
+  version: 0.143.0
   license:
     name: Apache-2.0
     url: "https://www.apache.org/licenses/LICENSE-2.0.html"
-  description: "The Mirror Node REST API offers the ability to query cryptocurrency transactions and account information from a Hedera managed mirror node.\n\nBase url: [/api/v1](/api/v1)\n\nOpenAPI Spec: [/api/v1/docs/openapi.yml](/api/v1/docs/openapi.yml)"
+  description: "The REST API offers the ability to query transactions and entity information from a mirror node.\n\nBase url: [/api/v1](/api/v1)\n\nOpenAPI Spec: [/api/v1/docs/openapi.yml](/api/v1/docs/openapi.yml)"
   contact:
-    name: Hedera Mirror Node Team
+    name: Mirror Node Team
     email: mirrornode@hedera.com
     url: "https://github.com/hiero-ledger/hiero-mirror-node"
 externalDocs:
-  description: Hedera REST API Docs
+  description: REST API Docs
   url: "https://docs.hedera.com/guides/docs/mirror-node-api/cryptocurrency-api"
 servers:
   - description: The current REST API server
-    url: "https://mainnet.mirrornode.hedera.com"
+    url: ""
   - description: The production REST API servers
     url: "{scheme}://{network}.mirrornode.hedera.com"
     variables:
@@ -1550,6 +1573,66 @@ components:
           $ref: "#/components/schemas/CryptoAllowances"
         links:
           $ref: "#/components/schemas/Links"
+    HooksResponse:
+      type: object
+      required:
+        - hooks
+        - links
+      properties:
+        hooks:
+          type: array
+          items:
+            $ref: "#/components/schemas/Hook"
+        links:
+          $ref: "#/components/schemas/Links"
+    Hook:
+      type: object
+      required:
+        - admin_key
+        - contract_id
+        - created_timestamp
+        - deleted
+        - extension_point
+        - hook_id
+        - owner_id
+        - timestamp_range
+        - type
+      properties:
+        admin_key:
+          $ref: "#/components/schemas/Key"
+        contract_id:
+          allOf:
+            - $ref: "#/components/schemas/EntityId"
+          description: The contract entity that contains the hook's executing bytecode
+        created_timestamp:
+          allOf:
+            - $ref: "#/components/schemas/TimestampNullable"
+          description: The consensus timestamp when the hook was created
+        deleted:
+          description: Whether the hook has been deleted
+          example: false
+          type: boolean
+        extension_point:
+          description: The extension point this hook implements
+          enum: [ACCOUNT_ALLOWANCE_HOOK]
+          example: ACCOUNT_ALLOWANCE_HOOK
+          type: string
+        hook_id:
+          description: The unique identifier for the hook within the owner's scope
+          example: 1
+          format: int64
+          type: integer
+        owner_id:
+          allOf:
+            - $ref: "#/components/schemas/EntityId"
+          description: The entity that owns the hook
+        timestamp_range:
+          $ref: "#/components/schemas/TimestampRangeNullable"
+        type:
+          description: The type of the hook implementation
+          enum: [LAMBDA]
+          example: LAMBDA
+          type: string
     NetworkExchangeRateSetResponse:
       type: object
       properties:
@@ -2002,6 +2085,12 @@ components:
         memo:
           example: contract memo
           type: string
+        nonce:
+          description: The nonce of the contract
+          nullable: true
+          format: int64
+          type: integer
+          example: 1
         obtainer_id:
           $ref: "#/components/schemas/EntityId"
         permanent_removal:
@@ -2562,10 +2651,10 @@ components:
           pattern: "^((0x)?[0-9a-fA-F]+|(earliest|pending|latest))$"
           type: string
         data:
-          description: Hexadecimal method signature and encoded parameters. Up to 24656 bytes as at most 49152 hexidecimal digits plus optional leading 0x.
+          description: Hexadecimal method signature and encoded parameters. Up to 131072 bytes as at most 262146 hexadecimal digits including optional leading 0x.
           example: "0x47f1aae7"
           format: binary
-          maxLength: 49154
+          maxLength: 262146
           nullable: true
           pattern: "^(0x)?[0-9a-fA-F]+$"
           type: string
@@ -2796,6 +2885,7 @@ components:
         - decline_reward
         - description
         - file_id
+        - grpc_proxy_endpoint
         - max_stake
         - memo
         - min_stake
@@ -2823,6 +2913,8 @@ components:
           type: string
         file_id:
           $ref: "#/components/schemas/EntityId"
+        grpc_proxy_endpoint:
+          $ref: "#/components/schemas/ServiceEndpoint"
         max_stake:
           description: The maximum stake (rewarded or not rewarded) this node can have as consensus weight
           type: integer
@@ -4087,6 +4179,17 @@ components:
             _status:
               messages:
                 - message: Not found
+    NetworkStakeNotFound:
+      description: No network stake data found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            _status:
+              messages:
+                - detail: No network stake data found
+                  message: Not Found
     TopicNotFound:
       description: Topic Not Found
       content:
@@ -4457,6 +4560,17 @@ components:
         default: 25
         minimum: 1
         maximum: 100
+    hookIdQueryParam:
+      description: The ID of the hook
+      example: 1234
+      in: query
+      name: hook.id
+      schema:
+        format: int64
+        type: integer
+        minimum: 1
+        maximum: 9223372036854775807
+      required: false
     blockNumberQueryParam:
       name: block.number
       in: query
@@ -4486,7 +4600,6 @@ components:
       schema:
         type: string
         pattern: ^((eq|gt|gte|lt|lte):)?\d{1,19}$
-        minimum: 0
     nodeIdQueryParam:
       name: node.id
       description: The ID of the node
@@ -4808,7 +4921,7 @@ components:
         type: array
         items:
           type: string
-          pattern: ^((eq|gt|gte|lt|lte|ne):)?\d{1,10}(.\d{1,9})?$
+          pattern: ^((eq|gt|gte|lt|lte|ne):)?\d{1,10}(\.\d{1,9})?$
     timestampPathParam:
       name: timestamp
       in: path
@@ -4817,7 +4930,7 @@ components:
       example: 1234567890.000000700
       schema:
         type: string
-        pattern: ^\d{1,10}(.\d{1,9})?$
+        pattern: ^\d{1,10}(\.\d{1,9})?$
     stateTimestampQueryParam:
       description: The consensus timestamp of the contract state as a Unix timestamp in seconds.nanoseconds format with an optional comparison operator. See [unixtimestamp.com](https://www.unixtimestamp.com/) for a simple way to convert a date to the 'seconds' part of the Unix time.
       name: timestamp
@@ -4867,7 +4980,7 @@ components:
         type: array
         items:
           type: string
-          pattern: ^((eq|gt|gte|lt|lte):)?\d{1,10}(.\d{1,9})?$
+          pattern: ^((eq|gt|gte|lt|lte):)?\d{1,10}(\.\d{1,9})?$
     tokenInfoTimestampQueryParam:
       description: The Unix timestamp in seconds.nanoseconds format. See [unixtimestamp.com](https://www.unixtimestamp.com/) for a simple way to convert a date to the 'seconds' part of the Unix time.
       name: timestamp
@@ -4903,7 +5016,7 @@ components:
           value: lte:1234567890.000000700
       schema:
         type: string
-        pattern: ^((eq|lt|lte):)?\d{1,10}(.\d{1,9})?$
+        pattern: ^((eq|lt|lte):)?\d{1,10}(\.\d{1,9})?$
     logTopic0QueryParam:
       name: topic0
       in: query
@@ -5138,7 +5251,6 @@ components:
       schema:
         type: string
         pattern: ^(eq:)?(\d{1,19}|0x[a-fA-f0-9]+)$
-        minimum: 0
     slotQueryParam:
       name: slot
       in: query

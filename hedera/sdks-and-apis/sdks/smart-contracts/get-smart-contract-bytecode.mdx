@@ -3,7 +3,17 @@ title: "Get smart contract bytecode"
 ---
 
 
-A query that returns the bytecode for a smart contract instance\*\*.\*\* Anyone can request the byte code of a smart contract instance on the network. Queries do not change the state of the smart contract or require network consensus. The information is returned from a single node processing the query.
+A query that returns the bytecode for a smart contract instance. Anyone can request the byte code of a smart contract instance on the network. Queries do not change the state of the smart contract or require network consensus. The information is returned from a single node processing the query.
+
+<Note>
+#### **Recommend Using Mirror Node REST API**
+
+For obtaining smart contract information and historical data, consider using the Mirror Node REST API endpoint [**Get Contract by ID**](https://docs.hedera.com/api-reference/contracts/get-contract-by-id) which offers several advantages:
+
+* **Cost-effective and scalable:** [Mirror node providers](/hedera/core-concepts/mirror-nodes/hedera-mirror-node#mainnet) offer paid plans with a large number of queries included. The Hedera-hosted mirror node offers free queries with specific throttles for testing. While some SDK queries are currently free, these are subject to change in the future.
+* **Performance:** Mirror nodes don't burden consensus nodes, allowing them to focus on processing transactions and providing efficient access to historical data without impacting network performance.
+* **Historical data:** Mirror nodes store complete transaction history, records, and events - ideal for analytics, auditing, and monitoring past activity.
+</Note>
 
 **Query Signing Requirements**
 

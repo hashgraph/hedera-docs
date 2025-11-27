@@ -5,7 +5,17 @@ title: "Get account balance"
 
 A query that returns the account balance for the specified account. Requesting an account balance is currently free of charge. Queries do not change the state of the account or require network consensus. The information is returned from a single node processing the query.
 
-In Services release 0.50, returning token balance from the consensus node was deprecated with HIP-367. This query returns token information by requesting the information from the Hedera Mirror Node APIs via [/api/v1/accounts/{id}/tokens](https://mainnet.mirrornode.hedera.com/api/v1/docs/#/accounts/listTokenRelationshipByAccountId). Token symbol is not returned in the response.
+In Services release 0.50, returning token balance from the consensus node was deprecated with HIP-367. This query returns token information by requesting the information from the Hedera Mirror Node APIs via [/api/v1/accounts/\{id\}/tokens](https://mainnet.mirrornode.hedera.com/api/v1/docs/#/accounts/listTokenRelationshipByAccountId). Token symbol is not returned in the response.
+
+<Note>
+#### **Recommend Using Mirror Node REST API**
+
+For obtaining account balance and historical balance information, consider using the Mirror Node REST API endpoint [**List Account Balances**](https://docs.hedera.com/api-reference/balances/list-account-balances) which offers several advantages:
+
+* **Cost-effective and scalable:** [Mirror node providers](/hedera/core-concepts/mirror-nodes/hedera-mirror-node#mainnet) offer paid plans with a large number of queries included. The Hedera-hosted mirror node offers free queries with specific throttles for testing. While account balance queries via SDK are currently free, this is subject to change in the future.
+* **Performance:** Mirror nodes don't burden consensus nodes, allowing them to focus on processing transactions and providing efficient access to historical data without impacting network performance.
+* **Historical data:** Mirror nodes store complete transaction history and balance snapshots - ideal for analytics, auditing, and monitoring past activity.
+</Note>
 
 **Query Fees**
 

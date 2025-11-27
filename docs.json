@@ -29,6 +29,10 @@
       "destination": "/:slug*"
     },
     {
+      "source": "/guides/docs/mirror-node-api/cryptocurrency-api",
+      "destination": "/hedera/sdks-and-apis/rest-api"
+    },
+    {
       "source": "/guides",
       "destination": "/"
     },

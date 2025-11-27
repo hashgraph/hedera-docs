@@ -5,6 +5,16 @@ title: "Get account token balance"
 
 To get the balance of tokens for an account, you can submit an account balance query. The account balance query will return the tokens the account holds in a list format.
 
+<Note>
+#### **Recommend Using Mirror Node REST API**
+
+For obtaining token information and historical data, consider using the Mirror Node REST API endpoint [**Get Token Account Balance**](https://docs.hedera.com/api-reference/tokens/list-token-balances) which offers several advantages:
+
+* **Cost-effective and scalable:** [Mirror node providers](/hedera/core-concepts/mirror-nodes/hedera-mirror-node#mainnet) offer paid plans with a large number of queries included. The Hedera-hosted mirror node offers free queries with specific throttles for testing. While some SDK queries are currently free, these are subject to change in the future.
+* **Performance:** Mirror nodes don't burden consensus nodes, allowing them to focus on processing transactions and providing efficient access to historical data without impacting network performance.
+* **Historical data:** Mirror nodes store complete transaction history, records, and events - ideal for analytics, auditing, and monitoring past activity.
+</Note>
+
 **Query Fees**
 
 * Please see the transaction and query [fees](/hedera/networks/mainnet/fees#transaction-and-query-fees) table for the base transaction fee

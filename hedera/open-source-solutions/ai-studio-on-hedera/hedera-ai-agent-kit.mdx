@@ -4,54 +4,67 @@ description: "Features and Functionality in the Hedera Agent Kit SDK at https://
 ---
 
 
+# Hedera AI Agent Kit
+
+Features and Functionality in the Hedera Agent Kit SDK at https://github.com/hashgraph/hedera-agent-kit
+
 ## Overview
 
 Build LLM-powered applications that interact with the Hedera Network. Create conversational agents that can understand user requests in natural language and execute Hedera transactions, or build backend systems that leverage AI for on-chain operations.
 
 The Hedera Agent Kit provides:
 
-* **Conversational AI**: LangChain-based agents that understand natural language
-* **Adaptors for Framework Tools**:  Pre-built tools covering Hedera services (and third party plugins), automatically adapted into popular frameworks like LangChain, Vercel ai-sdk, and MCP
-* **Flexible Transaction Handling**: Direct execution or provide transaction bytes for user signing
-* **Autonomous and Human-in-the-Loop** mode for executing transactions on Hedera
-* **A Plugin Architecture -** For using both Hedera network capabilities and services, as well as third-party features and functionality
+- **Conversational AI**: LangChain-based agents that understand natural language
+- **Adaptors for Framework Tools**: Pre-built tools covering Hedera services (and third party plugins), automatically adapted into popular frameworks like LangChain, Vercel ai-sdk, and MCP
+- **Flexible Transaction Handling**: Direct execution or provide transaction bytes for user signing
+- **Autonomous and Human-in-the-Loop** mode for executing transactions on Hedera
+- **A Plugin Architecture** - For using both Hedera network capabilities and services, as well as third-party features and functionality
 
-***
+---
 
 ## Quick Start - Create a Hedera Agent
 
 See the npm package for the Hedera Agent Kit can be found at: https://www.npmjs.com/package/hedera-agent-kit
 
-1. Create your project directory
+### 1. Create your project directory
 
 ```bash
 mkdir hello-hedera-agent-kit
 cd hello-hedera-agent-kit
 ```
 
-2. Install the agent kit, and init the project
+### 2. Install the agent kit, and init the project
+
+Init and install with npm
 
 ```bash
-npm install hedera-agent-kit @langchain/openai @langchain/core langchain @hashgraph/sdk dotenv
 npm init -y
 ```
 
-3. Install ONE of these AI provider packages:
+> This command initializes a CommonJS project by default.
 
-   ```bash
-   # Option 1: OpenAI (requires API key)
-   npm install @langchain/openai
+```bash
+npm install hedera-agent-kit @langchain/core@^0.3 langchain@^0.3 @hashgraph/sdk dotenv
+# NOTE: currently Hedera Agent Kit's Langchain toolkit is only compatible with langchain v0.3 We have v1 support coming very soon!
+```
 
-   # Option 2: Anthropic Claude (requires API key)
-   npm install @langchain/anthropic
+### 3. Install ONE of these AI provider packages:
 
-   # Option 3: Groq (free tier available)
-   npm install @langchain/groq
+```bash
+# Option 1: OpenAI (requires API key)
+npm install @langchain/openai@^0.6
 
-   # Option 4: Ollama (100% free, runs locally)
-   npm install @langchain/ollama
-   ```
-4. Add Environment Variables
+# Option 2: Anthropic Claude (requires API key)
+npm install @langchain/anthropic@^0.3
+
+# Option 3: Groq (free tier available)
+npm install @langchain/groq@^0.2
+
+# Option 4: Ollama (100% free, runs locally)
+npm install @langchain/ollama@^0.2
+```
+
+### 4. Add Environment Variables
 
 Create a .env file in your directory
 
@@ -63,7 +76,7 @@ If you don't already have a Hedera account, create a testnet account at https://
 
 Add the following to the .env file:
 
-``` wrap
+```env
 # Required: Hedera credentials (get free testnet account at https://portal.hedera.com/dashboard)
 HEDERA_ACCOUNT_ID="0.0.xxxxx"
 HEDERA_PRIVATE_KEY="0x..." # ECDSA encoded private key
@@ -75,14 +88,17 @@ GROQ_API_KEY="gsk_..."            # For Groq free tier (https://console.groq.com
 # Ollama doesn't need an API key (runs locally)
 ```
 
+### 5. Create your agent
 
-5. Once you have your project set up, create an index.js file:
+Once you have your project set up, create an index.js file:
 
 ```bash
 touch index.js
 ```
 
-```javascript index.js
+**index.js**
+
+```javascript
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -174,8 +190,7 @@ async function main() {
 main().catch(console.error);
 ```
 
-
-6. Run Your "Hello Hedera Agent Kit" Example
+### 6. Run Your "Hello Hedera Agent Kit" Example
 
 From the root directory, run your example agent, and prompt it to give your hbar balance:
 
@@ -183,18 +198,20 @@ From the root directory, run your example agent, and prompt it to give your hbar
 node index.js
 ```
 
-***
+---
 
 ## Examples
 
-See and try out the [**example NextJS Application** ](https://github.com/hedera-dev/template-hedera-agent-kit-nextjs)built using the latest version of the AI Agent Kit to see
+See and try out the example NextJS Application built using the latest version of the AI Agent Kit to see
 
-[**Clone and try out**](https://github.com/hedera-dev/hedera-agent-kit?tab=readme-ov-file#-clone--test-the-sdk-examples) different examples in the toolkit:
+Clone and try out different examples in the toolkit:
 
-* The [**example tool calling agent**](https://github.com/hedera-dev/hedera-agent-kit?tab=readme-ov-file#2--configure-add-environment-variables-1) can carry out simple tasks with Hedera tools in 'autonomous mode'
-* The [**structured chat agent**](https://github.com/hedera-dev/hedera-agent-kit?tab=readme-ov-file#4--option-b-run-the-structured-chat-agent) can string together and complete more complex tasks, autonomously on Hedera
-* The [**human in the loop agent**](https://github.com/hedera-dev/hedera-agent-kit?tab=readme-ov-file#5---option-c-try-the-human-in-the-loop-chat-agent) shows you how you can create a more controlled workflow
-* [**Try out the MCP server**](https://github.com/hedera-dev/hedera-agent-kit?tab=readme-ov-file#6---option-d-try-out-the-mcp-server) to enable interaction with Hedera in your favorite application such as Claude Desktop or an IDE like Cursor.
+- The example tool calling agent can carry out simple tasks with Hedera tools in 'autonomous mode'
+- The structured chat agent can string together and complete more complex tasks, autonomously on Hedera
+- The human in the loop agent shows you how you can create a more controlled workflow
+- Try out the MCP server to enable interaction with Hedera in your favorite application such as Claude Desktop or an IDE like Cursor.
+
+---
 
 ## About the Agent Kit
 
@@ -202,33 +219,42 @@ See and try out the [**example NextJS Application** ](https://github.com/hedera-
 
 This tool has two execution modes with AI agents; autonomous excution and return bytes. If you set:
 
-* `mode: AgentMode.RETURN_BYTE` the transaction will be executed, and the bytes to execute the Hedera transaction will be returned.
-* `mode: AgentMode.AUTONOMOUS` the transaction will be executed autonomously, using the accountID set (the operator account can be set in the client with `.setOperator(process.env.ACCOUNT_ID!`)
+- `mode: AgentMode.RETURN_BYTE` the transaction will be executed, and the bytes to execute the Hedera transaction will be returned.
+- `mode: AgentMode.AUTONOMOUS` the transaction will be executed autonomously, using the accountID set (the operator account can be set in the client with `.setOperator(process.env.ACCOUNT_ID!)`)
+
+---
 
 ## Agent Kit Plugins
 
 The Hedera Agent Kit provides a basic set of tools in the form of Plugins, which group together sets of functionality and can easily be included in your instance of hederaAgentToolkit
 
-Need additional capabilities with the agent kit, that isn't currently included? Please [open an issue](https://github.com/hedera-dev/hedera-agent-kit/issues/new?template=toolkit_feature_request.md&title=%5BFEATURE%5D%20-%20).
+Need additional capabilities with the agent kit, that isn't currently included? Please [open an issue](https://github.com/hedera-dev/hedera-agent-kit/issues).
 
 **Available Plugins**
 
-* **Core Account Plugin**: Tools for Hedera Account Service operations
-* **Core Consensus Plugin**: Tools for Hedera Consensus Service (HCS) operations
-* **Core HTS Plugin**: Tools for Hedera Token Service operations
-* **Core Queries Plugin**: Tools for querying Hedera network data
+- **Core Account Plugin**: Tools for Hedera Account Service operations
+- **Core Consensus Plugin**: Tools for Hedera Consensus Service (HCS) operations
+- **Core HTS Plugin**: Tools for Hedera Token Service operations
+- **Core Queries Plugin**: Tools for querying Hedera network data
 
-See the available plugins, the included tools, examples, and instructions on how to use a in the Github docs: [PLUGINS.md](https://github.com/hashgraph/hedera-agent-kit/blob/main/docs/HEDERAPLUGINS.md)
+See the available plugins, the included tools, examples, and instructions on how to use a in the Github docs: [PLUGINS.md](https://github.com/hashgraph/hedera-agent-kit/blob/main/docs/PLUGINS.md)
+
+---
 
 ## Requests and Contributions
 
-**To request additional functionality,** please [**open an issue**](https://github.com/hedera-dev/hedera-agent-kit/issues/new?template=toolkit_feature_request.yml&labels=feature-request)**.**\
-**To contribute** to the Hedera Agent Kit see the [**Contributing Guidelines**](https://github.com/hedera-dev/hedera-agent-kit/blob/main/CONTRIBUTING.md) \
-**To create your own plugin,** see the instructions in [PLUGINS.md](https://github.com/hashgraph/hedera-agent-kit/blob/main/docs/PLUGINS.md)\
-**To officially register your plugin**, [follow the instructions here](https://github.com/hashgraph/hedera-agent-kit/blob/main/docs/PLUGINS.md#publish-and-register-your-plugin)
+**To request additional functionality**, please [open an issue](https://github.com/hedera-dev/hedera-agent-kit/issues).
+
+**To contribute** to the Hedera Agent Kit see the [Contributing Guidelines](https://github.com/hashgraph/hedera-agent-kit/blob/main/CONTRIBUTING.md)
+
+**To create your own plugin**, see the instructions in [PLUGINS.md](https://github.com/hashgraph/hedera-agent-kit/blob/main/docs/PLUGINS.md)
+
+**To officially register your plugin**, [follow the instructions here](https://github.com/hashgraph/hedera-agent-kit/blob/main/docs/PLUGINS.md#registering-your-plugin)
+
+---
 
 ## Resources
 
-* **GitHub**: https://github.com/hashgraph/hedera-agent-kit
-* **npm**: [hedera-agent-kit](https://www.npmjs.com/package/hedera-agent-kit)
-* **Issues**: https://github.com/hedera-dev/hedera-agent-kit/issues
+- **GitHub**: https://github.com/hashgraph/hedera-agent-kit
+- **npm**: [hedera-agent-kit](https://www.npmjs.com/package/hedera-agent-kit)
+- **Issues**: https://github.com/hedera-dev/hedera-agent-kit/issues

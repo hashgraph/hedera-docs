@@ -1,5 +1,6 @@
 ---
 title: "Hedera Schedule Service"
+mode: "wide"
 ---
 
 
@@ -17,20 +18,20 @@ The `IHederaScheduleService` interface, introduced in [HIP-755](https://hips.hed
 
 Following system contract conventions, HSS is callable at the reserved `0x16b` address and exposes the following functions callable within smart contracts.
 
-<table><thead><tr><th width="210">Function Name</th><th width="102" align="center">Consensus Node Release Version</th><th width="67" align="center">HIP</th><th>Function Interface</th></tr></thead><tbody><tr><td><code>authorizeSchedule</code></td><td align="center"><a href="https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.57">0.57</a></td><td align="center"><a href="https://hips.hedera.com/hip/hip-755">HIP 755</a></td><td><code>authorizeSchedule(address) external returns (int64 responseCode)</code></td></tr><tr><td><code>signSchedule</code></td><td align="center"><a href="https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.59">0.59</a></td><td align="center"><a href="https://hips.hedera.com/hip/hip-755">HIP 755</a></td><td><code>signSchedule(address, bytes) external returns (int64 responseCode)</code></td></tr><tr><td><code>scheduleNative</code></td><td align="center"><a href="https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.59">0.59</a></td><td align="center"><a href="https://hips.hedera.com/hip/hip-756">HIP 756</a></td><td><code>scheduleNative(address, bytes, address) external returns (int64, address)</code></td></tr><tr><td><code>getScheduledCreateFungibleTokenInfo</code></td><td align="center"><a href="https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.59">0.59</a></td><td align="center"><a href="https://hips.hedera.com/hip/hip-756">HIP 756</a></td><td><code>getScheduledCreateFungibleTokenInfo(address) external returns (int64, FungibleTokenInfo)</code></td></tr><tr><td><code>getScheduledCreateNonFungibleTokenInfo</code></td><td align="center"><a href="https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.59">0.59</a></td><td align="center"><a href="https://hips.hedera.com/hip/hip-756">HIP 756</a></td><td><code>getScheduledCreateNonFungibleTokenInfo(address) external returns (int64, NonFungibleTokenInfo)</code></td></tr><tr><td><code>scheduleCall</code></td><td align="center"><a href="https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.68">0.68</a></td><td align="center"><a href="https://hips.hedera.com/hip/hip-1215">HIP 1215</a></td><td><code>scheduleCall(address, uint256, uint256, uint64, bytes) external returns (address, int64)</code></td></tr><tr><td><code>scheduleCallWithPayer</code></td><td align="center"><a href="https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.68">0.68</a></td><td align="center"><a href="https://hips.hedera.com/hip/hip-1215">HIP 1215</a></td><td><code>scheduleCallWithPayer(address, address, uint256, uint256, uint64, bytes) external returns (address, int64)</code></td></tr><tr><td><code>executeCallOnPayerSignature</code></td><td align="center"><a href="https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.68">0.68</a></td><td align="center"><a href="https://hips.hedera.com/hip/hip-1215">HIP 1215</a></td><td><code>executeCallOnPayerSignature(address, address, uint256, uint256, uint64, bytes) external returns (address, int64)</code></td></tr><tr><td><code>deleteSchedule</code></td><td align="center"><a href="https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.68">0.68</a></td><td align="center"><a href="https://hips.hedera.com/hip/hip-1215">HIP 1215</a></td><td><code>deleteSchedule(address) external returns (int64)</code></td></tr><tr><td><code>hasScheduleCapacity</code></td><td align="center"><a href="https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.68">0.68</a></td><td align="center"><a href="https://hips.hedera.com/hip/hip-1215">HIP 1215</a></td><td><code>hasScheduleCapacity(uint256, uint256) external view returns (bool)</code></td></tr></tbody></table>
-#### **signSchedule()**
+<table><thead><tr><th width="210">Function Name</th><th width="120" align="center">Function Selector</th><th width="102" align="center">Consensus Node Release Version</th><th width="67" align="center">HIP</th><th>Function Interface</th></tr></thead><tbody><tr><td><code>authorizeSchedule</code></td><td align="center"><code>0xf0637961</code></td><td align="center"><a href="https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.57">0.57</a></td><td align="center"><a href="https://hips.hedera.com/hip/hip-755">HIP 755</a></td><td><code>authorizeSchedule(address) external returns (int64 responseCode)</code></td></tr><tr><td><code>signSchedule</code></td><td align="center"><code>0x358eeb03</code></td><td align="center"><a href="https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.59">0.59</a></td><td align="center"><a href="https://hips.hedera.com/hip/hip-755">HIP 755</a></td><td><code>signSchedule(address, bytes) external returns (int64 responseCode)</code></td></tr><tr><td><code>scheduleNative</code></td><td align="center"><code>0xca829811</code></td><td align="center"><a href="https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.59">0.59</a></td><td align="center"><a href="https://hips.hedera.com/hip/hip-756">HIP 756</a></td><td><code>scheduleNative(address, bytes, address) external returns (int64, address)</code></td></tr><tr><td><code>getScheduledCreateFungibleTokenInfo</code></td><td align="center"><code>0xda2d5f8f</code></td><td align="center"><a href="https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.59">0.59</a></td><td align="center"><a href="https://hips.hedera.com/hip/hip-756">HIP 756</a></td><td><code>getScheduledCreateFungibleTokenInfo(address) external returns (int64, FungibleTokenInfo)</code></td></tr><tr><td><code>getScheduledCreateNonFungibleTokenInfo</code></td><td align="center"><code>0xd68c902c</code></td><td align="center"><a href="https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.59">0.59</a></td><td align="center"><a href="https://hips.hedera.com/hip/hip-756">HIP 756</a></td><td><code>getScheduledCreateNonFungibleTokenInfo(address) external returns (int64, NonFungibleTokenInfo)</code></td></tr><tr><td><code>scheduleCall</code></td><td align="center"><code>0x6f5bfde8</code></td><td align="center"><a href="https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.68">0.68</a></td><td align="center"><a href="https://hips.hedera.com/hip/hip-1215">HIP 1215</a></td><td><code>scheduleCall(address, uint256, uint256, uint64, bytes) external returns (int64, address)</code></td></tr><tr><td><code>scheduleCallWithPayer</code></td><td align="center"><code>0xe6599c18</code></td><td align="center"><a href="https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.68">0.68</a></td><td align="center"><a href="https://hips.hedera.com/hip/hip-1215">HIP 1215</a></td><td><code>scheduleCallWithPayer(address, address, uint256, uint256, uint64, bytes) external returns (int64, address)</code></td></tr><tr><td><code>executeCallOnPayerSignature</code></td><td align="center"><code>0x105772b2</code></td><td align="center"><a href="https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.68">0.68</a></td><td align="center"><a href="https://hips.hedera.com/hip/hip-1215">HIP 1215</a></td><td><code>executeCallOnPayerSignature(address, address, uint256, uint256, uint64, bytes) external returns (int64, address)</code></td></tr><tr><td><code>deleteSchedule</code></td><td align="center"><code>0x72d42394</code></td><td align="center"><a href="https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.68">0.68</a></td><td align="center"><a href="https://hips.hedera.com/hip/hip-1215">HIP 1215</a></td><td><code>deleteSchedule(address) external returns (int64)</code></td></tr><tr><td><code>deleteSchedule</code></td><td align="center"><code>0xc61dea85</code></td><td align="center"><a href="https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.68">0.68</a></td><td align="center"><a href="https://hips.hedera.com/hip/hip-1215">HIP 1215</a></td><td><code>deleteSchedule() external returns (int64)</code></td></tr><tr><td><code>hasScheduleCapacity</code></td><td align="center"><code>0xdfb4a999</code></td><td align="center"><a href="https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.68">0.68</a></td><td align="center"><a href="https://hips.hedera.com/hip/hip-1215">HIP 1215</a></td><td><code>hasScheduleCapacity(uint256, uint256) external view returns (bool)</code></td></tr></tbody></table>
 
-* Callable only by an externally owned account (EOA) or wallet, not callable from a smart contract.
-* Signs the specified schedule transaction using the public key of the caller.
-* Executed through a system proxy contract to support safe and easy first calls by an EOA and ensure compliance with Hedera's security model.
-* Returns a `responseCode` indicating the success or failure of the signature addition attempt.
 
 #### **authorizeSchedule(address)**
 
 * Signs the schedule transaction identified by the pass-in parameter (`address`) with a `ContractKey` using the format `0.0.<ContractId of the calling contract>`.
 * Allows contracts to sign schedule transactions using their own contract key.
-* The `address` parameter is the unique identifier of the schedule transaction that specifies the transaction to be signed.
 * Returns a `responseCode` indicating the success or failure of the authorization attempt.
+
+#### **signSchedule(address schedule, bytes memory signatureMap)**
+
+* Allows for the signing of a schedule transaction given a protobuf encoded signature map.
+* The message signed by the keys is defined to be the concatenation of the shard, realm, and schedule transaction address.
+* Returns a `responseCode` indicating the success or failure of the signature addition attempt.
 
 #### **scheduleNative(address systemContractAddress, bytes memory callData, address payer)**
 
@@ -56,37 +57,47 @@ Following system contract conventions, HSS is callable at the reserved `0x16b` a
 * `to`: The address of the contract to call.
 * `expirySecond`: The epoch second at which the transaction should expire.
 * `gasLimit`: The maximum amount of gas to use for the call.
-* `value`: The amount of HBAR to send with the call.
+* `value`: The amount of HBAR (in tinybars) to send with the call.
 * `callData`: The ABI-encoded data for the function call.
-* Returns the `scheduleAddress` of the newly created scheduled transaction and a `responseCode` indicating success or failure.
+* Returns a `responseCode` indicating success or failure (`22` for SUCCESS) and the `scheduleAddress` of the newly created scheduled transaction.
 
 #### **scheduleCallWithPayer(address to, address payer, uint256 expirySecond, uint256 gasLimit, uint64 value, bytes memory callData)**
 
-* Schedules a contract call with a specified payer address. The payer must provide signatures before the transaction can execute.
+* Schedules a contract call with a specified payer address. This method collects the required signatures but **only executes the transaction at the `expirySecond` timestamp**, even if all signatures are gathered earlier. The payer must provide signatures before the transaction can execute.
 * `to`: The address of the contract to call.
 * `payer`: The address of the account that will pay for the transaction.
 * `expirySecond`: The epoch second at which the transaction should expire.
 * `gasLimit`: The maximum amount of gas to use for the call.
-* `value`: The amount of HBAR to send with the call.
+* `value`: The amount of HBAR (in tinybars) to send with the call.
 * `callData`: The ABI-encoded data for the function call.
-* Returns the `scheduleAddress` of the newly created scheduled transaction and a `responseCode` indicating success or failure.
+* Returns a `responseCode` indicating success or failure (`22` for SUCCESS) and the `scheduleAddress` of the newly created scheduled transaction.
 
 #### **executeCallOnPayerSignature(address to, address payer, uint256 expirySecond, uint256 gasLimit, uint64 value, bytes memory callData)**
 
-* Schedules and executes a contract call immediately upon receiving the payer's signature, unless the consensus time has already passed the `expirySecond`.
+* Schedules and executes a contract call immediately upon receiving the payer's signature. This method also collects signatures, but **executes the transaction immediately once all required signatures are present**, without waiting for the `expirySecond` timestamp, unless the consensus time has already passed the `expirySecond`.
 * `to`: The address of the contract to call.
 * `payer`: The address of the account that will pay for the transaction.
 * `expirySecond`: The epoch second at which the transaction should expire.
 * `gasLimit`: The maximum amount of gas to use for the call.
-* `value`: The amount of HBAR to send with the call.
+* `value`: The amount of HBAR (in tinybars) to send with the call.
 * `callData`: The ABI-encoded data for the function call.
-* Returns the `scheduleAddress` of the newly created scheduled transaction and a `responseCode` indicating success or failure.
+* Returns a `responseCode` indicating success or failure (`22` for SUCCESS) and the `scheduleAddress` of the newly created scheduled transaction.
 
 #### **deleteSchedule(address scheduleAddress)**
 
 * Deletes a previously scheduled transaction.
 * `scheduleAddress`: The address of the scheduled transaction to delete.
-* Returns a `responseCode` indicating success or failure.
+* Returns a `responseCode` indicating success or failure (`22` for SUCCESS).
+
+#### **deleteSchedule()**
+
+*   Deletes a scheduled transaction by calling this parameter-less redirect function directly on the schedule's address.
+*   This provides a convenient alternative for contracts or Externally Owned Accounts (EOAs) to the main `deleteSchedule(address)` function.
+*   Returns a `responseCode` indicating success or failure (`22` for SUCCESS).
+
+
+
+
 
 #### **hasScheduleCapacity(uint256 expirySecond, uint256 gasLimit)**
 
@@ -94,6 +105,7 @@ Following system contract conventions, HSS is callable at the reserved `0x16b` a
 * `expirySecond`: The epoch second to check for capacity.
 * `gasLimit`: The gas limit of the call to check for capacity.
 * Returns `true` if there is capacity, `false` otherwise.
+* For a reliable retry pattern, consider implementing a method similar to `findAvailableSecond()` as described in HIP-1215.
 
 ## Behavior and Costs
 
@@ -123,3 +135,8 @@ Gas fee schedule and calculation
 *   [HIP-1215: Generalized Scheduled Contract Calls](https://hips.hedera.com/hip/hip-1215)
 *   [HIP-756: Contract Scheduled Token Create](https://hips.hedera.com/hip/hip-756)
 *   [HIP-755: Schedule Service System Contract](https://hips.hedera.com/hip/hip-755)
+
+
+
+
+

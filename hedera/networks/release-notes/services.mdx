@@ -12,7 +12,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 </Info>
 
 <Check>
-  **TESTNET UPDATE: NOVEMBER 25, 2025**
+  **TESTNET UPDATE: DECEMBER 2, 2025**
 </Check>
 
 ## Release Highlights
@@ -41,8 +41,20 @@ Contracts can schedule calls to themselves or other contracts with a chosen expi
 
 For developers and operators, the main impact from release v0.68 is more reliable block/RPC synchronization on testnet; client APIs and semantics remain unchanged. Release v0.68 prepares the network for Dynamic Address Book node account ID changes and enables new methods of leveraging scheduled smart contract calls with the Hedera Schedule Service system contract.
 
-
 </Accordion>
+
+
+### [**Build 0.68.3**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.68.3)
+
+<Accordion title="What's Changed">
+  - chore: Backport 22211: Use the latest block when initializing which block to stream first by @timfn-hg in #22264
+  - chore: cherry-pick: Additional throttle accumulator tests by @derektriley in #22314
+  - chore: Align gas throttle w/ throughput throttle leaking by @tinker-michaelj in #22343
+  - chore(cherry-pick): switch hashgraph to hiero-ledger packages by @andrewb1269 in #22333
+  
+  **Full Changelog**: [v0.68.2...v0.68.3](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.68.2...v0.68.3)
+</Accordion>
+
 
 ### [**Build 0.68.2**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.68.2)
 

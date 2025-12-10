@@ -926,7 +926,7 @@ Reference: [HIP-906](https://hips.hedera.com/hip/hip-906), [HIP-632](https://hip
 
 ### **➡** [**Hedera Schedule Service**](/hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-schedule-service)
 
-The Hedera Schedule Service (HSS) system contract exposes functions that enable smart contracts to interact with Hedera's native schedule service.
+The Hedera Schedule Service (HSS) system contract exposes functions that enable smart contracts to interact with Hedera's native schedule service. It allows for scheduling native transactions (like token creation via [HIP-756](https://hips.hedera.com/hip/hip-756)) and, with the introduction of [**HIP-1215**](https://hips.hedera.com/hip/hip-1215), supports generalized scheduled contract calls, allowing smart contracts to schedule arbitrary calls to other contracts (or themselves) directly from within the EVM.
 
 | Contract Address | Source                                                                                                             |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------ |
@@ -980,6 +980,9 @@ interface IHederaScheduleService {
 }
 ```
 </Accordion>
+
+Reference: [HIP-1215](https://hips.hedera.com/hip/hip-1215), [HIP-756](https://hips.hedera.com/hip/hip-756), [HIP-755](https://hips.hedera.com/hip/hip-755).
+
 
 ### ➡ **Pseudo Random Number Generator (PRNG)**
 

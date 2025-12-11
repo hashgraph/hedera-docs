@@ -555,8 +555,9 @@
                   "hedera/open-source-solutions/stablecoin-studio/cli-management",
                   "hedera/open-source-solutions/github-com-hashgraph-hedera-accelerator-stablecoin-tree-main-sdk"
                 ]
+  
               },
-              "hedera/open-source-solutions/docs-hedera-com-guardian-guardian",
+              "hedera/open-source-solutions/hedera-guardian",
               "hedera/open-source-solutions/hedera-walletconnect"
             ]
           },

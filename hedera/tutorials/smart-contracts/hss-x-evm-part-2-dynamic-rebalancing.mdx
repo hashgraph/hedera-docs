@@ -1,3 +1,903 @@
 ---
 title: "HSS x EVM - Dynamic Rebalancing Through Scheduled Execution (Part 2)"
 ---
+
+In [Part 1](/hedera/tutorials/smart-contracts/hss-x-evm-part-1-schedule-smart-contract-calls), you learned how to schedule future smart contract calls using Hedera's Schedule Service. Now, let's build something more sophisticated: a **capacity-aware DeFi rebalancer** that automatically adjusts its scheduling strategy based on network conditions.
+
+**What makes this advanced?**
+
+Most blockchain automation requires off-chain infrastructure to periodically check and execute operations. Even with Hedera's Schedule Service, naively scheduling all operations at fixed intervals can create network congestion when many contracts compete for the same execution window.
+
+This tutorial demonstrates how to build **intelligent on-chain automation** that:
+
+- **Queries network capacity** before scheduling operations
+- **Uses exponential backoff with jitter** to find optimal execution times
+- **Self-sustains** by automatically rescheduling after each execution
+- **Gracefully handles** network congestion and capacity constraints
+
+<Info>
+  You can take a look at the **complete code** in the
+  [**hss-rebalancer-capacity-aware demo
+  repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hss-rebalancer-capacity-aware).
+</Info>
+
+---
+
+## What You'll Build
+
+A `RebalancerCapacityAware` contract that:
+
+1. **Starts a rebalancing loop** with configurable intervals
+2. **Checks network capacity** using `hasScheduleCapacity()` before scheduling
+3. **Applies intelligent retry logic** with exponential backoff and randomized jitter
+4. **Executes rebalances automatically** via scheduled transactions
+5. **Reschedules itself** after each execution, creating a self-sustaining loop
+6. **Can be stopped** by canceling pending scheduled transactions
+
+This pattern is perfect for:
+
+- DeFi vault rebalancing
+- Periodic token distributions
+- Automated treasury management
+- Time-based protocol operations
+
+---
+
+## Prerequisites
+
+- Completion of [Part 1: Schedule Smart Contract Calls](/hedera/tutorials/smart-contracts/hss-x-evm-part-1-schedule-smart-contract-calls)
+- ECDSA account from the [Hedera Portal](https://portal.hedera.com/)
+- Understanding of DeFi rebalancing concepts
+
+---
+
+## Table of Contents <a href="#table-of-contents" id="table-of-contents"></a>
+
+1. [Setup Project](#setup-project)
+2. [Step 1: Understanding the Architecture](#step-1%3A-understanding-the-architecture)
+3. [Step 2: Create the Rebalancer Contract](#step-2%3A-create-the-rebalancer-contract)
+4. [Step 3: Deploy the Contract](#step-3%3A-deploy-the-contract)
+5. [Step 4: Start Rebalancing](#step-4%3A-start-rebalancing)
+6. [Step 5: Monitor Rebalancing Operations](#step-5%3A-monitor-rebalancing-operations)
+7. [Step 6: Stop Rebalancing](#step-6%3A-stop-rebalancing)
+8. [Step 7: Run Tests (Optional)](#step-7%3A-run-tests-optional)
+9. [Conclusion](#conclusion)
+10. [Additional Resources](#additional-resources)
+
+---
+
+## Setup Project
+
+If you completed Part 1, you can use the same project. Otherwise, set up a new project:
+
+```bash
+mkdir hss-rebalancer-capacity-aware
+cd hss-rebalancer-capacity-aware
+npx hardhat --init
+```
+
+Select "**Hardhat 3 -> Typescript Hardhat Project using Mocha and Ethers.js**" and accept defaults.
+
+Configure environment variables:
+
+```bash
+npx hardhat keystore set HEDERA_RPC_URL
+# Enter:  https://testnet.hashio.io/api
+
+npx hardhat keystore set HEDERA_PRIVATE_KEY
+# Enter your HEX encoded private key
+```
+
+For `HEDERA_PRIVATE_KEY`, enter the **HEX Encoded Private Key for your ECDSA account** from the [Hedera Portal. ](https://portal.hedera.com/)
+
+We won't need any additional dependencies for this tutorial since we'll be interacting directly with the Schedule Service system contract.
+
+Now let's remove the default contracts and scripts that come with the Hardhat project:
+
+```bash
+rm -rf contracts/* scripts/* test/*
+rm -rf ignition
+```
+
+#### Install Dependencies
+
+Next, install the required dependencies:
+
+```bash
+npm install github:hashgraph/hedera-smart-contracts
+```
+
+Note that we are installing the latest code from the main branch when we install `github:hashgraph/hedera-smart-contracts`. This also gets installed at `@hashgraph/smart-contracts` so we can easily call these contracts from our own contract.
+
+Configure `hardhat.config.ts` (same as Part 1):
+
+```typescript hardhat.config.ts
+import type { HardhatUserConfig } from "hardhat/config";
+import hardhatToolboxMochaEthersPlugin from "@nomicfoundation/hardhat-toolbox-mocha-ethers";
+import { configVariable } from "hardhat/config";
+
+const config: HardhatUserConfig = {
+  plugins: [hardhatToolboxMochaEthersPlugin],
+  solidity: {
+    profiles: {
+      default: {
+        version: "0.8.31"
+      },
+      production: {
+        version: "0.8.31",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200
+          }
+        }
+      }
+    }
+  },
+  networks: {
+    testnet: {
+      type: "http",
+      url: configVariable("HEDERA_RPC_URL"),
+      accounts: [configVariable("HEDERA_PRIVATE_KEY")]
+    }
+  }
+};
+
+export default config;
+```
+
+---
+
+## Step 1: Understanding the Architecture
+
+Before diving into code, let's understand the key concepts that make this rebalancer capacity-aware.
+
+### The Capacity Problem
+
+When multiple contracts schedule transactions for the same future time:
+
+- Network capacity for that second may be exhausted
+- Subsequent scheduling attempts fail
+- Operations get delayed or fail entirely
+
+### The Solution: Capacity-Aware Scheduling
+
+Our rebalancer uses three key Hedera features:
+
+**1. hasScheduleCapacity(expirySecond, gasLimit)**
+
+- Queries if a specific future second can accept a scheduled transaction
+- Returns `true` if capacity is available, `false` otherwise
+- Allows contracts to "probe" future availability
+
+**2. Exponential Backoff with Jitter**
+
+- If desired time lacks capacity, try progressively later times: +1s, +2s, +4s, +8s...
+- Add random jitter to avoid "thundering herd" where all contracts retry at the same moment
+- Spreads load across multiple seconds
+
+**3. Hedera PRNG System Contract (0x169)**
+
+- Provides pseudorandom seeds for jitter calculation
+- Enables true on-chain randomness without external oracles
+- Each contract gets different jitter, naturally distributing load
+
+### How It Works Together
+
+```
+User calls:  startRebalancing(60) // 60-second intervals
+
+Contract:
+1. Calculates desired time: now + 60 seconds
+2. Checks:  hasScheduleCapacity(desiredTime, gasLimit)?
+   - YES → Schedule at desiredTime
+   - NO → Try exponential backoff with jitter:
+     * Try desiredTime + 1 + random(0-1)
+     * Try desiredTime + 2 + random(0-2)
+     * Try desiredTime + 4 + random(0-4)
+     * Try desiredTime + 8 + random(0-8)
+     * ...  until capacity found or max retries reached
+
+3. Schedule rebalance() at chosen time
+4. When rebalance() executes (automatically):
+   - Increment counter (or perform real DeFi operation)
+   - Calculate next desired time:  now + 60 seconds
+   - Repeat capacity-aware scheduling process
+
+Result: Self-sustaining loop that respects network capacity
+```
+
+<Info>
+**Why This Matters**
+
+On traditional EVM chains, you'd need:
+
+- Off-chain service to monitor network congestion
+- Manual intervention to adjust timing
+- External keeper network that understands capacity
+
+On Hedera, the **contract itself** is capacity-aware and self-adjusting!
+
+</Info>
+
+---
+
+## Step 2: Create the Rebalancer Contract
+
+Create `RebalancerCapacityAware.sol` in your `contracts` directory:
+
+```solidity contracts/RebalancerCapacityAware.sol
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.31;
+
+import {
+    HederaScheduleService
+} from "@hashgraph/smart-contracts/contracts/system-contracts/hedera-schedule-service/HederaScheduleService.sol";
+import {
+    HederaResponseCodes
+} from "@hashgraph/smart-contracts/contracts/system-contracts/HederaResponseCodes.sol";
+import {
+    PrngSystemContract
+} from "@hashgraph/smart-contracts/contracts/system-contracts/pseudo-random-number-generator/PrngSystemContract.sol";
+
+/// Capacity-aware on-chain rebalancer:
+/// - Uses hasScheduleCapacity to probe future network availability
+/// - Applies exponential backoff + jitter to find optimal scheduling windows
+/// - Self-sustains by rescheduling after each execution
+/// - Can be stopped by canceling pending schedules
+contract RebalancerCapacityAware is HederaScheduleService {
+    // Gas limit for each rebalance execution
+    uint256 internal constant REBALANCE_GAS_LIMIT = 2_000_000;
+
+    struct RebalanceConfig {
+        bool active; // Is the rebalancing loop active?
+        uint256 intervalSeconds; // Desired seconds between rebalances
+        uint256 lastRebalanceTime; // Timestamp of last execution
+        uint256 rebalanceCount; // Total number of rebalances executed
+        address lastScheduleAddress; // Address of the most recent scheduled transaction
+    }
+
+    RebalanceConfig public config;
+
+    event RebalancingStarted(uint256 intervalSeconds, uint256 firstScheduledAt);
+    event RebalanceScheduled(
+        uint256 chosenTime,
+        uint256 desiredTime,
+        address scheduleAddress
+    );
+    event RebalanceExecuted(uint256 timestamp, uint256 count);
+    event RebalancingStopped();
+
+    constructor() payable {}
+    receive() external payable {}
+
+    /// Start the capacity-aware rebalancing loop
+    function startRebalancing(uint256 intervalSeconds) external {
+        require(intervalSeconds > 0, "interval must be > 0");
+        require(!config.active, "already active");
+
+        config.active = true;
+        config.intervalSeconds = intervalSeconds;
+        config.lastRebalanceTime = block.timestamp;
+        config.rebalanceCount = 0;
+
+        uint256 desiredTime = block.timestamp + intervalSeconds;
+        uint256 scheduledAt = _scheduleNextRebalance(desiredTime);
+
+        emit RebalancingStarted(intervalSeconds, scheduledAt);
+    }
+
+    /// The function called by scheduled transactions
+    /// Increments counter and schedules the next rebalance
+    function rebalance() external {
+        require(config.active, "not active");
+
+        config.rebalanceCount += 1;
+        config.lastRebalanceTime = block.timestamp;
+
+        emit RebalanceExecuted(block.timestamp, config.rebalanceCount);
+
+        // Schedule next rebalance
+        uint256 desiredTime = block.timestamp + config.intervalSeconds;
+        _scheduleNextRebalance(desiredTime);
+    }
+
+    /// Stop the rebalancing loop and cancel pending schedule
+    function stopRebalancing() external {
+        if (config.lastScheduleAddress != address(0)) {
+            address scheduleAddress = config.lastScheduleAddress;
+
+            // Attempt to delete the scheduled transaction
+            deleteSchedule(scheduleAddress);
+            // Note: We don't revert if deletion fails - just best effort
+            config.lastScheduleAddress = address(0);
+        }
+
+        config.active = false;
+        emit RebalancingStopped();
+    }
+
+    /// Internal:  Schedule next rebalance using capacity-aware logic
+    function _scheduleNextRebalance(
+        uint256 desiredTime
+    ) internal returns (uint256 chosenTime) {
+        // Find a second that has capacity for our gas limit
+        chosenTime = _findAvailableSecond(
+            desiredTime,
+            REBALANCE_GAS_LIMIT,
+            8 // maxProbes
+        );
+
+        bytes memory callData = abi.encodeWithSelector(this.rebalance.selector);
+
+        (int64 rc, address scheduleAddress) = scheduleCall(
+            address(this),
+            chosenTime,
+            REBALANCE_GAS_LIMIT,
+            0,
+            callData
+        );
+        require(rc == HederaResponseCodes.SUCCESS, "scheduleCall failed");
+
+        config.lastScheduleAddress = scheduleAddress;
+
+        emit RebalanceScheduled(chosenTime, desiredTime, scheduleAddress);
+    }
+
+    /// Internal: Find an available second using exponential backoff + jitter
+    function _findAvailableSecond(
+        uint256 expiry,
+        uint256 gasLimit,
+        uint256 maxProbes
+    ) internal returns (uint256 second) {
+        // First, try the ideal time
+        if (hasScheduleCapacity(expiry, gasLimit)) {
+            return expiry;
+        }
+
+        // Get pseudorandom seed from Hedera PRNG
+        bytes32 seed = PrngSystemContract(address(0x169)).getPseudorandomSeed();
+
+        // Exponential backoff with jitter
+        for (uint256 i = 0; i < maxProbes; i++) {
+            uint256 baseDelay = 1 << i; // 1, 2, 4, 8, 16, 32, 64, 128
+
+            // Generate jitter from seed
+            bytes32 hash = keccak256(abi.encodePacked(seed, i));
+            uint16 randomValue = uint16(uint256(hash)); // Take low 16 bits
+            uint256 jitter = uint256(randomValue) % (baseDelay + 1);
+
+            uint256 candidate = expiry + baseDelay + jitter;
+
+            if (hasScheduleCapacity(candidate, gasLimit)) {
+                return candidate;
+            }
+        }
+
+        revert("No capacity after maxProbes");
+    }
+}
+```
+
+<Info>
+
+**How It Works**
+
+1. **startRebalancing()**: Initializes the loop and schedules the first rebalance using capacity-aware logic
+
+2. **\_findAvailableSecond()**: The core capacity-awareness algorithm:
+
+   - First checks if desired time has capacity
+   - If not, tries exponentially increasing delays: +1s, +2s, +4s, +8s...
+   - Adds random jitter (0 to baseDelay) to each attempt
+   - Uses Hedera's PRNG for true on-chain randomness
+
+3. **rebalance()**: Executed automatically by scheduled transactions:
+
+   - Increments counter (in real DeFi, would perform actual rebalancing)
+   - Schedules next execution using capacity-aware logic
+   - Creates self-sustaining loop
+
+4. **stopRebalancing()**: Cancels pending schedule and marks loop inactive
+
+5. **HBAR Requirement**: Contract must hold HBAR to pay for all scheduled executions
+
+</Info>
+
+Build the contract:
+
+```bash
+npx hardhat build
+```
+
+---
+
+## Step 3: Deploy the Contract
+
+Create `deploy. ts` in the `scripts` directory:
+
+```typescript scripts/deploy.ts
+import { network } from "hardhat";
+
+const { ethers } = await network.connect({ network: "testnet" });
+
+async function main() {
+  const [deployer] = await ethers.getSigners();
+  console.log("Deploying contract with account:", deployer.address);
+
+  const RebalancerCapacityAware = await ethers.getContractFactory(
+    "RebalancerCapacityAware",
+    deployer
+  );
+
+  // Fund with 10 HBAR for multiple rebalancing operations
+  const HBAR_TO_SEND = "10";
+  console.log(
+    `Deploying with ${HBAR_TO_SEND} HBAR for rebalancing operations... `
+  );
+
+  const contract = await RebalancerCapacityAware.deploy({
+    value: ethers.parseEther(HBAR_TO_SEND)
+  });
+  await contract.waitForDeployment();
+
+  const contractAddress = await contract.getAddress();
+  console.log("RebalancerCapacityAware deployed at:", contractAddress);
+
+  const balance = await ethers.provider.getBalance(contractAddress);
+  console.log("Contract HBAR balance:", ethers.formatEther(balance), "HBAR");
+
+  // Display initial config
+  const config = await contract.config();
+  console.log("\nInitial Config:");
+  console.log("  Active:", config.active);
+  console.log("  Rebalance Count:", config.rebalanceCount.toString());
+}
+
+main().catch(console.error);
+```
+
+Deploy:
+
+```bash
+npx hardhat run scripts/deploy.ts --network testnet
+```
+
+<Check>Copy the deployed contract address for the next steps. </Check>
+
+Expected output:
+
+```bash
+Deploying contract with account: 0xA98556A4deeB07f21f8a66093989078eF86faa30
+Deploying with 10 HBAR for rebalancing operations...
+RebalancerCapacityAware deployed at: 0x2d8E63dE36eD12670E65FCf501e4a084562CF6ea
+Contract HBAR balance: 10.0 HBAR
+
+Initial Config:
+  Active: false
+  Rebalance Count: 0
+```
+
+---
+
+## Step 4: Start Rebalancing
+
+Create `startRebalancing.ts` to initiate the rebalancing loop:
+
+```typescript scripts/startRebalancing.ts
+import { network } from "hardhat";
+
+const { ethers } = await network.connect({ network: "testnet" });
+
+async function main() {
+  const [signer] = await ethers.getSigners();
+  console.log("Using signer:", signer.address);
+
+  const contractAddress = "<your-contract-address>"; // Replace with your deployed address
+  const rebalancer = await ethers.getContractAt(
+    "RebalancerCapacityAware",
+    contractAddress,
+    signer
+  );
+
+  // Start rebalancing with 15-second intervals
+  const intervalSeconds = 15;
+  console.log(`\nStarting rebalancing with ${intervalSeconds}s intervals...`);
+
+  const tx = await rebalancer.startRebalancing(intervalSeconds);
+  const receipt = await tx.wait();
+  console.log("Transaction hash:", tx.hash);
+
+  // Parse RebalancingStarted event
+  const event = receipt?.logs.find(
+    (log: any) =>
+      rebalancer.interface.parseLog(log)?.name === "RebalancingStarted"
+  );
+
+  if (event) {
+    const parsed = rebalancer.interface.parseLog(event);
+    console.log("\n✅ Rebalancing Started!");
+    console.log(
+      "  Interval:",
+      parsed?.args.intervalSeconds.toString(),
+      "seconds"
+    );
+    console.log(
+      "  First scheduled at:",
+      new Date(Number(parsed?.args.firstScheduledAt) * 1000).toISOString()
+    );
+  }
+
+  // Display current config
+  const config = await rebalancer.config();
+  console.log("\nCurrent Config:");
+  console.log("  Active:", config.active);
+  console.log("  Interval:", config.intervalSeconds.toString(), "seconds");
+  console.log("  Rebalance Count:", config.rebalanceCount.toString());
+  console.log(
+    "  Last Schedule Address:",
+    config.lastScheduleAddress !== ethers.ZeroAddress
+      ? config.lastScheduleAddress
+      : "None"
+  );
+
+  console.log(
+    `\n📊 Monitor events at: https://hashscan.io/testnet/contract/${contractAddress}/events`
+  );
+  console.log(
+    `⏰ Rebalancing will execute automatically every ~${intervalSeconds} seconds`
+  );
+}
+
+main().catch(console.error);
+```
+
+Run the script:
+
+```bash
+npx hardhat run scripts/startRebalancing.ts --network testnet
+```
+
+Expected output:
+
+```bash
+Using signer: 0xA98556A4deeB07f21f8a66093989078eF86faa30
+
+Starting rebalancing with 15s intervals...
+Transaction hash: 0xe5954026dfa69f12f5cb9b33ca449f5d8705d61be97a40df553744e4c75acde7
+
+✅ Rebalancing Started!
+  Interval: 15 seconds
+  First scheduled at: 2025-12-12T18:30:00.000Z
+
+Current Config:
+  Active: true
+  Interval: 15 seconds
+  Rebalance Count: 0
+  Last Schedule Address: 0x0000000000000000000000000000000000718cFa
+
+📊 Monitor events at: https://hashscan.io/testnet/contract/0x2d8E63dE36eD12670E65FCf501e4a084562CF6ea/events
+⏰ Rebalancing will execute automatically every ~15 seconds
+```
+
+<Info>
+
+**What's Happening**
+
+1. `startRebalancing(15)` calculates desired time: `now + 15 seconds`
+2. Contract checks: `hasScheduleCapacity(desiredTime, 2_000_000)?`
+3. If capacity available → schedules at desired time
+4. If not → applies exponential backoff with jitter to find available slot
+5. Emits `RebalancingStarted` with actual scheduled time
+6. After ~15 seconds, network automatically executes `rebalance()`
+7. `rebalance()` schedules next execution → creates self-sustaining loop
+
+</Info>
+
+---
+
+## Step 5: Monitor Rebalancing Operations
+
+Create a monitoring script to observe the rebalancing loop:
+
+```typescript scripts/monitorRebalancing.ts
+import { network } from "hardhat";
+
+const { ethers } = await network.connect({ network: "testnet" });
+
+async function main() {
+  const contractAddress = "<your-contract-address>"; // Replace
+  const rebalancer = await ethers.getContractAt(
+    "RebalancerCapacityAware",
+    contractAddress
+  );
+
+  console.log("Monitoring Rebalancer:", contractAddress);
+  console.log("Press Ctrl+C to stop\n");
+
+  // Display current state
+  async function displayState() {
+    const config = await rebalancer.config();
+    const balance = await ethers.provider.getBalance(contractAddress);
+
+    console.log(`[${new Date().toISOString()}]`);
+    console.log("  Active:", config.active);
+    console.log("  Rebalance Count:", config.rebalanceCount.toString());
+    console.log(
+      "  Last Rebalance:",
+      config.lastRebalanceTime > 0
+        ? new Date(Number(config.lastRebalanceTime) * 1000).toISOString()
+        : "Never"
+    );
+    console.log("  Contract Balance:", ethers.formatEther(balance), "HBAR");
+    console.log("  Interval:", config.intervalSeconds.toString(), "seconds");
+    console.log("---");
+  }
+
+  // Initial display
+  await displayState();
+
+  // Poll every 5 seconds
+  setInterval(async () => {
+    await displayState();
+  }, 5000);
+}
+
+main().catch(console.error);
+```
+
+Run the monitoring script:
+
+```bash
+npx hardhat run scripts/monitorRebalancing.ts --network testnet
+```
+
+You'll see output like:
+
+```bash
+Monitoring Rebalancer: 0x2d8E63dE36eD12670E65FCf501e4a084562CF6ea
+Press Ctrl+C to stop
+
+[2025-12-12T18:31:13.406Z]
+  Active: true
+  Rebalance Count: 5
+  Last Rebalance: 2025-12-12T18:30:55.000Z
+  Contract Balance: 4.56 HBAR
+  Interval: 15 seconds
+---
+[2025-12-12T18:31:19.146Z]
+  Active: true
+  Rebalance Count: 6
+  Last Rebalance: 2025-12-12T18:31:09.000Z
+  Contract Balance: 3.472 HBAR
+  Interval: 15 seconds
+---
+---
+```
+
+### View Events on HashScan
+
+Navigate to your contract's events page to see:
+
+**RebalanceScheduled Events:**
+
+```
+RebalanceScheduled(
+  chosenTime: 1734087330,
+  desiredTime: 1734087330,
+  scheduleAddress: 0x000000000000000000000000000000000068d3ef
+)
+```
+
+- Shows when capacity-aware scheduling found an available slot
+- `chosenTime === desiredTime` means ideal time had capacity
+- `chosenTime > desiredTime` means backoff was needed
+
+**RebalanceExecuted Events:**
+
+```
+RebalanceExecuted(
+  timestamp: 1734087330,
+  count: 1
+)
+```
+
+- Confirms automatic execution by the network
+- Tracks total rebalance operations performed
+
+---
+
+## Step 6: Stop Rebalancing
+
+Create `stopRebalancing.ts` to halt the loop:
+
+```typescript scripts/stopRebalancing.ts
+import { network } from "hardhat";
+
+const { ethers } = await network.connect({ network: "testnet" });
+
+async function main() {
+  const [signer] = await ethers.getSigners();
+  console.log("Using signer:", signer.address);
+
+  const contractAddress = "<your-contract-address>"; // Replace
+  const rebalancer = await ethers.getContractAt(
+    "RebalancerCapacityAware",
+    contractAddress,
+    signer
+  );
+
+  // Check current state
+  const configBefore = await rebalancer.config();
+  console.log("\nBefore Stopping:");
+  console.log("  Active:", configBefore.active);
+  console.log("  Rebalance Count:", configBefore.rebalanceCount.toString());
+  console.log("  Pending Schedule:", configBefore.lastScheduleAddress);
+
+  // Stop rebalancing
+  console.log("\nStopping rebalancing...");
+  const tx = await rebalancer.stopRebalancing();
+  await tx.wait();
+  console.log("Transaction hash:", tx.hash);
+
+  // Check new state
+  const configAfter = await rebalancer.config();
+  console.log("\nAfter Stopping:");
+  console.log("  Active:", configAfter.active);
+  console.log("  Rebalance Count:", configAfter.rebalanceCount.toString());
+  console.log("  Pending Schedule:", configAfter.lastScheduleAddress);
+
+  console.log("\n✅ Rebalancing stopped!");
+  console.log(
+    "  Total rebalances executed:",
+    configAfter.rebalanceCount.toString()
+  );
+}
+
+main().catch(console.error);
+```
+
+Run:
+
+```bash
+npx hardhat run scripts/stopRebalancing.ts --network testnet
+```
+
+Expected output:
+
+```bash
+Using signer: 0xA98556A4deeB07f21f8a66093989078eF86faa30
+
+Before Stopping:
+  Active: true
+  Rebalance Count: 8
+  Pending Schedule: 0x0000000000000000000000000000000000718D0b
+
+Stopping rebalancing...
+Transaction hash: 0x563338fa5f32bc1e18aca8983af580342b4e659788cada53abf62bf730ffe5d8
+
+After Stopping:
+  Active: false
+  Rebalance Count: 8
+  Pending Schedule: 0x0000000000000000000000000000000000000000
+
+✅ Rebalancing stopped!
+  Total rebalances executed: 8
+```
+
+<Info>
+
+**What Happened**
+
+1. `stopRebalancing()` called `deleteSchedule(lastScheduleAddress)`
+2. Pending scheduled transaction was canceled (best effort)
+3. `config. active` set to `false`
+4. Even if a scheduled `rebalance()` executes, the `require(config.active)` check prevents further scheduling
+5. Loop is fully stopped
+
+</Info>
+
+---
+
+## Step 7: Run Tests (Optional)
+
+You can find both types of tests in the [**hedera-code-snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hss-rebalancer-capacity-aware). You will find the following files:
+
+- `contracts/RebalancerCapacityAware.t.sol`
+
+<Info>
+
+- **Initial state**: Verifies contract deploys with inactive configuration
+- **Start/stop logic**: Confirms only inactive rebalancers can be started and active ones can be stopped
+- **Configuration validation**: Ensures interval must be greater than zero
+- **HBAR handling**: Verifies contract can receive HBAR for funding scheduled operations
+- **State management**: Tests that rebalance count and timestamps are properly maintained
+
+</Info>
+
+- `test/RebalancerCapacityAware.ts`
+
+<Info>
+
+- **Deployment and funding**: Deploys with substantial HBAR balance and
+  validates initial state
+- **Start rebalancing**: Initiates the loop and verifies first schedule is created with capacity-aware logic
+- **Monitor executions**: Observes multiple automatic rebalance executions via scheduled transactions
+- **Capacity awareness**: Tests that the contract successfully finds available time slots even under network load
+- **Stop and restart**: Verifies the rebalancer can be stopped, canceling pending schedules, and restarted with new intervals
+- **Network integration**: All tests run against Hedera testnet as Schedule Service and PRNG precompiles are not available locally
+
+</Info>
+
+Run the tests:
+
+```bash
+# Solidity unit tests
+npx hardhat test solidity
+
+# TypeScript integration tests against testnet
+npx hardhat test mocha
+```
+
+You can also run both the solidity and mocha tests altogether:
+
+```bash
+npx hardhat test
+```
+
+Which should output something like:
+
+```bash
+
+```
+
+---
+
+## Conclusion
+
+You've built a sophisticated **capacity-aware DeFi rebalancer** that demonstrates advanced patterns with Hedera's Schedule Service!
+
+In this tutorial, you learned how to:
+
+- **Query network capacity** using `hasScheduleCapacity()`
+- **Implement exponential backoff** with randomized jitter
+- **Use Hedera's PRNG** for true on-chain randomness
+- **Build self-sustaining loops** that automatically reschedule
+- **Handle network congestion** gracefully
+- **Cancel scheduled operations** when needed
+
+### Key Takeaways
+
+- **Capacity-aware scheduling prevents network congestion**. Contracts cooperate with the network's throttling model
+- **Exponential backoff + jitter distributes load**. Avoids "thundering herd" where all contracts compete for the same slot
+- **True on-chain randomness via PRNG**. No external oracles needed for jitter calculation
+- **This level of network awareness doesn't exist on most EVM chains**. Hedera enables truly intelligent on-chain automation
+
+### Real-World Applications
+
+This pattern can be extended to:
+
+- **DeFi Vaults**: Automatic portfolio rebalancing based on price oracles
+- **Liquidity Management**: Periodic adjustment of AMM positions
+- **Treasury Operations**: Scheduled fund distributions or buybacks
+- **Yield Optimization**: Regular harvesting and compounding of rewards
+- **DAO Governance**: Time-delayed execution of approved proposals
+
+All without relying on off-chain infrastructure or keeper networks!
+
+---
+
+## Additional Resources
+
+- [HIP-755: Schedule Service System Contract](https://hips.hedera.com/hip/hip-755)
+- [HIP-1215: Generalized Scheduled Contract Calls](https://hips.hedera.com/hip/hip-1215)
+- [HIP-351: PRNG System Contract](https://hips.hedera.com/hip/hip-351)
+- [Full Contract and Demo Repository](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hss-rebalancer-capacity-aware)
+- [Part 1: Schedule Smart Contract Calls](/hedera/tutorials/smart-contracts/hss-x-evm-part-1-schedule-smart-contract-calls)
+
+<Columns cols={2}>
+  <Card title="Writer:  Kiran, Developer Advocate" arrow>
+    [GitHub](https://github.com/kpachhai) |
+    [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
+  </Card>
+</Columns>

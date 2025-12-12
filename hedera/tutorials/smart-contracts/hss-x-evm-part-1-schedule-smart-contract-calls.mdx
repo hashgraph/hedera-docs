@@ -1,0 +1,851 @@
+---
+title: "HSS x EVM - Schedule Smart Contract Calls (Part 1)"
+---
+
+On most EVM chains like Ethereum, smart contracts cannot "wake up" on their own—every function call must be triggered by an externally owned account (EOA) or an off-chain bot. This means implementing time-based automation (like cron jobs) requires external infrastructure.
+
+**Hedera changes this fundamentally.**
+
+With the **[Hedera Schedule Service (HSS) via HIP-755](https://hips.hedera.com/hip/hip-755)** and **[HIP-1215](https://hips.hedera.com/hip/hip-1215)**, smart contracts on Hedera can schedule future calls to themselves or other contracts. The Hedera network itself stores and executes these scheduled transactions when the time comes—**no off-chain bots required**.
+
+This unlocks powerful new patterns:
+
+- **On-chain cron jobs** for DeFi rebalancing and automation
+- **Time-based vesting** and token releases
+- **Recurring payments** and subscriptions
+- **DAO governance** with time-delayed execution
+
+In this tutorial, you'll build a simple **AlarmClock** contract that demonstrates this unique capability by scheduling one-shot and recurring alarms entirely on-chain.
+
+<Info>
+  You can take a look at the **complete code** in the [**hss-schedule-sc-calls
+  demo
+  repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hss-schedule-sc-calls).
+</Info>
+
+---
+
+## What Makes This Unique?
+
+### Traditional EVM Chains (Ethereum, most L2s)
+
+- Smart contracts **cannot schedule** themselves to be called later
+- Every contract execution requires an external trigger (EOA or bot)
+- Time-based automation needs:
+  - Off-chain infrastructure (cron jobs, keepers, bots)
+  - Trusted third parties or decentralized keeper networks
+  - Additional gas costs for the keeper service
+
+### Hedera with HIP-1215
+
+- Contracts can call the **Schedule Service system contract** (`0x16b`)
+- Schedule any contract call to execute at a future time
+- The **Hedera consensus layer** stores and executes scheduled transactions
+- **Fully on-chain** automation with no external dependencies
+
+This is enabled by two key Hedera Improvement Proposals (HIPs):
+
+- **[HIP-755](https://hips.hedera.com/hip/hip-755)** – Schedule Service System Contract  
+  Exposes the Hedera Schedule Service as an EVM-callable system contract at address `0x16b`
+
+- **[HIP-1215](https://hips.hedera.com/hip/hip-1215)** – Generalized Scheduled Contract Calls  
+  Allows contracts to schedule **any contract call** via the Schedule Service, including calls to themselves
+
+---
+
+## Prerequisites
+
+- ECDSA account from the [Hedera Portal](https://portal.hedera.com/).
+- Basic understanding of Solidity.
+- Some testnet HBAR (get from the [Hedera Portal](https://portal.hedera.com/)).
+
+---
+
+## Table of Contents <a href="#table-of-contents" id="table-of-contents"></a>
+
+1. [Setup Project](#setup-project)
+2. [Step 1: Configure Hardhat](#step-1%3A-configure-hardhat)
+3. [Step 2: Create the AlarmClock Smart Contract](#step-2%3A-create-the-alarmclock-smart-contract)
+4. [Step 3: Deploy the Contract](#step-3%3A-deploy-the-contract)
+5. [Step 4: Set a One-Shot Alarm](#step-4%3A-set-a-one-shot-alarm)
+6. [Step 5: Set a Recurring Alarm](#step-5%3A-set-a-recurring-alarm)
+7. [Step 6: Monitor Alarm Triggers](#step-6%3A-monitor-alarm-triggers)
+8. [Step 7: Run Tests (Optional)](#step-7%3A-run-tests-optional)
+9. [Conclusion](#conclusion)
+10. [Additional Resources](#additional-resources)
+
+---
+
+## Setup Project
+
+Set up your project by initializing the hardhat project.
+
+```bash
+mkdir hss-schedule-sc-calls
+cd hss-schedule-sc-calls
+npx hardhat --init
+```
+
+Make sure to select "**Hardhat 3 -> Typescript Hardhat Project using Mocha and Ethers.js**" and accept the default values. Hardhat will configure your project correctly and install the required dependencies.
+
+<Accordion title="🚧 What's new:  Hardhat 2 → 3 ">
+Key differences in Hardhat 3:
+
+- **compile → build**\
+  `npx hardhat compile` is now `npx hardhat build`. This is the big one. The v3 migration guide explicitly shows using the `build` task.
+- **project init switch**\
+  v2 commonly used `npx hardhat` or `npx hardhat init` to bootstrap. In v3 it's `npx hardhat --init`.
+
+* **keystore helper commands are new**\
+  v3's recommended flow includes a keystore plugin with commands like `npx hardhat keystore set HEDERA_RPC_URL` and `npx hardhat keystore set HEDERA_PRIVATE_KEY`. These weren't standard in v2.
+* **Foundry-compatible Solidity tests**\
+  In addition to offering Javascript/Typescript integration tests, Hardhat v3 also integrates Foundry-compatible Solidity tests that allows developers to write unit tests directly in Solidity
+
+- **Enhanced Network Management**\
+  v3 allows tasks to create and manage multiple network connections simultaneously which is a significant improvement over the single, fixed connection available in version 2. This provides greater flexibility for scripts and tests that interact with multiple networks.
+
+_📚 Learn more from the official_ [_Hardhat documentation_](https://hardhat.org/docs/getting-started)_._
+
+</Accordion>
+
+Before we make any changes to our Hardhat configuration file, let's set some configuration variables we will be referring to within the file later.
+
+```bash
+# If you have already set this before, please use the --force flag
+npx hardhat keystore set HEDERA_RPC_URL
+```
+
+For `HEDERA_RPC_URL`, we'll have `https://testnet.hashio.io/api`
+
+```bash
+# If you have already set this before, please use the --force flag
+npx hardhat keystore set HEDERA_PRIVATE_KEY
+```
+
+For `HEDERA_PRIVATE_KEY`, enter the **HEX Encoded Private Key for your ECDSA account** from the [Hedera Portal. ](https://portal.hedera.com/)
+
+We won't need any additional dependencies for this tutorial since we'll be interacting directly with the Schedule Service system contract.
+
+Now let's remove the default contracts and scripts that come with the Hardhat project:
+
+```bash
+rm -rf contracts/* scripts/* test/*
+rm -rf ignition
+```
+
+#### Install Dependencies
+
+Next, install the required dependencies:
+
+```bash
+npm install github:hashgraph/hedera-smart-contracts
+```
+
+Note that we are installing the latest code from the main branch when we install `github:hashgraph/hedera-smart-contracts`. This also gets installed at `@hashgraph/smart-contracts` so we can easily call these contracts from our own contract.
+
+---
+
+## Step 1: Configure Hardhat
+
+Update your `hardhat.config.ts`file in the root directory of your project. This file contains the network settings so Hardhat knows how to interact with the Hedera Testnet.
+
+```typescript hardhat.config.ts
+import type { HardhatUserConfig } from "hardhat/config";
+
+import hardhatToolboxMochaEthersPlugin from "@nomicfoundation/hardhat-toolbox-mocha-ethers";
+import { configVariable } from "hardhat/config";
+
+const config: HardhatUserConfig = {
+  plugins: [hardhatToolboxMochaEthersPlugin],
+  solidity: {
+    profiles: {
+      default: {
+        version: "0.8.31"
+      },
+      production: {
+        version: "0.8.31",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200
+          }
+        }
+      }
+    }
+  },
+  networks: {
+    testnet: {
+      type: "http",
+      url: configVariable("HEDERA_RPC_URL"),
+      accounts: [configVariable("HEDERA_PRIVATE_KEY")]
+    }
+  }
+};
+
+export default config;
+```
+
+---
+
+## Step 2: Create the AlarmClock Smart Contract
+
+Create a new Solidity file (`AlarmClockSimple.sol`) in your `contracts` directory:
+
+```solidity contracts/AlarmClockSimple. sol
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.31;
+
+import {
+    HederaScheduleService
+} from "@hashgraph/smart-contracts/contracts/system-contracts/hedera-schedule-service/HederaScheduleService.sol";
+import {
+    HederaResponseCodes
+} from "@hashgraph/smart-contracts/contracts/system-contracts/HederaResponseCodes.sol";
+
+/// Very simple "alarm clock" demo:
+/// - User calls setAlarm()
+/// - Contract schedules a call to triggerAlarm(alarmId) at roughly now + intervalSeconds
+/// - No off-chain bots required
+contract AlarmClockSimple is HederaScheduleService {
+    // Gas limit used for scheduled calls (must cover triggerAlarm + re-scheduling logic)
+    uint256 internal constant SCHEDULED_CALL_GAS_LIMIT = 2_000_000;
+
+    struct Alarm {
+        address user;
+        uint256 time; // when we expect it to fire
+        uint256 numTimesTriggered; // how many times this alarm has fired
+        bool recurring;
+        uint256 interval; // seconds between firings (for recurring alarms)
+    }
+
+    uint256 public nextAlarmId;
+    mapping(uint256 => Alarm) public alarms;
+
+    event AlarmScheduled(
+        address scheduleAddress,
+        uint256 alarmId,
+        uint256 time
+    );
+    event AlarmTriggered(
+        uint256 alarmId,
+        address user,
+        uint256 time,
+        uint256 numTimesTriggered
+    );
+
+    /// Funds will be used to pay the cost of executing the triggerAlarm function
+    /// and to schedule another timer in case of recurrent alarm.
+    constructor() payable {}
+    receive() external payable {}
+
+    /// User calls this to set a one-shot or recurring alarm.
+    /// For simplicity we choose time = block.timestamp + intervalSeconds.
+    function setAlarm(bool recurring, uint256 intervalSeconds) external {
+        require(intervalSeconds > 0, "interval must be > 0");
+
+        uint256 alarmId = nextAlarmId++;
+        uint256 alarmTime = block.timestamp + intervalSeconds;
+
+        alarms[alarmId] = Alarm({
+            user: msg.sender,
+            time: alarmTime,
+            numTimesTriggered: 0,
+            recurring: recurring,
+            interval: intervalSeconds
+        });
+
+        _scheduleAlarm(alarmId, alarmTime);
+    }
+
+    function _scheduleAlarm(uint256 alarmId, uint256 time) internal {
+        // Encode the future call:  triggerAlarm(alarmId)
+        bytes memory callData = abi.encodeWithSelector(
+            this.triggerAlarm.selector,
+            alarmId
+        );
+
+        // Ask HIP-1215 Schedule Service to schedule this call
+        (int64 rc, address scheduleAddress) = scheduleCall(
+            address(this),
+            time,
+            SCHEDULED_CALL_GAS_LIMIT,
+            0,
+            callData
+        );
+        require(rc == HederaResponseCodes.SUCCESS, "Schedule failed");
+
+        emit AlarmScheduled(scheduleAddress, alarmId, time);
+    }
+
+    /// This is called automatically by the network when the scheduled time arrives.
+    function triggerAlarm(uint256 alarmId) external {
+        Alarm storage alarm = alarms[alarmId];
+
+        // Only the alarm owner and this contract can trigger the alarm
+        require(
+            msg.sender == address(this) || msg.sender == alarm.user,
+            "Not authorized"
+        );
+
+        // One-shot alarm can only fire once
+        require(
+            alarm.recurring || alarm.numTimesTriggered == 0,
+            "Already triggered"
+        );
+
+        alarm.numTimesTriggered += 1;
+        emit AlarmTriggered(
+            alarmId,
+            alarm.user,
+            block.timestamp,
+            alarm.numTimesTriggered
+        );
+
+        // If recurring, reschedule for the next interval
+        if (alarm.recurring) {
+            alarm.time = alarm.time + alarm.interval;
+            _scheduleAlarm(alarmId, alarm.time);
+        }
+    }
+}
+```
+
+<Info>
+**How It Works**
+
+1. **Schedule Service System Contract (`0x16b`)**: The contract interacts with the Hedera Schedule Service at the fixed address `0x16b`, which provides the `scheduleCall` function.
+
+2. **setAlarm function**: When a user calls `setAlarm(recurring, intervalSeconds)`, the contract:
+
+   - Creates an `Alarm` struct in storage with the user's address and target time
+   - Calls `_scheduleAlarm` to schedule the future execution
+
+3. **\_scheduleAlarm (internal)**: This function:
+
+   - Encodes the call data for `triggerAlarm(alarmId)`
+   - Calls the Schedule Service at `0x16b` with `scheduleCall(... )`
+   - Specifies the target time (`expirySecond`), gas limit, and encoded call data
+   - Emits `AlarmScheduled` event
+
+4. **Scheduled Execution**: When the scheduled time arrives, the Hedera network automatically executes the scheduled transaction, calling `triggerAlarm(alarmId)` on the contract.
+
+5. **triggerAlarm function**: This is called by the network (or can be manually triggered):
+
+   - Increments the trigger counter
+   - Emits `AlarmTriggered` event
+   - For recurring alarms, schedules the next occurrence by calling `_scheduleAlarm` again
+
+6. **HBAR Requirement**: The contract must hold HBAR to pay for gas when scheduled transactions execute. Each execution (and re-scheduling for recurring alarms) deducts from the contract's balance.
+
+</Info>
+
+Let's build this contract by running:
+
+```bash
+npx hardhat build
+```
+
+This command will generate the smart contract artifacts, including the ABI. We are now ready to deploy the smart contract.
+
+---
+
+## Step 3: Deploy the Contract
+
+Create a deployment script (`deploy.ts`) in `scripts` directory:
+
+```typescript scripts/deploy.ts
+import { network } from "hardhat";
+
+const { ethers } = await network.connect({ network: "testnet" });
+
+async function main() {
+  const [deployer] = await ethers.getSigners();
+  console.log("Deploying contract with the account:", deployer.address);
+
+  // Deploy the AlarmClockSimple contract with initial HBAR funding
+  const AlarmClockSimple = await ethers.getContractFactory(
+    "AlarmClockSimple",
+    deployer
+  );
+
+  // Send 50 HBAR to the contract during deployment
+  // This HBAR will be used to pay for scheduled alarm executions
+  const HBAR_TO_SEND = "50";
+  console.log(
+    `Deploying with ${HBAR_TO_SEND} HBAR to fund scheduled executions... `
+  );
+
+  const contract = await AlarmClockSimple.deploy({
+    value: ethers.parseEther(HBAR_TO_SEND)
+  });
+  await contract.waitForDeployment();
+
+  const contractAddress = await contract.getAddress();
+  console.log("AlarmClockSimple contract deployed at:", contractAddress);
+
+  // Get the contract balance to verify funding
+  const balance = await ethers.provider.getBalance(contractAddress);
+  console.log("Contract HBAR balance:", ethers.formatEther(balance), "HBAR");
+}
+
+main().catch(console.error);
+```
+
+<Info>
+**Critical:  Why Does the Contract Need HBAR?**
+
+Every time a scheduled transaction executes (when the network automatically calls `triggerAlarm`), gas fees must be paid. Since the contract itself is the payer for these scheduled executions, it **must hold HBAR**.
+
+**For recurring alarms:**
+
+- Each `triggerAlarm` execution consumes gas
+- Each `triggerAlarm` then schedules the next alarm (more gas)
+- If the contract runs out of HBAR, scheduled executions will fail and recurring alarms will stop
+
+**Best practice:** Fund the contract with enough HBAR based on:
+
+- Your `SCHEDULED_CALL_GAS_LIMIT` (set to 2,000,000 in this example)
+- Expected number of alarm executions
+- For recurring alarms, estimate how long you want them to run
+
+You can always add more HBAR by sending a transaction to the contract address.
+
+</Info>
+
+Deploy your contract by executing the script:
+
+```bash
+npx hardhat run scripts/deploy.ts --network testnet
+```
+
+<Check>Copy the deployed address—you'll need this in subsequent steps. </Check>
+
+The output looks like this:
+
+```bash
+Deploying contract with the account: 0xA98556A4deeB07f21f8a66093989078eF86faa30
+Deploying with 5 HBAR to fund scheduled executions...
+AlarmClockSimple contract deployed at: 0x76CFE47809A84e62D633562c350e775e0dB7E1bF
+Contract HBAR balance: 5.0 HBAR
+```
+
+---
+
+## Step 4: Set a One-Shot Alarm
+
+Create a script (`setOneShot.ts`) in your `scripts` directory to set a one-shot alarm. Don't forget to replace the `<your-contract-address>` with the address you've just copied.
+
+```typescript scripts/setOneShot.ts
+import { network } from "hardhat";
+
+const { ethers } = await network.connect({ network: "testnet" });
+
+async function main() {
+  const [signer] = await ethers.getSigners();
+  console.log("Using signer:", signer.address);
+
+  const contractAddress = "0x76CFE47809A84e62D633562c350e775e0dB7E1bF"; // Replace with your deployed contract address
+  const alarmClockContract = await ethers.getContractAt(
+    "AlarmClockSimple",
+    contractAddress,
+    signer
+  );
+
+  // Set a one-shot alarm that fires in 10 seconds
+  const recurring = false;
+  const intervalSeconds = 10;
+
+  console.log(
+    `Setting one-shot alarm to fire in ${intervalSeconds} seconds... `
+  );
+  const tx = await alarmClockContract.setAlarm(recurring, intervalSeconds);
+  await tx.wait();
+  console.log("setAlarm tx hash:", tx.hash);
+
+  // Get the alarm ID (it's the nextAlarmId - 1 after our call)
+  const nextAlarmId = await alarmClockContract.nextAlarmId();
+  const alarmId = nextAlarmId - BigInt(1);
+  console.log("Alarm ID:", alarmId.toString());
+
+  // Retrieve alarm details
+  const alarm = await alarmClockContract.alarms(alarmId);
+  console.log("\nAlarm Details:");
+  console.log("  User:", alarm.user);
+  console.log(
+    "  Scheduled time:",
+    new Date(Number(alarm.time) * 1000).toISOString()
+  );
+  console.log("  Recurring:", alarm.recurring);
+  console.log("  Times triggered:", alarm.numTimesTriggered.toString());
+
+  console.log("\n✅ One-shot alarm scheduled!");
+  console.log(
+    `⏰ It will automatically trigger in ~${intervalSeconds} seconds`
+  );
+  console.log(
+    `📊 View events at: https://hashscan.io/testnet/contract/${contractAddress}/events`
+  );
+}
+
+main().catch(console.error);
+```
+
+<Info>
+**How It Works**
+
+1. Connects to your deployed `AlarmClockSimple` contract
+2. Calls `setAlarm(false, 10)` to schedule a one-shot alarm in 10 seconds
+3. The contract immediately schedules a transaction with the Schedule Service
+4. After ~10 seconds, the network will automatically execute `triggerAlarm(0)`
+5. You can view the `AlarmScheduled` and `AlarmTriggered` events on HashScan
+
+**Important:** The alarm will fire automatically—no further action needed from you!
+
+</Info>
+
+Run the script:
+
+```bash
+npx hardhat run scripts/setOneShot.ts --network testnet
+```
+
+Expected output:
+
+```bash
+Using signer: 0xA98556A4deeB07f21f8a66093989078eF86faa30
+Setting one-shot alarm to fire in 10 seconds...
+setAlarm tx hash: 0xa94ff67071db3f089dcb81199187c7a42245360658b4e3654a059363a270205e
+Alarm ID: 0
+
+Alarm Details:
+  User: 0xA98556A4deeB07f21f8a66093989078eF86faa30
+  Scheduled time: 2025-12-12T15:37:04.000Z
+  Recurring: false
+  Times triggered: 0
+
+✅ One-shot alarm scheduled!
+⏰ It will automatically trigger in ~10 seconds
+📊 View events at: https://hashscan.io/testnet/contract/0x76CFE47809A84e62D633562c350e775e0dB7E1bF/events
+```
+
+---
+
+## Step 5: Set a Recurring Alarm
+
+Create a script (`setRecurring.ts`) in your `scripts` directory to set a recurring alarm. Replace `<your-contract-address>` with your contract address.
+
+```typescript scripts/setRecurring.ts
+import { network } from "hardhat";
+
+const { ethers } = await network.connect({ network: "testnet" });
+
+async function main() {
+  const [signer] = await ethers.getSigners();
+  console.log("Using signer:", signer.address);
+
+  const contractAddress = "0x76CFE47809A84e62D633562c350e775e0dB7E1bF"; // Replace with your deployed contract address
+  const alarmClockContract = await ethers.getContractAt(
+    "AlarmClockSimple",
+    contractAddress,
+    signer
+  );
+
+  // Set a recurring alarm that fires every 10 seconds
+  const recurring = true;
+  const intervalSeconds = 10;
+
+  console.log(
+    `Setting recurring alarm to fire every ${intervalSeconds} seconds...`
+  );
+  const tx = await alarmClockContract.setAlarm(recurring, intervalSeconds);
+  await tx.wait();
+  console.log("setAlarm tx hash:", tx.hash);
+
+  // Get the alarm ID
+  const nextAlarmId = await alarmClockContract.nextAlarmId();
+  const alarmId = nextAlarmId - BigInt(1);
+  console.log("Alarm ID:", alarmId.toString());
+
+  // Retrieve alarm details
+  const alarm = await alarmClockContract.alarms(alarmId);
+  console.log("\nAlarm Details:");
+  console.log("  User:", alarm.user);
+  console.log(
+    "  Scheduled time:",
+    new Date(Number(alarm.time) * 1000).toISOString()
+  );
+  console.log("  Recurring:", alarm.recurring);
+  console.log("  Interval:", alarm.interval.toString(), "seconds");
+  console.log("  Times triggered:", alarm.numTimesTriggered.toString());
+
+  // Check contract balance
+  const balance = await ethers.provider.getBalance(contractAddress);
+  console.log("\nContract HBAR balance:", ethers.formatEther(balance), "HBAR");
+
+  console.log("\n✅ Recurring alarm scheduled!");
+  console.log(
+    `⏰ It will trigger every ${intervalSeconds} seconds automatically`
+  );
+  console.log(
+    `⚠️  Make sure the contract has enough HBAR to pay for scheduled executions`
+  );
+  console.log(
+    `📊 View events at: https://hashscan.io/testnet/contract/${contractAddress}/events`
+  );
+}
+
+main().catch(console.error);
+```
+
+<Info>
+**How Recurring Alarms Work**
+
+1. You call `setAlarm(true, 10)` to set a recurring alarm with a 10-second interval
+2. The contract schedules the first `triggerAlarm` call for 10 seconds from now
+3. When the scheduled time arrives, the network executes `triggerAlarm`:
+   - Increments the trigger counter
+   - Emits `AlarmTriggered` event
+   - **Automatically schedules the next alarm** for 10 seconds later
+4. This creates a self-sustaining on-chain timer!
+
+**The alarm will keep firing indefinitely until:**
+
+- The contract runs out of HBAR (scheduled execution fails)
+- You modify the contract logic to stop it
+- A scheduling error occurs
+
+This is perfect for:
+
+- DeFi rebalancing strategies
+- Periodic token distributions
+- Recurring payment systems
+- Time-based governance actions
+
+</Info>
+
+Run the script:
+
+```bash
+npx hardhat run scripts/setRecurring.ts --network testnet
+```
+
+Expected output:
+
+```bash
+Using signer: 0xA98556A4deeB07f21f8a66093989078eF86faa30
+Setting recurring alarm to fire every 10 seconds...
+setAlarm tx hash: 0x25b4a292f4e6dde1e760ba57b34631bbdfe0cfbb3b46a211430ac9c967a272a5
+Alarm ID: 1
+
+Alarm Details:
+  User: 0xA98556A4deeB07f21f8a66093989078eF86faa30
+  Scheduled time: 2025-12-12T15:41:59.000Z
+  Recurring: true
+  Interval: 10 seconds
+  Times triggered: 0
+
+Contract HBAR balance: 3.944 HBAR
+
+✅ Recurring alarm scheduled!
+⏰ It will trigger every 10 seconds automatically
+⚠️  Make sure the contract has enough HBAR to pay for scheduled executions
+📊 View events at: https://hashscan.io/testnet/contract/0x76CFE47809A84e62D633562c350e775e0dB7E1bF/events
+```
+
+---
+
+## Step 6: Monitor Alarm Triggers
+
+After setting your alarms, you can monitor their execution on HashScan, Hedera's block explorer.
+
+### Viewing Events
+
+Navigate to your contract's events page:
+
+```
+https://hashscan.io/testnet/contract/<your-contract-address>/events
+```
+
+You'll see two types of events:
+
+**1. AlarmScheduled Event**
+
+```
+AlarmScheduled(
+  scheduleAddress: 0x...,
+  alarmId: 0,
+  time: 1705315800
+)
+```
+
+This event is emitted when an alarm is scheduled. For recurring alarms, you'll see this event multiple times—once for each scheduled occurrence.
+
+**2. AlarmTriggered Event**
+
+```
+AlarmTriggered(
+  alarmId: 0,
+  user: 0xA98556A4deeB07f21f8a66093989078eF86faa30,
+  time: 1705315800,
+  numTimesTriggered: 1
+)
+```
+
+This event is emitted when the scheduled time arrives and the alarm fires.
+
+### Viewing Scheduled Transactions
+
+You can also view the actual scheduled transaction executions on HashScan:
+
+**Example Flow:**
+
+1. **setAlarm transaction**: [View on HashScan](https://hashscan.io/testnet/transaction/1765553815.902461007)
+
+   - This is when you call `setAlarm()`
+   - Emits `AlarmScheduled` event
+
+2. **Scheduled triggerAlarm execution**: [View on HashScan](https://hashscan.io/testnet/transaction/1765553824.054298515)
+   - This is the **automatic execution** by the network
+   - Notice the transaction was triggered by the schedule service, not by an EOA
+   - Emits `AlarmTriggered` event
+
+<Info>
+**Understanding the Transaction Flow**
+
+When you look at the scheduled transaction on HashScan on the [trace tab](https://hashscan.io/testnet/transaction/1765553824.054298515/trace), you will notice:
+
+- The "From" address will be the contract itself (or show as scheduled execution)
+- The "To" address is the contract address
+- The "Function" called is `triggerAlarm(alarmId)`
+- You'll see the gas consumed by the execution
+- **No external account** initiated this call—it was executed by the network's Schedule Service
+
+This is the key difference from traditional EVM chains!
+
+</Info>
+
+---
+
+## Step 7: Run Tests (Optional)
+
+You can find both types of tests in the [**hedera-code-snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hss-schedule-sc-calls). You will find the following files:
+
+- `contracts/AlarmClockSimple.t.sol`
+
+<Info>
+
+- **Initial state**: Verifies contract deploys with `nextAlarmId` starting at 0.
+- **Alarm creation**: Confirms `setAlarm` properly creates alarm structs with correct user, time, and interval values.
+- **Authorization**: Ensures only the alarm owner or the contract itself can trigger alarms (non-owners are rejected).
+- **One-shot enforcement**: Validates that one-shot alarms can only be triggered once and revert on subsequent attempts.
+- **HBAR handling**: Verifies the contract can receive HBAR via `receive()` function for funding scheduled executions.
+
+</Info>
+
+- `test/AlarmClockSimple.ts`
+
+<Info>
+
+- **Deployment and setup**: Deploys the contract with 10 HBAR funding, creates
+  a separate funded user wallet, and validates initial state.
+- **One-shot alarms**: Sets a one-shot alarm, verifies the `AlarmScheduled` event is emitted, and confirms alarm details are correctly stored.
+- **Recurring alarms**: Sets a recurring alarm and validates it's configured with the recurring flag and proper interval.
+- **Manual triggering**: Tests that users can manually trigger their own alarms and verifies the `AlarmTriggered` event is emitted with correct data.
+- **Authorization checks**: Ensures non-owners cannot trigger someone else's alarm and that one-shot alarms cannot be triggered twice.
+- **Network integration**: All tests run against Hedera testnet as the Schedule Service precompile (`0x16b`) is not available locally.
+
+</Info>
+
+Copy these files and then run the tests:
+
+```bash
+# This will run the Solidity unit tests via Foundry
+npx hardhat test solidity
+# This will run the TypeScript integration tests via Hedera testnet
+# (precompiles are not available on hardhat locally and we must use the testnet)
+npx hardhat test mocha
+```
+
+You can also run both the solidity and mocha tests altogether:
+
+```bash
+npx hardhat test
+```
+
+Which should output something like:
+
+```bash
+Running Solidity tests
+
+  contracts/AlarmClockSimple.t.sol:AlarmClockSimpleTest
+    ✔ test_TriggerAlarmDirectly()
+    ✔ test_RevertWhen_TriggeringOneShotAlarmTwice()
+    ✔ test_RevertWhen_NonOwnerTriggersAlarm()
+    ✔ test_RevertWhen_IntervalIsZero()
+    ✔ test_RecurringAlarmCanTriggerMultipleTimes()
+    ✔ test_ReceiveHBAR()
+    ✔ test_InitialState()
+    ✔ test_ContractCanTriggerAlarm()
+    ✔ test_AlarmDataStructure()
+
+Running Mocha tests
+
+  AlarmClockSimple
+Deployer: 0xA98556A4deeB07f21f8a66093989078eF86faa30
+User: 0x84b6F7e5fCD1AC75EbDFc3a24c47ea3f6915746e
+Contract deployed at: 0xa2Ba0662d646FC337576dFc80058BA3946ab726b
+    ✔ should deploy with correct initial state (188ms)
+    ✔ should set a one-shot alarm (6759ms)
+    ✔ should set a recurring alarm (7424ms)
+    ✔ should manually trigger an alarm (13441ms)
+    ✔ should not allow non-owner to trigger someone else's alarm (7394ms)
+    ✔ should not allow triggering a one-shot alarm twice (15553ms)
+
+  6 passing (60s)
+```
+
+---
+
+## Conclusion
+
+You've just built an on-chain alarm clock that demonstrates **Hedera Schedule Service's unique capability**—scheduling future smart contract calls without any off-chain infrastructure!
+
+In this tutorial, you learned how to:
+
+- **Interact with the Schedule Service** system contract
+- **Schedule one-shot alarms** that fire once at a future time
+- **Create recurring alarms** that automatically reschedule themselves
+- **Monitor scheduled executions** on HashScan
+- **Understand the HBAR requirements** for scheduled transactions
+
+### Key Takeaways
+
+- **Hedera's Schedule Service enables truly autonomous smart contracts**. No off-chain bots or keeper networks required
+- **Contracts must hold HBAR** to pay for scheduled execution gas fees
+- **Recurring patterns create self-sustaining on-chain automation**. Perfect for DeFi, vesting, payments, and governance
+- **This capability doesn't exist on most EVM chains**. It's a fundamental difference in what's possible on Hedera
+
+Continue exploring the tutorial about dynamic rebalancing through scheduled execution to see a real-world application of this technology—building a capacity-aware DeFi rebalancer that automatically adjusts its strategy based on network conditions.
+
+<Card
+  title="HSS x EVM - Dynamic Rebalancing Through Scheduled Execution (Part 2)"
+  href="/hedera/tutorials/smart-contracts/hss-x-evm-part-2-dynamic-rebalancing"
+/>
+
+---
+
+## Additional Resources
+
+Check out the resources below to learn more about Hedera's Schedule Service and HIP-1215!
+
+- [HIP-755: Schedule Service System Contract](https://hips.hedera.com/hip/hip-755)
+- [HIP-1215: Generalized Scheduled Contract Calls](https://hips.hedera.com/hip/hip-1215)
+- [Full Contract and Demo Repository](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hss-schedule-sc-calls)
+- [Hedera Schedule Service Documentation](https://docs.hedera.com/hedera/core-concepts/scheduled-transaction)
+
+<Columns cols={2}>
+  <Card title="Writer:  Kiran, Developer Advocate" arrow>
+    [GitHub](https://github.com/kpachhai) |
+    [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
+  </Card>
+</Columns>

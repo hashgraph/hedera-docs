@@ -848,7 +848,40 @@ npx hardhat test
 Which should output something like:
 
 ```bash
+Running Solidity tests
 
+  contracts/RebalancerCapacityAware.t.sol:RebalancerCapacityAwareTest
+    ✔ test_StopRebalancing()
+    ✔ test_RevertWhen_RebalanceNotActive()
+    ✔ test_RevertWhen_IntervalIsZero()
+    ✔ test_RevertWhen_AlreadyActive()
+    ✔ test_ReceiveHBAR()
+    ✔ test_MultipleStartStopCycles()
+    ✔ test_ManualRebalanceIncrementsCount()
+    ✔ test_InitialState()
+    ✔ test_ConfigUpdatesAfterStart()
+    ✔ test_ConfigPersistsAcrossRebalances()
+
+Running Mocha tests
+
+  RebalancerCapacityAware
+Deployer: 0xe3c0743e01bE37c42B2ee57BD1aA30c9c266c0Ae
+User: 0xDBfb6265396E82c6Af1E547401C4CB81468cf435
+Contract deployed at: 0x9034d960dcae5714cA9829825F7bbe20b89EC00e
+    ✔ should deploy with correct initial state (305ms)
+    ✔ should start rebalancing with capacity-aware scheduling (7131ms)
+    ✔ should wait for first rebalance execution (13196ms)
+    ✔ should wait for multiple rebalance executions (13903ms)
+    ✔ should stop rebalancing and cancel pending schedule (7706ms)
+    ✔ should be able to restart rebalancing with new interval (17535ms)
+    ✔ should reject zero interval (627ms)
+    ✔ should reject starting when already active (16700ms)
+
+
+  8 passing (1m)
+
+
+10 passing (10 solidity)
 ```
 
 ---

@@ -7,6 +7,25 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Latest Releases
 
+
+## [v0.145.1](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.145.1)
+
+[HIP-1261](https://hips.hedera.com/hip/hip-1261) Simple Fees saw a new REST API added to support estimating network fees. The new POST `/api/v1/network/fees` REST API takes as input a serialized [Transaction](https://github.com/hiero-ledger/hiero-consensus-node/blob/main/hapi/hedera-protobuf-java-api/src/main/proto/services/transaction.proto) protobuf object in the request body with either `application/protobuf` or `application/x-protobuf` `Content-Type` header and produces a break down of estimated network fees. Not that this API is currently not implemented and just returns dummy data so it should not be used in production. Interested parties can use it to start integrating early so that they're ready for when we integrate the upstream fee estimation library in a future release.
+
+The `/api/v1/network/supply` REST API has now been converted to Java. The JavaScript implementation will continue to be the default for a few releases as we work to stabilize and optimize the new implementation. Similarly, the `/api/v1/network/fees` endpoint was converted to Java and enabled by default in prior releases and is now considered stable. As such, this release removes the legacy JavaScript implementation of the network fees.
+
+As forecasted in the [blog](https://hedera.com/blog/hip-1217-important-updates-to-the-hedera-api-v1-contracts-call-endpoint) for [HIP-1217](https://hips.hedera.com/hip/hip-1217), the modularized `/api/v1/contracts/call` is now rolled out to all environments. The workaround for allowing calls to long-zero EVM address for accounts that have an ECDSA alias has been disabled in all environments as well. In this release, we make it the default behavior to reject long-zero EVM addresses for accounts with an alias and soon we will be removing the option entirely. Note that the option to reject accounts without sufficient payer balance was not enabled on 12/1 as per the blog. Based upon customer feedback, we will not enable this feature globally and instead enhanced the logic to only conditionally validate payer balance if `from` is populated and either `gasPrice` or `value` are populated. This behavior is more aligned with how other EVM chains validate payer balances. Finally, we've begun the process of deleting the legacy monolithic code base with it targeted for complete removal by the next release.
+
+[HIP-1056](https://hips.hedera.com/hip/hip-1056) Block Streams saw the remaining block stream protobuf changes from consensus node [v0.69](/hedera/networks/release-notes/services/#release-v0-69) addressed. Additionally, the block root hash calculation was updated to use the latest algorithm ensuring support for newer block nodes.
+
+### Breaking Changes
+As noted above, the `/api/v1/network/fees` JavaScript implementation is now removed in favor of the newer Java-based implementation. Operators should ensure their routing logic is updated so that requests to `/api/v1/network/fees` are directed to the rest-java process instead of the rest process. If operators use our docker compose or Helm chart this routing change is handled automatically.
+
+We now set the `hiero.mirror.web3.evm.allowLongZeroAddresses` property to `false` by default as described in the overview. In a future release, the undocumented property will be removed entirely.
+
+The alpha `getFeeEstimate` gRPC API was removed in favor of the equivalent `POST` `/api/v1/network/fees` REST API. This gRPC API only returned stub data and would not have been used by any one in production.
+
+
 ## [v0.144.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.144.0)
 
 This release implements a new REST API to support [HIP-1195](https://hips.hedera.com/hip/hip-1195) Hooks. The newly added `/api/v1/accounts/{id}/hooks/{hookId}/storage` returns the storage state for a hook. This endpoint is similar to the `/api/v1/contracts/{id}/state` REST API but for hook storage instead of contract storage. With this change, the hook implementation on mirror node is complete outside some acceptance test coverage still being worked on. Below is an example response:

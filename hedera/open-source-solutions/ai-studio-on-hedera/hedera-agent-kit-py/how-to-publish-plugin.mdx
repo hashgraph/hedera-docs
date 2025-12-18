@@ -1,0 +1,172 @@
+---
+title: "How To: Publish & Register Your Plugin (Python)"
+description: "Instructions for creating, publishing, and registering your Python Hedera Agent Kit Plugin"
+---
+
+## Publish and Register Your Plugin
+
+To create a plugin for the Python Hedera Agent Kit, you will need to create a plugin in your own repository, publish a PyPI package, and provide a description of the functionality included.
+
+Once you have a repository, published PyPI package, and documentation, you can add it to the Hedera Agent Kit by:
+
+1. Include the plugin in the [README.md](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/README.md) under the **Third Party Plugins** section
+2. Include the same information in [docs/PLUGINS.md](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/PLUGINS.md)
+
+Feel free to [reach out to the Hedera Agent Kit maintainers on Discord](https://hedera.com/discord) so we can test your plugin and promote it through our channels.
+
+---
+
+## Plugin Interface
+
+Every plugin must implement the Plugin interface:
+
+```python
+from typing import Callable, List, Optional
+from hedera_agent_kit.shared.types import Tool, Context
+
+class Plugin:
+    name: str
+    version: Optional[str]
+    description: Optional[str]
+    tools: Callable[[Context], List[Tool]]
+```
+
+---
+
+## Creating a Plugin
+
+### Step 1: Create Plugin Structure
+
+```
+my_custom_plugin/
+├── __init__.py           # Plugin exports
+├── plugin.py             # Plugin definition
+└── tools/
+    └── my_tool.py        # Individual tool implementation
+```
+
+### Step 2: Implement Your Tool
+
+```python
+# tools/my_tool.py
+from pydantic import BaseModel, Field
+from hedera_agent_kit.shared.types import Tool, Context
+
+class MyToolParams(BaseModel):
+    required_param: str = Field(..., description="Description of required parameter")
+    optional_param: str = Field(None, description="Description of optional parameter")
+
+def my_tool_prompt(context: Context = None) -> str:
+    return """
+    This tool performs a specific operation.
+    
+    Parameters:
+    - required_param (string, required): Description
+    - optional_param (string, optional): Description
+    """
+
+async def my_tool_execute(client, context: Context, params: MyToolParams):
+    try:
+        # Your implementation here
+        result = await some_hedera_operation(params)
+        return result
+    except Exception as e:
+        return str(e)
+
+MY_TOOL = "my_tool"
+
+def tool(context: Context) -> Tool:
+    return Tool(
+        method=MY_TOOL,
+        name="My Custom Tool",
+        description=my_tool_prompt(context),
+        parameters=MyToolParams,
+        execute=my_tool_execute,
+    )
+```
+
+### Step 3: Create Plugin Definition
+
+```python
+# plugin.py
+from hedera_agent_kit.shared.types import Plugin, Context
+from .tools.my_tool import tool as my_tool, MY_TOOL
+
+my_custom_plugin = Plugin(
+    name="my-custom-plugin",
+    version="1.0.0",
+    description="A plugin for custom functionality",
+    tools=lambda context: [my_tool(context)],
+)
+
+my_custom_plugin_tool_names = {
+    "MY_TOOL": MY_TOOL,
+}
+```
+
+---
+
+## Using Your Plugin
+
+```python
+from hedera_agent_kit.langchain.toolkit import HederaLangchainToolkit
+from hedera_agent_kit.shared.configuration import Configuration, Context, AgentMode
+from my_custom_plugin import my_custom_plugin
+
+configuration = Configuration(
+    tools=[],
+    plugins=[
+        my_custom_plugin,
+    ],
+    context=Context(
+        mode=AgentMode.AUTONOMOUS,
+        account_id=str(operator_id),
+    ),
+)
+
+hedera_toolkit = HederaLangchainToolkit(
+    client=client,
+    configuration=configuration,
+)
+
+tools = hedera_toolkit.get_tools()
+```
+
+---
+
+## Plugin README Template
+
+```markdown
+## Plugin Name
+
+This plugin was built by <?> for the <project>. It enables <who?> to <do what?>
+
+### Installation
+
+'''bash
+pip install <plugin-name>
+'''
+
+### Usage
+
+'''python
+from my_plugin import my_custom_plugin
+
+configuration = Configuration(
+    plugins=[my_custom_plugin],
+    context=Context(mode=AgentMode.AUTONOMOUS),
+)
+'''
+
+
+| Tool Name | Description | Usage |
+|-----------|-------------|-------|
+| `MY_TOOL` | What it does | How to use with parameters |
+```
+
+---
+
+## Resources
+
+- **GitHub**: https://github.com/hashgraph/hedera-agent-kit-py
+- **Discord**: https://hedera.com/discord

@@ -12,9 +12,30 @@ Additionally, the HSS includes expiration handling, where scheduled transactions
 
 The `IHederaScheduleService` interface, introduced in [HIP-755](https://hips.hedera.com/hip/hip-755), allows accounts to interact with the schedule transaction service via smart contracts. With the introduction of [**HIP-1215**](https://hips.hedera.com/hip/hip-1215), the HSS now supports generalized scheduled contract calls, allowing smart contracts to schedule arbitrary calls to other contracts (or themselves) directly from within the EVM. This powerful feature enables a wide range of decentralized automation use cases, such as:
 
+
+<div className="flex flex-col justify-center items-center w-full mt-4 mb-8 not-prose">
+  <a
+    href="https://hips.hedera.com/hip/hip-1215"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="no-underline text-center cursor-pointer group w-full"
+  >
+    <img
+      src="/images/core-concepts/smart-contracts/system-smart-contracts/hedera-schedule-service-hip-1215-hss.png"
+      alt="Hedera AI Studio"
+      className="rounded-lg shadow-sm w-full h-auto mb-[5px]"
+      noZoom
+    />
+    <p className="text-gray-1000 dark:text-gray-500 text-base font-semibold mt-2 mb-0 text-center underline decoration-[#8853FF] decoration-1 underline-offset-[6px] transition-colors duration-200 group-hover:text-[#8853FF]">
+      HIP-1215: Generalized Scheduled Contract Calls
+    </p>
+  </a>
+</div>
+
 *   **DeFi Automation**: Automatically rebalancing a portfolio or harvesting yield farming rewards.
 *   **Vesting Schedules**: Creating token vesting contracts that automatically release tokens at specified intervals.
 *   **DAO Operations**: Scheduling recurring governance tasks, such as distributing rewards or executing proposals.
+
 
 Following system contract conventions, HSS is callable at the reserved `0x16b` address and exposes the following functions callable within smart contracts.
 

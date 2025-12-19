@@ -1118,6 +1118,15 @@
               "hedera/support-and-community/brand-guidelines",
               "hedera/support-and-community/status-hedera-com"
             ]
+          },
+          {
+            "group": "FAQs",
+            "pages": [
+              "hedera/faqs/getting-started",
+              "hedera/faqs/network-governance",
+              "hedera/faqs/hbar",
+              "hedera/faqs/community"
+            ]
           }
         ]
       }

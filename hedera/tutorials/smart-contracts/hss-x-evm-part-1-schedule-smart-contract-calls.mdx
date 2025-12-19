@@ -391,7 +391,7 @@ async function main() {
 main().catch(console.error);
 ```
 
-<Info>
+<Note>
 **Critical:  Why Does the Contract Need HBAR?**
 
 Every time a scheduled transaction executes (when the network automatically calls `triggerAlarm`), gas fees must be paid. Since the contract itself is the payer for these scheduled executions, it **must hold HBAR**.
@@ -410,7 +410,7 @@ Every time a scheduled transaction executes (when the network automatically call
 
 You can always add more HBAR by sending a transaction to the contract address.
 
-</Info>
+</Note>
 
 Deploy your contract by executing the script:
 

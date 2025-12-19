@@ -1,0 +1,285 @@
+---
+title: "Network Governance"
+---
+
+<AccordionGroup>
+  <Accordion title="Is Hedera censorship resistant?">
+    The Hedera cryptocurrency service is completely censorship resistant. The Hedera network is governed by the Hedera Council, and it is not possible for the Council nor anyone else to restrict account creation, delete accounts, freeze or otherwise prevent cryptocurrency transactions, reverse or alter cryptocurrency transactions, or amend a user’s files or smart contracts.  The only ability the Council has to modify the network state is to delete hosted files, which includes hosted smart contracts. The Council retains this ability for the sole purpose of removing unambiguously illegal content from the network (more specifically, the nodes).  We remind people that Hedera is a public network and unencrypted files stored on a public network are visible to all, and that users and developers are solely responsible for their activities that utilize the Hedera network. It is also important to distinguish content or specific files from activities, the latter of which Hedera has no ability to censor in any way. 
+  </Accordion>
+
+<Accordion title="Will the mainnet (beta) continue to have scheduled maintenance?">
+    The status of the Hedera mainnet and testnets are publicly available at https://status.hedera.com/
+
+    During the mainnet beta period, it is expected that the network will experience very brief periods of scheduled downtime for maintenance.
+
+    Anticipated maintenance activities include adding additional nodes to the network and updating the core software running on mainnet (beta) nodes. The network's consensus state will remain unchanged in the case of any downtime or network failures, and any transactions sent to the network during periods of downtime will be rejected.
+  </Accordion>
+
+  <Accordion title="Is the mainnet throttled?">
+    To ensure the availability of Hedera's services to all participants, API calls for all previewnet, testnet, and mainnet network services are throttled.
+
+    You can find the latest information about network throttles for the mainnet and testnets in the documentation: [mainnet throttled](https://docs.hedera.com/hedera/networks/mainnet#main-network-throttles), [testnet throttle](https://docs.hedera.com/hedera/networks/testnet#test-network-throttles).
+  </Accordion>
+
+  <Accordion title="Who can run a Hedera mainnet node?">
+    Initially, only Council members will run network nodes. The plan is to expand the ability to host nodes over time, starting with other trusted organizations and, eventually, anyone who can meet basic requirements for bandwidth, CPU, and storage. We expect to eventually have a huge diversity of nodes around the world, run by ordinary people, some of whom might choose to remain anonymous.
+
+    You can learn more about Hedera's path to decentralization by watching this webinar with hashgraph inventor, Dr. Leemon Baird: https://www.youtube.com/watch?v=QTNNYeSks-s
+  </Accordion>
+
+  <Accordion title="How are nodes incentivized to participate in the Hedera network?">
+    A distributed network needs to incentivize nodes to contribute computing resources to validate transactions and maintain the shared ledger. Like most DLT platforms, Hedera will reward nodes by paying them in the platform's native cryptocurrency. When node reward payments are implemented, it is expected that, every 24 hours, a Hedera account will automatically distribute HBAR as node reward payments to all the nodes that participated in validating transactions during that period. Node reward payments will eventually be distributed to nodes in proportion to the amount of HBAR staked by a node or proxy-staked to it. To be eligible for payment, a node must have been online and participating in consensus for that previous 24-hour period.
+  </Accordion>
+
+  <Accordion title="How does someone stand up a mirror node?">
+    The Hedera mirror node source code can be found [here](https://github.com/hiero-ledger/hiero-mirror-node) and documentation can be found [here](https://docs.hedera.com/hedera/core-concepts/mirror-nodes).
+  </Accordion>
+
+  <Accordion title="How can I contribute to the OSS Hedera network services?">
+    We welcome members of the Hedera developer community to review and contribute to the network services codebase, which has moved from Hedera to the Hiero codebase under the `hiero-ledger` GitHub organization.
+    
+    If you find a non-sensitive bug or issue in any of the network services code, open a new issue or submit a pull request in the relevant hiero-ledger repository. Keep pull requests tight in scope and include a clear, detailed description of what you changed and why. For contribution rules and expectations, see the contributing guide in the repos or projects repositories in the [`hiero-ledger` organization](https://github.com/hiero-ledger/).
+    
+    If you have found a highly sensitive vulnerability, report it through Hedera’s bug bounty program on [Immunefi](https://immunefi.com/bug-bounty/hedera/information/). Additional details about the bounty program are available [here](https://hedera.com/bounty). Please do not disclose security issues publicly before they are reviewed and remediated.
+    
+    If you have a new feature request, the [Hedera Improvement Proposal (HIP)](https://github.com/hiero-ledger/hiero-improvement-proposals) program remains the recommended path. Submit your proposal through the HIP process so it can be reviewed and tracked. The engineering team may not be able to respond to every request, but the goal is to continue improving how community contributions are handled over time.
+  </Accordion>
+
+  <Accordion title="What is the OSS license for Hedera network services?">
+    Hedera's network services are released under the `Apache License version 2.0`. The network services codebase can be found in the official [GitHub repo](https://github.com/hiero-ledger/hiero-consensus-node).
+  </Accordion>
+
+  <Accordion title="Will Hedera add additional services to the platform?">
+    Although the current network is fully functional, Hedera expects to add additional features and services in the future. Technology development is subject to uncertainties. Timeframes are subject to change and none of the improvements, enhancements or tools are guaranteed to be added as planned.
+
+    The platform continues to evolve with planned developments including additional wallet integrations, state proofs, mirror node improvements, reconfiguration capabilities, and expanded node hosting eligibility. Eventually, Hedera intends to allow anyone to run a node and implement HBAR staking and proxy-staking mechanisms.
+
+    For more information on Hedera's path to further decentralization, see the webinar available at: https://www.youtube.com/watch?v=QTNNYeSks-s&feature=youtu.be
+  </Accordion>
+
+  <Accordion title="What is a Hedera Improvement Proposal (HIP)?">
+    In pursuit of fostering a strong developer community, Hedera will make available the ability for any developer to [submit improvement proposals](https://github.com/hiero-ledger/hiero-improvement-proposals?tab=readme-ov-file#submit-a-hip) starting at v1.0 of the Hedera mainnet.
+
+    Improvement proposals can range from core protocol changes, to the applications, frameworks, and protocols built on top of the Hedera public network and used by the community. The HIP author is responsible for building consensus within the community and documenting dissenting opinions, as well as tracking their HIP through a defined process.
+
+    You can learn more about Hedera improvement proposals [here](https://github.com/hiero-ledger/hiero-improvement-proposals?tab=readme-ov-file#what-is-a-hip).
+  </Accordion>
+
+  <Accordion title="Where can I find the status of Hedera's mainnet and testnet?">
+    The status of Hedera's mainnet and testnet is publicly available at https://status.hedera.com/
+  </Accordion>
+
+  <Accordion title="When was the genesis of the Hedera DLT, and what historical records are kept?">
+    The genesis of the Hedera ledger was when it launched on August 24, 2018. At that time, all of the HBAR were created, the nodes started running, and it was able to start processing transactions from authorized people. Since then, the mainnet has been running continuously, and a growing number of people have used it, including those in the two test programs, and a growing number of dapp developers.
+
+    The Hedera ledger works by having all the nodes store the current state, such as account balances. When a transaction modifies that state, such as for a cryptocurrency transfer, then all the nodes process the transaction by updating the balances, and can then discard the transaction. Each state update is signed by a supermajority of the nodes (more than two thirds of the stake). So the state evolves securely over time, without having to store a block chain of its history.
+
+    Mirror nodes are free to keep a history, if desired. The mirror nodes have been running off and on over the last year, and have kept a partial history. After a certain point, each Hedera node refrains from deleting any old transactions or records until they have been transferred to the mirror nodes. This ensures that mirror nodes can keep a continuous history, without gaps, if they desire to do so.
+  </Accordion>
+
+  <Accordion title="Where can I find the full fee schedule & estimator?">
+    A fee schedule overview and fee estimator can be found here: https://www.hedera.com/fees
+  </Accordion>
+
+  <Accordion title="What fees does Hedera charge to use the network?">
+    Hedera charges fees for network services based on the type of transaction and resource usage. Detailed fee information can be found at https://www.hedera.com/fees
+  </Accordion>
+
+  <Accordion title="Why do users need to pay for network services and why must they do so in HBAR?">
+    All public DLT platforms need computers to serve as nodes in the decentralized network. These nodes serve two purposes: (i) they maintain a shared ledger of the balances in each network user’s account, and (ii) they verify and execute new transactions and place those transactions into chronological order, so that user account balances are updated on an ongoing basis. Each node must provide computing power to run the platform’s consensus algorithm and process transactions.
+
+    To incentivize nodes to participate and to cover basic operational costs — as computing power is not free — DLT platforms typically compensate nodes with payments, often in the platform’s native cryptocurrency. On the Hedera network, HBAR are used as a “fuel” to pay for network services (i.e., to submit transactions, run smart contracts, and store files) and to reward nodes for providing their computing resources (bandwidth, processing power, memory) to the network. The fees per transaction are very low, requiring the ability to make micropayments in a form – an HBAR – that is divisible to less than a penny.  For example, transactions using the cryptocurrency service or Hedera Consensus Service are expected to cost approximately US$0.0001.
+
+    The economics of a transaction on the Hedera network have been designed to balance the costs and incentives to create an efficient flow of funds. This flow consists of (i) transaction fees paid by end users (or third-party applications as or on behalf of end users) into a Hedera account and (ii) reward payments paid out of a Hedera account as (a) node reward payments to node hosts and (b) eventually, proxy-staking payments to HBAR owners who proxy-stake their HBAR to nodes (though proxy-staking payments are expected to be de minimis). Node reward payments and proxy-staking payments are not yet being made.
+  </Accordion>
+
+  <Accordion title="How are Hedera transaction fees calculated?">
+    The determination of fees reflect the burden a particular transaction places on the network – particularly the amount of bandwidth, CPU/GPU, RAM, and hard drive storage that a transaction or query consumes. The greater the consumption, the greater the fee. Additionally, because the above resources vary in their scarcity, transactions that use proportionally more of a scarce resource will pay proportionally more. .
+  </Accordion>
+
+  <Accordion title="What do Hedera fees reflect?">
+    The determination of fees reflect the burden a particular transaction places on the network – particularly the amount of bandwidth, CPU/GPU, RAM, and hard drive storage that a transaction or query consumes. The greater the consumption, the greater the fee. Additionally, because the above resources vary in their scarcity, transactions that use proportionally more of a scarce resource will pay proportionally more.
+  </Accordion>
+
+  <Accordion title="How are Hedera transaction fees broken out?">
+     Users of Hedera pay fees for transactions submitted to the network. Transaction fees are broken out into three parts:
+
+    * **Node Fee**: A fee that compensates the node that first processes a transaction (submitting it to the rest of the network) or query for the costs associated with that processing.
+
+    * **Network Fee**: A fee that compensates the network for the costs associated with calculating consensus for a transaction.
+
+    * **Service Fee**: A fee that compensates the network for the costs associated with providing the ongoing service associated with a transaction.  
+  </Accordion>
+
+  <Accordion title="What are the material financial terms of the license agreement between Hedera and Swirlds?">
+    The license agreement between Hedera and Swirlds includes specific financial terms related to the use of the hashgraph consensus algorithm and related technology. Details are available in Hedera's public disclosures.
+  </Accordion>
+
+  <Accordion title="How much bandwidth overhead does gossip about gossip add to messages?">
+    The hashgraph algorithm requires that nodes add two hashes, a timestamp, and the node's signature to the fundamental payload of business transactions within an event. The hashes are 48 bytes in size, the timestamp 12 bytes, the signature 384 bytes so the total overhead for each event is approximately 500 bytes. The payload transactions vary in size - a simple transfer of HBAR is 150 bytes.
+
+    The number of transactions within an event will determine the relative contribution of the overhead. As an example, for 15 nodes, a throughput of 10,000 HBAR tps with each node creating 10 events per second, the overhead is approximately 0.5%.
+
+    The hashgraph is something you get almost for free, by adding a small amount of overhead to the fundamental payload of business transactions within the gossip messages. If there are no transactions at all for a few seconds, then the entire network goes quiet, and stops creating new events.
+  </Accordion>
+
+<Accordion title="Approximately how much would it cost to store all txs history without a mirror network? Is it realistically affordable for a startup?">
+    We expect that, at Hedera's high throughput, the transaction history will grow to multiple terabytes fairly quickly, so the viability of storing that full history will depend on a company's storage capabilities, resources, and the type of storage.
+  </Accordion>
+
+  <Accordion title="Do nodes need to know the total number of nodes running the network at any one time?">
+    Hashgraph nodes must be able to calculate the influence of other nodes during the virtual voting process and calculation of the median timestamp of transactions. In a permissioned deployment of hashgraph, that influence will depend on the total number of nodes, and so nodes will need to know that value. Of course, in a permissioned deployment, this is not an issue as new nodes will join only after a provisioning process - part of which would be updating the network on the new member and so larger network size. On the other hand, in Hedera's stake-weighted deployment of hashgraph, a node's influence is determined by the node's stake as a fraction of the total stake (which is the total number of HBAR) and not the number of nodes. The first number in this calculation is readily available from the ledger, the second is the constant 50b. Consequently, in Hedera, the number of nodes is irrelevant to the consensus calculation.
+  </Accordion>
+
+  <Accordion title="Is Hedera post-quantum secure?">
+    The hashgraph consensus algorithm itself is post-quantum secure, as long as you use a post-quantum signature. We have designed our system to make it straight-forward to plug in a post-quantum signature scheme some time after the current NIST contest selects one or more. Hedera closely monitors progress in post-quantum cryptography and remains prepared to adapt as the landscape evolves. While quantum computers capable of posing a real threat are still years away, the network is built to respond quickly if that changes.
+    
+    To dive deeper into Hedera’s approach to post-quantum security, read the following blog posts:
+
+    * [Post Quantum Crypto](https://hedera.com/blog/post-quantum-crypto)
+
+    * [Are Ed25519 Keys Quantum-Resistant? Exploring the Future of Cryptography?](https://hedera.com/blog/are-ed25519-keys-quantum-resistant-exploring-the-future-of-cryptography)
+
+  </Accordion>
+
+
+  <Accordion title="What services does Hedera offer to developers?">
+    Hedera offers developers the ability to utilize the following services: [Hedera Token Service](https://hedera.com/token-service), [Hedera Smart Contract](https://hedera.com/smart-contract), and [Hedera Consensus Service](https://hedera.com/consensus-service).
+
+    Get started at the [Hedera Docs](https://docs.hedera.com/)
+  </Accordion>
+
+  <Accordion title="Which programming languages are available for developers to build on the Hedera network?">
+    Hedera supports smart contracts written in the Solidity™ language. Existing EVM-compatible smart contracts can be deployed and run on Hedera without modification. Hedera continues to focus on EVM compatibility rather than introducing alternative smart contract languages.
+
+    In addition to smart contracts, developers can build applications that run on servers, desktops, or mobile devices and interact with Hedera network services through the Hedera APIs. These applications use the [Consensus Node Code SDKs](https://docs.hedera.com/hedera/sdks-and-apis/sdks#consensus-node-code-sdks), which are officially supported in multiple languages, including JavaScript, Java, Go, Swift, Python, Rust, and C++.
+  </Accordion>
+
+  <Accordion title="Is the the Hedera network and cryptocurrency able to fork?">
+    No, as the only public network implementation of the Hashgraph consensus algorithm, Hedera will not fork.
+  </Accordion>
+
+  <Accordion title="Do I pay a licensing fee to run my application on the Hedera network?">
+    No license is required to run your application on the Hedera network, or write software that uses Hedera network services. Applications built upon the Hedera network are owned by their developers and can be open source or proprietary; they do not require any license or approval from Hedera.
+  </Accordion>
+
+  <Accordion title="How are the transfers and fees associated with a transaction published?">
+    After processing a transaction into consensus, the Hedera network nodes report the results of that transaction in a 'record'. That record can be retrieved either directly by a query of a mainnet node or via a mirror node.
+
+    Amongst other information, a transaction record lists:
+    - The total transaction fee paid
+    - A list of the net balance changes for any account impacted by the transaction - including the Hedera account 0.0.98 and node accounts receiving transaction fees
+
+    Note that if the transaction fails due to insufficient balance in the paying account, then the transaction fee will report what the total fee would have been. All transfers in a transaction record sum to zero.
+  </Accordion>
+
+  <Accordion title="How does the exchange rate impact transaction fees?">
+    Nodes calculate the fee for a transaction in USD but convert that value to HBAR using the current exchange rate before deducting that amount from the account paying for the transaction. Consequently, the fee in HBAR for the same transaction may vary from hour to hour, even as the fee in USD stays stable. If the client stipulates a max transaction fee for their transactions, a transaction may fail with an INSUFFICIENT_TX_FEE error if that stipulated max value is less than the value calculated by the nodes using the current exchange rate. Clients can protect themselves against this HBAR fee volatility by stipulating a sufficiently high max transaction fee (as they will only be charged the actual fee, not the max they stipulate) for transactions.
+
+    This applies to the payment transactions for queries as well.
+  </Accordion>
+
+  <Accordion title="What does a COST_ANSWER query return?">
+    Queries have an associated payment transaction that will compensate the particular node that processes and responds to the query. The value of this payment transaction will go from the client sending the query to the node in question. To determine an appropriate value for this payment, a client can first send a version of the query but stipulate it desires not the actual response, but rather just the cost for that query. This type of `COST_ANSWER` query is free to the client.
+
+    The client can take the returned `COST_ANSWER` value and insert it as the value of the payment transaction for a real query.This payment transaction will also have an associated transaction fee - distinct from the value of the payment itself. The net cost to the client for a query is then the sum of the payment value (which goes from client to the node) and the transaction fee for the payment transaction (which goes from client to the node & network).
+
+    Clients should be aware that the full value of a payment transaction for a query will be processed - there is no protection against overpayment as there is for transactions.
+  </Accordion>
+
+  <Accordion title="Are there any free operations?">
+    All transactions, which impact all nodes, have an associated transaction fee as one level of protection against Denial of Service attacks. The size of these fees will depend on the specifics of the transaction and the corresponding burden it places on the network.
+
+    There are three queries (which impact only a single node) that are currently free:
+
+      1. Asking for a receipt for a transaction.
+  
+      2. Asking a node how much a particular query would cost, if actually sent.
+  
+      3. Asking for the balance of an account.
+  </Accordion>
+
+  <Accordion title="How is Solidity gas accounted for in determining the fee for a smart contract operation?">
+    Solidity gas is converted to Hedera transaction fees based on the current fee schedule. The gas consumed by smart contract execution is calculated and then converted to HBAR using the network's fee structure. Refer to the Smart Contracts [Gas and Fees documentation](https://docs.hedera.com/hedera/core-concepts/smart-contracts/gas-and-fees) for more details. 
+  </Accordion>
+
+  <Accordion title="Deprecated - Who pays for threshold records?">
+    This FAQ has been deprecated and is no longer applicable to current Hedera network operations.
+  </Accordion>
+
+  <Accordion title="How many accounts are associated with an HBAR transfer?">
+    A single HBAR transfer transaction can have multiple sending accounts from which HBAR are being moved, multiple receiving accounts into which HBAR are being moved, and an account that pays the fee associated with the transaction. The total of the amounts being moved from the sending accounts must equal the total of the amounts being moved into the receiving accounts. In the simplest case, there is a single sender, a single receiver, and one of them will pay the transaction fee. 
+  </Accordion>
+
+  <Accordion title="How is the fee for a query paid?">
+    A query is processed by a single node and not forwarded to the rest of the network (like a transaction) for processing into consensus state. To compensate that particular node for the costs of processing a query, the query contains an embedded payment transaction. The node processing the query submits that embedded payment transaction to the network in order to receive its node fee.
+
+    Note that the client will pay the full amount that they stipulate for this payment transaction - there is no protection against overpayment as for transactions. Before sending a a query with a payment transaction, clients can first ask a node for the approriate value of this payment - and so guard against overpayment.
+  </Accordion>
+
+  <Accordion title="Why are transaction receipts free to request? But transaction records not?">
+    When a transaction is processed into consensus, nodes automatically create both a receipt and a record for the transaction and store both for 3 minutes. Clients can query for either receiptor record to obtain confirmation that the transaction successfully reached consensus. As receipts are small and persisted for a short period of time, their impact on the network is not overly burdensome. Consequently, Hedera decided to price a query for a receipt for a transaction as free. Records carry more information than receipts and, depending on what triggers their creation, may be persisted for a longer period of time than 3 minutes. Consequently, there is a small cost to the client that queries for the record for a transaction.
+  </Accordion>
+
+  <Accordion title="Why does a query have no network or service fee component?">
+    A query is processed by only a single node, that which the client chose to send the query to.
+
+    Other nodes do no work in responding to the query. Consequently, a query has only a node fee component and no network or service fee component.
+  </Accordion>
+
+  <Accordion title="Why do transactions from a multi-signature account cost more?">
+    Fees for all transactions reflect the burden placed on the network for their processing into consensus and subsequent servicing. Multi-signature transactions, such as one spending hbars from a 2 of 3 crypto account, will require greater processing of those signatures and so is priced accordingly. The number of signatures on a transaction is one of the most significant factors in the determination of the fee for that transaction.
+  </Accordion>
+
+<Accordion title="Do transaction fees account for 'rent'?">
+    **No**. Hedera smart contracts are not currently subject to recurring rent charges. While the network architecture includes provisions for auto-renewal and storage fees, **the enforcement mechanisms for recurring rent and automatic entity deletion are presently disabled for smart contracts**.
+    
+    **Current behavior**:
+    The transaction fee paid during contract creation includes storage costs for an initial period, determined by the `auto_renew_period` (typically 30–90 days). Although contracts are assigned an `expirationTime`, the system does not currently charge renewal fees or remove contracts upon expiration. Consequently, deployed smart contracts remain on the ledger indefinitely without additional charges or risk of deletion due to non-payment.
+    This behavior may evolve as Hedera implements its long-term strategy for sustainable storage management.
+
+    [Learn more about smart contract rent →](https://docs.hedera.com/hedera/core-concepts/smart-contracts/smart-contract-rent)
+  </Accordion>
+
+  <Accordion title="What happens if the account paying for the storage of some object in state runs out of HBAR?">
+    Hedera supports a storage rent and auto-renew model for state objects such as accounts, files, and smart contracts. However, **storage rent is not currently enforced** on the network.
+
+    As a result, if the account designated to pay for the storage of an object runs out of HBAR:
+
+    * The object is not automatically removed from state
+    * The object does not become unusable
+    * No HBAR is charged, and no storage is reclaimed due to insufficient funds
+
+    The network is designed so that, if storage rent enforcement is enabled in the future, objects without sufficient funding could eventually expire and be removed from state. Until then, running out of HBAR does not trigger automatic deletion of stored objects.
+  </Accordion>
+
+  <Accordion title="How does auto renewal for accounts work?">
+    When an account is created, an expiration time is set along with an auto-renew period. The account creation transaction funds the account with an initial balance and pays the account creation fee. No HBAR is prepaid specifically for future auto-renewal.
+
+    Although Hedera supports account auto-renewal and rent-based expiration, account **rent fees are not currently enforced**. As a result, when an account reaches its expiration time:
+
+    * The account is not charged HBAR to renew.
+    * The account balance is not consumed to extend the expiration.
+    * The account does not become unusable or deleted due to unpaid rent.
+
+    The network is designed so that, if account rent enforcement is enabled in the future, renewal fees would be charged to the account’s balance or to a designated auto-renew account, and accounts without sufficient balance could eventually expire and be deleted. 
+    
+    [Learn more about auto-renewal →](https://docs.hedera.com/hedera/core-concepts/smart-contracts/smart-contract-rent#contract-auto-renewal).
+  </Accordion>
+
+  <Accordion title="If a client provides more HBAR in a transaction fee than required, do they get a 'refund'?">
+    Yes, if a client stipulates a transaction fee that is higher than the fee calculated by nodes that reflects the specifics of the transaction , they will be charged only the lower calculated fee. Technically, it is not a ‘refund’ as they are never charged the higher fee. if the stipulated transaction fee is less than the calculated fee, the transaction will fail.
+  </Accordion>
+
+  <Accordion title="How often does pricing for transactions and queries change?">
+    Hedera council reviews pricing at every council meeting (once every three months), and approves all changes to the prices. The exchange rate that nodes use to determine the corresponding fees in hbars is updated frequently (currently every hour) .
+  </Accordion>
+
+  <Accordion title="Are Hedera transactions fees set in FIAT (USD) or HBAR?">
+    Hedera transaction and query fees are denominated in USD and paid in HBAR. The network regularly updates the USD-to-HBAR exchange rate based on current market rates, subject to a defined minimum exchange rate.
+
+    This model is designed to keep fees predictable in USD terms, even though the amount paid in HBAR may vary over time. By using a minimum exchange rate, the network limits how much the HBAR-denominated fee can increase during periods of significant price volatility.
+
+    While this structure provides USD fee stability, transactions and queries can still fail if the paying account does not have sufficient HBAR at the time of execution.
+  </Accordion>
+</AccordionGroup>

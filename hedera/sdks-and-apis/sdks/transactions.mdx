@@ -7,7 +7,7 @@ sidebarTitle: "Overview"
 Transactions are requests submitted by a client to a node in the Hedera network. Every transaction has a fee that will be paid for processing the transaction. The following table lists the transaction type requests for each service.
 
 <Info>
-Transactions have a 6,144-byte size limit. This includes the signatures on the transaction. The estimated single signature size is about 80-100 bytes.
+Transactions have a 6,144-byte size limit, which includes all attached signatures. A single signature is ~80–100 bytes, depending on the key type and encoding. Privileged Hedera accounts, such as 0.0.2 and 0.0.50, set as the transaction fee payer are permitted to submit transactions up to 130 KB in size.
 </Info>
 
 <Info>

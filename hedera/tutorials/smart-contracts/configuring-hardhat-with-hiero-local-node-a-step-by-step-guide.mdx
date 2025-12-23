@@ -329,15 +329,20 @@ Contract deployed at: 0xB3e022eBC7D5C5B1f4ca50b3D4A55173b34ceD49
 
 ---
 
-## Step 5: Deploy on Testnet
 
-If you would like to instead deploy and interact with testnet hedera network rather than a local hedera network, all you need to do is the following:
+{false && (
+  <>
+  ## Step 5: Deploy on Testnet
 
-```bash
-npx hardhat keystore set HEDERA_RPC_URL --force # Set this to "https://testnet.hashio.io/api"
-npx hardhat keystore set HEDERA_PRIVATE_KEY --force # Set this to your private key. Eg. 0xd434asdfa...
-npx hardhat run scripts/deploy.ts
-```
+  If you would like to instead deploy and interact with testnet hedera network rather than a local hedera network, all you need to do is the following:
+
+  ```bash
+  npx hardhat keystore set HEDERA_RPC_URL --force # Set this to "https://testnet.hashio.io/api"
+  npx hardhat keystore set HEDERA_PRIVATE_KEY --force # Set this to your private key. Eg. 0xd434asdfa...
+  npx hardhat run scripts/deploy.ts
+  ```
+  </>
+)}
 
 ## Further Learning & Next Steps
 

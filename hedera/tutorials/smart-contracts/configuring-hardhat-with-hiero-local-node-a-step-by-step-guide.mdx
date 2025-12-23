@@ -143,19 +143,23 @@ Before we make any changes to our Hardhat configuration file, let's set some con
 npx hardhat keystore set HEDERA_RPC_URL
 ```
 
-For `HEDERA_RPC_URL`, we'll have `https://localhost:7546`
+If you are using a local node, set the `HEDERA_RPC_URL` to `https://localhost:7546`
+
+If you are use Testnet set `HEDERA_RPC_URL` to `https://testnet.hashio.io/api`.
 
 ```bash
 # If you have already set this before, please use the --force flag
 npx hardhat keystore set HEDERA_PRIVATE_KEY
 ```
 
-For `HEDERA_PRIVATE_KEY`, enter `0x105d050185ccb907fba04dd92d8de9e32c18305e097ab41dadda21489a211524`
+If you are using a local node, for the `HEDERA_PRIVATE_KEY`, enter `0x105d050185ccb907fba04dd92d8de9e32c18305e097ab41dadda21489a211524`
 
 <Info>
   **Note:** We got this private key from our console when we started our Hiero
   Local Node.
 </Info>
+
+If you are using Testnet, for the `HEDERA_PRIVATE_KEY`, enter your testnet ECDSA EVM private key which you can get by signing up on the [Hedera Developer Portal](https://portal.hedera.com/dashboard)
 
 Now, we can update our Hardhat config file to include the Hiero Local Node as a custom network:
 

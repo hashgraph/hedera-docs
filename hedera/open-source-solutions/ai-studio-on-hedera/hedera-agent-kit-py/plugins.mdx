@@ -1,0 +1,169 @@
+---
+title: "Plugins (Python)"
+description: "Plugin architecture and available tools for the Python SDK"
+---
+
+## Summary
+
+The Hedera Agent Kit provides a comprehensive set of tools organized into **plugins**, which can be used to extend the functionality of the Hedera Agent Kit SDK. These tools can be used both by the conversational agent and when you are building with the SDK.
+
+See the full plugin documentation: [HEDERAPLUGINS.md](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/HEDERAPLUGINS.md)
+
+---
+
+## Plugin Architecture
+
+The tools are organized into plugins, each containing related functionality:
+
+* **core_account_plugin**: Tools for Hedera Account Service operations
+* **core_account_query_plugin**: Tools for querying Hedera Account Service data
+* **core_consensus_plugin**: Tools for Hedera Consensus Service (HCS) operations
+* **core_consensus_query_plugin**: Tools for querying HCS data
+* **core_token_plugin**: Tools for Hedera Token Service (HTS) operations
+* **core_token_query_plugin**: Tools for querying HTS data
+* **core_evm_plugin**: Tools for interacting with EVM smart contracts (ERC-20, ERC-721)
+* **core_misc_query_plugin**: Tools for miscellaneous queries
+* **core_transaction_query_plugin**: Tools for transaction-related queries
+
+---
+
+## Available Plugins and Tools
+
+### Core Account Plugin (`core_account_plugin`)
+
+Tools for Hedera **Account Service operations**:
+
+| Tool Name                               | Description                        |
+|-----------------------------------------|------------------------------------|
+| `TRANSFER_HBAR_TOOL`                    | Transfer HBAR between accounts     |
+| `APPROVE_HBAR_ALLOWANCE_TOOL`           | Approve an HBAR spending allowance |
+| `DELETE_HBAR_ALLOWANCE_TOOL`            | Delete an HBAR allowance           |
+| `TRANSFER_HBAR_WITH_ALLOWANCE_TOOL`     | Transfer HBAR using an allowance   |
+| `CREATE_ACCOUNT_TOOL`                   | Create a new Hedera account        |
+| `UPDATE_ACCOUNT_TOOL`                   | Update an account's metadata       |
+| `DELETE_ACCOUNT_TOOL`                   | Delete an account                  |
+| `SCHEDULE_DELETE_TOOL`                  | Delete a scheduled transaction     |
+| `APPROVE_FUNGIBLE_TOKEN_ALLOWANCE_TOOL` | Approve token spending allowances  |
+| `APPROVE_NFT_ALLOWANCE_TOOL`            | Approve NFT allowances             |
+
+---
+
+### Core Account Query Plugin (`core_account_query_plugin`)
+
+Tools for querying **Account Service** data:
+
+| Tool Name | Description |
+|-----------|-------------|
+| `GET_ACCOUNT_QUERY_TOOL` | Returns comprehensive account information |
+| `GET_HBAR_BALANCE_QUERY_TOOL` | Returns the HBAR balance for an account |
+| `GET_ACCOUNT_TOKEN_BALANCES_QUERY_TOOL` | Returns token balances for an account |
+
+---
+
+### Core Consensus Plugin (`core_consensus_plugin`)
+
+Tools for **Consensus Service (HCS)** operations:
+
+| Tool Name | Description |
+|-----------|-------------|
+| `CREATE_TOPIC_TOOL` | Create a new topic |
+| `SUBMIT_TOPIC_MESSAGE_TOOL` | Submit a message to a topic |
+| `DELETE_TOPIC_TOOL` | Delete a topic |
+| `UPDATE_TOPIC_TOOL` | Update a topic |
+
+---
+
+### Core Token Plugin (`core_token_plugin`)
+
+Tools for **Token Service (HTS)** operations:
+
+| Tool Name | Description |
+|-----------|-------------|
+| `CREATE_FUNGIBLE_TOKEN_TOOL` | Creates a fungible token |
+| `CREATE_NON_FUNGIBLE_TOKEN_TOOL` | Creates an NFT collection |
+| `MINT_FUNGIBLE_TOKEN_TOOL` | Mints additional fungible tokens |
+| `MINT_NON_FUNGIBLE_TOKEN_TOOL` | Mints NFTs with metadata |
+| `ASSOCIATE_TOKEN_TOOL` | Associates tokens with an account |
+| `DISSOCIATE_TOKEN_TOOL` | Dissociates tokens from an account |
+| `AIRDROP_FUNGIBLE_TOKEN_TOOL` | Airdrops tokens to recipients |
+| `TRANSFER_FUNGIBLE_TOKEN_WITH_ALLOWANCE_TOOL` | Transfers tokens using allowance |
+
+---
+
+### Core EVM Plugin (`core_evm_plugin`)
+
+Tools for **EVM smart contract** operations:
+
+| Tool Name | Description |
+|-----------|-------------|
+| `CREATE_ERC20_TOOL` | Deploys an ERC-20 token |
+| `TRANSFER_ERC20_TOOL` | Transfers an ERC-20 token |
+| `CREATE_ERC721_TOOL` | Deploys an ERC-721 token |
+| `MINT_ERC721_TOOL` | Mints an ERC-721 token |
+| `TRANSFER_ERC721_TOOL` | Transfers an ERC-721 token |
+
+---
+
+## Using Hedera Plugins in Python
+
+First, import the plugins you need:
+
+```python
+from hedera_agent_kit.plugins import (
+    core_account_plugin,
+    core_account_query_plugin,
+    core_consensus_plugin,
+    core_token_plugin,
+    core_evm_plugin,
+)
+from hedera_agent_kit.shared.configuration import AgentMode, Context, Configuration
+```
+
+Then instantiate the toolkit with your configuration:
+
+```python
+from hedera_agent_kit.langchain.toolkit import HederaLangchainToolkit
+
+configuration = Configuration(
+    tools=[],  # Empty = load all tools from plugins
+    context=Context(
+        mode=AgentMode.AUTONOMOUS,
+        account_id=str(operator_id),
+    ),
+    plugins=[
+        core_account_plugin,
+        core_account_query_plugin,
+        core_consensus_plugin,
+        core_token_plugin,
+        core_evm_plugin,
+    ],
+)
+
+hedera_toolkit = HederaLangchainToolkit(
+    client=client,
+    configuration=configuration,
+)
+
+# Get the tools for use with LangChain
+tools = hedera_toolkit.get_tools()
+```
+
+---
+
+## Agent Modes
+
+The Python SDK currently supports one agent mode:
+
+| Mode                   | Description                                                    |
+|------------------------|----------------------------------------------------------------|
+| `AgentMode.AUTONOMOUS` | The agent executes transactions directly on the Hedera network |
+
+> **Coming Soon:** `AgentMode.RETURN_BYTES` - In this mode, the agent creates the transaction and returns the bytes for the user to execute.
+
+---
+
+## Resources
+
+- **GitHub**: https://github.com/hashgraph/hedera-agent-kit-py
+- **Plugins Documentation**: [HEDERAPLUGINS.md](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/HEDERAPLUGINS.md)
+- **Tools Documentation**: [HEDERATOOLS.md](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/HEDERATOOLS.md)

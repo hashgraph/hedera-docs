@@ -174,10 +174,7 @@ const config: HardhatUserConfig = {
     testnet: {
       type: "http",
       url: configVariable("HEDERA_RPC_URL"),
-      accounts: [
-        configVariable("HEDERA_PRIVATE_KEY"),
-        configVariable("HEDERA_PRIVATE_KEY_2")
-      ]
+      accounts: [configVariable("HEDERA_PRIVATE_KEY")]
     }
   }
 };
@@ -263,7 +260,7 @@ Contract:
 Result: Self-sustaining loop that respects network capacity
 ```
 
-<Info>
+<Note>
 **Why This Matters**
 
 On traditional EVM chains, you'd need:
@@ -274,7 +271,7 @@ On traditional EVM chains, you'd need:
 
 On Hedera, the **contract itself** is capacity-aware and self-adjusting!
 
-</Info>
+</Note>
 
 ---
 
@@ -339,21 +336,21 @@ contract RebalancerCapacityAware is HederaScheduleService {
     }
 
     function setSchedulingMethod(bool _usePayerScheduling) external {
-        require(! config.active, "stop rebalancing first");
+        require(!config.active, "stop rebalancing first");
         config.usePayerScheduling = _usePayerScheduling;
         emit SchedulingMethodChanged(_usePayerScheduling);
     }
 
     function startRebalancing(uint256 intervalSeconds) external {
         require(intervalSeconds > 0, "interval must be > 0");
-        require(! config.active, "already active");
+        require(!config.active, "already active");
 
         config.active = true;
         config.intervalSeconds = intervalSeconds;
         config.lastRebalanceTime = block.timestamp;
         config.rebalanceCount = 0;
 
-        uint256 desiredTime = block. timestamp + intervalSeconds;
+        uint256 desiredTime = block.timestamp + intervalSeconds;
         uint256 scheduledAt = _scheduleNextRebalance(desiredTime);
         emit RebalancingStarted(
             intervalSeconds,
@@ -366,7 +363,7 @@ contract RebalancerCapacityAware is HederaScheduleService {
     function rebalance() external {
         require(config.active, "not active");
         config.rebalanceCount += 1;
-        config.lastRebalanceTime = block. timestamp;
+        config.lastRebalanceTime = block.timestamp;
 
         emit RebalanceExecuted(block.timestamp, config.rebalanceCount);
 
@@ -388,7 +385,7 @@ contract RebalancerCapacityAware is HederaScheduleService {
         uint256 desiredTime
     ) internal returns (uint256 chosenTime) {
         chosenTime = _findAvailableSecond(desiredTime, REBALANCE_GAS_LIMIT, 8);
-        bytes memory callData = abi.encodeWithSelector(this.rebalance. selector);
+        bytes memory callData = abi.encodeWithSelector(this.rebalance.selector);
         int64 rc;
         address scheduleAddress;
         string memory method;
@@ -485,7 +482,7 @@ contract RebalancerCapacityAware is HederaScheduleService {
         )
     {
         return (
-            config. active,
+            config.active,
             config.intervalSeconds,
             config.lastRebalanceTime,
             config.rebalanceCount,
@@ -597,6 +594,14 @@ Set the contract address as an environment variable:
 ```bash
 export CONTRACT_ADDRESS=0xYOURDEPLOYEDADDRESS
 ```
+
+In order to decode events emitted from the contract, the contract must be verified.
+
+```bash
+./generate_hedera_sc_metadata.sh RebalancerCapacityAware
+```
+
+You can then upload the `verify-bundles/RebalancerCapacityAware/metadata.json` file to Hashscan to verify this contract.
 
 ---
 
@@ -851,6 +856,8 @@ Press Ctrl+C to stop
   Contract Balance: 15.2 HBAR
 ---
 ```
+
+Note that the `Rebalance Count` increments every ~15 seconds as scheduled transactions execute automatically. When the contract runs out of HBAR, scheduling will fail, and the count will stop increasing however the state remains `Active: true` until you explicitly stop rebalancing.
 
 ### Check Contract Config
 

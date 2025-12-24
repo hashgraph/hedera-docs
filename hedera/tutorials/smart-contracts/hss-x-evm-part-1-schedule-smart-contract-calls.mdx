@@ -17,39 +17,11 @@ This unlocks powerful new patterns:
 
 In this tutorial, you'll build a simple **AlarmClock** contract that demonstrates this unique capability by scheduling one-shot and recurring alarms entirely on-chain.
 
-<Info>
+<Note>
   You can take a look at the **complete code** in the [**hss-schedule-sc-calls
   demo
   repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hss-schedule-sc-calls).
-</Info>
-
----
-
-## What Makes This Unique?
-
-### Traditional EVM Chains (Ethereum, most L2s)
-
-- Smart contracts **cannot schedule** themselves to be called later
-- Every contract execution requires an external trigger (EOA or bot)
-- Time-based automation needs:
-  - Off-chain infrastructure (cron jobs, keepers, bots)
-  - Trusted third parties or decentralized keeper networks
-  - Additional gas costs for the keeper service
-
-### Hedera with HIP-1215
-
-- Contracts can call the **Schedule Service system contract** (`0x16b`)
-- Schedule any contract call to execute at a future time
-- The **Hedera consensus layer** stores and executes scheduled transactions
-- **Fully on-chain** automation with no external dependencies
-
-This is enabled by two key Hedera Improvement Proposals (HIPs):
-
-- **[HIP-755](https://hips.hedera.com/hip/hip-755)** – Schedule Service System Contract  
-  Exposes the Hedera Schedule Service as an EVM-callable system contract at address `0x16b`
-
-- **[HIP-1215](https://hips.hedera.com/hip/hip-1215)** – Generalized Scheduled Contract Calls  
-  Allows contracts to schedule **any contract call** via the Schedule Service, including calls to themselves
+</Note>
 
 ---
 
@@ -57,7 +29,6 @@ This is enabled by two key Hedera Improvement Proposals (HIPs):
 
 - ECDSA account from the [Hedera Portal](https://portal.hedera.com/).
 - Basic understanding of Solidity.
-- Some testnet HBAR (get from the [Hedera Portal](https://portal.hedera.com/)).
 
 ---
 
@@ -368,9 +339,9 @@ async function main() {
     deployer
   );
 
-  // Send 50 HBAR to the contract during deployment
+  // Send 5 HBAR to the contract during deployment
   // This HBAR will be used to pay for scheduled alarm executions
-  const HBAR_TO_SEND = "50";
+  const HBAR_TO_SEND = "5";
   console.log(
     `Deploying with ${HBAR_TO_SEND} HBAR to fund scheduled executions... `
   );
@@ -386,6 +357,9 @@ async function main() {
   // Get the contract balance to verify funding
   const balance = await ethers.provider.getBalance(contractAddress);
   console.log("Contract HBAR balance:", ethers.formatEther(balance), "HBAR");
+
+  console.log("📝 Save this address for the next steps!");
+  console.log(`export CONTRACT_ADDRESS=${contractAddress}`);
 }
 
 main().catch(console.error);
@@ -418,22 +392,41 @@ Deploy your contract by executing the script:
 npx hardhat run scripts/deploy.ts --network testnet
 ```
 
-<Check>Copy the deployed address—you'll need this in subsequent steps. </Check>
+<Check>
+  Copy the deployed contract address and set it as an environment variable for
+  the next steps.{" "}
+</Check>
 
-The output looks like this:
+Expected output:
 
 ```bash
 Deploying contract with the account: 0xA98556A4deeB07f21f8a66093989078eF86faa30
 Deploying with 5 HBAR to fund scheduled executions...
-AlarmClockSimple contract deployed at: 0x76CFE47809A84e62D633562c350e775e0dB7E1bF
+AlarmClockSimple contract deployed at: 0xBa2bD87abAF00F96212081CF621DFC5728E0697e
 Contract HBAR balance: 5.0 HBAR
+📝 Save this address for the next steps!
+export CONTRACT_ADDRESS=0xBa2bD87abAF00F96212081CF621DFC5728E0697e
 ```
+
+Set the contract address as an environment variable:
+
+```bash
+export CONTRACT_ADDRESS=0xYOURDEPLOYEDADDRESS
+```
+
+In order to decode events emitted from the contract, the contract must be verified.
+
+```bash
+./generate_hedera_sc_metadata.sh AlarmClockSimple
+```
+
+You can then upload the `verify-bundles/AlarmClockSimple/metadata.json` file to Hashscan to verify this contract.
 
 ---
 
 ## Step 4: Set a One-Shot Alarm
 
-Create a script (`setOneShot.ts`) in your `scripts` directory to set a one-shot alarm. Don't forget to replace the `<your-contract-address>` with the address you've just copied.
+Create a script (`setOneShot.ts`) in your `scripts` directory to set a one-shot alarm.
 
 ```typescript scripts/setOneShot.ts
 import { network } from "hardhat";
@@ -444,7 +437,8 @@ async function main() {
   const [signer] = await ethers.getSigners();
   console.log("Using signer:", signer.address);
 
-  const contractAddress = "0x76CFE47809A84e62D633562c350e775e0dB7E1bF"; // Replace with your deployed contract address
+  const contractAddress =
+    process.env.CONTRACT_ADDRESS || "<your-deployed-contract-address>";
   const alarmClockContract = await ethers.getContractAt(
     "AlarmClockSimple",
     contractAddress,
@@ -514,25 +508,25 @@ Expected output:
 ```bash
 Using signer: 0xA98556A4deeB07f21f8a66093989078eF86faa30
 Setting one-shot alarm to fire in 10 seconds...
-setAlarm tx hash: 0xa94ff67071db3f089dcb81199187c7a42245360658b4e3654a059363a270205e
+setAlarm tx hash: 0x50bd2d8f3938a92fcb6e4dc036fed1439c8200c19349846e2a98741fd9f0831d
 Alarm ID: 0
 
 Alarm Details:
   User: 0xA98556A4deeB07f21f8a66093989078eF86faa30
-  Scheduled time: 2025-12-12T15:37:04.000Z
+  Scheduled time: 2025-12-24T16:26:43.000Z
   Recurring: false
   Times triggered: 0
 
 ✅ One-shot alarm scheduled!
 ⏰ It will automatically trigger in ~10 seconds
-📊 View events at: https://hashscan.io/testnet/contract/0x76CFE47809A84e62D633562c350e775e0dB7E1bF/events
+📊 View events at: https://hashscan.io/testnet/contract/0xBa2bD87abAF00F96212081CF621DFC5728E0697e/events
 ```
 
 ---
 
 ## Step 5: Set a Recurring Alarm
 
-Create a script (`setRecurring.ts`) in your `scripts` directory to set a recurring alarm. Replace `<your-contract-address>` with your contract address.
+Create a script (`setRecurring.ts`) in your `scripts` directory to set a recurring alarm.
 
 ```typescript scripts/setRecurring.ts
 import { network } from "hardhat";
@@ -543,7 +537,8 @@ async function main() {
   const [signer] = await ethers.getSigners();
   console.log("Using signer:", signer.address);
 
-  const contractAddress = "0x76CFE47809A84e62D633562c350e775e0dB7E1bF"; // Replace with your deployed contract address
+  const contractAddress =
+    process.env.CONTRACT_ADDRESS || "<your-deployed-contract-address>";
   const alarmClockContract = await ethers.getContractAt(
     "AlarmClockSimple",
     contractAddress,
@@ -634,22 +629,22 @@ Expected output:
 ```bash
 Using signer: 0xA98556A4deeB07f21f8a66093989078eF86faa30
 Setting recurring alarm to fire every 10 seconds...
-setAlarm tx hash: 0x25b4a292f4e6dde1e760ba57b34631bbdfe0cfbb3b46a211430ac9c967a272a5
+setAlarm tx hash: 0xf14efe33ec59918114a89fe4f9ff0f2579429ab612451a1ef4fa4332e28d5e14
 Alarm ID: 1
 
 Alarm Details:
   User: 0xA98556A4deeB07f21f8a66093989078eF86faa30
-  Scheduled time: 2025-12-12T15:41:59.000Z
+  Scheduled time: 2025-12-24T16:29:16.000Z
   Recurring: true
   Interval: 10 seconds
   Times triggered: 0
 
-Contract HBAR balance: 3.944 HBAR
+Contract HBAR balance: 3.768 HBAR
 
 ✅ Recurring alarm scheduled!
 ⏰ It will trigger every 10 seconds automatically
 ⚠️  Make sure the contract has enough HBAR to pay for scheduled executions
-📊 View events at: https://hashscan.io/testnet/contract/0x76CFE47809A84e62D633562c350e775e0dB7E1bF/events
+📊 View events at: https://hashscan.io/testnet/contract/0xBa2bD87abAF00F96212081CF621DFC5728E0697e/events
 ```
 
 ---
@@ -699,12 +694,12 @@ You can also view the actual scheduled transaction executions on HashScan:
 
 **Example Flow:**
 
-1. **setAlarm transaction**: [View on HashScan](https://hashscan.io/testnet/transaction/1765553815.902461007)
+1. **setAlarm transaction**: [View on HashScan](https://hashscan.io/testnet/transaction/1766593595.774248162)
 
    - This is when you call `setAlarm()`
    - Emits `AlarmScheduled` event
 
-2. **Scheduled triggerAlarm execution**: [View on HashScan](https://hashscan.io/testnet/transaction/1765553824.054298515)
+2. **Scheduled triggerAlarm execution**: [View on HashScan](https://hashscan.io/testnet/transaction/1766593603.079000004)
    - This is the **automatic execution** by the network
    - Notice the transaction was triggered by the schedule service, not by an EOA
    - Emits `AlarmTriggered` event
@@ -712,7 +707,7 @@ You can also view the actual scheduled transaction executions on HashScan:
 <Info>
 **Understanding the Transaction Flow**
 
-When you look at the scheduled transaction on HashScan on the [trace tab](https://hashscan.io/testnet/transaction/1765553824.054298515/trace), you will notice:
+When you look at the scheduled transaction on HashScan on the [trace tab](https://hashscan.io/testnet/transaction/1766593603.079000004/trace), you will notice:
 
 - The "From" address will be the contract itself (or show as scheduled execution)
 - The "To" address is the contract address
@@ -790,18 +785,23 @@ Running Solidity tests
 
 Running Mocha tests
 
+
   AlarmClockSimple
 Deployer: 0xA98556A4deeB07f21f8a66093989078eF86faa30
 User: 0x84b6F7e5fCD1AC75EbDFc3a24c47ea3f6915746e
-Contract deployed at: 0xa2Ba0662d646FC337576dFc80058BA3946ab726b
-    ✔ should deploy with correct initial state (188ms)
-    ✔ should set a one-shot alarm (6759ms)
-    ✔ should set a recurring alarm (7424ms)
-    ✔ should manually trigger an alarm (13441ms)
-    ✔ should not allow non-owner to trigger someone else's alarm (7394ms)
-    ✔ should not allow triggering a one-shot alarm twice (15553ms)
+Contract deployed at: 0x0B3A4Db300b471f09DbaB35bFAB8f5056F74B8bb
+    ✔ should deploy with correct initial state (598ms)
+    ✔ should set a one-shot alarm (6879ms)
+    ✔ should set a recurring alarm (7809ms)
+    ✔ should manually trigger an alarm (14435ms)
+    ✔ should not allow non-owner to trigger someone else's alarm (8713ms)
+    ✔ should not allow triggering a one-shot alarm twice (13419ms)
 
-  6 passing (60s)
+
+  6 passing (1m)
+
+
+9 passing (9 solidity)
 ```
 
 ---
@@ -844,7 +844,7 @@ Check out the resources below to learn more about Hedera's Schedule Service and 
 - [Hedera Schedule Service Documentation](https://docs.hedera.com/hedera/core-concepts/scheduled-transaction)
 
 <Columns cols={2}>
-  <Card title="Writer:  Kiran, Developer Advocate" arrow>
+  <Card title="Writer:  Kiran Pachhai, Developer Advocate" arrow>
     [GitHub](https://github.com/kpachhai) |
     [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
   </Card>

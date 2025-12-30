@@ -1,0 +1,888 @@
+---
+title: "Batch, anchor, and verify records with HCS"
+description: "Learn how to batch records off-chain, compute a Merkle root, and anchor it on Hedera Consensus Service for cost-effective verification."
+---
+
+The Hedera Consensus Service (HCS) enables decentralized event ordering and immutable timestamping for any application. A best practice for data integrity involves anchoring a 'digital fingerprint' of your records on-chain, which provides a verifiable audit trail without exposing sensitive information. Merkle roots are cryptographic summaries that enable the efficient verification of large datasets, allowing you to also prove the existence of individual records within a batch. This tutorial demonstrates how to use these tools to verify data on a public ledger like Hedera in a manner that is both highly secure and cost-effective.
+
+## What You Will Accomplish
+- Compute a Merkle root from a batch of off-chain records
+- Anchor that Merkle root on HCS using `ConsensusSubmitMessage`
+- Verify the batch (and a single record) using the mirror node
+
+## Prerequisites
+- Node.js
+- A Hedera testnet account (see [Hedera Portal](https://portal.hedera.com))
+
+## Table of Contents
+1. Setup and Installation
+2. Understand the dataset
+3. Create a topic for batch anchoring and verification
+4. Compute the Merkle root
+5. Anchor the Merkle root on HCS
+6. Verify the batch via Mirror Node
+7. Verify a single record (Proof)
+8. Next steps
+
+---
+
+## 1. Setup and Installation
+
+### 1a. Clone and Install
+Clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/hedera-dev/tutorial-hcs-batching-hashing-verifying-js.git
+cd tutorial-hcs-batching-hashing-verifying-js
+npm install
+```
+
+### 1b. Configure Environment
+Copy the example environment file:
+
+```bash
+cp .env.example .env
+```
+
+Open `.env` and fill in your Testnet credentials:
+- `OPERATOR_ID`: Your Account ID (e.g. `0.0.12345`)
+- `OPERATOR_KEY`: Your Private Key (e.g. `302e...`)
+- `HEDERA_NETWORK`: `testnet`
+- `MIRROR_NODE_BASE_URL`: Leave as `https://testnet.mirrornode.hedera.com`
+
+---
+
+## 2. Understand the dataset you will anchor
+
+When you ran `npm install` in Step 1, a `postinstall` script automatically executed `scripts/generate-data-internal.js`. This script populated the `data/` directory with the sample datasets (`batch-10.json` and `batch-100.json`) and their corresponding Merkle proofs.
+
+Each record in the generated JSON files looks like this:
+
+```json
+{
+  "id": "record-000",
+  "timestamp": "2025-01-01T12:00:00.000Z",
+  "type": "PAYMENT",
+  "payload": { "amount": 100, "currency": "HBAR" }
+}
+```
+
+### Canonicalization
+To ensure the hash is deterministic (always the same for the same data), we "canonicalize" the record before hashing. This means:
+1. Sorting the object keys alphabetically.
+2. Removing all whitespace.
+3. Encoding as UTF-8.
+
+This ensures that `{ "a": 1, "b": 2 }` and `{ "b": 2, "a": 1 }` result in the exact same hash.
+
+<Info>
+  Canonicalization is the process of converting data into a standard, unique format. It is essential because different representations of the same logical data (like different key orders or whitespace) would produce different hashes, making verification difficult.
+</Info>
+
+### Terminology: Batch Hash vs. Merkle Root
+- **Batch Hash**: Usually `hash(record1 + record2 + ...)`. This approach is simple, but makes it hard to verify any single record.
+- **Merkle Root**: `hash(hash(r1) + hash(r2) + ...)`. This approach allows efficient batch verification and single-record proofs. This example uses Merkle Roots.
+
+---
+
+## 3. Create a topic for batch anchoring and verification
+
+Run the setup script to create a new HCS topic:
+
+```bash
+node scripts/01-create-topic.js
+```
+<Accordion title="View the code">
+
+  The `01-create-topic.js` script initializes the Hedera client and calls the `createTopic` helper function to mint a new topic ID.
+
+  <CodeGroup>
+  ```javascript scripts/01-create-topic.js
+  const { createTopic } = require('../src/hedera');
+
+  async function main() {
+      console.log('--- 1. Create HCS Topic ---');
+
+      if (!process.env.OPERATOR_ID || !process.env.OPERATOR_KEY) {
+          console.error('Error: OPERATOR_ID or OPERATOR_KEY missing in .env');
+          process.exit(1);
+      }
+
+      try {
+          const { topicId, transactionId } = await createTopic();
+          console.log(`\n✅ Created topic: ${topicId}`);
+          console.log(`   Transaction ID: ${transactionId}`);
+          console.log(`   HashScan: https://hashscan.io/testnet/transaction/${transactionId}`);
+          console.log(`\n👉 Add this to your .env file:\nTOPIC_ID=${topicId}`);
+      } catch (err) {
+          console.error('Error creating topic:', err.message);
+          process.exit(1);
+      }
+  }
+
+  main();
+  ```
+
+  ```javascript src/hedera.js
+  const {
+      Client,
+      TopicCreateTransaction,
+      TopicMessageSubmitTransaction,
+      PrivateKey
+  } = require("@hiero-ledger/sdk");
+
+  const { OPERATOR_ID, OPERATOR_KEY, HEDERA_NETWORK } = require("./config");
+
+  function getClient() {
+      if (!OPERATOR_ID || !OPERATOR_KEY) {
+          throw new Error("OPERATOR_ID and OPERATOR_KEY must be set in .env");
+      }
+
+      const client = Client.forName(HEDERA_NETWORK);
+      client.setOperator(OPERATOR_ID, PrivateKey.fromStringECDSA(OPERATOR_KEY));
+      return client;
+  }
+
+  /**
+  * Creates a new HCS topic.
+  * @returns {Promise<string>} The new Topic ID (e.g. "0.0.12345")
+  */
+  async function createTopic() {
+      const client = getClient();
+
+      const tx = await new TopicCreateTransaction()
+          .setTopicMemo("Merkle Anchor Verification Tutorial")
+          .execute(client);
+          
+      const receipt = await tx.getReceipt(client);
+      const topicId = receipt.topicId.toString();
+      const transactionId = tx.transactionId.toString();
+
+      client.close();
+      return { topicId, transactionId };
+  }
+
+  module.exports = {
+    createTopic,
+    submitMessage
+};
+  ```
+  </CodeGroup>
+</Accordion>
+
+**Expected Output:**
+```
+✅ Created topic: 0.0.98765
+   Transaction ID: 0.0.1307@1767056727.814369284
+   HashScan: https://hashscan.io/testnet/transaction/0.0.1307@1767056727.814369284
+
+👉 Add this to your .env file:
+TOPIC_ID=0.0.98765
+```
+
+🚨 Copy the new `TOPIC_ID` into your `.env` file.
+
+---
+
+## 4. Compute the Merkle root (Local)
+
+Before anchoring on-chain, calculate the Merkle root locally for the dataset you want to anchor. This example uses the dataset in `data/batch-100.json`. Run `scripts/02-compute-root.js` as shown below:
+
+```bash
+node scripts/02-compute-root.js --dataset batch-100
+```
+
+This script performs the following process:
+1.  **Load Dataset**: Reads the JSON file from the `data/` directory.
+2.  **Canonicalize**: Standardizes each record to ensure a deterministic hash.
+3.  **Hash**: Computes the SHA-256 hash of each canonicalized record (the leaves of the tree).
+4.  **Compute Root**: Recursively pairs and hashes leaves using `computeRoot` until a single root hash remains.
+
+<Accordion title="View the code">
+  <CodeGroup>
+  ```javascript scripts/02-compute-root.js
+  const fs = require('fs');
+  const path = require('path');
+  const { canonicalize } = require('../src/canonicalize');
+  const { sha256 } = require('../src/hash');
+  const { computeRoot } = require('../src/merkle');
+
+  const args = process.argv.slice(2);
+  let datasetName = 'batch-10'; // default
+
+  for (let i = 0; i < args.length; i++) {
+      if (args[i].startsWith('--dataset=')) {
+          datasetName = args[i].split('=')[1];
+      } else if (args[i] === '--dataset' && i + 1 < args.length) {
+          datasetName = args[i + 1];
+          i++; // skip the value
+      }
+  }
+
+  async function main() {
+      console.log('--- 2. Compute Merkle Root (Local) ---');
+      console.log(`Using dataset: ${datasetName}`);
+
+      // 1. Load Dataset
+      const filePath = path.join(__dirname, `../data/${datasetName}.json`);
+      if (!fs.existsSync(filePath)) {
+          console.error(`Error: Dataset not found at ${filePath}`);
+          process.exit(1);
+      }
+      const batch = JSON.parse(fs.readFileSync(filePath));
+      console.log(`1) Loaded ${batch.length} records.`);
+
+      // 2. Canonicalize & 3. Hash Leaves
+      const leaves = batch.map(record => sha256(canonicalize(record)));
+      console.log('2, 3) Canonicalized and computed leaf hashes.');
+
+      // 4. Compute Root
+      const rootBuffer = computeRoot(leaves);
+      const rootHex = rootBuffer.toString('hex');
+      console.log(`4) Computed Merkle Root: ${rootHex}`);
+      console.log('\nSuccess! You can now anchor this root on HCS in the next step.');
+  }
+
+  main();
+  ```
+
+  ```javascript src/canonicalize.js
+  /**
+   * Canonicalizes a JavaScript object (conceptually similar to JCS).
+   * - Sorts keys recursively
+   * - Encodes as UTF-8 (via Buffer.from)
+   * - Result is a Buffer ready for hashing
+   * 
+   * @param {Object} record - The object to canonicalize
+   * @returns {Buffer} - The canonical byte array
+   */
+  function canonicalize(record) {
+      // 1. Deterministic stringify (sort keys)
+      const jsonString = JSON.stringify(record, (key, value) => {
+          // If value is a plain object and not an array, sort its keys
+          if (value && typeof value === 'object' && !Array.isArray(value)) {
+              return Object.keys(value)
+                  .sort()
+                  .reduce((sorted, k) => {
+                      sorted[k] = value[k];
+                      return sorted;
+                  }, {});
+          }
+          return value;
+      });
+
+      // 2. Return buffer (UTF-8)
+      return Buffer.from(jsonString, 'utf8');
+  }
+
+  module.exports = {
+      canonicalize
+  };
+  ```
+
+  ```javascript src/hash.js
+  const crypto = require('node:crypto');
+
+  /**
+   * Computes SHA-256 hash of a buffer or string.
+   * @param {Buffer|string} data 
+   * @returns {Buffer} Raw buffer of the hash
+   */
+  function sha256(data) {
+      return crypto.createHash('sha256').update(data).digest();
+  }
+
+  module.exports = {
+      sha256
+  };
+  ```
+
+  ```javascript src/merkle.js
+  const { sha256 } = require('./hash');
+
+  /**
+   * Computes the Merkle root of an array of buffers (leaves).
+   * Rules:
+   * - SHA-256(left || right)
+   * - If odd, duplicate last node
+   * 
+   * @param {Buffer[]} leafHashes 
+   * @returns {Buffer} Root hash buffer
+   */
+  function computeRoot(leafHashes) {
+      if (leafHashes.length === 0) return Buffer.alloc(0);
+      if (leafHashes.length === 1) return leafHashes[0];
+
+      const nextLevel = [];
+
+      for (let i = 0; i < leafHashes.length; i += 2) {
+          const left = leafHashes[i];
+          // If we're at the end and it's odd, duplicate the last one
+          const right = (i + 1 < leafHashes.length) ? leafHashes[i + 1] : left;
+
+          // Concatenate raw bytes
+          const combined = Buffer.concat([left, right]);
+          nextLevel.push(sha256(combined));
+      }
+
+      return computeRoot(nextLevel);
+  }
+
+  module.exports = {
+      computeRoot
+  };
+  ```
+  </CodeGroup>
+</Accordion>
+
+**Expected Output:**
+```
+--- 2. Compute Merkle Root (Local) ---
+Using dataset: batch-100
+1) Loaded 100 records.
+2, 3) Canonicalized and computed leaf hashes.
+4) Computed Merkle Root: 1d59720e...
+
+Success! You can now anchor this root on HCS in the next step.
+```
+
+---
+
+## 5. Anchor the Merkle root on HCS
+
+Now that you have the root hash, proceed to anchor it on Hedera. This step recomputes the root for safety and then submits a message to HCS.
+
+While you could manually use the root hash from the previous step, recomputing it immediately before submission is a best practice. This ensures the anchor reflects the current state of your local dataset and serves as a final integrity check before committing the hash to the public ledger.
+
+```bash
+node scripts/03-submit-anchor.js --dataset batch-100
+```
+
+<Accordion title="View the code">
+  <CodeGroup>
+  ```javascript scripts/03-submit-anchor.js
+  const fs = require('fs');
+  const path = require('path');
+  const { canonicalize } = require('../src/canonicalize');
+  const { sha256 } = require('../src/hash');
+  const { computeRoot } = require('../src/merkle');
+  const { createAnchorMessage } = require('../src/anchor-message');
+  const { submitMessage } = require('../src/hedera');
+
+  const args = process.argv.slice(2);
+  let datasetName = 'batch-10'; // default
+
+  for (let i = 0; i < args.length; i++) {
+      if (args[i].startsWith('--dataset=')) {
+          datasetName = args[i].split('=')[1];
+      } else if (args[i] === '--dataset' && i + 1 < args.length) {
+          datasetName = args[i + 1];
+          i++; // skip the value
+      }
+  }
+
+  async function main() {
+      console.log('--- 3. Anchor Batch Merkle Root on HCS ---');
+      console.log(`Using dataset: ${datasetName}`);
+
+      // 1. Load Dataset
+      const filePath = path.join(__dirname, `../data/${datasetName}.json`);
+      if (!fs.existsSync(filePath)) {
+          console.error(`Error: Dataset not found at ${filePath}`);
+          process.exit(1);
+      }
+      const batch = JSON.parse(fs.readFileSync(filePath));
+
+      // 2, 3, 4. Recompute Root (Deterministic)
+      const leaves = batch.map(record => sha256(canonicalize(record)));
+      const rootHex = computeRoot(leaves).toString('hex');
+      console.log(`1) Recomputed local Merkle Root: ${rootHex}`);
+
+      // 5. Build Anchor Message
+      const anchorMessage = createAnchorMessage(rootHex, datasetName, batch.length);
+      const messageString = JSON.stringify(anchorMessage);
+      console.log(`2) Built anchor message (${messageString.length} bytes).`);
+
+      // 6. Submit to HCS
+      const topicId = process.env.TOPIC_ID;
+      if (!topicId) {
+          console.error('Error: TOPIC_ID missing in .env');
+          process.exit(1);
+      }
+
+      console.log(`\nSubmitting to Topic ${topicId}...`);
+      try {
+          const { status, transactionId } = await submitMessage(topicId, messageString);
+          console.log(`\n✅ Message Anchored!`);
+          console.log(`   Transaction ID: ${transactionId}`);
+          console.log(`   HashScan: https://hashscan.io/testnet/transaction/${transactionId}`);
+          console.log(`   Status: ${status}`);
+          console.log(`   Merkle Root: ${rootHex}`);
+          
+          // Warn about latency
+          console.log('\nNote: Wait ~5 seconds before verifying with mirror node to allow propagation.');
+      } catch (err) {
+          console.error('Error submitting message:', err);
+          process.exit(1);
+      }
+  }
+
+  main();
+  ```
+
+  ```javascript src/anchor-message.js
+  /**
+   * Formats the anchor message for HCS.
+   * @param {string} merkleRootHex 
+   * @param {string} datasetName 
+   * @param {number} recordCount 
+   * @returns {Object} JSON object ready to be stringified
+   */
+  function createAnchorMessage(merkleRootHex, datasetName, recordCount) {
+      return {
+          schema: "hcs.merkleRootAnchor",
+          schemaVersion: "1",
+          datasetVersion: "v1",
+          batchFile: `data/${datasetName}.json`,
+          recordCount: recordCount,
+          hashAlg: "sha256",
+          merkleRoot: merkleRootHex,
+          createdAt: new Date().toISOString()
+      };
+  }
+
+  module.exports = {
+      createAnchorMessage
+  };
+  ```
+
+  ```javascript src/hedera.js
+  const {
+      Client,
+      TopicCreateTransaction,
+      TopicMessageSubmitTransaction,
+      PrivateKey
+  } = require("@hiero-ledger/sdk");
+
+  const { OPERATOR_ID, OPERATOR_KEY, HEDERA_NETWORK } = require("./config");
+
+  function getClient() {
+      if (!OPERATOR_ID || !OPERATOR_KEY) {
+          throw new Error("OPERATOR_ID and OPERATOR_KEY must be set in .env");
+      }
+
+      const client = Client.forName(HEDERA_NETWORK);
+      client.setOperator(OPERATOR_ID, PrivateKey.fromStringECDSA(OPERATOR_KEY));
+      return client;
+  }
+
+  /**
+  * Submits a message to an HCS topic.
+  * @param {string} topicId 
+  * @param {string} messageString 
+  * @returns {Promise<{status: string, transactionId: string}>}
+  */
+  async function submitMessage(topicId, messageString) {
+      const client = getClient();
+
+      // Note: For larger messages, SDK handles chunking if enabled.
+      // .setMaxChunks(20) and .setChunkSize(1024) are defaults or can be set manually.
+      // In this tutorial, our anchor is small (<1KB), so no chunking needed.
+
+      const tx = await new TopicMessageSubmitTransaction()
+          .setTopicId(topicId)
+          .setMessage(messageString)
+          .execute(client);
+
+      const receipt = await tx.getReceipt(client);
+      const status = receipt.status.toString();
+      const transactionId = tx.transactionId.toString();
+
+      client.close();
+      return { status, transactionId };
+  }
+
+  module.exports = {
+      createTopic,
+      submitMessage
+  };
+  ```
+  </CodeGroup>
+</Accordion>
+
+**Expected Output:**
+```
+--- 3. Anchor Batch Merkle Root on HCS ---
+...
+1) Recomputed local Merkle Root: 1d59720e...
+2) Built anchor message (215 bytes).
+
+Submitting to Topic 0.0.98765...
+
+✅ Message Anchored!
+   Transaction ID: 0.0.1307@1767056727.814369284
+   HashScan: https://hashscan.io/testnet/transaction/0.0.1307@1767056727.814369284
+   Status: SUCCESS
+   Merkle Root: 1d59720e...
+```
+This approach is efficient because instead of sending 100 individual transactions, you send **one** transaction with the Merkle root.
+
+---
+
+## 6. Verify the anchored root using the mirror node
+
+With the Merkle root hash on the public ledger, anyone can verify the batch integrity. Running `scripts/04-verify-batch.js` confirms this by completing the following steps:
+  1.  **Recompute Root**: Loads the local dataset and calculates the Merkle root from your local `data/batch-100.json` exactly as before using `computeRoot`.
+  2.  **Fetch Message**: Queries the [Mirror Node REST API](https://docs.hedera.com/hedera/sdks-and-apis/rest-api) for the latest message on the topic using `getLatestTopicMessage`.
+  3.  **Compare**: decoding the message and verifying that the on-chain root matches the locally computed root.
+
+<Info>
+  Hedera operates a free/public mirror node for testing and development. Production applications should use commercial-grade mirror node services provided by [third-party vendors](https://docs.hedera.com/hedera/sdks-and-apis/rest-api#hedera-mirror-node-environments).
+</Info>
+
+```bash
+node scripts/04-verify-batch.js --dataset batch-100
+```
+
+<Accordion title="View the code">
+  <CodeGroup>
+  ```javascript scripts/04-verify-batch.js
+  const fs = require('fs');
+  const path = require('path');
+  const { canonicalize } = require('../src/canonicalize');
+  const { sha256 } = require('../src/hash');
+  const { computeRoot } = require('../src/merkle');
+  const { getLatestTopicMessage } = require('../src/mirror-node');
+
+  const args = process.argv.slice(2);
+  let datasetName = 'batch-10'; // default
+
+  for (let i = 0; i < args.length; i++) {
+      if (args[i].startsWith('--dataset=')) {
+          datasetName = args[i].split('=')[1];
+      } else if (args[i] === '--dataset' && i + 1 < args.length) {
+          datasetName = args[i + 1];
+          i++; // skip the value
+      }
+  }
+
+  async function main() {
+      console.log('--- 3. Verify Batch from Mirror Node ---');
+      console.log(`Using dataset: ${datasetName} (Local)`);
+
+      const topicId = process.env.TOPIC_ID;
+      if (!topicId) {
+          console.error('Error: TOPIC_ID missing in .env');
+          process.exit(1);
+      }
+
+      // 1. Recompute Local Root
+      const filePath = path.join(__dirname, `../data/${datasetName}.json`);
+      if (!fs.existsSync(filePath)) {
+          console.error(`Error: Dataset not found at ${filePath}`);
+          process.exit(1);
+      }
+      const batch = JSON.parse(fs.readFileSync(filePath));
+      const leaves = batch.map(record => sha256(canonicalize(record)));
+      const computedRoot = computeRoot(leaves).toString('hex');
+      
+      console.log(`1) Computed local Merkle root:   ${computedRoot}`);
+
+      // 2. Fetch from Mirror Node
+      console.log(`2) Fetching latest anchor from Topic ${topicId}...`);
+      try {
+          const { message, sequenceNumber, consensusTimestamp } = await getLatestTopicMessage(topicId);
+          console.log(`   Fetched Sequence #${sequenceNumber} (${consensusTimestamp})`);
+          
+          // 3. Decode & Parse
+          let anchor;
+          try {
+              anchor = JSON.parse(message);
+          } catch (e) {
+              console.error('Error parsing message JSON:', message);
+              process.exit(1);
+          }
+
+          if (anchor.schema !== 'hcs.merkleRootAnchor') {
+              console.warn('⚠️  Message is not an hcs.merkleRootAnchor schema. Retrying/Searching not implemented in tutorial.');
+              process.exit(1);
+          }
+
+          const anchoredRoot = anchor.merkleRoot;
+          console.log(`   Anchored Merkle root:       ${anchoredRoot}`);
+
+          // 4. Compare
+          console.log('\n--- VERIFICATION ---');
+          if (computedRoot === anchoredRoot) {
+              console.log('✅ PASS: Mirror node root matches local dataset root.');
+          } else {
+              console.error('❌ FAIL: Roots do not match!');
+              console.error(`Expected (Local):    ${computedRoot}`);
+              console.error(`Actual (On-Chain):   ${anchoredRoot}`);
+              process.exit(1);
+          }
+
+      } catch (err) {
+          console.error('Error verifying batch:', err.message);
+          process.exit(1);
+      }
+  }
+
+  main();
+  ```
+
+  ```javascript src/mirror-node.js
+  const { MIRROR_NODE_BASE_URL } = require("./config");
+
+  /**
+   * Fetches the latest message for a given topic from the Mirror Node.
+   * @param {string} topicId 
+   * @returns {Promise<Object>} The message content and metadata
+   */
+  async function getLatestTopicMessage(topicId) {
+      const url = `${MIRROR_NODE_BASE_URL}/api/v1/topics/${topicId}/messages?limit=1&order=desc`;
+      
+      try {
+          const response = await fetch(url);
+          if (!response.ok) {
+              throw new Error(`Mirror node error: ${response.status} ${response.statusText}`);
+          }
+          
+          const data = await response.json();
+          if (!data.messages || data.messages.length === 0) {
+              throw new Error("No messages found for this topic");
+          }
+          
+          const latest = data.messages[0];
+          
+          // Decode base64 message
+          // Note: older mirror node versions might return hex; standard is base64
+          const messageContent = Buffer.from(latest.message, 'base64').toString('utf8');
+          
+          return {
+              sequenceNumber: latest.sequence_number,
+              consensusTimestamp: latest.consensus_timestamp,
+              message: messageContent
+          };
+      } catch (error) {
+          console.error("Error fetching from mirror node:", error.message);
+          throw error;
+      }
+  }
+
+  module.exports = {
+      getLatestTopicMessage
+  };
+  ```
+  </CodeGroup>
+</Accordion>
+
+**Output:**
+```
+...
+2) Fetching latest anchor from Topic 0.0.98765...
+   Anchored Merkle root:       1d59720e...
+
+--- VERIFICATION ---
+✅ PASS: Mirror node root matches local dataset root.
+```
+
+---
+
+## 7. Verify a single record using a Merkle proof
+
+A powerful feature of Merkle trees is that they enable proving *one* item is in the batch without revealing the other items. 
+
+For simplicity, in this tutorial we use pre-generated proofs in `data/proofs-100.json`. The script takes the single record's hash and combines it with "siblings" from the pre-generated proof until it reaches the root. If the calculated root matches the trusted root, the record is proven content.
+
+Running `scripts/05-verify-single-record.js` demonstrates Merkle proofs with the following steps:
+  1.  **Load Proof**: Reads the pre-generated Merkle proof for the specific record.
+  2.  **Trusted Root**: In a real scenario, this comes from HCS (as in step 6). Here we simulate it with a manifest (`data/manifest.json`).
+  3.  **Verify**: Use the `verifyProof` function to hash the record with its sibling hashes up the tree. If the final hash matches the trusted root, the record is proven.
+
+```bash
+node scripts/05-verify-single-record.js --dataset batch-100 --recordId record-042
+```
+
+<Accordion title="View the code">
+
+
+  <CodeGroup>
+  ```javascript scripts/05-verify-single-record.js
+  const fs = require('fs');
+  const path = require('path');
+  const { verifyProof } = require('../src/merkle');
+
+  const args = process.argv.slice(2);
+
+  // Parse args roughly
+  let datasetName = 'batch-10';
+  let recordId = 'record-005'; // default
+
+  for (let i = 0; i < args.length; i++) {
+      const arg = args[i];
+      if (args[i].startsWith('--dataset=')) {
+          datasetName = args[i].split('=')[1];
+      } else if (args[i] === '--dataset' && i + 1 < args.length) {
+          datasetName = args[i + 1];
+          i++;
+      } else if (args[i].startsWith('--recordId=')) {
+          recordId = args[i].split('=')[1];
+      } else if (args[i] === '--recordId' && i + 1 < args.length) {
+          recordId = args[i + 1];
+          i++;
+      }
+  }
+
+  async function main() {
+      console.log('--- 4. Verify Single Record (Merkle Integrity) ---');
+      console.log(`Dataset: ${datasetName}`);
+      console.log(`Record ID: ${recordId}`);
+
+      // 1. Load Manifest (Trusted Source needed for Root)
+      // In a real app, you'd get the root from the chain (like script 03), 
+      // but here we simulate having the "Trusted Root" from the mirror node.
+      const manifestPath = path.join(__dirname, '../data/manifest.json');
+      const manifest = JSON.parse(fs.readFileSync(manifestPath));
+      
+      // Decide which root to use
+      let trustedRoot = '';
+      if (datasetName === 'batch-10') trustedRoot = manifest.expectedMerkleRoot_batch10;
+      else if (datasetName === 'batch-100') trustedRoot = manifest.expectedMerkleRoot_batch100;
+      
+      if (!trustedRoot) {
+          console.error('Unknown dataset root in manifest.');
+          process.exit(1);
+      }
+      
+      console.log(`Expected Root (from trusted source): ${trustedRoot}`);
+
+      // 2. Load Proof for the Record
+      const proofsPath = path.join(__dirname, `../data/proofs-${datasetName.split('-')[1]}.json`);
+      if (!fs.existsSync(proofsPath)) {
+          console.error('Proofs file not found.');
+          process.exit(1);
+      }
+      const allProofs = JSON.parse(fs.readFileSync(proofsPath));
+      
+      const recordProofData = allProofs[recordId];
+      if (!recordProofData) {
+          console.error(`No proof found for record ${recordId}`);
+          process.exit(1);
+      }
+
+      const { leafHashHex, proof } = recordProofData;
+
+      // 3. Verify
+      const isValid = verifyProof(leafHashHex, trustedRoot, proof);
+
+      console.log('\n--- VERIFICATION ---');
+      if (isValid) {
+          console.log(`✅ PASS: Record "${recordId}" is cryptographically proven to be in the batch.`);
+          console.log('   The Merkle proof reconstructs the root exactly.');
+      } else {
+          console.error(`❌ FAIL: Proof invalid for record "${recordId}".`);
+      }
+  }
+
+  main();
+  ```
+
+  ```javascript src/merkle.js
+  const { sha256 } = require('./hash');
+
+  /**
+    * Verifies a Merkle proof.
+    * @param {string} leafHashHex 
+    * @param {string} rootHashHex 
+    * @param {Array} proof 
+    * @returns {boolean}
+    */
+  function verifyProof(leafHashHex, rootHashHex, proof) {
+      let currentHash = Buffer.from(leafHashHex, 'hex');
+
+      for (const step of proof) {
+          const siblingParams = Buffer.from(step.siblingHashHex, 'hex');
+
+          if (step.position === 'right') {
+              currentHash = sha256(Buffer.concat([currentHash, siblingParams]));
+          } else {
+              currentHash = sha256(Buffer.concat([siblingParams, currentHash]));
+          }
+      }
+
+      return currentHash.toString('hex') === rootHashHex;
+  }
+
+  module.exports = {
+      computeRoot,
+      getProof,
+      verifyProof
+  };
+
+  ```
+  </CodeGroup>
+</Accordion>
+
+**Output:**
+```
+✅ PASS: Record "record-042" is cryptographically proven to be in the batch.
+```
+
+---
+
+## Code Check ✅
+
+It's time to try this example yourself! Get the code from the GitHub repository:
+[tutorial-hcs-batching-hashing-verifying-js](https://github.com/hedera-dev/tutorial-hcs-batching-hashing-verifying-js)
+
+## Notes on message limits
+
+### Message Limits
+- **HCS Message Size:** 1024 bytes (1 KB).
+- **HCS Transaction Size:** 6 KB (includes signatures and keys).
+
+### Chunking
+If your anchor message exceeds 1 KB (e.g., if you added a lot of metadata), you must use **HCS Chunking**.
+The SDK handles this automatically if you configure it:
+
+```javascript
+new TopicMessageSubmitTransaction()
+    .setMessage(largeContent)
+    .setMaxChunks(20) // Default is 20
+    .execute(client);
+```
+
+For this tutorial, our anchor message is ~200 bytes, so no chunking was needed.
+
+---
+
+## Next steps
+- **[Hedera Developer Playground](https://portal.hedera.com/playground)**: Try sending messages and creating topics in the browser.
+- **[GitHub Repo](https://github.com/hedera-dev/tutorial-hcs-batching-hashing-verifying-js)**: Explore the full source code and data generation scripts.
+- **Next Tutorial**: [Query Messages with Mirror Node](https://docs.hedera.com/hedera/tutorials/consensus/query-messages-with-mirror-node) - Learn how to filter and retrieve specific messages like an audit log.
+
+---
+
+<Info>
+Have a question? 
+- [Ask it on Discord](https://discord.com/invite/hederahashgraph)
+- [Ask it on StackOverflow](https://stackoverflow.com/questions/tagged/hedera-hashgraph)
+</Info>
+
+---
+
+<Columns cols={2}>
+  <Card
+    title="Writer: Ed Marquez, Developer Relations"
+    arrow
+  >
+    [X](https://x.com/ed__marquez) | [LinkedIn](https://www.linkedin.com/in/ed-marquez/)
+  </Card>
+  <Card
+      title="Editor: Krystal, DX Engineer"
+      arrow
+    >
+      [GitHub](https://github.com/theekrystallee) | [X](https://x.com/theekrystallee)
+    </Card>
+</Columns>

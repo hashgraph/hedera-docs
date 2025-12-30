@@ -34,16 +34,32 @@ npm install hedera-agent-kit @langchain/core langchain @langchain/langgraph @has
 
 ```bash
 # Option 1: OpenAI (requires API key)
+# for Langchain classic
 npm install @langchain/openai@^0.6
 
+# for LangChain v1
+npm install @langchain/openai@^1npm install @langchain/openai@^0.6
+
 # Option 2: Anthropic Claude (requires API key)
+# for LangChain classic
 npm install @langchain/anthropic@^0.3
 
+# for LangChain v1
+npm install @langchain/anthropic@^1
+
 # Option 3: Groq (free tier available)
+# for Langchain classic
 npm install @langchain/groq@^0.2
 
+# for LangChain v1
+npm install @langchain/groq@^1
+
 # Option 4: Ollama (100% free, runs locally)
+# for Langchain classic
 npm install @langchain/ollama@^0.2
+
+# for LangChain v1
+npm install @langchain/ollama@^1
 ```
 
 ### 4. Add Environment Variables
@@ -85,6 +101,9 @@ import { HederaLangchainToolkit, AgentMode } from 'hedera-agent-kit';
 import { createAgent } from 'langchain';
 import { MemorySaver } from '@langchain/langgraph';
 import { ChatOpenAI } from '@langchain/openai';
+// import { ChatAnthropic } from '@langchain/anthropic';
+// import { ChatGroq } from '@langchain/groq';
+// import { ChatOllama } from '@langchain/ollama';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -115,6 +134,21 @@ async function main() {
     model: 'gpt-4o-mini',
     apiKey: process.env.OPENAI_API_KEY,
   });
+
+  // const llm = new ChatAnthropic({
+  //   model: 'claude-sonnet-4-5-20250929',
+  //   apiKey: process.env.ANTHROPIC_API_KEY,
+  // });
+
+  // const llm = new ChatGroq({
+  //   model: 'llama-3.3-70b-versatile',
+  //   apiKey: process.env.GROQ_API_KEY,
+  // });
+  
+  // const llm = new ChatOllama({
+  //   model: 'llama3.1',
+  //   baseUrl: process.env.OLLAMA_BASE_URL || 'http://127.0.0.1:11434',
+  // });
 
   const agent = createAgent({
     model: llm,

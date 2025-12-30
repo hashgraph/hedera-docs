@@ -1,0 +1,183 @@
+---
+title: "Quickstart (JavaScript)"
+description: "Get started with the Hedera Agent Kit using JavaScript/TypeScript"
+---
+
+## Quickstart - Create a Hedera Agent
+
+See the npm package: https://www.npmjs.com/package/hedera-agent-kit
+
+### 1. Create your project directory
+
+```bash
+mkdir hello-hedera-agent-kit
+cd hello-hedera-agent-kit
+```
+
+### 2. Install the agent kit and init the project
+
+Init and install with npm:
+
+```bash
+npm init -y
+```
+
+Open `package.json` and add `"type": "module"` to enable ES modules.
+
+```bash
+npm install hedera-agent-kit @langchain/core langchain @langchain/langgraph @hashgraph/sdk dotenv
+```
+
+> **Note**: The Hedera Agent Kit supports both **LangChain v1** (recommended) and **LangChain classic** (v0.3, legacy). The examples below use LangChain v1.
+
+### 3. Install ONE of these AI provider packages
+
+```bash
+# Option 1: OpenAI (requires API key)
+npm install @langchain/openai@^0.6
+
+# Option 2: Anthropic Claude (requires API key)
+npm install @langchain/anthropic@^0.3
+
+# Option 3: Groq (free tier available)
+npm install @langchain/groq@^0.2
+
+# Option 4: Ollama (100% free, runs locally)
+npm install @langchain/ollama@^0.2
+```
+
+### 4. Add Environment Variables
+
+Create a `.env` file in your directory:
+
+```bash
+touch .env
+```
+
+If you don't already have a Hedera account, create a testnet account at https://portal.hedera.com/dashboard
+
+Add the following to the `.env` file:
+
+```env
+# Required: Hedera credentials (get free testnet account at https://portal.hedera.com/dashboard)
+ACCOUNT_ID="0.0.xxxxx"
+PRIVATE_KEY="0x..." # ECDSA encoded private key
+
+# Optional: Add the API key for your chosen AI provider
+OPENAI_API_KEY="sk-proj-..."      # For OpenAI (https://platform.openai.com/api-keys)
+ANTHROPIC_API_KEY="sk-ant-..."    # For Claude (https://console.anthropic.com)
+GROQ_API_KEY="gsk_..."            # For Groq free tier (https://console.groq.com/keys)
+# Ollama doesn't need an API key (runs locally)
+```
+
+### 5. Create your agent
+
+Once you have your project set up, create an `index.js` file:
+
+```bash
+touch index.js
+```
+
+```javascript index.js
+// index.js
+import { Client, PrivateKey } from '@hashgraph/sdk';
+import { HederaLangchainToolkit, AgentMode } from 'hedera-agent-kit';
+import { createAgent } from 'langchain';
+import { MemorySaver } from '@langchain/langgraph';
+import { ChatOpenAI } from '@langchain/openai';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+async function main() {
+  // Hedera client setup (Testnet by default)
+  const client = Client.forTestnet().setOperator(
+    process.env.ACCOUNT_ID,
+    PrivateKey.fromStringECDSA(process.env.PRIVATE_KEY)
+  );
+
+  // Prepare Hedera toolkit
+  const hederaAgentToolkit = new HederaLangchainToolkit({
+    client,
+    configuration: {
+      tools: [], // Add specific tools here if needed, or leave empty for defaults/plugins
+      plugins: [], // Add plugins here
+      context: {
+        mode: AgentMode.AUTONOMOUS,
+      },
+    },
+  });
+
+  // Fetch tools from a toolkit
+  const tools = hederaAgentToolkit.getTools();
+
+  const llm = new ChatOpenAI({
+    model: 'gpt-4o-mini',
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+
+  const agent = createAgent({
+    model: llm,
+    tools: tools,
+    systemPrompt: 'You are a helpful assistant with access to Hedera blockchain tools',
+    checkpointer: new MemorySaver(),
+  });
+
+  console.log('Sending a message to the agent...');
+  
+  const response = await agent.invoke(
+    { messages: [{ role: 'user', content: "what's my balance?" }] },
+    { configurable: { thread_id: '1' } }
+  );
+
+  console.log(response.messages[response.messages.length - 1].content);
+}
+
+main().catch(console.error);
+```
+
+> **Using a different AI provider?** You can substitute `ChatOpenAI` with other LangChain chat models like `ChatAnthropic`, `ChatGroq`, or `ChatOllama`. Install the corresponding package (e.g., `@langchain/anthropic`) and update the import accordingly.
+
+### 6. Run Your "Hello Hedera Agent Kit" Example
+
+From the root directory, run your example agent:
+
+```bash
+node index.js
+```
+
+---
+
+## Examples
+
+Clone the repository and try out different example agents. Both **LangChain v1** (recommended) and **LangChain classic** (v0.3) examples are available.
+
+See the full [Developer Examples](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/DEVEXAMPLES.md) documentation for detailed setup instructions.
+
+**Available Examples:**
+
+- **Option A** - [Tool Calling Agent](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/DEVEXAMPLES.md#option-a-run-the-example-tool-calling-agent): Simple tasks with Hedera tools in autonomous mode
+- **Option B** - [Structured Chat Agent](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/DEVEXAMPLES.md#option-b-run-the-structured-chat-agent-langchain-v03-only): Complex multistep tasks (LangChain v0.3 only)
+- **Option C** - [Human in the Loop Agent](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/DEVEXAMPLES.md#option-c-try-the-human-in-the-loop-chat-agent): Controlled workflow with RETURN_BYTES mode
+- **Option D** - [MCP Server](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/DEVEXAMPLES.md#option-d-try-out-the-mcp-server): Interact with Hedera via Claude Desktop or IDEs like Cursor
+- **Option E** - [ElizaOS Agent](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/DEVEXAMPLES.md#option-e-try-out-the-hedera-agent-kit-with-elizaos): Build autonomous AI agents with ElizaOS framework
+
+---
+
+## Agent Execution Modes
+
+This tool has two execution modes with AI agents:
+
+| Mode                     | Description                                                         |
+|--------------------------|---------------------------------------------------------------------|
+| `AgentMode.AUTONOMOUS`   | The transaction is executed autonomously using the operator account |
+| `AgentMode.RETURN_BYTES` | The transaction bytes are returned for the user to sign and execute |
+
+---
+
+## Resources
+
+- **GitHub**: https://github.com/hashgraph/hedera-agent-kit-js
+- **npm**: [hedera-agent-kit](https://www.npmjs.com/package/hedera-agent-kit)
+- **Issues**: https://github.com/hashgraph/hedera-agent-kit-js/issues
+- **Developer Examples**: [DEVEXAMPLES.md](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/DEVEXAMPLES.md)

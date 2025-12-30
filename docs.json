@@ -461,24 +461,32 @@
                 "group": "AI Studio on Hedera",
                 "pages": [
                   "hedera/open-source-solutions/ai-studio-on-hedera",
-                  "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit",
+                  "hedera/open-source-solutions/ai-studio-on-hedera/hedera-agent-kit-js/elizaos-plugin",
                   {
-                    "group": "JavaScript SDK",
+                    "group": "Hedera AI Agent Kit",
                     "pages": [
-                      "hedera/open-source-solutions/ai-studio-on-hedera/hedera-agent-kit-js/quick-start",
-                      "hedera/open-source-solutions/ai-studio-on-hedera/hedera-agent-kit-js/plugins",
-                      "hedera/open-source-solutions/ai-studio-on-hedera/hedera-agent-kit-js/how-to-publish-plugin",
-                      "hedera/open-source-solutions/ai-studio-on-hedera/hedera-agent-kit-js/elizaos-plugin"
-                    ]
-                  },
-                  {
-                    "group": "Python SDK",
-                    "pages": [
-                      "hedera/open-source-solutions/ai-studio-on-hedera/hedera-agent-kit-py/quick-start",
-                      "hedera/open-source-solutions/ai-studio-on-hedera/hedera-agent-kit-py/plugins",
-                      "hedera/open-source-solutions/ai-studio-on-hedera/hedera-agent-kit-py/how-to-publish-plugin"
+                     
+                      
+                      {
+                        "group": "JavaScript SDK",
+                        "pages": [
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-agent-kit-js/plugins",
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-agent-kit-js/quickstart",
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-agent-kit-js/how-to-publish-plugin"
+                          
+                        ]
+                      },
+                      {
+                        "group": "Python SDK",
+                        "pages": [
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-agent-kit-py/plugins",
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-agent-kit-py/quickstart",
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-agent-kit-py/how-to-publish-plugin"
+                        ]
+                      }
                     ]
                   }
+              
                 ]
               },
               {

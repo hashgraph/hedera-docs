@@ -46,7 +46,7 @@ cp .env.example .env
 
 Open `.env` and fill in your Testnet credentials:
 - `OPERATOR_ID`: Your Account ID (e.g. `0.0.12345`)
-- `OPERATOR_KEY`: Your Private Key (e.g. `302e...`)
+- `OPERATOR_KEY`: Your HEX-encoded ECDSA Private Key (e.g. `0x8ccf...`)
 - `HEDERA_NETWORK`: `testnet`
 - `MIRROR_NODE_BASE_URL`: Leave as `https://testnet.mirrornode.hedera.com`
 
@@ -534,7 +534,7 @@ This approach is efficient because instead of sending 100 individual transaction
 With the Merkle root hash on the public ledger, anyone can verify the batch integrity. Running `scripts/04-verify-batch.js` confirms this by completing the following steps:
   1.  **Recompute Root**: Loads the local dataset and calculates the Merkle root from your local `data/batch-100.json` exactly as before using `computeRoot`.
   2.  **Fetch Message**: Queries the [Mirror Node REST API](https://docs.hedera.com/hedera/sdks-and-apis/rest-api) for the latest message on the topic using `getLatestTopicMessage`.
-  3.  **Compare**: decoding the message and verifying that the on-chain root matches the locally computed root.
+  3.  **Compare**: Decode the message and verify that the on-chain root matches the locally computed root.
 
 <Info>
   Hedera operates a free/public mirror node for testing and development. Production applications should use commercial-grade mirror node services provided by [third-party vendors](https://docs.hedera.com/hedera/sdks-and-apis/rest-api#hedera-mirror-node-environments).

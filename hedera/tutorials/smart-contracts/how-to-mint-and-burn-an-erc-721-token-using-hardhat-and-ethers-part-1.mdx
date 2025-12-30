@@ -99,14 +99,14 @@ npm install @openzeppelin/contracts
 Before we make any changes to our Hardhat configuration file, let's set some configuration variables we will be referring to within the file later.
 
 ```bash
-# If you have already set this before, please use the --force flag
+# If you have set a different one before, use the --force flag to overwrite
 npx hardhat keystore set HEDERA_RPC_URL
 ```
 
 For `HEDERA_RPC_URL`, we'll have `https://testnet.hashio.io/api`
 
 ```bash
-# If you have already set this before, please use the --force flag
+# If you have set a different one before, use the --force flag 
 npx hardhat keystore set HEDERA_PRIVATE_KEY
 ```
 
@@ -408,7 +408,7 @@ async function main() {
 
   // Connect to the deployed contract
   // (REPLACE WITH YOUR CONTRACT ADDRESS)
-  const contractAddress = "0x00f2753A689C3bdd1a733430c7b63A3993B1eFBc";
+  const contractAddress = "<your-contract-address>";
   const contract = MyToken.attach(contractAddress);
 
   // Burn the token

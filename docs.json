@@ -171,6 +171,8 @@
                   "hedera/tutorials/smart-contracts/hts-x-evm-part-1-how-to-mint-nfts",
                   "hedera/tutorials/smart-contracts/hts-x-evm-part-2-kyc-and-update",
                   "hedera/tutorials/smart-contracts/hts-x-evm-part-3-how-to-pause-freeze-wipe-and-delete-nfts",
+                  "hedera/tutorials/smart-contracts/hss-x-evm-part-1-schedule-smart-contract-calls",
+                  "hedera/tutorials/smart-contracts/hss-x-evm-part-2-dynamic-rebalancing",
                   "hedera/tutorials/smart-contracts/how-to-verify-a-smart-contract-on-hashscan",
                   "hedera/tutorials/smart-contracts/send-and-receive-hbar-using-solidity-smart-contracts",
                   "hedera/tutorials/smart-contracts/deploy-a-subgraph-using-the-graph-and-json-rpc",

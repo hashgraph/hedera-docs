@@ -23,14 +23,6 @@ The Hedera Consensus Service (HCS) enables decentralized event ordering and immu
 6. [Verify the batch via Mirror Node](#6-verify-the-anchored-root-using-the-mirror-node)
 7. [Verify a single record (Proof)](#7-verify-a-single-record-using-a-merkle-proof)
 8. [Next steps](#next-steps)
-1. Setup and Installation
-2. Understand the dataset
-3. Create a topic for batch anchoring and verification
-4. Compute the Merkle root
-5. Anchor the Merkle root on HCS
-6. Verify the batch via Mirror Node
-7. Verify a single record (Proof)
-8. Next steps
 
 ---
 
@@ -60,7 +52,7 @@ Open `.env` and fill in your Testnet credentials:
 
 ---
 
-## 2. Understand the dataset you will anchor
+## 2. Understand the Dataset You Will Anchor
 
 When you ran `npm install` in Step 1, a `postinstall` script automatically executed `scripts/generate-data-internal.js`. This script populated the `data/` directory with the sample datasets (`batch-10.json` and `batch-100.json`) and their corresponding Merkle proofs.
 
@@ -93,7 +85,7 @@ This ensures that `{ "a": 1, "b": 2 }` and `{ "b": 2, "a": 1 }` result in the ex
 
 ---
 
-## 3. Create a topic for batch anchoring and verification
+## 3. Create a Topic for Batch Anchoring and Verification
 
 Run the setup script to create a new HCS topic:
 
@@ -192,7 +184,7 @@ TOPIC_ID=0.0.98765
 
 ---
 
-## 4. Compute the Merkle root (Local)
+## 4. Compute the Merkle Root (Local)
 
 Before anchoring on-chain, calculate the Merkle root locally for the dataset you want to anchor. This example uses the dataset in `data/batch-100.json`. Run `scripts/02-compute-root.js` as shown below:
 
@@ -356,7 +348,7 @@ Success! You can now anchor this root on HCS in the next step.
 
 ---
 
-## 5. Anchor the Merkle root on HCS
+## 5. Anchor the Merkle Root on HCS
 
 Now that you have the root hash, proceed to anchor it on Hedera. This step recomputes the root for safety and then submits a message to HCS.
 
@@ -537,7 +529,7 @@ This approach is efficient because instead of sending 100 individual transaction
 
 ---
 
-## 6. Verify the anchored root using the mirror node
+## 6. Verify the Anchored Root Using the Mirror Node
 
 With the Merkle root hash on the public ledger, anyone can verify the batch integrity. Running `scripts/04-verify-batch.js` confirms this by completing the following steps:
   1.  **Recompute Root**: Loads the local dataset and calculates the Merkle root from your local `data/batch-100.json` exactly as before using `computeRoot`.
@@ -697,7 +689,7 @@ node scripts/04-verify-batch.js --dataset batch-100
 
 ---
 
-## 7. Verify a single record using a Merkle proof
+## 7. Verify a Single Record Using a Merkle Proof
 
 A powerful feature of Merkle trees is that they enable proving *one* item is in the batch without revealing the other items. 
 
@@ -844,7 +836,7 @@ node scripts/05-verify-single-record.js --dataset batch-100 --recordId record-04
 It's time to try this example yourself! Get the code from the GitHub repository:
 [tutorial-hcs-batching-hashing-verifying-js](https://github.com/hedera-dev/tutorial-hcs-batching-hashing-verifying-js)
 
-## Notes on message limits
+## Notes on Message Limits
 
 ### Message Limits
 - **HCS Message Size:** 1024 bytes (1 KB).

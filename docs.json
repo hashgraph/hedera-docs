@@ -196,8 +196,8 @@
                   "hedera/tutorials/consensus",
                   "hedera/tutorials/consensus/submit-your-first-message",
                   "hedera/tutorials/consensus/submit-message-to-private-topic",
-                  "hedera/tutorials/consensus/query-messages-with-mirror-node",
-                  "hedera/tutorials/consensus/batch-anchor-verify-records-with-hcs"
+                  "hedera/tutorials/consensus/batch-anchor-verify-records-with-hcs",
+                  "hedera/tutorials/consensus/query-messages-with-mirror-node"
                 ]
               },
               {

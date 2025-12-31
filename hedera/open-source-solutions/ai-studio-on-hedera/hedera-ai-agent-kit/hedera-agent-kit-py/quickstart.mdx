@@ -50,16 +50,32 @@ pip install hedera-agent-kit langchain langchain-openai python-dotenv
 
 ```bash
 # Option 1: OpenAI (requires API key)
-pip install langchain-openai
+# for Langchain classic
+pip install langchain-classic langchain-openai
+
+# for LangChain v1
+pip install langchain langchain-openai
 
 # Option 2: Anthropic Claude (requires API key)
-pip install langchain-anthropic
+# for LangChain classic
+pip install langchain-classic langchain-anthropic
+
+# for LangChain v1
+pip install langchain langchain-anthropic
 
 # Option 3: Groq (free tier available)
-pip install langchain-groq
+# for Langchain classic
+pip install langchain-classic langchain-groq
+
+# for LangChain v1
+pip install langchain langchain-groq
 
 # Option 4: Ollama (100% free, runs locally)
-pip install langchain-ollama
+# for Langchain classic
+pip install langchain-classic langchain-ollama
+
+# for LangChain v1
+pip install langchain langchain-ollama
 ```
 
 ### 4. Add Environment Variables

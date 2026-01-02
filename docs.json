@@ -462,15 +462,32 @@
                 "group": "AI Studio on Hedera",
                 "pages": [
                   "hedera/open-source-solutions/ai-studio-on-hedera",
-                  "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit",
+                  "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/elizaos-plugin",
                   {
-                    "group": "Plugins",
+                    "group": "Hedera AI Agent Kit",
                     "pages": [
-                      "hedera/open-source-solutions/ai-studio-on-hedera/plugins",
-                      "hedera/open-source-solutions/ai-studio-on-hedera/plugins/how-to-publish-and-register-your-plugin"
+                     "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit",
+                      
+                      {
+                        "group": "JavaScript SDK",
+                        "pages": [
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/quickstart",
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/plugins",
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/how-to-publish-plugin"
+                          
+                        ]
+                      },
+                      {
+                        "group": "Python SDK",
+                        "pages": [
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/quickstart",
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/plugins",
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/how-to-publish-plugin"
+                        ]
+                      }
                     ]
-                  },
-                  "hedera/open-source-solutions/ai-studio-on-hedera/elizaos-plugin-for-hedera"
+                  }
+              
                 ]
               },
               {

@@ -1,27 +1,29 @@
 ---
-title: Plugins
+title: Plugins (JavaScript)
 description: The Hedera Agent Kit implements a plugin architecture to include features and functionality for both Hedera Network functions and Services, as well as third party apps and projects.
-sidebarTitle: Overview
 ---
+
 ## Summary
 
-The Hedera Agent Kit provides a comprehensive set of tools organized into **plugins**, which can be installed alongside the Hedera Agent Kit and used to extend the core functionality of the Hedera Agent Kit SDK. These tools can be used both by the conversational agent, and when you are building with the SDK.
+The Hedera Agent Kit provides a comprehensive set of tools organized into **plugins**, which can be installed alongside the Hedera Agent Kit and used to extend the core functionality of the Hedera Agent Kit SDK. These tools can be used both by the conversational agent and when you are building with the SDK.
 
-The Hedera services and functionality built into this agent toolkit are also implemented as plugins, you can see a description of each plugin in the [HEDERAPLUGINS.md](https://github.com/hashgraph/hedera-agent-kit/blob/main/docs/HEDERAPLUGINS.md) file, as well as list of the individual tools for each Hedera service that are included in each plugin.
+The Hedera services built into this agent toolkit are also implemented as plugins. You can see a description of each plugin in the [HEDERAPLUGINS.md](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/HEDERAPLUGINS.md) file, as well as a list of the individual tools for each Hedera service that are included in each plugin.
 
 ### Available Third-Party Plugins
 
-* [Memejob Plugin](https://www.npmjs.com/package/@buidlerlabs/hak-memejob-plugin)  provides a streamlined interface to the [**memejob**](https://memejob.fun/) protocol, exposing the core actions (`create`, `buy`, `sell`) for interacting with meme tokens on Hedera. See the[ **Github repository** ](https://github.com/buidler-labs/hak-memejob-plugin)for more information.\\
+* [Memejob Plugin](https://www.npmjs.com/package/@buidlerlabs/hak-memejob-plugin) provides a streamlined interface to the [**memejob**](https://memejob.fun/) protocol, exposing the core actions (`create`, `buy`, `sell`) for interacting with meme tokens on Hedera. See the [**GitHub repository**](https://github.com/buidler-labs/hak-memejob-plugin) for more information.
 
-***
+---
 
 ## Plugin Architecture
+
+The tools are organized into plugins, each containing a set of functionality related to the Hedera service or project they are created for.
 
 ### Plugin Interface
 
 Every plugin must implement the Plugin interface:
 
-```javascript
+```typescript
 export interface Plugin {
   name: string;
   version?: string;
@@ -34,23 +36,27 @@ export interface Plugin {
 
 Each tool must implement the Tool interface:
 
-```javascript
+```typescript
 export type Tool = {
   method: string;
   name: string;
   description: string;
   parameters: z.ZodObject<any, any>;
   execute: (client: Client, context: Context, params: any) => Promise<any>;
+  // transactionToolOutputParser and untypedQueryOutputParser can be used. If required, define a custom parser
+  outputParser?: (rawOutput: string) => { raw: any; humanMessage: string };
 };
 ```
 
-#### Examples
+> **Note:** The `outputParser` is important for **LangChain v1** tools. It extracts tool output into `{ raw, humanMessage }` format. Two built-in parsers are available:
+> - `transactionToolOutputParser` - For transaction tools (handles RETURN_BYTES and EXECUTE_TRANSACTION modes)
+> - `untypedQueryOutputParser` - For query tools (generic parser)
+>
+> If not defined, a default parser is used.
 
-See an example of how to create your own plugin in [hedera-agent-kit/typescript/examples/plugin/example-plugin.ts](https://github.com/hashgraph/hedera-agent-kit/blob/main/typescript/examples/plugin/example-plugin.ts)
+See [typescript/src/shared/tools.ts](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/typescript/src/shared/tools.ts) for the full definition.
 
-See an example application using Hedera plugins and tools and a custom plugin at [hedera-agent-kit/typescript/examples/langchain/plugin-tool-calling-agent.ts](https://github.com/hashgraph/hedera-agent-kit/blob/main/typescript/examples/langchain/plugin-tool-calling-agent.ts)
-
-***
+---
 
 ## Step-by-Step Guide
 
@@ -66,7 +72,7 @@ See an example application using Hedera plugins and tools and a custom plugin at
 
 ### **Step 2: Implement Your Tool**
 
-Create your tool file (e.g., tools/my-service/my-tool.ts):
+Create your tool file (e.g., `tools/my-service/my-tool.ts`):
 
 ```typescript
   import { z } from 'zod';
@@ -151,10 +157,9 @@ export const myCustomPluginToolNames = {
 export default { myCustomPlugin, myCustomPluginToolNames }; 
 ```
 
-
 ### Step 4: Register Your Plugin
 
-Add your plugin to the main plugins index (src/plugins/index.ts):
+Add your plugin to the main plugins index (`src/plugins/index.ts`):
 
 ```typescript
 import { myCustomPlugin, myCustomPluginToolNames } from './my-custom-plugin';
@@ -183,16 +188,21 @@ export {
 **Transaction Handling**
 
 * Use handleTransaction() to facilitate human-in-the-loop and autonomous execution flows
-* Respect the AgentMode (AUTONOMOUS vs RETURN\_BYTES)
+* Respect the AgentMode (AUTONOMOUS vs. RETURN\_BYTES)
 * Implement proper transaction building patterns
 
 ***
 
 ## Using Your Custom Plugin
 
+### LangChain v0.3 (Classic)
+
 ```typescript
-import { HederaLangchainToolkit } from 'hedera-agent-kit';
-import { myCustomPlugin, myCustomPluginToolNames } from './plugins/my-custom-plugin';
+import { HederaLangchainToolkit } from "hedera-agent-kit";
+import {
+  myCustomPlugin,
+  myCustomPluginToolNames,
+} from "./plugins/my-custom-plugin";
 
 const toolkit = new HederaLangchainToolkit({
   client,
@@ -205,3 +215,55 @@ const toolkit = new HederaLangchainToolkit({
   },
 });
 ```
+
+### LangChain v1 (New)
+
+```typescript
+import { HederaLangchainToolkit, ResponseParserService } from "hedera-agent-kit";
+import {
+  myCustomPlugin,
+  myCustomPluginToolNames,
+} from "./plugins/my-custom-plugin";
+
+// Initialize toolkit
+const toolkit = new HederaLangchainToolkit({
+  client,
+  configuration: {
+    tools: [myCustomPluginToolNames.MY_TOOL],
+    plugins: [myCustomPlugin],
+    context: {
+      mode: AgentMode.AUTONOMOUS,
+    },
+  },
+});
+
+// Initialize response parser
+const responseParsingService = new ResponseParserService(toolkit.getTools());
+
+// ... inside your agent loop ...
+const response = await agent.invoke({ messages: [/* ... */] });
+
+// Parse tool outputs
+const parsedToolData = responseParsingService.parseNewToolMessages(response);
+const toolCall = parsedToolData[0]; // assuming only one tool was called
+
+if (toolCall) {
+  console.log('Human Message:', toolCall.parsedData.humanMessage);
+  console.log('Raw Data:', toolCall.parsedData.raw);
+}
+```
+
+---
+
+## Publish and Register Your Plugin
+
+See [How To: Publish & Register Your Plugin](./plugins/how-to-publish-and-register-your-plugin) for instructions on creating, publishing, and registering your plugin with the Hedera Agent Kit ecosystem.
+
+---
+
+## Examples and References
+
+* See existing core plugins in [typescript/src/plugins/core-*-plugin/](https://github.com/hashgraph/hedera-agent-kit-js/tree/main/typescript/src/plugins)
+* Follow the patterns established in tools like [transfer-hbar.ts](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/typescript/src/plugins/core-account-plugin/tools/account/transfer-hbar.ts)
+* See [plugin-tool-calling-agent.ts](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/typescript/examples/langchain-v1/plugin-tool-calling-agent.ts) for usage examples
+

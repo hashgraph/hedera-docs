@@ -134,6 +134,7 @@ load_dotenv()
 
 async def main():
     # Hedera client setup (Testnet by default)
+    import asyncio
     account_id = AccountId.from_string(os.getenv("ACCOUNT_ID"))
     private_key = PrivateKey.from_string(os.getenv("PRIVATE_KEY"))
     client = Client(Network(network="testnet"))

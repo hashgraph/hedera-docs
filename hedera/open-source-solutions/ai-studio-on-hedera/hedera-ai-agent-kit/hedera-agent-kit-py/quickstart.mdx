@@ -1,0 +1,274 @@
+---
+title: "Quickstart (Python)"
+description: "Get started with the Hedera Agent Kit using Python"
+---
+
+## Overview
+
+Build LLM-powered applications that interact with the Hedera Network using Python. Create conversational agents that can understand user requests in natural language and execute Hedera transactions, or build backend systems that leverage AI for on-chain operations.
+
+This is the **Python edition** of the [Hedera Agent Kit](https://github.com/hashgraph/hedera-agent-kit-py), providing a flexible and extensible framework for building AI-powered Hedera agents.
+
+> **Note**: See also the [JavaScript SDK documentation](/hedera/open-source-solutions/ai-studio-on-hedera/hedera-agent-kit-js) for the JS/TypeScript version.
+
+The Hedera Agent Kit (Python) provides:
+
+- **Plugin Architecture**: Extensible design for easy customization
+- **LangChain Integration**: Support for LangChain v1 and LangChain Classic
+- **Comprehensive Hedera Tools**: Token creation (HTS), smart contracts (EVM), account operations, topics (HCS), and more
+- **Autonomous Execution**: Direct transaction execution on the Hedera network
+
+---
+
+## Quickstart — Create a Hedera Agent
+
+See the PyPI package at: https://pypi.org/project/hedera-agent-kit/
+
+### 1. Create your project directory
+
+```bash
+mkdir hello-hedera-agent-kit
+cd hello-hedera-agent-kit
+```
+
+### 2. Set up virtual environment and install dependencies
+
+Create and activate a virtual environment:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+```
+
+Install dependencies:
+
+```bash
+pip install hedera-agent-kit langchain langchain-openai python-dotenv
+```
+
+### 3. Install ONE of these AI provider packages
+
+```bash
+# Option 1: OpenAI (requires API key)
+# for Langchain classic
+pip install langchain-classic langchain-openai
+
+# for LangChain v1
+pip install langchain langchain-openai
+
+# Option 2: Anthropic Claude (requires API key)
+# for LangChain classic
+pip install langchain-classic langchain-anthropic
+
+# for LangChain v1
+pip install langchain langchain-anthropic
+
+# Option 3: Groq (free tier available)
+# for Langchain classic
+pip install langchain-classic langchain-groq
+
+# for LangChain v1
+pip install langchain langchain-groq
+
+# Option 4: Ollama (100% free, runs locally)
+# for Langchain classic
+pip install langchain-classic langchain-ollama
+
+# for LangChain v1
+pip install langchain langchain-ollama
+```
+
+<Note>
+    The example below uses OpenAI and is written for LangChain V1 (Python). It does not use the older LangChain “classic” API. If you want to use a different model provider (Anthropic, Groq, Ollama, etc.), check the LangChain Python integrations docs [here](https://docs.langchain.com/oss/python/integrations/chat). 
+    
+    For the LangChain classic example code, refer to the example in the [Hedera Agent Kit (Python) repo](https://github.com/hashgraph/hedera-agent-kit-py/tree/main/python/examples/langchain-classic).
+</Note>
+
+### 4. Add Environment Variables
+
+Create a `.env` file in your directory:
+
+```bash
+touch .env
+```
+
+If you don't already have a Hedera account, create a testnet account at https://portal.hedera.com/dashboard
+
+Add the following to the `.env` file:
+
+```env
+# Required: Hedera credentials (get free testnet account at https://portal.hedera.com/dashboard)
+ACCOUNT_ID="0.0.xxxxx"
+PRIVATE_KEY="303..." # ECDSA encoded private key
+
+# Optional: Add the API key for your chosen AI provider
+OPENAI_API_KEY="sk-proj-..."      # For OpenAI (https://platform.openai.com/api-keys)
+ANTHROPIC_API_KEY="sk-ant-..."    # For Claude (https://console.anthropic.com)
+GROQ_API_KEY="gsk_..."            # For Groq free tier (https://console.groq.com/keys)
+# Ollama doesn't need an API key (runs locally)
+```
+
+### 5. Create your agent
+
+Create a `main.py` file:
+
+```bash
+touch main.py
+```
+
+```python main.py
+# main.py
+import asyncio
+import os
+
+from dotenv import load_dotenv
+from hedera_agent_kit.langchain.toolkit import HederaLangchainToolkit
+from hedera_agent_kit.plugins import (
+    core_account_plugin,
+    core_account_query_plugin,
+    core_token_plugin,
+    core_consensus_plugin,
+)
+from hedera_agent_kit.shared.configuration import Configuration, Context, AgentMode
+from hiero_sdk_python import Client, Network, AccountId, PrivateKey
+from langchain.agents import create_agent
+from langchain_openai import ChatOpenAI
+from langgraph.checkpoint.memory import MemorySaver
+
+load_dotenv()
+
+
+async def main():
+    # Hedera client setup (Testnet by default)
+    import asyncio
+    account_id = AccountId.from_string(os.getenv("ACCOUNT_ID"))
+    private_key = PrivateKey.from_string(os.getenv("PRIVATE_KEY"))
+    client = Client(Network(network="testnet"))
+    client.set_operator(account_id, private_key)
+
+    # Prepare Hedera toolkit
+    hedera_toolkit = HederaLangchainToolkit(
+        client=client,
+        configuration=Configuration(
+            tools=[],  # Empty = load all tools from plugins
+            plugins=[
+                core_account_plugin,
+                core_account_query_plugin,
+                core_token_plugin,
+                core_consensus_plugin,
+            ],
+            context=Context(
+                mode=AgentMode.AUTONOMOUS,
+                account_id=str(account_id),
+            ),
+        ),
+    )
+
+    tools = hedera_toolkit.get_tools()
+
+    llm = ChatOpenAI(
+        model="gpt-4o-mini",
+        api_key=os.getenv("OPENAI_API_KEY"),
+    )
+
+    agent = create_agent(
+        model=llm,
+        tools=tools,
+        checkpointer=MemorySaver(),
+        system_prompt="You are a helpful assistant with access to Hedera blockchain tools and plugin tools",
+    )
+
+    print("Sending a message to the agent...")
+
+    response = await agent.ainvoke(
+        {"messages": [{"role": "user", "content": "what's my balance?"}]},
+        config={"configurable": {"thread_id": "1"}},
+    )
+
+    final_message_content = response["messages"][-1].content
+    print("\n--- Agent Response ---")
+    print(final_message_content)
+    print("----------------------")
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+> **Using a different AI provider?** You can substitute `ChatOpenAI` with other LangChain chat models like `ChatAnthropic`, `ChatGroq`, or `ChatOllama`. Install the corresponding package and update the import accordingly.
+
+### 6. Run Your "Hello Hedera Agent Kit" Example
+
+From the root directory, run your example agent:
+
+```bash
+python3 main.py
+```
+
+---
+
+## Examples
+
+Clone the repository and try out different example agents. Both **LangChain v1** (recommended) and **LangChain Classic** (v0.3) examples are available.
+
+See the full [Developer Examples](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/DEVEXAMPLES.md) documentation for detailed setup instructions.
+
+**Available Examples:**
+
+- **Option A** - [Plugin Tool Calling Agent (LangChain v1)](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/DEVEXAMPLES.md#option-a-run-the-plugin-tool-calling-agent-langchain-v1): Uses LangGraph with plugin-based tool management
+- **Option B** - [Tool Calling Agent (LangChain Classic)](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/DEVEXAMPLES.md#option-b-run-the-tool-calling-agent-langchain-classic): Basic tool-calling with LangChain Classic
+- **Option C** - [Plugin Tool Calling Agent (LangChain Classic)](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/DEVEXAMPLES.md#option-c-run-the-plugin-tool-calling-agent-langchain-classic): Plugin-based agent with LangChain Classic
+- **Option D** - [Structured Chat Agent (LangChain Classic)](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/DEVEXAMPLES.md#option-d-run-the-structured-chat-agent-langchain-classic): Structured chat with LangChain Classic
+
+---
+
+## About the Agent Kit
+
+### Agent Execution Modes
+
+The Python SDK currently supports one execution mode:
+
+| Mode                     | Status         | Description                                                     |
+|--------------------------|----------------|-----------------------------------------------------------------|
+| `AgentMode.AUTONOMOUS`   | ✅ Supported    | Transactions are executed directly using the operator account   |
+| `AgentMode.RETURN_BYTES` | 🔜 Coming Soon | Transaction bytes returned for user signing (human-in-the-loop) |
+
+---
+
+## Agent Kit Plugins
+
+The Hedera Agent Kit provides tools organized into **plugins** by the type of Hedera service they interact with.
+
+**Available Plugins**
+
+| Plugin                            | Description                                                                                                   |
+|-----------------------------------|---------------------------------------------------------------------------------------------------------------|
+| **core_account_plugin**           | Tools for Hedera Account Service operations (transfer HBAR, create/update/delete accounts, manage allowances) |
+| **core_account_query_plugin**     | Tools for querying account data (balances, account info, token balances)                                      |
+| **core_consensus_plugin**         | Tools for Hedera Consensus Service (HCS) operations (create/update/delete topics, submit messages)            |
+| **core_consensus_query_plugin**   | Tools for querying HCS data (topic messages, topic info)                                                      |
+| **core_token_plugin**             | Tools for Hedera Token Service (HTS) operations (create/mint/transfer tokens, manage allowances)              |
+| **core_token_query_plugin**       | Tools for querying HTS data (token info, pending airdrops)                                                    |
+| **core_evm_plugin**               | Tools for interacting with EVM smart contracts (ERC-20, ERC-721 tokens)                                       |
+| **core_misc_query_plugin**        | Tools for miscellaneous queries (exchange rates)                                                              |
+| **core_transaction_query_plugin** | Tools for transaction-related queries (get transaction records)                                               |
+
+See the full plugin documentation: [HEDERAPLUGINS.md](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/HEDERAPLUGINS.md)
+
+---
+
+## Requests and Contributions
+
+**To request additional functionality**, please [open an issue](https://github.com/hashgraph/hedera-agent-kit-py/issues).
+
+**To contribute** to the Hedera Agent Kit (Python), see the repository's contributing guidelines.
+
+---
+
+## Resources
+
+- **GitHub**: https://github.com/hashgraph/hedera-agent-kit-py
+- **PyPI**: [hedera-agent-kit](https://pypi.org/project/hedera-agent-kit/)
+- **Issues**: https://github.com/hashgraph/hedera-agent-kit-py/issues
+- **Developer Examples**: [DEVEXAMPLES.md](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/DEVEXAMPLES.md)
+- **Plugins Documentation**: [HEDERAPLUGINS.md](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/HEDERAPLUGINS.md)

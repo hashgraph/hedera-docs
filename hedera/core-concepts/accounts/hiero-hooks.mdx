@@ -26,7 +26,7 @@ Hiero Hooks solve this by allowing developers to inject custom logic directly in
 | Concept | Description |
 |:--------|:------------|
 | **Trigger Model** | **Triggered only when referenced/specified** in a `TransferTransaction`—not automatic event listeners. |
-| **Implementation** | Lambda EVM Hooks: Solidity contracts executed by the network's EVM. |
+| **Implementation** | EVM Hooks: Solidity contracts executed by the network's EVM. |
 | **Extension Point** | Account Allowance Hooks validate token transfers that consume an allowance. |
 | **Key Advantage** | Custom logic on native assets (HBAR and HTS tokens) without `ContractCall` overhead. |
 | **Use Cases** | Compliance rules, transfer constraints, custom validation logic. |
@@ -81,7 +81,7 @@ The `HookStoreTransaction` enables fast, low-overhead updates to a hook’s stor
 
 | Field | Description |
 |------|-------------|
-| **Hook ID** | Identifies the Lambda EVM Hook whose storage is being updated, including the owning entity (account or contract) and the hook’s 64-bit ID. |
+| **Hook ID** | Identifies the EVM Hook whose storage is being updated, including the owning entity (account or contract) and the hook’s 64-bit ID. |
 | **Storage Updates** | A list of updates applied to the hook’s persistent storage. Supports direct slot updates (`LambdaStorageSlot`) and mapping updates (`LambdaMappingEntries`). |
 
 ---
@@ -130,7 +130,7 @@ You must specify:
 
 - Extension point  
 - Hook ID (64-bit identifier)  
-- Lambda EVM Hook (the deployed `ContractId`)  
+- EVM Hook (the deployed `ContractId`)  
 
 ### Step 3: Trigger the Hook
 

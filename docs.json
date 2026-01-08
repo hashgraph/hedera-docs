@@ -17,16 +17,8 @@
       "destination": "/#getting-started"
     },
     {
-      "source": "/hedera/:slug*",
-      "destination": "/:slug*"
-    },
-    {
-      "source": "/hedera",
+      "source": "/guides/docs",
       "destination": "/"
-    },
-    {
-      "source": "/guides/:slug*",
-      "destination": "/:slug*"
     },
     {
       "source": "/guides/docs/mirror-node-api/cryptocurrency-api",

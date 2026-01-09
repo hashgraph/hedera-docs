@@ -2,45 +2,55 @@
 set -euo pipefail
 
 # ──────────────────────────────────────────────────────────────────────────────
-# config
+# Hedera Node Tables Update Script
+# 
+# This script fetches the latest node data from the Hedera Mirror Node API
+# and updates the mainnet-nodes.mdx documentation file with:
+# - Service endpoints
+# - Public keys
+# - Certificate hashes
+#
+# Data source: https://mainnet.mirrornode.hedera.com/api/v1/network/nodes
+# (Same data displayed on https://hashscan.io/mainnet/nodes/table)
+# ──────────────────────────────────────────────────────────────────────────────
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Configuration
 # ──────────────────────────────────────────────────────────────────────────────
 BASE_URL="https://mainnet.mirrornode.hedera.com/api/v1/network/nodes?limit=100&order=asc"
-DOC_FILE="networks/mainnet/mainnet-nodes/README.md"
-
-TABLE_A_START="<!-- TABLE A START -->"
-TABLE_A_END="<!-- TABLE A END -->"
-TABLE_B_START="<!-- TABLE B START -->"
-TABLE_B_END="<!-- TABLE B END -->"
+DOC_FILE="hedera/networks/mainnet/mainnet-nodes.mdx"
 
 # ──────────────────────────────────────────────────────────────────────────────
-# temp files and cleanup
+# Temp files and cleanup
 # ──────────────────────────────────────────────────────────────────────────────
 acc_file="$(mktemp)"
 page_file="$(mktemp)"
-trap 'rm -f "$acc_file" "$page_file" "${DOC_FILE}.tmp" "${DOC_FILE}.bak" 2>/dev/null || true' EXIT
+tableA_file="$(mktemp)"
+tableB_file="$(mktemp)"
+trap 'rm -f "$acc_file" "$page_file" "$tableA_file" "$tableB_file" 2>/dev/null || true' EXIT
 
-# initialize accumulator
+# Initialize accumulator
 printf '%s\n' '{"nodes":[]}' > "$acc_file"
 
 # ──────────────────────────────────────────────────────────────────────────────
-# fetch all pages (no huge argv to jq)
+# Fetch all pages from Mirror Node API
 # ──────────────────────────────────────────────────────────────────────────────
-echo "ℹ️ fetching all nodes via pagination..."
+echo "ℹ️  Fetching all nodes via pagination from Mirror Node API..."
 url="$BASE_URL"
 while [ -n "${url:-}" ]; do
   echo "→ GET $url"
   if ! curl -sS --fail --max-time 30 "$url" -o "$page_file"; then
-    echo "❌ fetch failed: $url"
+    echo "❌ Fetch failed: $url"
     exit 1
   fi
 
-  # append nodes from this page to the accumulator using files (avoids argv blowups)
+  # Append nodes from this page to the accumulator
   jq -s '{
     nodes: (.[0].nodes + (.[1].nodes // []))
   }' "$acc_file" "$page_file" > "${acc_file}.new"
   mv "${acc_file}.new" "$acc_file"
 
-  # follow pagination; mirror returns a relative path for next
+  # Follow pagination
   next_rel="$(jq -r '.links.next // empty' < "$page_file")"
   if [ -n "$next_rel" ]; then
     case "$next_rel" in
@@ -53,7 +63,9 @@ while [ -n "${url:-}" ]; do
   fi
 done
 
-# normalize, de-dupe, and project fields (stdin, not argv)
+# ──────────────────────────────────────────────────────────────────────────────
+# Process and normalize node data
+# ──────────────────────────────────────────────────────────────────────────────
 nodes_json="$(
   jq '
     .nodes
@@ -72,126 +84,139 @@ nodes_json="$(
 )"
 
 node_count="$(jq 'length' <<<"$nodes_json")"
-echo "ℹ️ found $node_count nodes"
-[ "$node_count" -eq 0 ] && { echo "⚠️ no nodes found; aborting"; exit 1; }
+echo "ℹ️  Found $node_count nodes"
+[ "$node_count" -eq 0 ] && { echo "⚠️  No nodes found; aborting"; exit 1; }
 
 # ──────────────────────────────────────────────────────────────────────────────
-# build table a (markdown)
+# Build Table A: Node Address Book (HTML format for MDX - ALL ON ONE LINE)
+# Columns: Node | Node ID | Node Account ID | Endpoints | Node Certificate Thumbprint
+#
+# IMPORTANT: Mintlify/MDX requires the entire table to be on a SINGLE LINE
+# with NO newlines between <tr> elements. Newlines break the rendering.
 # ──────────────────────────────────────────────────────────────────────────────
-echo "ℹ️ building table a (markdown)..."
-tableA_header="| Node | Node ID | Node Account ID | Endpoints | Node Certificate Thumbprint |
-|------|---------|-----------------|-----------|--------------------------------|
-"
+echo "ℹ️  Building Table A (Node Address Book)..."
 
-tableA_rows="$(
-  jq -r '
-    map({
-      node: (
-        if (.description // "") == "" then "N/A"
-        else (
-          # capture either "Hosted by X" or "Hosted for X" when present
-          try ((.description | capture("Hosted (by|for) (?<node>[^|]+)")).node)
-          catch .description
-        ) end
-      ),
-      id: .node_id,
-      acct: .node_account_id,
-      endpoints: (
-        (
-          [.service_endpoints[]? |
-            if (.ip_address_v4 // "") != "" and (.port // null) != null
-              then "\(.ip_address_v4):\(.port)"
-            elif (.ip_address_v6 // "") != "" and (.port // null) != null
-              then "[\(.ip_address_v6)]:\(.port)"
-            else empty
-            end
-          ]
-        ) | join(",<br>")
-      ),
-      thumb: .node_cert_hash
-    })
-    | sort_by(.id)
-    | .[]
-    | "| \(.node) | \(.id) | **\(.acct // "N/A")** | \(.endpoints // "N/A") | \(.thumb // "N/A") |"
+{
+  # Start table - everything must be on one line
+  printf '<table><thead><tr><th>Node</th><th>Node ID</th><th>Node Account ID</th><th>Endpoints</th><th>Node Certificate Thumbprint</th></tr></thead><tbody>'
+  
+  # Generate all rows WITHOUT newlines between them
+  jq -rj '
+    .[] | 
+    # Extract node name from description
+    (
+      if (.description // "") == "" then "N/A"
+      else (
+        (.description | split(" | ")[0] | 
+          if startswith("Hosted by ") then .[10:]
+          elif startswith("Hosted for ") then .[11:]
+          else .
+          end
+        ) // .description
+      ) end
+    ) as $node_name |
+    
+    # Format endpoints with <br/> separators
+    (
+      [.service_endpoints[]? |
+        if (.ip_address_v4 // "") != "" and (.port // null) != null
+          then "\(.ip_address_v4):\(.port)"
+        elif (.ip_address_v6 // "") != "" and (.port // null) != null
+          then "[\(.ip_address_v6)]:\(.port)"
+        else empty
+        end
+      ] | join(",<br/>")
+    ) as $endpoints |
+    
+    "<tr><td>\($node_name)</td><td>\(.node_id)</td><td><strong>\(.node_account_id // "N/A")</strong></td><td>\($endpoints // "N/A")</td><td>\(.node_cert_hash // "N/A")</td></tr>"
   ' <<<"$nodes_json"
-)"
-tableA_content="${tableA_header}${tableA_rows}"
-echo "ℹ️ table a built."
+  
+  printf '</tbody></table>'
+} > "$tableA_file"
+
+echo "ℹ️  Table A built."
 
 # ──────────────────────────────────────────────────────────────────────────────
-# build table b (markdown)
+# Build Table B: Node Public Keys (HTML format for MDX - ALL ON ONE LINE)
+# Columns: Node Account ID | Public Key
 # ──────────────────────────────────────────────────────────────────────────────
-echo "ℹ️ building table b (markdown)..."
-tableB_header="| Node Account ID | Public Key |
-|-----------------|-----------|
-"
+echo "ℹ️  Building Table B (Node Public Keys)..."
 
-tableB_rows="$(
-  jq -r '
-    map(select(.public_key != null))
-    | sort_by(.node_id)
-    | .[]
-    | "| **\(.node_account_id // "N/A")** | \(.public_key // "N/A") |"
+{
+  printf '<table><thead><tr><th>Node Account ID</th><th>Public Key</th></tr></thead><tbody>'
+  
+  # Generate all rows WITHOUT newlines between them
+  jq -rj '
+    map(select(.public_key != null and .public_key != "")) |
+    sort_by(.node_id) |
+    .[] |
+    "<tr><td><strong>\(.node_account_id // "N/A")</strong></td><td>\(.public_key)</td></tr>"
   ' <<<"$nodes_json"
-)"
-tableB_content="${tableB_header}${tableB_rows}"
-echo "ℹ️ table b built."
+  
+  printf '</tbody></table>'
+} > "$tableB_file"
+
+echo "ℹ️  Table B built."
 
 # ──────────────────────────────────────────────────────────────────────────────
-# injection helper
+# Verify doc file exists
 # ──────────────────────────────────────────────────────────────────────────────
-inject_table() {
-  local file_to_update="$1" start_marker="$2" end_marker="$3" content_to_inject="$4"
-  local tmp_content
-  tmp_content="$(mktemp)"
-  printf "%s\n" "$content_to_inject" > "$tmp_content"
-
-  cp "$file_to_update" "${file_to_update}.bak" || true
-  echo "ℹ️ created backup: ${file_to_update}.bak"
-
-  awk -v start="$start_marker" -v end="$end_marker" -v tf="$tmp_content" '
-  {
-    if ($0 == start) {
-      print
-      print ""
-      while ((getline line < tf) > 0) { print line }
-      print ""
-      inblock=1; next
-    }
-    if ($0 == end) { inblock=0; print; next }
-    if (!inblock) { print }
-  }' "$file_to_update" > "${file_to_update}.tmp" && mv "${file_to_update}.tmp" "$file_to_update"
-
-  rm -f "$tmp_content"
-}
-
-# ensure doc file exists with markers
 if [ ! -f "$DOC_FILE" ]; then
-  echo "ℹ️ $DOC_FILE not found. creating a placeholder with markers."
-  mkdir -p "$(dirname "$DOC_FILE")"
-  printf "%s\n%s\n\n%s\n%s\n" "$TABLE_A_START" "$TABLE_A_END" "$TABLE_B_START" "$TABLE_B_END" > "$DOC_FILE"
+  echo "❌ Error: $DOC_FILE not found."
+  echo "   Please ensure you're running this script from the repository root."
+  exit 1
 fi
 
 # ──────────────────────────────────────────────────────────────────────────────
-# inject tables
+# Update the MDX file using Python
+# Strategy: Read table content from files to avoid shell escaping issues
 # ──────────────────────────────────────────────────────────────────────────────
-echo "ℹ️ injecting table a into $DOC_FILE..."
-inject_table "$DOC_FILE" "$TABLE_A_START" "$TABLE_A_END" "$tableA_content"
-echo "ℹ️ injecting table b into $DOC_FILE..."
-inject_table "$DOC_FILE" "$TABLE_B_START" "$TABLE_B_END" "$tableB_content"
+echo "ℹ️  Updating $DOC_FILE..."
+
+python3 - "$DOC_FILE" "$tableA_file" "$tableB_file" << 'PYTHON_SCRIPT'
+import re
+import sys
+
+doc_file = sys.argv[1]
+tableA_file = sys.argv[2]
+tableB_file = sys.argv[3]
+
+# Read the table content from files
+with open(tableA_file, "r") as f:
+    tableA = f.read()
+
+with open(tableB_file, "r") as f:
+    tableB = f.read()
+
+# Read the original file
+with open(doc_file, "r") as f:
+    content = f.read()
+
+# Pattern to match the first table (Node Address Book)
+# This table has headers: Node | Node ID | Node Account ID | Endpoints | Node Certificate Thumbprint
+pattern_tableA = r'<table><thead><tr><th>Node</th><th>Node ID</th><th>Node Account ID</th><th>Endpoints</th><th>Node Certificate Thumbprint</th></tr></thead><tbody>.*?</tbody></table>'
+
+# Pattern to match the second table (Public Keys)
+# This table has headers: Node Account ID | Public Key
+pattern_tableB = r'<table><thead><tr><th>Node Account ID</th><th>Public Key</th></tr></thead><tbody>.*?</tbody></table>'
+
+# Replace the tables
+new_content = re.sub(pattern_tableA, tableA, content, count=1, flags=re.DOTALL)
+new_content = re.sub(pattern_tableB, tableB, new_content, count=1, flags=re.DOTALL)
+
+# Write the updated file
+with open(doc_file, "w") as f:
+    f.write(new_content)
+
+print("✅ Tables replaced successfully")
+PYTHON_SCRIPT
 
 # ──────────────────────────────────────────────────────────────────────────────
-# diagnostics
+# Summary
 # ──────────────────────────────────────────────────────────────────────────────
-echo "ℹ️ change summary:"
-git status --porcelain || true
-if git diff --quiet; then
-  echo "no changes detected."
-else
-  echo "=== diffstat ==="
-  git --no-pager diff --stat
-  echo "=== first 200 lines of diff ==="
-  git --no-pager diff | head -n 200
-fi
-
-echo "✅ updated $DOC_FILE with latest nodes"
+echo ""
+echo "✅ Updated $DOC_FILE with latest node data from Mirror Node API"
+echo "   - $node_count nodes processed"
+echo "   - Service endpoints updated"
+echo "   - Public keys updated"
+echo "   - Certificate hashes updated"

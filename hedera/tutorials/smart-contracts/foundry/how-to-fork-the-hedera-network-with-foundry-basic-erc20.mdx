@@ -2,139 +2,134 @@
 title: "How to Fork the Hedera Network with Foundry - Basic ERC-20 Contract "
 ---
 
-In this tutorial, you’ll fork Hedera mainnet using Foundry and interact with a live Hedera NFT (ERC-721) on the fork and also run tests on this local forked network.
+In this tutorial, you'll fork Hedera testnet using Foundry and interact with a basic ERC-20 token on the forked network. This is an introductory guide to local fork testing with Foundry.
 
 This guide shows how to:
 
-- Fork Hedera mainnet using Foundry
-- Run Foundry tests on a fork of Hedera mainnet
-- Read and interact with an existing NFT (ERC-721) contract by its EVM address (e.g., `ownerOf`, `name`, `symbol`, `tokenURI`), with minimal setup.
+- Fork Hedera testnet using Foundry
+- Deploy an ERC-20 contract to Hedera testnet
+- Run Foundry tests on a fork of Hedera testnet
+- Read and interact with an existing ERC-20 contract by its EVM address (e.g., `balanceOf`, `name`, `symbol`, `transfer`), with minimal setup
+- The process to set up and run tests is similar for mainnet as well
 
 References:
 
 - Repo: [hashgraph/hedera-forking](https://github.com/hashgraph/hedera-forking)
-- Readme sections: Foundry library, Running your Tests/Scripts, Hardhat plugin (if you prefer Hardhat)
-- Examples: [`examples/foundry-hts/test/NFT.t.sol`](https://github.com/hashgraph/hedera-forking/blob/main/examples/foundry-hts/test/NFT.t.sol), scripts under [`examples/foundry-hts/script/`](https://github.com/hashgraph/hedera-forking/tree/main/examples/foundry-hts/script)
+- Readme sections: Foundry library, Running your Tests
+- Examples: [`examples/foundry-hts/`](https://github.com/hashgraph/hedera-forking/tree/main/examples/foundry-hts)
 
 <Info>
-  You can take a look at the **complete code** in the [**Hedera-Code-Snippets
-  repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/foundry-mainnet-fork-tutorial).
+  For a deeper understanding of how Hedera forking works and its limitations,
+  see [Forking Hedera Network for Local
+  Testing](/hedera/core-concepts/smart-contracts/forking-hedera-network-for-local-testing).
 </Info>
+
+<Note>
+  You can take a look at the complete code in the [**basic-erc20-fork-test
+  repository**](https://github.com/hedera-dev/tutorial-hedera-fork-testing/tree/main/foundry/basic-erc20-fork-test).
+</Note>
 
 ---
 
 ## Prerequisites
 
-- Foundry installed (forge, cast, anvil, chisel):
-  - `curl -L https://foundry.paradigm.xyz | bash`
-    - `forge-std` >= v1.8.0
-  - `foundryup`
-- curl (Unix) or PowerShell (Windows), so ffi can call Mirror Node
+- [Foundry](https://book.getfoundry.sh/getting-started/installation) installed
+- ECDSA account from the [Hedera Portal](https://portal.hedera.com/)
+- Basic understanding of Solidity
 - A Hedera JSON-RPC endpoint:
   - mainnet: `https://mainnet.hashio.io/api`
-  - testnet: `https://testnet.hashio.io/api`
-- ECDSA account and 0x‑prefixed private key for Hedera Testnet (create/fund via the [Hedera Portal](https://portal.hedera.com/))
-- Basic Solidity / CLI familiarity
-- If you want to learn how to deploy an ERC-721 token using Foundry, you can read more about that [here](/hedera/tutorials/smart-contracts/foundry/how-to-mint-and-burn-an-erc-721-token-using-foundry-part-1).
+  - testnet: `https://testnet.hashio. io/api`
 
 ---
 
 ## Table of Contents
 
-1. [Step 1: Project Setup](#step-1%3A-project-setup)
-2. [Step 2: Create the contract and scripts and deploy to mainnet](#step-2%3A-create-the-contract-and-scripts-and-deploy-to-mainnet)
-3. [Step 3: Run tests on the forked network](#step-4-run-tests-on-the-forked-network)
+1. [Step 1: Project Setup](#step-1:-project-setup)
+2. [Step 2: Create the ERC-20 Contract and Deploy to Testnet](#step-2:-create-the-erc-20-contract-and-deploy-to-testnet)
+3. [Step 3: Write Tests for the Forked Network](#step-3:-write-tests-for-the-forked-network)
+4. [Step 4: Run Tests on the Forked Network](#step-4:-run-tests-on-the-forked-network)
 
 ---
 
 ## Step 1: Project Setup
 
-#### **Initialize Project**
+#### Initialize Project
 
-Set up your project by initializing the hardhat project:
+Create a new directory and initialize the Foundry project:
 
 ```bash
-forge init foundry-mainnet-fork-tutorial
-cd foundry-mainnet-fork-tutorial
+mkdir basic-erc20-fork-test
+cd basic-erc20-fork-test
+forge init
 ```
-
-This creates a new directory with a standard Foundry project structure, including `src`, `test`, and `script` folders.
 
 #### Install Dependencies
 
-Foundry uses git submodules to manage dependencies.
-
-We'll install the required dependency that will let us fork the Hedera mainnet for our local testing.
-
-```bash
-forge install hashgraph/hedera-forking
-```
-
-We'll also install the OpenZeppelin Contracts library, which provides a standard and secure implementation of the ERC20 token.
+Install OpenZeppelin contracts and the Hedera forking library:
 
 ```bash
 forge install OpenZeppelin/openzeppelin-contracts
+forge install hashgraph/hedera-forking
 ```
 
-**Create `.env` File**
+### Configure Remappings
 
-Create an `.env` for your RPC URL and private key.
+Create or update `remappings.txt` in your project root:
 
-```bash
-touch .env
+```txt remappings.txt
+@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
+hedera-forking/=lib/hedera-forking/contracts/
+forge-std/=lib/forge-std/src/
 ```
 
-Put the following into your environment file.
+We need this to import prefix to a filesystem path so both Foundry(forge) and our editor can resolve short, package-like imports instead of long relative paths.
 
-```bash .env
-HEDERA_RPC_URL="https://mainnet.hashio.io/api"
+### Set Environment Variables
+
+Create a `.env` file in your project root:
+
+```bash . env
+HEDERA_RPC_URL=https://testnet.hashio.io/api
 HEDERA_PRIVATE_KEY=0x-your-private-key
-```
-
-Now, let's also load these to the terminal:
-
-```bash
-source .env
 ```
 
 <Warning>
   Replace the `0x-your-private-key` environment variable with the **HEX Encoded
   Private Key** for your **ECDSA** **account.** Note that this account **MUST**
-  exist on **mainnet** as we're dealing with the mainnet for this exercise.
+  exist on **testnet** as we're dealing with the testnet for this exercise.
 </Warning>
+
+Now, let's load these to the terminal:
+
+```bash
+source .env
+```
 
 #### Configure Foundry
 
 Update your `foundry.toml` file in the root directory of your project. Open it and add profiles for the Hedera RPC endpoints.
 
-```toml highlight={16}
+```toml foundry.toml
 [profile.default]
 src = "src"
 out = "out"
 libs = ["lib"]
-remappings = [
-  "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
-  "forge-std/=lib/forge-std/src/"
-]
 ffi = true
-gas_reports = ["MyToken", "MyTokenTest"]
+solc = "0.8.33"
 
 # Add this section for Hedera testnet
 [rpc_endpoints]
-mainnet = "${HEDERA_RPC_URL}"
+testnet = "${HEDERA_RPC_URL}"
 
 [profile.default.fuzz]
 runs = 10
 max_test_rejects = 65536
-
 ```
 
 Some things to keep in mind:
 
-- Note the values in `remappings` field. We need this to import prefix to a filesystem path so both Foundry(forge) and our editor can resolve short, package-like imports instead of long relative paths.
 - We have `ffi` to be true because on forked tests, the library uses curl (or PowerShell) to query Hedera Mirror Node for token state so that EVM calls like `IERC721.ownerOf()` can work as if the token were a normal EVM contract.
 - If we run fuzz tests, they may hit our RPC's rate limit so in order to get around that issue, we need to lower the runs so we don't run into any errors that have nothing to do with our contract at all. We are using `10` here but you could technically go much higher before you hit the rate limit.
-- We are adding the field `gas_reports` here so we can do some cool things while testing such as
 
 We will be removing the default contracts that comes with foundry default project:
 
@@ -144,279 +139,457 @@ rm -rf script/* src/* test/*
 
 ---
 
-## Step 2: Create the contract and scripts and deploy to mainnet
+## Step 2: Create the ERC-20 Contract and Deploy to Testnet
 
-Please follow the guide on "How to Mint & Burn an ERC-721 Token using Foundry" to learn how to create an ERC-721 contract, various scripts for deployment, minting and burning and various other things.
+### Create the Contract
 
-You can also refer to the code in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/foundry-erc721-mint-burn)**.**
+Create a new file `src/ERC20Token.sol`:
 
-We have already deployed this ERC-721 contract on mainnet at https://hashscan.io/mainnet/contract/0x07F6D65f9454EA2dff99bF8C2C1De918Fcd27416 so we will be using this for the remainder of this exercise.
+```solidity src/ERC20Token.sol
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.33;
+
+import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+
+contract ERC20Token is ERC20, Ownable {
+    constructor(address initialOwner, address recipient)
+        ERC20("MyToken", "MTK")
+        Ownable(initialOwner)
+    {
+        _mint(recipient, 10000 * 10 ** decimals());
+    }
+
+    function mint(address to, uint256 amount) public onlyOwner {
+        _mint(to, amount);
+    }
+}
+```
+
+This contract:
+
+- Creates a basic ERC-20 token named "MyToken" with symbol "MTK"
+- Mints 10,000 tokens to a recipient on deployment
+- Has an `onlyOwner` `mint` function for additional minting
+
+### Compile the Contract
+
+```bash
+forge build
+```
+
+### Create Deployment Script
+
+Create a new file `script/Deploy.s.sol`:
+
+```solidity script/Deploy.s.sol
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.33;
+
+import {Script, console} from "forge-std/Script.sol";
+import {ERC20Token} from "../src/ERC20Token.sol";
+
+contract DeployScript is Script {
+    function run() external {
+        uint256 deployerPrivateKey = vm.envUint("HEDERA_PRIVATE_KEY");
+        address deployer = vm.addr(deployerPrivateKey);
+
+        console.log("Deploying contracts with the account:", deployer);
+        console.log("Account balance:", deployer.balance);
+
+        vm.startBroadcast(deployerPrivateKey);
+
+        // Deploy ERC20Token with deployer as both owner and initial recipient
+        ERC20Token token = new ERC20Token(deployer, deployer);
+
+        vm.stopBroadcast();
+
+        console.log("ERC20Token deployed to:", address(token));
+        console.log(
+            "View on HashScan:  https://hashscan.io/testnet/contract/",
+            address(token)
+        );
+        console.log("");
+        console.log("=== IMPORTANT ===");
+        console.log("Save this contract address for your fork tests!");
+        console.log(
+            "Update DEPLOYED_CONTRACT in your test file with this address"
+        );
+    }
+}
+```
+
+### Deploy to Testnet
+
+Deploy your contract to Hedera testnet:
+
+```bash
+forge script script/Deploy.s.sol:DeployScript --rpc-url testnet --broadcast
+```
+
+You should see output similar to:
+
+```bash
+  Deploying contracts with the account: 0xA98556A4deeB07f21f8a66093989078eF86faa30
+  Account balance: 67028157017920000000000
+  ERC20Token deployed to: 0xfC7D2FB1D5a9Be5D6182cBf3F283140d007CdcD4
+  View on HashScan:  https://hashscan.io/testnet/contract/ 0xfC7D2FB1D5a9Be5D6182cBf3F283140d007CdcD4
+
+  === IMPORTANT ===
+  Save this contract address for your fork tests!
+  Update DEPLOYED_CONTRACT in your test file with this address
+```
+
+We have already deployed this ERC-20 contract on testnet at [https://hashscan.io/testnet/contract/0xfC7D2FB1D5a9Be5D6182cBf3F283140d007CdcD4](https://hashscan.io/testnet/contract/0xfC7D2FB1D5a9Be5D6182cBf3F283140d007CdcD4) so we will be using this for the remainder of this exercise.
 
 ---
 
-## Step 3: Run tests on the forked network
+## Step 3: Write Tests for the Forked Network
 
-Since we want to interact with our deployed ERC-721 token on the mainnet (which is then forked for our testing), we will need to make some changes to our `test/MyToken.t.sol` file:
+Now we'll write tests that interact with the already deployed contract on the forked testnet. This is the real power of fork testing - you can test against real deployed contracts without spending gas or affecting the live network.
 
-```solidity
+Create a new file `test/ERC20Token.t.sol`:
+
+```solidity test/ERC20Token.t.sol
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.28;
+pragma solidity ^0.8.33;
 
-import "forge-std/Test.sol";
-import {MyToken} from "../src/MyToken.sol";
-import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import {Test, console} from "forge-std/Test.sol";
+import {ERC20Token} from "../src/ERC20Token.sol";
 
-contract MyTokenTest is Test {
-    // Your deployed mainnet contract:
-    // https://hashscan.io/mainnet/contract/0x07F6D65f9454EA2dff99bF8C2C1De918Fcd27416
-    address internal constant DEPLOYED =
-        0x07F6D65f9454EA2dff99bF8C2C1De918Fcd27416; // Please update this value to your
-                                                    // deployed contract on mainnet
+contract ERC20TokenForkTest is Test {
+    // Your deployed testnet contract:
+    // https://hashscan.io/testnet/contract/0xfC7D2FB1D5a9Be5D6182cBf3F283140d007CdcD4
+    address constant DEPLOYED_CONTRACT =
+        0xfC7D2FB1D5a9Be5D6182cBf3F283140d007CdcD4;
 
-    MyToken internal token;
-
-    address internal owner;
-    address internal alice;
-    address internal bob;
+    ERC20Token public token;
+    address public owner;
+    address public alice;
+    address public bob;
 
     function setUp() public {
-        // Bind to deployed contract
-        token = MyToken(DEPLOYED);
+        // Bind to the deployed contract on the forked network
+        token = ERC20Token(DEPLOYED_CONTRACT);
 
-        // Discover real on-chain owner (Ownable)
+        // Get the real owner from the deployed contract
         owner = token.owner();
 
-        // Locally create EOAs with labeled traces
+        // Create test accounts
         alice = makeAddr("alice");
         bob = makeAddr("bob");
 
-        // Fund/initialize accounts locally to avoid remote eth_getBalance calls
-        // (Helps prevent 429 rate limits when running on a fork)
+        // Fund test accounts
         vm.deal(owner, 100 ether);
-        vm.deal(alice, 0);
-        vm.deal(bob, 0);
-
-        // For nicer traces
-        vm.label(address(token), "MyToken");
-        vm.label(owner, "Owner");
-        vm.label(alice, "Alice");
-        vm.label(bob, "Bob");
+        vm.deal(alice, 100 ether);
+        vm.deal(bob, 100 ether);
     }
 
     /* =========================
-                Basics
+            Basic Info
        ========================= */
 
-    function test_NameAndSymbol() public view {
+    function test_ReadNameAndSymbol() public view {
         assertEq(token.name(), "MyToken");
         assertEq(token.symbol(), "MTK");
     }
 
-    function test_SupportsERC721Interface() public view {
-        // IERC721 interfaceId = 0x80ac58cd
-        assertTrue(
-            IERC721(address(token)).supportsInterface(type(IERC721).interfaceId)
-        );
+    function test_ReadDecimals() public view {
+        assertEq(token.decimals(), 18);
+    }
+
+    function test_ReadTotalSupply() public view {
+        uint256 totalSupply = token.totalSupply();
+        console.log("Total supply on testnet:", totalSupply);
+        assertGt(totalSupply, 0);
+    }
+
+    function test_ReadOwnerBalance() public view {
+        uint256 balance = token.balanceOf(owner);
+        console.log("Owner balance:", balance);
+        assertGt(balance, 0);
     }
 
     /* =========================
-               Ownership
+            Ownership
        ========================= */
 
-    function test_OnlyOwnerCanMint() public {
-        // Non-owner tries to mint → revert with OwnableUnauthorizedAccount(address)
+    function test_RejectMintingFromNonOwner() public {
+        // Alice (not the owner) tries to mint → should revert
         vm.prank(alice);
-        vm.expectRevert(
-            abi.encodeWithSignature(
-                "OwnableUnauthorizedAccount(address)",
-                alice
-            )
-        );
-        token.safeMint(alice);
+        vm.expectRevert();
+        token.mint(alice, 100 ether);
     }
 
-    function test_MintByOwner_IncrementsBalanceAndReturnsTokenId() public {
-        // Use real owner from chain
-        uint256 beforeBal = token.balanceOf(alice);
+    function test_AllowOwnerToMint() public {
+        uint256 balanceBefore = token.balanceOf(alice);
 
+        // Impersonate the real owner to mint
         vm.prank(owner);
-        uint256 id0 = token.safeMint(alice);
-        assertEq(token.ownerOf(id0), alice);
-        assertEq(token.balanceOf(alice), beforeBal + 1);
+        token.mint(alice, 500 ether);
 
-        vm.prank(owner);
-        uint256 id1 = token.safeMint(alice);
-        assertEq(token.ownerOf(id1), alice);
-        assertEq(token.balanceOf(alice), beforeBal + 2);
-
-        // Do not assume sequential IDs starting at 0 on a fork; just ensure distinct IDs
-        assertTrue(id1 != id0);
+        uint256 balanceAfter = token.balanceOf(alice);
+        assertEq(balanceAfter, balanceBefore + 500 ether);
     }
 
     /* =========================
-                 Burn
+            Transfers
        ========================= */
 
-    function test_BurnByOwner_RemovesTokenAndDecrementsBalance() public {
-        // Mint to Alice using the real owner
-        vm.startPrank(owner);
-        uint256 id0 = token.safeMint(alice);
-        vm.stopPrank();
+    function test_TransferFromOwnerToAlice() public {
+        uint256 amount = 100 ether;
+        uint256 balanceBefore = token.balanceOf(alice);
 
-        uint256 beforeBal = token.balanceOf(alice);
-        assertEq(token.ownerOf(id0), alice);
+        // Transfer from owner
+        vm.prank(owner);
+        token.transfer(alice, amount);
 
-        // Alice (owner of token) burns tokenId
-        vm.prank(alice);
-        token.burn(id0);
-
-        // After burn: token no longer exists → ownerOf(id0) should revert
-        vm.expectRevert(
-            abi.encodeWithSignature("ERC721NonexistentToken(uint256)", id0)
-        );
-        token.ownerOf(id0);
-
-        // Balance drops by 1
-        assertEq(token.balanceOf(alice), beforeBal - 1);
+        uint256 balanceAfter = token.balanceOf(alice);
+        assertEq(balanceAfter, balanceBefore + amount);
     }
 
-    function test_BurnRequiresOwnerOrApproved() public {
-        // Mint tokenId to Alice
+    function test_HandleMultipleTransfers() public {
+        // Mint tokens to alice first
         vm.prank(owner);
-        uint256 id0 = token.safeMint(alice);
+        token.mint(alice, 1000 ether);
 
-        // Bob (not owner/approved) tries to burn → revert with ERC721InsufficientApproval(address,uint256)
-        vm.prank(bob);
-        vm.expectRevert(
-            abi.encodeWithSignature(
-                "ERC721InsufficientApproval(address,uint256)",
-                bob,
-                id0
-            )
-        );
-        token.burn(id0);
+        uint256 aliceInitial = token.balanceOf(alice);
+        uint256 bobInitial = token.balanceOf(bob);
+
+        // Alice transfers to bob
+        vm.prank(alice);
+        token.transfer(bob, 300 ether);
+
+        assertEq(token.balanceOf(alice), aliceInitial - 300 ether);
+        assertEq(token.balanceOf(bob), bobInitial + 300 ether);
     }
 
-    function test_BurnByApprovedOperator_Succeeds() public {
-        // Mint tokenId to Alice
-        vm.prank(owner);
-        uint256 id0 = token.safeMint(alice);
-
-        // Alice approves Bob for tokenId
-        vm.prank(alice);
-        token.approve(bob, id0);
-
-        // Bob can now burn that tokenId
+    function test_FailTransferWithInsufficientBalance() public {
+        // Bob has no tokens initially, should fail
         vm.prank(bob);
-        token.burn(id0);
-
-        vm.expectRevert(
-            abi.encodeWithSignature("ERC721NonexistentToken(uint256)", id0)
-        );
-        token.ownerOf(id0);
-        // Balance of Alice decreased
-        // (we don't assert exact value; just ensure the token is gone)
-        // Optionally: assertEq(token.balanceOf(alice), prev - 1);
-    }
-
-    function test_BurnByOperatorApprovedForAll_Succeeds() public {
-        // Mint tokenId to Alice
-        vm.prank(owner);
-        uint256 id0 = token.safeMint(alice);
-
-        // Approve Bob for all of Alice's tokens
-        vm.prank(alice);
-        token.setApprovalForAll(bob, true);
-
-        // Bob can burn that tokenId
-        vm.prank(bob);
-        token.burn(id0);
-
-        vm.expectRevert(
-            abi.encodeWithSignature("ERC721NonexistentToken(uint256)", id0)
-        );
-        token.ownerOf(id0);
-        // Optionally check balance decrease as above
+        vm.expectRevert();
+        token.transfer(alice, 100 ether);
     }
 
     /* =========================
-               Fuzzing
+          Allowances
        ========================= */
 
-    function testFuzz_MintToAnyNonZeroAddress(address to) public {
-        vm.assume(to != address(0));
+    function test_ApproveAndCheckAllowance() public {
+        // Mint tokens to alice
+        vm.prank(owner);
+        token.mint(alice, 1000 ether);
 
-        // Avoid remote eth_getBalance lookups for every fuzz input
-        vm.deal(to, 0);
+        // Alice approves bob
+        vm.prank(alice);
+        token.approve(bob, 500 ether);
+
+        assertEq(token.allowance(alice, bob), 500 ether);
+    }
+
+    function test_TransferFromAfterApproval() public {
+        // Mint tokens to alice
+        vm.prank(owner);
+        token.mint(alice, 1000 ether);
+
+        // Alice approves bob
+        vm.prank(alice);
+        token.approve(bob, 500 ether);
+
+        uint256 aliceBefore = token.balanceOf(alice);
+
+        // Bob transfers from alice to himself
+        vm.prank(bob);
+        token.transferFrom(alice, bob, 200 ether);
+
+        assertEq(token.balanceOf(bob), 200 ether);
+        assertEq(token.balanceOf(alice), aliceBefore - 200 ether);
+        assertEq(token.allowance(alice, bob), 300 ether);
+    }
+
+    function test_FailTransferFromWithoutApproval() public {
+        // Mint tokens to alice but no approval for bob
+        vm.prank(owner);
+        token.mint(alice, 1000 ether);
+
+        vm.prank(bob);
+        vm.expectRevert();
+        token.transferFrom(alice, bob, 100 ether);
+    }
+
+    /* =========================
+         Supply Changes
+       ========================= */
+
+    function test_TrackSupplyChangesAfterMinting() public {
+        uint256 supplyBefore = token.totalSupply();
 
         vm.prank(owner);
-        uint256 id = token.safeMint(to);
+        token.mint(alice, 5000 ether);
 
-        // id should be valid
-        assertEq(token.ownerOf(id), to);
-        assertEq(token.balanceOf(to), 1);
+        uint256 supplyAfter = token.totalSupply();
+        assertEq(supplyAfter, supplyBefore + 5000 ether);
+    }
+
+    /* =========================
+        Fork Verification
+       ========================= */
+
+    function test_ConnectedToForkedNetwork() public view {
+        uint256 blockNumber = block.number;
+        console.log("Current fork block number:", blockNumber);
+        assertGt(blockNumber, 0);
+    }
+
+    function test_InteractingWithRealDeployedContract() public view {
+        // Verify we're reading from the actual deployed contract
+        uint256 codeSize;
+        address contractAddr = DEPLOYED_CONTRACT;
+        assembly {
+            codeSize := extcodesize(contractAddr)
+        }
+        assertGt(codeSize, 0);
+        console.log("Contract code size:", codeSize);
     }
 }
-
 ```
 
-Some things to note:
+**Key points about these tests:**
 
-- Use the deployed contract address instead of deploying a new one.
-- Automatically read the real owner from chain and impersonate it for owner-only actions.
-- Pre-deal balances to addresses to avoid `eth_getBalance` calls on the RPC.
-- Fuzz test no longer checks `to.code.length` (which would trigger an `eth_getCode` per iteration) and pre-deals the target address to avoid RPC balance lookups.
-- Removes assumptions that depend on a freshly deployed local contract (like token IDs starting at 0)
+- **Uses deployed contract** - Tests bind to the already deployed contract address
+- **Impersonation with `vm.prank`** - Uses Foundry's cheatcode to act as the real owner
+- **Reads real state** - Token info, balances, etc. come from the actual testnet deployment
+- **Local modifications** - All transfers, mints happen only on the local fork
+- **No testnet changes** - The real testnet is never modified
 
-### Run tests
+---
 
-Now, we're ready to run some tests.
+## Step 4: Run Tests on the Forked Network
+
+Run your tests against the forked Hedera testnet:
 
 ```bash
-forge test --fork-url https://mainnet.hashio.io/api
+forge test --fork-url $HEDERA_RPC_URL
 ```
 
-We can also pin a specific block for reproducibility:
+You should see output similar to:
 
 ```bash
-forge test --fork-url https://mainnet.hashio.io/api --fork-block-number 84800456
+Ran 15 tests for test/ERC20Token.t.sol:ERC20TokenForkTest
+[PASS] test_AllowOwnerToMint() (gas: 49526)
+[PASS] test_ApproveAndCheckAllowance() (gas: 77316)
+[PASS] test_ConnectedToForkedNetwork() (gas: 3725)
+[PASS] test_FailTransferFromWithoutApproval() (gas: 53875)
+[PASS] test_FailTransferWithInsufficientBalance() (gas: 16977)
+[PASS] test_HandleMultipleTransfers() (gas: 83137)
+[PASS] test_InteractingWithRealDeployedContract() (gas: 6315)
+[PASS] test_ReadDecimals() (gas: 5930)
+[PASS] test_ReadNameAndSymbol() (gas: 18696)
+[PASS] test_ReadOwnerBalance() (gas: 14130)
+[PASS] test_ReadTotalSupply() (gas: 11401)
+[PASS] test_RejectMintingFromNonOwner() (gas: 14536)
+[PASS] test_TrackSupplyChangesAfterMinting() (gas: 48071)
+[PASS] test_TransferFromAfterApproval() (gas: 112142)
+[PASS] test_TransferFromOwnerToAlice() (gas: 47497)
+Suite result: ok. 15 passed; 0 failed; 0 skipped; finished in 1.21ms (3.15ms CPU time)
+
+Ran 1 test suite in 225.61ms (1.21ms CPU time): 15 tests passed, 0 failed, 0 skipped (15 total tests)
 ```
 
-We are using block number `84800456` for this testing because the contract from above(i.e. `0x07F6D65f9454EA2dff99bF8C2C1De918Fcd27416` was deployed on block `84800456`. If we tried to run our tests with block below this, it would fail such as:
+### Pin to a Specific Block
+
+For reproducible tests, you can pin to a specific block number:
 
 ```bash
-forge test --fork-url https://mainnet.hashio.io/api --fork-block-number 84800455
+forge test --fork-url $HEDERA_RPC_URL --fork-block-number 29970059
+```
+
+This ensures your tests always run against the same blockchain state.
+
+We are using block number `29970059` for this testing because the contract from above(i.e. `0xfC7D2FB1D5a9Be5D6182cBf3F283140d007CdcD4` was deployed on block `29970059`. If we tried to run our tests with block below this, it would fail such as:
+
+```bash
+forge test --fork-url $HEDERA_RPC_URL --fork-block-number 29970058
 ```
 
 This would fail with something like:
 
 ```bash
-Ran 1 test for test/MyToken.t.sol:MyTokenTest
+Ran 1 test for test/ERC20Token.t.sol:ERC20TokenForkTest
 [FAIL: EvmError: Revert] setUp() (gas: 0)
-Suite result: FAILED. 0 passed; 1 failed; 0 skipped; finished in 5.22ms (0.00ns CPU time)
+Suite result: FAILED. 0 passed; 1 failed; 0 skipped; finished in 3.60s (0.00ns CPU time)
 
-Ran 1 test suite in 330.90ms (5.22ms CPU time): 0 tests passed, 1 failed, 0 skipped (1 total tests)
+Ran 1 test suite in 3.87s (3.60s CPU time): 0 tests passed, 1 failed, 0 skipped (1 total tests)
 
 Failing tests:
-Encountered 1 failing test in test/MyToken.t.sol:MyTokenTest
+Encountered 1 failing test in test/ERC20Token.t.sol:ERC20TokenForkTest
 [FAIL: EvmError: Revert] setUp() (gas: 0)
 
 Encountered a total of 1 failing tests, 0 tests succeeded
 ```
 
+---
+
+## Understanding Fork Testing with Deployed Contracts
+
+### Why Test Against Deployed Contracts?
+
+1. **Real-world state** - Test against actual balances, allowances, and state
+2. **No deployment costs** - Don't spend gas deploying for every test run
+3. **Impersonation** - Act as any account (even the contract owner) without their private key
+4. **Safe experimentation** - Try anything without affecting the real network
+
+### How Impersonation Works in Foundry
+
+Foundry provides cheatcodes for impersonation:
+
+```solidity
+// Impersonate an address for the next call
+vm.prank(someAddress);
+token.transfer(recipient, amount);
+
+// Impersonate an address for multiple calls
+vm.startPrank(someAddress);
+token.transfer(recipient1, amount1);
+token.transfer(recipient2, amount2);
+vm.stopPrank();
+```
+
+### Funding Accounts with `vm.deal`
+
+Fund test accounts with native tokens:
+
+```solidity
+// Fund an account with 100 ETH/HBAR
+vm.deal(accountAddress, 100 ether);
+```
+
+### Local vs. Remote State
+
+| Action                     | Affects Local Fork | Affects Testnet |
+| -------------------------- | ------------------ | --------------- |
+| Read balances              | ✅ (cached)        | ❌ (read-only)  |
+| Transfer tokens            | ✅                 | ❌              |
+| Mint new tokens            | ✅                 | ❌              |
+| Deploy new contracts       | ✅                 | ❌              |
+| Impersonate accounts       | ✅                 | ❌              |
+| Changes persist after test | ❌ (reset)         | N/A             |
+
+---
+
 ## Further Learning & Next Steps
 
-Want to take your local development setup even further? Here are some excellent references to help you dive deeper into Foundry:
-
-1. [**How to Mint and Burn an ERC-721 Token (Part 1)**](/hedera/tutorials/smart-contracts/foundry/how-to-mint-and-burn-an-erc-721-token-using-foundry-part-1)\
-   Learn how to create a basic ERC-721 NFT, mint it, and burn it on Hedera.
-2. [How to Write Tests in Solidity (Part 2)](/hedera/tutorials/smart-contracts/foundry/how-to-write-tests-in-solidity-part-2)\
-   Learn how to start writing tests in Foundry using Solidity
-3. [Learn more about Hedera Forking repo](https://github.com/hashgraph/hedera-forking)
-4. [Learn more about advanced testing with Foundry](https://getfoundry.sh/forge/advanced-testing/overview)
+1. [**Forking Hedera Network for Local Testing**](/hedera/core-concepts/smart-contracts/forking-hedera-network-for-local-testing)\
+   Deep dive into how Hedera forking works under the hood
+2. [**How to Fork Hedera with Hardhat (Part 1)**](/hedera/tutorials/smart-contracts/how-to-fork-the-hedera-network-with-hardhat-basic-erc20)\
+   Learn fork testing with Hardhat framework
+3. [**How to Fork Hedera with Hardhat (Part 2)**](/hedera/tutorials/smart-contracts/how-to-fork-the-hedera-network-with-hardhat-advanced-hts)\
+   Learn to work with HTS System Contracts and understand emulation limitations
+4. [**hedera-forking Repository**](https://github.com/hashgraph/hedera-forking)\
+   Explore examples and documentation
 
 <Columns cols={2}>
-  <Card title="Writer: Kiran, Developer Advocate" arrow>
+  <Card title="Writer: Kiran Pachhai, Developer Advocate" arrow>
     [GitHub](https://github.com/kpachhai) |
     [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
   </Card>

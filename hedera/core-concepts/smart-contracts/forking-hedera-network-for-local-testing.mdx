@@ -327,26 +327,25 @@ The Hardhat plugin intercepts JSON-RPC calls (`eth_getCode` and `eth_getStorageA
 **Key setup:**
 
 - Install `@hashgraph/system-contracts-forking`
-- Import the plugin in `hardhat.config. js`
+- Import the plugin in `hardhat.config.ts`
 - Configure `chainId` and `workerPort` in forking config
 
 **Configuration example:**
 
-```javascript
-require("@hashgraph/system-contracts-forking/plugin");
+```typescript
+import "@hashgraph/system-contracts-forking/plugin";
 
-module.exports = {
-  networks: {
-    hardhat: {
-      forking: {
-        url: "https://mainnet.hashio.io/api",
-        blockNumber: 70531900,
-        chainId: 295, // Required:  295 (mainnet), 296 (testnet), 297 (previewnet)
-        workerPort: 1235 // Required: Any free port
-      }
-    }
+// In your hardhat.config.ts
+hardhat:  {
+  forking: {
+    url: "https://mainnet.hashio.io/api",
+    blockNumber: 70531900,
+    // @ts-ignore - custom properties for hedera-forking plugin
+    chainId:  295, // Required: 295 (mainnet), 296 (testnet), 297 (previewnet)
+    // @ts-ignore
+    workerPort:  1235 // Required: Any free port
   }
-};
+}
 ```
 
 ---

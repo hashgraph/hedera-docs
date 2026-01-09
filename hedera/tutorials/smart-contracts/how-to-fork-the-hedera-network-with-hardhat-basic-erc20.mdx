@@ -1,0 +1,814 @@
+---
+title: "How to Fork the Hedera Network with Hardhat - Basic ERC-20 Contract (Part 1)"
+---
+
+In this tutorial, you'll fork Hedera testnet using Hardhat and interact with a basic ERC-20 token on the forked network. This is an introductory guide to local fork testing with Hardhat using TypeScript.
+
+This guide shows how to:
+
+- Fork Hedera testnet using Hardhat
+- Deploy an ERC-20 contract to Hedera testnet
+- Run Hardhat tests on a fork of Hedera testnet
+- Read and interact with an existing ERC-20 contract by its EVM address (e.g., `balanceOf`, `name`, `symbol`, `transfer`), with minimal setup
+- The process to set up and run tests is similar for mainnet as well
+
+References:
+
+- Repo: [hashgraph/hedera-forking](https://github.com/hashgraph/hedera-forking)
+- Readme sections: Hardhat plugin, Running your Tests
+- Examples: [`examples/hardhat-hts/`](https://github.com/hashgraph/hedera-forking/tree/main/examples/hardhat-hts)
+
+<Info>
+  For a deeper understanding of how Hedera forking works and its limitations,
+  see [Forking Hedera Network for Local
+  Testing](/hedera/core-concepts/smart-contracts/forking-hedera-network-for-local-testing).
+</Info>
+
+<Note>
+  You can take a look at the complete code in the [**basic-erc20-fork-test
+  repository**](https://github.com/hedera-dev/tutorial-hedera-fork-testing/tree/main/hardhat/basic-erc20-fork-test).
+</Note>
+
+---
+
+## Prerequisites
+
+- Node.js (v18 or later) and npm
+- ECDSA account from the [Hedera Portal](https://portal.hedera.com/)
+- Basic understanding of Solidity and TypeScript
+- A Hedera JSON-RPC endpoint:
+  - mainnet: `https://mainnet. hashio.io/api`
+  - testnet: `https://testnet.hashio. io/api`
+
+---
+
+## Table of Contents
+
+1. [Step 1: Project Setup](#step-1:-project-setup)
+2. [Step 2: Create the ERC-20 Contract and Deploy to Testnet](#step-2:-create-the-erc-20-contract-and-deploy-to-testnet)
+3. [Step 3: Write Tests for the Forked Network](#step-3:-write-tests-for-the-forked-network)
+4. [Step 4: Run Tests on the Forked Network](#step-4:-run-tests-on-the-forked-network)
+
+---
+
+## Step 1: Project Setup
+
+### Initialize Project
+
+Create a new directory and initialize the project:
+
+```bash
+mkdir basic-erc20-fork-test
+cd basic-erc20-fork-test
+npm init -y
+```
+
+### Install Dependencies
+
+Create or update your `package.json` with all required dependencies:
+
+```json package.json
+{
+  "name": "basic-erc20-fork-test",
+  "version": "1.0.0",
+  "description": "Hedera Fork Testing with Hardhat",
+  "private": true,
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:testnet": "hardhat run scripts/deploy.ts --network hederaTestnet"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@hashgraph/system-contracts-forking": "0.1.2",
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
+    "@nomicfoundation/hardhat-ethers": "^3.0.0",
+    "@nomicfoundation/hardhat-ignition": "^0.15.16",
+    "@nomicfoundation/ignition-core": "^0.15.15",
+    "@nomicfoundation/hardhat-ignition-ethers": "^0.15.0",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.0",
+    "@nomicfoundation/hardhat-toolbox": "5.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.0",
+    "@openzeppelin/contracts": "^5.0.0",
+    "@typechain/ethers-v6": "^0.5.0",
+    "@typechain/hardhat": "^9.0.0",
+    "@types/chai": "^4.2.0",
+    "@types/mocha": ">=9.1.0",
+    "@types/node": "^20.0.0",
+    "chai": "^4.2.0",
+    "hardhat": "2.22.19",
+    "hardhat-gas-reporter": "^1.0.8",
+    "solidity-coverage": "^0.8.1",
+    "ts-node": "^10.9.0",
+    "typechain": "^8.3.0",
+    "typescript": "^5.0.0"
+  }
+}
+```
+
+Then install all dependencies:
+
+```bash
+npm install --legacy-peer-deps
+```
+
+<Warning>
+
+**Why these specific versions?**
+
+The `@hashgraph/system-contracts-forking` plugin requires **Hardhat 2.22.x**. Newer versions of Hardhat (2.28+) introduced breaking changes that cause a `No known hardfork for execution` error when forking Hedera networks.
+
+- **`hardhat@2.22.19`** - Last compatible version before breaking changes
+- **`@nomicfoundation/hardhat-toolbox@5.0.0`** - Compatible with Hardhat 2.22.x
+- **`@hashgraph/system-contracts-forking@0.1.2`** - The Hedera forking plugin
+- **`--legacy-peer-deps`** - Required to resolve dependency conflicts between these versions
+
+</Warning>
+
+Verify Hardhat is installed correctly:
+
+```bash
+npx hardhat --version
+# Should output: 2.22.19
+```
+
+### Create Project Structure
+
+Create the necessary directories:
+
+```bash
+mkdir contracts test scripts
+```
+
+### Configure TypeScript
+
+Create `tsconfig.json` in your project root:
+
+```json tsconfig.json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist",
+    "resolveJsonModule": true
+  },
+  "include": ["./scripts", "./test", "./typechain-types"],
+  "files": ["./hardhat.config.ts"]
+}
+```
+
+### Configure Hardhat
+
+Create `hardhat.config.ts` in your project root. This file must exist before you can run any Hardhat commands:
+
+```typescript hardhat.config.ts
+import { HardhatUserConfig, vars } from "hardhat/config";
+import "@nomicfoundation/hardhat-toolbox";
+import "@hashgraph/system-contracts-forking/plugin";
+
+// Load configuration variables
+const HEDERA_RPC_URL = vars.get("HEDERA_RPC_URL");
+const HEDERA_PRIVATE_KEY = vars.get("HEDERA_PRIVATE_KEY");
+
+const config: HardhatUserConfig = {
+  solidity: "0.8.33",
+  networks: {
+    // Network for deploying to real testnet
+    hederaTestnet: {
+      url: HEDERA_RPC_URL,
+      accounts: [HEDERA_PRIVATE_KEY],
+      chainId: 296
+    },
+    // Local fork of testnet for testing
+    hardhat: {
+      forking: {
+        url: HEDERA_RPC_URL,
+        // Pin to a specific block for reproducible tests
+        // Update this after deploying your contract
+        blockNumber: 29900000,
+        // @ts-ignore - custom properties for hedera-forking plugin
+        chainId: 296,
+        // @ts-ignore
+        workerPort: 10001
+      }
+    }
+  }
+};
+
+export default config;
+```
+
+**Important configuration notes:**
+
+- **`HEDERA_RPC_URL`** - Loaded from Hardhat configuration variables
+- **`HEDERA_PRIVATE_KEY`** - Loaded securely from configuration variables
+- **`hederaTestnet`** - Network configuration for deploying to real testnet
+- **`hardhat.forking`** - Configuration for forking testnet locally
+- **`blockNumber`** - Pin to a block where your deployed contract exists
+- **`chainId:  296`** - Required for testnet (295 for mainnet)
+- **`workerPort: 10001`** - Any free port for the worker that intercepts Hardhat calls
+- **`@ts-ignore`** - Required because `chainId` and `workerPort` are custom properties not in Hardhat's type definitions
+
+### Set Configuration Variables
+
+Now that `hardhat.config.ts` exists, you can set the configuration variables. Hardhat allows you to securely store sensitive values using configuration variables:
+
+```bash
+npx hardhat vars set HEDERA_RPC_URL
+```
+
+When prompted, enter: `https://testnet.hashio.io/api`
+
+```bash
+npx hardhat vars set HEDERA_PRIVATE_KEY
+```
+
+When prompted, enter the **HEX Encoded Private Key** for your **ECDSA account** from the [Hedera Portal](https://portal.hedera.com/).
+
+<Warning>
+  Make sure your ECDSA account exists on **testnet** and has sufficient HBAR for
+  deployment. You can fund your testnet account using the [Hedera
+  Portal](https://portal.hedera.com/).
+</Warning>
+
+You can verify your variables are set correctly:
+
+```bash
+npx hardhat vars list
+```
+
+---
+
+## Step 2: Create the ERC-20 Contract and Deploy to Testnet
+
+### Create the Contract
+
+Create a new file `contracts/ERC20Token.sol`:
+
+```solidity contracts/ERC20Token.sol
+// SPDX-License-Identifier: MIT
+// Compatible with OpenZeppelin Contracts ^5.0.0
+pragma solidity ^0.8.33;
+
+import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+
+contract ERC20Token is ERC20, Ownable {
+    constructor(address initialOwner, address recipient)
+        ERC20("MyToken", "MTK")
+        Ownable(initialOwner)
+    {
+        _mint(recipient, 10000 * 10 ** decimals());
+    }
+
+    function mint(address to, uint256 amount) public onlyOwner {
+        _mint(to, amount);
+    }
+}
+```
+
+This contract:
+
+- Creates a basic ERC-20 token named "MyToken" with symbol "MTK"
+- Mints 10,000 tokens to a recipient on deployment
+- Has an `onlyOwner` `mint` function for additional minting
+
+### Compile the Contract
+
+```bash
+npx hardhat compile
+```
+
+This will also generate TypeScript types in the `typechain-types` directory.
+
+### Create Deployment Script
+
+Create a new file `scripts/deploy.ts`:
+
+```typescript scripts/deploy.ts
+import { ethers } from "hardhat";
+
+async function main(): Promise<void> {
+  const [deployer] = await ethers.getSigners();
+
+  console.log("Deploying contracts with the account:", deployer.address);
+
+  const balance = await ethers.provider.getBalance(deployer.address);
+  console.log("Account balance:", ethers.formatEther(balance), "HBAR");
+
+  // Deploy ERC20Token with deployer as both owner and initial recipient
+  const ERC20Token = await ethers.getContractFactory("ERC20Token");
+  const token = await ERC20Token.deploy(deployer.address, deployer.address);
+
+  await token.waitForDeployment();
+
+  const tokenAddress = await token.getAddress();
+  console.log("ERC20Token deployed to:", tokenAddress);
+  console.log(
+    "View on HashScan: https://hashscan.io/testnet/contract/" + tokenAddress
+  );
+
+  // Get deployment block number for fork testing reference
+  const blockNumber = await ethers.provider.getBlockNumber();
+  console.log("Deployed at block number:", blockNumber);
+  console.log("\n=== IMPORTANT ===");
+  console.log("Save this contract address for your fork tests!");
+  console.log(
+    "Update blockNumber in hardhat. config.ts to >=",
+    blockNumber,
+    "when forking"
+  );
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
+```
+
+### Deploy to Testnet
+
+Deploy your contract to Hedera testnet:
+
+```bash
+npx hardhat run scripts/deploy.ts --network hederaTestnet
+```
+
+You should see output similar to:
+
+```bash
+Deploying contracts with the account: 0xA98556A4deeB07f21f8a66093989078eF86faa30
+Account balance: 63051.15495643 HBAR
+ERC20Token deployed to: 0xea606E2D68Ff9F211756b8cfd9026a7Eb76845C9
+View on HashScan: https://hashscan.io/testnet/contract/0xea606E2D68Ff9F211756b8cfd9026a7Eb76845C9
+Deployed at block number: 29965248
+
+=== IMPORTANT ===
+Save this contract address for your fork tests!
+Update blockNumber in hardhat. config.ts to >= 29965248 when forking
+```
+
+<Warning>
+  Save the deployed contract address and block number! You'll need these for
+  your fork tests. The contract must exist at the block you're forking from.
+</Warning>
+
+### Update Hardhat Config with Deployment Block
+
+After deployment, update your `hardhat.config.ts` with the block number from the deployment output:
+
+```typescript
+blockNumber: 29965248, // <-- Update this with your deployment block or higher
+```
+
+We have already deployed this ERC-20 contract on testnet at [https://hashscan.io/testnet/contract/0xea606E2D68Ff9F211756b8cfd9026a7Eb76845C9](https://hashscan.io/testnet/contract/0xea606E2D68Ff9F211756b8cfd9026a7Eb76845C9) so we will be using this for the remainder of this exercise.
+
+---
+
+## Step 3: Write Tests for the Forked Network
+
+Now we'll write tests that interact with the already deployed contract on the forked testnet. This is the real power of fork testing - you can test against real deployed contracts without spending gas or affecting the live network.
+
+Create a new file `test/ERC20Token.test.ts`:
+
+```typescript test/ERC20Token.test.ts
+import { expect } from "chai";
+import { ethers, network } from "hardhat";
+import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
+import { ERC20Token } from "../typechain-types";
+import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
+
+describe("ERC20Token - Forked Network Tests", function () {
+  // Your deployed testnet contract:
+  // https://hashscan.io/testnet/contract/0xea606E2D68Ff9F211756b8cfd9026a7Eb76845C9
+  const DEPLOYED_CONTRACT = "0xea606E2D68Ff9F211756b8cfd9026a7Eb76845C9"; // Update with your deployed address
+
+  let token: ERC20Token;
+  let realOwner: HardhatEthersSigner;
+  let alice: HardhatEthersSigner;
+  let bob: HardhatEthersSigner;
+
+  /**
+   * Fixture to set up the test environment.
+   * Using fixtures ensures each test starts with a clean state.
+   */
+  async function setupFixture(): Promise<{
+    token: ERC20Token;
+    realOwner: HardhatEthersSigner;
+    ownerAddress: string;
+    alice: HardhatEthersSigner;
+    bob: HardhatEthersSigner;
+  }> {
+    // Bind to the deployed contract on the forked network
+    const tokenContract = await ethers.getContractAt(
+      "ERC20Token",
+      DEPLOYED_CONTRACT
+    );
+
+    // Discover the real on-chain owner (from Ownable)
+    const ownerAddress = await tokenContract.owner();
+
+    // Impersonate the real owner so we can call onlyOwner functions
+    await network.provider.request({
+      method: "hardhat_impersonateAccount",
+      params: [ownerAddress]
+    });
+    const impersonatedOwner = await ethers.getSigner(ownerAddress);
+
+    // Fund the impersonated account with ETH for gas
+    await network.provider.send("hardhat_setBalance", [
+      ownerAddress,
+      "0x56BC75E2D63100000" // 100 ETH in hex
+    ]);
+
+    // Get local test accounts for recipients
+    const [, aliceSigner, bobSigner] = await ethers.getSigners();
+
+    // Fund local accounts
+    await network.provider.send("hardhat_setBalance", [
+      aliceSigner.address,
+      "0x56BC75E2D63100000"
+    ]);
+    await network.provider.send("hardhat_setBalance", [
+      bobSigner.address,
+      "0x56BC75E2D63100000"
+    ]);
+
+    return {
+      token: tokenContract as ERC20Token,
+      realOwner: impersonatedOwner,
+      ownerAddress,
+      alice: aliceSigner,
+      bob: bobSigner
+    };
+  }
+
+  beforeEach(async function () {
+    const fixture = await loadFixture(setupFixture);
+    token = fixture.token;
+    realOwner = fixture.realOwner;
+    alice = fixture.alice;
+    bob = fixture.bob;
+  });
+
+  /* =========================
+          Basic Info
+     ========================= */
+
+  describe("Token Information (Reading from Forked State)", function () {
+    it("should read name and symbol from deployed contract", async function () {
+      expect(await token.name()).to.equal("MyToken");
+      expect(await token.symbol()).to.equal("MTK");
+    });
+
+    it("should read decimals from deployed contract", async function () {
+      expect(await token.decimals()).to.equal(18n);
+    });
+
+    it("should read total supply from deployed contract", async function () {
+      const totalSupply = await token.totalSupply();
+      console.log(
+        `Total supply on testnet: ${ethers.formatEther(totalSupply)} MTK`
+      );
+      expect(totalSupply).to.be.gt(0n);
+    });
+
+    it("should read owner balance from deployed contract", async function () {
+      const ownerAddress = await token.owner();
+      const balance = await token.balanceOf(ownerAddress);
+      console.log(
+        `Owner (${ownerAddress}) balance: ${ethers.formatEther(balance)} MTK`
+      );
+      expect(balance).to.be.gt(0n);
+    });
+  });
+
+  /* =========================
+          Ownership
+     ========================= */
+
+  describe("Ownership (Testing with Impersonation)", function () {
+    it("should reject minting from non-owner", async function () {
+      // Alice (not the owner) tries to mint → should revert
+      await expect(
+        token.connect(alice).mint(alice.address, ethers.parseEther("100"))
+      ).to.be.revertedWithCustomError(token, "OwnableUnauthorizedAccount");
+    });
+
+    it("should allow real owner to mint new tokens", async function () {
+      const balanceBefore = await token.balanceOf(alice.address);
+
+      // Use the impersonated real owner to mint
+      await token
+        .connect(realOwner)
+        .mint(alice.address, ethers.parseEther("500"));
+
+      const balanceAfter = await token.balanceOf(alice.address);
+      expect(balanceAfter).to.equal(balanceBefore + ethers.parseEther("500"));
+    });
+  });
+
+  /* =========================
+          Transfers
+     ========================= */
+
+  describe("Transfers (Modifying Forked State)", function () {
+    it("should transfer tokens from owner to alice", async function () {
+      const amount = ethers.parseEther("100");
+      const balanceBefore = await token.balanceOf(alice.address);
+
+      // Transfer from impersonated owner
+      await token.connect(realOwner).transfer(alice.address, amount);
+
+      const balanceAfter = await token.balanceOf(alice.address);
+      expect(balanceAfter).to.equal(balanceBefore + amount);
+    });
+
+    it("should handle multiple transfers correctly", async function () {
+      // Mint tokens to alice first
+      await token
+        .connect(realOwner)
+        .mint(alice.address, ethers.parseEther("1000"));
+
+      const aliceInitial = await token.balanceOf(alice.address);
+      const bobInitial = await token.balanceOf(bob.address);
+
+      // Alice transfers to bob
+      await token
+        .connect(alice)
+        .transfer(bob.address, ethers.parseEther("300"));
+
+      expect(await token.balanceOf(alice.address)).to.equal(
+        aliceInitial - ethers.parseEther("300")
+      );
+      expect(await token.balanceOf(bob.address)).to.equal(
+        bobInitial + ethers.parseEther("300")
+      );
+    });
+
+    it("should fail transfer with insufficient balance", async function () {
+      // Bob has no tokens initially, should fail
+      await expect(
+        token.connect(bob).transfer(alice.address, ethers.parseEther("100"))
+      ).to.be.revertedWithCustomError(token, "ERC20InsufficientBalance");
+    });
+  });
+
+  /* =========================
+        Allowances
+     ========================= */
+
+  describe("Allowances", function () {
+    it("should approve and check allowance", async function () {
+      // Mint tokens to alice
+      await token
+        .connect(realOwner)
+        .mint(alice.address, ethers.parseEther("1000"));
+
+      // Alice approves bob
+      await token.connect(alice).approve(bob.address, ethers.parseEther("500"));
+
+      expect(await token.allowance(alice.address, bob.address)).to.equal(
+        ethers.parseEther("500")
+      );
+    });
+
+    it("should transfer using transferFrom after approval", async function () {
+      // Mint tokens to alice
+      await token
+        .connect(realOwner)
+        .mint(alice.address, ethers.parseEther("1000"));
+
+      // Alice approves bob
+      await token.connect(alice).approve(bob.address, ethers.parseEther("500"));
+
+      const aliceBefore = await token.balanceOf(alice.address);
+
+      // Bob transfers from alice to himself
+      await token
+        .connect(bob)
+        .transferFrom(alice.address, bob.address, ethers.parseEther("200"));
+
+      expect(await token.balanceOf(bob.address)).to.equal(
+        ethers.parseEther("200")
+      );
+      expect(await token.balanceOf(alice.address)).to.equal(
+        aliceBefore - ethers.parseEther("200")
+      );
+      expect(await token.allowance(alice.address, bob.address)).to.equal(
+        ethers.parseEther("300")
+      );
+    });
+
+    it("should fail transferFrom without approval", async function () {
+      // Mint tokens to alice but no approval for bob
+      await token
+        .connect(realOwner)
+        .mint(alice.address, ethers.parseEther("1000"));
+
+      await expect(
+        token
+          .connect(bob)
+          .transferFrom(alice.address, bob.address, ethers.parseEther("100"))
+      ).to.be.revertedWithCustomError(token, "ERC20InsufficientAllowance");
+    });
+  });
+
+  /* =========================
+       Supply Changes
+     ========================= */
+
+  describe("Supply Changes", function () {
+    it("should track supply changes after minting", async function () {
+      const supplyBefore = await token.totalSupply();
+
+      await token
+        .connect(realOwner)
+        .mint(alice.address, ethers.parseEther("5000"));
+
+      const supplyAfter = await token.totalSupply();
+      expect(supplyAfter).to.equal(supplyBefore + ethers.parseEther("5000"));
+    });
+  });
+
+  /* =========================
+      Fork Verification
+     ========================= */
+
+  describe("Fork Network Verification", function () {
+    it("should be connected to a forked network", async function () {
+      const blockNumber = await ethers.provider.getBlockNumber();
+      console.log(`Current fork block number: ${blockNumber}`);
+      expect(blockNumber).to.be.gt(0);
+    });
+
+    it("should be interacting with real deployed contract", async function () {
+      // Verify we're reading from the actual deployed contract
+      const contractCode = await ethers.provider.getCode(DEPLOYED_CONTRACT);
+      expect(contractCode).to.not.equal("0x");
+      console.log(
+        `Contract at ${DEPLOYED_CONTRACT} has ${contractCode.length} bytes of code`
+      );
+    });
+
+    it("should preserve original state for each test (via fixtures)", async function () {
+      // Each test starts fresh because of loadFixture's snapshot/revert
+      const ownerAddress = await token.owner();
+      const originalBalance = await token.balanceOf(ownerAddress);
+
+      // This change only affects this test
+      await token
+        .connect(realOwner)
+        .transfer(alice.address, ethers.parseEther("100"));
+
+      // In the next test, the balance will be back to original
+      console.log(
+        `Original owner balance:  ${ethers.formatEther(originalBalance)} MTK`
+      );
+    });
+  });
+});
+```
+
+**Key points about these tests:**
+
+- **TypeScript types** - Uses generated types from `typechain-types` for type safety
+- **Uses deployed contract** - Tests bind to the already deployed contract using `getContractAt`
+- **Impersonation** - Uses `hardhat_impersonateAccount` to act as the real owner
+- **Reads real state** - Token info, balances, etc. come from the actual testnet deployment
+- **Local modifications** - All transfers, mints happen only on the local fork
+- **No testnet changes** - The real testnet is never modified
+- **Uses fixtures** - `loadFixture` ensures each test starts with a clean state
+
+---
+
+## Step 4: Run Tests on the Forked Network
+
+Run your tests against the forked Hedera testnet:
+
+```bash
+npx hardhat test
+```
+
+You should see output similar to:
+
+```bash
+  ERC20Token - Forked Network Tests
+    Token Information (Reading from Forked State)
+      ✔ should read name and symbol from deployed contract (371ms)
+      ✔ should read decimals from deployed contract
+Total supply on testnet: 10000.0 MTK
+      ✔ should read total supply from deployed contract (73ms)
+Owner (0xA98556A4deeB07f21f8a66093989078eF86faa30) balance: 10000.0 MTK
+      ✔ should read owner balance from deployed contract (78ms)
+    Ownership (Testing with Impersonation)
+      ✔ should reject minting from non-owner (89ms)
+      ✔ should allow real owner to mint new tokens (72ms)
+    Transfers (Modifying Forked State)
+      ✔ should transfer tokens from owner to alice
+      ✔ should handle multiple transfers correctly (76ms)
+      ✔ should fail transfer with insufficient balance
+    Allowances
+      ✔ should approve and check allowance (85ms)
+      ✔ should transfer using transferFrom after approval
+      ✔ should fail transferFrom without approval
+    Supply Changes
+      ✔ should track supply changes after minting
+    Fork Network Verification
+Current fork block number: 29965248
+      ✔ should be connected to a forked network
+Contract at 0xea606E2D68Ff9F211756b8cfd9026a7Eb76845C9 has 9016 bytes of code
+      ✔ should be interacting with real deployed contract
+Original owner balance:  10000.0 MTK
+      ✔ should preserve original state for each test (via fixtures)
+
+
+  16 passing (2s)
+```
+
+### Pin to a Specific Block
+
+For reproducible tests, make sure the `blockNumber` in your `hardhat.config.ts` is set to a block where your contract exists. If you try to fork at a block before your contract was deployed, you'll see an error because the contract doesn't exist yet at that block.
+
+---
+
+## Understanding Fork Testing with Deployed Contracts
+
+### Why Test Against Deployed Contracts?
+
+1. **Real-world state** - Test against actual balances, allowances, and state
+2. **No deployment costs** - Don't spend gas deploying for every test run
+3. **Impersonation** - Act as any account (even the contract owner) without their private key
+4. **Safe experimentation** - Try anything without affecting the real network
+
+### How Impersonation Works
+
+```typescript
+// Tell Hardhat to let us sign as this address
+await network.provider.request({
+  method: "hardhat_impersonateAccount",
+  params: [someAddress]
+});
+
+// Now we can get a signer for that address
+const impersonatedSigner = await ethers.getSigner(someAddress);
+
+// Use it to call functions as if we were that account
+await token.connect(impersonatedSigner).transfer(recipient, amount);
+```
+
+### Local vs. Remote State
+
+| Action                     | Affects Local Fork | Affects Testnet |
+| -------------------------- | ------------------ | --------------- |
+| Read balances              | ✅ (cached)        | ❌ (read-only)  |
+| Transfer tokens            | ✅                 | ❌              |
+| Mint new tokens            | ✅                 | ❌              |
+| Deploy new contracts       | ✅                 | ❌              |
+| Impersonate accounts       | ✅                 | ❌              |
+| Changes persist after test | ❌ (reset)         | N/A             |
+
+---
+
+## Next Steps
+
+Now that you understand fork testing with deployed contracts, you can:
+
+1. **Test contract upgrades** - Fork, deploy upgraded version, compare behavior
+2. **Simulate user interactions** - Impersonate real users to test edge cases
+3. **Move to Part 2** - Learn how to work with HTS System Contracts
+
+<Info>
+  In [Part
+  2](/hedera/tutorials/smart-contracts/how-to-fork-the-hedera-network-with-hardhat-advanced-hts),
+  you'll learn how to interact with the Hedera Token Service (HTS) using system
+  contract precompiles, including interacting with existing HTS tokens and
+  understanding the limitations of the forking emulation layer.
+</Info>
+
+---
+
+## Further Learning & Next Steps
+
+1. [**How to Fork Hedera with Hardhat (Part 2)**](/hedera/tutorials/smart-contracts/how-to-fork-the-hedera-network-with-hardhat-advanced-hts)\
+   Learn to work with HTS System Contracts and understand emulation limitations
+
+2. [**Forking Hedera Network for Local Testing**](/hedera/core-concepts/smart-contracts/forking-hedera-network-for-local-testing)\
+   Deep dive into how Hedera forking works under the hood
+
+3. [**How to Fork Hedera with Foundry**](/hedera/tutorials/smart-contracts/foundry/how-to-fork-the-hedera-network-with-foundry-basic-erc20)\
+   Learn fork testing with Foundry framework
+
+4. [**hedera-forking Repository**](https://github.com/hashgraph/hedera-forking)\
+   Explore examples and documentation
+
+<Columns cols={2}>
+  <Card title="Writer:  Kiran Pachhai, Developer Advocate" arrow>
+    [GitHub](https://github.com/kpachhai) |
+    [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
+  </Card>
+</Columns>

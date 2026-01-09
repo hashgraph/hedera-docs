@@ -36,6 +36,41 @@ The lifecycle of a transaction in the Hedera ecosystem begins when a client crea
 
 The receiving node validates (for instance, confirms the paying account has sufficient balance to pay the fee) the transaction and, if validation is successful, submits the transaction to the Hedera network for consensus by adding the transaction to an event and gossiping that event to another node. Quickly, that event flows out to all the other nodes. The network receives this transaction exponentially fast via the [gossip about gossip protocol](/hedera/core-concepts/hashgraph-consensus-algorithms/gossip-about-gossip). The consensus timestamp for an event (and so the transactions within) is calculated by each node independently calculating the median of the times that the network nodes received that event. You may find more information on how the consensus timestamp is calculated [here](https://docs.hedera.com/docs/hashgraph-overview#section-fair-timestamps). The hashgraph algorithm delivers the finality of consensus. Once assigned a consensus timestamp the transaction is then applied to the consensus state in the order determined by each transaction’s consensus timestamp. At that point, the transaction fees are also processed. In this manner, every node in the network maintains a consensus state because they all apply the same transactions in the same order. Each node also creates and temporarily stores receipts/records in support of the client, subsequently querying for the status of a transaction.
 
+## Transaction Fees
+
+Every transaction on the Hedera network has an associated fee to compensate the network for processing and state storage. With the implementation of **[HIP-1259](https://hips.hedera.com/hip/hip-1259)**, the mechanism for handling these fees has been significantly streamlined to improve network efficiency and simplify transaction records for users.
+
+### Fee Collection and Distribution ([HIP-1259](https://hips.hedera.com/hip/hip-1259))
+
+Previously, transaction fees were immediately split and distributed to multiple accounts with every transaction. This immediate distribution created challenges. For a simple crypto transfer between two accounts, the system must read and update up to six accounts: the sender, receiver, submitting node, `0.0.98`, `0.0.800`, and `0.0.801`. This increases processing overhead and slows performance. In the block stream, every transaction must record balance changes for all these accounts, inflating data size and storage costs. Users viewing transactions on explorers like HashScan see a complex web of transfers, which can be confusing even with visualizations.
+
+The new system introduces the **Fee Collection Account (0.0.802)**, a network-controlled account that consolidates all transaction fees.
+
+**How it Works:**
+
+1.  **Collection**: When a transaction is processed, the entire fee is transferred in a single payment to the Fee Collection Account (`0.0.802`).
+2.  **Distribution**: Once per day, at the end of each staking period, a single, large synthetic transaction distributes the accumulated fees from the `0.0.802` account to the appropriate destinations, including node operator rewards, staking rewards (`0.0.800`), node rewards (`0.0.801`), and the network treasury (`0.0.98`).
+
+<Frame>
+  <img src="/images/core-concepts/transactions-and-queries/fee-collection-account-flow.png" />
+</Frame>
+
+This change simplifies the process without altering the actual cost of transactions for users.
+
+| Aspect | Before HIP-1259 | After HIP-1259 |
+| :--- | :--- | :--- |
+| **Fee Distribution** | Immediate, per-transaction splits to multiple accounts. | Consolidated into a single account (`0.0.802`) and distributed daily. |
+| **Transaction Record** | Shows multiple fee-related transfers. | Shows a single, clear fee transfer to `0.0.802`. |
+| **Network Overhead** | Higher, due to multiple balance updates per transaction. | Lower, improving overall network throughput. |
+| **Block Stream** | Larger and more complex. | Smaller and more efficient, reducing costs for mirror nodes. |
+
+<Info>
+  #### **Key Takeaway**
+
+  This enhancement **does not change the amount you pay** for transactions. It only optimizes how the network processes the fees behind the scenes, resulting in a cleaner experience for users and a more efficient network for everyone.
+</Info>
+
+
 ## Transaction Types
 
 ### Standard Transactions

@@ -9,7 +9,7 @@ Unlike regular smart contracts, hooks execute in a special EVM context where `ad
 
 ## Core Concepts
 
-Hiero Hooks are a mechanism for **Account Abstraction** on Hedera, enabling custom validation and logic without migrating entire applications to the EVM. A hook is a small piece of Solidity logic that is **triggered only when referenced/specified in a `TransferTransaction`**—not automatically.
+Hiero Hooks are a mechanism for [**Account Abstraction**](/hedera/support-and-community/glossary#account-abstraction) on Hedera, enabling custom validation and logic without migrating entire applications to the EVM. A hook is a small piece of Solidity logic that is **triggered only when referenced/specified in a `TransferTransaction`**—not automatically.
 
 Think of it like a webhook for the ledger itself. Instead of waiting for an off-chain call, the hook runs inside the network when a transaction explicitly references it. Hooks can check conditions before execution, update state, log data, or stop a transfer if validation fails.
 

@@ -604,6 +604,7 @@
                     "pages": [
                       "hedera/sdks-and-apis/sdks/transactions",
                       "hedera/sdks-and-apis/sdks/transactions/create-a-batch-transaction",
+                      "hedera/sdks-and-apis/sdks/transactions/create-a-hookstore-transaction",
                       "hedera/sdks-and-apis/sdks/transactions/transaction-id",
                       "hedera/sdks-and-apis/sdks/transactions/modify-transaction-fields",
                       "hedera/sdks-and-apis/sdks/transactions/create-an-unsigned-transaction",

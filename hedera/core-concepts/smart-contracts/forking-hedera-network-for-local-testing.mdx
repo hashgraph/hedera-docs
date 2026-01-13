@@ -190,80 +190,7 @@ sequenceDiagram
 
 ## HTS Supported Methods
 
-The emulation layer supports a subset of HTS functionality. Here's what's available:
-
-### Fungible Tokens (ERC-20 Interface)
-
-| Function                                  | Description                             |
-| ----------------------------------------- | --------------------------------------- |
-| `name()`                                  | Returns the name of the token           |
-| `symbol()`                                | Returns the symbol of the token         |
-| `decimals()`                              | Returns the decimal places of the token |
-| `totalSupply()`                           | Returns the total supply of tokens      |
-| `balanceOf(address)`                      | Returns the balance of an account       |
-| `transfer(address, uint256)`              | Transfers tokens to a recipient         |
-| `transferFrom(address, address, uint256)` | Transfers tokens on behalf of an owner  |
-| `approve(address, uint256)`               | Approves a spender to transfer tokens   |
-| `allowance(address, address)`             | Returns the remaining allowance         |
-
-### Non-Fungible Tokens (ERC-721 Interface)
-
-| Function                                  | Description                         |
-| ----------------------------------------- | ----------------------------------- |
-| `name()`                                  | Returns the token collection name   |
-| `symbol()`                                | Returns the token collection symbol |
-| `totalSupply()`                           | Returns the total amount of tokens  |
-| `balanceOf(address)`                      | Returns the number of tokens owned  |
-| `ownerOf(uint256)`                        | Returns the owner of a token        |
-| `tokenURI(uint256)`                       | Returns the URI for a token         |
-| `approve(address, uint256)`               | Approves a transfer                 |
-| `getApproved(uint256)`                    | Returns the approved address        |
-| `setApprovalForAll(address, bool)`        | Approves an operator                |
-| `isApprovedForAll(address, address)`      | Checks operator approval            |
-| `transferFrom(address, address, uint256)` | Transfers a token                   |
-
-### Association Methods (IHRC719)
-
-| Function         | Description                                    |
-| ---------------- | ---------------------------------------------- |
-| `associate()`    | Associates the calling account with the token  |
-| `dissociate()`   | Dissociates the calling account from the token |
-| `isAssociated()` | Checks if the calling account is associated    |
-
-### HTS System Contract Methods (at `0x167`)
-
-| Function                           | Status       |
-| ---------------------------------- | ------------ |
-| `createFungibleToken(...)`         | ✅ Supported |
-| `createNonFungibleToken(...)`      | ✅ Supported |
-| `mintToken(...)`                   | ✅ Supported |
-| `burnToken(...)`                   | ✅ Supported |
-| `getTokenInfo(...)`                | ✅ Supported |
-| `getFungibleTokenInfo(...)`        | ✅ Supported |
-| `getNonFungibleTokenInfo(...)`     | ✅ Supported |
-| `transferToken(...)`               | ✅ Supported |
-| `transferTokens(...)`              | ✅ Supported |
-| `transferNFT(...)`                 | ✅ Supported |
-| `transferNFTs(...)`                | ✅ Supported |
-| `transferFrom(...)`                | ✅ Supported |
-| `transferFromNFT(...)`             | ✅ Supported |
-| `associateToken(...)`              | ✅ Supported |
-| `associateTokens(...)`             | ✅ Supported |
-| `dissociateToken(...)`             | ✅ Supported |
-| `dissociateTokens(...)`            | ✅ Supported |
-| `approve(...)`                     | ✅ Supported |
-| `approveNFT(...)`                  | ✅ Supported |
-| `allowance(...)`                   | ✅ Supported |
-| `getApproved(...)`                 | ✅ Supported |
-| `isApprovedForAll(...)`            | ✅ Supported |
-| `setApprovalForAll(...)`           | ✅ Supported |
-| `getTokenKey(...)`                 | ✅ Supported |
-| `getTokenType(...)`                | ✅ Supported |
-| `getTokenExpiryInfo(...)`          | ✅ Supported |
-| `getTokenCustomFees(...)`          | ✅ Supported |
-| `getTokenDefaultFreezeStatus(...)` | ✅ Supported |
-| `getTokenDefaultKycStatus(...)`    | ✅ Supported |
-| `isToken(...)`                     | ✅ Supported |
+The emulation layer supports a subset of HTS functionality. Refer to [https://github.com/hashgraph/hedera-forking#hedera-token-service-supported-methods](https://github.com/hashgraph/hedera-forking#hedera-token-service-supported-methods) for the latest list.
 
 ---
 
@@ -347,40 +274,6 @@ hardhat:  {
   }
 }
 ```
-
----
-
-## Common Errors and Solutions
-
-### `EvmError:  InvalidFEOpcode`
-
-**Cause:** Trying to execute System Contract methods without the emulation layer enabled.
-
-**Solution:** Enable the Foundry library (`Hsc.htsSetup()`) or Hardhat plugin.
-
-### `No known hardfork for execution`
-
-**Cause:** Hardhat doesn't know the hardfork history for Hedera networks.
-
-**Solution:** Use the Hardhat plugin which automatically sets up hardfork history.
-
-### `Missing access list`
-
-**Cause:** EIP-1559 transactions missing the `accessField` when using `blockNumber`.
-
-**Solution:** The Hardhat plugin provides an empty access list automatically.
-
-### `keyExistsJson not found`
-
-**Cause:** Outdated `forge-std` dependency.
-
-**Solution:** Update with `forge update lib/forge-std`
-
-### `StateChangeDuringStaticCall` (Foundry)
-
-**Cause:** Attempting to write storage during a `view` call.
-
-**Solution:** This is handled internally by the library using `vm.store` instead of `sstore`.
 
 ---
 

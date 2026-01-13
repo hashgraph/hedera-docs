@@ -38,7 +38,7 @@ References:
 - Basic understanding of Solidity
 - A Hedera JSON-RPC endpoint:
   - mainnet: `https://mainnet.hashio.io/api`
-  - testnet: `https://testnet.hashio. io/api`
+  - testnet: `https://testnet.hashio.io/api`
 
 ---
 
@@ -97,7 +97,10 @@ HEDERA_PRIVATE_KEY=0x-your-private-key
   Replace the `0x-your-private-key` environment variable with the **HEX Encoded
   Private Key** for your **ECDSA** **account.** Note that this account **MUST**
   exist on **testnet** as we're dealing with the testnet for this exercise.
+  Also, ensure it has sufficient HBAR for deployment.
 </Warning>
+
+Note that these variables will only be used for the original deployment of the contract to the testnet. The private key is not needed for the forked tests since we will be impersonating accounts.
 
 Now, let's load these to the terminal:
 
@@ -120,21 +123,14 @@ solc = "0.8.33"
 # Add this section for Hedera testnet
 [rpc_endpoints]
 testnet = "${HEDERA_RPC_URL}"
-
-[profile.default.fuzz]
-runs = 10
-max_test_rejects = 65536
 ```
 
-Some things to keep in mind:
-
-- We have `ffi` to be true because on forked tests, the library uses curl (or PowerShell) to query Hedera Mirror Node for token state so that EVM calls like `IERC721.ownerOf()` can work as if the token were a normal EVM contract.
-- If we run fuzz tests, they may hit our RPC's rate limit so in order to get around that issue, we need to lower the runs so we don't run into any errors that have nothing to do with our contract at all. We are using `10` here but you could technically go much higher before you hit the rate limit.
+Note that we have `ffi` to be true because on forked tests, the library uses curl (or PowerShell) to query Hedera Mirror Node for token state so that EVM calls like `IERC721.ownerOf()` can work as if the token were a normal EVM contract.
 
 We will be removing the default contracts that comes with foundry default project:
 
 ```bash
-rm -rf script/* src/* test/*
+rm -f script/Counter.s.sol src/Counter.sol test/Counter.t.sol
 ```
 
 ---

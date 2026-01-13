@@ -2,19 +2,17 @@
 title: "How to Fork the Hedera Network with Hardhat - Advanced HTS Contract (Part 2)"
 ---
 
-In this advanced tutorial, you'll learn how to interact with the Hedera Token Service (HTS) using system contract precompiles on a forked network. This guide covers creating HTS tokens, minting, transferring, and understanding the limitations of the forking emulation layer.
+In this advanced tutorial, you'll learn how to interact with the Hedera Token Service (HTS) using System Contracts precompiles on a forked network. This guide covers creating HTS tokens, minting, transferring, and understanding the limitations of the forking emulation layer.
 
 This guide shows how to:
 
-- Create HTS fungible tokens using system contract precompiles
+- Create HTS fungible tokens using System Contracts precompiles
 - Mint and transfer HTS tokens on a forked network
-- Understand which HTS methods are supported vs. unsupported
-- Handle expected failures for unsupported methods like `cryptoTransfer`
 
 References:
 
 - Repo: [hashgraph/hedera-forking](https://github.com/hashgraph/hedera-forking)
-- HTS System Contract: [hedera-smart-contracts](https://github.com/hashgraph/hedera-smart-contracts)
+- HTS System Contracts: [hedera-smart-contracts](https://github.com/hashgraph/hedera-smart-contracts)
 - Supported methods: [README - Supported Methods](https://github.com/hashgraph/hedera-forking#hedera-token-service-supported-methods)
 
 <Info>
@@ -33,7 +31,7 @@ References:
 ## Prerequisites
 
 - Completed [Part 1](/hedera/tutorials/smart-contracts/how-to-fork-the-hedera-network-with-hardhat-basic-erc20) of this tutorial series
-- Familiarity with Hedera system contracts - more specifically [HTS system contract precompiles](https://github.com/hashgraph/hedera-smart-contracts/tree/main/contracts/system-contracts/hedera-token-service)
+- Familiarity with Hedera System Contracts - more specifically [HTS System Contracts precompiles](https://github.com/hashgraph/hedera-smart-contracts/tree/main/contracts/system-contracts/hedera-token-service)
 
 ---
 
@@ -102,7 +100,7 @@ Create or update your `package.json` with all required dependencies:
 }
 ```
 
-Note the addition of `@hashgraph/smart-contracts` which provides the HTS system contract interfaces and helper contracts.
+Note the addition of `@hashgraph/smart-contracts` which provides the HTS System Contracts interfaces and helper contracts.
 
 Then install all dependencies:
 
@@ -119,7 +117,7 @@ The `@hashgraph/system-contracts-forking` plugin requires **Hardhat 2.22.x**. Ne
 - **`hardhat@2.22.19`** - Last compatible version before breaking changes
 - **`@nomicfoundation/hardhat-toolbox@5.0.0`** - Compatible with Hardhat 2.22.x
 - **`@hashgraph/system-contracts-forking@0.1.2`** - The Hedera forking plugin
-- **`@hashgraph/smart-contracts`** - HTS system contract interfaces
+- **`@hashgraph/smart-contracts`** - HTS System Contracts interfaces
 - **`--legacy-peer-deps`** - Required to resolve dependency conflicts between these versions
 
 </Warning>
@@ -236,6 +234,12 @@ npx hardhat vars set HEDERA_PRIVATE_KEY
 ```
 
 When prompted, enter the **HEX Encoded Private Key** for your **ECDSA account** from the [Hedera Portal](https://portal.hedera.com/).
+
+<Warning>
+  Make sure your ECDSA account exists on **testnet** and has sufficient HBAR for
+  deployment. You can fund your testnet account using the [Hedera
+  Portal](https://portal.hedera.com/).
+</Warning>
 
 ---
 
@@ -650,7 +654,7 @@ describe("HTSTokenManager - HTS Forking Tests", function () {
   /**
    * Helper function to get response code from receipt
    */
-  function getResponseCodeFromReceipt(receipt: any): bigint | null {
+  function getResponseCodeFromReceipt(receipt: ContractTransactionReceipt | null): bigint | null {
     const responseEvent = receipt?.logs.find((log: any) => {
       try {
         const parsed = htsManager.interface.parseLog({
@@ -1056,7 +1060,7 @@ describe("HTSTokenManager - HTS Forking Tests", function () {
 
 - **TypeScript types** - Uses generated types from `typechain-types` for type safety
 - **Uses deployed contract** - Tests bind to the already deployed `HTSTokenManager` contract using `getContractAt`
-- **HTS token creation** - Demonstrates creating fungible tokens using HTS system contract precompiles on the forked network
+- **HTS token creation** - Demonstrates creating fungible tokens using HTS System Contracts precompiles on the forked network
 - **Event parsing** - Parses `CreatedToken`, `ResponseCode`, and `FungibleTokenInfo` events to verify HTS operations
 - **Response code validation** - Checks for HTS `SUCCESS` response code (22) to confirm operations completed successfully
 - **Self-contained tests** - Each test creates its own token and operates on it, ensuring test isolation
@@ -1205,7 +1209,7 @@ await network.provider.send("hardhat_setBalance", [
    Explore examples and documentation
 
 4. [**Hedera Smart Contracts Repository**](https://github.com/hashgraph/hedera-smart-contracts)\
-   Explore HTS system contract interfaces
+   Explore HTS System Contracts interfaces
 
 <Columns cols={2}>
   <Card title="Writer:  Kiran Pachhai, Developer Advocate" arrow>

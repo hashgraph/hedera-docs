@@ -42,7 +42,7 @@ Every transaction on the Hedera network has an associated fee to compensate the 
 
 ### Fee Collection and Distribution ([HIP-1259](https://hips.hedera.com/hip/hip-1259))
 
-Previously, transaction fees were immediately split and distributed to multiple accounts with every transaction. This immediate distribution created challenges. For a simple crypto transfer between two accounts, the system must read and update up to six accounts: the sender, receiver, submitting node, `0.0.98`, `0.0.800`, and `0.0.801`. This increases processing overhead and slows performance. In the block stream, every transaction must record balance changes for all these accounts, inflating data size and storage costs. Users viewing transactions on explorers like HashScan see a complex web of transfers, which can be confusing even with visualizations.
+Previously, transaction fees were immediately split and distributed to multiple accounts with every transaction. This immediate distribution created challenges. For a simple crypto transfer between two accounts, the system must read and update up to six accounts: the sender, receiver, submitting node, `0.0.98`, `0.0.800`, and `0.0.801`. This increases processing overhead and slows performance. In the [block stream](/hedera/support-and-community/glossary#block-stream), every transaction must record balance changes for all these accounts, inflating data size and storage costs. Users viewing transactions on explorers like HashScan see a complex web of transfers, which can be confusing even with visualizations.
 
 The new system introduces the **Fee Collection Account (0.0.802)**, a network-controlled account that consolidates all transaction fees.
 

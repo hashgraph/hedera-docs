@@ -7,6 +7,49 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Latest Releases
 
+## [v0.146.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.146.0)
+
+Support for [HIP-1259](https://hips.hedera.com/hip/hip-1259) fee collection account `0.0.802` was added. Once live on mainnet, this should help reduce the size of the mirror node database by sending fees to a single account on every transaction and instead distributing fees to nodes and system accounts once per day.
+
+New block node specific metrics `hiero.mirror.importer.stream.latency` and `hiero.mirror.importer.stream.error` were added for [HIP-1081](https://hips.hedera.com/hip/hip-1081). These metrics previously existed for record streams and were implemented in block streams to reach feature parity. Support for streaming from the earliest available block was added. If `hiero.mirror.importer.startBlockNumber` is set to `-1` and the database is empty, then the importer will query the configured block node to determine what's the earliest block it has available to use. If a non-negative number is set then it will sync from that exact block as before. Finally, an issue with reading trailing non-transaction statechanges in an event was also addressed.
+
+[HIP-1195](https://hips.hedera.com/hip/hip-1195) hooks had acceptance tests added to support end to end testing of the feature. An issue with duplicate keys was addressed by de-duplicating lambda storage updates.
+
+On the build side of things, Gradle was upgraded to version 9. This allowed us to enable the Gradle configuration cache to help speed up the build. In addition, our database ZFS volumes will now automatically grow if they get close to filling up.
+
+### Breaking Changes
+The legacy monolithic contract call code in the web3 module was removed. It has been disabled by default for a number of releases and the newer modularized code is the default in all production environments. As a result of its removal, a number of properties specific to the old code were also removed:
+
+```
+hiero.mirror.web3.evm.allowLongZeroAddresses
+hiero.mirror.web3.evm.allowTreasuryToOwnNfts
+hiero.mirror.web3.evm.autoRenewTargetTypes
+hiero.mirror.web3.evm.directTokenCall
+hiero.mirror.web3.evm.dynamicEvmVersion
+hiero.mirror.web3.evm.evmSpecVersion
+hiero.mirror.web3.evm.exchangeRateGasReq
+hiero.mirror.web3.evm.expirationCacheTime
+hiero.mirror.web3.evm.feesTokenTransferUsageMultiplier
+hiero.mirror.web3.evm.fundingAccount
+hiero.mirror.web3.evm.htsDefaultGasCost
+hiero.mirror.web3.evm.limitTokenAssociations
+hiero.mirror.web3.evm.maxAutoRenewDuration
+hiero.mirror.web3.evm.maxBatchSizeBurn
+hiero.mirror.web3.evm.maxBatchSizeMint
+hiero.mirror.web3.evm.maxBatchSizeWipe
+hiero.mirror.web3.evm.maxCustomFeesAllowed
+hiero.mirror.web3.evm.maxGas
+hiero.mirror.web3.evm.maxMemoUtf8Bytes
+hiero.mirror.web3.evm.maxNftMetadataBytes
+hiero.mirror.web3.evm.maxTokensPerAccount
+hiero.mirror.web3.evm.maxTokenSymbolUtf8Bytes
+hiero.mirror.web3.evm.minAutoRenewDuration
+hiero.mirror.web3.evm.modularizedServices
+hiero.mirror.web3.evm.modularizedTrafficPercent
+```
+Operators should determine if any of these properties were specified in their deployments and take appropriate action. While these properties were removed, a lot of them can still be set if needed by consensus node specific properties passed via `hiero.mirror.web3.evm.properties`.
+
+**Full GitHub Release Notes**: [v0.146.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.146.0)
 
 ## [v0.145.1](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.145.1)
 

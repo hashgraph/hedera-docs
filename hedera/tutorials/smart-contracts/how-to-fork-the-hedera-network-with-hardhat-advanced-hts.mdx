@@ -575,6 +575,12 @@ We have already deployed this HTS contract on testnet at [https://hashscan.io/te
 
 Create a new file `test/HTSTokenManager.test.ts`:
 
+<Info>
+  Make sure to update the `DEPLOYED_CONTRACT` and `TOKEN_ADDRESS` constants
+  below with the values from your deployment.
+</Info>
+
+
 ```typescript test/HTSTokenManager.test.ts
 import { expect } from "chai";
 import { ethers, network } from "hardhat";
@@ -587,7 +593,7 @@ const SUCCESS = 22n;
 
 describe("HTSTokenManager - HTS Forking Tests", function () {
   // Increase timeout for network operations
-  this.timeout(120000);
+  this.timeout(120000); // 2 minutes
 
   // Add delay between tests to avoid rate limiting
   afterEach(async function () {
@@ -598,9 +604,9 @@ describe("HTSTokenManager - HTS Forking Tests", function () {
   // UPDATE THESE VALUES AFTER RUNNING deploy.ts
   // ============================================
   // Your deployed testnet contract address
-  const DEPLOYED_CONTRACT = "0x525F2a20563A052F7dC65df59106EC82f0584102";
+  const DEPLOYED_CONTRACT = "YOUR_CONTRACT_ADDRESS"; // <--- UPDATE THIS>
   // The HTS token created during deployment
-  const TOKEN_ADDRESS = "0x000000000000000000000000000000000073E8dC";
+  const TOKEN_ADDRESS = "YOUR_TOKEN_ADDRESS"; // <--- UPDATE THIS>
   // ============================================
 
   let htsManager: HTSTokenManager;
@@ -654,7 +660,9 @@ describe("HTSTokenManager - HTS Forking Tests", function () {
   /**
    * Helper function to get response code from receipt
    */
-  function getResponseCodeFromReceipt(receipt: ContractTransactionReceipt | null): bigint | null {
+  function getResponseCodeFromReceipt(
+    receipt: ContractTransactionReceipt | null
+  ): bigint | null {
     const responseEvent = receipt?.logs.find((log: any) => {
       try {
         const parsed = htsManager.interface.parseLog({

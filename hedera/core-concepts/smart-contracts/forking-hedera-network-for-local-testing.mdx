@@ -44,7 +44,7 @@ $ cast code --rpc-url https://mainnet.hashio.io/api 0x00000000000000000000000000
 0xfe
 ```
 
-This leads to the error `EvmError: InvalidFEOpcode` when running tests.
+This leads to the error `EvmError: InvalidFEOpcode` when running tests. This is precisely where the hedera-forking library comes in to provide an emulation layer for Hedera System Contracts. For example, with Hardhat, the plugin intercepts JSON-RPC calls to return the appropriate bytecode and state for HTS and for Foundry, the library uses `ffi` to fetch state from the Mirror Node. This is explained in detail below.
 
 ---
 

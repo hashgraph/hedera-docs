@@ -25,8 +25,9 @@ References:
 </Info>
 
 <Note>
-  You can take a look at the complete code in the [**basic-erc20-fork-test
-  repository**](https://github.com/hedera-dev/tutorial-hedera-fork-testing/tree/main/foundry/basic-erc20-fork-test).
+  You can take a look at the complete code in the
+  [**basic-erc20-fork-test-foundry
+  repository**](https://github.com/hedera-dev/tutorial-hedera-fork-testing/tree/main/foundry/basic-erc20-fork-test-foundry).
 </Note>
 
 ---
@@ -58,8 +59,8 @@ References:
 Create a new directory and initialize the Foundry project:
 
 ```bash
-mkdir basic-erc20-fork-test
-cd basic-erc20-fork-test
+mkdir basic-erc20-fork-test-foundry
+cd basic-erc20-fork-test-foundry
 forge init
 ```
 
@@ -83,6 +84,11 @@ forge-std/=lib/forge-std/src/
 ```
 
 We need this to import prefix to a filesystem path so both Foundry(forge) and our editor can resolve short, package-like imports instead of long relative paths.
+
+<Note>
+  Note that we are updating the `remappings.txt` in our root directory of the
+  project and not in the `lib` directory where the dependencies are installed.
+</Note>
 
 ### Set Environment Variables
 
@@ -191,7 +197,7 @@ contract DeployScript is Script {
         address deployer = vm.addr(deployerPrivateKey);
 
         console.log("Deploying contracts with the account:", deployer);
-        console.log("Account balance:", deployer.balance);
+        console.log("Account balance:", deployer.balance / 1e18, "HBAR");
 
         vm.startBroadcast(deployerPrivateKey);
 
@@ -202,9 +208,13 @@ contract DeployScript is Script {
 
         console.log("ERC20Token deployed to:", address(token));
         console.log(
-            "View on HashScan:  https://hashscan.io/testnet/contract/",
+            "View on HashScan: https://hashscan.io/testnet/contract/%s",
             address(token)
         );
+
+        // Get deployment block number for fork testing reference
+        uint256 blockNumber = block.number;
+        console.log("Deployed at block number:", blockNumber);
         console.log("");
         console.log("=== IMPORTANT ===");
         console.log("Save this contract address for your fork tests!");
@@ -227,9 +237,10 @@ You should see output similar to:
 
 ```bash
   Deploying contracts with the account: 0xA98556A4deeB07f21f8a66093989078eF86faa30
-  Account balance: 67028157017920000000000
+  Account balance: 67028 HBAR
   ERC20Token deployed to: 0xfC7D2FB1D5a9Be5D6182cBf3F283140d007CdcD4
-  View on HashScan:  https://hashscan.io/testnet/contract/ 0xfC7D2FB1D5a9Be5D6182cBf3F283140d007CdcD4
+  View on HashScan:  https://hashscan.io/testnet/contract/0xfC7D2FB1D5a9Be5D6182cBf3F283140d007CdcD4
+  Deployed at block number: 29970059
 
   === IMPORTANT ===
   Save this contract address for your fork tests!
@@ -246,6 +257,11 @@ Now we'll write tests that interact with the already deployed contract on the fo
 
 Create a new file `test/ERC20Token.t.sol`:
 
+<Info>
+  Make sure to update the `DEPLOYED_CONTRACT` constant below with the
+  contract address from your deployment.
+</Info>
+
 ```solidity test/ERC20Token.t.sol
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.33;
@@ -255,9 +271,8 @@ import {ERC20Token} from "../src/ERC20Token.sol";
 
 contract ERC20TokenForkTest is Test {
     // Your deployed testnet contract:
-    // https://hashscan.io/testnet/contract/0xfC7D2FB1D5a9Be5D6182cBf3F283140d007CdcD4
     address constant DEPLOYED_CONTRACT =
-        0xfC7D2FB1D5a9Be5D6182cBf3F283140d007CdcD4;
+        "YOUR_CONTRACT_ADDRESS"; // <-- Update this!
 
     ERC20Token public token;
     address public owner;

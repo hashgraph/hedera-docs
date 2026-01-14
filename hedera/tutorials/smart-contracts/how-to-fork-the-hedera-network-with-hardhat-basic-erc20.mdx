@@ -25,8 +25,8 @@ References:
 </Info>
 
 <Note>
-  You can take a look at the complete code in the [**basic-erc20-fork-test
-  repository**](https://github.com/hedera-dev/tutorial-hedera-fork-testing/tree/main/hardhat/basic-erc20-fork-test).
+  You can take a look at the complete code in the [**basic-erc20-fork-test-hardhat
+  repository**](https://github.com/hedera-dev/tutorial-hedera-fork-testing/tree/main/hardhat/basic-erc20-fork-test-hardhat).
 </Note>
 
 ---
@@ -58,8 +58,8 @@ References:
 Create a new directory and initialize the project:
 
 ```bash
-mkdir basic-erc20-fork-test
-cd basic-erc20-fork-test
+mkdir basic-erc20-fork-test-hardhat
+cd basic-erc20-fork-test-hardhat
 npm init -y
 ```
 
@@ -69,7 +69,7 @@ Create or update your `package.json` with all required dependencies:
 
 ```json package.json
 {
-  "name": "basic-erc20-fork-test",
+  "name": "basic-erc20-fork-test-hardhat",
   "version": "1.0.0",
   "description": "Hedera Fork Testing with Hardhat",
   "private": true,
@@ -365,7 +365,7 @@ After deployment, update your `hardhat.config.ts` with the block number from the
 blockNumber: 29965248, // <-- Update this with your deployment block or higher
 ```
 
-We have already deployed this ERC-20 contract on testnet at [https://hashscan.io/testnet/contract/0xea606E2D68Ff9F211756b8cfd9026a7Eb76845C9](https://hashscan.io/testnet/contract/0xea606E2D68Ff9F211756b8cfd9026a7Eb76845C9) so we will be using this for the remainder of this exercise.
+We have already deployed this ERC-20 contract on testnet at [0xea606E2D68Ff9F211756b8cfd9026a7Eb76845C9](https://hashscan.io/testnet/contract/0xea606E2D68Ff9F211756b8cfd9026a7Eb76845C9) so we will be using this for the remainder of this exercise.
 
 ---
 
@@ -374,6 +374,11 @@ We have already deployed this ERC-20 contract on testnet at [https://hashscan.io
 Now we'll write tests that interact with the already deployed contract on the forked testnet. This is the real power of fork testing - you can test against real deployed contracts without spending gas or affecting the live network.
 
 Create a new file `test/ERC20Token.test.ts`:
+
+<Info>
+  Make sure to update the `DEPLOYED_CONTRACT` constant below with the
+  address of your deployed contract from Step 2.
+</Info>
 
 ```typescript test/ERC20Token.test.ts
 import { expect } from "chai";
@@ -384,8 +389,7 @@ import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
 
 describe("ERC20Token - Forked Network Tests", function () {
   // Your deployed testnet contract:
-  // https://hashscan.io/testnet/contract/0xea606E2D68Ff9F211756b8cfd9026a7Eb76845C9
-  const DEPLOYED_CONTRACT = "0xea606E2D68Ff9F211756b8cfd9026a7Eb76845C9"; // Update with your deployed address
+  const DEPLOYED_CONTRACT = "YOUR_CONTRACT_ADDRESS"; // <-- Update with your deployed address
 
   let token: ERC20Token;
   let realOwner: HardhatEthersSigner;

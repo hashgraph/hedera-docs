@@ -49,7 +49,15 @@ The new system introduces the **Fee Collection Account (0.0.802)**, a network-co
 **How it Works:**
 
 1.  **Collection**: When a transaction is processed, the entire fee is transferred in a single payment to the Fee Collection Account (`0.0.802`).
-2.  **Distribution**: Once per day, at the end of each staking period, a single, large synthetic transaction distributes the accumulated fees from the `0.0.802` account to the appropriate destinations, including node operator rewards, staking rewards (`0.0.800`), node rewards (`0.0.801`), and the network treasury (`0.0.98`).
+2.  **Distribution**: Once per day, at the end of each staking period, a single, large synthetic transaction distributes the accumulated fees from the `0.0.802` account to the appropriate destinations. 
+
+These destinations include:
+- **Node Operator Rewards**: Payments to individual nodes for their services.
+- **Staking Rewards (`0.0.800`)**: Funds allocated to accounts participating in staking.
+- **Node Rewards (`0.0.801`)**: Rewards distributed to nodes.
+- **Network Treasury (`0.0.98`)**: The account that receives network fees.
+
+You can visualize these transfers in a transaction on [HashScan](https://hashscan.io/mainnet/transaction/1767736795.323966553).
 
 <Frame>
   <img src="/images/core-concepts/transactions-and-queries/fee-collection-account-flow.png" />

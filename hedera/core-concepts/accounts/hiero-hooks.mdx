@@ -13,14 +13,14 @@ Hiero Hooks are a mechanism for [**Account Abstraction**](/hedera/support-and-co
 
 Think of it like a webhook for the ledger itself. Instead of waiting for an off-chain call, the hook runs inside the network when a transaction explicitly references it. Hooks can check conditions before execution, update state, log data, or stop a transfer if validation fails.
 
-### Why Account Hooks?
+### Why Hooks?
 
 Before Hooks, developers faced two major limitations:
 
 1. **Protocol dependency**: New functionality required network-wide upgrades through HIPs (slow and heavyweight)
 2. **EVM migration**: Moving applications to smart contracts sacrificed the performance and cost-efficiency of native HAPI transactions
 
-Account Hooks solve this by allowing developers to inject custom logic directly into native flows, offering better performance and lower cost than general-purpose `ContractCall` operations.
+Hooks solve this by allowing developers to inject custom logic directly into native flows, offering better performance and lower cost than general-purpose `ContractCall` operations.
 
 ### Key Characteristics
 
@@ -33,7 +33,7 @@ Account Hooks solve this by allowing developers to inject custom logic directly 
 | **Use Cases** | Compliance rules, transfer constraints, custom validation logic. |
 ---
 
-## How Account Hooks Work
+## How Hooks Work
 
 A Hook is a small piece of EVM bytecode, implemented as a Solidity contract, that is attached to a Hedera entity such as an account or contract.
 
@@ -76,22 +76,22 @@ Hooks are managed via standard HAPI transactions and can maintain their own pers
 
 ### HookStoreTransaction
 
-The `HookStoreTransactionBody` enables fast, low-overhead updates to a hook’s storage. This allows hook configuration changes such as passcodes or allowlists without the cost of a full `ContractCall`.
+The [`HookStoreTransactionBody`](/hedera/sdks-and-apis/sdks/transactions/create-a-hookstore-transaction.mdx) enables fast, low-overhead updates to a hook’s storage. This allows hook configuration changes such as passcodes or allowlists without the cost of a full `ContractCall`.
 
 #### HookStoreTransaction Properties
 
 | Field | Description |
 |------|-------------|
 | **Hook ID** | Identifies the EVM Hook whose storage is being updated, including the owning entity (account or contract) and the hook’s 64-bit ID. |
-| **Storage Updates** | A list of updates applied to the hook’s persistent storage. Supports direct slot updates (`LambdaStorageSlot`) and mapping updates (`LambdaMappingEntries`). |
+| **Storage Updates** | A list of updates applied to the hook’s persistent storage. Supports direct slot updates (`EvmHookStorageSlot`) and mapping updates (`EvmHookMappingEntries`). |
 
 ---
 
 ### Hook Storage Details
 
 Hooks can maintain state in their own storage. The `HookStoreTransaction` allows for granular updates to this storage without executing the hook's full logic.
- * **Slots**: Write or delete a 32-byte key → 32-byte value via LambdaStorageSlot.
- * **Mappings**: Update entries under a mapping slot via LambdaMappingEntries, either by explicit key or by providing the preimage whose Keccak256 hash yields the key.
+ * **Slots**: Write or delete a 32-byte key → 32-byte value via EvmHookStorageSlot.
+ * **Mappings**: Update entries under a mapping slot via EvmHookMappingEntries, either by explicit key or by providing the preimage whose Keccak256 hash yields the key.
 
 
 <Note>

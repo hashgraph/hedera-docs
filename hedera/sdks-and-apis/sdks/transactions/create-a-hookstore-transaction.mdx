@@ -27,8 +27,12 @@ Use `HookStoreTransaction` when you need to:
 
 ## Transaction Signing Requirements
 
-* The transaction must be signed by the **Admin Key** associated with the target Hiero Hook
-* The account paying for the transaction fee is also required to sign
+The signing requirements depend on if an `adminKey` was set when the hook was created:
+
+- **If the hook has an `adminKey`**: Either the Admin Key OR the hook owner (account or contract that owns the hook) must sign the transaction
+- **If the hook does NOT have an `adminKey`**: The hook owner (account or contract that owns the hook) must sign the transaction
+- **In all cases**: The account paying the transaction fee must also sign
+
 
 ---
 
@@ -165,13 +169,10 @@ storageSlot := hook.NewEvmHookStorageSlot().
     SetKey(key).
     SetValue(value)
 
-storageUpdate := hook.NewEvmHookStorageUpdate().
-    SetStorageSlot(storageSlot)
-
 // 3. Create and execute the HookStoreTransaction
 hookStoreTx := transaction.NewHookStoreTransaction().
     SetHookID(hookID).
-    AddStorageUpdate(storageUpdate).
+    AddStorageUpdate(storageSlot).
     FreezeWith(client)
 
 // Must be signed by the hook's admin key
@@ -352,26 +353,20 @@ mappingSlot := make([]byte, 32)
 mappingSlot[31] = 0x02
 
 // New Value (e.g., a boolean 'true' which is 1)
-newValue := make([]byte, 32)
-newValue[31] = 0x01
+mappingValue := make([]byte, 32)
+mappingValue[31] = 0x01
 
 // Create the mapping entry
-mappingEntry := hook.NewEvmHookMappingEntry().
-    SetKey(mappingKey).
-    SetValue(newValue)
+mappingEntry := NewEvmHookMappingEntryWithKey(mappingKey, mappingValue)
 
-// Create the mapping update
-storageUpdate := hook.NewEvmHookStorageUpdate().
-    SetMappingEntries(
-        hook.NewEvmHookMappingEntries().
-            SetMappingSlot(mappingSlot).
-            AddEntry(mappingEntry),
-    )
+mappingEntries := NewLambdaMappingEntries().
+	SetMappingSlot(mappingSlot).
+	AddMappingEntry(*mappingEntry)
 
 // 3. Create and execute the HookStoreTransaction
 hookStoreTx := transaction.NewHookStoreTransaction().
     SetHookID(hookID).
-    AddStorageUpdate(storageUpdate).
+    AddStorageUpdate(mappingEntries).
     FreezeWith(client)
 
 // Must be signed by the hook's admin key

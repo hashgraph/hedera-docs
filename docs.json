@@ -483,6 +483,12 @@
                 ]
               },
               {
+                "group": "Hiero CLI",
+                "pages": [
+                  "hedera/open-source-solutions/hiero-cli/overview"
+                ]
+              },
+              {
                 "group": "AI Tools for Developers",
                 "pages": [
                   "hedera/open-source-solutions/ai-tools-for-developers",
@@ -509,7 +515,6 @@
                   "hedera/open-source-solutions/hashiodao/local-environment-setup"
                 ]
               },
-              "hedera/open-source-solutions/hedera-cli",
               "hedera/open-source-solutions/hedera-contract-builder",
               {
                 "group": "Hedera Custodians Library",

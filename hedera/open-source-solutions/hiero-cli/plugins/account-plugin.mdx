@@ -1,0 +1,128 @@
+---
+title: "Account Plugin"
+---
+
+## Most Used Commands
+
+**Goal:** Create, import, inspect, and securely manage accounts across networks.
+
+**Create a new account**
+
+```sh
+hcli account create \
+  --balance 1 \
+  --name <account-name>
+```
+
+**Check an account balance**
+
+```sh
+hcli account balance --account myaccount
+```
+
+**List all accounts**
+
+```sh
+hcli account list
+```
+
+## Full Command Reference
+
+<Accordion title="Account Create">
+    Creates a new Hedera account.
+
+    <ResponseField name="-b, --balance" type="int" required>
+    Initial HBAR balance. Add "t" for Tinybar units <br/>
+    `--balance 10`   --> 10 HBAR <br/>
+    `--balance 100t` --> 100 Tinybars
+    </ResponseField>
+
+    <ResponseField name="-a, --auto-associations" type="int">
+        The maximum number of automatic association tokens allowed <br/>
+        Default value set to 0
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string">
+        Key manager to use: `local` or `local_encrypted` (defaults to config setting) <br/>
+    </ResponseField>
+
+    <ResponseField name="-n, --name" type="string" required>
+        Alias of the created account to be used <br/>
+    </ResponseField>
+
+    <ResponseField name="-t, --key-type" type="string(ecdsa|ed25519)">
+        Set the default key type. Defaults to ecdsa (recommended for full usability) <br/>
+    </ResponseField>
+
+    <ResponseField name="-p, --payer" type="string">
+        Set the payer account, can be an account ID or alias
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Account Import">
+    Import an existing account into the CLI tool. Provide `accountId:privateKey` format.
+
+    <ResponseField name="-K, --key" type="string" required>
+        Specify the private key in `accountId:privateKey` format (e.g., "`0.0.123456:abc123...`")
+    </ResponseField>
+
+    <ResponseField name="-n, --name" type="string" required>
+        Alias for the account to be used
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string">
+        Key manager to use: `local` or `local_encrypted` (defaults to config setting) <br/>
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Account Balance">
+    Retrieve the balance for an account ID or name.
+
+    <ResponseField name="-a, --account" type="string" required>
+        Account ID, alias or name of the account present in state
+    </ResponseField>
+
+    <ResponseField name="-H, --hbar-only">
+        Show only HBAR balance
+    </ResponseField>
+
+    <ResponseField name="-t, --token" type="string">
+        Show balance for specific token ID, specify token ID or name 
+    </ResponseField>
+
+    <ResponseField name="-r, --raw">
+        Display balances in raw units (tinybars for HBAR, base units for tokens) 
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Account List">
+    List all accounts stored in the address book.
+
+    <ResponseField name="-p, --private">
+        Include private keys reference ID in listing. This is not the actual private key!
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Account View">
+    View detailed information about an account.
+
+    <ResponseField name="-a, --account" type="string" required>
+        View data for account ID or name of the account present in state.
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Account Clear">
+    Remove all account information from the address book (no options)
+</Accordion>
+
+<Accordion title="Account Delete">
+    Delete an account from the address book. You need to specify either name or ID to delete the account.
+
+    <ResponseField name="-n, --name" type="string">
+        Account name to be deleted from the store.
+    </ResponseField>
+
+    <ResponseField name="-i, --id" type="string">
+        Account ID to be deleted from the store.
+    </ResponseField>
+</Accordion>

@@ -1,0 +1,1228 @@
+---
+title: "How to Fork the Hedera Network with Hardhat - Advanced HTS Contract (Part 2)"
+---
+
+In this advanced tutorial, you'll learn how to interact with the Hedera Token Service (HTS) using System Contracts precompiles on a forked network. This guide covers creating HTS tokens, minting, transferring, and understanding the limitations of the forking emulation layer.
+
+This guide shows how to:
+
+- Create HTS fungible tokens using System Contracts precompiles
+- Mint and transfer HTS tokens on a forked network
+
+References:
+
+- Repo: [hashgraph/hedera-forking](https://github.com/hashgraph/hedera-forking)
+- HTS System Contracts: [hedera-smart-contracts](https://github.com/hashgraph/hedera-smart-contracts)
+- Supported methods: [README - Supported Methods](https://github.com/hashgraph/hedera-forking#hedera-token-service-supported-methods)
+
+<Info>
+  For a deeper understanding of how Hedera forking works and its limitations,
+  see [Forking Hedera Network for Local
+  Testing](/hedera/core-concepts/smart-contracts/forking-hedera-network-for-local-testing).
+</Info>
+
+<Note>
+  You can take a look at the complete code in the [**advanced-hts-fork-test
+  repository**](https://github.com/hedera-dev/tutorial-hedera-fork-testing/tree/main/hardhat/advanced-hts-fork-test).
+</Note>
+
+---
+
+## Prerequisites
+
+- Completed [Part 1](/hedera/tutorials/smart-contracts/how-to-fork-the-hedera-network-with-hardhat-basic-erc20) of this tutorial series
+- Familiarity with Hedera System Contracts - more specifically [HTS System Contracts precompiles](https://github.com/hashgraph/hedera-smart-contracts/tree/main/contracts/system-contracts/hedera-token-service)
+
+---
+
+## Table of Contents
+
+1. [Step 1: Project Setup](#step-1:-project-setup)
+2. [Step 2: Create the HTS Contract and Deploy to Testnet](#step-2:-create-the-hts-contract-and-deploy-to-testnet)
+3. [Step 3: Write Tests for Supported HTS Methods](#step-3:-write-tests-for-supported-hts-methods)
+4. [Step 4: Run Tests on the Forked Network](#step-4:-run-tests-on-the-forked-network)
+
+---
+
+## Step 1: Project Setup
+
+### Initialize Project
+
+Create a new directory and initialize the project:
+
+```bash
+mkdir advanced-hts-fork-test
+cd advanced-hts-fork-test
+npm init -y
+```
+
+### Install Dependencies
+
+Create or update your `package.json` with all required dependencies:
+
+```json package.json
+{
+  "name": "advanced-hts-fork-test",
+  "version": "1.0.0",
+  "description": "Advanced Hedera HTS Fork Testing with Hardhat",
+  "private": true,
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:testnet": "hardhat run scripts/deploy.ts --network hederaTestnet"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@hashgraph/smart-contracts": "github:hashgraph/hedera-smart-contracts",
+    "@hashgraph/system-contracts-forking": "0.1.2",
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
+    "@nomicfoundation/hardhat-ethers": "^3.0.0",
+    "@nomicfoundation/hardhat-ignition": "^0.15.16",
+    "@nomicfoundation/hardhat-ignition-ethers": "^0.15.0",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.0",
+    "@nomicfoundation/hardhat-toolbox": "5.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.0",
+    "@nomicfoundation/ignition-core": "^0.15.15",
+    "@openzeppelin/contracts": "^5.0.0",
+    "@typechain/ethers-v6": "^0.5.0",
+    "@typechain/hardhat": "^9.0.0",
+    "@types/chai": "^4.2.0",
+    "@types/mocha": ">=9.1.0",
+    "@types/node": "^20.0.0",
+    "chai": "^4.2.0",
+    "hardhat": "2.22.19",
+    "hardhat-gas-reporter": "^1.0.8",
+    "solidity-coverage": "^0.8.1",
+    "ts-node": "^10.9.0",
+    "typechain": "^8.3.0",
+    "typescript": "^5.0.0"
+  }
+}
+```
+
+Note the addition of `@hashgraph/smart-contracts` which provides the HTS System Contracts interfaces and helper contracts.
+
+Then install all dependencies:
+
+```bash
+npm install --legacy-peer-deps
+```
+
+<Warning>
+
+**Why these specific versions?**
+
+The `@hashgraph/system-contracts-forking` plugin requires **Hardhat 2.22.x**. Newer versions of Hardhat (2.28+) introduced breaking changes that cause a `No known hardfork for execution` error when forking Hedera networks.
+
+- **`hardhat@2.22.19`** - Last compatible version before breaking changes
+- **`@nomicfoundation/hardhat-toolbox@5.0.0`** - Compatible with Hardhat 2.22.x
+- **`@hashgraph/system-contracts-forking@0.1.2`** - The Hedera forking plugin
+- **`@hashgraph/smart-contracts`** - HTS System Contracts interfaces
+- **`--legacy-peer-deps`** - Required to resolve dependency conflicts between these versions
+
+</Warning>
+
+Verify Hardhat is installed correctly:
+
+```bash
+npx hardhat --version
+# Should output: 2.22.19
+```
+
+### Create Project Structure
+
+Create the necessary directories:
+
+```bash
+mkdir contracts test scripts
+```
+
+### Configure TypeScript
+
+Create `tsconfig.json` in your project root:
+
+```json tsconfig.json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist",
+    "resolveJsonModule": true
+  },
+  "include": ["./scripts", "./test", "./typechain-types"],
+  "files": ["./hardhat.config.ts"]
+}
+```
+
+### Configure Hardhat
+
+Create `hardhat.config.ts` in your project root:
+
+```typescript hardhat.config.ts
+import { HardhatUserConfig, vars } from "hardhat/config";
+import "@nomicfoundation/hardhat-toolbox";
+import "@hashgraph/system-contracts-forking/plugin";
+
+// Load configuration variables
+const HEDERA_RPC_URL = vars.get("HEDERA_RPC_URL");
+const HEDERA_PRIVATE_KEY = vars.get("HEDERA_PRIVATE_KEY");
+
+const config: HardhatUserConfig = {
+  solidity: {
+    version: "0.8.33",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200
+      }
+    }
+  },
+  networks: {
+    // Network for deploying to real testnet
+    hederaTestnet: {
+      url: HEDERA_RPC_URL,
+      accounts: [HEDERA_PRIVATE_KEY],
+      chainId: 296
+    },
+    // Local fork of testnet for testing
+    hardhat: {
+      forking: {
+        url: HEDERA_RPC_URL,
+        // Pin to a specific block for reproducible tests
+        // Update this after deploying your contract
+        blockNumber: 29900000,
+        // @ts-ignore - custom properties for hedera-forking plugin
+        chainId: 296,
+        // @ts-ignore
+        workerPort: 10001
+      }
+    }
+  }
+};
+
+export default config;
+```
+
+**Important configuration notes:**
+
+- **`HEDERA_RPC_URL`** - Loaded from Hardhat configuration variables
+- **`HEDERA_PRIVATE_KEY`** - Loaded securely from configuration variables
+- **`hederaTestnet`** - Network configuration for deploying to real testnet
+- **`hardhat.forking`** - Configuration for forking testnet locally
+- **`blockNumber`** - Pin to a block where your deployed contract exists
+- **`chainId:  296`** - Required for testnet (295 for mainnet)
+- **`workerPort: 10001`** - Any free port for the worker that intercepts Hardhat calls
+- **`@ts-ignore`** - Required because `chainId` and `workerPort` are custom properties not in Hardhat's type definitions
+- Optimizer is enabled for gas efficiency
+
+### Set Configuration Variables
+
+Now that `hardhat.config.ts` exists, you can set the configuration variables. Hardhat allows you to securely store sensitive values using configuration variables:
+
+```bash
+npx hardhat vars set HEDERA_RPC_URL
+```
+
+When prompted, enter: `https://testnet.hashio.io/api`
+
+```bash
+npx hardhat vars set HEDERA_PRIVATE_KEY
+```
+
+When prompted, enter the **HEX Encoded Private Key** for your **ECDSA account** from the [Hedera Portal](https://portal.hedera.com/).
+
+<Warning>
+  Make sure your ECDSA account exists on **testnet** and has sufficient HBAR for
+  deployment. You can fund your testnet account using the [Hedera
+  Portal](https://portal.hedera.com/).
+</Warning>
+
+---
+
+## Step 2: Create the HTS Contract and Deploy to Testnet
+
+### Create the HTS Interaction Contract
+
+Create a new file `contracts/HTSTokenManager.sol`:
+
+```solidity contracts/HTSTokenManager.sol
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.33;
+
+import "@hashgraph/smart-contracts/contracts/system-contracts/hedera-token-service/HederaTokenService.sol";
+import "@hashgraph/smart-contracts/contracts/system-contracts/hedera-token-service/ExpiryHelper.sol";
+import "@hashgraph/smart-contracts/contracts/system-contracts/hedera-token-service/KeyHelper.sol";
+import "@hashgraph/smart-contracts/contracts/system-contracts/HederaResponseCodes.sol";
+import "@hashgraph/smart-contracts/contracts/system-contracts/hedera-token-service/IHederaTokenService.sol";
+import "@hashgraph/smart-contracts/contracts/system-contracts/hedera-token-service/FeeHelper.sol";
+
+contract HTSTokenManager is
+    HederaTokenService,
+    ExpiryHelper,
+    KeyHelper,
+    FeeHelper
+{
+    bool finiteTotalSupplyType = true;
+
+    event ResponseCode(int256 responseCode);
+    event CreatedToken(address tokenAddress);
+    event FungibleTokenInfo(IHederaTokenService.FungibleTokenInfo tokenInfo);
+    event TransferToken(address tokenAddress, address receiver, int64 amount);
+    event MintedToken(int64 newTotalSupply, int64[] serialNumbers);
+
+    /**
+     * @notice Creates a new fungible token using HTS
+     */
+    function createFungibleTokenPublic(
+        string memory _name,
+        string memory _symbol
+    ) public payable {
+        // Build token definition
+        IHederaTokenService.HederaToken memory token;
+        token.name = _name;
+        token.symbol = _symbol;
+        token.treasury = address(this);
+        token.memo = "This is a fungible token";
+
+        // Keys: SUPPLY + ADMIN -> contractId
+        IHederaTokenService.TokenKey[]
+            memory keys = new IHederaTokenService.TokenKey[](2);
+        keys[0] = getSingleKey(
+            KeyType.SUPPLY,
+            KeyValueType.CONTRACT_ID,
+            address(this)
+        );
+        keys[1] = getSingleKey(
+            KeyType.ADMIN,
+            KeyValueType.CONTRACT_ID,
+            address(this)
+        );
+        token.tokenKeys = keys;
+
+        (int256 responseCode, address tokenAddress) = HederaTokenService
+            .createFungibleToken(token, 0, 0);
+
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            revert();
+        }
+        emit CreatedToken(tokenAddress);
+    }
+
+    /**
+     * @notice Mints tokens
+     */
+    function mintTokenPublic(
+        address token,
+        int64 amount,
+        bytes[] memory metadata
+    )
+        public
+        returns (
+            int256 responseCode,
+            int64 newTotalSupply,
+            int64[] memory serialNumbers
+        )
+    {
+        (responseCode, newTotalSupply, serialNumbers) = HederaTokenService
+            .mintToken(token, amount, metadata);
+        emit ResponseCode(responseCode);
+
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            revert();
+        }
+
+        emit MintedToken(newTotalSupply, serialNumbers);
+    }
+
+    /**
+     * @notice Transfers tokens using HTS transferToken
+     * @dev This is a SUPPORTED method in hedera-forking
+     */
+    function transferTokenPublic(
+        address token,
+        address sender,
+        address receiver,
+        int64 amount
+    ) public returns (int256 responseCode) {
+        responseCode = HederaTokenService.transferToken(
+            token,
+            sender,
+            receiver,
+            amount
+        );
+        emit ResponseCode(responseCode);
+
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            revert();
+        }
+    }
+
+    /**
+     * @notice Gets token info
+     */
+    function getTokenInfoPublic(
+        address token
+    )
+        public
+        returns (
+            int256 responseCode,
+            IHederaTokenService.TokenInfo memory tokenInfo
+        )
+    {
+        (responseCode, tokenInfo) = HederaTokenService.getTokenInfo(token);
+        emit ResponseCode(responseCode);
+    }
+
+    /**
+     * @notice Gets fungible token info
+     */
+    function getFungibleTokenInfoPublic(
+        address token
+    )
+        public
+        returns (
+            int256 responseCode,
+            IHederaTokenService.FungibleTokenInfo memory tokenInfo
+        )
+    {
+        (responseCode, tokenInfo) = HederaTokenService.getFungibleTokenInfo(
+            token
+        );
+        emit ResponseCode(responseCode);
+        emit FungibleTokenInfo(tokenInfo);
+    }
+}
+```
+
+**Key features of this contract:**
+
+- `createFungibleTokenPublic` - Creates new HTS fungible tokens
+- `mintTokenPublic` - Mints additional tokens (requires supply key)
+- `transferTokenPublic` - Supported HTS transfer method
+- `getTokenInfoPublic` / `getFungibleTokenInfoPublic` - Query token information
+
+### Compile the Contract
+
+```bash
+npx hardhat compile
+```
+
+### Create Deployment Script
+
+Create a new file `scripts/deploy.ts`:
+
+```typescript scripts/deploy.ts
+import { ethers } from "hardhat";
+
+async function main(): Promise<void> {
+  const [deployer] = await ethers.getSigners();
+
+  console.log("Deploying contracts with the account:", deployer.address);
+
+  const balance = await ethers.provider.getBalance(deployer.address);
+  console.log("Account balance:", ethers.formatEther(balance), "HBAR");
+
+  // 1) Deploy the HTSTokenManager contract
+  console.log("\n--- Deploying HTSTokenManager ---");
+  const HTSTokenManager = await ethers.getContractFactory("HTSTokenManager");
+  const htsManager = await HTSTokenManager.deploy();
+  await htsManager.waitForDeployment();
+
+  const contractAddress = await htsManager.getAddress();
+  console.log("HTSTokenManager deployed to:", contractAddress);
+  console.log(
+    "View on HashScan: https://hashscan.io/testnet/contract/" + contractAddress
+  );
+
+  // 2) Create a fungible token using the contract
+  console.log("\n--- Creating HTS Fungible Token ---");
+  const TOKEN_NAME = "TestForkToken";
+  const TOKEN_SYMBOL = "TFT";
+  const HBAR_TO_SEND = "15"; // HBAR to send for token creation
+
+  console.log(`Creating token "${TOKEN_NAME}" (${TOKEN_SYMBOL})...`);
+  console.log(`Sending ${HBAR_TO_SEND} HBAR for token creation...`);
+
+  const createTx = await htsManager.createFungibleTokenPublic(
+    TOKEN_NAME,
+    TOKEN_SYMBOL,
+    {
+      gasLimit: 1_000_000,
+      value: ethers.parseEther(HBAR_TO_SEND)
+    }
+  );
+  const createReceipt = await createTx.wait();
+  console.log("createFungibleTokenPublic() tx hash:", createTx.hash);
+
+  // 3) Extract token address from CreatedToken event
+  let tokenAddress: string | null = null;
+  for (const log of createReceipt?.logs || []) {
+    try {
+      const parsed = htsManager.interface.parseLog({
+        topics: log.topics as string[],
+        data: log.data
+      });
+      if (parsed?.name === "CreatedToken") {
+        tokenAddress = parsed.args[0];
+        break;
+      }
+    } catch {
+      // Not our event, skip
+    }
+  }
+
+  if (!tokenAddress) {
+    throw new Error("Failed to extract token address from CreatedToken event");
+  }
+
+  console.log("HTS Token created at:", tokenAddress);
+  console.log(
+    "View token on HashScan: https://hashscan.io/testnet/token/" + tokenAddress
+  );
+
+  // 4) Get deployment block number
+  const blockNumber = await ethers.provider.getBlockNumber();
+  console.log("\nDeployed at block number:", blockNumber);
+
+  // 5) Summary
+  console.log("\n" + "=".repeat(60));
+  console.log("DEPLOYMENT SUMMARY");
+  console.log("=".repeat(60));
+  console.log("HTSTokenManager Contract:", contractAddress);
+  console.log("HTS Token Address:        ", tokenAddress);
+  console.log("Block Number:            ", blockNumber);
+  console.log("=".repeat(60));
+  console.log("\n=== IMPORTANT ===");
+  console.log("Update your hardhat.config.ts with:");
+  console.log(`  blockNumber: ${blockNumber}`);
+  console.log("\nUpdate your test file with:");
+  console.log(`  DEPLOYED_CONTRACT = "${contractAddress}"`);
+  console.log(`  TOKEN_ADDRESS = "${tokenAddress}"`);
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
+```
+
+### Deploy to Testnet
+
+Deploy your contract to Hedera testnet:
+
+```bash
+npx hardhat run scripts/deploy.ts --network hederaTestnet
+```
+
+You should see output similar to:
+
+```bash
+Deploying contracts with the account: 0xA98556A4deeB07f21f8a66093989078eF86faa30
+Account balance: 67044.71699545 HBAR
+
+--- Deploying HTSTokenManager ---
+HTSTokenManager deployed to: 0x525F2a20563A052F7dC65df59106EC82f0584102
+View on HashScan: https://hashscan.io/testnet/contract/0x525F2a20563A052F7dC65df59106EC82f0584102
+
+--- Creating HTS Fungible Token ---
+Creating token "TestForkToken" (TFT)...
+Sending 15 HBAR for token creation...
+createFungibleTokenPublic() tx hash: 0xe71eb1253d11120dc9db1c764070fdb13db0b25374c30f2f0bd2792d1eead3fb
+HTS Token created at: 0x000000000000000000000000000000000073E8dC
+View token on HashScan: https://hashscan.io/testnet/token/0x000000000000000000000000000000000073E8dC
+
+Deployed at block number: 29968809
+
+============================================================
+DEPLOYMENT SUMMARY
+============================================================
+HTSTokenManager Contract: 0x525F2a20563A052F7dC65df59106EC82f0584102
+HTS Token Address:         0x000000000000000000000000000000000073E8dC
+Block Number:             29968809
+============================================================
+
+=== IMPORTANT ===
+Update your hardhat.config.ts with:
+  blockNumber: 29968809
+
+Update your test file with:
+  DEPLOYED_CONTRACT = "0x525F2a20563A052F7dC65df59106EC82f0584102"
+  TOKEN_ADDRESS = "0x000000000000000000000000000000000073E8dC"
+```
+
+<Warning>
+  Save the deployed contract address and block number! You'll need these for
+  your fork tests. The contract must exist at the block you're forking from.
+</Warning>
+
+### Update Hardhat Config with Deployment Block
+
+After deployment, update your `hardhat.config.ts` with the block number:
+
+```typescript
+blockNumber: 29966796, // <-- Update this with your deployment block or higher
+```
+
+We have already deployed this HTS contract on testnet at [https://hashscan.io/testnet/contract/0xdC6F13e9Bb740593ffacdB7510548FD2E62bc035](https://hashscan.io/testnet/contract/0xdC6F13e9Bb740593ffacdB7510548FD2E62bc035) so we will be using this for the remainder of this exercise.
+
+---
+
+## Step 3: Write Tests for Supported HTS Methods
+
+Create a new file `test/HTSTokenManager.test.ts`:
+
+<Info>
+  Make sure to update the `DEPLOYED_CONTRACT` and `TOKEN_ADDRESS` constants
+  below with the values from your deployment.
+</Info>
+
+
+```typescript test/HTSTokenManager.test.ts
+import { expect } from "chai";
+import { ethers, network } from "hardhat";
+import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
+import { HTSTokenManager } from "../typechain-types";
+import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
+
+// HTS Success response code
+const SUCCESS = 22n;
+
+describe("HTSTokenManager - HTS Forking Tests", function () {
+  // Increase timeout for network operations
+  this.timeout(120000); // 2 minutes
+
+  // Add delay between tests to avoid rate limiting
+  afterEach(async function () {
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // 1 second delay
+  });
+
+  // ============================================
+  // UPDATE THESE VALUES AFTER RUNNING deploy.ts
+  // ============================================
+  // Your deployed testnet contract address
+  const DEPLOYED_CONTRACT = "YOUR_CONTRACT_ADDRESS"; // <--- UPDATE THIS>
+  // The HTS token created during deployment
+  const TOKEN_ADDRESS = "YOUR_TOKEN_ADDRESS"; // <--- UPDATE THIS>
+  // ============================================
+
+  let htsManager: HTSTokenManager;
+  let alice: HardhatEthersSigner;
+  let bob: HardhatEthersSigner;
+
+  async function setupFixture(): Promise<{
+    htsManager: HTSTokenManager;
+    alice: HardhatEthersSigner;
+    bob: HardhatEthersSigner;
+  }> {
+    // Bind to the deployed contract on the forked network
+    const contract = await ethers.getContractAt(
+      "HTSTokenManager",
+      DEPLOYED_CONTRACT
+    );
+
+    // Get local test accounts
+    const [, aliceSigner, bobSigner] = await ethers.getSigners();
+
+    // Fund local accounts
+    await network.provider.send("hardhat_setBalance", [
+      aliceSigner.address,
+      "0x56BC75E2D63100000" // 100 ETH in hex
+    ]);
+    await network.provider.send("hardhat_setBalance", [
+      bobSigner.address,
+      "0x56BC75E2D63100000"
+    ]);
+
+    // Fund the contract (it's the treasury and needs gas for operations)
+    await network.provider.send("hardhat_setBalance", [
+      DEPLOYED_CONTRACT,
+      "0x56BC75E2D63100000"
+    ]);
+
+    return {
+      htsManager: contract as HTSTokenManager,
+      alice: aliceSigner,
+      bob: bobSigner
+    };
+  }
+
+  beforeEach(async function () {
+    const fixture = await loadFixture(setupFixture);
+    htsManager = fixture.htsManager;
+    alice = fixture.alice;
+    bob = fixture.bob;
+  });
+
+  /**
+   * Helper function to get response code from receipt
+   */
+  function getResponseCodeFromReceipt(
+    receipt: ContractTransactionReceipt | null
+  ): bigint | null {
+    const responseEvent = receipt?.logs.find((log: any) => {
+      try {
+        const parsed = htsManager.interface.parseLog({
+          topics: log.topics as string[],
+          data: log.data
+        });
+        return parsed?.name === "ResponseCode";
+      } catch {
+        return false;
+      }
+    });
+
+    if (responseEvent) {
+      const parsed = htsManager.interface.parseLog({
+        topics: responseEvent.topics as string[],
+        data: responseEvent.data
+      });
+      return parsed?.args[0];
+    }
+    return null;
+  }
+
+  /**
+   * Helper function to get minted token info from receipt
+   */
+  function getMintedTokenInfoFromReceipt(
+    receipt: any
+  ): { newTotalSupply: bigint } | null {
+    const mintedEvent = receipt?.logs.find((log: any) => {
+      try {
+        const parsed = htsManager.interface.parseLog({
+          topics: log.topics as string[],
+          data: log.data
+        });
+        return parsed?.name === "MintedToken";
+      } catch {
+        return false;
+      }
+    });
+
+    if (mintedEvent) {
+      const parsed = htsManager.interface.parseLog({
+        topics: mintedEvent.topics as string[],
+        data: mintedEvent.data
+      });
+      return { newTotalSupply: parsed?.args[0] };
+    }
+    return null;
+  }
+
+  /* =========================
+      Token Info Tests
+     ========================= */
+
+  describe("Token Info", function () {
+    it("should get token info for the pre-created token", async function () {
+      const tx = await htsManager.getTokenInfoPublic(TOKEN_ADDRESS);
+      const receipt = await tx.wait();
+
+      const responseCode = getResponseCodeFromReceipt(receipt);
+      expect(responseCode).to.equal(SUCCESS);
+      console.log("Successfully retrieved token info");
+    });
+
+    it("should get fungible token info for the pre-created token", async function () {
+      const tx = await htsManager.getFungibleTokenInfoPublic(TOKEN_ADDRESS);
+      const receipt = await tx.wait();
+
+      const infoEvent = receipt?.logs.find((log) => {
+        try {
+          const parsed = htsManager.interface.parseLog({
+            topics: log.topics as string[],
+            data: log.data
+          });
+          return parsed?.name === "FungibleTokenInfo";
+        } catch {
+          return false;
+        }
+      });
+
+      expect(infoEvent).to.not.be.undefined;
+      console.log("Successfully retrieved fungible token info");
+    });
+
+    it("should read token properties via ERC-20 interface", async function () {
+      const token = await ethers.getContractAt(
+        [
+          "function name() view returns (string)",
+          "function symbol() view returns (string)",
+          "function decimals() view returns (uint8)",
+          "function totalSupply() view returns (uint256)",
+          "function balanceOf(address) view returns (uint256)"
+        ],
+        TOKEN_ADDRESS
+      );
+
+      const name = await token.name();
+      const symbol = await token.symbol();
+      const decimals = await token.decimals();
+      const totalSupply = await token.totalSupply();
+
+      console.log(`Token Name:  ${name}`);
+      console.log(`Token Symbol: ${symbol}`);
+      console.log(`Token Decimals: ${decimals}`);
+      console.log(`Token Total Supply: ${totalSupply}`);
+
+      expect(name).to.equal("TestForkToken");
+      expect(symbol).to.equal("TFT");
+    });
+  });
+
+  /* =========================
+      Token Minting Tests
+     ========================= */
+
+  describe("Token Minting", function () {
+    it("should mint tokens successfully", async function () {
+      const mintAmount = 1000n;
+
+      const tx = await htsManager.mintTokenPublic(
+        TOKEN_ADDRESS,
+        mintAmount,
+        []
+      );
+      const receipt = await tx.wait();
+
+      const responseCode = getResponseCodeFromReceipt(receipt);
+      expect(responseCode).to.equal(SUCCESS);
+
+      const mintInfo = getMintedTokenInfoFromReceipt(receipt);
+      expect(mintInfo).to.not.be.null;
+      console.log(
+        `Minted ${mintAmount} tokens.  New total supply: ${mintInfo?.newTotalSupply}`
+      );
+    });
+
+    it("should mint tokens multiple times and track total supply", async function () {
+      // First mint
+      const tx1 = await htsManager.mintTokenPublic(TOKEN_ADDRESS, 500n, []);
+      const receipt1 = await tx1.wait();
+      const mintInfo1 = getMintedTokenInfoFromReceipt(receipt1);
+      console.log(
+        `First mint - New total supply: ${mintInfo1?.newTotalSupply}`
+      );
+
+      // Second mint
+      const tx2 = await htsManager.mintTokenPublic(TOKEN_ADDRESS, 300n, []);
+      const receipt2 = await tx2.wait();
+      const mintInfo2 = getMintedTokenInfoFromReceipt(receipt2);
+      console.log(
+        `Second mint - New total supply: ${mintInfo2?.newTotalSupply}`
+      );
+
+      // Verify supply increased
+      expect(mintInfo2?.newTotalSupply).to.be.gt(
+        mintInfo1?.newTotalSupply || 0n
+      );
+    });
+
+    it("should increase treasury balance after minting", async function () {
+      // Get ERC-20 interface
+      const token = await ethers.getContractAt(
+        ["function balanceOf(address) view returns (uint256)"],
+        TOKEN_ADDRESS
+      );
+
+      // Check balance before mint
+      const balanceBefore = await token.balanceOf(DEPLOYED_CONTRACT);
+      console.log(`Treasury balance before mint: ${balanceBefore}`);
+
+      // Mint tokens
+      const mintAmount = 2000n;
+      const tx = await htsManager.mintTokenPublic(
+        TOKEN_ADDRESS,
+        mintAmount,
+        []
+      );
+      await tx.wait();
+
+      // Check balance after mint
+      const balanceAfter = await token.balanceOf(DEPLOYED_CONTRACT);
+      console.log(`Treasury balance after mint: ${balanceAfter}`);
+
+      expect(balanceAfter).to.equal(balanceBefore + mintAmount);
+    });
+  });
+
+  /* =========================
+      Token Transfer Tests
+     ========================= */
+
+  describe("Token Transfers", function () {
+    it("should transfer tokens from treasury to alice", async function () {
+      // First mint some tokens
+      const mintAmount = 5000n;
+      await htsManager.mintTokenPublic(TOKEN_ADDRESS, mintAmount, []);
+
+      // Get ERC-20 interface
+      const token = await ethers.getContractAt(
+        ["function balanceOf(address) view returns (uint256)"],
+        TOKEN_ADDRESS
+      );
+
+      // Check alice's balance before transfer
+      const aliceBalanceBefore = await token.balanceOf(alice.address);
+      console.log(`Alice balance before transfer:  ${aliceBalanceBefore}`);
+
+      // Transfer tokens from treasury (contract) to alice
+      const transferAmount = 1000n;
+      const tx = await htsManager.transferTokenPublic(
+        TOKEN_ADDRESS,
+        DEPLOYED_CONTRACT, // sender (treasury/contract)
+        alice.address, // receiver
+        transferAmount
+      );
+      const receipt = await tx.wait();
+
+      const responseCode = getResponseCodeFromReceipt(receipt);
+      expect(responseCode).to.equal(SUCCESS);
+
+      // Check alice's balance after transfer
+      const aliceBalanceAfter = await token.balanceOf(alice.address);
+      console.log(`Alice balance after transfer: ${aliceBalanceAfter}`);
+
+      expect(aliceBalanceAfter).to.equal(aliceBalanceBefore + transferAmount);
+    });
+
+    it("should transfer tokens to multiple recipients", async function () {
+      // Mint tokens first
+      const mintAmount = 10000n;
+      await htsManager.mintTokenPublic(TOKEN_ADDRESS, mintAmount, []);
+
+      const token = await ethers.getContractAt(
+        ["function balanceOf(address) view returns (uint256)"],
+        TOKEN_ADDRESS
+      );
+
+      // Transfer to alice
+      const aliceAmount = 2000n;
+      await htsManager.transferTokenPublic(
+        TOKEN_ADDRESS,
+        DEPLOYED_CONTRACT,
+        alice.address,
+        aliceAmount
+      );
+      console.log(`Transferred ${aliceAmount} to alice`);
+
+      // Transfer to bob
+      const bobAmount = 3000n;
+      await htsManager.transferTokenPublic(
+        TOKEN_ADDRESS,
+        DEPLOYED_CONTRACT,
+        bob.address,
+        bobAmount
+      );
+      console.log(`Transferred ${bobAmount} to bob`);
+
+      // Verify balances
+      const aliceBalance = await token.balanceOf(alice.address);
+      const bobBalance = await token.balanceOf(bob.address);
+
+      expect(aliceBalance).to.be.gte(aliceAmount);
+      expect(bobBalance).to.be.gte(bobAmount);
+
+      console.log(`Alice final balance: ${aliceBalance}`);
+      console.log(`Bob final balance: ${bobBalance}`);
+    });
+
+    it("should mint and then transfer in sequence", async function () {
+      const token = await ethers.getContractAt(
+        [
+          "function balanceOf(address) view returns (uint256)",
+          "function totalSupply() view returns (uint256)"
+        ],
+        TOKEN_ADDRESS
+      );
+
+      // Get initial state
+      const initialSupply = await token.totalSupply();
+      console.log(`Initial total supply: ${initialSupply}`);
+
+      // Mint tokens
+      const mintAmount = 3000n;
+      const mintTx = await htsManager.mintTokenPublic(
+        TOKEN_ADDRESS,
+        mintAmount,
+        []
+      );
+      await mintTx.wait();
+      console.log(`Minted ${mintAmount} tokens`);
+
+      // Verify supply increased
+      const supplyAfterMint = await token.totalSupply();
+      console.log(`Supply after mint: ${supplyAfterMint}`);
+      expect(supplyAfterMint).to.equal(initialSupply + mintAmount);
+
+      // Transfer some tokens
+      const transferAmount = 1500n;
+      const transferTx = await htsManager.transferTokenPublic(
+        TOKEN_ADDRESS,
+        DEPLOYED_CONTRACT,
+        alice.address,
+        transferAmount
+      );
+      await transferTx.wait();
+      console.log(`Transferred ${transferAmount} to alice`);
+
+      // Verify alice received tokens
+      const aliceBalance = await token.balanceOf(alice.address);
+      expect(aliceBalance).to.be.gte(transferAmount);
+      console.log(`Alice balance:  ${aliceBalance}`);
+
+      // Total supply should remain same after transfer
+      const supplyAfterTransfer = await token.totalSupply();
+      expect(supplyAfterTransfer).to.equal(supplyAfterMint);
+    });
+  });
+
+  /* =========================
+      Token Creation Tests
+     ========================= */
+
+  describe("Token Creation", function () {
+    it("should create a new token via the contract", async function () {
+      const tx = await htsManager.createFungibleTokenPublic(
+        "New Test Token",
+        "NTT",
+        { value: ethers.parseEther("15") }
+      );
+      const receipt = await tx.wait();
+
+      const createdEvent = receipt?.logs.find((log) => {
+        try {
+          const parsed = htsManager.interface.parseLog({
+            topics: log.topics as string[],
+            data: log.data
+          });
+          return parsed?.name === "CreatedToken";
+        } catch {
+          return false;
+        }
+      });
+
+      expect(createdEvent).to.not.be.undefined;
+
+      if (createdEvent) {
+        const parsed = htsManager.interface.parseLog({
+          topics: createdEvent.topics as string[],
+          data: createdEvent.data
+        });
+        const newTokenAddress = parsed?.args[0];
+        console.log(`Created new token at:  ${newTokenAddress}`);
+        expect(newTokenAddress).to.not.equal(ethers.ZeroAddress);
+      }
+    });
+  });
+
+  /* =========================
+      Fork Verification
+     ========================= */
+
+  describe("Fork Network Verification", function () {
+    it("should be connected to a forked network", async function () {
+      const blockNumber = await ethers.provider.getBlockNumber();
+      console.log(`Current fork block number: ${blockNumber}`);
+      expect(blockNumber).to.be.gt(0);
+    });
+
+    it("should be interacting with real deployed contract", async function () {
+      const contractCode = await ethers.provider.getCode(DEPLOYED_CONTRACT);
+      expect(contractCode).to.not.equal("0x");
+      console.log(
+        `Contract at ${DEPLOYED_CONTRACT} has ${contractCode.length} bytes of code`
+      );
+    });
+
+    it("should be able to access the pre-created token", async function () {
+      const tokenCode = await ethers.provider.getCode(TOKEN_ADDRESS);
+      expect(tokenCode).to.not.equal("0x");
+      console.log(`Token at ${TOKEN_ADDRESS} exists on the forked network`);
+    });
+
+    it("should verify contract is the token treasury", async function () {
+      const token = await ethers.getContractAt(
+        ["function balanceOf(address) view returns (uint256)"],
+        TOKEN_ADDRESS
+      );
+
+      // The contract should be the treasury (where minted tokens go)
+      // After we mint, the contract's balance should be > 0
+      const mintTx = await htsManager.mintTokenPublic(TOKEN_ADDRESS, 100n, []);
+      await mintTx.wait();
+
+      const contractBalance = await token.balanceOf(DEPLOYED_CONTRACT);
+      expect(contractBalance).to.be.gt(0n);
+      console.log(`Contract (treasury) balance: ${contractBalance}`);
+    });
+  });
+});
+```
+
+**Key points about these tests:**
+
+- **TypeScript types** - Uses generated types from `typechain-types` for type safety
+- **Uses deployed contract** - Tests bind to the already deployed `HTSTokenManager` contract using `getContractAt`
+- **HTS token creation** - Demonstrates creating fungible tokens using HTS System Contracts precompiles on the forked network
+- **Event parsing** - Parses `CreatedToken`, `ResponseCode`, and `FungibleTokenInfo` events to verify HTS operations
+- **Response code validation** - Checks for HTS `SUCCESS` response code (22) to confirm operations completed successfully
+- **Self-contained tests** - Each test creates its own token and operates on it, ensuring test isolation
+- **Local modifications** - All token creations and queries happen only on the local fork
+- **No testnet changes** - The real testnet is never modified by these tests
+- **Uses fixtures** - `loadFixture` ensures each test starts with a clean state
+- **Funded accounts** - Uses `hardhat_setBalance` to fund test accounts for gas fees and token creation costs
+
+---
+
+## Step 4: Run Tests on the Forked Network
+
+Run your tests against the forked Hedera testnet:
+
+```bash
+npx hardhat test
+```
+
+You should see output similar to:
+
+```bash
+  HTSTokenManager - HTS Forking Tests
+    Token Info
+Successfully retrieved token info
+      ✔ should get token info for the pre-created token (870ms)
+Successfully retrieved fungible token info
+      ✔ should get fungible token info for the pre-created token (108ms)
+Token Name:  TestForkToken
+Token Symbol: TFT
+Token Decimals: 0
+Token Total Supply: 0
+      ✔ should read token properties via ERC-20 interface (196ms)
+    Token Minting
+Minted 1000 tokens.  New total supply: 1000
+      ✔ should mint tokens successfully (602ms)
+First mint - New total supply: 500
+Second mint - New total supply: 800
+      ✔ should mint tokens multiple times and track total supply
+Treasury balance before mint: 0
+Treasury balance after mint: 2000
+      ✔ should increase treasury balance after minting
+    Token Transfers
+Alice balance before transfer:  0
+Alice balance after transfer: 1000
+      ✔ should transfer tokens from treasury to alice (302ms)
+Transferred 2000 to alice
+Transferred 3000 to bob
+Alice final balance: 2000
+Bob final balance: 3000
+      ✔ should transfer tokens to multiple recipients (275ms)
+Initial total supply: 0
+Minted 3000 tokens
+Supply after mint: 3000
+Transferred 1500 to alice
+Alice balance:  1500
+      ✔ should mint and then transfer in sequence
+    Token Creation
+Created new token at:  0x0000000000000000000000000000000000000408
+      ✔ should create a new token via the contract (487ms)
+    Fork Network Verification
+Current fork block number: 29968809
+      ✔ should be connected to a forked network
+Contract at 0x525F2a20563A052F7dC65df59106EC82f0584102 has 17144 bytes of code
+      ✔ should be interacting with real deployed contract
+Token at 0x000000000000000000000000000000000073E8dC exists on the forked network
+      ✔ should be able to access the pre-created token
+Contract (treasury) balance: 100
+      ✔ should verify contract is the token treasury
+
+
+  14 passing (18s)
+```
+
+### Pin to a Specific Block
+
+For reproducible tests, make sure the `blockNumber` in your `hardhat.config.ts` is set to a block where your contract exists. If you try to fork at a block before your contract was deployed, you'll see an error because the contract doesn't exist yet at that block.
+
+---
+
+## Best Practices for HTS Fork Testing
+
+1. **Always verify on real network** - Fork testing is for development; always test on testnet/mainnet before production
+
+2. **Use supported methods** - Stick to the currently supported HTS methods
+
+3. **Handle associations** - Remember that token associations work differently in emulation
+
+4. **Check response codes** - Always verify HTS response codes (`SUCCESS = 22`)
+
+5. **Fund test accounts** - Use `hardhat_setBalance` to fund accounts for gas
+
+---
+
+## Understanding Fork Testing with Deployed Contracts
+
+### Why Test Against Deployed Contracts?
+
+1. **Real-world state** - Test against actual balances, allowances, and state
+2. **No deployment costs** - Don't spend gas deploying for every test run
+3. **Impersonation** - Act as any account (even the contract owner) without their private key
+4. **Safe experimentation** - Try anything without affecting the real network
+
+### How Impersonation Works
+
+Hardhat's impersonation feature allows you to act as any address without having its private key:
+
+```typescript
+// Impersonate an address
+await network.provider.request({
+  method: "hardhat_impersonateAccount",
+  params: [someAddress]
+});
+
+// Get a signer for that address
+const impersonatedSigner = await ethers.getSigner(someAddress);
+
+// Act as that account
+await token.connect(impersonatedSigner).transfer(recipient, amount);
+```
+
+**Note:** Impersonation is not needed in this tutorial because `HTSTokenManager` is designed with the contract itself as the treasury and supply key holder. All functions are public with no access control, so anyone can call them. See [Part 1](/hedera/tutorials/smart-contracts/how-to-fork-the-hedera-network-with-hardhat-basic-erc20) for an example where impersonation is required for `onlyOwner` functions.
+
+### Funding Accounts with `hardhat_setBalance`
+
+Local test accounts on a forked network start with no balance. Fund them for gas and operations:
+
+```typescript
+// Fund an account with 100 HBAR (hex wei)
+await network.provider.send("hardhat_setBalance", [
+  accountAddress,
+  "0x56BC75E2D63100000" // 100 HBAR in hex
+]);
+```
+
+---
+
+## Further Learning & Next Steps
+
+1. [**Forking Hedera Network for Local Testing**](/hedera/core-concepts/smart-contracts/forking-hedera-network-for-local-testing)\
+   Deep dive into how Hedera forking works under the hood
+
+2. [**How to Fork Hedera with Foundry**](/hedera/tutorials/smart-contracts/foundry/how-to-fork-the-hedera-network-with-foundry-basic-erc20)\
+   Learn fork testing with Foundry framework
+
+3. [**hedera-forking Repository**](https://github.com/hashgraph/hedera-forking)\
+   Explore examples and documentation
+
+4. [**Hedera Smart Contracts Repository**](https://github.com/hashgraph/hedera-smart-contracts)\
+   Explore HTS System Contracts interfaces
+
+<Columns cols={2}>
+  <Card title="Writer:  Kiran Pachhai, Developer Advocate" arrow>
+    [GitHub](https://github.com/kpachhai) |
+    [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
+  </Card>
+</Columns>
+```

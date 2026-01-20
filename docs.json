@@ -169,6 +169,8 @@
                   "hedera/tutorials/smart-contracts/send-and-receive-hbar-using-solidity-smart-contracts",
                   "hedera/tutorials/smart-contracts/deploy-a-subgraph-using-the-graph-and-json-rpc",
                   "hedera/tutorials/smart-contracts/deploy-smart-contracts-on-hedera-using-truffle",
+                  "hedera/tutorials/smart-contracts/how-to-fork-the-hedera-network-with-hardhat-basic-erc20",
+                  "hedera/tutorials/smart-contracts/how-to-fork-the-hedera-network-with-hardhat-advanced-hts",
                   {
                     "group": "Foundry on Hedera",
                     "pages": [
@@ -176,7 +178,7 @@
                       "hedera/tutorials/smart-contracts/foundry/configuring-foundry-with-hedera-localnet-testnet-a-step-by-step-guide",
                       "hedera/tutorials/smart-contracts/foundry/how-to-mint-and-burn-an-erc-721-token-using-foundry-part-1",
                       "hedera/tutorials/smart-contracts/foundry/how-to-write-tests-in-solidity-part-2",
-                      "hedera/tutorials/smart-contracts/foundry/how-to-fork-the-hedera-network-for-local-testing"
+                      "hedera/tutorials/smart-contracts/foundry/how-to-fork-the-hedera-network-with-foundry-basic-erc20"
                     ]
                   },
                   "hedera/tutorials/smart-contracts/how-to-connect-metamask-to-hedera"
@@ -382,7 +384,8 @@
                   "hedera/core-concepts/smart-contracts/wrapped-hbar-whbar",
                   "hedera/core-concepts/smart-contracts/smart-contract-rent",
                   "hedera/core-concepts/smart-contracts/security",
-                  "hedera/core-concepts/smart-contracts/evm-archive-node-queries"
+                  "hedera/core-concepts/smart-contracts/evm-archive-node-queries",
+                  "hedera/core-concepts/smart-contracts/forking-hedera-network-for-local-testing"
                 ]
               },
               {

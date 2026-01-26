@@ -1,3 +1,31 @@
 ---
 title: "Hbar Plugin"
 ---
+
+## Full Command Reference
+
+<Accordion title="Hbar Transfer">
+    Transfer HBAR (tinybars) from one account to another.
+
+    <ResponseField name="-a, --amount" type="int" required>
+        Amount to transfer. Default: display units.<br/>
+        Add `t` for base units. Example: "1" = 1 HBAR, "100t" = 100 tinybar
+    </ResponseField>
+
+    <ResponseField name="-t, --to" type="string" required>
+        Account ID or name to transfer to
+    </ResponseField>
+
+    <ResponseField name="-f, --from" type="string" required>
+        AccountID:privateKey pair, AccountID:keyType:privateKey format, or account name to transfer from (defaults to operator).<br/>
+        Key type can be "ecdsa" or "ed25519" (defaults to ecdsa if not specified).
+    </ResponseField>
+
+    <ResponseField name="-m, --memo" type="string">
+        Memo for the transfer.
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager to use: local or local_encrypted (defaults to config setting).
+    </ResponseField>
+</Accordion>

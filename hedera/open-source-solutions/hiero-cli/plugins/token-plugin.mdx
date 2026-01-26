@@ -1,3 +1,211 @@
 ---
 title: "Token Plugin"
 ---
+
+## Most Used Commands
+
+**Create a new token with treasy and admin key set to alias Alice**
+
+```sh
+hcli token create \
+  --token-name "My Token" \
+  --symbol "MTK" \
+  --treasury alice \
+  --decimals 2 \
+  --initial-supply 1000 \
+  --supply-type FINITE \
+  --admin-key alice \
+  --name mytoken-alias
+```
+
+**Token associate**
+
+```sh
+hcli token associate \
+  --token mytoken-alias \
+  --account bob
+```
+
+## Full Command Reference
+
+If you want to create a complex token with many keys, custom fees, and other options, take a look at the [below guide](#guide:-token-create-from-file-specification) for creating tokens from a specification file using the `token create-from-file` command.
+
+<Accordion title="Token Create">
+    Create a new fungible token with specified properties.
+
+    <ResponseField name="-N, --token-name" type="string" required>
+        Token name.
+    </ResponseField>
+
+    <ResponseField name="-s, --symbol" type="string" required>
+        Token symbol.
+    </ResponseField>
+
+    <ResponseField name="-t, --treasury" type="string" required>
+        Treasury account: either an alias or `treasury-id:treasury-key` pair.
+    </ResponseField>
+
+    <ResponseField name="-d, --decimals" type="int" default="0">
+        Decimals for the token. Default: 0.
+    </ResponseField>
+
+    <ResponseField name="-i, --initial-supply" type="int">
+        Initial supply amount. Default: display units (with decimals applied). Append "t" for raw base units (e.g., "1000t").
+    </ResponseField>
+
+    <ResponseField name="-S, --supply-type" type="int" default="INFINITE">
+        Set supply type: `INFINITE` (default) or `FINITE`.
+    </ResponseField>
+
+    <ResponseField name="-m, --max-supply" type="int">
+        Maximum supply of the token to bet set upon creation. **This option is required if you set supply type to `FINITE`.**
+    </ResponseField>
+
+    <ResponseField name="-a, --admin-key" type="string">
+        Admin key to be set for the token upon creation. If option not set then the operator key is passed as admin key.
+    </ResponseField>
+
+    <ResponseField name="-n, --name" type="string">
+        Optional name to register for the token.
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager to use: local or local_encrypted (defaults to config setting).
+    </ResponseField>
+
+    <ResponseField name="-M, --memo" type="string">
+        Optional memo for the token (max 100 characters).
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Token Create-From-File">
+    Create a new token from a JSON file definition with advanced features. See the full guide below.<br/>
+    Example: `hcli token create-from-file --file ~/projects/token.json`
+   
+    <ResponseField name="-f, --file" type="string" required>
+        Token definition file path (absolute or relative) to a JSON file.
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager to use: local or local_encrypted (defaults to config setting).
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Token Associate">
+    Associate a token with an account to enable transfers.
+
+    <ResponseField name="-T, --token" type="string" required>
+        Token: either a token alias or token-id
+    </ResponseField>
+
+    <ResponseField name="-a, --account" type="string" required>
+        Account: either an alias or `account-id:account-key` pair to associate with the token.
+    </ResponseField>
+
+   <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager to use: local or local_encrypted (defaults to config setting).
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Token Transfer">
+    Transfer a fungible token from one account to another.
+
+    <ResponseField name="-T, --token" type="string" required>
+        Token: either a token alias or token-id.
+    </ResponseField>
+
+    <ResponseField name="-t, --to" type="string" required>
+        Destination account: either an alias or account-id.
+    </ResponseField>
+
+    <ResponseField name="-f, --from" type="string" required>
+        Source account: either a stored alias or `account-id:private-key` or `account-id:key-type:private-key pair`.
+    </ResponseField>
+
+    <ResponseField name="-a, --amount" type="int" required>
+        Amount to transfer. Default: display units (with decimals applied). Append "t" for raw base units (e.g., "100t").
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager to use: local or local_encrypted (defaults to config setting).
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Token List">
+    List all tokens stored in state for the current network or a specified network.
+
+    <ResponseField name="-k, --keys">
+        Show token key information (admin, supply, wipe, etc.).
+    </ResponseField>
+
+    <ResponseField name="-N, --network" type="string">
+        Filter tokens by network (defaults to current active network).
+    </ResponseField>
+</Accordion>
+
+## Guide: Token Create From File (Specification)
+
+Create a token by defining its configuration in a JSON file. This is the recommended approach for repeatable token creation (scripts, CI, team handoffs), and it supports aliases for token keys so you don’t have to hardcode account keys everywhere.
+
+### What it does
+
+`token create-from-file` reads a JSON file that matches a supported schema and creates a token on the selected network.
+
+You can define:
+- token metadata (name, symbol, decimals, memo)
+- supply model (finite/infinite, initial/max supply)
+- token keys (admin, supply, wipe, kyc, freeze, pause, feeSchedule)
+- optional token associations
+- optional custom fees
+
+### Quickstart
+
+Create a `token.json` file and add a JSON specification. Here's a basic example that both uses the full key format for the `treasuryKey` and the alias format for the `adminKey`.
+
+```json
+{
+  "name": "token-keys-example",
+  "symbol": "TRK",
+  "decimals": 10,
+  "supplyType": "infinite",
+  "initialSupply": 1000,
+  "treasuryKey": "<0.0.1002:3030020100300706052b8104000a042204207f109a9e3b0d8ecfba9cc23a3614433ce0fa7ddcc80f2a8f10b222179a5a80d6>",
+  "adminKey": "alice-account"
+}
+```
+
+You can create a toke from this specification by running the following command: `hcli token create-from-file --file ./token.json`
+
+### Full breakdown
+
+Here's a full breakdown of all the options you can use:
+
+```json
+{
+  "name": "token-full-example",
+  "symbol": "TFE",
+  "decimals": 8,
+  "supplyType": "finite",
+  "initialSupply": 1000000,
+  "maxSupply": 10000000,
+  "treasuryKey": "<alias or accountId:privateKey>",
+  "adminKey": "<alias or accountId:privateKey>",
+  "supplyKey": "<alias or accountId:privateKey>",
+  "wipeKey": "<alias or accountId:privateKey>",
+  "kycKey": "<alias or accountId:privateKey>",
+  "freezeKey": "<alias or accountId:privateKey>",
+  "pauseKey": "<alias or accountId:privateKey>",
+  "feeScheduleKey": "<alias or accountId:privateKey>",
+  "memo": "Full example token with all fields",
+  "associations": ["<alias or accountId:privateKey>"],
+  "customFees": [
+    {
+      "type": "fixed",
+      "amount": 100,
+      "unitType": "HBAR",
+      "collectorId": "0.0.1234",
+      "exempt": false
+    }
+  ]
+}
+```

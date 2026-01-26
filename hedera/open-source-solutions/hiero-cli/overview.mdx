@@ -2,7 +2,6 @@
 title: "Overview"
 ---
 
-
 ## Introduction to Hiero CLI
 
 The [Hiero CLI ](https://github.com/hiero-ledger/hiero-cli) is a command‑line interface that offers a simple way to interact with the Hedera network. It consolidates many common network operations into easy-to‑use commands so you can:
@@ -20,13 +19,13 @@ The [Hiero CLI ](https://github.com/hiero-ledger/hiero-cli) is a command‑line 
 * Node.js installation: LTS 16.20.2 or higher
 * [Hedera Account](https://portal.hedera.com/) (for mainnet, testnet, or previewnet) or [Hedera Local Node](/hedera/tutorials/local-node/how-to-set-up-a-hedera-local-node) (for localnet)
 
-The easiest way to get started with Hedera CLI is to install it globally via NPM:
+The easiest way to get started with Hiero CLI is to install it globally via NPM:
 
 ```
 npm install -g @hiero-ledger/hiero-cli
 ```
 
-Once installed, you can use the CLI with the hcli command:
+Once installed, you can use the CLI with the `hcli` command:
 
 ```sh
 # Check available commands
@@ -161,6 +160,14 @@ hcli hbar transfer --to 0.0.123456 --amount 10
     </Tabs>
 </Accordion>
 
+## Global Flags
+
+These flags are available on **all Hiero CLI commands**. They control output, help, and versioning, regardless of the specific plugin or command you’re using.
+
+- `--format <type>`: Controls how command output is formatted.<br/>Supported values `human` (default) or `json` for machine-readable output.
+- `-h, --help`: Displays help information for a command.
+- `-V, --version`: Outputs the installed Hiero CLI version.
+
 ## Plugins Overview
 
 <Card title="Credentials Plugin" icon="puzzle-piece-simple" href="/hedera/open-source-solutions/hiero-cli/plugins/credentials-plugin" horizontal>
@@ -186,6 +193,14 @@ hcli hbar transfer --to 0.0.123456 --amount 10
 </Card>
 <Card title="Plugin Management Plugin" icon="puzzle-piece-simple" href="/hedera/open-source-solutions/hiero-cli/plugins/plugin-management-plugin" horizontal>
   Add, remove, enable/disable, and inspect plugins
+</Card>
+
+## Scripting 
+
+Once you’re familiar with the available CLI commands, you can take the next step with scripting. Scripting is especially useful for CI/CD pipelines, setting up test environments, and automating repeated workflows.
+
+<Card title="Scripting Quickstart" icon="scroll" href="/hedera/open-source-solutions/hiero-cli/scripting/quickstart" horizontal>
+  Learn how to create your first script using Hiero CLI commands.
 </Card>
 
 ## Contributing

@@ -498,6 +498,12 @@
                       "/hedera/open-source-solutions/hiero-cli/plugins/config-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/plugin-management-plugin"
                     ]
+                  },
+                  {
+                    "group": "Scripting",
+                    "pages": [
+                      "/hedera/open-source-solutions/hiero-cli/scripting/quickstart"
+                    ]
                   }
                 ]
               },

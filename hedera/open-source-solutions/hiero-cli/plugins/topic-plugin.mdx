@@ -1,3 +1,116 @@
 ---
 title: "Topic Plugin"
 ---
+
+## Most Used Commands
+
+**Create a new topic with admin and submit key set**
+
+```sh
+hcli topic create \
+  --name marketing-updates \
+  --memo "Weekly digest" \
+  --admin-key alice \
+  --submit-key bob
+```
+
+**Submit a message**
+
+```sh
+hcli topic submit-message \
+  --topic 0.0.7473019 \
+  --message '{"event":"mint","amount":10}'
+```
+
+**Find messages between a range of 1 and 3**
+
+```sh
+hcli topic find-message \
+  --topic marketing-updates \
+  --sequence-gt 1 \
+  --sequence-lt 3
+```
+
+## Full Command Reference
+
+<Accordion title="Topic Create">
+    Create a new Hedera Consensus Service topic with optional memo and keys.
+
+    <ResponseField name="-n, --name" type="string" required>
+        Define the name for this topic.
+    </ResponseField>
+
+    <ResponseField name="-m, --memo" type="string">
+        The memo for a topic.
+    </ResponseField>
+
+    <ResponseField name="-a, --admin-key" type="string">
+        Pass an admin key as name or private key for the topic. Private key can be optionally prefixed with key type<br/>
+        (e.g., "ed25519:..." or "ecdsa:..."). Defaults to ecdsa if no prefix.
+    </ResponseField>
+
+    <ResponseField name="-s, --submit-key" type="string">
+        Submit key as account name or `{accountId}:{private_key}` format.
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager to use: local or local_encrypted (defaults to config setting)
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Topic List">
+    List all topics stored in the state.
+
+    <ResponseField name="-n, --network" type="string">
+        Filter topics by network.
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Topic Submit-Message">
+    Submit a message to a Hedera Consensus Service topic
+
+    <ResponseField name="-t, --topic" type="string" required>
+        The topic ID or topic name.
+    </ResponseField>
+
+    <ResponseField name="-m, --message" type="string" required>
+        Submit a message to the topic.
+    </ResponseField>
+
+    <ResponseField name="-s, --signer" type="string">
+        Account to use for signing the message. Can be an alias or `{accountId}:{private_key}`.<br/>
+        Required for public topics (without submit keys). For topics with submit keys, must be one of the authorized signers.
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager to use: local or local_encrypted (defaults to config setting)
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Topic Find-Message">
+    Find messages in a topic by sequence number or filters
+
+    <ResponseField name="-t, --topic" type="string" required>
+        The topic ID or topic name to filter for.
+    </ResponseField>
+
+    <ResponseField name="-g, --sequence-gt" type="int">
+        Filter by sequence number greater than.
+    </ResponseField>
+
+    <ResponseField name="-G, --sequence-gte" type="int">
+        Filter by sequence number greater than or equal to.
+    </ResponseField>
+
+    <ResponseField name="-l, --sequence-lt" type="int">
+        Filter by sequence number less than.
+    </ResponseField>
+
+    <ResponseField name="-L, --sequence-lte" type="int">
+        Filter by sequence number less than or equal to.
+    </ResponseField>
+
+    <ResponseField name="-e, --sequence-eq" type="int">
+        Filter by sequence number equal to.
+    </ResponseField>
+</Accordion>

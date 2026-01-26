@@ -1,3 +1,42 @@
 ---
 title: "Network Plugin"
 ---
+
+## Full Command Reference
+
+<Accordion title="Network List">
+    List all available networks with their configuration and health status.
+</Accordion>
+
+<Accordion title="Network Use">
+    Switch the active network to the specified network name.
+
+    <ResponseField name="-N, --network" type="string" required>
+        Network name (testnet, mainnet, previewnet, localnet)
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Network Get-Operator">
+    Get operator credentials for a specific network.
+
+    <ResponseField name="-N, --network" type="string">
+        Target network (defaults to current network)
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Network Set-Operator" defaultOpen="true">
+    Set operator credentials for signing transactions on a specific network.<br/><br/>
+    **⚠️ Use this command to set the operator to avoid triggering the setup wizard asking you to set up an operator account. This is important when using the Hiero CLI in a CI/CD environment.**
+
+    <ResponseField name="-o, --operator" type="string" required>
+        Operator credentials: name or `account-id:private-key pair`.
+    </ResponseField>
+
+    <ResponseField name="-N, --network" type="string">
+        Target network (defaults to current network).
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager to use: local or local_encrypted (defaults to config setting).
+    </ResponseField>
+</Accordion>

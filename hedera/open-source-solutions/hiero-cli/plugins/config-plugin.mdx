@@ -1,3 +1,59 @@
 ---
 title: "Config Plugin"
 ---
+## Full Command Reference
+
+<Accordion title="Config List">
+    List all configuration options with current values.
+</Accordion>
+
+<Accordion title="Config Get">
+    Get the value of a configuration option.
+
+    <ResponseField name="-o, --option" type="string" required>
+        Option name to read.
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Config Set">
+    Set the value of a configuration option.
+
+    <ResponseField name="-o, --option" type="string" required>
+        Option name to set. Use `list` command to check what options could be set.
+    </ResponseField>
+
+    <ResponseField name="-v, --value" type="(boolean|number|string)" required>
+        Value to set (boolean|number|string). Booleans: true/false.
+    </ResponseField>
+</Accordion>
+
+## Configuration Options
+
+The config plugin allows you to control global Hiero CLI behavior. Configuration values are typically stored in the CLI config file and affect logging, cryptographic support, and key management defaults.
+
+<ResponseField name="ed25519_support_enabled" type="boolean" default="false" required>
+    **Enables support for Ed25519 keys** within the Hiero CLI. When enabled, the CLI can:<br/>
+        - Generate Ed25519 keys<br/>
+        - Use Ed25519 keys for signing transactions<br/>
+        - Interact with accounts or services that rely on Ed25519 cryptography<br/>
+
+    **When to enable:**<br/>
+    - You are working with Hedera accounts or tooling that explicitly require Ed25519 keys<br/>
+    - You are testing compatibility with different key types
+</ResponseField>
+
+<ResponseField name="log_level" type="string" default="silent" required>
+    Controls the verbosity of CLI output.<br/>
+    Allowed values:<br/>
+    - `silent`: No output except critical failures<br/>
+    - `error`: Only errors are shown<br/>
+    - `warn`: Errors and warnings<br/>
+    - `info`: General informational messages<br/>
+    - `debug`: Verbose output for troubleshooting
+</ResponseField>
+
+<ResponseField name="default_key_manager" type="string" default="local_encrypted" required>
+    Defines which key manager the CLI uses by default when creating or managing keys. Keep the default `local_encrypted` setting unless you are working in a controlled test environment.<br/>
+    - `local`: Keys are stored locally in plaintext (not recommended for production).<br/>
+    - `local_encrypted`: Keys are stored locally and encrypted (recommended).<br/>
+</ResponseField>

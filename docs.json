@@ -7,98 +7,775 @@
     "light": "#614ff4",
     "dark": "#614ff4"
   },
-  "redirects": [
-    {
-      "source": "/hedera/getting-started",
-      "destination": "/#getting-started"
-    },
-    {
-      "source": "/hedera/getting-started/:slug*",
-      "destination": "/#getting-started"
-    },
-    {
-      "source": "/guides/docs",
-      "destination": "/"
-    },
-    {
-      "source": "/guides/docs/mirror-node-api/cryptocurrency-api",
-      "destination": "/hedera/sdks-and-apis/rest-api"
-    },
-    {
-      "source": "/guides",
-      "destination": "/"
-    },
-    {
-      "source": "/transaction-tool/:slug*",
-      "destination": "https://transactiontool.hedera.com/:slug*"
-    },
-    {
-      "source": "/transaction-tool",
-      "destination": "https://transactiontool.hedera.com"
-    },
-    {
-      "source": "/guardian/:slug*",
-      "destination": "https://guardian.hedera.com/guardian/:slug*"
-    },
-    {
-      "source": "/guardian",
-      "destination": "https://guardian.hedera.com/guardian/"
-    },
-    {
-      "source": "/guardian-dev-1/:slug*",
-      "destination": "https://dev.guardian.hedera.com/guardian/:slug*"
-    },
-    {
-      "source": "/hedera-transaction-tool-v2/:slug*",
-      "destination": "https://transactiontool.hedera.com/:slug*"
-    },
-    {
-      "source": "/hedera-transaction-tool-v2",
-      "destination": "https://transactiontool.hedera.com"
-    }
-  ],
-  "style": {
-    "path": "style.css"
-  },
-  "fonts": {
-    "heading": {
-      "family": "Styrene A",
-      "source": "/public/fonts/styrene/StyreneA-Regular-Web.woff2",
-      "format": "woff2",
-      "weight": 400
-    },
-    "body": {
-      "family": "Styrene A",
-      "source": "/public/fonts/styrene/StyreneA-Regular-Web.woff2",
-      "format": "woff2",
-      "weight": 400
-    }
-  },
-  "background": {
-    "decoration": "gradient"
-  },
   "favicon": "/favicon.png",
-  "appearance": {
-    "default": "light"
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "https://hedera.com/"
   },
-  "contextual": {
-    "options": [
-      "copy",
-      "view",
-      "chatgpt",
-      "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
-    ]
+  "navbar": {
+    "primary": {
+      "type": "button",
+      "label": "Dev Portal",
+      "href": "https://portal.hedera.com"
+    }
+  },
+  "footer": {
+    "socials": {
+      "discord": "https://hedera.com/discord",
+      "x": "https://X.com/hedera",
+      "github": "https://github.com/hashgraph",
+      "youtube": "https://www.youtube.com/hederahashgraph"
+    }
   },
   "navigation": {
+    "tabs": [
+      {
+        "tab": "Learn",
+        "groups": [
+          {
+            "group": "Welcome",
+            "pages": [
+              "learn/index",
+              "learn/getting-started/what-is-hedera",
+              "learn/getting-started/why-hedera"
+            ]
+          },
+          {
+            "group": "Get Started",
+            "pages": [
+              "learn/getting-started/choose-your-path",
+              "learn/getting-started/create-portal-account",
+              "learn/getting-started/testnet-faucet",
+              "learn/getting-started/portal-playground"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "learn/core-concepts/index",
+              {
+                "group": "Hashgraph Consensus",
+                "pages": [
+                  "learn/core-concepts/hashgraph/index",
+                  "learn/core-concepts/hashgraph/gossip-about-gossip",
+                  "learn/core-concepts/hashgraph/virtual-voting"
+                ]
+              },
+              {
+                "group": "Accounts",
+                "pages": [
+                  "learn/core-concepts/accounts/index",
+                  "learn/core-concepts/accounts/account-creation",
+                  "learn/core-concepts/accounts/auto-account-creation",
+                  "learn/core-concepts/accounts/account-properties"
+                ]
+              },
+              "learn/core-concepts/keys/index",
+              {
+                "group": "Transactions",
+                "pages": [
+                  "learn/core-concepts/transactions/index",
+                  "learn/core-concepts/transactions/properties",
+                  "learn/core-concepts/transactions/scheduled"
+                ]
+              },
+              {
+                "group": "Tokens (HTS)",
+                "pages": [
+                  "learn/core-concepts/tokens/index",
+                  "learn/core-concepts/tokens/hts-overview",
+                  "learn/core-concepts/tokens/types-and-ids",
+                  "learn/core-concepts/tokens/properties",
+                  "learn/core-concepts/tokens/creation",
+                  "learn/core-concepts/tokens/custom-fees",
+                  "learn/core-concepts/tokens/airdrops"
+                ]
+              },
+              {
+                "group": "Staking",
+                "pages": [
+                  "learn/core-concepts/staking/index",
+                  "learn/core-concepts/staking/staking",
+                  "learn/core-concepts/staking/stake-hbar"
+                ]
+              },
+              "learn/core-concepts/mirror-nodes",
+              "learn/core-concepts/state-and-history"
+            ]
+          },
+          {
+            "group": "Networks",
+            "pages": [
+              "learn/networks/index",
+              {
+                "group": "Mainnet",
+                "pages": [
+                  "learn/networks/mainnet/index",
+                  "learn/networks/mainnet/access",
+                  "learn/networks/mainnet/fees",
+                  "learn/networks/mainnet/transaction-records"
+                ]
+              },
+              {
+                "group": "Testnet",
+                "pages": [
+                  "learn/networks/testnet/index",
+                  "learn/networks/testnet/access",
+                  "learn/networks/testnet/nodes"
+                ]
+              },
+              {
+                "group": "Localnet",
+                "pages": [
+                  "learn/networks/localnet/index",
+                  "learn/networks/localnet/single-node",
+                  "learn/networks/localnet/multinode"
+                ]
+              },
+              "learn/networks/community-mirror-nodes"
+            ]
+          },
+          {
+            "group": "Release Notes",
+            "pages": [
+              "learn/release-notes/index",
+              "learn/release-notes/services",
+              "learn/release-notes/mirror-node"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "EVM Developers",
+        "groups": [
+          {
+            "group": "Start Here",
+            "pages": [
+              "evm/index",
+              "evm/overview/why-hedera-for-evm",
+              "evm/overview/evm-on-hedera-explained",
+              "evm/overview/choose-your-path"
+            ]
+          },
+          {
+            "group": "Quick Start",
+            "pages": [
+              "evm/quickstart/index",
+              "evm/quickstart/setup-metamask",
+              "evm/quickstart/get-test-hbar",
+              {
+                "group": "Deploy Your First Contract",
+                "pages": [
+                  "evm/quickstart/deploy-with-remix",
+                  "evm/quickstart/deploy-with-hardhat",
+                  "evm/quickstart/deploy-with-foundry",
+                  "evm/quickstart/deploy-with-contract-builder"
+                ]
+              },
+              "evm/quickstart/interact-with-contract",
+              "evm/quickstart/whats-next"
+            ]
+          },
+          {
+            "group": "Smart Contract Development",
+            "pages": [
+              "evm/development/index",
+              {
+                "group": "Contract Lifecycle",
+                "pages": [
+                  "evm/development/creating",
+                  "evm/development/compiling",
+                  "evm/development/deploying",
+                  "evm/development/verifying"
+                ]
+              },
+              {
+                "group": "Gas & Costs",
+                "pages": [
+                  "evm/development/gas-fees",
+                  "evm/development/rent"
+                ]
+              },
+              {
+                "group": "Debugging & Analysis",
+                "pages": [
+                  "evm/development/traceability",
+                  "evm/development/archive-queries"
+                ]
+              },
+              "evm/development/addresses",
+              "evm/development/security",
+              "evm/development/forking",
+              "evm/development/json-rpc/index"
+            ]
+          },
+          {
+            "group": "Migrating from Ethereum?",
+            "pages": [
+              "evm/migration/index",
+              "evm/migration/key-differences-overview",
+              "evm/migration/accounts-and-keys",
+              "evm/migration/hbar-decimals",
+              "evm/migration/native-token-transfers",
+              "evm/migration/json-rpc-differences",
+              "evm/migration/tooling-compatibility",
+              "evm/migration/checklist"
+            ]
+          },
+          {
+            "group": "ERC Token Standards",
+            "pages": [
+              "evm/tokens/index",
+              "evm/tokens/erc20",
+              "evm/tokens/erc721",
+              "evm/tokens/erc1363",
+              "evm/tokens/erc3643",
+              "evm/tokens/whbar"
+            ]
+          },
+          {
+            "group": "Hedera-Native Features",
+            "pages": [
+              "evm/hedera-services/index",
+              "evm/hedera-services/why-use-native-services",
+              {
+                "group": "System Contracts",
+                "pages": [
+                  "evm/hedera-services/system-contracts/index",
+                  "evm/hedera-services/system-contracts/hts",
+                  "evm/hedera-services/system-contracts/account-service",
+                  "evm/hedera-services/system-contracts/schedule-service",
+                  "evm/hedera-services/system-contracts/exchange-rate",
+                  "evm/hedera-services/system-contracts/prng"
+                ]
+              },
+              {
+                "group": "HTS from Solidity",
+                "pages": [
+                  "evm/hedera-services/hts-solidity/index",
+                  "evm/hedera-services/hts-solidity/create-tokens",
+                  "evm/hedera-services/hts-solidity/transfer-tokens",
+                  "evm/hedera-services/hts-solidity/token-management",
+                  "evm/hedera-services/hts-solidity/nft-operations"
+                ]
+              },
+              {
+                "group": "Hybrid Tokenization",
+                "pages": [
+                  "evm/hedera-services/hybrid/index",
+                  "evm/hedera-services/hybrid/hts-vs-erc",
+                  "evm/hedera-services/hybrid/erc-compatibility"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Development Tools",
+            "pages": [
+              "evm/tools/index",
+              "evm/tools/contract-builder",
+              {
+                "group": "Hardhat",
+                "pages": [
+                  "evm/tools/hardhat/index",
+                  "evm/tools/hardhat/setup",
+                  "evm/tools/hardhat/forking-basic",
+                  "evm/tools/hardhat/forking-advanced",
+                  "evm/tools/hardhat/testing"
+                ]
+              },
+              {
+                "group": "Foundry",
+                "pages": [
+                  "evm/tools/foundry/index",
+                  "evm/tools/foundry/setup",
+                  "evm/tools/foundry/forking",
+                  "evm/tools/foundry/testing"
+                ]
+              },
+              {
+                "group": "Other Tools",
+                "pages": [
+                  "evm/tools/remix",
+                  "evm/tools/other/truffle",
+                  "evm/tools/other/the-graph"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Tutorials",
+            "pages": [
+              "evm/tutorials/index",
+              {
+                "group": "Beginner",
+                "pages": [
+                  "evm/tutorials/beginner/connect-metamask",
+                  "evm/tutorials/beginner/your-first-token",
+                  "evm/tutorials/beginner/simple-nft",
+                  "evm/tutorials/beginner/read-contract-data"
+                ]
+              },
+              {
+                "group": "Intermediate",
+                "pages": [
+                  "evm/tutorials/intermediate/send-receive-hbar",
+                  "evm/tutorials/intermediate/verify-hashscan",
+                  "evm/tutorials/intermediate/events-and-logs"
+                ]
+              },
+              {
+                "group": "Advanced",
+                "pages": [
+                  {
+                    "group": "ERC-721 Series (Hardhat)",
+                    "pages": [
+                      "evm/tutorials/advanced/erc721-hardhat/part1-mint-burn",
+                      "evm/tutorials/advanced/erc721-hardhat/part2-access-control",
+                      "evm/tutorials/advanced/erc721-hardhat/part3-upgradeable"
+                    ]
+                  },
+                  {
+                    "group": "ERC-721 Series (Foundry)",
+                    "pages": [
+                      "evm/tutorials/advanced/erc721-foundry/part1-mint-burn",
+                      "evm/tutorials/advanced/erc721-foundry/part2-testing"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Hedera-Specific",
+                "pages": [
+                  {
+                    "group": "HTS + Solidity",
+                    "pages": [
+                      "evm/tutorials/hedera/hts-evm/part1-mint-nfts",
+                      "evm/tutorials/hedera/hts-evm/part2-kyc-update",
+                      "evm/tutorials/hedera/hts-evm/part3-pause-freeze-wipe"
+                    ]
+                  },
+                  {
+                    "group": "Scheduled Transactions",
+                    "pages": [
+                      "evm/tutorials/hedera/hss-evm/part1-schedule-calls",
+                      "evm/tutorials/hedera/hss-evm/part2-rebalancing"
+                    ]
+                  },
+                  "evm/tutorials/hedera/nft-solidity"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "evm/integrations/index",
+              {
+                "group": "Oracles",
+                "pages": [
+                  "evm/integrations/oracles/index",
+                  "evm/integrations/oracles/chainlink",
+                  "evm/integrations/oracles/pyth",
+                  "evm/integrations/oracles/supra"
+                ]
+              },
+              {
+                "group": "Cross-Chain & Bridges",
+                "pages": [
+                  "evm/integrations/cross-chain/index",
+                  "evm/integrations/cross-chain/layerzero",
+                  "evm/integrations/cross-chain/chainlink-ccip"
+                ]
+              },
+              {
+                "group": "Wallets",
+                "pages": [
+                  "evm/integrations/wallets/index",
+                  "evm/integrations/wallets/walletconnect",
+                  "evm/integrations/wallets/metamask-snap"
+                ]
+              },
+              {
+                "group": "Indexing & Data",
+                "pages": [
+                  "evm/integrations/indexing/the-graph",
+                  "evm/integrations/indexing/mirror-node"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Troubleshooting",
+            "pages": [
+              "evm/troubleshooting/index",
+              "evm/troubleshooting/common-errors",
+              "evm/troubleshooting/gas-estimation",
+              "evm/troubleshooting/transaction-failures"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Native SDKs",
+        "groups": [
+          {
+            "group": "Start Here",
+            "pages": [
+              "native/index",
+              "native/overview/why-native-sdk",
+              "native/overview/sdk-comparison"
+            ]
+          },
+          {
+            "group": "Quick Start",
+            "pages": [
+              "native/quickstart/index",
+              "native/quickstart/javascript",
+              "native/quickstart/java",
+              "native/quickstart/go"
+            ]
+          },
+          {
+            "group": "SDK Fundamentals",
+            "pages": [
+              "native/fundamentals/index",
+              "native/fundamentals/client",
+              "native/fundamentals/local-network",
+              "native/fundamentals/hbars",
+              "native/fundamentals/errors"
+            ]
+          },
+          {
+            "group": "Keys & Cryptography",
+            "pages": [
+              "native/keys/index",
+              "native/keys/generate-key-pair",
+              "native/keys/import-key",
+              "native/keys/key-list",
+              "native/keys/threshold-key"
+            ]
+          },
+          {
+            "group": "Transactions",
+            "pages": [
+              "native/transactions/index",
+              "native/transactions/transaction-id",
+              "native/transactions/submit",
+              "native/transactions/receipt",
+              "native/transactions/record",
+              "native/transactions/multisig",
+              "native/transactions/batch"
+            ]
+          },
+          {
+            "group": "Accounts",
+            "pages": [
+              "native/accounts/index",
+              "native/accounts/create",
+              "native/accounts/update",
+              "native/accounts/transfer",
+              "native/accounts/get-balance",
+              "native/accounts/get-info",
+              "native/accounts/delete"
+            ]
+          },
+          {
+            "group": "Token Service (HTS)",
+            "pages": [
+              "native/tokens/index",
+              "native/tokens/define",
+              "native/tokens/mint",
+              "native/tokens/burn",
+              "native/tokens/transfer",
+              "native/tokens/airdrop",
+              "native/tokens/associate",
+              "native/tokens/dissociate",
+              "native/tokens/freeze",
+              "native/tokens/unfreeze",
+              "native/tokens/enable-kyc",
+              "native/tokens/disable-kyc",
+              "native/tokens/pause",
+              "native/tokens/unpause",
+              "native/tokens/wipe",
+              "native/tokens/delete",
+              "native/tokens/custom-fees",
+              "native/tokens/atomic-swaps",
+              "native/tokens/get-info",
+              "native/tokens/get-nft-info"
+            ]
+          },
+          {
+            "group": "Consensus Service (HCS)",
+            "pages": [
+              "native/consensus/index",
+              "native/consensus/create-topic",
+              "native/consensus/update-topic",
+              "native/consensus/submit-message",
+              "native/consensus/delete-topic",
+              "native/consensus/get-message",
+              "native/consensus/get-info"
+            ]
+          },
+          {
+            "group": "File Service",
+            "pages": [
+              "native/files/index"
+            ]
+          },
+          {
+            "group": "Scheduled Transactions",
+            "pages": [
+              "native/scheduled/index"
+            ]
+          },
+          {
+            "group": "Smart Contracts",
+            "pages": [
+              "native/smart-contracts/index"
+            ]
+          },
+          {
+            "group": "Queries & Utilities",
+            "pages": [
+              "native/queries",
+              "native/prng"
+            ]
+          },
+          {
+            "group": "Signature Provider",
+            "pages": [
+              "native/signature-provider/index"
+            ]
+          },
+          {
+            "group": "Tutorials",
+            "pages": [
+              "native/tutorials/index",
+              {
+                "group": "Tokens",
+                "pages": [
+                  "native/tutorials/tokens/index"
+                ]
+              },
+              {
+                "group": "Consensus",
+                "pages": [
+                  "native/tutorials/consensus/index"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Local Development",
+            "pages": [
+              "native/local-dev/index"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              {
+                "group": "AI & Agents",
+                "pages": [
+                  "native/integrations/ai/index"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Operators",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "operators/index"
+            ]
+          },
+          {
+            "group": "Mirror Node",
+            "pages": [
+              "operators/mirror-node/index",
+              "operators/mirror-node/architecture",
+              "operators/mirror-node/one-click-deploy",
+              {
+                "group": "Run Your Own",
+                "pages": [
+                  "operators/mirror-node/run-your-own/index"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "JSON-RPC Relay",
+            "pages": [
+              "operators/json-rpc/index",
+              "operators/json-rpc/setup",
+              "operators/json-rpc/configuration"
+            ]
+          },
+          {
+            "group": "Consensus Node",
+            "pages": [
+              "operators/consensus-node/index",
+              {
+                "group": "Requirements",
+                "pages": [
+                  "operators/consensus-node/requirements/index",
+                  "operators/consensus-node/requirements/hardware",
+                  "operators/consensus-node/requirements/network"
+                ]
+              },
+              "operators/consensus-node/deployment",
+              "operators/consensus-node/monitoring"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "reference/index"
+            ]
+          },
+          {
+            "group": "Mirror Node REST API",
+            "pages": [
+              "reference/rest-api/index",
+              "reference/rest-api/accounts/index",
+              "reference/rest-api/balances/index",
+              "reference/rest-api/blocks/index",
+              "reference/rest-api/contracts/index",
+              "reference/rest-api/tokens/index",
+              "reference/rest-api/topics/index",
+              "reference/rest-api/transactions/index",
+              "reference/rest-api/schedules/index",
+              "reference/rest-api/network/index"
+            ]
+          },
+          {
+            "group": "Other APIs",
+            "pages": [
+              "reference/hcs-api",
+              "reference/status-api",
+              "reference/verification-api"
+            ]
+          },
+          {
+            "group": "Protobuf Reference",
+            "pages": [
+              "reference/protobuf/index",
+              "reference/protobuf/basic-types/index",
+              "reference/protobuf/crypto/index",
+              "reference/protobuf/consensus/index",
+              "reference/protobuf/token/index",
+              "reference/protobuf/file/index",
+              "reference/protobuf/schedule/index",
+              "reference/protobuf/smart-contracts/index"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Solutions",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "solutions/index"
+            ]
+          },
+          {
+            "group": "Tokenization",
+            "pages": [
+              {
+                "group": "Asset Tokenization Studio",
+                "pages": [
+                  "solutions/tokenization/ats/index",
+                  "solutions/tokenization/ats/quickstart",
+                  "solutions/tokenization/ats/web-ui",
+                  "solutions/tokenization/ats/faq"
+                ]
+              },
+              {
+                "group": "Stablecoin Studio",
+                "pages": [
+                  "solutions/tokenization/stablecoin/index",
+                  "solutions/tokenization/stablecoin/core-concepts",
+                  "solutions/tokenization/stablecoin/web-ui",
+                  "solutions/tokenization/stablecoin/cli"
+                ]
+              },
+              {
+                "group": "NFT Studio",
+                "pages": [
+                  "solutions/tokenization/nft-studio/index",
+                  "solutions/tokenization/nft-studio/metadata-validator",
+                  "solutions/tokenization/nft-studio/airdrop-verifier",
+                  "solutions/tokenization/nft-studio/rarity-inspector"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "AI & Agents",
+            "pages": [
+              "solutions/ai/index",
+              "solutions/ai/agent-kit",
+              "solutions/ai/hivemind"
+            ]
+          },
+          {
+            "group": "Governance",
+            "pages": [
+              {
+                "group": "HashioDAO",
+                "pages": [
+                  "solutions/governance/hashiodao/index",
+                  "solutions/governance/hashiodao/governance-token-dao",
+                  "solutions/governance/hashiodao/nft-dao",
+                  "solutions/governance/hashiodao/multisig-dao"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Sustainability",
+            "pages": [
+              "solutions/sustainability/guardian"
+            ]
+          },
+          {
+            "group": "Developer Tools",
+            "pages": [
+              "solutions/tools/hedera-cli",
+              "solutions/tools/playground",
+              "solutions/tools/code-repo",
+              "solutions/tools/custodians-library"
+            ]
+          },
+          {
+            "group": "Examples & Templates",
+            "pages": [
+              "solutions/examples/demos",
+              "solutions/examples/starters",
+              "solutions/examples/building-on-hedera"
+            ]
+          }
+        ]
+      }
+    ],
     "global": {
       "anchors": [
         {
           "anchor": "Status",
-          "href": "http://status.hedera.com/",
+          "href": "https://status.hedera.com/",
           "icon": "signal"
         },
         {
@@ -117,1049 +794,52 @@
           "icon": "newspaper"
         }
       ]
+    }
+  },
+  "redirects": [
+    {
+      "source": "/hedera/getting-started",
+      "destination": "/learn"
     },
-    "groups": [
-      {
-        "group": " ",
-        "pages": [
-          "index",
-          {
-            "group": "Hedera Native Developers",
-            "pages": [
-              "hedera/getting-started-hedera-native-developers",
-              "hedera/getting-started-hedera-native-developers/quickstart",
-              "hedera/getting-started-hedera-native-developers/create-an-account",
-              "hedera/getting-started-hedera-native-developers/create-a-token",
-              "hedera/getting-started-hedera-native-developers/create-a-topic",
-              "hedera/getting-started-hedera-native-developers/portal-hedera-com-playground"
-            ]
-          },
-          {
-            "group": "EVM Developers",
-            "pages": [
-              "hedera/getting-started-evm-developers",
-              "hedera/getting-started-evm-developers/add-hedera-to-metamask",
-              "hedera/getting-started-evm-developers/hedera-testnet-faucet",
-              "hedera/getting-started-evm-developers/deploy-your-first-contract-with-hedera-contract-builder",
-              "hedera/getting-started-evm-developers/deploy-a-smart-contract-using-remix",
-              "hedera/getting-started-evm-developers/deploy-a-smart-contract-with-hardhat",
-              "hedera/getting-started-evm-developers/deploy-a-smart-contract-with-foundry",
-              "hedera/getting-started-evm-developers/portal-hedera-com-contract-builder",
-              "hedera/getting-started-evm-developers/docs-hedera-com-hedera-core-concepts-smart-contracts-understanding-hederas-evm-differences-and-compatibility"
-            ]
-          },
-          {
-            "group": "Tutorials",
-            "pages": [
-              "hedera/tutorials",
-              {
-                "group": "Smart Contracts",
-                "pages": [
-                  "hedera/tutorials/smart-contracts",
-                  "hedera/tutorials/smart-contracts/configuring-hardhat-with-hiero-local-node-a-step-by-step-guide",
-                  "hedera/tutorials/smart-contracts/how-to-mint-and-burn-an-erc-721-token-using-hardhat-and-ethers-part-1",
-                  "hedera/tutorials/smart-contracts/how-to-set-access-control-a-token-uri-pause-and-transfer-an-erc-721-token-using-hardhat-part-2",
-                  "hedera/tutorials/smart-contracts/how-to-upgrade-an-erc-721-token-with-openzeppelin-uups-proxies-and-hardhat-part-3",
-                  "hedera/tutorials/smart-contracts/hts-x-evm-part-1-how-to-mint-nfts",
-                  "hedera/tutorials/smart-contracts/hts-x-evm-part-2-kyc-and-update",
-                  "hedera/tutorials/smart-contracts/hts-x-evm-part-3-how-to-pause-freeze-wipe-and-delete-nfts",
-                  "hedera/tutorials/smart-contracts/hss-x-evm-part-1-schedule-smart-contract-calls",
-                  "hedera/tutorials/smart-contracts/hss-x-evm-part-2-dynamic-rebalancing",
-                  "hedera/tutorials/smart-contracts/how-to-verify-a-smart-contract-on-hashscan",
-                  "hedera/tutorials/smart-contracts/send-and-receive-hbar-using-solidity-smart-contracts",
-                  "hedera/tutorials/smart-contracts/deploy-a-subgraph-using-the-graph-and-json-rpc",
-                  "hedera/tutorials/smart-contracts/deploy-smart-contracts-on-hedera-using-truffle",
-                  "hedera/tutorials/smart-contracts/how-to-fork-the-hedera-network-with-hardhat-basic-erc20",
-                  "hedera/tutorials/smart-contracts/how-to-fork-the-hedera-network-with-hardhat-advanced-hts",
-                  {
-                    "group": "Foundry on Hedera",
-                    "pages": [
-                      "hedera/tutorials/smart-contracts/foundry",
-                      "hedera/tutorials/smart-contracts/foundry/configuring-foundry-with-hedera-localnet-testnet-a-step-by-step-guide",
-                      "hedera/tutorials/smart-contracts/foundry/how-to-mint-and-burn-an-erc-721-token-using-foundry-part-1",
-                      "hedera/tutorials/smart-contracts/foundry/how-to-write-tests-in-solidity-part-2",
-                      "hedera/tutorials/smart-contracts/foundry/how-to-fork-the-hedera-network-with-foundry-basic-erc20"
-                    ]
-                  },
-                  "hedera/tutorials/smart-contracts/how-to-connect-metamask-to-hedera"
-                ]
-              },
-              {
-                "group": "Consensus",
-                "pages": [
-                  "hedera/tutorials/consensus",
-                  "hedera/tutorials/consensus/submit-your-first-message",
-                  "hedera/tutorials/consensus/submit-message-to-private-topic",
-                  "hedera/tutorials/consensus/batch-anchor-verify-records-with-hcs",
-                  "hedera/tutorials/consensus/query-messages-with-mirror-node"
-                ]
-              },
-              {
-                "group": "Tokens",
-                "pages": [
-                  "hedera/tutorials/token",
-                  "hedera/tutorials/token/create-and-transfer-your-first-nft",
-                  "hedera/tutorials/token/create-and-transfer-your-first-fungible-token",
-                  "hedera/tutorials/token/create-and-transfer-an-nft-using-a-solidity-contract",
-                  "hedera/tutorials/token/structure-your-token-metadata-using-json-schema-v2",
-                  "hedera/tutorials/token/hedera-token-service-part-1-how-to-mint-nfts",
-                  "hedera/tutorials/token/hedera-token-service-part-2-kyc-update-and-scheduled-transactions",
-                  "hedera/tutorials/token/hedera-token-service-part-3-how-to-pause-freeze-wipe-and-delete-nfts",
-                  "hedera/tutorials/token/create-your-first-frictionless-airdrop-campaign"
-                ]
-              },
-              {
-                "group": "Local Node",
-                "pages": [
-                  "hedera/tutorials/local-node",
-                  {
-                    "group": "How to Run Hedera Local Node in a Cloud Development Environment (CDE)",
-                    "pages": [
-                      "hedera/tutorials/local-node/how-to-run-hedera-local-node-in-a-cloud-development-environment-cde",
-                      "hedera/tutorials/local-node/how-to-run-hedera-local-node-in-a-cloud-development-environment-cde/gitpod",
-                      "hedera/tutorials/local-node/how-to-run-hedera-local-node-in-a-cloud-development-environment-cde/codespaces"
-                    ]
-                  },
-                  "hedera/tutorials/local-node/how-to-set-up-a-hedera-local-node",
-                  "hedera/tutorials/local-node/setup-hedera-node-cli-npm"
-                ]
-              },
-              {
-                "group": "More Tutorials",
-                "pages": [
-                  "hedera/tutorials/more-tutorials",
-                  "hedera/tutorials/more-tutorials/create-and-fund-your-hedera-testnet-account",
-                  "hedera/tutorials/more-tutorials/how-to-create-a-personal-access-token-api-key-on-the-hedera-portal",
-                  "hedera/tutorials/more-tutorials/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers",
-                  "hedera/tutorials/more-tutorials/how-to-configure-a-mirror-node-and-query-specific-data",
-                  "hedera/tutorials/more-tutorials/how-to-generate-a-random-number-on-hedera",
-                  {
-                    "group": "Get Started with the Hedera Consensus Service Fabric Plugin",
-                    "pages": [
-                      "hedera/tutorials/more-tutorials/get-started-with-the-hedera-consensus-service-fabric-plugin",
-                      "hedera/tutorials/more-tutorials/get-started-with-the-hedera-consensus-service-fabric-plugin/virtual-environment-set-up"
-                    ]
-                  },
-                  "hedera/tutorials/more-tutorials/schedule-your-first-transaction",
-                  "hedera/tutorials/more-tutorials/javascript-testing"
-                ]
-              },
-              "hedera/tutorials/demo-applications",
-              "hedera/tutorials/starter-projects",
-              "hedera/tutorials/building-on-hedera"
-            ]
-          },
-          {
-            "group": "Networks",
-            "pages": [
-              "hedera/networks",
-              {
-                "group": "Mainnet",
-                "pages": [
-                  "hedera/networks/mainnet",
-                  "hedera/networks/mainnet/mainnet-access",
-                  {
-                    "group": "Mainnet Consensus Nodes",
-                    "pages": [
-                      "hedera/networks/mainnet/mainnet-nodes",
-                      {
-                        "group": "Node Deployment Requirements",
-                        "pages": [
-                          "hedera/networks/mainnet/mainnet-nodes/node-requirements",
-                          "hedera/networks/mainnet/mainnet-nodes/node-requirements/faq"
-                        ]
-                      },
-                      "hedera/networks/mainnet/mainnet-nodes/node-deployment-process"
-                    ]
-                  },
-                  {
-                    "group": "Fees",
-                    "pages": [
-                      "hedera/networks/mainnet/fees",
-                      "hedera/networks/mainnet/fees/transaction-records"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Testnets",
-                "pages": [
-                  "hedera/networks/testnet",
-                  "hedera/networks/testnet/testnet-access",
-                  "hedera/networks/testnet/testnet-nodes"
-                ]
-              },
-              {
-                "group": "Localnet",
-                "pages": [
-                  "hedera/networks/localnet",
-                  "hedera/networks/localnet/single-node-configuration",
-                  "hedera/networks/localnet/multinode-configuration"
-                ]
-              },
-              "hedera/networks/community-mirror-nodes",
-              {
-                "group": "Release Notes",
-                "pages": [
-                  "hedera/networks/release-notes",
-                  "hedera/networks/release-notes/services",
-                  "hedera/networks/release-notes/mirror-node"
-                ]
-              }
-            ]
-          },
-          {
-            "group": "Core Concepts",
-            "pages": [
-              "hedera/core-concepts",
-              {
-                "group": "Accounts",
-                "pages": [
-                  "hedera/core-concepts/accounts",
-                  "hedera/core-concepts/accounts/account-creation",
-                  "hedera/core-concepts/accounts/auto-account-creation",
-                  "hedera/core-concepts/accounts/account-properties"
-                ]
-              },
-              "hedera/core-concepts/keys-and-signatures",
-              "hedera/core-concepts/scheduled-transaction",
-              {
-                "group": "Smart Contracts",
-                "pages": [
-                  "hedera/core-concepts/smart-contracts",
-                  {
-                    "group": "Understanding Hedera's EVM Differences and Compatibility",
-                    "pages": [
-                      "hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility",
-                      {
-                        "group": "For EVM Developers Migrating to Hedera",
-                        "pages": [
-                          "hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility/for-evm-developers-migrating-to-hedera",
-                          "hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility/for-evm-developers-migrating-to-hedera/accounts-signature-verification-and-keys-ecdsa-vs.-ed25519",
-                          "hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility/for-evm-developers-migrating-to-hedera/json-rpc-relay-and-evm-tooling",
-                          "hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility/for-evm-developers-migrating-to-hedera/token-management-with-hedera-token-service",
-                          "hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility/for-evm-developers-migrating-to-hedera/decimal-handling-8-vs.-18-decimals",
-                          "hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility/for-evm-developers-migrating-to-hedera/handling-hbar-transfers-in-contracts"
-                        ]
-                      },
-                      {
-                        "group": "For Hedera-Native Developers Adding Smart Contract Functionality",
-                        "pages": [
-                          "hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility/for-hedera-native-developers-adding-smart-contract-functionality",
-                          "hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility/for-hedera-native-developers-adding-smart-contract-functionality/integrating-ed25519-accounts-and-advanced-features-into-smart-contracts",
-                          "hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility/for-hedera-native-developers-adding-smart-contract-functionality/json-rpc-relay-and-state-queries",
-                          "hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility/for-hedera-native-developers-adding-smart-contract-functionality/extending-token-management-with-smart-contracts"
-                        ]
-                      }
-                    ]
-                  },
-                  "hedera/core-concepts/smart-contracts/creating-smart-contracts",
-                  "hedera/core-concepts/smart-contracts/compiling-smart-contracts",
-                  {
-                    "group": "System Smart Contracts",
-                    "pages": [
-                      "hedera/core-concepts/smart-contracts/system-smart-contracts",
-                      "hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-account-service",
-                      "hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-schedule-service"
-                    ]
-                  },
-                  "hedera/core-concepts/smart-contracts/gas-and-fees",
-                  "hedera/core-concepts/smart-contracts/json-rpc-relay",
-                  "hedera/core-concepts/smart-contracts/deploying-smart-contracts",
-                  "hedera/core-concepts/smart-contracts/smart-contract-addresses",
-                  "hedera/core-concepts/smart-contracts/verifying-smart-contracts-beta",
-                  "hedera/core-concepts/smart-contracts/smart-contract-traceability",
-                  {
-                    "group": "Tokens Managed by Smart Contracts",
-                    "pages": [
-                      "hedera/core-concepts/smart-contracts/tokens-managed-by-smart-contracts",
-                      "hedera/core-concepts/smart-contracts/tokens-managed-by-smart-contracts/erc-20-fungible-tokens",
-                      "hedera/core-concepts/smart-contracts/tokens-managed-by-smart-contracts/erc-721-non-fungible-tokens-nfts",
-                      "hedera/core-concepts/smart-contracts/tokens-managed-by-smart-contracts/erc-3643-real-world-assets-rwa",
-                      "hedera/core-concepts/smart-contracts/tokens-managed-by-smart-contracts/erc-1363-payable-tokens",
-                      "hedera/core-concepts/smart-contracts/tokens-managed-by-smart-contracts/hedera-token-service-system-contract"
-                    ]
-                  },
-                  "hedera/core-concepts/smart-contracts/wrapped-hbar-whbar",
-                  "hedera/core-concepts/smart-contracts/smart-contract-rent",
-                  "hedera/core-concepts/smart-contracts/security",
-                  "hedera/core-concepts/smart-contracts/evm-archive-node-queries",
-                  "hedera/core-concepts/smart-contracts/forking-hedera-network-for-local-testing"
-                ]
-              },
-              {
-                "group": "Tokens",
-                "pages": [
-                  "hedera/core-concepts/tokens",
-                  "hedera/core-concepts/tokens/tokenization-on-hedera",
-                  {
-                    "group": "Hedera Token Service (HTS) Native Tokenization",
-                    "pages": [
-                      "hedera/core-concepts/tokens/hedera-token-service-hts-native-tokenization",
-                      "hedera/core-concepts/tokens/hedera-token-service-hts-native-tokenization/token-types-and-id-formats",
-                      "hedera/core-concepts/tokens/hedera-token-service-hts-native-tokenization/token-properties",
-                      "hedera/core-concepts/tokens/hedera-token-service-hts-native-tokenization/token-creation",
-                      "hedera/core-concepts/tokens/hedera-token-service-hts-native-tokenization/custom-fee-schedule",
-                      "hedera/core-concepts/tokens/hedera-token-service-hts-native-tokenization/token-airdrops"
-                    ]
-                  },
-                  "hedera/core-concepts/tokens/erc-evm-compatible-tokenization",
-                  "hedera/core-concepts/tokens/hybrid-hts-+-evm-tokenization"
-                ]
-              },
-              {
-                "group": "Staking",
-                "pages": [
-                  "hedera/core-concepts/staking",
-                  "hedera/core-concepts/staking/staking",
-                  "hedera/core-concepts/staking/stake-hbar"
-                ]
-              },
-              {
-                "group": "Hashgraph Consensus Algorithm",
-                "pages": [
-                  "hedera/core-concepts/hashgraph-consensus-algorithms",
-                  "hedera/core-concepts/hashgraph-consensus-algorithms/gossip-about-gossip",
-                  "hedera/core-concepts/hashgraph-consensus-algorithms/virtual-voting"
-                ]
-              },
-              {
-                "group": "Transactions and Queries",
-                "pages": [
-                  "hedera/core-concepts/transactions-and-queries",
-                  "hedera/core-concepts/transactions-and-queries/transaction-properties"
-                ]
-              },
-              "hedera/core-concepts/state-and-history",
-              {
-                "group": "Mirror Nodes",
-                "pages": [
-                  "hedera/core-concepts/mirror-nodes",
-                  "hedera/core-concepts/mirror-nodes/hedera-mirror-node",
-                  "hedera/core-concepts/mirror-nodes/one-click-mirror-node-deployment",
-                  {
-                    "group": "Run Your Own Mirror Node",
-                    "pages": [
-                      "hedera/core-concepts/mirror-nodes/run-your-own-beta-mirror-node",
-                      "hedera/core-concepts/mirror-nodes/run-your-own-beta-mirror-node/run-your-own-mirror-node-gcs",
-                      "hedera/core-concepts/mirror-nodes/run-your-own-beta-mirror-node/run-your-own-mirror-node-s3"
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "group": "Open Source Solutions and Integrations",
-            "pages": [
-              "hedera/open-source-solutions",
-              {
-                "group": "AI Studio on Hedera",
-                "pages": [
-                  "hedera/open-source-solutions/ai-studio-on-hedera",
-                  "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/elizaos-plugin",
-                  {
-                    "group": "Hedera AI Agent Kit",
-                    "pages": [
-                     "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit",
-                      
-                      {
-                        "group": "JavaScript SDK",
-                        "pages": [
-                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/quickstart",
-                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/plugins",
-                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/how-to-publish-plugin"
-                          
-                        ]
-                      },
-                      {
-                        "group": "Python SDK",
-                        "pages": [
-                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/quickstart",
-                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/plugins",
-                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/how-to-publish-plugin"
-                        ]
-                      }
-                    ]
-                  }
-              
-                ]
-              },
-              {
-                "group": "AI Tools for Developers",
-                "pages": [
-                  "hedera/open-source-solutions/ai-tools-for-developers",
-                  "hedera/open-source-solutions/ai-tools-for-developers/hedera-hivemind",
-                  "hedera/open-source-solutions/ai-tools-for-developers/kapa-ai"
-                ]
-              },
-              {
-                "group": "Asset Tokenization Studio (ATS)",
-                "pages": [
-                  "hedera/open-source-solutions/asset-tokenization-studio-ats",
-                  "hedera/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui",
-                  "hedera/open-source-solutions/asset-tokenization-studio-ats/frequently-asked-questions-faqs"
-                ]
-              },
-              {
-                "group": "HashioDAO",
-                "pages": [
-                  "hedera/open-source-solutions/hashiodao",
-                  "hedera/open-source-solutions/hashiodao/governance-token-dao",
-                  "hedera/open-source-solutions/hashiodao/nft-dao",
-                  "hedera/open-source-solutions/hashiodao/multisig-dao",
-                  "hedera/open-source-solutions/hashiodao/dao-proposals",
-                  "hedera/open-source-solutions/hashiodao/local-environment-setup"
-                ]
-              },
-              "hedera/open-source-solutions/hedera-cli",
-              "hedera/open-source-solutions/hedera-contract-builder",
-              {
-                "group": "Hedera Custodians Library",
-                "pages": [
-                  "hedera/open-source-solutions/hedera-custodians-library",
-                  "hedera/open-source-solutions/hedera-custodians-library/how-to-use-it"
-                ]
-              },
-              "hedera/open-source-solutions/hedera-developers-code-repository",
-              "hedera/open-source-solutions/hedera-developer-playground",
-              {
-                "group": "Hedera Wallet Snap By MetaMask",
-                "pages": [
-                  "hedera/open-source-solutions/hedera-wallet-snap-by-metamask",
-                  "hedera/open-source-solutions/docs-tuum-tech-hedera-wallet-snap-basics-introduction",
-                  "hedera/open-source-solutions/hedera-wallet-snap-by-metamask/metamask-hedera-wallet-snap-tutorial"
-                ]
-              },
-              {
-                "group": "Interoperability and Bridging",
-                "pages": [
-                  "hedera/open-source-solutions/interoperability-and-bridging",
-                  "hedera/open-source-solutions/interoperability-and-bridging/layerzero",
-                  "hedera/open-source-solutions/interoperability-and-bridging/chainlink"
-                ]
-              },
-              {
-                "group": "NFT Studio",
-                "pages": [
-                  "hedera/open-source-solutions/nft-studio",
-                  "hedera/open-source-solutions/nft-studio/airdrop-list-verifier",
-                  "hedera/open-source-solutions/nft-studio/metadata-validator",
-                  "hedera/open-source-solutions/nft-studio/nft-rarity-inspector",
-                  "hedera/open-source-solutions/nft-studio/nft-token-holders-list-builder",
-                  "hedera/open-source-solutions/nft-studio/nft-risk-calculator",
-                  "hedera/open-source-solutions/nft-studio/token-balance-snapshot",
-                  "hedera/open-source-solutions/github-com-hashgraph-hedera-nft-sdk"
-                ]
-              },
-              {
-                "group": "Oracle Networks",
-                "pages": [
-                  "hedera/open-source-solutions/oracle-networks",
-                  "hedera/open-source-solutions/oracle-networks/chainlink-oracles",
-                  "hedera/open-source-solutions/oracle-networks/pyth-network-oracle",
-                  "hedera/open-source-solutions/oracle-networks/supra-oracles"
-                ]
-              },
-              {
-                "group": "Stablecoin Studio",
-                "pages": [
-                  "hedera/open-source-solutions/stablecoin-studio",
-                  "hedera/open-source-solutions/stablecoin-studio/core-concepts",
-                  "hedera/open-source-solutions/stablecoin-studio/web-ui-application",
-                  "hedera/open-source-solutions/stablecoin-studio/cli-management",
-                  "hedera/open-source-solutions/github-com-hashgraph-hedera-accelerator-stablecoin-tree-main-sdk"
-                ]
-              },
-              "hedera/open-source-solutions/hedera-guardian",
-              "hedera/open-source-solutions/hedera-walletconnect"
-            ]
-          },
-          {
-            "group": "SDKs & APIs",
-            "pages": [
-              "hedera/sdks-and-apis",
-              {
-                "group": "SDKs",
-                "pages": [
-                  "hedera/sdks-and-apis/sdks",
-                  "hedera/sdks-and-apis/sdks/client",
-                  "hedera/sdks-and-apis/sdks/set-up-your-local-network",
-                  "hedera/sdks-and-apis/sdks/address-book",
-                  {
-                    "group": "Keys",
-                    "pages": [
-                      "hedera/sdks-and-apis/sdks/keys",
-                      "hedera/sdks-and-apis/sdks/keys/generate-a-new-key-pair",
-                      "hedera/sdks-and-apis/sdks/keys/import-an-existing-key",
-                      "hedera/sdks-and-apis/sdks/keys/create-a-key-list",
-                      "hedera/sdks-and-apis/sdks/keys/create-a-threshold-key",
-                      "hedera/sdks-and-apis/sdks/keys/generate-a-mnemonic-phrase",
-                      "hedera/sdks-and-apis/sdks/keys/recover-keys-from-a-mnemonic-phrase"
-                    ]
-                  },
-                  "hedera/sdks-and-apis/sdks/hbars",
-                  "hedera/sdks-and-apis/sdks/specialized-types",
-                  "hedera/sdks-and-apis/sdks/pseudorandom-number-generator",
-                  {
-                    "group": "Transactions",
-                    "pages": [
-                      "hedera/sdks-and-apis/sdks/transactions",
-                      "hedera/sdks-and-apis/sdks/transactions/create-a-batch-transaction",
-                      "hedera/sdks-and-apis/sdks/transactions/transaction-id",
-                      "hedera/sdks-and-apis/sdks/transactions/modify-transaction-fields",
-                      "hedera/sdks-and-apis/sdks/transactions/create-an-unsigned-transaction",
-                      "hedera/sdks-and-apis/sdks/transactions/manually-sign-a-transaction",
-                      "hedera/sdks-and-apis/sdks/transactions/submit-a-transaction",
-                      "hedera/sdks-and-apis/sdks/transactions/sign-a-multisignature-transaction",
-                      "hedera/sdks-and-apis/sdks/transactions/get-a-transaction-receipt",
-                      "hedera/sdks-and-apis/sdks/transactions/get-a-transaction-record"
-                    ]
-                  },
-                  {
-                    "group": "Schedule Transaction",
-                    "pages": [
-                      "hedera/sdks-and-apis/sdks/schedule-transaction",
-                      "hedera/sdks-and-apis/sdks/schedule-transaction/schedule-id",
-                      "hedera/sdks-and-apis/sdks/schedule-transaction/create-a-schedule-transaction",
-                      "hedera/sdks-and-apis/sdks/schedule-transaction/sign-a-schedule-transaction",
-                      "hedera/sdks-and-apis/sdks/schedule-transaction/delete-a-schedule-transaction",
-                      "hedera/sdks-and-apis/sdks/schedule-transaction/get-schedule-info",
-                      "hedera/sdks-and-apis/sdks/schedule-transaction/network-response-messages"
-                    ]
-                  },
-                  "hedera/sdks-and-apis/sdks/queries",
-                  "hedera/sdks-and-apis/sdks/general-errors",
-                  {
-                    "group": "Accounts and HBAR",
-                    "pages": [
-                      "hedera/sdks-and-apis/sdks/accounts-and-hbar",
-                      "hedera/sdks-and-apis/sdks/accounts-and-hbar/create-an-account",
-                      "hedera/sdks-and-apis/sdks/accounts-and-hbar/update-an-account",
-                      "hedera/sdks-and-apis/sdks/accounts-and-hbar/transfer-cryptocurrency",
-                      "hedera/sdks-and-apis/sdks/accounts-and-hbar/approve-an-allowance",
-                      "hedera/sdks-and-apis/sdks/accounts-and-hbar/adjust-an-allowance",
-                      "hedera/sdks-and-apis/sdks/accounts-and-hbar/delete-an-account",
-                      "hedera/sdks-and-apis/sdks/accounts-and-hbar/get-account-balance",
-                      "hedera/sdks-and-apis/sdks/accounts-and-hbar/get-account-info",
-                      "hedera/sdks-and-apis/sdks/accounts-and-hbar/errors"
-                    ]
-                  },
-                  {
-                    "group": "Consensus Service",
-                    "pages": [
-                      "hedera/sdks-and-apis/sdks/consensus-service",
-                      "hedera/sdks-and-apis/sdks/consensus-service/create-a-topic",
-                      "hedera/sdks-and-apis/sdks/consensus-service/update-a-topic",
-                      "hedera/sdks-and-apis/sdks/consensus-service/submit-a-message",
-                      "hedera/sdks-and-apis/sdks/consensus-service/delete-a-topic",
-                      "hedera/sdks-and-apis/sdks/consensus-service/get-topic-message",
-                      "hedera/sdks-and-apis/sdks/consensus-service/get-topic-info",
-                      "hedera/sdks-and-apis/sdks/consensus-service/errors"
-                    ]
-                  },
-                  {
-                    "group": "Token Service",
-                    "pages": [
-                      "hedera/sdks-and-apis/sdks/token-service",
-                      "hedera/sdks-and-apis/sdks/token-service/token-id",
-                      "hedera/sdks-and-apis/sdks/token-service/nft-id",
-                      "hedera/sdks-and-apis/sdks/token-service/token-types",
-                      "hedera/sdks-and-apis/sdks/token-service/define-a-token",
-                      "hedera/sdks-and-apis/sdks/token-service/custom-token-fees",
-                      "hedera/sdks-and-apis/sdks/token-service/update-a-token",
-                      "hedera/sdks-and-apis/sdks/token-service/update-a-fee-schedule",
-                      "hedera/sdks-and-apis/sdks/token-service/update-nft-metadata",
-                      "hedera/sdks-and-apis/sdks/token-service/transfer-tokens",
-                      "hedera/sdks-and-apis/sdks/token-service/airdrop-a-token",
-                      "hedera/sdks-and-apis/sdks/token-service/claim-a-token",
-                      "hedera/sdks-and-apis/sdks/token-service/cancel-a-token",
-                      "hedera/sdks-and-apis/sdks/token-service/reject-an-airdrop",
-                      "hedera/sdks-and-apis/sdks/token-service/delete-a-token",
-                      "hedera/sdks-and-apis/sdks/token-service/mint-a-token",
-                      "hedera/sdks-and-apis/sdks/token-service/burn-a-token",
-                      "hedera/sdks-and-apis/sdks/token-service/freeze-an-account",
-                      "hedera/sdks-and-apis/sdks/token-service/unfreeze-an-account",
-                      "hedera/sdks-and-apis/sdks/token-service/enable-kyc-account-flag",
-                      "hedera/sdks-and-apis/sdks/token-service/disable-kyc-account-flag",
-                      "hedera/sdks-and-apis/sdks/token-service/associate-tokens-to-an-account",
-                      "hedera/sdks-and-apis/sdks/token-service/dissociate-tokens-from-an-account",
-                      "hedera/sdks-and-apis/sdks/token-service/pause-a-token",
-                      "hedera/sdks-and-apis/sdks/token-service/unpause-a-token",
-                      "hedera/sdks-and-apis/sdks/token-service/wipe-a-token",
-                      "hedera/sdks-and-apis/sdks/token-service/atomic-swaps",
-                      "hedera/sdks-and-apis/sdks/token-service/get-account-token-balance",
-                      "hedera/sdks-and-apis/sdks/token-service/get-token-info",
-                      "hedera/sdks-and-apis/sdks/token-service/get-nft-token-info",
-                      "hedera/sdks-and-apis/sdks/token-service/errors"
-                    ]
-                  },
-                  {
-                    "group": "File Service",
-                    "pages": [
-                      "hedera/sdks-and-apis/sdks/file-service",
-                      "hedera/sdks-and-apis/sdks/file-service/create-a-file",
-                      "hedera/sdks-and-apis/sdks/file-service/append-to-a-file",
-                      "hedera/sdks-and-apis/sdks/file-service/update-a-file",
-                      "hedera/sdks-and-apis/sdks/file-service/delete-a-file",
-                      "hedera/sdks-and-apis/sdks/file-service/get-file-contents",
-                      "hedera/sdks-and-apis/sdks/file-service/get-file-info",
-                      "hedera/sdks-and-apis/sdks/file-service/errors"
-                    ]
-                  },
-                  {
-                    "group": "Smart Contract Service",
-                    "pages": [
-                      "hedera/sdks-and-apis/sdks/smart-contracts",
-                      "hedera/sdks-and-apis/sdks/smart-contracts/delegate-contract-id",
-                      "hedera/sdks-and-apis/sdks/smart-contracts/create-a-smart-contract",
-                      "hedera/sdks-and-apis/sdks/smart-contracts/update-a-smart-contract",
-                      "hedera/sdks-and-apis/sdks/smart-contracts/delete-a-smart-contract",
-                      "hedera/sdks-and-apis/sdks/smart-contracts/call-a-smart-contract-function",
-                      "hedera/sdks-and-apis/sdks/smart-contracts/ethereum-transaction",
-                      "hedera/sdks-and-apis/sdks/smart-contracts/get-a-smart-contract-function",
-                      "hedera/sdks-and-apis/sdks/smart-contracts/get-smart-contract-bytecode",
-                      "hedera/sdks-and-apis/sdks/smart-contracts/get-smart-contract-info",
-                      "hedera/sdks-and-apis/sdks/smart-contracts/hedera-service-solidity-libraries",
-                      "hedera/sdks-and-apis/sdks/smart-contracts/errors"
-                    ]
-                  },
-                  {
-                    "group": "Signature Provider",
-                    "pages": [
-                      "hedera/sdks-and-apis/sdks/signature-provider",
-                      "hedera/sdks-and-apis/sdks/signature-provider/provider",
-                      "hedera/sdks-and-apis/sdks/signature-provider/signer",
-                      "hedera/sdks-and-apis/sdks/signature-provider/wallet",
-                      "hedera/sdks-and-apis/sdks/signature-provider/local-provider"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Mirror Node REST API",
-                "pages": [
-                  "hedera/sdks-and-apis/rest-api",
-                  {
-                    "group": "Accounts",
-                    "pages": [
-                      "hedera/sdks-and-apis/rest-api/accounts",
-                      "openapi.yaml GET /api/v1/accounts",
-                      "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}",
-                      "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/crypto",
-                      "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/rewards",
-                      "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/tokens",
-                      "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/airdrops/outstanding",
-                      "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/airdrops/pending",
-                      "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/tokens",
-                      "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/nfts",
-                      "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/nfts"
-                    ]
-                  },
-                  {
-                    "group": "Balances",
-                    "pages": [
-                      "hedera/sdks-and-apis/rest-api/balances",
-                      "openapi.yaml GET /api/v1/balances"
-                    ]
-                  },
-                  {
-                    "group": "Blocks",
-                    "pages": [
-                      "hedera/sdks-and-apis/rest-api/blocks",
-                      "openapi.yaml GET /api/v1/blocks",
-                      "openapi.yaml GET /api/v1/blocks/{hashOrNumber}"
-                    ]
-                  },
-                  {
-                    "group": "Schedule Transactions",
-                    "pages": [
-                      "hedera/sdks-and-apis/rest-api/schedule-transactions",
-                      "openapi.yaml GET /api/v1/schedules",
-                      "openapi.yaml GET /api/v1/schedules/{scheduleId}"
-                    ]
-                  },
-                  {
-                    "group": "Smart Contracts",
-                    "pages": [
-                      "hedera/sdks-and-apis/rest-api/smart-contracts",
-                      "openapi.yaml GET /api/v1/contracts",
-                      "openapi.yaml GET /api/v1/contracts/{contractIdOrAddress}",
-                      "openapi.yaml GET /api/v1/contracts/results",
-                      "openapi.yaml GET /api/v1/contracts/results/{transactionIdOrHash}",
-                      "openapi.yaml GET /api/v1/contracts/{contractIdOrAddress}/results",
-                      "openapi.yaml GET /api/v1/contracts/{contractIdOrAddress}/state",
-                      "openapi.yaml GET /api/v1/contracts/results",
-                      "openapi.yaml GET /api/v1/contracts/results/{transactionIdOrHash}/actions",
-                      "openapi.yaml GET /api/v1/contracts/{contractIdOrAddress}/results/{timestamp}",
-                      "openapi.yaml GET /api/v1/contracts/{contractIdOrAddress}/results/logs",
-                      "openapi.yaml GET /api/v1/contracts/results/logs",
-                      "openapi.yaml GET /api/v1/contracts/results/{transactionIdOrHash}/opcodes",
-                      "openapi.yaml POST /api/v1/contracts/call"
-                    ]
-                  },
-                  {
-                    "group": "Tokens",
-                    "pages": [
-                      "hedera/sdks-and-apis/rest-api/tokens",
-                      "openapi.yaml GET /api/v1/tokens",
-                      "openapi.yaml GET /api/v1/tokens/{tokenId}/balances",
-                      "openapi.yaml GET /api/v1/tokens/{tokenId}",
-                      "openapi.yaml GET /api/v1/tokens/{tokenId}/nfts",
-                      "openapi.yaml GET /api/v1/tokens/{tokenId}/nfts/{serialNumber}",
-                      "openapi.yaml GET /api/v1/tokens/{tokenId}/nfts/{serialNumber}/transactions"
-                    ]
-                  },
-                  {
-                    "group": "Topics",
-                    "pages": [
-                      "hedera/sdks-and-apis/rest-api/topics",
-                      "openapi.yaml GET /api/v1/topics/{topicId}/messages",
-                      "openapi.yaml GET /api/v1/topics/{topicId}/messages/{sequenceNumber}",
-                      "openapi.yaml GET /api/v1/topics/messages/{timestamp}"
-                    ]
-                  },
-                  {
-                    "group": "Transactions",
-                    "pages": [
-                      "hedera/sdks-and-apis/rest-api/transactions",
-                      "openapi.yaml GET /api/v1/transactions",
-                      "openapi.yaml GET /api/v1/transactions/{transactionId}"
-                    ]
-                  },
-                  {
-                    "group": "Network",
-                    "pages": [
-                      "hedera/sdks-and-apis/rest-api/network",
-                      "openapi.yaml GET /api/v1/network/supply",
-                      "openapi.yaml GET /api/v1/network/fees",
-                      "openapi.yaml GET /api/v1/network/exchangerate",
-                      "openapi.yaml GET /api/v1/network/nodes",
-                      "openapi.yaml GET /api/v1/network/stake"
-                    ]
-                  }
-                ]
-              },
-              "hedera/sdks-and-apis/hedera-consensus-service-api",
-              {
-                "group": "Hedera APIs",
-                "pages": [
-                  {
-                    "group": "Basic Types",
-                    "pages": [
-                      "hedera/sdks-and-apis/hedera-api/basic-types",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/accountamount",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/accountid",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/contractid",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/cryptoallowance",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/currentandnextfeeschedule",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/feecomponents",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/feedata",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/feeschedule",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/fileid",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/fraction",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/hederafunctionality",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/key",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/keylist",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/nftallowance",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/nfttransfer",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/nodeaddress",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/nodeaddressbook",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/realmid",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/scheduleid",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/semanticversion",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/servicesconfigurationlist",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/serviceendpoint",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/setting",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/shardid",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/signature",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/signature-list",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/signaturemap",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/signature-pair",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/subtype",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/transferlist",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/transactionid",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/thresholdkey",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/thresholdsignature",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/tokenallowance",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/tokenbalance",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/tokenbalances",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/tokenfreezestatus",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/tokenpausestatus",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/tokenid",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/tokenkycstatus",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/tokenrelationship",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/tokentransferlist",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/tokentype",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/tokensupplytype",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/topicid",
-                      "hedera/sdks-and-apis/hedera-api/basic-types/transactionfeeschedule"
-                    ]
-                  },
-                  {
-                    "group": "Cryptocurrency Accounts",
-                    "pages": [
-                      "hedera/sdks-and-apis/hedera-api/cryptocurrency-accounts",
-                      "hedera/sdks-and-apis/hedera-api/cryptocurrency-accounts/cryptoservice",
-                      "hedera/sdks-and-apis/hedera-api/cryptocurrency-accounts/cryptapproveallowance",
-                      "hedera/sdks-and-apis/hedera-api/cryptocurrency-accounts/cryptodeleteallowance",
-                      "hedera/sdks-and-apis/hedera-api/cryptocurrency-accounts/cryptocreate",
-                      "hedera/sdks-and-apis/hedera-api/cryptocurrency-accounts/cryptotransfer",
-                      "hedera/sdks-and-apis/hedera-api/cryptocurrency-accounts/cryptoupdate",
-                      "hedera/sdks-and-apis/hedera-api/cryptocurrency-accounts/cryptodelete",
-                      "hedera/sdks-and-apis/hedera-api/cryptocurrency-accounts/cryptogetaccountbalance",
-                      "hedera/sdks-and-apis/hedera-api/cryptocurrency-accounts/cryptogetaccountrecords",
-                      "hedera/sdks-and-apis/hedera-api/cryptocurrency-accounts/cryptogetinfo",
-                      "hedera/sdks-and-apis/hedera-api/cryptocurrency-accounts/cryptogetstakers"
-                    ]
-                  },
-                  {
-                    "group": "Consensus Service",
-                    "pages": [
-                      "hedera/sdks-and-apis/hedera-api/consensus",
-                      "hedera/sdks-and-apis/hedera-api/consensus/consensus-service",
-                      "hedera/sdks-and-apis/hedera-api/consensus/consensuscreatetopic",
-                      "hedera/sdks-and-apis/hedera-api/consensus/consensusupdatetopic",
-                      "hedera/sdks-and-apis/hedera-api/consensus/consensussubmitmessage",
-                      "hedera/sdks-and-apis/hedera-api/consensus/consensusdeletetopic",
-                      "hedera/sdks-and-apis/hedera-api/consensus/consensustopicinfo",
-                      "hedera/sdks-and-apis/hedera-api/consensus/consensusgettopicinfo"
-                    ]
-                  },
-                  {
-                    "group": "Schedule Service",
-                    "pages": [
-                      "hedera/sdks-and-apis/hedera-api/schedule-service",
-                      "hedera/sdks-and-apis/hedera-api/schedule-service/scheduleservice",
-                      "hedera/sdks-and-apis/hedera-api/schedule-service/schedulabletransactionbody",
-                      "hedera/sdks-and-apis/hedera-api/schedule-service/schedulecreate",
-                      "hedera/sdks-and-apis/hedera-api/schedule-service/scheduledelete",
-                      "hedera/sdks-and-apis/hedera-api/schedule-service/schedulesign",
-                      "hedera/sdks-and-apis/hedera-api/schedule-service/schedulegetinfo"
-                    ]
-                  },
-                  {
-                    "group": "Token Service",
-                    "pages": [
-                      "hedera/sdks-and-apis/hedera-api/token-service",
-                      "hedera/sdks-and-apis/hedera-api/token-service/tokenservice",
-                      {
-                        "group": "Custom Fees",
-                        "pages": [
-                          "hedera/sdks-and-apis/hedera-api/token-service/customfees",
-                          "hedera/sdks-and-apis/hedera-api/token-service/customfees/assessedcustomfee",
-                          "hedera/sdks-and-apis/hedera-api/token-service/customfees/customfee",
-                          "hedera/sdks-and-apis/hedera-api/token-service/customfees/fractionalfee",
-                          "hedera/sdks-and-apis/hedera-api/token-service/customfees/fixedfee",
-                          "hedera/sdks-and-apis/hedera-api/token-service/customfees/royaltyfee"
-                        ]
-                      },
-                      "hedera/sdks-and-apis/hedera-api/token-service/tokencreate",
-                      "hedera/sdks-and-apis/hedera-api/token-service/tokenupdate",
-                      "hedera/sdks-and-apis/hedera-api/token-service/tokenfeescheduleupdate",
-                      "hedera/sdks-and-apis/hedera-api/token-service/tokendelete",
-                      "hedera/sdks-and-apis/hedera-api/token-service/tokenmint",
-                      "hedera/sdks-and-apis/hedera-api/token-service/tokenburn",
-                      "hedera/sdks-and-apis/hedera-api/token-service/tokenfreezeaccount",
-                      "hedera/sdks-and-apis/hedera-api/token-service/tokenunfreezeaccount",
-                      "hedera/sdks-and-apis/hedera-api/token-service/tokengrantkyc",
-                      "hedera/sdks-and-apis/hedera-api/token-service/tokenrevokekyc",
-                      "hedera/sdks-and-apis/hedera-api/token-service/tokenassociate",
-                      "hedera/sdks-and-apis/hedera-api/token-service/tokendissociate",
-                      "hedera/sdks-and-apis/hedera-api/token-service/tokenwipeaccount",
-                      "hedera/sdks-and-apis/hedera-api/token-service/tokenpause",
-                      "hedera/sdks-and-apis/hedera-api/token-service/tokenunpause",
-                      "hedera/sdks-and-apis/hedera-api/token-service/tokengetinfo",
-                      "hedera/sdks-and-apis/hedera-api/token-service/tokengetnftinfo",
-                      "hedera/sdks-and-apis/hedera-api/token-service/tokengetnftinfos",
-                      "hedera/sdks-and-apis/hedera-api/token-service/tokengetaccountnftinfo"
-                    ]
-                  },
-                  {
-                    "group": "File Service",
-                    "pages": [
-                      "hedera/sdks-and-apis/hedera-api/file-service",
-                      "hedera/sdks-and-apis/hedera-api/file-service/fileservice",
-                      "hedera/sdks-and-apis/hedera-api/file-service/filecreate",
-                      "hedera/sdks-and-apis/hedera-api/file-service/fileappend",
-                      "hedera/sdks-and-apis/hedera-api/file-service/fileupdate",
-                      "hedera/sdks-and-apis/hedera-api/file-service/filedelete",
-                      "hedera/sdks-and-apis/hedera-api/file-service/filegetcontents",
-                      "hedera/sdks-and-apis/hedera-api/file-service/filegetinfo"
-                    ]
-                  },
-                  {
-                    "group": "Smart Contracts",
-                    "pages": [
-                      "hedera/sdks-and-apis/hedera-api/smart-contracts",
-                      "hedera/sdks-and-apis/hedera-api/smart-contracts/smartcontractservice",
-                      "hedera/sdks-and-apis/hedera-api/smart-contracts/contractcall",
-                      "hedera/sdks-and-apis/hedera-api/smart-contracts/contractcalllocal",
-                      "hedera/sdks-and-apis/hedera-api/smart-contracts/contractcreate",
-                      "hedera/sdks-and-apis/hedera-api/smart-contracts/contractupdate",
-                      "hedera/sdks-and-apis/hedera-api/smart-contracts/contractdelete",
-                      "hedera/sdks-and-apis/hedera-api/smart-contracts/contractgetbytecode",
-                      "hedera/sdks-and-apis/hedera-api/smart-contracts/contractgetinfo",
-                      "hedera/sdks-and-apis/hedera-api/smart-contracts/contractgetrecords"
-                    ]
-                  },
-                  {
-                    "group": "Miscellaneous",
-                    "pages": [
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/duration",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/exchangerate",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/freeze",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/freezetype",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/getbykey",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/getbysolidityid",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/networkgetversioninfo",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/networkservice",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/query",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/queryheader",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/response",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/responsecode",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/responseheader",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/systemdelete",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/systemundelete",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/timestamp",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/transaction",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/transactionbody",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/transaction-contents",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/transactiongetfastrecord",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/transactiongetreceipt",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/transactiongetrecord",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/transactionreceipt",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/transactionrecord",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/transactionresponse",
-                      "hedera/sdks-and-apis/hedera-api/miscellaneous/uncheckedsubmit"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Hedera Status API",
-                "pages": [
-                  "hedera/sdks-and-apis/hedera-status-api",
-                  "hedera-status-api.yaml GET /summary.json",
-                  "hedera-status-api.yaml GET /status.json",
-                  "hedera-status-api.yaml GET /components.json",
-                  "hedera-status-api.yaml GET /incidents.json",
-                  "hedera-status-api.yaml GET /incidents/unresolved.json",
-                  "hedera-status-api.yaml GET /scheduled-maintenances.json",
-                  "hedera-status-api.yaml GET /scheduled-maintenances/upcoming.json",
-                  "hedera-status-api.yaml GET /scheduled-maintenances/active.json"
-                ]
-              },
-              {
-                "group": "Smart Contract Verification API",
-                "pages": [
-                  "hedera/sdks-and-apis/smart-contract-verification-api",
-                  "smart-contract-verification-api.yaml POST /verify",
-                  "smart-contract-verification-api.yaml POST /verify/etherscan",
-                  "smart-contract-verification-api.yaml POST /verify/solc-json",
-                  "smart-contract-verification-api.yaml GET /check-all-by-addresses",
-                  "smart-contract-verification-api.yaml GET /check-by-addresses",
-                  "smart-contract-verification-api.yaml GET /files/any/{chain}/{address}",
-                  "smart-contract-verification-api.yaml GET /files/{chain}/{address}",
-                  "smart-contract-verification-api.yaml GET /repository/contracts/{matchType}/{chain}/{address}/{filePath}",
-                  "smart-contract-verification-api.yaml GET /files/contracts/{chain}",
-                  "smart-contract-verification-api.yaml GET /files/tree/any/{chain}/{address}",
-                  "smart-contract-verification-api.yaml GET /files/tree/{chain}/{address}",
-                  "smart-contract-verification-api.yaml GET /session/data",
-                  "smart-contract-verification-api.yaml POST /session/clear",
-                  "smart-contract-verification-api.yaml POST /session/input-files",
-                  "smart-contract-verification-api.yaml POST /session/input-contract",
-                  "smart-contract-verification-api.yaml POST /session/verify-checked",
-                  "smart-contract-verification-api.yaml POST /session/input-solc-json",
-                  "smart-contract-verification-api.yaml POST /session/verify/etherscan",
-                  "smart-contract-verification-api.yaml POST /change-log-level"
-                ]
-              }
-            ]
-          },
-          {
-            "group": "Support & Community",
-            "pages": [
-              "hedera/support-and-community",
-              "hedera/support-and-community/glossary",
-              {
-                "group": "Contributing to Hedera documentation",
-                "pages": [
-                  "hedera/support-and-community/contributing-guide",
-                  {
-                    "group": "Contribution Guidelines",
-                    "pages": [
-                      "hedera/support-and-community/contributing-guide/contribution-guidelines",
-                      "hedera/support-and-community/contributing-guide/contribution-guidelines/creating-issues",
-                      "hedera/support-and-community/contributing-guide/contribution-guidelines/creating-pull-requests",
-                      "hedera/support-and-community/contributing-guide/contribution-guidelines/hedera-improvement-proposal-hip",
-                      "hedera/support-and-community/contributing-guide/contribution-guidelines/submit-demo-applications"
-                    ]
-                  },
-                  {
-                    "group": "Style Guide",
-                    "pages": [
-                      "hedera/support-and-community/contributing-guide/style-guide",
-                      "hedera/support-and-community/contributing-guide/style-guide/understanding-different-types-of-documentation",
-                      "hedera/support-and-community/contributing-guide/style-guide/use-of-hbar-and-tinybars",
-                      "hedera/support-and-community/contributing-guide/style-guide/use-of-web2-and-web3",
-                      "hedera/support-and-community/contributing-guide/style-guide/use-of-mainnet-testnet-and-previewnet",
-                      "hedera/support-and-community/contributing-guide/style-guide/language-and-grammar",
-                      "hedera/support-and-community/contributing-guide/style-guide/formatting",
-                      "hedera/support-and-community/contributing-guide/style-guide/punctuation",
-                      "hedera/support-and-community/contributing-guide/style-guide/gitbook-markdown-syntax"
-                    ]
-                  }
-                ]
-              },
-              "hedera/support-and-community/hedera-com-discord",
-              "hedera/support-and-community/github-com-hashgraph",
-              "hedera/support-and-community/stackoverflow-com-questions-tagged-hedera-hashgraph",
-              "hedera/support-and-community/hedera-com-blog-tagged-technical",
-              "hedera/support-and-community/hedera-com-bounty",
-              "hedera/support-and-community/help-hedera-com-hc-en-us",
-              "hedera/support-and-community/forms",
-              "hedera/support-and-community/meetups",
-              "hedera/support-and-community/brand-guidelines",
-              "hedera/support-and-community/status-hedera-com"
-            ]
-          },
-          {
-            "group": "FAQs",
-            "pages": [
-              "hedera/faqs/getting-started",
-              "hedera/faqs/network-governance",
-              "hedera/faqs/hbar",
-              "hedera/faqs/community"
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg",
-    "href": "https://hedera.com/"
-  },
-  "navbar": {
-    "primary": {
-      "type": "button",
-      "label": "Dev Portal",
-      "href": "https://portal.hedera.com"
+    {
+      "source": "/hedera/getting-started/:slug*",
+      "destination": "/learn/getting-started/:slug*"
+    },
+    {
+      "source": "/hedera/core-concepts/:slug*",
+      "destination": "/learn/core-concepts/:slug*"
+    },
+    {
+      "source": "/hedera/networks/:slug*",
+      "destination": "/learn/networks/:slug*"
+    },
+    {
+      "source": "/hedera/getting-started-evm-developers/:slug*",
+      "destination": "/evm/:slug*"
+    },
+    {
+      "source": "/hedera/getting-started-hedera-native-developers/:slug*",
+      "destination": "/native/:slug*"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/:slug*",
+      "destination": "/native/:slug*"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/rest-api/:slug*",
+      "destination": "/reference/rest-api/:slug*"
+    },
+    {
+      "source": "/hedera/tutorials/smart-contracts/:slug*",
+      "destination": "/evm/tutorials/:slug*"
+    },
+    {
+      "source": "/hedera/tutorials/token/:slug*",
+      "destination": "/native/tutorials/tokens/:slug*"
+    },
+    {
+      "source": "/hedera/open-source-solutions/:slug*",
+      "destination": "/solutions/:slug*"
     }
-  },
-  "footer": {
-    "socials": {
-      "discord": "https://hedera.com/discord",
-      "facebook": "https://www.facebook.com/hederanetwork",
-      "linkedin": "https://www.linkedin.com/company/hashgraph",
-      "medium": "https://medium.com/hashgraph",
-      "reddit": "https://www.reddit.com/r/Hedera/",
-      "telegram": "https://t.me/hederahashgraph",
-      "x": "https://X.com/hedera",
-      "youtube": "https://www.youtube.com/hederahashgraph"
-    }
-  }
+  ]
 }

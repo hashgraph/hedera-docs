@@ -1,0 +1,29 @@
+---
+title: "Balances"
+sidebarTitle: "Overview"
+---
+
+
+## Overview
+
+The **Balances endpoints** in the Hedera Mirror Node REST API allows developers to query **account balances** on the Hedera network. These endpoints provides real-time and historical balance data, essential for wallets, explorers, and financial applications.
+
+## Endpoints
+
+The following endpoint is available for the Balances object:
+
+| **Endpoint**           | **Description**                       |
+| ---------------------- | ------------------------------------- |
+| `GET /api/v1/balances` | Retrieves a list of account balances. |
+
+## Balances <a href="#balances" id="balances"></a>
+
+The **balance** object represents the balance of accounts on the Hedera network. You can retrieve this to view the **most recent** balance of all the accounts on the network at that given time. The balances object returns the account ID and the balance in HBAR. Balances are checked on a periodic basis and thus return the most recent snapshot of time captured prior to the request.
+
+The **balance object** represents the balance of accounts on the Hedera network. It allows you to retrieve the **most recent** snapshot of all account balances on the network at a given time. Since balances are updated periodically, the returned values reflect the latest recorded state before the request.
+
+Each **balance object** includes:
+
+* **Account ID** – The Hedera account being queried.
+* **Balance (in HBAR)** – The most recent balance available.
+* **Token Balances (if applicable)** – Associated token balances for the account.

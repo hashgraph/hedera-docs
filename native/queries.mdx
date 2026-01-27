@@ -1,0 +1,93 @@
+---
+title: "Queries"
+---
+
+
+Queries are requests that do not require network consensus. Queries are processed only by the single node the request is sent to. Below is a list of network queries by service.
+
+<Note>
+#### **Recommend Using Mirror Node REST API**
+
+For obtaining balance and historical information, consider using the [Mirror Node REST API](/hedera/sdks-and-apis/rest-api) which offers several advantages:
+
+* **Cost-effective and scalable:** [Mirror node providers](/hedera/core-concepts/mirror-nodes/hedera-mirror-node#mainnet) offer paid plans with a large number of queries included. The Hedera-hosted mirror node offers free queries with specific throttles for testing. While some SDK queries are currently free, these are subject to change in the future.
+* **Performance:** Mirror nodes don't burden consensus nodes, allowing them to focus on processing transactions and providing efficient access to historical data without impacting network performance.
+* **Historical data:** Mirror nodes store complete transaction history, records, and events - ideal for analytics, auditing, and monitoring past activity.
+
+📚 **_For more details, please read our [blog post on querying data](https://hedera.com/blog/querying-data-on-hedera-sdk-vs-mirror-node-rest-api)._**
+
+</Note>
+
+| Cryptocurrency Accounts                                                                                        | Consensus                                                                                                  | Tokens                                                                                                         | File Service                                                                                          | Smart Contracts                                                                                                        | Schedule Service                                                                                              |
+| -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| [AccountBalanceQuery](/hedera/sdks-and-apis/sdks/accounts-and-hbar/get-account-balance) | [TopicInfoQuery](/hedera/sdks-and-apis/sdks/consensus-service/get-topic-info)       | [TokenBalanceQuery](/hedera/sdks-and-apis/sdks/token-service/get-account-token-balance) | [FileContentsQuery](/hedera/sdks-and-apis/sdks/file-service/get-file-contents) | [ContractCallQuery](/hedera/sdks-and-apis/sdks/smart-contracts/get-a-smart-contract-function)   | [ScheduleInfoQuery](/hedera/sdks-and-apis/sdks/schedule-transaction/get-schedule-info) |
+| [AccountInfoQuery](/hedera/sdks-and-apis/sdks/accounts-and-hbar/get-account-info)       | [TopicMessageQuery](/hedera/sdks-and-apis/sdks/consensus-service/get-topic-message) | [TokenInfoQuery](/hedera/sdks-and-apis/sdks/token-service/get-token-info)               | [FileInfoQuery](/hedera/sdks-and-apis/sdks/file-service/get-file-info)         | [ContractByteCodeQuery](/hedera/sdks-and-apis/sdks/smart-contracts/get-smart-contract-bytecode) |                                                                                                               |
+
+## Get Query Cost
+
+A query that returns the cost of a query prior to submitting the query to the network node for processing. If the cost of the query is greater than the default max query payment (1 HBAR) you can use `setMaxQueryPayment(<hbar>)` to change the default.
+
+<table><thead><tr><th>Method</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>getCost(&#x3C;client>)</code></td><td>Client</td><td>Get the cost of the query in HBAR</td></tr><tr><td><code>getCost(&#x3C;client, timeout>)</code></td><td>Client, Duration</td><td>The max length of time the SDK will attempt to retry in the event of repeated busy responses from the node(s)</td></tr><tr><td><code>getCostAsync(&#x3C;client>)</code></td><td>Client</td><td>Get the cost of a query asynchronously</td></tr></tbody></table>
+
+<CodeGroup>
+
+```java Java
+//Create the query request
+AccountBalanceQuery query = new AccountBalanceQuery()
+     .setAccountId(accountId);
+
+//Get the cost of the query
+Hbar queryCost = query.getCost(client);
+
+System.out.println("The account balance query cost is " +queryCost);
+
+//v2.0.0
+```
+
+
+```javascript JavaScript
+//Create the query request
+const query = new AccountBalanceQuery()
+     .setAccountId(accountId);
+
+//Get the cost of the query
+const queryCost = await query.getCost(client);
+
+console.log("The account balance query cost is " +queryCost);
+
+//v2.0.0
+```
+
+
+```java Go
+//Create the query request
+query := hedera.NewAccountBalanceQuery().
+     SetAccountID(newAccountId)
+
+//Get the cost of the query
+cost, err := query.GetCost(client)
+
+if err != nil {
+		panic(err)
+}
+
+fmt.Printf("The account balance query cost is: %v\n ", cost.String())
+
+//v2.0.0
+```
+
+
+```rust Rust
+// Create the query request
+let query = AccountBalanceQuery::new()
+    .account_id(account_id);
+
+// Get the cost of the query
+let query_cost = query.get_cost(&client).await?;
+
+println!("The account balance query cost is {:?}", query_cost);
+
+// v0.34.0
+```
+
+</CodeGroup>

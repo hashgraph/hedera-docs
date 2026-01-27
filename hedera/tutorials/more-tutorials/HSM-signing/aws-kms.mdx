@@ -1,0 +1,214 @@
+---
+title: "Sign Hedera Transactions with AWS KMS"
+---
+
+This tutorial demonstrates how to use an `ECC_SECG_P256K1` key in AWS KMS to sign Hedera transactions. This solution ensures that your private keys are never exposed in your application environment.
+
+---
+
+## Prerequisites
+
+Before you begin, ensure you have:
+
+- An **AWS account** with appropriate permissions
+- **AWS CLI** installed and configured ([Installation Instructions](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html))
+- **Node.js** (version 18.0.0 or higher)
+- A **Hedera Testnet account**. If you don't have one, you can register at the [Hedera Developer Portal](https://portal.hedera.com/)
+
+---
+
+## Part 1: AWS KMS Setup
+
+### 1. Create an ECC Key in AWS KMS
+
+Create an asymmetric key with the `ECC_SECG_P256K1` key spec, which is compatible with Hedera's ECDSA key requirements.
+
+```bash
+# Create the KMS key
+aws kms create-key \
+    --key-spec ECC_SECG_P256K1 \
+    --key-usage SIGN_VERIFY \
+    --description "Hedera transaction signing key"
+```
+
+Save the **Key ID** from the output. It will look like: `arn:aws:kms:us-east-1:123456789012:key/abcd1234-5678-90ab-cdef-EXAMPLE11111`
+
+### 2. Create a Key Alias (Optional but Recommended)
+
+Create an alias for easier reference to your key.
+
+```bash
+aws kms create-alias \
+    --alias-name alias/hedera-signing-key \
+    --target-key-id <YOUR_KEY_ID>
+```
+
+### 3. Set Up IAM Permissions
+
+Create an IAM policy that allows your application to use the KMS key for signing operations.
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "kms:Sign",
+                "kms:GetPublicKey",
+                "kms:DescribeKey"
+            ],
+            "Resource": "<YOUR_KEY_ARN>"
+        }
+    ]
+}
+```
+
+Attach this policy to an IAM user or role that your application will use.
+
+---
+
+## Part 2: Application Setup
+
+### 1. Install Dependencies
+
+Create a new Node.js project and install the required dependencies.
+
+```bash
+npm init -y
+npm install @hashgraph/sdk @aws-sdk/client-kms dotenv
+```
+
+### 2. Create the `.env` File
+
+Create a `.env` file with your AWS credentials and Hedera account details.
+
+```
+# AWS KMS Configuration
+AWS_REGION=us-east-1
+AWS_ACCESS_KEY_ID=<YOUR_AWS_ACCESS_KEY>
+AWS_SECRET_ACCESS_KEY=<YOUR_AWS_SECRET_KEY>
+KMS_KEY_ID=<YOUR_KMS_KEY_ID_OR_ARN>
+
+# Hedera Account Details
+HEDERA_ACCOUNT_ID=<YOUR_HEDERA_ACCOUNT_ID>
+HEDERA_PRIVATE_KEY=<YOUR_HEDERA_PRIVATE_KEY>
+HEDERA_NETWORK=testnet
+```
+
+### 3. Create the Signer Function
+
+Create a custom signer function that uses AWS KMS to sign transaction bytes.
+
+```javascript
+const { KMSClient, SignCommand, GetPublicKeyCommand } = require("@aws-sdk/client-kms");
+const { PrivateKey } = require("@hashgraph/sdk");
+
+const kmsClient = new KMSClient({ region: process.env.AWS_REGION });
+
+async function createKmsSigner(keyId) {
+    // Get the public key from KMS
+    const getPublicKeyCommand = new GetPublicKeyCommand({ KeyId: keyId });
+    const publicKeyResponse = await kmsClient.send(getPublicKeyCommand);
+    
+    // Convert the public key to Hedera format
+    const publicKeyBytes = Buffer.from(publicKeyResponse.PublicKey);
+    const publicKey = PrivateKey.fromBytesECDSA(publicKeyBytes);
+    
+    // Return a signer function
+    return async (message) => {
+        const signCommand = new SignCommand({
+            KeyId: keyId,
+            Message: message,
+            MessageType: "RAW",
+            SigningAlgorithm: "ECDSA_SHA_256"
+        });
+        
+        const signResponse = await kmsClient.send(signCommand);
+        return Buffer.from(signResponse.Signature);
+    };
+}
+```
+
+### 4. Create and Sign a Transaction
+
+Use the custom signer to create and sign a Hedera transaction.
+
+```javascript
+const { Client, AccountCreateTransaction, Hbar } = require("@hashgraph/sdk");
+require("dotenv").config();
+
+async function main() {
+    // Create Hedera client
+    const client = Client.forTestnet();
+    client.setOperator(
+        process.env.HEDERA_ACCOUNT_ID,
+        process.env.HEDERA_PRIVATE_KEY
+    );
+    
+    // Create KMS signer
+    const kmsSigner = await createKmsSigner(process.env.KMS_KEY_ID);
+    
+    // Create a new account with the KMS public key
+    const transaction = await new AccountCreateTransaction()
+        .setKey(kmsSigner.publicKey)
+        .setInitialBalance(Hbar.fromTinybars(100))
+        .freezeWith(client);
+    
+    // Sign with KMS
+    const signature = await kmsSigner(transaction.toBytes());
+    transaction.addSignature(kmsSigner.publicKey, signature);
+    
+    // Execute the transaction
+    const response = await transaction.execute(client);
+    const receipt = await response.getReceipt(client);
+    
+    console.log("Account created:", receipt.accountId.toString());
+}
+
+main().catch(console.error);
+```
+
+---
+
+## Part 3: Verification
+
+### 1. Verify Key Configuration
+
+Verify that your KMS key is configured correctly:
+
+```bash
+aws kms describe-key --key-id <YOUR_KEY_ID>
+```
+
+The output should show:
+- `KeySpec: ECC_SECG_P256K1`
+- `KeyUsage: SIGN_VERIFY`
+
+### 2. Test Transaction Signing
+
+Run your application and verify that transactions are being signed successfully with the KMS key.
+
+---
+
+## Cleanup
+
+To avoid ongoing charges, delete the KMS key when you're done:
+
+```bash
+# Schedule key deletion (7-30 days)
+aws kms schedule-key-deletion --key-id <YOUR_KEY_ID> --pending-window-in-days 7
+
+# Or delete immediately (if key is not in use)
+aws kms delete-key --key-id <YOUR_KEY_ID>
+```
+
+<Warning>
+**Important**: Deleting a KMS key is irreversible. Make sure you have backups of any data encrypted with this key before deletion.
+</Warning>
+
+## Resources
+
+- [GitHub Repository - AWS KMS Signing](https://github.com/hedera-dev/tutorial-hsm-signing/tree/master/hedera-aws-kms-signing)
+- [AWS KMS Documentation](https://docs.aws.amazon.com/kms/)
+- [Hedera SDK Documentation](/hedera/sdks-and-apis)

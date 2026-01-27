@@ -1,0 +1,276 @@
+---
+title: "Sign Hedera Transactions with Google Cloud HSM"
+---
+
+This tutorial demonstrates how to use a Google Cloud HSM-backed `secp256k1` key for signing Hedera transactions. This solution ensures that your private keys are stored securely in Google Cloud's Hardware Security Module.
+
+---
+
+## Prerequisites
+
+Before you begin, ensure you have:
+
+- A **Google Cloud Platform (GCP) account** with billing enabled
+- **Google Cloud SDK (gcloud)** installed and configured ([Installation Instructions](https://cloud.google.com/sdk/docs/install))
+- **Node.js** (version 18.0.0 or higher)
+- A **Hedera Testnet account**. If you don't have one, you can register at the [Hedera Developer Portal](https://portal.hedera.com/)
+
+---
+
+## Part 1: Google Cloud HSM Setup
+
+### 1. Enable Required APIs
+
+Enable the Cloud KMS API for your project.
+
+```bash
+# Set your project ID
+export PROJECT_ID="your-gcp-project-id"
+
+# Enable Cloud KMS API
+gcloud services enable cloudkms.googleapis.com --project=$PROJECT_ID
+```
+
+### 2. Create a Key Ring
+
+Create a key ring to organize your keys. Key rings must be created in a specific location.
+
+```bash
+# Set the location (e.g., us-east1, us-west1, etc.)
+export LOCATION="us-east1"
+
+# Create the key ring
+gcloud kms keyrings create hedera-keyring \
+    --location=$LOCATION \
+    --project=$PROJECT_ID
+```
+
+### 3. Create an HSM-Backed Key
+
+Create a `secp256k1` key with HSM protection. This requires Cloud HSM, which provides FIPS 140-2 Level 3 certified hardware.
+
+```bash
+# Create the HSM key
+gcloud kms keys create hedera-secp256k1-key \
+    --keyring=hedera-keyring \
+    --location=$LOCATION \
+    --purpose=asymmetric-signing \
+    --default-algorithm=ec-sign-p256-sha256 \
+    --protection-level=hsm \
+    --project=$PROJECT_ID
+```
+
+<Info>
+**Note**: HSM protection level requires Cloud HSM, which may have additional costs. For development, you can use `software` protection level, but for production, HSM is recommended.
+</Info>
+
+### 4. Set Up Service Account
+
+Create a service account for your application to authenticate with GCP.
+
+```bash
+# Create service account
+gcloud iam service-accounts create hedera-kms-signer \
+    --display-name="Hedera KMS Signer" \
+    --project=$PROJECT_ID
+
+# Get the service account email
+export SERVICE_ACCOUNT_EMAIL="hedera-kms-signer@${PROJECT_ID}.iam.gserviceaccount.com"
+```
+
+### 5. Grant Permissions
+
+Grant the service account permission to use the key for signing operations.
+
+```bash
+# Grant Cloud KMS CryptoKey Signer role
+gcloud kms keys add-iam-policy-binding hedera-secp256k1-key \
+    --location=$LOCATION \
+    --keyring=hedera-keyring \
+    --member="serviceAccount:${SERVICE_ACCOUNT_EMAIL}" \
+    --role="roles/cloudkms.signer" \
+    --project=$PROJECT_ID
+```
+
+### 6. Create and Download Service Account Key
+
+Create a key file for the service account to authenticate your application.
+
+```bash
+# Create and download the key file
+gcloud iam service-accounts keys create ~/hedera-kms-key.json \
+    --iam-account=$SERVICE_ACCOUNT_EMAIL \
+    --project=$PROJECT_ID
+```
+
+---
+
+## Part 2: Application Setup
+
+### 1. Install Dependencies
+
+Create a new Node.js project and install the required dependencies.
+
+```bash
+npm init -y
+npm install @hashgraph/sdk @google-cloud/kms dotenv
+```
+
+### 2. Create the `.env` File
+
+Create a `.env` file with your GCP credentials and Hedera account details.
+
+```
+# Google Cloud Configuration
+GOOGLE_APPLICATION_CREDENTIALS=/path/to/hedera-kms-key.json
+GCP_PROJECT_ID=<YOUR_GCP_PROJECT_ID>
+GCP_LOCATION=us-east1
+GCP_KEY_RING=hedera-keyring
+GCP_KEY_NAME=hedera-secp256k1-key
+
+# Hedera Account Details
+HEDERA_ACCOUNT_ID=<YOUR_HEDERA_ACCOUNT_ID>
+HEDERA_PRIVATE_KEY=<YOUR_HEDERA_PRIVATE_KEY>
+HEDERA_NETWORK=testnet
+```
+
+### 3. Create the Signer Function
+
+Create a custom signer function that uses Google Cloud KMS to sign transaction bytes.
+
+```javascript
+const { KeyManagementServiceClient } = require("@google-cloud/kms");
+const { PrivateKey } = require("@hashgraph/sdk");
+
+const client = new KeyManagementServiceClient();
+
+async function createGcpKmsSigner(projectId, location, keyRing, keyName) {
+    const keyPath = client.cryptoKeyPath(projectId, location, keyRing, keyName);
+    
+    // Get the public key from KMS
+    const [publicKeyResponse] = await client.getPublicKey({
+        name: client.cryptoKeyVersionPath(projectId, location, keyRing, keyName, "1")
+    });
+    
+    // Convert the public key to Hedera format
+    const publicKeyBytes = Buffer.from(publicKeyResponse.pem, "base64");
+    const publicKey = PrivateKey.fromBytesECDSA(publicKeyBytes);
+    
+    // Return a signer function
+    return {
+        publicKey: publicKey,
+        sign: async (message) => {
+            const [signResponse] = await client.asymmetricSign({
+                name: client.cryptoKeyVersionPath(projectId, location, keyRing, keyName, "1"),
+                digest: {
+                    sha256: message
+                }
+            });
+            
+            return Buffer.from(signResponse.signature, "base64");
+        }
+    };
+}
+```
+
+### 4. Create and Sign a Transaction
+
+Use the custom signer to create and sign a Hedera transaction.
+
+```javascript
+const { Client, AccountCreateTransaction, Hbar } = require("@hashgraph/sdk");
+require("dotenv").config();
+
+async function main() {
+    // Create Hedera client
+    const client = Client.forTestnet();
+    client.setOperator(
+        process.env.HEDERA_ACCOUNT_ID,
+        process.env.HEDERA_PRIVATE_KEY
+    );
+    
+    // Create GCP KMS signer
+    const kmsSigner = await createGcpKmsSigner(
+        process.env.GCP_PROJECT_ID,
+        process.env.GCP_LOCATION,
+        process.env.GCP_KEY_RING,
+        process.env.GCP_KEY_NAME
+    );
+    
+    // Create a new account with the KMS public key
+    const transaction = await new AccountCreateTransaction()
+        .setKey(kmsSigner.publicKey)
+        .setInitialBalance(Hbar.fromTinybars(100))
+        .freezeWith(client);
+    
+    // Sign with KMS
+    const messageHash = transaction.toBytes();
+    const signature = await kmsSigner.sign(messageHash);
+    transaction.addSignature(kmsSigner.publicKey, signature);
+    
+    // Execute the transaction
+    const response = await transaction.execute(client);
+    const receipt = await response.getReceipt(client);
+    
+    console.log("Account created:", receipt.accountId.toString());
+}
+
+main().catch(console.error);
+```
+
+---
+
+## Part 3: Verification
+
+### 1. Verify Key Configuration
+
+Verify that your KMS key is configured correctly:
+
+```bash
+gcloud kms keys describe hedera-secp256k1-key \
+    --keyring=hedera-keyring \
+    --location=$LOCATION \
+    --project=$PROJECT_ID
+```
+
+The output should show:
+- `purpose: ASYMMETRIC_SIGN`
+- `algorithm: EC_SIGN_P256_SHA256`
+- `protectionLevel: HSM`
+
+### 2. Test Transaction Signing
+
+Run your application and verify that transactions are being signed successfully with the GCP HSM key.
+
+---
+
+## Cleanup
+
+To avoid ongoing charges, delete the KMS key and related resources when you're done:
+
+```bash
+# Delete the key (this schedules deletion, keys are retained for 24 hours)
+gcloud kms keys destroy hedera-secp256k1-key \
+    --keyring=hedera-keyring \
+    --location=$LOCATION \
+    --project=$PROJECT_ID
+
+# Delete the key ring (only after all keys are deleted)
+gcloud kms keyrings delete hedera-keyring \
+    --location=$LOCATION \
+    --project=$PROJECT_ID
+
+# Delete the service account
+gcloud iam service-accounts delete $SERVICE_ACCOUNT_EMAIL \
+    --project=$PROJECT_ID
+```
+
+<Warning>
+**Important**: Deleting a KMS key is irreversible after the retention period. Make sure you have backups of any data before deletion.
+</Warning>
+
+## Resources
+
+- [GitHub Repository - GCP KMS Signing](https://github.com/hedera-dev/tutorial-hsm-signing/tree/master/hedera-gcp-kms-signing)
+- [Google Cloud KMS Documentation](https://cloud.google.com/kms/docs)
+- [Hedera SDK Documentation](/hedera/sdks-and-apis)

@@ -1,0 +1,55 @@
+---
+title: HSM/KMS Signing Solutions
+sidebarTitle: Overview
+---
+
+This collection of tutorials demonstrates how to sign Hedera Hashgraph transactions using keys stored in various cloud-based Key Management Services (KMS) and Hardware Security Modules (HSMs). These examples show how to integrate Hedera with popular cloud providers to ensure that your private keys are never exposed in your application environment.
+
+## How it Works
+
+The general workflow for each solution is as follows:
+
+1. **Key Generation**: An asymmetric key is created and stored in the respective KMS/HSM service.
+2. **Public Key Retrieval**: The public key corresponding to the stored private key is fetched from the KMS.
+3. **Hedera Account Creation**: A new Hedera account is created and associated with the retrieved public key.
+4. **Transaction Signing**: A custom signer function is implemented that sends transaction bytes to the KMS/HSM for signing. The Hedera SDK is configured to use this custom signer.
+5. **Transaction Execution**: Transactions are executed on the Hedera network using the client configured with the custom signer.
+
+## General Prerequisites
+
+Before you begin, ensure you have the following:
+
+- A **Hedera Testnet account**. If you don't have one, you can register at the [Hedera Developer Portal](https://portal.hedera.com/).
+- **Node.js** (version 18.0.0 or higher).
+- Cloud-specific CLI tools and accounts as detailed in the provider-specific sections.
+
+## Provider Examples
+
+<Columns cols={2}>
+  <Card
+    title="AWS KMS"
+    href="/hedera/tutorials/more-tutorials/HSM-signing/aws-kms"
+  >
+    Sign transactions using an asymmetric key stored in AWS Key Management Service.
+  </Card>
+  <Card
+    title="Azure Key Vault"
+    href="/hedera/tutorials/more-tutorials/HSM-signing/azure-key-vault"
+  >
+    Utilize an HSM-backed secp256k1 key in Azure Key Vault (Premium SKU) for signing.
+  </Card>
+  <Card
+    title="Google Cloud HSM"
+    href="/hedera/tutorials/more-tutorials/HSM-signing/gcp-kms"
+  >
+    Sign transactions with a Google Cloud HSM-backed secp256k1 key.
+  </Card>
+</Columns>
+
+## Disclaimer
+
+These examples are for demonstration purposes only. When implementing in a production environment, always follow security best practices for key management and access control.
+
+## Resources
+
+- [GitHub Repository](https://github.com/hedera-dev/tutorial-hsm-signing)

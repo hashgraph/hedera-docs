@@ -7,13 +7,42 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Release v0.69
 
-<Info>
-  **MAINNET UPDATE SCHEDULED: JANUARY 21, 2026**
-</Info>
+<Check>
+  **MAINNET UPDATE: JANUARY 28, 2026**
+</Check>
 
 <Check>
   **TESTNET UPDATE: DECEMBER 30, 2025**
 </Check>
+
+## Release highlights
+
+Release v0.69 highlights include support for a new operations-based throttling model for smart-contract execution (HIP-1249), and an update to the ConsensusSubmitMessage fee schedule. Together, these changes significantly expand contract throughput capacity, and ensure sustainable pricing for high-volume consensus messaging.
+
+<Accordion title="What's new in Release v0.69?">
+
+#### **Precise Smart Contract Throttling (HIP-1249)**
+
+The gas-per-second throttling model for smart-contract execution is replaced with a new operations-per-second (ops/sec) approach. Each EVM opcode, precompile, and system contract call is assigned an operations cost calibrated to measured execution behavior. Billing remains gas-based, but throttling now reflects actual computational load.
+
+**Benefits**
+* Increases smart-contract throughput by aligning throttling with real resource usage
+* Improves predictability and efficiency for contract execution workloads
+* Retains full EVM compatibility while enabling significantly higher capacity
+
+#### **HCS ConsensusSubmitMessage Fee Update**
+
+This release updates the USD fee for ConsensusSubmitMessage from `$0.0001` to `$0.0008` per message. This adjustment reflects the operational cost of sustaining high-volume HCS workloads and is the first update to this fee since mainnet launch.
+
+See more in the communication [here](https://hedera.com/blog/price-update-to-consensussubmitmessage-in-consensus-service-january-2026/).
+
+**Benefits**
+
+* Aligns HCS message pricing with actual infrastructure and processing costs
+* Supports long-term economic sustainability for high-throughput consensus messaging
+* Maintains predictable fixed-fee economics for developers building with HCS
+
+</Accordion>
 
 ### [**Build 0.69.1**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.69.1)
 
@@ -45,10 +74,15 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 </Accordion>
 
 
+## Performance Results
+<Frame>
+  ![](/images/networks/release-notes/services/0.69_Performance-measurement-results_extract.001.png)
+</Frame>
+
 ## Release v0.68
 
 <Check>
-  **MAINNET UPDATE: DECEMBER 18, 2025**
+  **MAINNET UPDATE: JANUARY 15, 2025**
 </Check>
 
 <Check>
@@ -81,6 +115,15 @@ Contracts can schedule calls to themselves or other contracts with a chosen expi
 
 For developers and operators, the main impact from release v0.68 is more reliable block/RPC synchronization on testnet; client APIs and semantics remain unchanged. Release v0.68 prepares the network for Dynamic Address Book node account ID changes and enables new methods of leveraging scheduled smart contract calls with the Hedera Schedule Service system contract.
 
+</Accordion>
+
+### [**Build 0.68.6**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.68.6)
+
+<Accordion title="What's Changed">
+  - fix: (0.68) Use service component for handler-assessed fees by @tinker-michaelj in #22393
+  - chore: (0.68) Refine HIP-991 sig requirement checks by @tinker-michaelj in #22474
+  
+  **Full Changelog**: [v0.68.3...v0.68.6](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.68.3...v0.68.6)
 </Accordion>
 
 ### [**Build 0.68.5**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.68.5)

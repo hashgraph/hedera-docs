@@ -13,6 +13,29 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
   **TESTNET UPDATE: FEBRUARY 4, 2025**
 </Info>
 
+## Release highlights
+
+Release 0.70 delivers significant advancements in fee processing efficiency and foundational infrastructure for future scalability, building on Hedera’s focus on performance and simplicity.
+The headline feature implements HIP-1259 Fee Collection Account, centralizing fee accumulation for streamlined operations, while incremental progress on several multi-phase HIPs and block node enhancements prepares the network for higher throughput and enhanced data handling.
+
+<Accordion title="What's new in Release v0.70?">
+
+Fee Collection Account (HIP-1259)
+This release fully implements HIP-1259, introducing a dedicated, network-controlled fee collection account (default address 0.0.802). All transaction fees are now routed to this single account instead of immediate distribution across multiple system accounts. Fees accumulate at collection account and are disbursed in a single synthetic transaction at the start of each staking period—to node accounts (via accumulated node payments), network admin fee account (0.0.98), staking reward account (0.0.800), and node reward account (0.0.801).
+
+Key benefits:
+Simplified transaction records: Explorers show a clean, single fee payment to 0.0.802, reducing visual complexity for users.
+Enhanced performance: Fewer account updates per transaction improve processing speed and throughput.
+Reduced overhead: Smaller network output for lower storage and ingestion costs for block nodes and mirror nodes.
+Daily Settlement: Daily distributions align with staking cycles, maintaining accurate reward calculations without disrupting node operator economics.
+Other Updates
+
+Release 0.70 includes partial implementations and supporting work for several ongoing HIPs, advancing them toward full completion:
+HIP-1261: Simple Fees — Continued rollout of the simplified, transparent fee model with "base + extras" structure. This phase adds simple fee calculators and support across additional services, including airdrops, token creation with custom fees, crypto transfers, allowances approve/delete, file/schedule queries, and topic custom fees. These changes promote consistency, reduce complexity, and enable predictable pricing reproducible by tools and mirror nodes.
+HIP-1081: Block Node — Updates to Block Node communications including new support for block node configurations with separate streaming and service ports, additional state API methods, service API client/connection handling, and stabilized tests.
+
+</Accordion>
+
 ### [**Build 0.70.0**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.70.0)
 <Accordion title="What's Changed">
   - Implement a support for the new BN response `BehindPublisher` [#22913](https://github.com/hiero-ledger/hiero-consensus-node/pull/22913) by @petreze

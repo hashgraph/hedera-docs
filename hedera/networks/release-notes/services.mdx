@@ -5,6 +5,50 @@ description: "Consensus Node release information"
 
 Visit the [Hedera status page](https://status.hedera.com/) for the latest versions supported on each network.
 
+## Release v0.70
+<Info>
+  **MAINNET UPDATE: FEBRUARY 18, 2026**
+</Info>
+
+<Check>
+  **TESTNET UPDATE: FEBRUARY 4, 2025**
+</Check>
+
+## Release highlights
+
+Release 0.70 delivers significant advancements in fee processing efficiency and foundational infrastructure for future scalability, building on Hedera’s focus on performance and simplicity.
+The headline feature implements HIP-1259 Fee Collection Account, centralizing fee accumulation for streamlined operations, while incremental progress on several multi-phase HIPs and block node enhancements prepares the network for higher throughput and enhanced data handling.
+
+<Accordion title="What's new in Release v0.70?">
+
+Fee Collection Account (HIP-1259)
+This release fully implements HIP-1259, introducing a dedicated, network-controlled fee collection account (default address 0.0.802). All transaction fees are now routed to this single account instead of immediate distribution across multiple system accounts. Fees accumulate at collection account and are disbursed in a single synthetic transaction at the start of each staking period—to node accounts (via accumulated node payments), network admin fee account (0.0.98), staking reward account (0.0.800), and node reward account (0.0.801).
+
+Key benefits:
+Simplified transaction records: Explorers show a clean, single fee payment to 0.0.802, reducing visual complexity for users.
+Enhanced performance: Fewer account updates per transaction improve processing speed and throughput.
+Reduced overhead: Smaller network output for lower storage and ingestion costs for block nodes and mirror nodes.
+Daily Settlement: Daily distributions align with staking cycles, maintaining accurate reward calculations without disrupting node operator economics.
+Other Updates
+
+Release 0.70 includes partial implementations and supporting work for several ongoing HIPs, advancing them toward full completion:
+HIP-1261: Simple Fees — Continued rollout of the simplified, transparent fee model with "base + extras" structure. This phase adds simple fee calculators and support across additional services, including airdrops, token creation with custom fees, crypto transfers, allowances approve/delete, file/schedule queries, and topic custom fees. These changes promote consistency, reduce complexity, and enable predictable pricing reproducible by tools and mirror nodes.
+HIP-1081: Block Node — Updates to Block Node communications including new support for block node configurations with separate streaming and service ports, additional state API methods, service API client/connection handling, and stabilized tests.
+
+</Accordion>
+
+### [**Build 0.70.0**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.70.0)
+<Accordion title="What's Changed">
+  - Implement a support for the new BN response `BehindPublisher` [#22913](https://github.com/hiero-ledger/hiero-consensus-node/pull/22913) by @petreze
+  - 22756 Additional State API methods required for BlockNode [#22782](https://github.com/hiero-ledger/hiero-consensus-node/pull/22782) [#22924](https://github.com/hiero-ledger/hiero-consensus-node/pull/22924) by @imalygin
+  - Update Block Node configuration to support different streaming and service ports [#22552](https://github.com/hiero-ledger/hiero-consensus-node/pull/22552) by @timfn-hg
+  - Implement Fee Collection Account (HIP-1259) [#22521](https://github.com/hiero-ledger/hiero-consensus-node/pull/22521) by @Neeharika-Sompalli
+  - Populate state proofs with real Merkle paths [#22253](https://github.com/hiero-ledger/hiero-consensus-node/pull/22253) by @mhess-swl
+  - Simple fees for File/Schedule service queries [#22537](https://github.com/hiero-ledger/hiero-consensus-node/pull/22537) by @ibankov
+  - Add connection/client for BN service API [#22483](https://github.com/hiero-ledger/hiero-consensus-node/pull/22483) by @timfn-hg
+  **Full Changelog**: [v0.69.1...v0.70.0](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.69.1...v0.70.0)
+</Accordion>
+
 ## Release v0.69
 
 <Check>
@@ -44,6 +88,20 @@ See more in the communication [here](https://hedera.com/blog/price-update-to-con
 
 </Accordion>
 
+### [**Build 0.69.3**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.69.3)
+
+<Accordion title="What's Changed">
+  - ci(fix): add checkout in private to build release artifact (#22416) by @andrewb1269 in https://github.com/hiero-ledger/hiero-consensus-node/pull/22830
+  - ci: cherry pick various CI changes to release 69 branch by @andrewb1269 in https://github.com/hiero-ledger/hiero-consensus-node/pull/23030
+  - ci(workflows): rename zxf to flow on MATS and XTS dry run workflows by @andrewb1269 in https://github.com/hiero-ledger/hiero-consensus-node/pull/23193
+  - ci(workflows): Update build-release-artifact and associated workflows by @andrewb1269 in https://github.com/hiero-ledger/hiero-consensus-node/pull/23208
+  - ci(workflows): Update runners & Improve XTS Dry Run Capabilities (#23172) by @rbarker-dev in https://github.com/hiero-ledger/hiero-consensus-node/pull/23220
+  - fix: (0.69) Ensure HTS transfer gas cost reflects HBAR auto-creations by @tinker-michaelj in https://github.com/hiero-ledger/hiero-consensus-node/pull/23184
+
+  **Full Changelog**: [v0.69.1...v0.69.3](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.69.1...v0.69.3)
+</Accordion>
+
+
 ### [**Build 0.69.1**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.69.1)
 
 <Accordion title="What's Changed">
@@ -76,7 +134,7 @@ See more in the communication [here](https://hedera.com/blog/price-update-to-con
 
 ## Performance Results
 <Frame>
-  ![](/images/networks/release-notes/services/0.69_Performance-measurement-results_extract.001.png)
+  ![](/images/networks/release-notes/services/0.69_performance_measurement_results_extract.001.png)
 </Frame>
 
 ## Release v0.68

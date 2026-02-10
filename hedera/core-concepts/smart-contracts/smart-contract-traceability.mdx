@@ -9,6 +9,13 @@ After contracts have been deployed, you may want to further investigate the exec
 
 **➡** [**State Trace**](#state-trace)
 
+<Warning>
+
+  #### **Known Issue**
+
+  _**In rare cases, contract action traces for reverted transactions may appear incomplete due to a known Mirror Node sidecar issue that can truncate the final internal calls leading up to a revert. This may impact debugging for certain failed executions (e.g., division-by-zero or other runtime errors). The Engineering team is actively investigating and a fix is planned for an upcoming release. If you encounter missing trace data, please report the transaction hash via [GitHub issues](https://github.com/hiero-ledger/hiero-mirror-node/issues) for follow-up.**_
+</Warning>
+
 ***
 
 ## Call Trace

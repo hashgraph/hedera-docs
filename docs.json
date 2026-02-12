@@ -486,6 +486,31 @@
                 ]
               },
               {
+                "group": "Hiero CLI",
+                "pages": [
+                  "hedera/open-source-solutions/hiero-cli/overview",
+                  {
+                    "group": "Plugins",
+                    "pages": [
+                      "/hedera/open-source-solutions/hiero-cli/plugins/credentials-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/network-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/hbar-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/account-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/token-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/topic-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/config-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/plugin-management-plugin"
+                    ]
+                  },
+                  {
+                    "group": "Scripting",
+                    "pages": [
+                      "/hedera/open-source-solutions/hiero-cli/scripting/quickstart"
+                    ]
+                  }
+                ]
+              },
+              {
                 "group": "AI Tools for Developers",
                 "pages": [
                   "hedera/open-source-solutions/ai-tools-for-developers",
@@ -512,7 +537,6 @@
                   "hedera/open-source-solutions/hashiodao/local-environment-setup"
                 ]
               },
-              "hedera/open-source-solutions/hedera-cli",
               "hedera/open-source-solutions/hedera-contract-builder",
               {
                 "group": "Hedera Custodians Library",

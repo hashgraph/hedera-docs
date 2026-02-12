@@ -1,0 +1,215 @@
+---
+title: "Overview"
+---
+
+## Introduction to Hiero CLI
+
+The [Hiero CLI ](https://github.com/hiero-ledger/hiero-cli) is a command‑line interface that offers a simple way to interact with the Hedera network. It consolidates many common network operations into easy-to‑use commands so you can:
+
+* **Test** your Hedera applications quickly.
+* **Automate** repetitive tasks without writing bulky code.
+* **Simplify** key management, letting you focus on building and scaling your solutions.
+
+***
+
+## Getting Started
+
+**Prerequisites**:
+
+* Node.js installation: LTS 16.20.2 or higher
+* [Hedera Account](https://portal.hedera.com/) (for mainnet, testnet, or previewnet) or [Hedera Local Node](/hedera/tutorials/local-node/how-to-set-up-a-hedera-local-node) (for localnet)
+
+The easiest way to get started with Hiero CLI is to install it globally via NPM:
+
+```
+npm install -g @hiero-ledger/hiero-cli
+```
+
+Once installed, you can use the CLI with the `hcli` command:
+
+```sh
+# Check available commands
+hcli --help
+
+# Example: Check account balance
+hcli account balance --account-id 0.0.123456
+
+# Example: Transfer HBAR
+hcli hbar transfer --to 0.0.123456 --amount 10
+```
+
+<Note>
+#### **First-time setup (Initialization):** 
+When you run any command that requires an operator (like transferring HBAR or creating tokens) in interactive mode, the CLI will automatically launch an initialization wizard to guide you through configuring the operator account, private key, and settings. In script mode (non-interactive), an error will be thrown instead, requiring you to use `hcli` network set-operator to configure the operator first.
+</Note>
+
+<Accordion title="Manual Setup (Build custom plugins)" icon="alien-8bit">
+    ## Manual Setup (For Developers)
+
+    If you want to contribute to the development of the Hiero CLI or create your own version or plugins, follow these instructions.
+
+    **Prerequisites** 
+
+    * Node.js installation: LTS 16.20.2 or higher
+    * [Hedera Account](https://portal.hedera.com/) (for mainnet, testnet, or previewnet) or [Hedera Local Node](/hedera/tutorials/local-node/how-to-set-up-a-hedera-local-node) (for localnet)
+    * Git
+
+    **Step 1: Clone the repository**
+
+    ```sh
+    git clone https://github.com/hiero-ledger/hiero-cli.git
+    ```
+
+    **Step 2: Install dependencies**
+
+    ```sh
+    cd hiero-cli
+    npm install
+    ```
+
+    **Step 3: Build the package**
+
+    ```sh
+    npm run build
+    ``` 
+
+    **Step 4: CLI Initialization**
+
+    The Hiero CLI initializes automatically when you run any command. The CLI loads default plugins and registers their commands. No manual setup is required.
+
+    When you first run the CLI, it will:
+
+    * Load all default plugins from `dist/plugins/`
+    * Initialize the Core API with the selected output format
+    * Register all plugin commands
+    * Use testnet as the default network
+
+    **Note:** There is a test plugin available that is required for running integration tests.
+
+    You can verify the installation by checking available commands:
+
+    ```sh
+    node dist/hiero-cli.js --help
+    ```
+
+    **Step 5: Set Up Operator Credentials**
+
+    To interact with Hedera networks, you need to configure operator credentials for each network you want to use. Use the network plugin's set-operator command:
+
+    ```sh
+    # Set operator for testnet using account name (if already imported)
+    node dist/hiero-cli.js network set-operator --operator my-testnet-account --network testnet
+
+    # Set operator for testnet using account-id:private-key pair
+    node dist/hiero-cli.js network set-operator --operator 0.0.123456:302e020100300506032b657004220420... --network testnet
+
+    # Set operator for mainnet
+    node dist/hiero-cli.js network set-operator --operator 0.0.123456:302e020100300506032b657004220420... --network mainnet
+    ```
+
+    The operator credentials are stored in the CLI's state management system. Make sure that each operator account contains at least 1 HBAR for transaction fees.
+
+    **Step 6: Setting Up an Alias (Optional)
+
+    To avoid typing the full command each time, you can set an alias in your shell profile. Replace the path with the absolute path to your hiero-cli installation.
+
+    <Tabs>
+    <Tab title="macOS / Linux (bash/zsh)">
+        Add the following line to your `~/.bashrc`,` ~/.bash_profile`, or `~/.zshrc`:
+
+        ```sh
+        alias hcli="node /path/to/hiero-cli/dist/hiero-cli.js"
+        ```
+
+        Then reload your shell:
+
+        ```sh
+        # For bash
+        source ~/.bashrc
+        
+        # or
+        source ~/.bash_profile
+
+        # For zsh
+        source ~/.zshrc
+        ```
+    </Tab>
+    <Tab title="Windows (PowerShell)">
+        Add the following line to your PowerShell profile. First, open PowerShell and check if your profile exists:
+        ```sh
+        # Check if profile exists
+        Test-Path $PROFILE
+
+        # If it doesn't exist, create it
+        New-Item -ItemType File -Path $PROFILE -Force
+        ```
+
+        Then add the following function to your profile:
+
+        ```js
+        function hcli {
+        node C:\path\to\hiero-cli\dist\hiero-cli.js @args
+        }
+        ```
+
+        Then reload your PowerShell:
+
+        ```sh
+        . $PROFILE
+        ```
+
+        Now you can use `hcli` with arguments just like on Unix systems.
+    </Tab>
+    </Tabs>
+</Accordion>
+
+## Global Flags
+
+These flags are available on **all Hiero CLI commands**. They control output, help, and versioning, regardless of the specific plugin or command you’re using.
+
+- `--format <type>`: Controls how command output is formatted.<br/>Supported values `human` (default) or `json` for machine-readable output.
+- `-h, --help`: Displays help information for a command.
+- `-V, --version`: Outputs the installed Hiero CLI version.
+
+## Plugins Overview
+
+<Card title="Credentials Plugin" icon="puzzle-piece-simple" href="/hedera/open-source-solutions/hiero-cli/plugins/credentials-plugin" horizontal>
+  Manage operator credentials and keys
+</Card>
+<Card title="Network Plugin" icon="puzzle-piece-simple" href="/hedera/open-source-solutions/hiero-cli/plugins/network-plugin" horizontal>
+  Switch networks, manage operator credentials, and check network health
+</Card>
+<Card title="HBAR Plugin" icon="puzzle-piece-simple" href="/hedera/open-source-solutions/hiero-cli/plugins/hbar-plugin" horizontal>
+  Transfer HBAR between accounts
+</Card>
+<Card title="Account Plugin" icon="puzzle-piece-simple" href="/hedera/open-source-solutions/hiero-cli/plugins/account-plugin" horizontal>
+  Create, import, manage accounts, and view balances
+</Card>
+<Card title="Token Plugin" icon="puzzle-piece-simple" href="/hedera/open-source-solutions/hiero-cli/plugins/token-plugin" horizontal>
+  Create, associate, and transfer tokens
+</Card>
+<Card title="Topic Plugin" icon="puzzle-piece-simple" href="/hedera/open-source-solutions/hiero-cli/plugins/topic-plugin" horizontal>
+  Create topics and manage topic messages
+</Card>
+<Card title="Config Plugin" icon="puzzle-piece-simple" href="/hedera/open-source-solutions/hiero-cli/plugins/config-plugin" horizontal>
+  Inspect and update CLI configuration values
+</Card>
+<Card title="Plugin Management Plugin" icon="puzzle-piece-simple" href="/hedera/open-source-solutions/hiero-cli/plugins/plugin-management-plugin" horizontal>
+  Add, remove, enable/disable, and inspect plugins
+</Card>
+
+## Scripting 
+
+Once you’re familiar with the available CLI commands, you can take the next step with scripting. Scripting is especially useful for CI/CD pipelines, setting up test environments, and automating repeated workflows.
+
+<Card title="Scripting Quickstart" icon="scroll" href="/hedera/open-source-solutions/hiero-cli/scripting/quickstart" horizontal>
+  Learn how to create your first script using Hiero CLI commands.
+</Card>
+
+## Contributing
+
+<Tip>
+### 💡 Feature Requests?
+
+Feel free to contribute to the Hiero CLI or submit a feature request or bug via the [**issues tab**](https://github.com/hiero-ledger/hiero-cli/issues)**.**
+</Tip>

@@ -7,11 +7,27 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Latest Releases
 
+## [v0.147.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.147.0)
+Repository: hiero-ledger/hiero-mirror-node · Tag: v0.147.0 · Commit: 951247c · Released by: github-actions[bot]
+
+This release contains some notable dependency upgrades. The Java version was increased from JDK 21 to JDK 25. Testing shows that this change resulted in a 10-20% improvement in Java REST API throughput. It also resulted in a 100-200 ms drop in stream file processing latency. 
+For the JavaScript-based REST APIs, the Node.js version was increased from 22 LTS to 24 LTS. Testing shows this increased REST API throughput anywhere from 5% to 100%, averaging around 50% improvement overall. Finally, we're upgrading Stackgres from 1.17 to 1.18.3 which gives us some stability fixes.
+
+The new Java-based /api/v1/network/supply REST API is now enabled by default in the Helm chart. In the next release, we'll be deleting the legacy JavaScript-based implementation. Operators should ensure they're ready to transition to the new backend.
+
+HIP-1195 hooks had some updates to make it compatible with the block stream. We also integrated the upstream changes to rename LambdaSStore to HookStore.
+
+Breaking Changes
+We fixed a bug in the formatting of the batch_key field in the response of the transaction REST APIs. The field was being formatted directly as a hexadecimal string instead of our standard key wrapper object (e.g.{"_type": "ED25519", "key": "1234..."}). 
+The previous behavior did not match the format defined in the OpenAPI specification or in the HIP-551 Batch Transactions. Luckily this is a newer field that has not been used in production yet so we don't expect any major disruption from this change.
+
 ## [v0.146.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.146.0)
 
 Support for [HIP-1259](https://hips.hedera.com/hip/hip-1259) fee collection account `0.0.802` was added. Once live on mainnet, this should help reduce the size of the mirror node database by sending fees to a single account on every transaction and instead distributing fees to nodes and system accounts once per day.
 
-New block node specific metrics `hiero.mirror.importer.stream.latency` and `hiero.mirror.importer.stream.error` were added for [HIP-1081](https://hips.hedera.com/hip/hip-1081). These metrics previously existed for record streams and were implemented in block streams to reach feature parity. Support for streaming from the earliest available block was added. If `hiero.mirror.importer.startBlockNumber` is set to `-1` and the database is empty, then the importer will query the configured block node to determine what's the earliest block it has available to use. If a non-negative number is set then it will sync from that exact block as before. Finally, an issue with reading trailing non-transaction statechanges in an event was also addressed.
+New block node specific metrics `hiero.mirror.importer.stream.latency` and `hiero.mirror.importer.stream.error` were added for [HIP-1081](https://hips.hedera.com/hip/hip-1081). These metrics previously existed for record streams and were implemented in block streams to reach feature parity. 
+Support for streaming from the earliest available block was added. If `hiero.mirror.importer.startBlockNumber` is set to `-1` and the database is empty, then the importer will query the configured block node to determine what's the earliest block it has available to use. 
+If a non-negative number is set then it will sync from that exact block as before. Finally, an issue with reading trailing non-transaction statechanges in an event was also addressed.
 
 [HIP-1195](https://hips.hedera.com/hip/hip-1195) hooks had acceptance tests added to support end to end testing of the feature. An issue with duplicate keys was addressed by de-duplicating lambda storage updates.
 

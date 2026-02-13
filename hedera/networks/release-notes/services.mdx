@@ -4,14 +4,137 @@ description: "Consensus Node release information"
 ---
 
 Visit the [Hedera status page](https://status.hedera.com/) for the latest versions supported on each network.
+
+## Release v0.71
+<Info>
+  **MAINNET UPDATE: MARCH 11, 2026**
+</Info>
+
+<Info>
+  **TESTNET UPDATE: FEBRUARY 19, 2026**
+</Info>
+
+### [**Build 0.71.0**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.71.0)
+<Accordion title="What's Changed">
+  Features
+* Refactor the FeeResult object to be encapsulated semantic #22964 by @joshmarinacci
+* add HOOK_SLOT_UPDATE extra #22969 by @joshmarinacci
+* 23009 Use PBJ format for SigSet on reconnect #23021 by @imalygin
+* Simple fees for contract service queries #22872 by @ibankov
+* 22922 Store SigSet in PBJ format #22971 by @imalygin
+* Add production configs for high volume throttles #22891 by @Neeharika-Sompalli
+* Use hashing prefixes in all block merkle tree operations #22783 by @mhess-swl
+* Simple fees for Smart Contracts Service #22319 by @ibankov
+* Initialize Block producing benchmarks
+* New Metrics Framework supporting labels #22719 by @akugal
+* Address book service Simple Fees #22644 by @ibankov
+* Add simple fee calculators for Util, Network Admin, and File services #22788 by @aderevets
+* Serialize and de-serialize high_volume field correctly #22881 by @Neeharika-Sompalli
+* Add protobufs for high volume entity creation hip #22851 by @Neeharika-Sompalli
+* 22756 Additional State API methods required for BlockNode #22782 by @imalygin
+* 22653 hts system contract transfer functions update with transfer event emission logic #22750 by @gkozyryatskyy
+* Implement a support for the new BN response BehindPublisher #22540 by @petreze
+* Delete old FeeModel and registry, along with related unit tests #22692 by @joshmarinacci
+* more Token Transaction Simple Fees #22584 by @joshmarinacci
+Bug Fixes
+* (0.71) Ensure HTS transfer gas cost reflects HBAR auto-creations #23181 by @tinker-michaelj
+* Consensus optimization #23132 by @poulok
+* Increase gradle JVM memory settings #22963 by @poulok
+* Resolve compilation warnings related to Javadoc formatting and comment placement #21900 by @rbair23
+* fix the double run of gradle determinism #22984 by @andrewb1269
+* Fix token associate fee for multiple tokens #22952 by @ibankov
+* point to explicit proto pkg version #22935 by @venilinvasilev
+* Update dev genesis network json #22932 by @derektriley
+* updated BlockStreamManagerWrapper #22937 by @AlexKehayov
+* fix message in the BN communication test #22934 by @petreze
+* Resolved compiler warnings in VirtualMapStateTest #22903 by @imalygin
+* Use unique account names in SteadyStateThrottlingTest #22858 by @tinker-michaelj
+* Fix flaky Hapi Test in RecordCreationSuite #22896 by @ibankov
+* 22863 Fix migration testing exception #22870 by @imalygin
+* extend Schedule Delete admin key check to also keep track of delegatable contract ids #22834 by @stoyanov-st
+* 22388: Reconnect: custom reconnect roots are no longer needed #22440 by @artemananiev
+Other Changes
+Build System
+* publish the swirlds-cli Jar because other modules depend on it #23040 by @jjohannes
+* remove yahCliJar from assemble #22902 by @jjohannes
+Chores
+* Cherry-Pick (0.71): Use incremental streaming hashers for all subroots #23143 by @mhess-swl
+* remove teams from CODEOWNERS for gradle #23053 by @anthony-swirldslabs
+* 22984 Cleanup usages of SelfSerializable #23033 by @imalygin
+* move fallen behind monitor #23041 by @netopyr
+* Add extra validations for queries #22982 by @Neeharika-Sompalli
+* Add BYTES to nodeFee #22920 by @Neeharika-Sompalli
+* 22972: 1B: IndexOutOfBoundsException when resizing HDHM #22976 by @artemananiev
+* 22991 Remove MerkleData*Stream classes #22994 by @imalygin
+* Removed empty time-consuming task from CI
+* Enable hooks #23004 by @Neeharika-Sompalli
+* Fix simple fees json #23003 by @Neeharika-Sompalli
+* Cleanup PeerInfo related classes #22970 by @poulok
+* Cleanup GitHub workflows #22967 by @poulok
+* Cleanup redundent BN XTS HAPI Tests #22950 by @derektriley
+* Update BN Streaming Metrics md with alerting #22958 by @derektriley
+* add private repo checks to skip certain ci steps #22861 by @andrewb1269
+* Refactor Platform CLI infrastructure #22720 by @mxtartaglia-sl
+* Cleanup event-intake dependencies #22821 by @netopyr
+* 19654 Removed com.swirlds.common.merkle.crypto package #22910 by @imalygin
+* 22448 Removed old serialization mechanism for VM #22895 by @imalygin
+* Fix CryptoTransfer fee calculations for SimpleFees #22928 by @Neeharika-Sompalli
+* move orphan buffer #22899 by @netopyr
+* remove dependency on com.hedera.cryptography.rpm #22912 by @anthony-swirldslabs
+* Remove AddressBook #22593 by @timo0
+* removing StateTest #22626 by @mxtartaglia-sl
+* Publish LedgerId #22865 by @tinker-michaelj
+* 22879 Removed swirlds-merkle module #22880 by @imalygin
+* Minor Version Roll to 0.71.0-SNAPSHOT
+* Switch add-on tracer type to ActionSidecarContentTracer #22869 by @tinker-michaelj
+* Disable event hash validators #22772 by @mhess-swl
+* bump org.hiero.gradle.build from 0.6.2 to 0.6.4 #22780 by @dependabot[bot]
+* Expose EvmFrameState in RootProxyWorldUpdater
+* Simplify interaction between consensus layer and execution layer #22836 by @netopyr
+* Move unit tests of consensus metrics to new module #22825 by @netopyr
+* Move EventSignatureValidor into event-intake module #22706 by @netopyr
+* Reenable backpressure BN communication tests #22857 by @petreze
+* 22864: Make use of hash code checks in bucket mutations #22866 by @artemananiev
+* Capture PCES files in failure artifacts #22774 by @mhess-swl
+* Remove PlatformContext from DefaultConsensusEngine #22796 by @poulok
+* increase cert ttl on teleport auth steps #22893 by @andrewb1269
+Continuous Integration
+* Update runners & Improve XTS Dry Run Capabilities #23172 #23217 by @rbarker-dev
+* Update build-release-artifact and associated workflows #23206 by @andrewb1269
+* rename zxf to flow on MATS and XTS dry run workflows #23191 by @andrewb1269
+* cherry-pick update hiero-observability group #23179 by @andrewb1269
+* Update checkout refs to fix gradle determinism checks #22957 by @rbarker-dev
+* run checkVersionConsistency on PRs #22917 by @jjohannes
+* add dry run flag to version roll workflow #22378 by @andrewb1269
+Documentation Updates
+* Add clarifying javadocs to SequenceMap #22875 by @poulok
+Refactoring
+* 22804 Additional constructor for WritableKVStateBase #23036 by @imalygin
+* 21284 Use MerkleNodeState in BlockStreamManager #22884 by @imalygin
+* Move LinkedEvent to consensus-model #22826 by @poulok
+* Move RandomAccessDeque and SequentialRingBuffer out of swirlds-common #22748 by @poulok
+Tests
+* Add more tests #23055 by @Neeharika-Sompalli
+* #23028 to fix decimal parsing in bash, #23034 to use solo deployment diagnostics #23035 by @alex-kuzmin-hg
+* Fix failing XTS tests #23032 by @Neeharika-Sompalli
+* senders/receivers sorting and additional ERC transfer events test #22978 by @gkozyryatskyy
+* Implement Simple Fees - Crypto Transfer hapi tests #22859 by @Evdokia-Georgieva
+* NLG_0.11.1 fixed SmartContract startup #22868 #22871 by @alex-kuzmin-hg
+* Refactor SimpleFeesSuite negative tests and Implement Topic Create with Simple Fees tests coverage #22460 by @Evdokia-Georgieva
+* Added a chaos test which tries to break rpc sync mechansm explicitly #22558 by @abies
+* 22753 NLG with latency metrics #22768 by @alex-kuzmin-hg
+
+</Accordion>
+
+
 ## Release v0.70
 <Info>
   **MAINNET UPDATE: FEBRUARY 18, 2026**
 </Info>
 
-<Info>
-  **TESTNET UPDATE: FEBRUARY 4, 2025**
-</Info>
+<Check>
+  **TESTNET UPDATED: FEBRUARY 5, 2026**
+</Check>
 
 ## Release highlights
 

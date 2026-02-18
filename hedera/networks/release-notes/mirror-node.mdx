@@ -7,6 +7,17 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Latest Releases
 
+## [v0.148.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.148.0)
+
+This release saw support for [HIP-1313 High-Volume Entity Creation](https://hips.hedera.com/hip/hip-1313). A new `high_volume` boolean field was added to the database and the transaction REST APIs. This field will be set to true if the user opts into high-volume pricing to create their entities.
+
+Partial support for [HIP-1193 Record Stream to Block Stream Cut-over](https://hips.hedera.com/hip/hip-1193) was implemented. As part of the larger block stream effort, mirror nodes will need to transition from reading record streams to reading block streams. This transition is intending to be automatic for most mirror node operators outside potentially adjusting their IAM permissions to allow reading a different bucket. Full cut-over support will be completed in `v0.149.0`.
+
+There were a number of notable dependency upgrades. Spring Boot was upgraded to version 4 which contained a number of major breaking changes. This should be mostly transparent to operators unless they are setting Spring specific configuration properties. The gRPC API module transitioned from using the unmaintained grpc-spring to using the new official Spring gRPC. Additionally, our application was tested successfully against Kubernetes 1.34 and Helm 4 ensuring compatibility for a wider set of deployments.
+
+### Breaking Changes
+The JavaScript implementation of `/api/v1/network/supply` was removed in this release in favor of the newer Java-based implementation. The Java implementation of this API was enabled by default in the Helm chart in the previous release and has been running in Hedera managed environments without issue. Operators should ensure their routing logic is updated so that requests to `/api/v1/network/supply` are directed to the rest-java process instead of the JavaScript-based rest process. If operators use our docker compose or Helm chart this routing change is handled automatically.
+
 ## [v0.147.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.147.0)
 
 This release contains some notable dependency upgrades. The Java version was increased from JDK 21 to JDK 25. Testing shows that this change resulted in a `10-20%` improvement in Java REST API throughput. It also resulted in a 100-200 ms drop in stream file processing latency. For the JavaScript-based REST APIs, the Node.js version was increased from 22 LTS to 24 LTS. Testing shows this increased REST API throughput anywhere from `5% to 100%`, averaging around 50% improvement overall. Finally, we're upgrading Stackgres from 1.17 to 1.18.3 which gives us some stability fixes.

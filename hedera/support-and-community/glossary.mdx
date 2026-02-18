@@ -125,6 +125,16 @@ A 32-byte prefix of the running hash of the last Record Stream Object from the p
 
 A successive number assigned to each record file, incremented by one for each new file. For pre-existing networks, this value is bootstrapped through [mirror nodes](#mirror-nodes) and subsequently maintained by service nodes.
 
+
+### Block Stream
+
+---
+
+A block stream is a new, unified data format for consensus nodes that consolidates event streams, record streams, sidecars, and signature files into a single, cohesive stream. Each block in the stream is a self-contained, independently verifiable entity that includes all transactions, events, and state changes for a given round of consensus. This design enhances transparency and trust within the network by allowing downstream services to seamlessly maintain and verify the network state. Block streams are defined by a comprehensive Protobuf specification, ensuring clear and consistent data structures for inputs, outputs, and state changes at the consensus node level.
+
+[HIP-1056: Block Streams](https://hips.hedera.com/hip/hip-1056) | [Block Node Repository](https://github.com/hiero-ledger/hiero-block-node)
+
+
 ### Block Timestamp
 
 ---

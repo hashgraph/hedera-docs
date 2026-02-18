@@ -65,7 +65,7 @@
       "family": "Styrene A",
       "source": "/public/fonts/styrene/StyreneA-Regular-Web.woff2",
       "format": "woff2",
-      "weight": 500
+      "weight": 400
     },
     "body": {
       "family": "Styrene A",
@@ -92,6 +92,11 @@
       "cursor",
       "vscode"
     ]
+  },
+  "integrations": {
+    "gtm": {
+      "tagId": "GTM-NHLK548"
+    }
   },
   "navigation": {
     "global": {

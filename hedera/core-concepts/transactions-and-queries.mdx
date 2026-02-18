@@ -155,15 +155,15 @@ A **nested transaction** triggers subsequent transactions after executing a top-
 
 Parent and child transactions share the payer account ID and transaction valid start timestamp. The child transaction IDs have an additional **nonce** value representing the order in which the child transactions were executed. The parent transaction has a nonce value of 0. The nonce value of child transactions increments by 1 for each child transaction executed due to the parent transaction.
 
-Parent Transaction ID: payerAccountId@transactionValidStart
+Parent Transaction ID: `payerAccountId@transactionValidStart`
 
-Child Transaction ID: payerAccountId@transactionValidStart/nonce
+Child Transaction ID: `payerAccountId@transactionValidStart/nonce`
 
 Example:
 
-* Parent Transaction ID: 0.0.2252@1640119571.329880313
-* Child 1 Transaction ID: 0.0.2252@1640119571.329880313/1
-* Child 2 Transaction ID: 0.0.2252@1640119571.329880313/2
+* Parent Transaction ID: `0.0.2252@1640119571.329880313`
+* Child 1 Transaction ID: `0.0.2252@1640119571.329880313/1`
+* Child 2 Transaction ID: `0.0.2252@1640119571.329880313/2`
 
 **Transaction Records**
 
@@ -269,14 +269,14 @@ Batch transactions have a specific fee structure:
 This means different accounts can pay for different parts of the batch, allowing for flexible payment arrangements.
 </Accordion>
 
-<Accordion title="What is a <code>BatchKey</code> and why is it required?">
-A BatchKey is a key that must sign the outer batch transaction and is set on each inner transaction. It serves several critical purposes:
+<Accordion title="What is a `BatchKey` and why is it required?">
+A `BatchKey` is a key that must sign the outer batch transaction and is set on each inner transaction. It serves several critical purposes:
 
 * **Security**: Ensures that batch transactions can only be submitted as a whole and prevents tampering with the batch
 * **Authorization**: Signals the trusted entity who can finalize the batch
 * **Integrity**: Guarantees that the inner transactions haven't been modified after being prepared for the batch
 
-Every inner transaction must have a BatchKey set, and the outer batch transaction must be signed by all BatchKeys specified in the inner transactions.
+Every inner transaction must have a `BatchKey` set, and the outer batch transaction must be signed by all BatchKeys specified in the inner transactions.
 </Accordion>
 
 <Accordion title="How do I properly prepare transactions for a batch?">
@@ -313,6 +313,6 @@ Learn more [here](/hedera/sdks-and-apis/sdks/transactions/create-a-batch-transac
 </Accordion>
 
 <Accordion title="What are the most common errors with batch transactions and how do I fix them?">
-<table><thead><tr><th>Error</th><th>Code</th><th>Cause</th><th>Solution</th></tr></thead><tbody><tr><td><code>BATCH_LIST_EMPTY</code></td><td>388</td><td>Submitting a batch with no inner transactions</td><td>Add at least one inner transaction to the batch</td></tr><tr><td><code>BATCH_LIST_CONTAINS_DUPLICATES</code></td><td>389</td><td>The batch contains duplicate inner transactions</td><td>Ensure each inner transaction in the batch is unique</td></tr><tr><td><code>BATCH_TRANSACTION_IN_BLACKLIST</code></td><td>390</td><td>An inner transaction is of a type that's not allowed in batches</td><td>Only use allowed transaction types in batches</td></tr><tr><td><code>INNER_TRANSACTION_FAILED</code></td><td>391</td><td>One or more inner transactions failed during execution</td><td>Check the specific error for the inner transaction and fix the issue</td></tr><tr><td><code>BATCH_KEY_SET_ON_NON_INNER_TRANSACTION</code></td><td>393</td><td>BatchKey is set on the outer transaction</td><td>Only set BatchKey on inner transactions, not on the outer batch transaction</td></tr><tr><td><code>INVALID_BATCH_KEY</code></td><td>394</td><td>The BatchKey is missing or invalid</td><td>Ensure all inner transactions have a valid BatchKey set</td></tr><tr><td><code>INVALID_NODE_ACCOUNT_ID</code></td><td>341</td><td>Inner transaction has a nodeAccountID other than 0.0.0</td><td>Use the <code>batchify()</code> method which automatically sets nodeAccountID to 0.0.0</td></tr></tbody></table>
+<table><thead><tr><th>Error</th><th>Code</th><th>Cause</th><th>Solution</th></tr></thead><tbody><tr><td><code>BATCH_LIST_EMPTY</code></td><td>388</td><td>Submitting a batch with no inner transactions</td><td>Add at least one inner transaction to the batch</td></tr><tr><td><code>BATCH_LIST_CONTAINS_DUPLICATES</code></td><td>389</td><td>The batch contains duplicate inner transactions</td><td>Ensure each inner transaction in the batch is unique</td></tr><tr><td><code>BATCH_TRANSACTION_IN_BLACKLIST</code></td><td>390</td><td>An inner transaction is of a type that's not allowed in batches</td><td>Only use allowed transaction types in batches</td></tr><tr><td><code>INNER_TRANSACTION_FAILED</code></td><td>391</td><td>One or more inner transactions failed during execution</td><td>Check the specific error for the inner transaction and fix the issue</td></tr><tr><td><code>BATCH_KEY_SET_ON_NON_INNER_TRANSACTION</code></td><td>393</td><td>`BatchKey` is set on the outer transaction</td><td>Only set `BatchKey` on inner transactions, not on the outer batch transaction</td></tr><tr><td><code>INVALID_BATCH_KEY</code></td><td>394</td><td>The `BatchKey` is missing or invalid</td><td>Ensure all inner transactions have a valid `BatchKey` set</td></tr><tr><td><code>INVALID_NODE_ACCOUNT_ID</code></td><td>341</td><td>Inner transaction has a nodeAccountID other than 0.0.0</td><td>Use the <code>batchify()</code> method which automatically sets nodeAccountID to 0.0.0</td></tr></tbody></table>
 </Accordion>
 </AccordionGroup>

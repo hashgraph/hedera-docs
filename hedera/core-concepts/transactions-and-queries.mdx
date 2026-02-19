@@ -45,12 +45,18 @@ Every transaction on the Hedera network has an associated fee to compensate the 
 
 Previously, transaction fees were immediately split and distributed to multiple accounts with every transaction. This immediate distribution created challenges. For a simple crypto transfer between two accounts, the system must read and update up to six accounts: the sender, receiver, submitting node, `0.0.98`, `0.0.800`, and `0.0.801`. This increases processing overhead and slows performance. In the [block stream](/hedera/support-and-community/glossary#block-stream), every transaction must record balance changes for all these accounts, inflating data size and storage costs. Users viewing transactions on explorers like HashScan see a complex web of transfers, which can be confusing even with visualizations.
 
-The new system introduces the **Fee Collection Account (0.0.802)**, a network-controlled account that consolidates all transaction fees.
+The new system introduces the **Fee Collection Account (`0.0.802`)**, a network-controlled account that consolidates all transaction fees. 
 
 **How it Works:**
 
 1.  **Collection**: When a transaction is processed, the entire fee is transferred in a single payment to the Fee Collection Account (`0.0.802`).
 2.  **Distribution**: Once per day, at the end of each staking period, a single, large synthetic transaction distributes the accumulated fees from the `0.0.802` account to the appropriate destinations. 
+
+<Info>
+  #### **Key Takeaway**
+
+  This enhancement **does not change the amount you pay** for transactions. It only optimizes how the network processes the fees behind the scenes, resulting in a cleaner experience for users and a more efficient network for everyone.
+</Info>
 
 These destinations include:
 - **Node Operator Rewards**: Payments to individual nodes for their services.
@@ -62,7 +68,45 @@ These destinations include:
   <img src="/images/core-concepts/transactions-and-queries/fee-collection-account-flow.png" />
 </Frame>
 
-This change simplifies the process without altering the actual cost of transactions for users.
+### Example 1: Fee Collection in Action (Crypto Transfer)
+
+Let's look at a standard `CRYPTO TRANSFER` transaction to see how the fee is collected.
+
+**Transaction Link:** [https://hashscan.io/mainnet/transaction/1771485699.125401461](https://hashscan.io/mainnet/transaction/1771485699.125401461)
+
+In this transaction, account `0.0.10231006` sends a small amount of HBAR to `0.0.37`. The HBAR transfers clearly show the fee consolidation:
+
+| Account | Amount | Description |
+| :--- | :--- | :--- |
+| `0.0.10231006` | **-0.00102456ℏ** | Payer (Sent transfer + fee) |
+| `0.0.37` | **+0.00000009ℏ** | Receiver (Node 34) |
+| **`0.0.802`** | **+0.00102447ℏ** | **Fee Collection Account** |
+
+
+### Example 2: Fee Collection Across All Transaction Types
+
+The HIP-1259 fee collection mechanism applies to all transaction types, not just crypto transfers. Let's look at a `SUBMIT MESSAGE` transaction to see the same streamlined process.
+
+**Transaction Link:** [https://hashscan.io/mainnet/transaction/1771486013.122401000](https://hashscan.io/mainnet/transaction/1771486013.122401000)
+
+#### Transaction Details
+
+- **ID:** `0.0.85243@1771485974.183471116`
+- **Type:** `SUBMIT MESSAGE`
+- **Fee:** `0.00902194ℏ`
+
+#### HBAR Transfers Breakdown
+
+This transaction submitted a message to the Hedera Consensus Service. Notice how simple the HBAR transfers are:
+
+| Account | Amount | Description |
+| :--- | :--- | :--- |
+| `0.0.85243` | **-0.00902194ℏ** | Payer (Paid the transaction fee) |
+| **`0.0.802`** | **+0.00902194ℏ** | **Fee Collection Account** |
+
+That's it. The entire fee is cleanly transferred to account `0.0.802`. There are no other transfers related to the fee in this transaction, making the record simple and easy to understand.
+
+### Before vs. After HIP-1259
 
 | Aspect | Before HIP-1259 | After HIP-1259 |
 | :--- | :--- | :--- |
@@ -71,11 +115,6 @@ This change simplifies the process without altering the actual cost of transacti
 | **Network Overhead** | Higher, due to multiple balance updates per transaction. | Lower, improving overall network throughput. |
 | **Block Stream** | Larger and more complex. | Smaller and more efficient, reducing costs for mirror nodes. |
 
-<Info>
-  #### **Key Takeaway**
-
-  This enhancement **does not change the amount you pay** for transactions. It only optimizes how the network processes the fees behind the scenes, resulting in a cleaner experience for users and a more efficient network for everyone.
-</Info>
 
 ## Transaction Types
 

@@ -2,23 +2,23 @@
    Hedera Styrene Webfonts
    ========================= */
 @font-face {
-  font-family: "Styrene A";
+  font-family: "Styrene Thin Web";
   src: url("/public/fonts/styrene/StyreneA-Thin-Web.woff2") format("woff2");
-  font-weight: 100;
+  font-weight: 200;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Styrene A";
+  font-family: "Styrene Light Web";
   src: url("/public/fonts/styrene/StyreneA-Light-Web.woff2") format("woff2");
-  font-weight: 300;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Styrene A";
+  font-family: "Styrene A Regular Web";
   src: url("/public/fonts/styrene/StyreneA-Regular-Web.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
@@ -26,7 +26,7 @@
 }
 
 @font-face {
-  font-family: "Styrene A";
+  font-family: "Styrene A Medium";
   src: url("/public/fonts/styrene/StyreneA-Medium-Web.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
@@ -34,15 +34,15 @@
 }
 
 @font-face {
-  font-family: "Styrene A";
+  font-family: "Styrene Bold";
   src: url("/public/fonts/styrene/StyreneA-Bold-Web.woff2") format("woff2");
-  font-weight: 700;
+  font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Styrene A";
+  font-family: "Styrene Black Web";
   src: url("/public/fonts/styrene/StyreneA-Black-Web.woff2") format("woff2");
   font-weight: 900;
   font-style: normal;
@@ -53,8 +53,8 @@
    Global Font Setup
    ========================= */
 :root {
-  --font-body: "Styrene A", "Inter", "Helvetica Neue", Arial, sans-serif;
-  --font-heading: "Styrene A", "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Styrene Light Web";
+  --font-heading: "Styrene A Medium";
 }
 
 html, body {
@@ -70,11 +70,11 @@ html, body {
    Hedera type weight rules
    ========================= */
 
-/* headings should use Styrene A Medium (not bold) */
+/* headings should use Styrene A Medium */
 h1, h2, h3, h4, h5, h6,
 .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
-  font-family: "Styrene A", "Inter", "Helvetica Neue", Arial, sans-serif !important;
-  font-weight: 500 !important; /* medium, per Hedera style guide */
+  font-family: "Styrene A Medium", sans-serif !important;
+  font-weight: 500 !important; /* medium */
   letter-spacing: -0.015em !important;
   line-height: 1.3 !important;
   color: inherit;

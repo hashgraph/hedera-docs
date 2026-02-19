@@ -12,13 +12,13 @@
 @font-face {
   font-family: "Styrene Light Web";
   src: url("/public/fonts/styrene/StyreneA-Light-Web.woff2") format("woff2");
-  font-weight: 400;
+  font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Styrene A Regular Web";
+  font-family: "Styrene A";
   src: url("/public/fonts/styrene/StyreneA-Regular-Web.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
@@ -59,7 +59,7 @@
 
 html, body {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

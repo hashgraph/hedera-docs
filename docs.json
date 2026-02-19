@@ -332,7 +332,8 @@
                   "hedera/core-concepts/accounts",
                   "hedera/core-concepts/accounts/account-creation",
                   "hedera/core-concepts/accounts/auto-account-creation",
-                  "hedera/core-concepts/accounts/account-properties"
+                  "hedera/core-concepts/accounts/account-properties",
+                  "hedera/core-concepts/accounts/network-accounts"
                 ]
               },
               "hedera/core-concepts/keys-and-signatures",

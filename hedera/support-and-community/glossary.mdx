@@ -464,11 +464,17 @@ The principle that all transactions on a distributed ledger should be treated eq
 
 A "fallback fee" in the context of Hedera and smart contracts is a type of custom fee that is charged to the recipient of a token transfer, rather than the sender. This can lead to vulnerabilities in smart contracts if they unknowingly accept a token with a high fallback fee, resulting in a loss of funds. Discussions on mitigation strategies, such as sender-pays models or limits on custom fees, are ongoing. [Here's](https://hedera.com/blog/nft-royalty-fees-hedera-hashgraph) a comprehensive blog post covering fallback fees.
 
+### Fee Collection Account
+
+---
+
+The single, special network account (0.0.802) that consolidates all HBAR network transaction fees before they are distributed daily to reward and treasury accounts. This process, introduced in [HIP-1259](https://hips.hedera.com/hip/hip-1259), simplifies transaction records and improves network efficiency.
+
 ### Fee Collector Account
 
 ---
 
-A fee collector account is an account designated to receive transaction fees and [custom token fees](/hedera/sdks-and-apis/sdks/token-service/custom-token-fees) on the Hedera network. The account collects the fees users pay for executing transactions and queries on the network.
+A user-designated account that receives custom fees from transfers of a specific token. The token creator defines this account in the token's fee schedule.
 
 ### Fiat Currency
 

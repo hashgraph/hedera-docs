@@ -33,6 +33,40 @@ Once a record file is closed, the consensus nodes generate a signature file. The
 
 Hedera consensus nodes push new record files and signature files to the cloud storage provider – currently AWS S3 and Google File Storage are supported. Mirror nodes download these files, verify their signatures based on their hashes, and only then make them available to be processed.
 
+
+## Understanding Block Streams After [`HIP-1259`](https://hips.hedera.com/hip/hip-1259)
+
+For Mirror Node and [block stream](/hedera/support-and-community/glossary#block-stream) consumers, [HIP-1259](https://hips.hedera.com/hip/hip-1259) significantly simplifies the data related to transaction fees, leading to smaller block stream files and reduced data ingestion costs.
+
+### Simplified Fee Structure
+
+The primary change is the consolidation of all transaction fees into a single transfer to the **Fee Collection Account (`0.0.802`)**. 
+
+- **Before HIP-1259:** Each transaction record contained multiple fee-related transfers, increasing the size and complexity of the block stream.
+- **After HIP-1259:** Each transaction record now contains only a single, clear fee transfer to `0.0.802`. This reduces the amount of data per transaction, making block streams more efficient.
+
+### The Daily Synthetic Transaction
+
+A new pattern to be aware of is the **daily synthetic distribution transaction**. This is a network-generated transaction that occurs once per day at the end of each staking period. It is responsible for distributing the fees accumulated in `0.0.802`.
+
+As a block stream consumer, you can identify this transaction by the following characteristics:
+
+- It will contain a single large debit from account `0.0.802`.
+- It will have a long list of credit transfers to node operator accounts, the staking rewards account (`0.0.800`), the node rewards account (`0.0.801`), and the network treasury (`0.0.98`).
+- It appears in the block stream like any other transaction.
+
+<Info>
+  This synthetic transaction is the **only** time you will see funds being transferred out of the [Fee Collection Account](/hedera/support-and-community/glossary#fee-collection-account). All other transactions involving [`0.0.802`](https://hashscan.io/mainnet/account/0.0.802) will be credit transfers into the account.
+</Info>
+
+### Benefits for Mirror Node Operators
+
+- **Reduced Storage Costs:** Smaller block stream files mean lower storage requirements for running a mirror node.
+- **Faster Data Ingestion:** Simpler transaction records can be processed more quickly, improving the speed of data ingestion and synchronization.
+- **Easier Data Analysis:** The fee structure is more straightforward, making it easier to analyze transaction costs and network revenue.
+
+
+
 ### Smart Contract Synthetic Logs
 
 Starting with [v0.79](/hedera/networks/release-notes/mirror-node#v0.79) of Hedera Mirror Node release, synthetic event logs for Hedera Token Service (HTS) token transactions have been introduced to mimic the behavior of smart contract tokens. Synthetic events are generated for transactions such as:

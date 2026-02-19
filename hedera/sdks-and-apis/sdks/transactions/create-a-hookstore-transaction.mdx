@@ -1,0 +1,387 @@
+---
+title: "Create a HookStore Transaction"
+---
+
+The `HookStoreTransaction` enables efficient, low-overhead management of an EVM Hook's persistent storage. This transaction allows hook owners to add, update, or remove key/value pairs in the hook's storage without executing the hook's bytecode—significantly more cost-effective and faster than using a `ContractCall`.
+
+---
+
+## Transaction Properties
+
+| Field | Description |
+|:------|:------------|
+| **Hook ID** | The unique identifier of the EVM Hook whose storage is being updated, including the owning entity (Account or Contract) and the hook's 64-bit ID. |
+| **Storage Updates** | A list of updates to the hook's persistent storage. Supports direct slot updates (`EvmHookStorageSlot`) or Solidity mapping updates (`EvmHookMappingEntries`). |
+
+---
+
+## When to Use This Transaction
+
+Use `HookStoreTransaction` when you need to:
+
+* Initialize storage slots on a newly created hook
+* Update configuration variables (e.g., whitelist, passcode hash) in an existing hook's storage
+* Delete storage entries by setting their value to an empty byte array
+
+---
+
+## Transaction Signing Requirements
+
+The signing requirements depend on if an `adminKey` was set when the hook was created:
+
+- **If the hook has an `adminKey`**: Either the Admin Key OR the hook owner (account or contract that owns the hook) must sign the transaction
+- **If the hook does NOT have an `adminKey`**: The hook owner (account or contract that owns the hook) must sign the transaction
+- **In all cases**: The account paying the transaction fee must also sign
+
+
+---
+
+## Methods
+
+| Method | Type | Description |
+|:-------|:-----|:------------|
+| `setHookId(<HookId>)` | `HookId` | **Required.** Sets the unique identifier of the EVM Hook whose storage is being updated. |
+| `addStorageUpdate(<update>)` | `EvmHookStorageUpdate` | **Optional.** Adds a single storage update (slot or mapping entry) to the transaction. |
+| `setStorageUpdates(<updates>)` | `list<EvmHookStorageUpdate>` | **Optional.** Sets the full list of storage updates for the transaction. |
+
+<Note>
+`EvmHookStorageUpdate` is an abstract class with two concrete implementations: `EvmHookStorageSlot` for direct slot updates and `EvmHookMappingEntries` for updating entries within a Solidity mapping. See the Hiero Hooks SDK Reference for details.
+</Note>
+
+---
+
+## Examples
+
+### Example 1: Updating a Hook's Storage Slot
+
+This example demonstrates how to update a single storage slot on a hook with ID `1002` owned by `accountId`.
+
+<CodeGroup>
+
+```java Java
+import com.hedera.hashgraph.sdk.HookStoreTransaction;
+import com.hedera.hashgraph.sdk.HookId;
+import com.hedera.hashgraph.sdk.HookEntityId;
+import com.hedera.hashgraph.sdk.EvmHookStorageUpdate;
+import com.hedera.hashgraph.sdk.EvmHookStorageSlot;
+
+// Assume these variables are defined:
+// AccountId accountId = AccountId.fromString("0.0.1000");
+// PrivateKey adminKey = PrivateKey.fromString("..."); // The hook's admin key
+
+// 1. Define the target hook ID
+HookId hookIdObj = new HookId()
+    .setEntityId(new HookEntityId().setAccountId(accountId))
+    .setHookId(1002L);
+
+// 2. Define the new storage update
+// We are updating storage slot 0x01 with a new value (0x02)
+EvmHookStorageUpdate storageUpdate = new EvmHookStorageUpdate()
+    .setStorageSlot(
+        new EvmHookStorageSlot()
+            .setKey(new byte[32]) // 32-byte key for slot 1
+            .setValue(new byte[32]) // 32-byte new value
+    );
+
+// Set the actual key and value bytes
+storageUpdate.getStorageSlot().setKey(new byte[] {0x01, 0x00, /* ... 30 more zeros */ });
+storageUpdate.getStorageSlot().setValue(new byte[] {0x02, 0x00, /* ... 30 more zeros */ });
+
+// 3. Create and execute the HookStoreTransaction
+HookStoreTransaction hookStoreTx = new HookStoreTransaction()
+    .setHookId(hookIdObj)
+    .addStorageUpdate(storageUpdate)
+    .freezeWith(client)
+    .sign(adminKey); // Must be signed by the hook's admin key
+
+TransactionResponse result = hookStoreTx.execute(client);
+System.out.println("HookStoreTransaction executed with ID: " + result.transactionId);
+```
+
+```javascript JavaScript
+import {
+    HookStoreTransaction,
+    HookId,
+    HookEntityId,
+    EvmHookStorageUpdate,
+    EvmHookStorageSlot,
+    AccountId,
+    PrivateKey,
+} from "@hashgraph/sdk";
+
+// Assume these variables are defined:
+// const accountId = AccountId.fromString("0.0.1000");
+// const adminKey = PrivateKey.fromString("..."); // The hook's admin key
+
+// 1. Define the target hook ID
+const hookIdObj = new HookId()
+    .setEntityId(new HookEntityId().setAccountId(accountId))
+    .setHookId(1002);
+
+// 2. Define the new storage update
+// We are updating storage slot 0x01 with a new value (0x02)
+const storageUpdate = new EvmHookStorageUpdate()
+    .setStorageSlot(
+        new EvmHookStorageSlot()
+            .setKey(new Uint8Array(32).fill(0)) // 32-byte key for slot 1
+            .setValue(new Uint8Array(32).fill(0)) // 32-byte new value
+    );
+
+// Set the actual key and value bytes
+storageUpdate.getStorageSlot().setKey(new Uint8Array([0x01, ...new Array(31).fill(0)]));
+storageUpdate.getStorageSlot().setValue(new Uint8Array([0x02, ...new Array(31).fill(0)]));
+
+// 3. Create and execute the HookStoreTransaction
+const hookStoreTx = new HookStoreTransaction()
+    .setHookId(hookIdObj)
+    .addStorageUpdate(storageUpdate)
+    .freezeWith(client)
+    .sign(adminKey); // Must be signed by the hook's admin key
+
+const result = await hookStoreTx.execute(client);
+console.log(`HookStoreTransaction executed with ID: ${result.transactionId}`);
+```
+
+```go Go
+import (
+    "fmt"
+    "encoding/hex"
+
+    hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
+)
+
+// Assume these variables are defined:
+// var client *client.Client // e.g., client.ClientForTestnet()
+// var accountID account.AccountID // e.g., account.AccountID{Shard: 0, Realm: 0, Account: 1000}
+// var adminKey *crypto.PrivateKey // The hook's admin key
+
+// 1. Define the target hook ID
+hookID := hook.NewHookID().
+    SetEntityID(hook.NewHookEntityID().SetAccountID(accountID)).
+    SetHookID(1002)
+
+// 2. Define the new storage update
+// We are updating storage slot 0x01 with a new value (0x02)
+key, _ := hex.DecodeString("0100000000000000000000000000000000000000000000000000000000000000")
+value, _ := hex.DecodeString("0200000000000000000000000000000000000000000000000000000000000000")
+
+storageSlot := hook.NewEvmHookStorageSlot().
+    SetKey(key).
+    SetValue(value)
+
+// 3. Create and execute the HookStoreTransaction
+hookStoreTx := transaction.NewHookStoreTransaction().
+    SetHookID(hookID).
+    AddStorageUpdate(storageSlot).
+    FreezeWith(client)
+
+// Must be signed by the hook's admin key
+response, err := hookStoreTx.Sign(adminKey).Execute(client)
+if err != nil {
+    // Handle error
+}
+
+// Get the receipt
+receipt, err := response.GetReceipt(client)
+if err != nil {
+    // Handle error
+}
+
+fmt.Printf("HookStoreTransaction executed with status: %v\n", receipt.Status)
+```
+
+</CodeGroup>
+
+---
+
+### Example 2: Updating a Solidity Mapping Entry
+
+This example demonstrates how to update an entry within a Solidity mapping stored in the hook's storage. This requires calculating the storage slot key based on the mapping key and the mapping's storage slot.
+
+<CodeGroup>
+
+```java Java
+import com.hedera.hashgraph.sdk.HookStoreTransaction;
+import com.hedera.hashgraph.sdk.HookId;
+import com.hedera.hashgraph.sdk.HookEntityId;
+import com.hedera.hashgraph.sdk.EvmHookStorageUpdate;
+import com.hedera.hashgraph.sdk.EvmHookMappingEntries;
+import com.hedera.hashgraph.sdk.EvmHookMappingEntry;
+import com.hedera.hashgraph.sdk.AccountId;
+import com.hedera.hashgraph.sdk.PrivateKey;
+
+// Assume these variables are defined:
+// AccountId accountId = AccountId.fromString("0.0.1000");
+// PrivateKey adminKey = PrivateKey.fromString("..."); // The hook's admin key
+
+// 1. Define the target hook ID
+HookId hookIdObj = new HookId()
+    .setEntityId(new HookEntityId().setAccountId(accountId))
+    .setHookId(1002L);
+
+// 2. Define the mapping update
+// We are updating a mapping at Solidity storage slot 0x02.
+// The mapping key is an address (0x...1234) and the new value is a boolean (true).
+
+// Mapping Key (e.g., an address)
+byte[] mappingKey = new byte[32];
+mappingKey[31] = 0x34;
+mappingKey[30] = 0x12;
+
+// Mapping Slot (Solidity slot 2)
+byte[] mappingSlot = new byte[32];
+mappingSlot[31] = 0x02;
+
+// New Value (e.g., a boolean 'true' which is 1)
+byte[] newValue = new byte[32];
+newValue[31] = 0x01;
+
+// Create the mapping entry
+EvmHookMappingEntry mappingEntry = new EvmHookMappingEntry()
+    .setKey(mappingKey)
+    .setValue(newValue);
+
+// Create the mapping update
+EvmHookStorageUpdate storageUpdate = new EvmHookStorageUpdate()
+    .setMappingEntries(
+        new EvmHookMappingEntries()
+            .setMappingSlot(mappingSlot)
+            .addEntry(mappingEntry)
+    );
+
+// 3. Create and execute the HookStoreTransaction
+HookStoreTransaction hookStoreTx = new HookStoreTransaction()
+    .setHookId(hookIdObj)
+    .addStorageUpdate(storageUpdate)
+    .freezeWith(client)
+    .sign(adminKey); // Must be signed by the hook's admin key
+
+TransactionResponse result = hookStoreTx.execute(client);
+System.out.println("HookStoreTransaction executed with ID: " + result.transactionId);
+```
+
+```javascript JavaScript
+import {
+    HookStoreTransaction,
+    HookId,
+    HookEntityId,
+    EvmHookStorageUpdate,
+    EvmHookMappingEntries,
+    EvmHookMappingEntry,
+    AccountId,
+    PrivateKey,
+} from "@hashgraph/sdk";
+
+// Assume these variables are defined:
+// const accountId = AccountId.fromString("0.0.1000");
+// const adminKey = PrivateKey.fromString("..."); // The hook's admin key
+
+// 1. Define the target hook ID
+const hookIdObj = new HookId()
+    .setEntityId(new HookEntityId().setAccountId(accountId))
+    .setHookId(1002);
+
+// 2. Define the mapping update
+// We are updating a mapping at Solidity storage slot 0x02.
+// The mapping key is an address (0x...1234) and the new value is a boolean (true).
+
+// Mapping Key (e.g., an address)
+const mappingKey = new Uint8Array(32).fill(0);
+mappingKey[31] = 0x34;
+mappingKey[30] = 0x12;
+
+// Mapping Slot (Solidity slot 2)
+const mappingSlot = new Uint8Array(32).fill(0);
+mappingSlot[31] = 0x02;
+
+// New Value (e.g., a boolean 'true' which is 1)
+const newValue = new Uint8Array(32).fill(0);
+newValue[31] = 0x01;
+
+// Create the mapping entry
+const mappingEntry = new EvmHookMappingEntry()
+    .setKey(mappingKey)
+    .setValue(newValue);
+
+// Create the mapping update
+const storageUpdate = new EvmHookStorageUpdate()
+    .setMappingEntries(
+        new EvmHookMappingEntries()
+            .setMappingSlot(mappingSlot)
+            .addEntry(mappingEntry)
+    );
+
+// 3. Create and execute the HookStoreTransaction
+const hookStoreTx = new HookStoreTransaction()
+    .setHookId(hookIdObj)
+    .addStorageUpdate(storageUpdate)
+    .freezeWith(client)
+    .sign(adminKey); // Must be signed by the hook's admin key
+
+const result = await hookStoreTx.execute(client);
+console.log(`HookStoreTransaction executed with ID: ${result.transactionId}`);
+```
+
+```go Go
+import (
+    "fmt"
+
+    hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
+)
+
+// Assume these variables are defined:
+// var client *client.Client // e.g., client.ClientForTestnet()
+// var accountID account.AccountID // e.g., account.AccountID{Shard: 0, Realm: 0, Account: 1000}
+// var adminKey *crypto.PrivateKey // The hook's admin key
+
+// 1. Define the target hook ID
+hookID := hook.NewHookID().
+    SetEntityID(hook.NewHookEntityID().SetAccountID(accountID)).
+    SetHookID(1002)
+
+// 2. Define the mapping update
+// We are updating a mapping at Solidity storage slot 0x02.
+// The mapping key is an address (0x...1234) and the new value is a boolean (true).
+
+// Mapping Key (e.g., an address)
+mappingKey := make([]byte, 32)
+mappingKey[31] = 0x34
+mappingKey[30] = 0x12
+
+// Mapping Slot (Solidity slot 2)
+mappingSlot := make([]byte, 32)
+mappingSlot[31] = 0x02
+
+// New Value (e.g., a boolean 'true' which is 1)
+mappingValue := make([]byte, 32)
+mappingValue[31] = 0x01
+
+// Create the mapping entry
+mappingEntry := NewEvmHookMappingEntryWithKey(mappingKey, mappingValue)
+
+mappingEntries := NewLambdaMappingEntries().
+	SetMappingSlot(mappingSlot).
+	AddMappingEntry(*mappingEntry)
+
+// 3. Create and execute the HookStoreTransaction
+hookStoreTx := transaction.NewHookStoreTransaction().
+    SetHookID(hookID).
+    AddStorageUpdate(mappingEntries).
+    FreezeWith(client)
+
+// Must be signed by the hook's admin key
+response, err := hookStoreTx.Sign(adminKey).Execute(client)
+if err != nil {
+    // Handle error
+}
+
+// Get the receipt
+receipt, err := response.GetReceipt(client)
+if err != nil {
+    // Handle error
+}
+
+fmt.Printf("HookStoreTransaction executed with status: %v\n", receipt.Status)
+```
+
+</CodeGroup>

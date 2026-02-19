@@ -1,0 +1,259 @@
+---
+title: "Hiero Hooks"
+
+---
+
+Hiero Hooks provide programmable extension points to inject Solidity-based logic directly into the network's transaction pipeline. Hooks attach to accounts to enforce custom rules on actions like token transfers, but they do not run automatically—a hook is triggered only when explicitly referenced in a `TransferTransaction` (e.g., `CryptoTransfer`).
+
+Unlike regular smart contracts, hooks execute in a special EVM context where `address(this)` is always the reserved system address `0x16d`, enabling them to act with the privileges of the account they're attached to. This model combines smart contract flexibility with native HAPI transaction efficiency, allowing custom validation without deploying full-scale contracts.
+
+## Core Concepts
+
+Hiero Hooks are a mechanism for [**Account Abstraction**](/hedera/support-and-community/glossary#account-abstraction) on Hedera, enabling custom validation and logic without migrating entire applications to the EVM. A hook is a small piece of Solidity logic that is **triggered only when referenced/specified in a `TransferTransaction`**—not automatically.
+
+Think of it like a webhook for the ledger itself. Instead of waiting for an off-chain call, the hook runs inside the network when a transaction explicitly references it. Hooks can check conditions before execution, update state, log data, or stop a transfer if validation fails.
+
+### Why Hooks?
+
+Before Hooks, developers faced two major limitations:
+
+1. **Protocol dependency**: New functionality required network-wide upgrades through HIPs (slow and heavyweight)
+2. **EVM migration**: Moving applications to smart contracts sacrificed the performance and cost-efficiency of native HAPI transactions
+
+Hooks solve this by allowing developers to inject custom logic directly into native flows, offering better performance and lower cost than general-purpose `ContractCall` operations.
+
+### Key Characteristics
+
+| Concept | Description |
+|:--------|:------------|
+| **Trigger Model** | **Triggered only when referenced/specified** in a `TransferTransaction`—not automatic event listeners. |
+| **Implementation** | EVM Hooks: Solidity contracts executed by the network's EVM. |
+| **Extension Point** | Account Allowance Hooks validate token transfers that consume an allowance. |
+| **Key Advantage** | Custom logic on native assets (HBAR and HTS tokens) without `ContractCall` overhead. |
+| **Use Cases** | Compliance rules, transfer constraints, custom validation logic. |
+---
+
+## How Hooks Work
+
+A Hook is a small piece of EVM bytecode, implemented as a Solidity contract, that is attached to a Hedera entity such as an account or contract.
+
+
+### Special EVM Context (`0x16d`)
+
+Hooks do not execute at their deployed contract address.
+
+Instead, they run inside Hedera’s execution layer where the contract address is always the reserved system address `0x16d`.
+
+**Key properties:**
+
+- **Execution**  
+  The network invokes the hook via a call from `0x16d`.
+- **Privileges**  
+  The hook executes with the owner’s privileges. A hook attached to account `0.0.123` can act as `0.0.123`.
+- **Identity**  
+  - `address(this)` → `0x16d`  
+  - `msg.sender` → transaction payer  
+- **Storage**
+  The storage used during hook execution is "Hook" storage, instead of the contract's storage. This ensures that the hook's state is isolated and managed specifically for the hook instance.
+
+This is Hedera’s implementation of account abstraction.
+
+---
+
+### Hook Management and State
+
+Hooks are managed via standard HAPI transactions and can maintain their own persistent state.
+
+#### Hook Management Transactions
+
+| Transaction Type | Purpose | Key SDK Class |
+|------------------|---------|---------------|
+| **Creation** | Attach a hook to a new or existing entity (account or contract). | `CryptoCreateTransaction`, `ContractCreateTransaction` |
+| **Update / Deletion** | Modify hook parameters or remove the hook from an entity. | `AccountUpdateTransaction`, `ContractUpdateTransaction` |
+| **Storage Update** | Update a hook’s persistent storage without executing its logic. | `HookStoreTransaction` |
+
+---
+
+### HookStoreTransaction
+
+The [`HookStoreTransactionBody`](/hedera/sdks-and-apis/sdks/transactions/create-a-hookstore-transaction.mdx) enables fast, low-overhead updates to a hook’s storage. This allows hook configuration changes such as passcodes or allowlists without the cost of a full `ContractCall`.
+
+#### HookStoreTransaction Properties
+
+| Field | Description |
+|------|-------------|
+| **Hook ID** | Identifies the EVM Hook whose storage is being updated, including the owning entity (account or contract) and the hook’s 64-bit ID. |
+| **Storage Updates** | A list of updates applied to the hook’s persistent storage. Supports direct slot updates (`EvmHookStorageSlot`) and mapping updates (`EvmHookMappingEntries`). |
+
+---
+
+### Hook Storage Details
+
+Hooks can maintain state in their own storage. The `HookStoreTransaction` allows for granular updates to this storage without executing the hook's full logic.
+ * **Slots**: Write or delete a 32-byte key → 32-byte value via EvmHookStorageSlot.
+ * **Mappings**: Update entries under a mapping slot via EvmHookMappingEntries, either by explicit key or by providing the preimage whose Keccak256 hash yields the key.
+
+
+<Note>
+    **Important constraints**
+
+    When deleting a hook, you must first clear all its storage slots. Otherwise, the deletion will fail with the status `HOOK_DELETION_REQUIRES_ZERO_STORAGE_SLOTS`. Additionally, an account cannot be deleted if it has any non-zero hooks attached. `CryptoDelete` transaction fails with `TRANSACTION_REQUIRES_ZERO_HOOKS`.
+</Note>
+
+---
+
+### Extension Points
+
+Hooks attach to specific extension points in a transaction's lifecycle. An extension point defines the type of hook allowed for a transaction but doesn't specify when or why a hook is activated.
+
+Currently, the first supported extension point is the Account Allowance Hook (`ACCOUNT_ALLOWANCE_HOOK`). This hook runs when a `TransferTransaction` attempts to spend an allowance from an account.
+
+Future extension points may include other native transaction types or entity lifecycle events, enabling hooks to validate or augment a wide range of on-chain operations.
+
+---
+
+## **Hook Lifecycle**
+
+Understanding how hooks are deployed, attached, and executed is essential for using Account Hooks effectively.
+
+### Step 1: Deploy the Hook Contract
+
+Deploy the hook's EVM bytecode using `ContractCreateTransaction` (same as standard smart contracts) to receive a `ContractId`.
+
+### Step 2: Attach the Hook
+
+Attach the hook using:
+
+- `AccountCreateTransaction` or `ContractCreateTransaction` for new entities  
+- `AccountUpdateTransaction` or `ContractUpdateTransaction` for existing entities  
+
+You must specify:
+
+- Extension point  
+- Hook ID (64-bit identifier)  
+- EVM Hook (the deployed `ContractId`)  
+
+### Step 3: Trigger the Hook
+
+**Hooks execute ONLY when explicitly referenced in the `TransferTransaction`**—attachment alone does not trigger execution.
+
+When triggered:
+
+1. Transaction execution pauses  
+2. Hook logic runs  
+3. Transaction continues only if the hook returns `true`  
+
+If the hook reverts or returns `false`, the entire transaction fails and all state changes roll back.
+
+---
+
+## Account Allowance Hooks
+
+Account Allowance Hooks validate allowance-based transfers during a `TransferTransaction`. **They are only invoked if the hook is explicitly referenced/specified in the transaction for the allowance.**
+
+They follow the same execution and rollback guarantees described in the lifecycle.
+
+---
+
+### Core Interface
+
+```solidity
+interface IHieroAccountAllowanceHook {
+    function allow(
+        IHieroHook.HookContext calldata context,
+        ProposedTransfers memory proposedTransfers
+    ) external payable returns (bool);
+}
+```
+
+`ProposedTransfers` provides visibility into all HBAR, fungible token, and NFT transfers, including implied custom fees.
+
+---
+
+## Example: Simple Allowance Hook
+
+```solidity
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.0;
+
+contract SimpleAllowanceHook {
+
+    modifier onlyHookContext() {
+        require(address(this) == 0x16d, "Hook can only run in network context");
+        _;
+    }
+
+    function allow(
+        IHieroHook.HookContext calldata context,
+        ProposedTransfers memory proposedTransfers
+    ) external payable onlyHookContext returns (bool) {
+        return true;
+    }
+}
+```
+
+---
+
+## Execution, Gas, and Call Order
+
+The execution of hooks is subject to specific rules regarding gas, cost, and ordering:
+
+### Gas Payer and Cost Model
+
+The transaction payer prepays gas up to the limit set in `EvmHookCall.gasLimit`. Hooks have a lower intrinsic cost than a generic `ContractCall`. However, in addition to the gas required to execute the hook's logic, there is a base price for the `CryptoTransfer` that invokes the hook.
+
+### Call Order
+
+If multiple per-leg hooks are present in a transfer, the network executes them in a defined order:
+
+The execution of hooks in a transaction follows a strict, three-phase model. Within each phase, the hooks are executed according to the order of their corresponding transfers in the `TokenTransfers` list.
+
+The execution phases are as follows:
+
+1. **Pre-Hooks Execution**
+   
+   a. All hooks of type `PRE_HOOK` are executed. The order is determined by the sequence of transfers (e.g., NFT transfers vs. fungible token transfers) in the `TokenTransfers` list.
+
+2. **Pre-Post Hooks (Pre-Transfer Part)**
+   
+   a. The `allowPre(...)` function of all pre-post hooks is executed. Again, the execution order follows the `TokenTransfers` list.
+
+3. **Pre-Post Hooks (Post-Transfer Part)**
+   
+   a. After the main transaction logic has completed, the `allowPost(...)` function of all pre-post hooks is executed, following the `TokenTransfers` list order.
+
+For example, if a transaction's `TokenTransfers` list specifies an NFT transfer before a fungible token transfer, and both have `PRE_HOOK` and pre-post hooks, the execution would be:
+
+1. NFT transfer's `PRE_HOOK`.
+2. Fungible token transfer's `PRE_HOOK`.
+3. NFT transfer's `allowPre(...)`.
+4. Fungible token transfer's `allowPre(...)`.
+5. (Main transaction logic)
+6. NFT transfer's `allowPost(...)`.
+7. Fungible token transfer's `allowPost(...)`.
+
+
+### Limits
+
+- **Hook invocations per transaction**: Each transaction can invoke a maximum of 10 hooks (`hooks.maxHookInvocationsPerTransaction=10`)
+- **Child records**: Child records generated by hook calls are capped at 50 (`consensus.handle.maxFollowingRecords=50`)
+
+---
+
+## Hooks vs Smart Contracts
+
+| Feature           | Account Hooks                           | Smart Contracts            |
+| ----------------- | ------------------------------------- | -------------------------- |
+| Primary Use       | Inline validation for native services | Full on-chain applications |
+| Trigger           | **By reference** in a transaction (e.g., `CryptoTransfer`) | Explicit `ContractCall`    |
+| Execution Context | `0x16d` with owner privileges         | Contract address           |
+| State Updates     | `HookStoreTransaction`             | Full contract execution    |
+| Cost              | Lower                                 | Higher                     |
+
+---
+
+## Next Steps
+
+* [Deploy Your First Hook](#) - Step-by-step tutorial
+* [HookStoreTransaction](#) - SDK documentation
+* [HIP-1195](https://hips.hedera.com/hip/hip-1195) - Full technical specification

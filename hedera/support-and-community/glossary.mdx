@@ -23,10 +23,17 @@ A 1/3 attack is a less discussed threat in distributed networks such as Hedera, 
 
 ## A
 
-### Account Alias
+### Account Abstraction
 
 ---
 
+A way to control accounts using programmable logic instead of just private keys. This lets you add custom security rules, recover lost keys, batch transactions, and improve the user experience. On Hedera, account abstraction is implemented through [Hiero Hooks](/hedera/core-concepts/accounts/hiero-hooks), which attach custom logic to native accounts without requiring full smart contracts. 
+
+📒 To learn more, refer to [Hiero Hooks](/hedera/core-concepts/accounts/hiero-hooks) or [Ethereum](https://ethereum.org/roadmap/account-abstraction/).
+
+### Account Alias
+
+---
 An account alias is a user-friendly identifier that can be classified as either a public key or an [Ethereum Virtual Machine (EVM) address](/hedera/core-concepts/accounts/account-properties#evm-address-account-alias). It serves as a reference to the account object, in addition to its account number, and is assigned during the auto account creation process. The purpose of an account alias is to facilitate easier management and recall of accounts, particularly in distributed ledger technology and cryptocurrency contexts where addresses are often complex and difficult to remember. Instead of inputting a long string of characters, users can use simpler and more memorable aliases.
 
 📒 For more information, refer to the [Account Alias section](/hedera/core-concepts/accounts/account-properties#account-alias) on the [Account Properties](/hedera/core-concepts/accounts/account-properties) page.

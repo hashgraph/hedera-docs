@@ -1,0 +1,143 @@
+---
+title: Hooks
+description: Learn about Hedera Hooks, an experimental feature for programmable transaction execution
+---
+
+## What are Hooks?
+
+Hooks are an experimental feature in the Hedera network that enable programmable logic to be executed automatically during transaction processing. They provide a mechanism for accounts to define custom code that runs in response to specific transaction events, similar to smart contract callbacks but with different execution characteristics.
+
+<Warning>
+**Experimental Feature**: Hooks are currently an experimental feature that has been disabled in production environments. The feature is under active development and may undergo significant changes before general availability.
+</Warning>
+
+## Purpose and Use Cases
+
+Hooks are designed to enable several advanced use cases:
+
+### Transaction Automation
+- Execute custom logic automatically when certain transaction conditions are met
+- Implement complex business rules without requiring separate smart contract deployments
+- Create programmable accounts with built-in transaction processing logic
+
+### State Management
+- Maintain custom storage state associated with hook execution
+- Track transaction history and patterns
+- Implement account-level state machines
+
+### Integration with CryptoTransfer
+Hooks can interact with `CryptoTransfer` operations to:
+- Validate transfer conditions before execution
+- Apply custom fee logic
+- Implement transfer restrictions or allowlists
+- Trigger side effects based on transfer patterns
+
+## Current Status
+
+### Network Availability
+
+| Network | Status |
+|---------|--------|
+| Mainnet | Disabled |
+| Testnet | Disabled |
+| Previewnet | Disabled |
+
+### Implementation Status
+
+According to the release notes:
+
+- **Release 0.71.1**: Hooks were explicitly disabled ([#23502](https://github.com/hashgraph/hedera-services/pull/23502))
+- **Release 0.71.0**: Hook functionality was enabled but later disabled
+- **Release 0.69**: Hooks were disabled in version 0.69
+- **Release 0.67**: `HookDispatch` authorization was reverted
+
+The feature has been toggled on and off during development as the implementation is refined and tested.
+
+### Mirror Node Support
+
+The Hedera Mirror Node has implemented support for hooks through [HIP-1195](https://hips.hedera.com/hip/hip-1195):
+
+- **Release 0.144.0**: Added REST API endpoint `/api/v1/accounts/{id}/hooks/{hookId}/storage` to query hook storage state
+- **Release 0.143.0**: Added REST API endpoint `/api/v1/accounts/{id}/hooks` to list hooks owned by an account
+- **Release 0.147.0**: Updated to rename `LambdaSStore` to `HookStore` for consistency
+
+## Technical Architecture
+
+### Hook Storage
+
+Hooks maintain their own storage state, similar to smart contracts:
+
+```json
+{
+  "hook_id": 1,
+  "owner_id": "0.0.123",
+  "storage": [
+    {
+      "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "value": "0x00000000000000000000000000000000000000000000000000000000000003e8",
+      "timestamp": "1726874345.123456789"
+    }
+  ]
+}
+```
+
+### Hook Execution
+
+When enabled, hooks execute during transaction processing:
+
+1. **HookDispatch**: The mechanism that triggers hook execution based on transaction type
+2. **HookExecution**: The actual execution of hook code during `CryptoTransfer` or other operations
+3. **HookStore**: The storage system for maintaining hook state between executions
+
+## Relationship to Smart Contracts
+
+Hooks differ from smart contracts in several key ways:
+
+| Feature | Hooks | Smart Contracts |
+|---------|-------|-----------------|
+| Execution Trigger | Automatic during transactions | Explicit contract calls |
+| Storage Model | Account-associated storage | Contract-associated storage |
+| Deployment | Associated with accounts | Deployed as separate entities |
+| Gas Model | TBD (under development) | Standard EVM gas |
+| State | Lightweight, transaction-focused | Full EVM state machine |
+
+## Development Timeline
+
+The hooks feature is following this general development path:
+
+1. **Initial Implementation**: Core hook execution and storage mechanisms
+2. **Testing Phase**: Extensive testing on development networks
+3. **Mirror Node Integration**: REST API support for querying hook data
+4. **Security Review**: Comprehensive security analysis before production
+5. **Controlled Rollout**: Gradual enablement with monitoring
+6. **General Availability**: Full production release (future)
+
+## Monitoring Hook Status
+
+To stay informed about hooks development:
+
+1. **Release Notes**: Check the [Services Release Notes](/hedera/networks/release-notes/services) for updates
+2. **Mirror Node Release Notes**: Review [Mirror Node Release Notes](/hedera/networks/release-notes/mirror-node) for API changes
+3. **HIP Repository**: Follow [HIP-1195](https://hips.hedera.com/hip/hip-1195) for specification updates
+4. **GitHub Issues**: Monitor the [hedera-services repository](https://github.com/hashgraph/hedera-services) for implementation progress
+
+## Future Availability
+
+When hooks are enabled for production use, this documentation will be updated with:
+
+- Complete API reference for hook operations
+- Code examples for creating and managing hooks
+- Best practices for hook development
+- Gas and fee schedules
+- Security considerations and limitations
+
+<Info>
+**Developer Note**: While hooks are not currently available for production use, developers interested in this feature should monitor the HIP-1195 proposal and related GitHub discussions for updates on when the feature will be enabled.
+</Info>
+
+## Related Resources
+
+- [HIP-1195: Hooks Specification](https://hips.hedera.com/hip/hip-1195)
+- [Smart Contracts](/hedera/core-concepts/smart-contracts)
+- [CryptoTransfer Operations](/hedera/sdks-and-apis/sdks/accounts-and-hbar/transfer-cryptocurrency)
+- [Mirror Node REST API](/hedera/sdks-and-apis/rest-api)

@@ -460,7 +460,8 @@
                     ]
                   }
                 ]
-              }
+              },
+              "hedera/core-concepts/hooks"
             ]
           },
           {

@@ -1,13 +1,6 @@
 /* =========================
    Hedera Styrene Webfonts
    ========================= */
-@font-face {
-  font-family: "Styrene Thin Web";
-  src: url("/public/fonts/styrene/StyreneA-Thin-Web.woff2") format("woff2");
-  font-weight: 200;
-  font-style: normal;
-  font-display: swap;
-}
 
 @font-face {
   font-family: "Styrene Light Web";
@@ -17,18 +10,11 @@
   font-display: swap;
 }
 
-@font-face {
-  font-family: "Styrene A";
-  src: url("/public/fonts/styrene/StyreneA-Regular-Web.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
 
 @font-face {
   font-family: "Styrene A Medium";
   src: url("/public/fonts/styrene/StyreneA-Medium-Web.woff2") format("woff2");
-  font-weight: 500;
+  font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
@@ -41,13 +27,13 @@
   font-display: swap;
 }
 
-@font-face {
+/* @font-face {
   font-family: "Styrene Black Web";
   src: url("/public/fonts/styrene/StyreneA-Black-Web.woff2") format("woff2");
   font-weight: 900;
   font-style: normal;
   font-display: swap;
-}
+} */
 
 /* =========================
    Global Font Setup
@@ -74,15 +60,16 @@ html, body {
 h1, h2, h3, h4, h5, h6,
 .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
   font-family: "Styrene A Medium", sans-serif !important;
-  font-weight: 500 !important; /* medium */
+  font-weight: 400 !important; /* medium */
   letter-spacing: -0.015em !important;
   line-height: 1.3 !important;
   color: inherit;
 }
 
+
 /* body and list text stay light */
 p, li, span, .prose p, .prose li {
-  font-weight: 300 !important; /* light */
+  font-weight: 400 !important; /* light */
   letter-spacing: -0.01em;
 }
 

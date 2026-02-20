@@ -6,14 +6,9 @@ The Hedera staking program allows you to earn rewards by staking your HBAR to a 
 
 ## Staking Nodes
 
-<Info>
-  The Hedera Council voted to change the min stake value from half of the max node stake value to 1/4 of the max node stake value.
-</Info>
-
 All consensus nodes run by the Hedera Council distribute rewards to the accounts staked to them. You can find information about each node by visiting a Hedera network explorer or by getting the network [address book](/hedera/sdks-and-apis/rest-api#api-v1-network-nodes).
 
-Nodes have a **minimum stake** and **maximum stake**. The node's minimum stake must be met for staked accounts to be eligible for rewards. Staked HBAR that exceeds the maximum stake does not increase the proportion of rewards returned. The maximum stake for each node is the total number of HBAR divided by the total number of nodes. The minimum stake is 1/4 of that maximum. These values change as more nodes join the network.
-
+Nodes have a minimum stake and maximum stake. The node's **minimum stake is $0**, meaning there is no minimum HBAR amount required for a node to be eligible for rewards. However, staked HBAR that exceeds the maximum stake does not increase the proportion of rewards returned. The maximum stake for each node is the total number of HBAR divided by the total number of nodes, and this value changes as more nodes join the network.
 ## Lockup Period
 
 There is **no lock-up period** when you stake your account. Your account's entire balance is automatically staked to the selected node or account, and your HBAR remains liquid at all times. There is no "bonding" or "slashing."

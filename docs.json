@@ -62,16 +62,16 @@
   },
   "fonts": {
     "heading": {
-      "family": "Styrene A",
-      "source": "/public/fonts/styrene/StyreneA-Regular-Web.woff2",
+      "family": "Styrene A Medium",
+      "source": "/public/fonts/styrene/StyreneA-Medium-Web.woff2",
       "format": "woff2",
-      "weight": 400
+      "weight": 700
     },
     "body": {
-      "family": "Styrene A",
-      "source": "/public/fonts/styrene/StyreneA-Regular-Web.woff2",
+      "family": "Styrene Light Web",
+      "source": "/public/fonts/styrene/StyreneA-Light-Web.woff2",
       "format": "woff2",
-      "weight": 400
+      "weight": 500
     }
   },
   "background": {
@@ -90,7 +90,9 @@
       "perplexity",
       "mcp",
       "cursor",
-      "vscode"
+      "vscode",
+      "add-mcp",
+      "grok"
     ]
   },
   "integrations": {
@@ -332,7 +334,8 @@
                   "hedera/core-concepts/accounts",
                   "hedera/core-concepts/accounts/account-creation",
                   "hedera/core-concepts/accounts/auto-account-creation",
-                  "hedera/core-concepts/accounts/account-properties"
+                  "hedera/core-concepts/accounts/account-properties",
+                  "hedera/core-concepts/accounts/network-accounts"
                 ]
               },
               "hedera/core-concepts/keys-and-signatures",

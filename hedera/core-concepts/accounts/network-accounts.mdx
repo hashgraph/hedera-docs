@@ -1,0 +1,32 @@
+---
+title: "Network Accounts"
+---
+
+The Hedera network uses several special, network-controlled accounts for its operations. These accounts are fundamental to the network's fee structure, staking rewards, and overall economic model.
+
+### Special Accounts Comparison
+
+| Account ID | Name | Purpose | Accepts Deposits? | Has Keys? |
+| :--- | :--- | :--- | :--- | :--- |
+| `0.0.98` | Network Admin Fee Account | Receives the majority of network transaction fees (typically 80%). | Yes | Yes |
+| `0.0.800` | Staking Rewards Account | Holds funds for staking reward distribution. Receives a portion of daily fees (typically 10%). | Yes (donations) | No |
+| `0.0.801` | Node Rewards Account | Holds funds for node reward distribution. Receives a portion of daily fees (typically 10%). | No | No |
+| `0.0.802` | Fee Collection Account | Consolidates all transaction fees before daily distribution. | No | No |
+
+### Account Details
+
+#### Fee Collection Account (`0.0.802`)
+
+Introduced in [HIP-1259](https://hips.hedera.com/hip/hip-1259), this account serves as a temporary holding account for all transaction fees. It is fully code-controlled, has no keys, and cannot accept HBAR deposits from users. This design simplifies transaction records and improves network efficiency.
+
+#### Staking Rewards Account (`0.0.800`)
+
+This account holds the HBAR that will be distributed to users who are staking their tokens. It receives a portion of the daily accumulated fees from the Fee Collection Account. While it does not have keys, it can accept HBAR donations from the community.
+
+#### Node Rewards Account (`0.0.801`)
+
+This account holds the HBAR that will be distributed to node operators for their services. It receives a portion of the daily accumulated fees from the Fee Collection Account. It does not have keys and cannot accept HBAR deposits.
+
+#### Network Admin Fee Account (`0.0.98`)
+
+This account receives the largest portion of the daily accumulated fees from the Fee Collection Account (typically 80%). These funds are used to support the long-term growth and development of the Hedera network. Unlike the other special fee accounts, this account has keys and can accept HBAR deposits.

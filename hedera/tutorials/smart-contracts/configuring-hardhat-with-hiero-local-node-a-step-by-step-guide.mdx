@@ -165,13 +165,11 @@ If you are using Testnet, for the `HEDERA_PRIVATE_KEY`, enter your testnet **HEX
 Now, we can update our Hardhat config file to include the Hiero Local Node as a custom network:
 
 ```typescript hardhat.config.ts
-import type { HardhatUserConfig } from "hardhat/config";
+import hardhatToolboxMochaEthersPlugin from "@nomicfoundation/hardhat-toolbox-mocha-ethers";
+import { configVariable, defineConfig } from "hardhat/config";
 
-import hardhatToolboxViemPlugin from "@nomicfoundation/hardhat-toolbox-viem";
-import { configVariable } from "hardhat/config";
-
-const config: HardhatUserConfig = {
-  plugins: [hardhatToolboxViemPlugin],
+export default defineConfig({
+  plugins: [hardhatToolboxMochaEthersPlugin],
   solidity: {
     profiles: {
       default: {
@@ -189,11 +187,6 @@ const config: HardhatUserConfig = {
     },
   },
   networks: {
-    hedera: {
-      type: "http",
-      url: configVariable("HEDERA_RPC_URL"),
-      accounts: [configVariable("HEDERA_PRIVATE_KEY")],
-    },
     hardhatMainnet: {
       type: "edr-simulated",
       chainType: "l1",
@@ -202,10 +195,13 @@ const config: HardhatUserConfig = {
       type: "edr-simulated",
       chainType: "op",
     },
+    hedera: {
+      type: "http",
+      url: configVariable("HEDERA_RPC_URL"),
+      accounts: [configVariable("HEDERA_PRIVATE_KEY")],
+    },
   },
-};
-
-export default config;
+});
 ```
 
 🔍 **Key Highlights**

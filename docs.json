@@ -576,9 +576,10 @@
                 "group": "Interoperability and Bridging",
                 "pages": [
                   "hedera/open-source-solutions/interoperability-and-bridging",
+                  "hedera/open-source-solutions/interoperability-and-bridging/axelar",
                   "hedera/open-source-solutions/interoperability-and-bridging/layerzero",
-                  "hedera/open-source-solutions/interoperability-and-bridging/chainlink",
-                  "hedera/open-source-solutions/interoperability-and-bridging/axelar"
+                  "hedera/open-source-solutions/interoperability-and-bridging/chainlink"
+                
                 ]
               },
               {

@@ -1,0 +1,252 @@
+---
+title: Axelar
+description: Learn how Axelar's Interchain Token Service (ITS) and General Message Passing (GMP) integrate with Hedera to enable cross-chain token transfers and arbitrary messaging.
+---
+
+## What is Axelar?
+
+Axelar is a decentralized interoperability network that lets blockchains communicate and transfer assets with each other. It runs its own proof-of-stake chain, where a decentralized set of **57 active validators** verify cross-chain messages and reach consensus before anything is executed on the destination chain. This architecture means there is no single trusted relayer — security comes from the validator set itself.
+
+For developers building on Hedera, Axelar exposes two main capabilities:
+
+- **Interchain Token Service (ITS):** A mint/burn bridge that lets you deploy tokens across **83 connected chains**, or register an existing token so it can move freely between Hedera and any other Axelar-connected network.
+- **General Message Passing (GMP):** A protocol for calling arbitrary functions on contracts deployed on other chains — enabling cross-chain governance, NFT marketplaces, gaming, and more.
+
+## Overview of Axelar and HTS Compatibility
+
+Axelar's ITS is designed to work with Hedera Token Service (HTS) tokens natively. When a new Interchain Token is deployed on Hedera, ITS creates an HTS token rather than a standard ERC-20. This means the token is a first-class citizen on Hedera — it appears in wallets, is visible on HashScan, and benefits from HTS's built-in compliance features.
+
+That said, HTS has architectural differences from ERC-20 that affect how ITS behaves on Hedera. The most important ones are covered in the [Developer Considerations](#developer-considerations) section below.
+
+## Getting Started with Axelar on Hedera
+
+<Cards>
+  <Card
+    href="https://interchain.axelar.dev/"
+    title="➡ ITS PORTAL"
+    body="No-code bridge deployment. Register an existing token or deploy a new one across chains in minutes."
+  />
+  <Card
+    href="https://github.com/skurzyp-arianelabs/axelar-gmp-tests"
+    title="➡ GMP EXAMPLES REPO"
+    body="Working Foundry examples for sending messages and counter values between Hedera and other EVM chains."
+  />
+  <Card
+    href="https://github.com/axelarnetwork/axelar-contract-deployments/tree/main/hedera"
+    title="➡ CONTRACT DEPLOYMENT SCRIPTS"
+    body="Scripts for deploying and managing ITS contracts on Hedera, including HTS library setup and WHBAR utilities."
+  />
+</Cards>
+
+## Key Components
+
+### Interchain Token Service (ITS)
+
+ITS is the primary way to bridge tokens to and from Hedera using Axelar. It supports two main flows:
+
+**Deploy a new Interchain Token**
+
+If you want to launch a new token that exists natively on multiple chains, ITS handles the full deployment. On Hedera, this creates a new HTS token. On EVM chains, it deploys a standard ERC-20. The token is fungible across all connected chains at a 1:1 ratio with no slippage, because the bridge uses mint/burn rather than liquidity pools.
+
+**Register an existing token**
+
+If your token already exists on another chain (for example, Ethereum mainnet), you can register it with ITS and deploy a corresponding representation on Hedera. ITS deploys a `TokenManager` contract on Hedera that acts as the sole minter and burner for the HTS token.
+
+**ITS Portal (No-Code)**
+
+The [ITS Portal](https://interchain.axelar.dev/) provides a web interface for both flows. The steps for bridging an existing Ethereum token to Hedera are:
+
+1. Connect your wallet and enter your token's address on the source chain (e.g., Ethereum mainnet).
+2. Register the token with ITS on the source chain.
+3. Select Hedera as the destination chain and deploy the token representation.
+4. Your token is now bridgeable between Ethereum and Hedera, and automatically listed on [Squid](https://www.squidrouter.com/) for cross-chain swaps.
+
+**Squid Router Integration**
+
+All ITS bridges are automatically whitelisted on Squid, which is integrated into MetaMask, PancakeSwap, Jumper, and many other DeFi applications. This means your token gets immediate distribution without any additional integration work.
+
+**Flow Limits**
+
+ITS supports configurable daily transfer limits per token. This is a security feature that caps how much of a token can be bridged in a 24-hour window. Axelar can help configure flow limits for tokens deployed through the ITS Portal.
+
+---
+
+### General Message Passing (GMP)
+
+GMP lets a smart contract on Hedera call a function on a contract deployed on any other Axelar-connected chain, and vice versa. The flow works as follows:
+
+1. Your contract on Hedera calls `callContract()` on the Axelar Gateway, specifying the destination chain, destination contract address, and an encoded payload.
+2. You pay gas fees upfront to the Axelar Gas Service in the same transaction. Overpaid gas is refunded.
+3. Axelar validators observe the event, reach consensus, and relay the approved message to the destination chain.
+4. The Axelar executor calls `execute()` on your destination contract, which decodes the payload and runs your logic.
+
+The full round trip typically completes in under 4 minutes on testnet.
+
+**Contract Addresses**
+
+| Network | Gateway | Gas Service |
+| :--- | :--- | :--- |
+| **Testnet** | `0xe432150cce91c13a887f7D836923d5597adD8E31` | `0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6` |
+| **Mainnet** | `0xe432150cce91c13a887f7D836923d5597adD8E31` | `0x2d5d7d31F671F86C782533cc367F14109a082712` |
+
+**Hedera chain name for GMP calls**
+
+When specifying the destination chain in a `callContract()` call, use the string `"hedera"` (lowercase). For example:
+
+```solidity
+gateway.callContract("hedera", destinationContractAddress, payload);
+```
+
+**Example: Sending a message from Hedera to Avalanche**
+
+The following example uses the `SourceMessenger` contract from the [GMP examples repo](https://github.com/skurzyp-arianelabs/axelar-gmp-tests). It sends a string message from Hedera testnet to Avalanche Fuji.
+
+Deploy the sender on Hedera and the receiver on Avalanche:
+
+```shell
+CHAIN=hedera CONTRACT_PAIR=messenger forge script script/UniversalDeploy.s.sol \
+  --rpc-url https://testnet.hashio.io/api \
+  --private-key $HEDERA_KEY \
+  --broadcast
+
+CHAIN=avalanche CONTRACT_PAIR=messenger forge script script/UniversalDeploy.s.sol \
+  --rpc-url https://api.avax-test.network/ext/bc/C/rpc \
+  --private-key $AVAX_KEY \
+  --broadcast
+```
+
+Send a message from Hedera to the `DestLogger` contract on Avalanche. The `--value` flag pays the Axelar gas fee:
+
+```shell
+cast send <SourceMessenger_address> \
+  "sendMessage(string,string,string)" "avalanche" "<DestLogger_address>" "hello from hedera" \
+  --rpc-url https://testnet.hashio.io/api \
+  --private-key $HEDERA_KEY \
+  --value 1ether
+```
+
+Check the received message on Avalanche:
+
+```shell
+cast call <DestLogger_address> "lastMessage()" \
+  --rpc-url https://api.avax-test.network/ext/bc/C/rpc
+```
+
+The output is ABI-encoded. Decode it with:
+
+```shell
+cast --to-utf8 <hex_output>
+```
+
+You can trace the full cross-chain transaction on [AxelarScan](https://testnet.axelarscan.io/) using the transaction hash from the `cast send` command.
+
+**Example: Sending a counter value from Hedera to Avalanche**
+
+```shell
+cast send <SourceIncrementer_address> \
+  "increment(string,string,uint256)" "avalanche" "<DestCounter_address>" 1 \
+  --rpc-url https://testnet.hashio.io/api \
+  --private-key $HEDERA_KEY \
+  --value 1ether
+```
+
+Read the updated counter on Avalanche:
+
+```shell
+cast call <DestCounter_address> "count()" \
+  --rpc-url https://api.avax-test.network/ext/bc/C/rpc
+```
+
+<Info>
+  The `--value` parameter is mandatory for all GMP calls. It pays the Axelar gas fee for the cross-chain execution. Any overpaid amount is automatically refunded. You can estimate the required fee at: `https://testnet.api.axelarscan.io/gas-payment/gas-fee/{sourceChain}/{destinationChain}`.
+</Info>
+
+---
+
+## Developer Considerations
+
+HTS has several architectural differences from ERC-20 that affect how Axelar ITS and GMP behave on Hedera. Review these carefully before building.
+
+### Token Creation Fee and WHBAR
+
+Creating a new HTS token requires a fee paid in HBAR. Because ITS contracts are EVM-based and cannot hold HBAR directly, the ITS implementation on Hedera uses **Wrapped HBAR (WHBAR)** — an ERC-20 compatible wrapper for HBAR — to pay this fee. When deploying a new Interchain Token on Hedera, you must ensure the deploying account has sufficient WHBAR approved for the `InterchainTokenFactory` contract.
+
+You can fund an address with WHBAR and approve the factory using the utility scripts in the [axelar-contract-deployments](https://github.com/axelarnetwork/axelar-contract-deployments/tree/main/hedera) repo:
+
+```shell
+# Deposit HBAR and convert to WHBAR
+node hedera/fund-whbar.js <your_address> --amount 10 --env testnet -n hedera
+
+# Approve the InterchainTokenFactory to spend your WHBAR
+node hedera/approve-factory-whbar.js --amount max --env testnet -n hedera
+```
+
+### No Initial Supply on Deploy
+
+Deploying a new Interchain Token with an initial supply is **not currently supported** on Hedera. This is because an account must be explicitly associated with an HTS token before it can receive a balance. When a new token is deployed, the deploying account is not automatically associated, so minting an initial supply would fail or result in a gas charge with no tokens received.
+
+This behavior may be updated in a future version of the `InterchainTokenFactory` contract.
+
+### Non-Deterministic HTS Token Addresses
+
+Unlike ERC-20 tokens, HTS tokens do not have addresses derived from the deployer's address and nonce. The address assigned to a new HTS token is non-deterministic. After deploying a new Interchain Token on Hedera, retrieve its address by calling:
+
+```solidity
+address tokenAddress = IInterchainTokenService(its).registeredTokenAddress(tokenId);
+```
+
+### Token Association Requirement
+
+Before any account or contract can receive an HTS token, it must be **associated** with that token. This is a Hedera-specific requirement with no EVM equivalent.
+
+If your contract needs to receive ITS tokens (for example, as part of a GMP call that also transfers tokens), it must implement the `InterchainTokenExecutable` interface and associate itself with the token before any transfers occur. One way to do this is:
+
+```solidity
+function associateWithToken(address tokenAddress_) external {
+    IHRC719(tokenAddress_).associate();
+}
+```
+
+The `IHRC719` interface abstracts the HTS precompile, so your contract does not need to interact with the HTS library directly.
+
+### Unsupported Token Key Types
+
+HTS tokens support several optional key types that control administrative operations. ITS does not support tokens that have the following keys set:
+
+- `kycKey`
+- `wipeKey`
+- `freezeKey`
+- `pauseKey`
+
+An `adminKey` can be used to update existing keys, but it **cannot** add new keys if they were not defined when the token was created.
+
+### Maximum Supply
+
+The maximum supply for an HTS token is **2^63 − 1**, which is significantly smaller than the 2^256 − 1 maximum for standard ERC-20 tokens. Ensure your token's total supply does not exceed this limit.
+
+### HTS Tokens as ERC-20
+
+HTS tokens support ERC-20 facade methods (`name`, `balanceOf`, `transfer`, `transferFrom`, `approve`, `allowance`) via [HIP-218](https://hips.hedera.com/hip/hip-218) and [HIP-376](https://hips.hedera.com/hip/hip-376). However, `mint` and `burn` are not part of the ERC-20 facade — they are handled directly by the `TokenManager` contract through the HTS precompile. HTS tokens also do not emit `Transfer` events to and from the zero address on mint and burn.
+
+---
+
+## Additional Resources
+
+| Resource | Description |
+| :--- | :--- |
+| [Axelar Documentation](https://docs.axelar.dev/) | Full Axelar developer documentation, including GMP and ITS guides |
+| [ITS Portal](https://interchain.axelar.dev/) | No-code interface for deploying and managing Interchain Tokens |
+| [Squid Router](https://www.squidrouter.com/) | Cross-chain swap and bridging platform powered by Axelar ITS |
+| [AxelarScan](https://axelarscan.io/) | Block explorer for tracing cross-chain transactions |
+| [axelar-contract-deployments](https://github.com/axelarnetwork/axelar-contract-deployments/tree/main/hedera) | Deployment scripts and utilities for Hedera ITS contracts |
+| [axelar-gmp-tests](https://github.com/skurzyp-arianelabs/axelar-gmp-tests) | GMP example contracts and Foundry scripts for Hedera |
+| [Hedera ITS contracts (commonprefix fork)](https://github.com/commonprefix/interchain-token-service/tree/hedera-its) | The Hedera-specific fork of the ITS contracts with HTS support |
+| [HashScan Explorer](https://hashscan.io/) | Hedera network explorer for verifying token deployments and transactions |
+
+## Summary
+
+**Axelar** connects Hedera to a cross-chain ecosystem of 83 networks through two complementary protocols. **ITS** provides a no-code, mint/burn bridge for tokens — eliminating liquidity fragmentation and giving tokens the same address across all connected EVM chains. **GMP** enables arbitrary cross-chain function calls, opening the door to complex multi-chain applications built on Hedera.
+
+Because Hedera's token model differs from EVM standards, working with Axelar on Hedera requires attention to HTS-specific details: token association, WHBAR for creation fees, non-deterministic addresses, and supply limits. The [Developer Considerations](#developer-considerations) section above covers each of these in detail.
+
+This complements the other interoperability solutions available on Hedera, including [**LayerZero**](./layerzero) and [**Chainlink CCIP**](./chainlink).

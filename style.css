@@ -19,21 +19,21 @@
   font-display: swap;
 }
 
+/* 1. Fix the @font-face weight mapping for the Bold variant */
 @font-face {
   font-family: "Styrene Bold";
   src: url("/public/fonts/styrene/StyreneA-Bold-Web.woff2") format("woff2");
-  font-weight: 600;
+  font-weight: 700; /* was 600 — now correctly mapped to bold */
   font-style: normal;
   font-display: swap;
 }
 
-/* @font-face {
-  font-family: "Styrene Black Web";
-  src: url("/public/fonts/styrene/StyreneA-Black-Web.woff2") format("woff2");
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-} */
+/* 2. Restore bold rendering for strong and b elements */
+strong, b,
+.prose strong, .prose b {
+  font-family: "Styrene Bold", sans-serif !important;
+  font-weight: 700 !important;
+}
 
 /* =========================
    Global Font Setup

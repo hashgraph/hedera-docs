@@ -138,7 +138,7 @@ Tests
 
 ## Release v0.70
 <Check>
-  **MAINNET UPDATED: FEBRUARY 18, 2026**
+  **MAINNET UPDATED: FEBRUARY 25, 2026**
 </Check>
 
 <Check>
@@ -149,6 +149,8 @@ Tests
 
 Release 0.70 delivers significant advancements in fee processing efficiency and foundational infrastructure for future scalability, building on Hedera’s focus on performance and simplicity.
 The headline feature implements HIP-1259 Fee Collection Account, centralizing fee accumulation for streamlined operations, while incremental progress on several multi-phase HIPs and block node enhancements prepares the network for higher throughput and enhanced data handling.
+
+
 
 <Accordion title="What's new in Release v0.70?">
 
@@ -168,6 +170,15 @@ HIP-1081: Block Node — Updates to Block Node communications including new supp
 
 </Accordion>
 
+### [**Build 0.70.1**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.70.1)
+<Accordion title="What's Changed">
+  - ci(workflows-fix): Determinism checks failing python setup for debian (cp #23350) by @rbarker-dev in #23882
+  - chore: Only use round timestamp for long-term schedules if all evts are empty by @tinker-michaelj in #23881
+  - fix(23639): add hiero logger (#23649) by @mxtartaglia-sl in #23883
+
+  **Full Changelog**: [v0.70.0...v0.70.1](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.70.0...v0.70.1)
+</Accordion>
+
 ### [**Build 0.70.0**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.70.0)
 <Accordion title="What's Changed">
   - Implement a support for the new BN response `BehindPublisher` [#22913](https://github.com/hiero-ledger/hiero-consensus-node/pull/22913) by @petreze
@@ -177,6 +188,7 @@ HIP-1081: Block Node — Updates to Block Node communications including new supp
   - Populate state proofs with real Merkle paths [#22253](https://github.com/hiero-ledger/hiero-consensus-node/pull/22253) by @mhess-swl
   - Simple fees for File/Schedule service queries [#22537](https://github.com/hiero-ledger/hiero-consensus-node/pull/22537) by @ibankov
   - Add connection/client for BN service API [#22483](https://github.com/hiero-ledger/hiero-consensus-node/pull/22483) by @timfn-hg
+  
   **Full Changelog**: [v0.69.1...v0.70.0](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.69.1...v0.70.0)
 </Accordion>
 

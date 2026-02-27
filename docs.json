@@ -1185,6 +1185,14 @@
     "href": "https://hedera.com/"
   },
   "navbar": {
+      "links": [
+      {
+        "label": "Join Hackathon",
+        "href": "https://hedera.com/hackathon",
+        "target": "_blank",
+        "icon": "code"
+      }
+    ],
     "primary": {
       "type": "button",
       "label": "Dev Portal",

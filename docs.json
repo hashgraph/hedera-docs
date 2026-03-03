@@ -235,6 +235,7 @@
                 "group": "More Tutorials",
                 "pages": [
                   "hedera/tutorials/more-tutorials",
+                  "hedera/tutorials/more-tutorials/hedera-mcp-server-setup-guide",
                   "hedera/tutorials/more-tutorials/create-and-fund-your-hedera-testnet-account",
                   "hedera/tutorials/more-tutorials/how-to-create-a-personal-access-token-api-key-on-the-hedera-portal",
                   "hedera/tutorials/more-tutorials/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers",

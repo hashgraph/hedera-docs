@@ -32,36 +32,26 @@ Use this URL to connect any supported AI tool to the Hedera documentation.
 | **Source** | Search engine index (may be stale) | Live documentation content |
 | **Noise** | Affected by SEO and ranking algorithms | Goes straight to official docs |
 | **Integration** | Separate step from response generation | Searches during response generation |
-| **Accuracy** | May surface outdated or third-party content | Always returns official Hedera docs |
+| **Accuracy** | May surface outdated or third-party content | Always returns the most up to date Hedera documentation |
 
 ---
 
 ## Quick Install (One Command)
 
-For tools that support `npx add-mcp`, you can install the Hedera MCP server across all detected AI agents in a single command:
+The Hedera MCP server is a remote `HTTP` server hosted by Mintlify. No code is downloaded or executed on your machine. Your AI tool connects directly to https://docs.hedera.com/mcp over `HTTPS` and queries the documentation through the `SearchHedera` tool.
 
-```bash
-npx add-mcp https://docs.hedera.com/mcp
-```
-
-This auto-detects which compatible AI tools you have installed (Claude Code, Cursor, VS Code, etc.) and configures them all. You can also target a specific tool:
-
-```bash
-# Install only for Cursor
-npx add-mcp https://docs.hedera.com/mcp -a cursor
-
-# Install only for Claude Code
-npx add-mcp https://docs.hedera.com/mcp -a claude-code
-
-# Install only for VS Code
-npx add-mcp https://docs.hedera.com/mcp -a vscode
-```
-
-> **Prerequisite:** [Node.js](https://nodejs.org/) (v18+) must be installed for `npx` commands.
+To connect, you manually add the server URL to your AI tool's configuration using the setup instructions below. This is the recommended approach because it gives you full visibility into what's being configured, and no third-party packages are installed or executed on your system.
 
 ---
 
 ## Setup by Tool
+
+<Note>
+
+#### Note
+If you run into issues, refer to the [Additional Resources](/hedera/tutorials/more-tutorials/hedera-mcp-server-setup-guide#additional-resources) section below as setup instructions can change and that's where you'll find the most current guidance.
+
+</Note>
 
 ### Claude (Web & Mobile)
 

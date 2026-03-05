@@ -161,7 +161,16 @@ println!("The new topic ID is {:?}", topic_id);
 
 ## Get transaction values
 
-<table><thead><tr><th>**Method**</th><th>**Type**</th><th>**Requirements**</th></tr></thead><tbody><tr><td><code>getAdminKey(&#x3C;adminKey>)</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>getSubmitKey(&#x3C;submitKey>)</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>getTopicMemo(&#x3C;memo>)</code></td><td>String</td><td>Optional</td></tr><tr><td><code>getAutoRenewAccountId()</code></td><td>AccountId</td><td>Required</td></tr><tr><td><code>getAutoRenewPeriod()</code></td><td>Duration</td><td>Required</td></tr><tr><td><code>getFeeScheduleKey()</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>getFeeExemptKeys()</code></td><td>List</td><td>Optional</td></tr><tr><td><code>getCustomFees()</code></td><td>List</td><td>Optional</td></tr></tbody></table>
+| **Method** | **Type** | **Requirements** |
+|------------|----------|------------------|
+| `getAdminKey(adminKey)` | Key | Optional |
+| `getSubmitKey(submitKey)` | Key | Optional |
+| `getTopicMemo(memo)` | String | Optional |
+| `getAutoRenewAccountId()` | AccountId | Required |
+| `getAutoRenewPeriod()` | Duration | Required |
+| `getFeeScheduleKey()` | Key | Optional |
+| `getFeeExemptKeys()` | List | Optional |
+| `getCustomFees()` | List | Optional |
 
 <CodeGroup>
 

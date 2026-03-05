@@ -46,8 +46,19 @@ You can also create a private topic where only authorized parties can submit mes
 
 #### Methods
 
-<table><thead><tr><th>Method</th><th>Type</th><th>Requirements</th></tr></thead><tbody><tr><td><code>setAdminKey(&#x3C;adminKey>)</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>setSubmitKey(&#x3C;submitKey>)</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>setTopicMemo(&#x3C;memo>)</code></td><td>String</td><td>Optional</td></tr><tr><td><code>setAutoRenewAccountId(&#x3C;accountId>)</code></td><td>AccountId</td><td>Optional</td></tr><tr><td><code>setAutoRenewPeriod(&#x3C;autoRenewPeriod>)</code></td><td>Duration</td><td>Optional</td></tr><tr><td><code>setFeeScheduleKey()</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>setFeeExemptKeys()</code></td><td>List&#x3C;Key></td><td>Optional</td></tr><tr><td><code>setCustomFees()</code></td><td>List&#x3C;CustomFixedFee></td><td>Optional</td></tr><tr><td><code>addCustomFee()</code></td><td>CustomFixedFee</td><td>Optional</td></tr><tr><td><code>addFeeExemptKey()</code></td><td>Key</td><td>Optional</td></tr></tbody></table>
-
+| **Method** | **Type** | **Requirements** |
+|---|---|---|
+| `setAdminKey(<adminKey>)` | Key | Optional |
+| `setSubmitKey(<submitKey>)` | Key | Optional |
+| `setTopicMemo(<memo>)` | String | Optional |
+| `setAutoRenewAccountId(<accountId>)` | AccountId | Optional |
+| `setAutoRenewPeriod(<autoRenewPeriod>)` | Duration | Optional |
+| `setFeeScheduleKey()` | Key | Optional |
+| `setFeeExemptKeys()` | List\<Key> | Optional |
+| `setCustomFees()` | List\<CustomFixedFee> | Optional |
+| `addCustomFee()` | CustomFixedFee | Optional |
+| `addFeeExemptKey()` | Key | Optional |
+| `setHighVolume(<highVolume>)` | boolean | Optional |
 <CodeGroup>
 
 ```java Java
@@ -150,7 +161,7 @@ println!("The new topic ID is {:?}", topic_id);
 
 ## Get transaction values
 
-<table><thead><tr><th>Method</th><th>Type</th><th>Requirements</th></tr></thead><tbody><tr><td><code>getAdminKey(&#x3C;adminKey>)</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>getSubmitKey(&#x3C;submitKey>)</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>getTopicMemo(&#x3C;memo>)</code></td><td>String</td><td>Optional</td></tr><tr><td><code>getAutoRenewAccountId()</code></td><td>AccountId</td><td>Required</td></tr><tr><td><code>getAutoRenewPeriod()</code></td><td>Duration</td><td>Required</td></tr><tr><td><code>getFeeScheduleKey()</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>getFeeExemptKeys()</code></td><td>List</td><td>Optional</td></tr><tr><td><code>getCustomFees()</code></td><td>List</td><td>Optional</td></tr></tbody></table>
+<table><thead><tr><th>**Method**</th><th>**Type**</th><th>**Requirements**</th></tr></thead><tbody><tr><td><code>getAdminKey(&#x3C;adminKey>)</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>getSubmitKey(&#x3C;submitKey>)</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>getTopicMemo(&#x3C;memo>)</code></td><td>String</td><td>Optional</td></tr><tr><td><code>getAutoRenewAccountId()</code></td><td>AccountId</td><td>Required</td></tr><tr><td><code>getAutoRenewPeriod()</code></td><td>Duration</td><td>Required</td></tr><tr><td><code>getFeeScheduleKey()</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>getFeeExemptKeys()</code></td><td>List</td><td>Optional</td></tr><tr><td><code>getCustomFees()</code></td><td>List</td><td>Optional</td></tr></tbody></table>
 
 <CodeGroup>
 
@@ -188,3 +199,10 @@ getFeeScheduleKey := transaction.GetFeeScheduleKey()
 ```
 
 </CodeGroup>
+
+<Note>
+    This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation)
+    (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated
+    high-volume throttle capacity with variable-rate pricing. Always pair this with
+    `setMaxTransactionFee()` to cap your costs.
+</Note>

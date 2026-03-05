@@ -329,6 +329,7 @@
             "group": "Core Concepts",
             "pages": [
               "hedera/core-concepts",
+            
               {
                 "group": "Accounts",
                 "pages": [
@@ -441,6 +442,7 @@
                   "hedera/core-concepts/hashgraph-consensus-algorithms/virtual-voting"
                 ]
               },
+              "hedera/core-concepts/high-volume-entity-creation",
               {
                 "group": "Transactions and Queries",
                 "pages": [
@@ -1120,6 +1122,7 @@
               }
             ]
           },
+        
           {
             "group": "Support & Community",
             "pages": [
@@ -1176,6 +1179,7 @@
               "hedera/faqs/community"
             ]
           }
+     
         ]
       }
     ]

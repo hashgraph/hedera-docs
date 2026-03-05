@@ -3,7 +3,7 @@ title: "Associate tokens to an account"
 ---
 
 
-Associates the provided Hedera account with the provided Hedera token(s). Hedera accounts must be associated with a fungible or non-fungible token first before you can transfer tokens to that account. When you transfer a custom fungible or non-fungible token to the alias account ID, the token association step is skipped and the account will automatically be associated with the token upon creation. In the case of NON\_FUNGIBLE Type, once an account is associated, it can hold any number of NFTs (serial numbers) of that token type. The Hedera account that is associated with a token is required to sign the transaction.
+Associates the provided Hedera account with the provided Hedera token(s). Hedera accounts must be associated with a fungible or non-fungible token first before you can transfer tokens to that account. When you transfer a custom fungible or non-fungible token to the alias account ID, the token association step is skipped and the account will automatically be associated with the token upon creation. In the case of NON\_FUNGIBLE **Type**, once an account is associated, it can hold any number of NFTs (serial numbers) of that token type. The Hedera account that is associated with a token is required to sign the transaction.
 
 * If the provided account is not found, the transaction will resolve to `INVALID_ACCOUNT_ID`.
 * If the provided account has been deleted, the transaction will resolve to `ACCOUNT_DELETED`.
@@ -27,12 +27,35 @@ There is currently no limit on the number of token IDs that can be associated wi
 * Please see the transaction and query [fees](/hedera/networks/mainnet/fees#transaction-and-query-fees) table for the base transaction fee
 * Please use the [Hedera fee estimator](https://hedera.com/fees) to estimate your transaction fee cost
 
-## Methods
+## Constructor
 
-| Method                      | Type            | Description                                           | Requirement |
-| --------------------------- | --------------- | ----------------------------------------------------- | ----------- |
-| `setAccountId(<accountId>)` | AccountId       | The account to be associated with the provided tokens | Required    |
-| `setTokenIds(<tokens>)`     | List \<TokenId> | The tokens to be associated with the provided account | Required    |
+| Constructor | Description |
+|-------------|-------------|
+| `new TokenAssociateTransaction()` | Initializes the TokenAssociateTransaction object |
+
+## Transaction Properties
+
+| Method | **Type** | Requirement |
+|--------|------|-------------|
+| `setAccountId(<accountId>)` | AccountId | Required |
+| `setTokenIds(<tokenIds>)` | List&lt;TokenId&gt; | Required |
+| `setHighVolume(<highVolume>)` | boolean | Optional |
+
+## Get Transaction Values
+
+| Method | **Type** | Description |
+|--------|------|-------------|
+| `getAccountId()` | AccountId | Returns the account to be associated |
+| `getTokenIds()` | List&lt;TokenId&gt; | Returns the list of tokens to be associated |
+| `getHighVolume()` | boolean | Returns whether this transaction uses [high-volume throttles](/core-concepts/high-volume-entity-creation) |
+
+
+<Note>
+     This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation)
+     (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated
+     high-volume throttle capacity with variable-rate pricing for both fungible and NFT mints.
+     Always pair this with `setMaxTransactionFee()` to cap your costs.
+</Note>
 
 <CodeGroup>
 

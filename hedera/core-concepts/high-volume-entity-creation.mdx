@@ -1,0 +1,354 @@
+---
+title: "High-Volume Entity Creation"
+sidebarTitle: "High-Volume Entity Creation"
+description: "Understand how high-volume throttles work, how variable-rate pricing affects your transaction fees, and how to use the high_volume flag effectively."
+---
+
+Hedera's standard throttle system limits entity creation transactions (like `CryptoCreate`,
+`TokenCreate`, and `TokenMint`) to relatively modest per-second rates. This protects the
+network but can be a bottleneck for applications that need to create entities at scale —
+for example, bulk user onboarding, large NFT drops, or automated token deployments.
+
+[HIP-1313](https://hips.hedera.com/hip/hip-1313) introduces a **high-volume throttle system**
+that runs in parallel alongside the standard system. By setting `high_volume = true` on a
+supported transaction, you opt into dedicated capacity with higher throughput limits. The
+tradeoff: **fees are variable and increase with utilization.**
+
+<Info>
+The standard throttle system is completely unaffected. Existing applications that do not
+set the `high_volume` flag will work exactly as before — same capacity, same pricing.
+</Info>
+
+---
+
+## How It Works
+
+### Two Parallel Throttle Systems
+
+When you submit an entity creation transaction, the network routes it to one of two
+independent throttle systems based on the `high_volume` flag:
+
+| | Standard Throttles | High-Volume Throttles |
+|---|---|---|
+| **Opt-in** | Default (no flag needed) | Set `high_volume = true` |
+| **Capacity** | Current published limits | Dedicated high-volume buckets |
+| **Pricing** | Fixed fee schedule | Variable-rate (scales with utilization) |
+| **Priority** | Consensus order | Consensus order (no priority boost) |
+
+The two systems have completely separate capacity pools. Using one does not consume
+capacity from the other.
+
+### Variable-Rate Pricing
+
+This is the most important thing to understand before using high-volume mode.
+
+Unlike standard transactions where fees are predictable from the
+[fee schedule](/hedera/networks/mainnet/fees), high-volume fees change dynamically based on how
+much of the high-volume capacity is currently in use:
+
+<Steps>
+
+<Step title="The network measures utilization">
+The network calculates how much of the high-volume throttle capacity is currently being
+consumed, expressed as a utilization percentage from 0% (idle) to 100% (saturated).
+</Step>
+
+<Step title="A pricing curve maps utilization to a multiplier">
+A governance-configured **pricing curve** converts the utilization percentage into a fee
+multiplier. The curve is defined as a piecewise linear function — a series of
+(utilization, multiplier) breakpoints with linear interpolation between them. For
+example, given points (0%, 1.0×), (50%, 2.0×), and (100%, 5.0×), a utilization of 75%
+would produce a multiplier of 3.5×.
+</Step>
+
+<Step title="The multiplier is applied to the standard fee">
+The base transaction fee (from the normal fee schedule) is multiplied by the current
+multiplier to produce the final fee. A `max_multiplier` caps how high the multiplier can
+go, preventing extreme pricing even at 100% utilization.
+</Step>
+
+<Step title="Your maxTransactionFee protects you">
+If the calculated fee exceeds the `maxTransactionFee` you set on the transaction, the
+transaction fails with `INSUFFICIENT_TX_FEE` and you are **not** charged. This is your
+primary cost-control mechanism.
+</Step>
+
+</Steps>
+
+<Warning>
+Depending on the governance-configured pricing curve, high-volume transactions **may**
+cost more than the same transaction sent through the standard throttle — even when
+there is no congestion. Always check the current multiplier before committing to a batch.
+</Warning>
+
+### Pricing Curve Example
+
+The actual curve values are set by network governance and may change. The HIP provides
+this example of a piecewise linear curve with three breakpoints:
+
+| Utilization | Multiplier | Effect on a $0.05 Base Fee |
+|---|---|---|
+| 0% | 1.0× | $0.05 |
+| 50% | 2.0× | $0.10 |
+| 100% | 5.0× | $0.25 |
+
+Between breakpoints, the multiplier is linearly interpolated. For example, at 75%
+utilization, the multiplier would be 3.5× (halfway between 2.0× and 5.0×). If no
+pricing curve is explicitly configured, the multiplier defaults to linear interpolation
+between 1.0× and `max_multiplier`.
+
+<Note>
+These values are from the HIP specification as an example. Actual pricing curve
+breakpoints will be configured by Hedera governance before launch. The `max_multiplier`
+value (also governance-configured) caps how high the multiplier can go regardless of
+the curve. Use the Mirror Node fee estimation endpoint to see the **current** multiplier
+in effect.
+</Note>
+
+---
+
+## Supported Transaction Types
+
+The `high_volume` flag is supported on the following entity creation transactions:
+
+<Accordion title="View all 14 supported transaction types">
+
+| Transaction Type | SDK Class | Notes |
+|---|---|---|
+| `ConsensusCreateTopic` | `TopicCreateTransaction` | |
+| `ContractCreate` | `ContractCreateTransaction` | HAPI only, not EVM |
+| `CryptoApproveAllowance` | `AccountAllowanceApproveTransaction` | |
+| `CryptoCreate` | `AccountCreateTransaction` | |
+| `CryptoTransfer` | `TransferTransaction` | Only the account-creation portion |
+| `FileAppend` | `FileAppendTransaction` | |
+| `FileCreate` | `FileCreateTransaction` | |
+| `HookStore` | — | Future transaction type |
+| `ScheduleCreate` | `ScheduleCreateTransaction` | |
+| `TokenAirdrop` | `TokenAirdropTransaction` | |
+| `TokenAssociateToAccount` | `TokenAssociateTransaction` | |
+| `TokenClaimAirdrop` | `TokenClaimAirdropTransaction` | |
+| `TokenCreate` | `TokenCreateTransaction` | |
+| `TokenMint` | `TokenMintTransaction` | Fungible and NFT |
+
+</Accordion>
+
+Setting `high_volume = true` on any other transaction type has no effect — the flag
+is silently ignored and the transaction processes through the standard system.
+
+<Note>
+**EVM transactions are excluded.** Contract creations via `CREATE` / `CREATE2` opcodes
+in the EVM do not participate in the high-volume system. A subsequent HIP will address
+EVM-specific high-volume behavior.
+</Note>
+
+---
+
+## High-Volume Throttle Capacity
+
+The high-volume system uses a two-level throttle structure. The HIP provides the
+following example configuration (actual mainnet values will be set by governance):
+
+| Throttle Bucket | Transaction Types | Example Capacity |
+|---|---|---|
+| HighVolumeCryptoThrottles | `CryptoCreate` + `ScheduleCreate` | 10,500 ops/sec |
+| HighVolumeTotalThrottles | All 14 supported types combined | 31,500 ops/sec |
+
+<Note>
+These values are from the HIP's example throttle configuration. Final mainnet and
+testnet capacity values will be set by Hedera governance and may differ.
+</Note>
+
+A transaction must pass **both** its per-type bucket and the total bucket to be accepted.
+If either is exhausted, the transaction receives a `BUSY` response.
+
+For comparison, the current standard `AccountCreateTransaction` throttle is **2 tps** on
+mainnet. The high-volume system offers orders-of-magnitude more capacity for applications
+willing to pay the variable-rate fees.
+
+---
+
+## How to Use High-Volume Mode
+
+### Step 1: Check Current Pricing
+
+Before submitting high-volume transactions, query the Mirror Node fee estimation endpoint
+to see the current `high_volume_multiplier`. The HIP specifies that this field will be
+added to the existing fee estimation response:
+
+```bash
+curl "https://mainnet.mirrornode.hedera.com/api/v1/network/fees"
+```
+
+Look for the `high_volume_multiplier` field in the response. This value is divided by
+1000 to produce the actual multiplier (e.g., a value of `1000` = 1.0×, `2000` = 2.0×).
+The fee totals in the response are **not** pre-multiplied — multiply the fee total by
+`high_volume_multiplier / 1000` to calculate the high-volume price.
+
+### Step 2: Set the Flag and a Fee Cap
+
+<Tabs>
+
+<Tab title="Java">
+
+```java
+// Create an account using high-volume throttles
+AccountCreateTransaction tx = new AccountCreateTransaction()
+    .setKey(publicKey)
+    .setInitialBalance(Hbar.from(10))
+    .setHighVolume(true)                   // Opt into high-volume throttles
+    .setMaxTransactionFee(Hbar.from(5));   // ALWAYS set a fee cap
+
+TransactionResponse response = tx.execute(client);
+TransactionReceipt receipt = response.getReceipt(client);
+AccountId newAccountId = receipt.accountId;
+
+System.out.println("Account created: " + newAccountId);
+```
+
+</Tab>
+
+<Tab title="JavaScript">
+
+```javascript
+// Create an account using high-volume throttles
+const tx = new AccountCreateTransaction()
+    .setKey(publicKey)
+    .setInitialBalance(Hbar.from(10))
+    .setHighVolume(true)
+    .setMaxTransactionFee(Hbar.from(5));
+
+const response = await tx.execute(client);
+const receipt = await response.getReceipt(client);
+const newAccountId = receipt.accountId;
+
+console.log("Account created: " + newAccountId);
+```
+
+</Tab>
+
+<Tab title="Go">
+
+```go
+// Create an account using high-volume throttles
+tx := hedera.NewAccountCreateTransaction().
+    SetKey(publicKey).
+    SetInitialBalance(hedera.HbarFrom(10, hedera.HbarUnits.Hbar)).
+    SetHighVolume(true).
+    SetMaxTransactionFee(hedera.HbarFrom(5, hedera.HbarUnits.Hbar))
+
+response, err := tx.Execute(client)
+if err != nil {
+    panic(err)
+}
+
+receipt, err := response.GetReceipt(client)
+if err != nil {
+    panic(err)
+}
+
+fmt.Printf("Account created: %v\n", receipt.AccountID)
+```
+
+</Tab>
+
+</Tabs>
+
+### Step 3: Handle Fee Failures Gracefully
+
+If the current multiplier pushes the fee above your `maxTransactionFee`, the transaction
+will fail with `INSUFFICIENT_TX_FEE`. Your application should:
+
+1. Catch the error
+2. Re-query the current multiplier
+3. Decide whether to retry with a higher cap, wait for utilization to drop, or fall
+   back to the standard throttle system
+
+---
+
+## Best Practices
+
+<Tip>
+**Always set `maxTransactionFee`.** This is not optional guidance — it is the only
+mechanism protecting you from unexpectedly high fees during utilization spikes.
+</Tip>
+
+<Tip>
+**Check the multiplier before batches.** If you are about to submit 10,000 account
+creations, query the fee estimation endpoint first. A multiplier of 5× on 10,000
+transactions is the difference between $500 and $2,500.
+</Tip>
+
+<Tip>
+**Implement adaptive fee caps.** For long-running batch jobs, periodically re-check
+the multiplier and adjust your `maxTransactionFee` up or down. If the multiplier rises
+above your acceptable threshold, pause and retry later.
+</Tip>
+
+<Tip>
+**Consider time-of-day patterns.** Like any shared resource, high-volume utilization
+may follow patterns. Off-peak hours may offer lower multipliers.
+</Tip>
+
+---
+
+## Verifying High-Volume Transactions
+
+After a high-volume transaction reaches consensus, you can confirm its status via the
+Mirror Node REST API:
+
+```bash
+curl "https://mainnet.mirrornode.hedera.com/api/v1/transactions/{transactionId}"
+```
+
+The response includes:
+
+- `high_volume`: `true` — confirms the transaction used the high-volume system
+- `charged_tx_fee` — the actual fee charged (reflecting the variable-rate multiplier)
+
+The `TransactionResult` protobuf (exposed via block streams) includes a
+`high_volume_pricing_multiplier` field (`uint64`, field number 13) showing the exact
+multiplier that was applied. This value is divided by 1000 to get the actual multiplier.
+
+---
+
+## What High-Volume Mode Does NOT Do
+
+<Info>
+**No priority.** High-volume transactions are processed in the same consensus order as
+all other transactions. Paying more does not make your transaction execute sooner.
+</Info>
+
+<Info>
+**No guaranteed throughput.** The high-volume throttle provides additional *capacity*,
+but if that capacity is fully utilized by other users, your transaction will receive a
+`BUSY` response just like the standard system.
+</Info>
+
+<Info>
+**No impact on standard users.** Applications that do not use the `high_volume` flag
+are completely unaffected — same throttle limits, same fixed-fee pricing.
+</Info>
+
+---
+
+## Related Resources
+
+<CardGroup cols={2}>
+
+<Card title="HIP-1313 Specification" icon="file-lines" href="https://hips.hedera.com/hip/hip-1313">
+  Full technical specification including pricing curve protobuf definitions
+</Card>
+
+<Card title="Transaction Fees" icon="coins" href="/hedera/networks/mainnet/fees">
+  Standard fee schedule for all transaction types
+</Card>
+
+<Card title="Mainnet Throttles" icon="gauge-high" href="/hedera/networks/mainnet">
+  Current standard and high-volume throttle limits
+</Card>
+
+<Card title="Modify Transaction Fields" icon="code" href="/hedera/sdks-and-apis/sdks/transactions/modify-transaction-fields">
+  SDK reference for setHighVolume() and other TransactionBody fields
+</Card>
+
+</CardGroup>

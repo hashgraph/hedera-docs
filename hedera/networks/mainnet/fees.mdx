@@ -8,13 +8,13 @@ The Hedera testnet fees tables found below offer a low-end estimate of transacti
 
 Fee estimates are based on assumptions about the details of a specific API call. For instance, the fee for an HBAR cryptocurrency transfer (CryptoTransfer) assumes a single signature on the transaction and the fee for storing a file assumes a 1,0000-byte sized file stored for 90 days. Transactions exceeding these base assumptions will be more expensive; we recommend increasing your maximum allowable fee to accommodate additional complexity.
 
-### Mainnet Fees
+## Mainnet Fees
 
 Mainnet transaction and query fees can be estimated using the [Hedera Fee Estimator](https://hedera.com/fees). The Fee Estimator allows you to determine fees (in both USD and HBAR, using the current exchange rate live on the mainnet) for individual transactions & queries based on their characteristics, as well as projected costs based on expected volume for those transactions. The estimations may not be 100% accurate and the underlying prices are subject to change without prior notice.
 
 ## HBAR Denominations and Abbreviations
 
-| Denominations | Abbreviations  | Amount of HBAR Cryptocurrency |
+| **Denominations** | **Abbreviations**  | **Amount of HBAR Cryptocurrency** |
 | ------------- | -------------- | ----------------------------- |
 | gigabar       | 1 Gℏ           | = 1,000,000,000 ℏ             |
 | megabar       | 1 Mℏ           | = 1,000,000 ℏ                 |
@@ -24,13 +24,31 @@ Mainnet transaction and query fees can be estimated using the [Hedera Fee Estima
 | microbar      | 1,000,000 μℏ   | = 1 ℏ                         |
 | tinybar       | 100,000,000 tℏ | = 1 ℏ                         |
 
+
+## High-Volume Transaction Pricing
+
+The fee tables below reflect **standard** transaction pricing. If you set the
+`high_volume` flag on a [supported entity creation transaction](/hedera/core-concepts/high-volume-entity-creation#supported-transaction-types),
+a **variable-rate multiplier** is applied on top of the standard fee. The multiplier
+scales with how much of the high-volume throttle capacity is currently in use — from
+1.0× at idle to a governance-configured maximum at full utilization.
+
+<Warning>
+    High-volume fees can be significantly higher than the standard fees listed in these
+    tables. Always check the current multiplier via the Mirror Node
+    [fee estimation endpoint](/hedera/sdks-and-apis/rest-api) and set `maxTransactionFee`
+    to cap your costs. See the
+    [High-Volume Entity Creation](/hedera/core-concepts/high-volume-entity-creation) guide
+    for full details on how variable-rate pricing works.
+</Warning>
+
 ## Transaction and Query Fees
 
 All fees are subject to change. The fees below reflect a base price for the transaction or query. Transaction characteristics may increase the price from the base price shown below. Transaction characteristics include having more than one signature, a memo field, etc. Please reference the [Hedera fee estimator](https://hedera.com/fees) to estimate the transaction or query fee.
 
 ### Cryptocurrency Service
 
-| Operations                   | USD ($)  |
+| **Operations**           | **USD ($)**  |
 | :--------------------------- | :------- |
 | CryptoCreate                 | $0.05    |
 | CryptoAccountAutoRenew       | $0.00022 |
@@ -50,7 +68,7 @@ All fees are subject to change. The fees below reflect a base price for the tran
 
 ### Consensus Service
 
-| Operations                                | USD ($)  |
+| **Operations**                        | **USD ($)**  |
 | ----------------------------------------- | -------- |
 | ConsensusCreateTopic                      | $0.01    |
 | ConsensusCreateTopic (with custom fees)   | $2.00    |
@@ -62,7 +80,7 @@ All fees are subject to change. The fees below reflect a base price for the tran
 
 ### Token Service Operations
 
-| Operations                                              | USD ($)       |
+| **Operations**                                           | **USD ($)**  |
 | ------------------------------------------------------- | ------------- |
 | TokenAirdrop (no prior association with token)          | $0.10         |
 | TokenAssociate                                          | $0.05         |
@@ -96,7 +114,7 @@ All fees are subject to change. The fees below reflect a base price for the tran
 
 ### Schedule Transaction
 
-| Operations      | USD ($) |
+| **Operations** | **USD ($)** |
 | --------------- | ------- |
 | ScheduleCreate  | $0.01   |
 | ScheduleSign    | $0.001  |
@@ -105,7 +123,7 @@ All fees are subject to change. The fees below reflect a base price for the tran
 
 ### File Service
 
-| Operations      | USD ($) |
+| **Operations**      | **USD ($)** |
 | --------------- | ------- |
 | FileCreate      | $0.05   |
 | FileUpdate      | $0.05   |
@@ -116,7 +134,7 @@ All fees are subject to change. The fees below reflect a base price for the tran
 
 ### Smart Contract Service
 
-| Operations                                             | USD ($)                                                            |
+| **Operations**                                         | **USD ($)**                                                            |
 | ------------------------------------------------------ | ------------------------------------------------------------------ |
 | ContractCreate                                         | $1.00                                                              |
 | ContractUpdate                                         | $0.026                                                             |
@@ -134,7 +152,7 @@ All fees are subject to change. The fees below reflect a base price for the tran
 
 ### Miscellaneous
 
-| Operations                                                        | USD ($) |
+| **Operations**                                                | **USD ($)** |
 | ----------------------------------------------------------------- | ------- |
 | BatchTransaction ([HIP-551](https://hips.hedera.com/hip/hip-551)) | $0.001  |
 | GetVersionInfo                                                    | $0.0001 |

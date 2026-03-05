@@ -275,6 +275,20 @@ title: "Network Governance"
     Hedera council reviews pricing at every council meeting (once every three months), and approves all changes to the prices. The exchange rate that nodes use to determine the corresponding fees in hbars is updated frequently (currently every hour) .
   </Accordion>
 
+  <Accordion title="Does Hedera have variable-rate transaction pricing?">
+    Yes. [High-volume entity creation](/hedera/core-concepts/high-volume-entity-creation) transactions
+    (introduced in [HIP-1313](https://hips.hedera.com/hip/hip-1313)) use a variable-rate
+    pricing model where fees change dynamically based on utilization of the dedicated
+    high-volume throttle capacity. The pricing curve parameters — including the breakpoints
+    and maximum multiplier — are configured by Hedera governance and subject to Council review.
+
+    Standard transactions (those without the `high_volume` flag) continue to use the fixed
+    fee schedule set by the Hedera Governing Council.
+
+    To check the current high-volume pricing multiplier for any transaction type, query the
+    Mirror Node fee estimation endpoint.
+  </Accordion>
+
   <Accordion title="Are Hedera transactions fees set in FIAT (USD) or HBAR?">
     Hedera transaction and query fees are denominated in USD and paid in HBAR. The network regularly updates the USD-to-HBAR exchange rate based on current market rates, subject to a defined minimum exchange rate.
 

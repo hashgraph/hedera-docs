@@ -2,3 +2,15 @@
 title: "Plugins"
 description: "Introduction to the plugin architecture, and an overview of Hedera and third-party plugins."
 ---
+
+## Overview
+
+The Hedera Agent Kit provides a comprehensive set of tools organized into **plugins**, which can be installed alongside the Hedera Agent Kit and used to extend the core functionality of the Hedera Agent Kit SDK. These tools can be used both by the conversational agent and when you are building with the SDK.
+
+The Hedera services built into this agent toolkit are also implemented as plugins. You can see a description of each plugin in the [HEDERAPLUGINS.md](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/HEDERAPLUGINS.md) file, as well as a list of the individual tools for each Hedera service that are included in each plugin.
+
+## The Plugin Architecture
+
+## Hedera Plugins
+
+## Third-Party Plugins

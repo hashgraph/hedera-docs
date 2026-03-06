@@ -480,7 +480,9 @@
                     "group": "Hedera AI Agent Kit",
                     "pages": [
                      "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit",
-                      
+                     "hedera/open-source-solutions/ai-studio-on-hedera/plugins",
+                     "hedera/open-source-solutions/ai-studio-on-hedera/policies",
+                     "hedera/open-source-solutions/ai-studio-on-hedera/adaptors",
                       {
                         "group": "JavaScript SDK",
                         "pages": [

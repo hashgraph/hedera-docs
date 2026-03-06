@@ -496,7 +496,6 @@
                         "group": "Python SDK",
                         "pages": [
                           "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/quickstart",
-                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/plugins",
                           "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/how-to-publish-plugin"
                         ]
                       }

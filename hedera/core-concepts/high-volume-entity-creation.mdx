@@ -15,8 +15,8 @@ supported transaction, you opt into dedicated capacity with higher throughput li
 tradeoff: **fees are variable and increase with utilization.**
 
 <Info>
-The standard throttle system is completely unaffected. Existing applications that do not
-set the `high_volume` flag will work exactly as before — same capacity, same pricing.
+  The standard throttle system is completely unaffected. Existing applications that do not
+  set the `high_volume` flag will work exactly as before — same capacity, same pricing.
 </Info>
 
 ---
@@ -81,28 +81,43 @@ cost more than the same transaction sent through the standard throttle — even 
 there is no congestion. Always check the current multiplier before committing to a batch.
 </Warning>
 
-### Pricing Curve Example
+### Pricing Curve
 
-The actual curve values are set by network governance and may change. The HIP provides
-this example of a piecewise linear curve with three breakpoints:
+The base curve below is set by Hedera governance and defines how the fee
+multiplier scales with throughput in the high-volume lane. The multiplier is
+expressed relative to the standard base fee, and the throughput rate is
+expressed as a multiplier of the base entity creation rate.
 
-| Utilization | Multiplier | Effect on a $0.05 Base Fee |
-|---|---|---|
-| 0% | 1.0× | $0.05 |
-| 50% | 2.0× | $0.10 |
-| 100% | 5.0× | $0.25 |
+| **High-Volume Throughput (× base create rate)** | **Fee Multiplier (× base price)** |
+|---|---|
+| 1 | 4× |
+| 1.5 | 8× |
+| 2.5 | 10× |
+| 3.5 | 15× |
+| 5 | 20× |
+| 7.5 | 30× |
+| 10 | 40× |
+| 25 | 60× |
+| 50 | 80× |
+| 100 | 100× |
+| 250 | 150× |
+| 500 | 200× |
+| 5,000 | 200× |
 
-Between breakpoints, the multiplier is linearly interpolated. For example, at 75%
-utilization, the multiplier would be 3.5× (halfway between 2.0× and 5.0×). If no
-pricing curve is explicitly configured, the multiplier defaults to linear interpolation
-between 1.0× and `max_multiplier`.
+Between breakpoints, the multiplier is linearly interpolated. The curve
+assumes the standard (low-throughput) lane is running at its maximum rate
+concurrently.
+
+<Warning>
+  At the base create rate (1×), high-volume transactions already cost **4× the
+  standard fee**. At 100× throughput, the multiplier reaches **100×**. The curve
+  caps at **200×** regardless of how much higher throughput goes. Always set
+  `maxTransactionFee` to protect against unexpected costs.
+</Warning>
 
 <Note>
-These values are from the HIP specification as an example. Actual pricing curve
-breakpoints will be configured by Hedera governance before launch. The `max_multiplier`
-value (also governance-configured) caps how high the multiplier can go regardless of
-the curve. Use the Mirror Node fee estimation endpoint to see the **current** multiplier
-in effect.
+  This curve may be updated by Hedera governance. Use the Mirror Node fee
+  estimation endpoint to see the **current** multiplier in effect.
 </Note>
 
 ---
@@ -113,8 +128,8 @@ The `high_volume` flag is supported on the following entity creation transaction
 
 <Accordion title="View all 14 supported transaction types">
 
-| Transaction Type | SDK Class | Notes |
-|---|---|---|
+| **Transaction Type** | **SDK Class** | **Notes** |
+|----|---|---|
 | `ConsensusCreateTopic` | `TopicCreateTransaction` | |
 | `ContractCreate` | `ContractCreateTransaction` | HAPI only, not EVM |
 | `CryptoApproveAllowance` | `AccountAllowanceApproveTransaction` | |
@@ -132,13 +147,17 @@ The `high_volume` flag is supported on the following entity creation transaction
 
 </Accordion>
 
-Setting `high_volume = true` on any other transaction type has no effect — the flag
-is silently ignored and the transaction processes through the standard system.
+The official Hedera SDKs expose `setHighVolume()` only on the transaction types
+listed above. If you are using a custom SDK or constructing protobuf transactions
+directly and set `high_volume = true` on a transaction type not in this list, the
+transaction **will not fail**. The flag is silently ignored and the transaction
+processes through the standard throttle system at standard pricing.
 
 <Note>
-**EVM transactions are excluded.** Contract creations via `CREATE` / `CREATE2` opcodes
-in the EVM do not participate in the high-volume system. A subsequent HIP will address
-EVM-specific high-volume behavior.
+  #### **EVM transactions are excluded** 
+  Contract creations via `CREATE` / `CREATE2` opcodes
+  in the EVM do not participate in the high-volume system. A subsequent HIP will address
+  EVM-specific high-volume behavior.
 </Note>
 
 ---
@@ -154,8 +173,8 @@ following example configuration (actual mainnet values will be set by governance
 | HighVolumeTotalThrottles | All 14 supported types combined | 31,500 ops/sec |
 
 <Note>
-These values are from the HIP's example throttle configuration. Final mainnet and
-testnet capacity values will be set by Hedera governance and may differ.
+  These values are from the HIP's example throttle configuration. Final mainnet and
+  testnet capacity values will be set by Hedera governance and may differ.
 </Note>
 
 A transaction must pass **both** its per-type bucket and the total bucket to be accepted.
@@ -175,7 +194,7 @@ Before submitting high-volume transactions, query the Mirror Node fee estimation
 to see the current `high_volume_multiplier`. The HIP specifies that this field will be
 added to the existing fee estimation response:
 
-```bash
+```bash wrap
 curl "https://mainnet.mirrornode.hedera.com/api/v1/network/fees"
 ```
 
@@ -186,17 +205,15 @@ The fee totals in the response are **not** pre-multiplied — multiply the fee t
 
 ### Step 2: Set the Flag and a Fee Cap
 
-<Tabs>
+<CodeGroup>
 
-<Tab title="Java">
-
-```java
+```java Java wrap
 // Create an account using high-volume throttles
 AccountCreateTransaction tx = new AccountCreateTransaction()
     .setKey(publicKey)
     .setInitialBalance(Hbar.from(10))
-    .setHighVolume(true)                   // Opt into high-volume throttles
-    .setMaxTransactionFee(Hbar.from(5));   // ALWAYS set a fee cap
+    .setHighVolume(true) // Opt into high-volume throttles
+    .setMaxTransactionFee(Hbar.from(5)); // ALWAYS set a fee cap
 
 TransactionResponse response = tx.execute(client);
 TransactionReceipt receipt = response.getReceipt(client);
@@ -205,11 +222,8 @@ AccountId newAccountId = receipt.accountId;
 System.out.println("Account created: " + newAccountId);
 ```
 
-</Tab>
 
-<Tab title="JavaScript">
-
-```javascript
+```javascript JavaScript wrap
 // Create an account using high-volume throttles
 const tx = new AccountCreateTransaction()
     .setKey(publicKey)
@@ -224,11 +238,7 @@ const newAccountId = receipt.accountId;
 console.log("Account created: " + newAccountId);
 ```
 
-</Tab>
-
-<Tab title="Go">
-
-```go
+```go Go wrap
 // Create an account using high-volume throttles
 tx := hedera.NewAccountCreateTransaction().
     SetKey(publicKey).
@@ -249,9 +259,25 @@ if err != nil {
 fmt.Printf("Account created: %v\n", receipt.AccountID)
 ```
 
-</Tab>
+```rust Rust wrap
+// Create an account using high-volume throttle
+let tx = AccountCreateTransaction::new()
+    .key(public_key)
+    .initial_balance(Hbar::new(10))
+    .high_volume(true)            // Opt into high-volume throttles
+    .max_transaction_fee(Hbar::new(5))     // ALWAYS set a fee cap
+    .freeze_with(&client)?;
 
-</Tabs>
+let response = tx.execute(&client).await?;
+let receipt = response.get_receipt(&client).await?;
+let new_account_id = receipt.account_id.unwrap();
+
+println!("Account created: {:?}", new_account_id);
+
+```
+
+</CodeGroup>
+
 
 ### Step 3: Handle Fee Failures Gracefully
 
@@ -296,7 +322,7 @@ may follow patterns. Off-peak hours may offer lower multipliers.
 After a high-volume transaction reaches consensus, you can confirm its status via the
 Mirror Node REST API:
 
-```bash
+```bash wrap
 curl "https://mainnet.mirrornode.hedera.com/api/v1/transactions/{transactionId}"
 ```
 

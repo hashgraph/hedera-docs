@@ -479,24 +479,22 @@
                   {
                     "group": "Hedera AI Agent Kit",
                     "pages": [
-                     "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit",
-                     "hedera/open-source-solutions/ai-studio-on-hedera/plugins",
-                     "hedera/open-source-solutions/ai-studio-on-hedera/policies",
-                     "hedera/open-source-solutions/ai-studio-on-hedera/adaptors",
+                      "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit",
+                      "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/plugins",
+                      "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/policies",
+                      "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/adaptors",
                       {
                         "group": "JavaScript SDK",
                         "pages": [
                           "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/quickstart",
-                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/plugins",
-                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/how-to-publish-plugin"
-                          
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/how-to-publish-js-plugins"
                         ]
                       },
                       {
                         "group": "Python SDK",
                         "pages": [
                           "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/quickstart",
-                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/how-to-publish-plugin"
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/how-to-publish-py-plugins"
                         ]
                       }
                     ]

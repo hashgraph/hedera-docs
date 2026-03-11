@@ -174,9 +174,9 @@ title: "Network Governance"
   </Accordion>
 
   <Accordion title="How does the exchange rate impact transaction fees?">
-    Nodes calculate the fee for a transaction in USD but convert that value to HBAR using the current exchange rate before deducting that amount from the account paying for the transaction. Consequently, the fee in HBAR for the same transaction may vary from hour to hour, even as the fee in USD stays stable. If the client stipulates a max transaction fee for their transactions, a transaction may fail with an INSUFFICIENT_TX_FEE error if that stipulated max value is less than the value calculated by the nodes using the current exchange rate. Clients can protect themselves against this HBAR fee volatility by stipulating a sufficiently high max transaction fee (as they will only be charged the actual fee, not the max they stipulate) for transactions.
+    Fees are defined in USD as `tinycents` (`10⁸ tinycents` = 1 cent USD) in the fee schedule. Nodes convert the calculated USD fee to HBAR using the current exchange rate before charging the payer's account. This means the HBAR cost of the same transaction may vary from hour to hour as the exchange rate changes, even though the USD fee stays stable.
 
-    This applies to the payment transactions for queries as well.
+    If you set a `maxTransactionFee`, a transaction will fail with `INSUFFICIENT_TX_FEE` if the max is lower than the current calculated fee. To protect against volatility, set a sufficiently high max, you will only be charged the actual fee, not the maximum.
   </Accordion>
 
   <Accordion title="What does a COST_ANSWER query return?">
@@ -272,11 +272,11 @@ title: "Network Governance"
   </Accordion>
 
   <Accordion title="How often does pricing for transactions and queries change?">
-    Hedera council reviews pricing at every council meeting (once every three months), and approves all changes to the prices. The exchange rate that nodes use to determine the corresponding fees in hbars is updated frequently (currently every hour) .
+    The Hedera Council reviews pricing at every council meeting (approximately every three months) and approves all changes to the fee schedule. Fee updates are published to system file `0.0.113` on the network. The USD-to-HBAR exchange rate is updated frequently (currently every hour).
   </Accordion>
 
   <Accordion title="Are Hedera transactions fees set in FIAT (USD) or HBAR?">
-    Hedera transaction and query fees are denominated in USD and paid in HBAR. The network regularly updates the USD-to-HBAR exchange rate based on current market rates, subject to a defined minimum exchange rate.
+    Hedera transaction and query fees are denominated in **USD** and paid in **HBAR**. Specifically, fees are defined in `tinycents` (`10⁸ tinycents` = 1 cent USD) in the fee schedule stored in system file `0.0.113`. The network regularly updates the USD-to-HBAR exchange rate based on current market rates, subject to a defined minimum exchange rate.
 
     This model is designed to keep fees predictable in USD terms, even though the amount paid in HBAR may vary over time. By using a minimum exchange rate, the network limits how much the HBAR-denominated fee can increase during periods of significant price volatility.
 

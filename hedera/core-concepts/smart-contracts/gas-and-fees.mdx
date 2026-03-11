@@ -23,7 +23,9 @@ As noted in [HIP-410](https://hips.hedera.com/hip/hip-410), this maximizes compa
 
 ## Gas Schedule and Fee Calculation
 
-Gas charges apply to `ContractCall`, `ContractCreate`, and `EthereumTransaction`. Other smart contract-related transactions (e.g., `ContractDelete`, `ContractGetInfo`) use standard Hedera network, node, and service fees in HBAR.
+Gas charges apply to `ContractCall`, `ContractCreate`, and `EthereumTransaction`. Other smart contract-related transactions (e.g., `ContractDelete`, `ContractGetInfo`) use the standard [Simple Fees](/hedera/core-concepts/transactions-and-queries/simple-fees) model, a base fee plus extras for node, network, and service components, paid in HBAR.
+
+For gas-consuming transactions (`ContractCall`, `ContractCreate`, `EthereumTransaction`), gas is an "extra" in the service fee component. The gas extra covers EVM execution costs. All other fee components (node fee, network fee, and the non-gas portion of the service fee) follow the base-fee-plus-extras model.
 
 Gas fees for EVM transactions consist of:
 

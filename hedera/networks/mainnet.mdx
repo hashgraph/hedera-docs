@@ -7,13 +7,13 @@ sidebarTitle: Overview
 
 The Hedera mainnet (short for main network) is where applications are run in production, with transaction fees paid in [HBAR](https://www.hedera.com/hbar). Any application or retail user can submit transactions to the Hedera mainnet; they're automatically consensus-timestamped and fairly ordered.
 
-Any Hedera account can query data associated with Hedera's services and stored on-chain. Every transaction requires payment as a **transaction fee** denominated in **tinybars** (100,000,000 tℏ = 1 ℏ). You can learn more about transaction fees and estimate your application costs [here](https://www.hedera.com/fees).
+Any Hedera account can query data associated with Hedera's services and stored on-chain. Every transaction requires payment of a fee. Fees follow a [base fee + extras model](/hedera/core-concepts/transactions-and-queries/simple-fees) defined in the network's fee schedule (system file `0.0.113`). Fees are denominated in USD (as tinycents) and paid in HBAR at the current exchange rate (100,000,000 tℏ = 1 ℏ). You can learn more about transaction fees [here](/hedera/core-concepts/transactions-and-queries/simple-fees) and estimate your application costs using the [fee tables](/hedera/networks/mainnet/fees) or the `POST /api/v1/network/fees` [Mirror Node endpoint](/hedera/sdks-and-apis/rest-api/network).
 
 If you're looking to test your application (or just experiment), please visit [Testnet Access](/hedera/networks/testnet/testnet-access). The Hedera testnet enables developers to prototype and test applications in a simulated mainnet environment that uses test *HBAR* for paying transaction fees.
 
 <Warning>
-**Transaction Throttles**\
-Transactions on the Hedera Mainnet are currently throttled. You will receive a `"BUSY"` response if the number of transactions submitted to the network exceeds the threshold value.
+    #### **Transaction Throttles**
+    Transactions on the Hedera Mainnet are currently throttled. You will receive a `"BUSY"` response if the number of transactions submitted to the network exceeds the threshold value.
 </Warning>
 
 ## Main Network Throttles

@@ -1,0 +1,366 @@
+---
+title: "Simple Fees"
+description: "Understand the simplified base-fee-plus-extras model for Hedera transaction and query fees introduced by HIP-1261."
+---
+
+## Overview
+
+Hedera uses a simplified fee model where every transaction cost is calculated as a **base fee plus extras**. Introduced in [HIP-1261](https://hips.hedera.com/hip/hip-1261), this model replaces the previous resource-weighted fee schedule with transparent, predictable pricing.
+
+All fees are defined in **USD as tinycents** and converted to HBAR at the current network exchange rate before being charged. The fee schedule is stored as a JSON document in system file `0.0.113` on the network.
+
+<Info>
+**What is a tinycent?** One cent USD = 10⁸ tinycents. One dollar USD = 10¹⁰ tinycents. Tinycents provide high precision for fee calculations without floating-point math.
+</Info>
+
+<Accordion title="Key terms">
+
+| Term | Definition |
+| --- | --- |
+| **Base Fee** | The fixed minimum fee in tinycents for a transaction or query before any extras are applied. |
+| **Extras** | Additional cost factors on top of the base fee, such as signatures, bytes, keys, or gas. Each has a per-unit fee and an optional included count. |
+| **Included Count** | Units of an extra included for free in the base fee before additional charges apply. |
+| **Tinycent** | The smallest fee unit. 10⁸ tinycents = 1 cent USD. 10¹⁰ tinycents = 1 USD. |
+| **Node Fee** | Fee paid to the submitting node. Same calculation for all transaction types. |
+| **Network Fee** | A multiplier of the node fee covering consensus and storage. |
+| **Service Fee** | Covers execution costs. Varies by transaction type. |
+
+</Accordion>
+
+## Fee Components
+
+Every transaction fee is split into three components:
+
+| Component | What It Covers | How It's Calculated |
+|-----------|---------------|---------------------|
+| **Node** | Compensates the submitting node for pre-checking and forwarding the transaction | `baseFee` + extras (bytes, signatures). Identical formula for **all** transaction types. |
+| **Network** | Covers gossip, consensus, signature verification, and blockchain storage | A configurable multiplier of the node fee (default: 9×). |
+| **Service** | Covers execution costs, state changes, and blockstream output | `baseFee` + transaction-specific extras (keys, token types, gas, etc.). Varies by transaction type. |
+
+```text
+totalFee = nodeFee + networkFee + serviceFee
+```
+
+The node and network fees are uniform across all transaction types — only the service fee varies per transaction.
+
+## Extras
+
+Extras are additional cost factors applied on top of a base fee. Each extra has a **name**, a **per-unit fee** (in tinycents), and an optional **included count** — the number of units included for free before additional charges apply.
+
+The following extras are defined in the fee schedule:
+
+| Extra | Counted By |
+|-------|-----------|
+| `Signatures` | Number of signature verifications on the transaction |
+| `Bytes` | Size of the transaction in protobuf bytes |
+| `Keys` | Number of keys defined (nested key structures count all keys) |
+| `TokenTypes` | Number of token types referenced |
+| `NFTSerials` | Number of distinct NFT serials |
+| `Accounts` | Number of accounts loaded during handling |
+| `StandardFungibleTokens` | Number of fungible tokens without custom fees |
+| `StandardNonFungibleTokens` | Number of NFTs without custom fees |
+| `CustomFeeFungibleTokens` | Number of fungible tokens with custom fees |
+| `CustomFeeNonFungibleTokens` | Number of NFTs with custom fees |
+| `CreatedAutoAssociations` | Number of auto-associations created |
+| `CreatedAccounts` | Number of hollow accounts created (e.g., transfers to aliases) |
+| `CustomFee` | Whether custom fees are defined for the created entity |
+| `Gas` | Gas cost (includes execution of hook programs) |
+| `Allowances` | Number of allowances |
+| `Airdrops` | Number of airdrops executed |
+| `HooksCreated` | Number of hooks created on an account or contract |
+| `HooksDeleted` | Number of hooks deleted from an account or contract |
+| `HooksModified` | Number of hooks modified on an account or contract (e.g., updated admin key, storage) |
+| `HookInvocations` | Number of hook programs invoked during transaction execution (e.g., pre-/post-transaction hook calls) |
+
+<Tip>
+The **included count** means you don't pay extra for typical usage. For example, the node fee includes 1,024 bytes and 1 signature by default — a 500-byte, single-signature transaction pays zero byte and signature extras on the node component.
+</Tip>
+
+## Fee Calculation Example
+
+Consider a basic `CryptoCreate` transaction with a single key and 150 bytes:
+
+<Steps>
+
+<Step title="Calculate the node fee">
+
+The node fee applies the same formula to all transactions:
+
+```text wrap
+Node baseFee:       100,000 tinycents
+Bytes extra:        150 bytes used, 1,024 included → 0 charged → 0
+Signatures extra:   1 signature, 1 included → 0 charged → 0
+───────────────────────────────────────────────
+Node fee total:     100,000 tinycents
+```
+
+</Step>
+
+<Step title="Calculate the network fee">
+
+The network fee is a multiplier of the node fee:
+
+```text
+Network fee = 9 × 100,000 = 900,000 tinycents
+```
+
+</Step>
+
+<Step title="Calculate the service fee">
+
+The service fee is specific to `CryptoCreate`:
+
+```text wrap
+Service baseFee:    499,000,000 tinycents
+Keys extra:         1 key used, 1 included → 0 charged → 0
+───────────────────────────────────────────────
+Service fee total:  499,000,000 tinycents
+```
+
+</Step>
+
+<Step title="Sum the total">
+
+```text wrap
+Total = 100,000 + 900,000 + 499,000,000 = 500,000,000 tinycents ≈ $0.05 USD
+```
+
+This amount is converted to HBAR at the current exchange rate and charged to the payer.
+
+</Step>
+
+</Steps>
+
+If the same transaction used **two** keys instead of one, the service fee would increase by the per-key extra fee (e.g., 10,000,000 tinycents), because the included count of 1 key is exceeded by 1.
+
+## Transaction Outcomes and Fees
+
+Not all transactions succeed. The fee charged depends on how far the transaction progresses:
+
+| Outcome | Description | Who Pays | Components Charged |
+|---------|-------------|----------|-------------------|
+| **Successful** | Transaction executed normally | Payer | Node + Network + Service |
+| **Bad** | Passed due-diligence but failed during execution (e.g., out of gas, semantically wrong, inconsistent with state) | Payer | Node + Network + Service (full) |
+| **Unhandled** | Well-formed but not executed (e.g., throttled, duplicate, unexecuted portion of an atomic batch) | Payer | Node + Network |
+| **Invalid** | Failed due-diligence checks by the submitting node (e.g., payer can't afford the fee, incompatible fields) | Submitting node | Network only |
+| **Unreadable** | Bytes cannot be parsed as a valid protobuf `Transaction` | Submitting node | Punitive flat fee |
+
+<Warning>
+Bad transactions are charged full freight (node + network + service) to protect the network from denial-of-service attacks. This applies even if the transaction fails due to a bug (`FAIL_INVALID`).
+</Warning>
+
+## Congestion Pricing
+
+When throughput for a specific throttle reaches a sustained critical level, **congestion pricing** may take effect. This dynamically increases fees to protect the network under high load. Congestion pricing is configurable per network — the Hedera Council sets the thresholds for the Hedera mainnet.
+
+## Fee Schedule Configuration
+
+The fee schedule is a JSON document stored in system file **`0.0.113`**. It defines:
+
+| Section | Purpose |
+|---------|---------|
+| `extras` | All available extra fee definitions (name + per-unit fee) |
+| `node` | Node fee configuration (base fee + extras with included counts) |
+| `network` | Network fee configuration (multiplier) |
+| `services` | Per-service groupings of transaction and query fee definitions |
+| `unreadable` | Punitive fee for unparsable transaction bytes |
+
+<Accordion title="Example fee schedule structure (JSON)">
+
+```json
+{
+  "version": 0,
+  "extras": [
+    { "name": "Signatures", "fee": 100000 },
+    { "name": "Bytes", "fee": 10000 },
+    { "name": "Keys", "fee": 10000000 }
+  ],
+  "node": {
+    "baseFee": 100000,
+    "extras": [
+      { "name": "Bytes", "includedCount": 1024 },
+      { "name": "Signatures", "includedCount": 1 }
+    ]
+  },
+  "network": { "multiplier": 9 },
+  "services": [
+    {
+      "name": "CryptoService",
+      "transactions": [
+        {
+          "name": "CryptoCreate",
+          "baseFee": 499000000,
+          "extras": [
+            { "name": "Keys", "includedCount": 1 }
+          ]
+        }
+      ],
+      "queries": []
+    }
+  ],
+  "unreadable": { "fee": 100000000000 }
+}
+```
+
+</Accordion>
+
+<Note>
+The legacy fee schedule in system file `0.0.111` remains available in its existing format for backward compatibility, but it will not receive further updates.
+</Note>
+
+## Fee Estimation
+
+You can estimate transaction fees before submitting them using the Mirror Node REST API:
+
+```bash
+POST /api/v1/network/fees?mode=intrinsic
+Content-Type: application/protobuf
+
+<Transaction protobuf binary>
+```
+
+The endpoint supports two modes:
+
+| Mode | Behavior |
+|------|----------|
+| `intrinsic` (default) | Estimates based on the transaction's inherent properties (size, signatures, keys) |
+| `state` | Estimates using the mirror node's latest known state (e.g., checks if accounts exist) |
+
+See [Mirror Node REST API — Network](/sdks-and-apis/rest-api/network) for the full endpoint specification and response format.
+
+## Queries
+
+Queries follow the same base-fee-plus-extras structure as transactions. Some queries are marked as `free` in the fee schedule (e.g., `FileGetInfo`, `TransactionGetReceipt`). For non-free queries, the SDK creates a `CryptoTransfer` payment transaction to pay the node, network, and service fees.
+
+## Fee Schedule Schema (Protobuf)
+
+The fee schedule is defined as a set of protobuf messages. The wire format is JSON, stored in system file `0.0.113`.
+
+### FeeSchedule
+
+Top-level message defining the complete fee configuration.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `node` | NodeFeeSchedule | How to compute the node fee component. **Required.** |
+| `network` | NetworkFeeSchedule | How to compute the network fee component. **Required.** |
+| `unreadable` | UnreadableTransactionFeeSchedule | Fee for unparsable transaction bytes. Optional. |
+| `extras` | repeated ExtraFeeDefinition | All available extra fee definitions. No duplicate names. |
+| `services` | repeated ServiceFeeSchedule | Fee configs per network service. No duplicate names. |
+
+### ExtraFeeDefinition
+
+Defines a single extra fee — an additional charge for a specific cost factor.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | string | Unique name. Must match `[A-Za-z].*[A-Za-z0-9]*`. **Required.** |
+| `fee` | uint64 | Fee per unit in tinycents. Must be > 0. **Required.** |
+
+### NodeFeeSchedule
+
+Node fee configuration. Applied identically to **all** transaction types.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `base_fee` | uint64 | Base fee in tinycents. Defaults to 0. |
+| `extras` | repeated ExtraFeeReference | Extras for computing the node fee. No duplicate references. |
+
+### NetworkFeeSchedule
+
+Network fee configuration. Calculated as a multiplier of the node fee.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `multiplier` | uint32 | Multiplied by the node fee. Must be ≥ 1. **Required.** |
+
+### ServiceFeeSchedule
+
+Groups transaction and query fee configs for a single gRPC service.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | string | Service name (e.g., `CryptoService`). **Required.** |
+| `schedule` | repeated ServiceFeeDefinition | Transaction/query fee configs. Must not be empty. |
+
+### ServiceFeeDefinition
+
+Fee definition for a single transaction or query.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | string | Transaction/query name (e.g., `CryptoCreate`). **Required.** |
+| `base_fee` | uint64 | Base fee in tinycents. Defaults to 0. |
+| `extras` | repeated ExtraFeeReference | Extras for this transaction/query. No duplicate references. |
+| `free` | bool | If `true`, `base_fee` and `extras` are ignored — the operation is free. |
+
+### ExtraFeeReference
+
+References an ExtraFeeDefinition with an optional included count.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | string | Name of the referenced extra. Must match a defined extra. **Required.** |
+| `included_count` | uint32 | Units included for free in the base fee. Defaults to 0. |
+
+### UnreadableTransactionFeeSchedule
+
+Punitive fee for nodes that submit unparsable bytes.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `fee` | uint64 | Punitive fee in tinycents. Optional (may be 0). |
+
+### Validation Rules
+
+Before a new fee schedule takes effect, the network validates it. If any rule fails, the schedule is rejected.
+
+<AccordionGroup>
+
+<Accordion title="Parsing and schema compliance">
+The JSON must parse and conform to the `FeeSchedule` protobuf message. All required fields must be present and types must match. No unrecognized fields.
+</Accordion>
+
+<Accordion title="Monetary values">
+All `baseFee` and `fee` fields must be non-negative integers. For extras, `fee` must be strictly > 0.
+</Accordion>
+
+<Accordion title="Multiplier constraint">
+The `multiplier` in `network` must be a positive integer ≥ 1.
+</Accordion>
+
+<Accordion title="Name uniqueness and format">
+All names must match `[A-Za-z].*[A-Za-z0-9]*`. Extra names, service names, and transaction/query names within each service must be unique.
+</Accordion>
+
+<Accordion title="Extra references">
+Every extra reference must point to a defined extra. No duplicate references within a single list.
+</Accordion>
+
+<Accordion title="Free transactions and queries">
+If `free` is `true`, `baseFee` and `extras` are ignored during calculation but must still comply with all validation rules if present.
+</Accordion>
+
+</AccordionGroup>
+
+## Related
+
+<CardGroup cols={2}>
+
+<Card title="HIP-1261: Simple Fees" icon="file-lines" href="https://hips.hedera.com/hip/hip-1261">
+  The full Hiero Improvement Proposal specification.
+</Card>
+
+<Card title="Transaction and Query Fees" icon="dollar-sign" href="/hedera/networks/mainnet/fees">
+  Fee tables for all transaction and query types on mainnet.
+</Card>
+
+<Card title="Gas and Fees" icon="gas-pump" href="/hedera/core-concepts/smart-contracts/gas-and-fees">
+  Gas schedule and fee calculation for smart contracts.
+</Card>
+
+<Card title="HIP-1259: Fee Collection" icon="vault" href="https://hips.hedera.com/hip/hip-1259">
+  The fee collection account model that Simple Fees depends on.
+</Card>
+
+</CardGroup>

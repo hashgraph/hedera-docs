@@ -481,20 +481,18 @@
                     "pages": [
                       "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit",
                       "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/plugins",
-                      "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/policies",
-                      "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/adaptors",
                       {
                         "group": "JavaScript SDK",
                         "pages": [
                           "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/quickstart",
-                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/how-to-publish-js-plugins"
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/create-js-plugins"
                         ]
                       },
                       {
                         "group": "Python SDK",
                         "pages": [
                           "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/quickstart",
-                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/how-to-publish-py-plugins"
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/create-py-plugins"
                         ]
                       }
                     ]

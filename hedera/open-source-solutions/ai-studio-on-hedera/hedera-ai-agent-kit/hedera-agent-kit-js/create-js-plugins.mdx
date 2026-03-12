@@ -1,18 +1,17 @@
 ---
-title: "Publish JavaScript Plugins"
+title: "Create JavaScript Plugins"
 description: "Instructions for Creating, Publishing and Registering your Hedera Agent Kit Plugin"
 ---
 
 
-### Publish and Register Your Plugin
+## Publish and Register Your Plugin
 
 To create a plugin to be use with the Hedera Agent Kit, you will need to create a plugin in your own repository, publish an npm package, and provide a description of the functionality included in that plugin, as well as the required and optional parameters.
 
 Once you have a repository, published npm package, and a README with a description of the functionality included in that plugin in your plugin's repo, as well as the required and optional parameters, you can add it to the Hedera Agent Kit by forking and opening a Pull Request to:
 
 1. Include the plugin as a bullet point under the **Third Party Plugin** section in the [README.md in the hedera-agent-kit-js](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/README.md#third-party-plugins). Include the name, a brief description, and a link to the repository with the README, as well the URL linked to the published npm package.
-2. Include the same information in [docs/PLUGINS.md](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/PLUGINS.md#available-third-party-plugins) of the hedera-agent-kit-js repository under the **Available Third Party Plugins** section.
-3. If you would like to include your plugin functionality in the Hedera plugin built for ElizaOS simply make a PR to [add your plugin name to the `plugins` array in the Hedera ElizaOS plugin](https://github.com/elizaos-plugins/plugin-hedera/blob/1.x/src/adapter-plugin/plugin.ts#L72) where the configuration is initiated. The hedera-agent-kit adaptor architecture means your plugin functionality will be usable with no additional configuration needed.
+2. If you would like to include your plugin functionality in the Hedera plugin built for ElizaOS simply make a PR to [add your plugin name to the `plugins` array in the Hedera ElizaOS plugin](https://github.com/elizaos-plugins/plugin-hedera/blob/1.x/src/adapter-plugin/plugin.ts#L72) where the configuration is initiated. The hedera-agent-kit adaptor architecture means your plugin functionality will be usable with no additional configuration needed.
 
 Feel free to also [reach out to the Hedera Agent Kit maintainers on Discord](https://hedera.com/discord) or another channel so we can test out your plugin, include it in our docs, and let our community know through marketing and community channels.
 
@@ -61,4 +60,3 @@ _High level description of the plugin_
 | `YOUR_PLUGIN_TOOL_NAME`| What it does | How to use. Include a list of parameters and their descriptions|
 
 ````
- 

@@ -97,10 +97,10 @@ Next, install the required dependencies:
 
 ```bash
 npm install @openzeppelin/contracts
-npm install github:hashgraph/hedera-smart-contracts
+npm install @hiero-ledger/hiero-contracts
 ```
 
-Note that we are installing the latest code from the main branch when we install `github:hashgraph/hedera-smart-contracts` . This also gets installed at `@hashgraph/smart-contracts` so we can easily call these contracts from our own contract.
+Install the published `@hiero-ledger/hiero-contracts` package to access the latest available system contract interfaces in your project.
 
 ---
 
@@ -168,10 +168,10 @@ import {IERC721} from "@openzeppelin/contracts/interfaces/IERC721.sol";
 
 // Hedera HTS system contracts (as in your setup)
 // Hedera HTS system contracts (v1, NOT v2)
-import {HederaTokenService} from "@hashgraph/smart-contracts/contracts/system-contracts/hedera-token-service/HederaTokenService.sol";
-import {IHederaTokenService} from "@hashgraph/smart-contracts/contracts/system-contracts/hedera-token-service/IHederaTokenService.sol";
-import {HederaResponseCodes} from "@hashgraph/smart-contracts/contracts/system-contracts/HederaResponseCodes.sol";
-import {KeyHelper} from "@hashgraph/smart-contracts/contracts/system-contracts/hedera-token-service/KeyHelper.sol";
+import {HederaTokenService} from "@hiero-ledger/hiero-contracts/token-service/HederaTokenService.sol";
+import {IHederaTokenService} from "@hiero-ledger/hiero-contracts/token-service/IHederaTokenService.sol";
+import {HederaResponseCodes} from "@hiero-ledger/hiero-contracts/common/HederaResponseCodes.sol";
+import {KeyHelper} from "@hiero-ledger/hiero-contracts/token-service/KeyHelper.sol";
 
 /**
  * HTS-backed ERC721-like collection:

@@ -36,7 +36,7 @@ To get started quickly, you can begin with the Gitpod demo, which requires no en
   </Card>
   <Card
     title="➡ LAYERZERO EXAMPLES REPO"
-    href="https://github.com/hashgraph/hedera-smart-contracts/tree/main/lib/layer-zero#layer-zero-examples"
+    href="https://github.com/hiero-ledger/hiero-contracts/tree/main/contracts/extensions"
     arrow
   >
     Explore examples for bridging tokens with LayerZero.
@@ -53,7 +53,7 @@ All examples in the demo repo are exploratory code and have NOT been audited. Pl
 
 ### Omnichain Fungible Token (OFT) / Omnichain Non-Fungible Token (ONFT)
 
-The OFT and ONFT token standards allow the transfer of fungible (ERC-20s) and non-fungible tokens (ERC-721s) across chains using LayerZero's messaging infrastructure. If you're bridging an existing fungible ERC token on Hedera to another EVM chain, you can deploy the [**OFT**](https://github.com/hashgraph/hedera-smart-contracts/tree/main/lib/layer-zero#oft) standard contract and the [**ONFT**](https://github.com/hashgraph/hedera-smart-contracts/tree/main/lib/layer-zero#onft) standard contract for NFTs.
+The OFT and ONFT token standards allow the transfer of fungible (ERC-20s) and non-fungible tokens (ERC-721s) across chains using LayerZero's messaging infrastructure. If you're bridging an existing fungible ERC token on Hedera to another EVM chain, you can deploy the [**OFT**](https://github.com/hiero-ledger/hiero-contracts/tree/main/contracts/extensions) standard contract and the [**ONFT**](https://github.com/hiero-ledger/hiero-contracts/tree/main/contracts/extensions) standard contract for NFTs.
 
 #### **Use Case**
 
@@ -65,7 +65,7 @@ Allows fungible and non-fungible tokens to be transferred across chains.
 <Tab title="OFT">
 <Card
     title="Github"
-    href="https://github.com/hashgraph/hedera-smart-contracts/blob/main/lib/layer-zero/ExampleOFT.sol"
+    href="https://github.com/hiero-ledger/hiero-contracts/tree/main/contracts/extensions"
     icon="github"
     horizontal
 />
@@ -101,7 +101,7 @@ contract ExampleOFT is OFT {
 <Tab title="ONFT">
 <Card
     title="Github"
-    href="https://github.com/hashgraph/hedera-smart-contracts/blob/main/lib/layer-zero/ExampleONFT.sol"
+    href="https://github.com/hiero-ledger/hiero-contracts/tree/main/contracts/extensions"
     icon="github"
     horizontal
 />
@@ -136,7 +136,7 @@ contract ExampleONFT is ONFT721 {
 
 ### OFT Adapter / ONFT Adapter
 
-The OFT Adapter acts as an intermediary contract that handles sending and receiving existing fungible tokens across chains. If your token already exists on the chain you want to connect to, you can deploy the [**OFT Adapter**](https://github.com/hashgraph/hedera-smart-contracts/tree/main/lib/layer-zero#oft-adapter) contract to act as an intermediary lockbox for the token. Similarly, the ONFT Adapter handles sending and receiving existing fungible tokens across chains. If your NFT already exists on the chain you want to connect to, you can deploy the [**ONFT Adapter**](https://github.com/hashgraph/hedera-smart-contracts/tree/main/lib/layer-zero#onft-adapter) contract to act as an intermediary lockbox for the NFT.
+The OFT Adapter acts as an intermediary contract that handles sending and receiving existing fungible tokens across chains. If your token already exists on the chain you want to connect to, you can deploy the [**OFT Adapter**](https://github.com/hiero-ledger/hiero-contracts/tree/main/contracts/extensions) contract to act as an intermediary lockbox for the token. Similarly, the ONFT Adapter handles sending and receiving existing fungible tokens across chains. If your NFT already exists on the chain you want to connect to, you can deploy the [**ONFT Adapter**](https://github.com/hiero-ledger/hiero-contracts/tree/main/contracts/extensions) contract to act as an intermediary lockbox for the NFT.
 
 #### **Use Case**
 
@@ -148,7 +148,7 @@ Intermediary contract that handles sending and receiving existing fungible token
 <Tab title="OFT Adapter">
 <Card
     title="Github"
-    href="https://github.com/hashgraph/hedera-smart-contracts/blob/main/lib/layer-zero/ExampleOFTAdapter.sol"
+    href="https://github.com/hiero-ledger/hiero-contracts/tree/main/contracts/extensions"
     icon="github"
     horizontal
 />
@@ -172,7 +172,7 @@ contract ExampleOFTAdapter is OFTAdapter {
 <Tab title="ONFT Adapter">
 <Card
     title="Github"
-    href="https://github.com/hashgraph/hedera-smart-contracts/blob/main/lib/layer-zero/ExampleONFTAdapter.sol"
+    href="https://github.com/hiero-ledger/hiero-contracts/tree/main/contracts/extensions"
     icon="github"
     horizontal
 />
@@ -203,7 +203,7 @@ contract ExampleONFTAdapter is ONFT721Adapter {
 
 ### HTS Connector
 
-The [**HTS Connector Contract**](https://github.com/hashgraph/hedera-smart-contracts/tree/main/lib/layer-zero#hts-connector) ([independent audit report](https://hedera.com/audits-and-standards)) extends LayerZero’s functionality to accommodate HTS tokens, addressing the differences between HTS and ERC token standards. It facilitates the integration of existing ERC tokens with Hedera by bridging them as native HTS tokens. This is a variant of OFT when bringing tokens to Hedera as HTS. If you bring a token to Hedera as an ERC token, you can use [**OFT**](https://github.com/hashgraph/hedera-smart-contracts/tree/main/lib/layer-zero#oft) or [**ONFT**](https://github.com/hashgraph/hedera-smart-contracts/tree/main/lib/layer-zero#onft).
+The [**HTS Connector Contract**](https://github.com/hiero-ledger/hiero-contracts/tree/main/contracts/extensions) ([independent audit report](https://hedera.com/audits-and-standards)) extends LayerZero’s functionality to accommodate HTS tokens, addressing the differences between HTS and ERC token standards. It facilitates the integration of existing ERC tokens with Hedera by bridging them as native HTS tokens. This is a variant of OFT when bringing tokens to Hedera as HTS. If you bring a token to Hedera as an ERC token, you can use [**OFT**](https://github.com/hiero-ledger/hiero-contracts/tree/main/contracts/extensions) or [**ONFT**](https://github.com/hiero-ledger/hiero-contracts/tree/main/contracts/extensions).
 
 #### **Use Case**
 
@@ -348,7 +348,7 @@ Please note the smallest unit of ***HBAR is the tinybar (8 decimal places)***, w
 
 ## Additional Resources
 
-* [**LZ Examples Repo**](https://github.com/hashgraph/hedera-smart-contracts/tree/main/lib/layer-zero#layer-zero-examples)
+* [**LZ Examples Repo**](https://github.com/hiero-ledger/hiero-contracts/tree/main/contracts/extensions)
 * [**Independent Audit Report**](https://hedera.com/audits-and-standards)
 * [**Demo Code Repo**](https://github.com/hedera-dev/hedera-example-layer-zero-bridging-oapp)
 * [**LayerZero Scan**](https://layerzeroscan.com/)

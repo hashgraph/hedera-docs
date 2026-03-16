@@ -10,3 +10,6 @@ dist
 .next
 .cache
 .DS_Store
+
+# Migration backups (created by revamp/migrate.sh)
+hedera.backup.*

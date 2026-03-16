@@ -7,8 +7,10 @@ This directory contains the tooling and plan for restructuring the Hedera docume
 | File | Purpose |
 |------|---------|
 | `plan.md` | The full revamp plan: persona model, navigation architecture, content mapping, user journeys |
-| `migrate.sh` | Migration script that copies content from `hedera/` to the new tab structure |
+| `migrate.sh` | Migration script that copies content from `hedera/` to the new tab structure and updates `docs.json` |
 | `create-placeholders.sh` | Creates placeholder pages for new content that doesn't exist in the old docs |
+| `verify.sh` | Verification script that validates the migration: nav integrity, coverage, orphans, duplicates |
+| `docs.json` | The new Mintlify navigation config with 7-tab structure (installed by `migrate.sh`) |
 | `README.md` | This file |
 
 ## New Structure
@@ -41,6 +43,9 @@ git checkout -b dev
 
 # Create placeholder pages for new content
 ./revamp/create-placeholders.sh
+
+# Verify everything is correct
+./revamp/verify.sh
 ```
 
 ### Keeping Dev in Sync with Main
@@ -136,6 +141,31 @@ The script automatically creates a timestamped backup of `hedera/` before making
 ```
 
 No options — creates placeholder `.mdx` files for pages in the new structure that need to be written from scratch (overview pages, "choose your path" guides, etc.). Skips files that already exist.
+
+### verify.sh
+
+```
+./revamp/verify.sh [OPTIONS]
+
+Options:
+  --fix    Show suggested fixes for issues found
+  --help   Show usage information
+```
+
+Runs 8 validation checks:
+
+| Check | What it validates |
+|-------|-------------------|
+| **1. JSON validity** | `docs.json` is valid JSON and matches `revamp/docs.json` |
+| **2. Nav references** | Every page path in `docs.json` has a corresponding `.mdx` file |
+| **3. Migration coverage** | Every `.mdx` in `hedera/` has a mapping in `migrate.sh` |
+| **4. No duplicates** | No page path appears more than once in `docs.json` navigation |
+| **5. No orphans** | Every `.mdx` in destination dirs is either in nav or a known placeholder |
+| **6. Snippet imports** | All `import ... from '/snippets/...'` statements resolve to real files |
+| **7. Tab structure** | All tabs in `docs.json` have groups or pages defined |
+| **8. Directory structure** | All 7 destination directories exist with `.mdx` files |
+
+Exits with code 0 if all checks pass, 1 if any fail.
 
 ## Adding New Mapping Rules
 

@@ -1,0 +1,110 @@
+---
+title: "Mainnet Accounts"
+---
+
+
+To interact with and access the various Hedera Mainnet services such as accounts, topics, tokens, files, and smart contracts, you will need a Hedera account. Your Hedera account also holds a balance of HBAR, which can be used to make transaction fee payments or transfers to other accounts.
+
+Create free mainnet accounts by visiting any of these wallet providers:
+
+<Columns cols={2}>
+  <Card
+    title="ATOMIC"
+    href="https://atomicwallet.io/"
+    arrow
+    img="/images/networks/mainnet/mainnet-access/mainnet-access-1.png"
+    
+  >
+    
+✅ Private Key Viewable
+  </Card>
+  <Card
+    title="BLADE"
+    href="https://www.bladewallet.io/"
+    arrow
+    img="/images/networks/mainnet/mainnet-access/mainnet-access-2.png"
+  >
+    
+✅ Private Key Viewable
+
+✅ SDK-compatible Passphrase
+  </Card>
+  <Card
+    title="COINOMI"
+    href="https://www.coinomi.com/en/"
+    arrow
+    img="/images/networks/mainnet/mainnet-access/mainnet-access-3.png"
+  >
+    
+✅ SDK-compatible Passphrase
+
+
+  </Card>
+  <Card
+    title="EXODUS"
+    href="https://www.exodus.com/hedera-wallet-hbar"
+    arrow
+    img="/images/networks/mainnet/mainnet-access/mainnet-access-4.png"
+  >
+    
+✅ Private Key Viewable
+  </Card>
+  <Card
+    title="GUARDA"
+    href="https://guarda.com/"
+    arrow
+    img="/images/networks/mainnet/mainnet-access/mainnet-access-5.png"
+  >
+    ✅ Private Key Viewable
+
+
+  </Card>
+  <Card
+    title="HASHPACK"
+    href="https://www.hashpack.app/"
+    arrow
+    img="/images/networks/mainnet/mainnet-access/mainnet-access-6.png"
+  >
+    
+✅ Private Key Viewable
+
+✅ SDK-compatible Passphrase
+  </Card>
+  <Card
+    title="KABILA"
+    href="https://www.kabila.app/"
+    arrow
+    img="/images/networks/mainnet/mainnet-access/mainnet-access-7.png"
+  >
+    ✅ Private Key Viewable
+
+✅ SDK-compatible Passphrase
+  </Card>
+  <Card
+    title="WALLAWALLET"
+    href="https://wallawallet.com/"
+    arrow
+    img="/images/networks/mainnet/mainnet-access/mainnet-access-8.png"
+  >
+  
+✅ Private Key Viewable
+
+✅ SDK-compatible Passphrase
+  </Card>
+</Columns>
+
+| Feature                     | Description                                                                                                                                             |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ✅ Private Key Viewable      | You have access to the private key associated with the mainnet account the wallet created for you                                                       |
+| ✅ SDK-compatible Passphrase | The passphrase created by the wallet is compatible with the SDKs and can be used to recover the private keys for the account the wallet created for you |
+
+### Create new mainnet accounts
+
+Once you have obtained your mainnet account from a supported wallet, you can use the SDKs to create additional mainnet accounts.
+
+To do this, you will need to point your Hedera client to mainnet (`Client.forMainnet()`)and use the `AccountCreateTransaction` API to create a new account. The transaction fee payer (referred to as the `operator` in the SDKs) information should be set to the mainnet account you created from one of the above wallets (`setOperator(<mainnetAccountId, mainnetAccountPrivateKey)`).
+
+<Card
+  title="Create An Account"
+  href="/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-an-account"
+/>

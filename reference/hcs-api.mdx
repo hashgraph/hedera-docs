@@ -1,0 +1,71 @@
+---
+title: "Hedera Consensus Service gRPC API"
+description: "The Hedera Consensus Service (HCS) gRPC API is a public mirror node managed by Hedera. It offers the ability to subscribe to HCS topics and receive messages for the topic subscribed."
+---
+
+
+<Warning>
+#### Important Notice: Deprecation of the Insecure Hedera Consensus Service (HCS) Mirror Node Endpoints
+
+We are phasing out the legacy Hedera Consensus Service (HCS) mirror node endpoints. The APIs have transitioned from the legacy *hcs*.
+
+`<env>.mirrornode.hedera.com:5600` endpoints to the new `<env>.mirrornode.hedera.com:443` endpoints.
+
+For more details, please read our [blog post announcement](https://hedera.com/blog/deprecation-of-the-insecure-hedera-consensus-service-hcs-mirror-node-endpoints).
+</Warning>
+
+<Info>
+**HCS Mirror Node Endpoints:**\
+**PREVIEWNET:** previewnet.mirrornode.hedera.com:443\
+**TESTNET**: testnet.mirrornode.hedera.com:443\
+**MAINNET**: mainnet.mirrornode.hedera.com:443
+</Info>
+
+<Warning>
+Requests for the public mainnet mirror node are throttled at 100 requests per second (rps). This may change in the future depending upon performance or security considerations. At this time, no authentication is required.
+</Warning>
+
+Community-supported mirror node information can be found here:
+
+<Card
+  title="Network Explorers and Tools"
+  href="/hedera/networks/community-mirror-nodes"
+/>
+
+## Build a Mirror Node Client
+
+If you building your client with a predefined Hedera network (previewnet, testnet, mainnet), you do not need to define the mirror client as it is built in. If you would like to modify the mirror node client, you can use `Client.<network>.setMirrorNetwork(<network>)`.
+
+<CodeGroup>
+
+```java Java
+// You will need to upgrade to v2.0.6 or higher
+Client client = Client.forMainnet();
+client.setMirrorNetwork(Collections.singletonList("mainnet.mirrornode.hedera.com:443"))
+```
+
+```javascript JavaScript
+// You will need to upgrade to v2.0.23 or higher
+const client = Client.forMainnet()
+client.setMirrorNetwork("mainnet.mirrornode.hedera.com:443")
+```
+
+```go Go
+hedera.ClientForMainnet()
+client.SetMirrorNetwork([]string{"mainnet.mirrornode.hedera.com:443"})
+```
+</CodeGroup>
+
+<Warning>
+**Concurrent Subscription Limit**\
+A single client can make a maximum of **5** concurrent subscription calls per connection.
+</Warning>
+
+### Subscribe to a topic
+
+Please click the link below to see how you can subscribe to a topic.
+
+<Card
+  title="Get Topic Message"
+  href="/hedera/sdks-and-apis/sdks/consensus-service/get-topic-message"
+/>

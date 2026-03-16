@@ -103,7 +103,8 @@ if [ "$DRY_RUN" = false ]; then
     BACKUP="hedera.backup.$(date +%Y%m%d_%H%M%S)"
     echo -e "${YELLOW}Creating backup...${NC}"
     cp -r hedera "$BACKUP"
-    echo -e "${GREEN}✓${NC} Backup: $BACKUP"
+    cp docs.json "$BACKUP/docs.json.bak"
+    echo -e "${GREEN}✓${NC} Backup: $BACKUP (includes docs.json)"
 fi
 
 # ============================================================================
@@ -973,24 +974,67 @@ echo -e "${BLUE}━━━ Checking for orphaned destination files ━━━${NC}
 DEST_DIRS=("learn" "evm" "native" "operators" "reference" "solutions" "support")
 ORPHAN_LIST=""
 
+PLACEHOLDER_COUNT=0
+
 for dir in "${DEST_DIRS[@]}"; do
     [ ! -d "$dir" ] && continue
     while IFS= read -r -d '' dest_file; do
         if ! grep -qxF "$dest_file" "$DEST_MANIFEST" 2>/dev/null; then
-            ORPHANED=$((ORPHANED + 1))
-            ORPHAN_LIST="${ORPHAN_LIST}${dest_file}\n"
-            if [ "$CLEAN_ORPHANS" = true ] && [ "$DRY_RUN" = false ]; then
-                rm "$dest_file"
-                echo -e "  ${RED}- REMOVED${NC} $dest_file"
+            # Check if this is a placeholder created by create-placeholders.sh
+            if grep -q "Coming Soon.*This page is under construction" "$dest_file" 2>/dev/null; then
+                PLACEHOLDER_COUNT=$((PLACEHOLDER_COUNT + 1))
+                [ "$VERBOSE" = true ] && echo -e "  ${DIM}⊞ PLACEHOLDER${NC}  $dest_file"
             else
-                echo -e "  ${YELLOW}! ORPHAN${NC}  $dest_file"
+                ORPHANED=$((ORPHANED + 1))
+                ORPHAN_LIST="${ORPHAN_LIST}${dest_file}\n"
+                if [ "$CLEAN_ORPHANS" = true ] && [ "$DRY_RUN" = false ]; then
+                    rm "$dest_file"
+                    echo -e "  ${RED}- REMOVED${NC} $dest_file"
+                else
+                    echo -e "  ${YELLOW}! ORPHAN${NC}  $dest_file"
+                fi
             fi
         fi
     done < <(find "$dir" -name "*.mdx" -type f -print0 | sort -z)
 done
 
-if [ "$ORPHANED" -eq 0 ]; then
+if [ "$ORPHANED" -eq 0 ] && [ "$PLACEHOLDER_COUNT" -eq 0 ]; then
     echo -e "  ${GREEN}✓${NC} No orphaned files found"
+elif [ "$ORPHANED" -eq 0 ]; then
+    echo -e "  ${GREEN}✓${NC} No orphaned files found ($PLACEHOLDER_COUNT placeholder pages skipped)"
+fi
+
+# ============================================================================
+# UPDATE docs.json
+# ============================================================================
+# If revamp/docs.json exists, install it as the new navigation config.
+# Preserves the backup made earlier for rollback.
+# ============================================================================
+
+echo ""
+echo -e "${BLUE}━━━ Updating docs.json ━━━${NC}"
+
+SCRIPT_SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+NEW_DOCS_JSON="$SCRIPT_SOURCE_DIR/docs.json"
+
+if [ -f "$NEW_DOCS_JSON" ]; then
+    if [ "$DRY_RUN" = true ]; then
+        if ! cmp -s "$NEW_DOCS_JSON" "docs.json"; then
+            echo -e "  ${CYAN}~ UPDATE${NC}  docs.json (from revamp/docs.json)"
+        else
+            echo -e "  ${DIM}= SAME${NC}    docs.json (no changes needed)"
+        fi
+    else
+        if ! cmp -s "$NEW_DOCS_JSON" "docs.json"; then
+            cp "$NEW_DOCS_JSON" docs.json
+            echo -e "  ${CYAN}~ UPDATE${NC}  docs.json (from revamp/docs.json)"
+        else
+            echo -e "  ${DIM}= SAME${NC}    docs.json (no changes needed)"
+        fi
+    fi
+else
+    echo -e "  ${YELLOW}! SKIP${NC}    revamp/docs.json not found — docs.json unchanged"
+    echo -e "  ${YELLOW}          Create revamp/docs.json with the new navigation structure${NC}"
 fi
 
 # ============================================================================
@@ -1037,9 +1081,8 @@ fi
 
 echo ""
 echo -e "${YELLOW}Next steps:${NC}"
-echo "  1. Run ./create-placeholders.sh to create new pages"
-echo "  2. Update docs.json with the new navigation structure"
-echo "  3. Run 'mint dev' to test"
+echo "  1. Run ./revamp/create-placeholders.sh to create new pages"
+echo "  2. Run 'npx mintlify dev' to test the new navigation"
 echo ""
 
 # Exit with error if there are unmapped files

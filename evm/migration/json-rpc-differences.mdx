@@ -1,0 +1,146 @@
+---
+title: "JSON-RPC Relay and EVM Tooling"
+description: "Learn how to use the JSON-RPC relay and familiar EVM tools to interact with the Hedera network."
+mode: "wide"
+---
+
+## **Overview**
+
+Hiero’s JSON-RPC relay provides a familiar interface for EVM developers by supporting standard Ethereum JSON RPC methods. This compatibility means you can use popular EVM development tools (like Hardhat, Truffle, or Foundry) and wallets (like Metamask) to interact with Hedera’s network. However, Hedera’s unique state management model affects how you retrieve historical data and verify states, requiring a shift in approach from the standard EVM workflow.
+
+---
+
+## **Key Relay Features**
+
+The relay offers several advanced features that enhance dApp development on Hedera:
+
+#### **Real-Time Data and Event Filtering**
+
+The relay provides robust support for real-time data streaming and event filtering through its WebSocket server and Filter API methods. This allows applications to listen for on-chain events and receive updates as they happen.
+
+* WebSocket Support (`eth_subscribe`): Developers can establish a WebSocket connection to the relay (default: `ws://localhost:8546`) to subscribe to logs and newHeads events. This is ideal for applications that need to react instantly to new blocks or specific contract events. This functionality is enabled by HIP-694.
+* Filter API Methods: The relay supports the standard Ethereum Filter API, including `eth_newFilter`, `eth_getFilterChanges`, and `eth_getFilterLogs`. These methods allow you to create and query filters for historical logs and pending transactions, providing a powerful way to track contract activity.
+
+#### **Paymaster Support for Gasless Transactions**
+
+The JSON-RPC relay supports a paymaster feature, enabling gasless transactions for users. When this feature is enabled, the relay operator can sponsor transaction fees, allowing dApp users to interact with smart contracts without needing to hold HBAR for gas. This is ideal for improving user onboarding and creating seamless application experiences.
+
+**Key features of paymaster support include:**
+
+* **Gasless Transactions**: Users can send transactions with a gas price of 0.
+* **Operator-Sponsored Fees**: The relay operator covers the HAPI and Ethereum fees.
+* **Flexible Configuration**: Operators can enable paymaster support for all transactions (wildcard) or restrict it to a whitelist of specific smart contract addresses.
+
+**💡**_For more details on how to configure and use the paymaster feature, please refer to the configuration details in the_ [_**Hiero JSON RPC Relay repository**_](https://github.com/hiero-ledger/hiero-json-rpc-relay/blob/main/docs/configuration.md)**.**
+
+#### **Testing with Network Forking**
+
+Hedera now supports network forking, which allows you to test smart contracts against a live network's state without executing transactions on the actual network. This is a feature for development and debugging, as it lets you simulate transactions and contract interactions in a realistic environment. You can fork the Hedera network using both Hardhat and Foundry.
+
+For detailed instructions and examples, please refer to our tutorials:
+
+- [Forking the Hedera Network for Local Testing (Core Concepts)](/hedera/core-concepts/smart-contracts/forking-hedera-network-for-local-testing)
+- [How to Fork the Hedera Network with Hardhat (Basic ERC-20)](/hedera/tutorials/smart-contracts/how-to-fork-the-hedera-network-with-hardhat-basic-erc20)
+- [How to Fork the Hedera Network with Hardhat (Advanced HTS)](/hedera/tutorials/smart-contracts/how-to-fork-the-hedera-network-with-hardhat-advanced-hts)
+- [How to Fork the Hedera Network with Foundry (Basic ERC-20)](/hedera/tutorials/smart-contracts/foundry/how-to-fork-the-hedera-network-with-foundry-basic-erc20)
+
+---
+
+## **Ethereum RPC API Behavior via JSON-RPC Relay**
+
+On Ethereum, methods like `eth_getBlockByNumber` return the true value of `stateRoot` that enables direct historical state verification. Hiero’s JSON-RPC relay, however, returns the root hash of an empty Merkle trie for the `stateRoot` value for compatibility. Instead of relying on it, you should query Hedera’s mirror nodes for historical states, event logs, and transaction details.
+
+#### **Example JSON-RPC Query Request**
+
+A request to `eth_getBlockByNumber` returns a `stateRoot`, but it’s not useful for historical verification on Hedera. Instead, use mirror node REST APIs to fetch the necessary historical information.
+
+```shell
+curl -X POST \
+     -H "Content-Type: application/json" \
+     -d 
+          "jsonrpc": "2.0",
+          "method": "eth_getBlockByNumber",
+          "params": [
+              "0x1",
+              false
+          ],
+          "id": 1
+     }
+     https://testnet.hashio.io/api
+```
+
+This returns the root hash of an empty Merkle trie for compatibility and not the actual `stateRoot` value.
+
+---
+
+## **Endpoints**
+
+The JSON RPC Relay methods implement a subset of the standard method:
+
+#### **Gossip Methods**
+
+These methods track the head of the chain. This is how transactions make their way around the network, find their way into blocks, and how clients find out about new blocks.
+
+
+| Method | Static Response Value |
+| --- | ----------------------- |
+| [`eth_blockNumber`](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_blocknumber) | N/A |
+| [`eth_sendRawTransaction`](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_sendrawtransaction) | N/A |
+
+
+#### **State Methods**
+
+Methods that report the current state of all the data stored. The “state” is like one big shared piece of RAM, and includes account balances, contract data, and gas estimations.
+
+| Method | Static Response Value |
+| --- | --- |
+| [eth_getBalance](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getbalance) | n/a |
+| [eth_getStorageAt](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getstorageat) | n/a |
+| [eth_getTransactionCount](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_gettransactioncount) | n/a |
+| [eth_getCode](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getcode) | n/a |
+| [eth_call](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_call) | n/a |
+| [eth_estimateGas](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_estimategas) | generates and returns an estimate of the gas required for the transaction to complete |
+
+#### **History Methods**
+
+Fetches historical records of every block back to genesis. This is like one large append-only file, and includes all block headers, block bodies, uncle blocks, and transaction receipts.
+
+| Method | Static Response Value |
+|------|-----------------------|
+| [eth_getBlockTransactionCountByHash](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getblocktransactioncountbyhash) | n/a |
+| [eth_getBlockTransactionCountByNumber](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getblocktransactioncountbynumber) | n/a |
+| [eth_getUncleCountByBlockHash](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getunclecountbyblockhash) | `null` |
+| [eth_getUncleCountByBlockNumber](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getunclecountbyblocknumber) | `0x0` |
+| [eth_getBlockByHash](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getblockbyhash) | `stateRoot` is always zero |
+| [eth_getBlockByNumber](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getblockbynumber) | `stateRoot` is always zero |
+| [eth_getTransactionByHash](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_gettransactionbyhash) | n/a |
+| [eth_getTransactionByBlockHashAndIndex](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_gettransactionbyblockhashandindex) | n/a |
+| [eth_getTransactionByBlockNumberAndIndex](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_gettransactionbyblocknumberandindex) | n/a |
+| [eth_getTransactionReceipt](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_gettransactionreceipt) | n/a |
+| [eth_getUncleByBlockHashAndIndex](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getunclebyblockhashandindex) | `null` |
+| [eth_getUncleByBlockNumberAndIndex](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getunclebyblocknumberandindex) | `null` |
+
+**💡**_**See the full list of methods**_ [_**here**_](https://github.com/hiero-ledger/hiero-json-rpc-relay/blob/main/docs/rpc-api.md)_**.**_
+
+## **Supported EVM Development Tools**
+
+<table><thead><tr><th>Feature</th><th>web3js</th><th>Truffle</th><th>ethers</th><th>Hardhat</th><th>Remix IDE</th><th>Foundry</th></tr></thead><tbody><tr><td>Transfer HBARS</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>Contract Deployment</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>Can use the contract instance after deploy without re-initialization</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>Contract View Function Call</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>Contract Function Call</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>Debug Operations**</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr></tbody></table>
+
+
+<Info>
+
+****Debug operations** are supported via the `debug_traceTransaction` and `debug_traceBlockByNumber` methods. To enable these methods, you must set `DEBUG_API_ENABLED=true` in your relay configuration. For more information, see the [debugging documentation](https://github.com/hiero-ledger/hiero-json-rpc-relay/blob/main/docs/debugging-transactions.md).
+
+**Note**: Development tools usually make a lot of requests to certain endpoints, especially during contract deployment. Be aware of rate limiting when deploying multiple large contracts.
+
+**Note**: Enable `development mode` to correctly assert revert messages of contract calls with `hardhat-chai-matchers`.
+
+</Info>
+
+---
+
+## Additional Resources
+
+- [**Supported EVM Tooling**](https://github.com/hiero-ledger/hiero-json-rpc-relay/tree/main/tools)
+- [**JSON-RPC Relay Docs**](/hedera/core-concepts/smart-contracts/json-rpc-relay)
+- [**Hiero JSON-RPC Relay Repo**](https://github.com/hiero-ledger/hiero-json-rpc-relay)

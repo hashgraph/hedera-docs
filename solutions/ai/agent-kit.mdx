@@ -1,0 +1,118 @@
+---
+title: "Hedera AI Agent Kit"
+description: "Build LLM-powered applications that interact with the Hedera Network"
+sidebarTitle: Overview
+---
+
+## Overview
+
+The **Hedera Agent Kit** is an open-source framework for building AI-powered applications that interact with the Hedera Network.
+Create conversational agents that understand natural language and execute Hedera transactions,
+or build backend systems that leverage AI for on-chain operations.
+
+The Agent Kit is available in two languages:
+
+<CardGroup cols={2}>
+  <Card title="JavaScript SDK" icon="js" href="/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/quickstart">
+    Build with TypeScript/JavaScript using npm
+  </Card>
+  <Card title="Python SDK" icon="python" href="/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/quickstart">
+    Build with Python using pip
+  </Card>
+</CardGroup>
+
+---
+
+## Key Features
+
+Both SDKs provide:
+
+- **🔌 Plugin Architecture**: Extensible design for easy customization
+- **🧠 LangChain Integration**: Support for LangChain v1 and LangChain Classic
+- **🪙 Comprehensive Hedera Tools**:
+  - Token creation and management (HTS)
+  - Smart contract execution (EVM)
+  - Account operations
+  - Topic (HCS) creation and messaging
+  - Transaction scheduling
+  - Allowances and approvals
+
+---
+
+## SDK Comparison
+
+| Feature                 | JavaScript SDK     | Python SDK         |
+|-------------------------|--------------------|--------------------|
+| **Package Manager**     | npm                | pip                |
+| **Package Name**        | `hedera-agent-kit` | `hedera-agent-kit` |
+| **Hedera SDK**          | `@hashgraph/sdk`   | `hiero_sdk_python` |
+| **Google ADK**          | 🔜 Coming Soon     | 🔜 Coming Soon     |
+| **AUTONOMOUS Mode**     | ✅ Supported        | ✅ Supported        |
+| **LangChain v1**        | ✅ Supported        | ✅ Supported        |
+| **LangChain Classic**   | ✅ Supported        | ✅ Supported        |
+| **Vercel AI SDK**       | ✅ Supported        | ❌ Not Available    |
+| **RETURN_BYTES Mode**   | ✅ Supported        | 🔜 Coming Soon     |
+| **ElizaOS Integration** | ✅ Supported        | ❌ Not Available    |
+| **MCP Server**          | ✅ Supported        | 🔜 Coming Soon     |
+
+---
+
+## Available Plugins
+
+Both SDKs provide the same core functionality through plugins:
+
+| Plugin                            | Description                                                     |
+|-----------------------------------|-----------------------------------------------------------------|
+| **Core Account Plugin**           | Transfer HBAR, create/update/delete accounts, manage allowances |
+| **Core Account Query Plugin**     | Query account info, balances, token holdings                    |
+| **Core Consensus Plugin**         | Create topics, submit messages (HCS)                            |
+| **Core Consensus Query Plugin**   | Query topic info and messages                                   |
+| **Core Token Plugin**             | Create/mint/transfer fungible and non-fungible tokens (HTS)     |
+| **Core Token Query Plugin**       | Query token info and pending airdrops                           |
+| **Core EVM Plugin**               | Deploy and interact with ERC-20 and ERC-721 contracts           |
+| **Core Transaction Query Plugin** | Query transaction records                                       |
+| **Core Misc Query Plugin**        | Exchange rates and other utilities                              |
+
+---
+
+## Choose Your SDK
+
+### JavaScript/TypeScript
+
+Best for:
+- Web applications
+- Node.js backends
+- Full feature set including ElizaOS and MCP Server
+
+[Get Started with JavaScript →](/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/quickstart
+)
+
+### Python
+
+Best for:
+- Data science and ML workflows
+- Python backend services
+- Jupyter notebooks and scripting
+
+[Get Started with Python →](/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/quickstart
+)
+
+---
+
+## Resources
+
+| Resource    | JavaScript                                                               | Python                                                                   |
+|-------------|--------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| **GitHub**  | [hedera-agent-kit-js](https://github.com/hashgraph/hedera-agent-kit-js)  | [hedera-agent-kit-py](https://github.com/hashgraph/hedera-agent-kit-py)  |
+| **Package** | [npm](https://www.npmjs.com/package/hedera-agent-kit)                    | [PyPI](https://pypi.org/project/hedera-agent-kit/)                       |
+| **Issues**  | [GitHub Issues](https://github.com/hashgraph/hedera-agent-kit-js/issues) | [GitHub Issues](https://github.com/hashgraph/hedera-agent-kit-py/issues) |
+
+---
+
+## Requests and Contributions
+
+**To request additional functionality**, please open an issue in the respective GitHub repository.
+
+**To contribute**, see the contributing guidelines in each repository.
+
+**Need help?** Reach out in the [Hedera Discord](https://hedera.com/discord) in the **Support > developer-help-desk** channel.

@@ -1,0 +1,15 @@
+---
+title: "FileService"
+---
+
+
+| RPC              | Request                                                                                          | Response                                                                                                         | Comments                                                                |
+| ---------------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `createFile`     | [Transaction](/hedera/sdks-and-apis/hedera-api/miscellaneous/transaction) | [TransactionResponse](/hedera/sdks-and-apis/hedera-api/miscellaneous/transactionresponse) | Creates a file                                                          |
+| `updateFile`     | [Transaction](/hedera/sdks-and-apis/hedera-api/miscellaneous/transaction) | [TransactionResponse](/hedera/sdks-and-apis/hedera-api/miscellaneous/transactionresponse) | Updates a file                                                          |
+| `deleteFile`     | [Transaction](/hedera/sdks-and-apis/hedera-api/miscellaneous/transaction) | [TransactionResponse](/hedera/sdks-and-apis/hedera-api/miscellaneous/transactionresponse) | Deletes a file                                                          |
+| `appendContent`  | [Transaction](/hedera/sdks-and-apis/hedera-api/miscellaneous/transaction) | [TransactionResponse](/hedera/sdks-and-apis/hedera-api/miscellaneous/transactionresponse) | Appends the file                                                        |
+| `getFileContent` | [Query](/hedera/sdks-and-apis/hedera-api/miscellaneous/query)             | [Response](/hedera/sdks-and-apis/hedera-api/miscellaneous/response)                       | Retrieves the file content                                              |
+| `getFileInfo`    | [Query](/hedera/sdks-and-apis/hedera-api/miscellaneous/query)             | [Response](/hedera/sdks-and-apis/hedera-api/miscellaneous/response)                       | Retrieves the file information                                          |
+| `systemDelete`   | [Transaction](/hedera/sdks-and-apis/hedera-api/miscellaneous/transaction) | [TransactionResponse](/hedera/sdks-and-apis/hedera-api/miscellaneous/transactionresponse) | Deletes a file if the submitting account has network admin privileges   |
+| `systemUndelete` | [Transaction](/hedera/sdks-and-apis/hedera-api/miscellaneous/transaction) | [TransactionResponse](/hedera/sdks-and-apis/hedera-api/miscellaneous/transactionresponse) | Undeletes a file if the submitting account has network admin privileges |

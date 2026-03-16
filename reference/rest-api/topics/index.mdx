@@ -1,0 +1,20 @@
+---
+title: "Topics"
+sidebarTitle: "Overview"
+---
+
+
+## Overview
+
+The **Topics endpoints** in the Hedera Mirror Node REST API allows developers to query **topics and messages**. These endpoints are crucial for retrieving topic details, message history, and tracking consensus events on the network.
+
+## Endpoints
+
+The following endpoints are available for the Topics object:
+
+| **Endpoint**                                            | **Description**                                                |
+| ------------------------------------------------------- | -------------------------------------------------------------- |
+| `GET /api/v1/topics/{id}/messages`                      | Retrieves messages for a specific topic by ID.                 |
+| `GET /api/v1/topics/{id}/messages/{sequence_number}`    | Fetches a specific message from a topic using sequence number. |
+| `GET /api/v1/topics/{id}/messages/{consensusTimestamp}` | Retrieves a topic message by consensus timestamp.              |
+| `GET /api/v1/topics/{topicid}`                          | Retrieves the topic details for the given topic ID.            |

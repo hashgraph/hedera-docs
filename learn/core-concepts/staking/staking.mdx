@@ -1,0 +1,62 @@
+---
+title: "Staking Program"
+---
+
+The Hedera staking program allows you to earn rewards by staking your HBAR to a network node. Staking helps secure the network by contributing to the node's consensus weight (voting power).
+
+## Staking Nodes
+
+All consensus nodes run by the Hedera Council distribute rewards to the accounts staked to them. You can find information about each node by visiting a Hedera network explorer or by getting the network [address book](/hedera/sdks-and-apis/rest-api#api-v1-network-nodes).
+
+Nodes have a minimum stake and maximum stake. The node's **minimum stake is $0**, meaning there is no minimum HBAR amount required for a node to be eligible for rewards. However, staked HBAR that exceeds the maximum stake does not increase the proportion of rewards returned. The maximum stake for each node is the total number of HBAR divided by the total number of nodes, and this value changes as more nodes join the network.
+## Lockup Period
+
+There is **no lock-up period** when you stake your account. Your account's entire balance is automatically staked to the selected node or account, and your HBAR remains liquid at all times. There is no "bonding" or "slashing."
+
+## Staking Reward Account
+
+The staking reward account [(`0.0.800`)](https://hashscan.io/#/mainnet/account/0.0.800) distributes rewards to eligible staked accounts. Its primary funding comes from the daily distribution from the [Fee Collection Account](/hedera/support-and-community/glossary#fee-collection-account) [(`0.0.802`)](https://hashscan.io/mainnet/account/0.0.802).
+
+Anyone in the community can also contribute to the rewards pool by transferring HBAR into this account. This account has no keys; any HBAR transferred into it cannot be returned.
+
+The account must meet a minimum balance before rewards can be distributed. Once this threshold is met, rewards will continue to be paid out as long as there is a balance in the account.
+
+### Staking Rewards
+
+To be eligible for rewards, your account must be staked for a minimum of **one full staking period (24 hours)**, which begins and ends at midnight UTC. 
+
+For a staked account to earn rewards, the following must be true:
+
+*   The staking reward account (`0.0.800`) must have met its initial threshold balance.
+*   The node the account is staked to must meet the minimum node stake threshold.
+*   The account must be staked for the entire 24-hour staking period.
+
+### Staking Reward Distribution
+
+With the implementation of [HIP-1259](https://hips.hedera.com/hip/hip-1259), the mechanism for handling fees and distributing rewards has been significantly streamlined to improve network efficiency and simplify transaction records.
+
+Previously, transaction fees were immediately split and distributed to multiple accounts. The new system introduces the **[Fee Collection Account](/hedera/support-and-community/glossary#fee-collector-account) (`0.0.802`)**, a network-controlled account that consolidates all transaction fees.
+
+**How it Works:**
+
+1.  **Collection**: When a transaction is processed, the entire fee is transferred in a single payment to the [Fee Collection Account](/hedera/support-and-community/glossary#fee-collection-account) (`0.0.802`).
+2.  **Distribution**: Once per day, at the end of each staking period, a single, large synthetic transaction distributes the accumulated fees from the `0.0.802` account to their appropriate destinations, including the Staking Rewards account (`0.0.800`).
+
+<Frame>
+  <img src="/images/core-concepts/transactions-and-queries/fee-collection-account-flow.png" />
+</Frame>
+
+<Info>
+  #### **Key Takeaway**
+
+  This enhancement **does not change the amount you pay** for transactions. It only optimizes how the network processes the fees behind the scenes, resulting in a cleaner experience for users and a more efficient network for everyone.
+</Info>
+
+### Indirect Staking
+
+Hedera offers a unique feature: **indirect staking**. If account A stakes to account B, and account B stakes to a node, the stake from both A and B increases the node's consensus weight. However, the rewards for both accounts are paid to account B.
+
+An account can also optionally decline to earn rewards, though its balance will still contribute to the node's stake.
+
+
+**📣 If you're interested in checking out the wallets and exchanges supporting staking HBAR, head to the** [**Stake HBAR**](/hedera/core-concepts/staking/stake-hbar) **page.**

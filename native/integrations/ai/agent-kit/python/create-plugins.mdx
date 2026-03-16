@@ -1,0 +1,222 @@
+---
+title: "Create Python Plugins"
+description: "Instructions for creating, publishing, and registering your Python Hedera Agent Kit Plugin"
+---
+
+## Creating a Plugin
+
+### Plugin Interface
+
+Every plugin corresponds to the `Plugin` class:
+
+```python
+from typing import Callable, List
+from hedera_agent_kit.shared.configuration import Context
+from hedera_agent_kit.shared.tool import Tool
+
+class Plugin:
+    def __init__(
+        self,
+        name: str,
+        tools: Callable[[Context], List[Tool]],
+        version: str | None = None,
+        description: str | None = None,
+    ):
+        # ...
+```
+
+### Tool Interface
+
+Each tool must assume the `Tool` class structure:
+
+```python
+from abc import ABC, abstractmethod
+from typing import Any, Type
+from hiero_sdk_python import Client
+from pydantic import BaseModel
+from hedera_agent_kit.shared.configuration import Context
+from hedera_agent_kit.shared.models import ToolResponse
+
+class Tool(ABC):
+    method: str
+    name: str
+    description: str
+    parameters: Type[BaseModel]
+
+    @abstractmethod
+    async def execute(
+        self, client: Client, context: Context, params: Any
+    ) -> ToolResponse:
+        """Execute the tool logic."""
+        pass
+```
+
+See `hedera_agent_kit/shared/tool.py` for the full definition.
+
+---
+
+## Creating a Plugin
+
+### Step 1: Create Plugin Structure
+
+```
+my_custom_plugin/
+├── __init__.py           # Plugin exports
+├── plugin.py             # Plugin definition
+└── tools/
+    └── my_tool.py        # Individual tool implementation
+```
+
+### Step 2: Implement Your Tool
+
+```python
+# tools/my_tool.py
+from pydantic import BaseModel, Field
+from hedera_agent_kit.shared.types import Tool, Context
+
+class MyToolParams(BaseModel):
+    required_param: str = Field(..., description="Description of required parameter")
+    optional_param: str = Field(None, description="Description of optional parameter")
+
+def my_tool_prompt(context: Context = None) -> str:
+    return """
+    This tool performs a specific operation.
+    
+    Parameters:
+    - required_param (string, required): Description
+    - optional_param (string, optional): Description
+    """
+
+async def my_tool_execute(client, context: Context, params: MyToolParams):
+    try:
+        # Your implementation here
+        result = await some_hedera_operation(params)
+        return result
+    except Exception as e:
+        return str(e)
+
+MY_TOOL = "my_tool"
+
+def tool(context: Context) -> Tool:
+    return Tool(
+        method=MY_TOOL,
+        name="My Custom Tool",
+        description=my_tool_prompt(context),
+        parameters=MyToolParams,
+        execute=my_tool_execute,
+    )
+```
+
+### Step 3: Create Plugin Definition
+
+```python
+# plugin.py
+from hedera_agent_kit.shared.types import Plugin, Context
+from .tools.my_tool import tool as my_tool, MY_TOOL
+
+my_custom_plugin = Plugin(
+    name="my-custom-plugin",
+    version="1.0.0",
+    description="A plugin for custom functionality",
+    tools=lambda context: [my_tool(context)],
+)
+
+my_custom_plugin_tool_names = {
+    "MY_TOOL": MY_TOOL,
+}
+```
+
+---
+
+## Using Your Plugin
+
+```python
+from hedera_agent_kit.langchain.toolkit import HederaLangchainToolkit
+from hedera_agent_kit.shared.configuration import Configuration, Context, AgentMode
+from my_custom_plugin import my_custom_plugin
+
+configuration = Configuration(
+    tools=[],
+    plugins=[
+        my_custom_plugin,
+    ],
+    context=Context(
+        mode=AgentMode.AUTONOMOUS,
+        account_id=str(operator_id),
+    ),
+)
+
+hedera_toolkit = HederaLangchainToolkit(
+    client=client,
+    configuration=configuration,
+)
+
+tools = hedera_toolkit.get_tools()
+```
+
+--
+## Publish and Register Your Plugin
+
+To create a plugin to be use with the Hedera Agent Kit, you will need to create a plugin in your own repository, publish an npm package, and provide a description of the functionality included in that plugin, as well as the required and optional parameters.
+
+Once you have a repository, published npm package, and a README with a description of the functionality included in that plugin in your plugin's repo, as well, add it to the Hedera Agent Kit by forking and opening a Pull Request that includes:
+
+1. Include the plugin as a bullet point under the **Third Party Plugin** section in the [README.md in the hedera-agent-kit-py](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/README.md). 
+    * Include the name, a brief description, and a link to the repository with the README, as well the URL linked to the published npm package.
+2. If you would like to include your plugin functionality in the Hedera plugin built for ElizaOS simply make a PR to [add your plugin name to the `plugins` array in the Hedera ElizaOS plugin](https://github.com/elizaos-plugins/plugin-hedera/blob/1.x/src/adapter-plugin/plugin.ts#L72) where the configuration is initiated. The hedera-agent-kit adaptor architecture means your plugin functionality will be usable with no additional configuration needed.
+
+Please also reach out in the Hedera Discord in the **Support > developer-help-desk** channel or create an Issue in this repository for help building, publishing, and promoting your plugin.
+
+
+
+### Plugin README Template
+
+````
+## Plugin Name
+This plugin was built by <?> for the <project, platform, etc>. It was built to enable <who?> to <do what?>
+
+_Feel free to include a description of your project and how it can be used with the Hedera Agent Kit. 
+
+### Installation
+
+```bash
+npm install <plugin-name>
+```
+
+### Usage
+
+```javascript
+import { myPlugin } from '<plugin-name>';
+```
+
+```javascript
+ const hederaAgentToolkit = new HederaLangchainToolkit({
+    client,
+    configuration: {
+      context: {
+        mode: AgentMode.AUTONOMOUS,
+      },
+      plugins: [coreTokenPlugin, coreAccountPlugin, coreConsensusPlugin, coreQueriesPlugin, myPlugin],
+    },
+  });
+```
+
+### Functionality
+Describe the different tools or individual pieces of functionality included in this plugin, and how to use them.
+
+**Plugin Name**
+_High level description of the plugin_
+
+| Tool Name                                       | Description                                        |Usage                                             |
+| ----------------------------------------------- | -------------------------------------------------- |--------------------------------------------------------- |
+| `YOUR_PLUGIN_TOOL_NAME`| What it does | How to use. Include a list of parameters and their descriptions|
+
+````
+
+
+## Resources
+
+- **GitHub**: https://github.com/hashgraph/hedera-agent-kit-py
+- **Discord**: https://hedera.com/discord
+
+

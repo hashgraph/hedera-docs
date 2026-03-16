@@ -1,0 +1,203 @@
+---
+title: "Chainlink"
+description: "Learn how Chainlink’s Cross-Chain Interoperability Protocol (CCIP) integrates with Hedera to enable secure cross-chain messaging and token transfers."
+---
+
+## Chainlink CCIP on Hedera
+
+The **Chainlink Cross-Chain Interoperability Protocol (CCIP)** is a standard for blockchain interoperability that enables developers to build **secure cross-chain applications** capable of transferring tokens, sending messages, and executing actions across multiple blockchains.
+
+Through the **Cross-Chain Token (CCT)** standard, CCIP allows token developers to integrate new or existing tokens in a **self-serve** way—without vendor lock-in or restrictive dependencies.
+
+**CCTs support:**
+
+- Self-serve deployments with full control and ownership
+- Zero-slippage transfers across supported chains
+- Enhanced programmability via configurable rate limits
+- Smart Execution for reliable cross-chain delivery
+
+CCIP is powered by **Chainlink Decentralized Oracle Networks (DONs)**—infrastructure that has secured **tens of billions of dollars** and enabled **over $21 trillion** in on-chain transaction value.
+
+---
+
+## Overview of CCIP and HTS Compatibility
+
+On Hedera, CCIP extends interoperability between **Hedera’s Hashgraph network** and **EVM-compatible blockchains** such as Ethereum.  
+It integrates seamlessly with both the **Hedera Token Service (HTS)** and standard **EVM tokens (ERC-20 and ERC-721)**, enabling developers to bridge tokens, data, and logic across ecosystems.
+
+With CCIP, developers can:
+
+- Send and receive arbitrary messages between chains
+- Execute programmable cross-chain logic via Chainlink’s oracle network
+- Use **LINK**, **Wrapped HBAR (WHBAR)**, or **ETH** as fee tokens
+- Prepare for **Cross-Chain Token (CCT)** transfers once fully enabled on Hedera
+
+<Warning>
+  **Note:** Cross-Chain Token (CCT) transfers on Hedera are currently in
+  progress on testnet. Current demos focus on message passing between **Hedera
+  Testnet** and **Ethereum Sepolia**.
+</Warning>
+
+---
+
+## Getting Started with CCIP on Hedera
+
+To explore CCIP functionality, start with the [**Hedera CCIP Demo Repository**](https://github.com/mgarbs/hedera-ccip-demos), which showcases **bi-directional cross-chain messaging** between the **Hedera Testnet** and **Ethereum Sepolia** using the Chainlink CCIP JavaScript SDK.
+
+<Columns cols={3}>
+  <Card title="➡ DEMO REPO" href="https://github.com/mgarbs/hedera-ccip-demos" arrow>
+    Explore Chainlink CCIP cross-chain message passing between Hedera and Ethereum Sepolia.
+  </Card>
+
+{" "}
+
+<Card
+  title="➡ CCIP SDK"
+  href="https://docs.chain.link/ccip/ccip-javascript-sdk"
+  arrow
+>
+  Learn how to integrate CCIP in your JavaScript dApps.
+</Card>
+
+  <Card title="➡ TOKEN MANAGER" href="https://tokenmanager.chain.link/" arrow>
+    Deploy and manage Cross-Chain Tokens (CCTs) with a no-code interface.
+  </Card>
+</Columns>
+
+---
+
+### Setup
+
+1. **Install dependencies**
+
+   ```bash
+   pnpm install
+   ```
+
+2. **Configure your environment**
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Add your Hedera Testnet private key:
+
+   ```
+   PRIVATE_KEY=0x...
+   ```
+
+3. **Run a demo**
+
+   ```bash
+   pnpm run demo:hedera-sepolia-link
+   ```
+
+---
+
+## Available Demos
+
+| Direction        | Payment | Command                              | Description                                            |
+| ---------------- | ------- | ------------------------------------ | ------------------------------------------------------ |
+| Read-only        | —       | `pnpm run demo:readonly`             | Query CCIP configuration without sending transactions. |
+| Hedera → Sepolia | LINK    | `pnpm run demo:hedera-sepolia-link`  | Send a message using LINK for fees.                    |
+| Hedera → Sepolia | WHBAR   | `pnpm run demo:hedera-sepolia-whbar` | Send a message using Wrapped HBAR for fees.            |
+| Sepolia → Hedera | ETH     | `pnpm run demo:sepolia-hedera`       | Send a message using ETH for fees.                     |
+
+<Info>
+  💡 **Tip:** Wrap HBAR before running WHBAR examples: ```bash pnpm run
+  wrap-hbar ``` All demos operate on **testnet** and are for educational
+  purposes only. They are **not audited** and should not be used in production.
+</Info>
+
+---
+
+## Network Configuration
+
+### Hedera Testnet
+
+| Parameter          | Value                                        |
+| ------------------ | -------------------------------------------- |
+| **Network Name**   | Hedera Testnet                               |
+| **RPC Endpoint**   | `https://testnet.hashio.io/api`              |
+| **Chain ID**       | `296`                                        |
+| **CCIP Router**    | `0x802C5F84eAD128Ff36fD6a3f8a418e339f467Ce4` |
+| **Chain Selector** | `222782988166878823`                         |
+
+[**Add Hedera Testnet**](https://chainlist.org/chain/296)
+
+---
+
+### Ethereum Sepolia
+
+| Parameter          | Value                                        |
+| ------------------ | -------------------------------------------- |
+| **Network Name**   | Ethereum Sepolia                             |
+| **Chain ID**       | `11155111`                                   |
+| **CCIP Router**    | `0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59` |
+| **Chain Selector** | `16015286601757825753`                       |
+
+[**Add Ethereum Sepolia**](https://chainlist.org/chain/11155111)
+
+---
+
+## Token Addresses
+
+| Network              | Token | Address                                      |
+| -------------------- | ----- | -------------------------------------------- |
+| **Hedera Testnet**   | LINK  | `0x90a386d59b9A6a4795a011e8f032Fc21ED6FEFb6` |
+| **Hedera Testnet**   | WHBAR | `0xb1F616b8134F602c3Bb465fB5b5e6565cCAd37Ed` |
+| **Ethereum Sepolia** | LINK  | `0x779877A7B0D9E8603169DdbD7836e478b4624789` |
+
+<Info>
+  ⚠️ **Note:** WHBAR uses **8 decimals**, while most EVM tokens use **18
+  decimals**.
+</Info>
+
+---
+
+## Developer Considerations
+
+### Decimal Precision
+
+HBAR’s smallest unit is the **tinybar (8 decimals)**.
+Since CCIP on EVM networks operates with **18-decimal precision**, conversions between tinybars and wei-based values may be required.
+See [Understanding Hedera’s EVM Differences and Compatibility](../../core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility).
+
+### Cross-Chain Fees
+
+Ensure your wallet holds sufficient **LINK**, **WHBAR**, or **ETH** to cover CCIP transaction fees.
+
+### Message Timing
+
+Cross-chain message delivery on testnet may take several minutes while the Chainlink oracle network finalizes execution.
+
+---
+
+## Test Tokens and Faucets
+
+| Network | Token | Faucet                                                               |
+| ------- | ----- | -------------------------------------------------------------------- |
+| Hedera  | HBAR  | [Hedera Faucet](https://portal.hedera.com/faucet)                    |
+| Hedera  | LINK  | [Chainlink Hedera Faucet](https://faucets.chain.link/hedera-testnet) |
+| Sepolia | ETH   | [Chainlink Sepolia Faucet](https://faucets.chain.link/sepolia)       |
+
+---
+
+## Additional Resources
+
+- [**CCIP Documentation**](https://docs.chain.link/ccip)
+- [**CCIP Token Manager**](https://tokenmanager.chain.link/)
+- [**CCIP SDK (JavaScript)**](https://docs.chain.link/ccip/ccip-javascript-sdk)
+- [**Hedera CCIP Demo Repository**](https://github.com/mgarbs/hedera-ccip-demos)
+- [**HashScan Explorer**](https://hashscan.io/testnet)
+- [**Chainlink Faucets**](https://faucets.chain.link/)
+
+---
+
+## Summary
+
+**Chainlink CCIP** establishes a universal standard for **secure, decentralized cross-chain interoperability**.
+It connects Hedera to a broader multi-chain ecosystem—enabling assets, logic, and state to move across blockchains through a unified protocol.
+
+On Hedera, CCIP provides a **modular, future-ready foundation** for interoperability, supporting **HTS and EVM token compatibility** under the **CCT standard**.
+This complements other interoperability solutions such as [**LayerZero**](/hedera/open-source-solutions/interoperability-and-bridging/layerzero) and **Hashport**, positioning Hedera as a key network in the interoperable web3 ecosystem.

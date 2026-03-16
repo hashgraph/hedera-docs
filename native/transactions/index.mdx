@@ -1,0 +1,37 @@
+---
+title: "Transactions"
+sidebarTitle: "Overview"
+---
+
+
+Transactions are requests submitted by a client to a node in the Hedera network. Every transaction has a fee that will be paid for processing the transaction. The following table lists the transaction type requests for each service.
+
+<Info>
+Transactions have a 6,144-byte size limit, which includes all attached signatures. A single signature is ~80–100 bytes, depending on the key type and encoding. Privileged Hedera accounts, such as 0.0.2 and 0.0.50, set as the transaction fee payer are permitted to submit transactions up to 130 KB in size.
+</Info>
+
+<Info>
+#### **Transfers**
+
+The R4 release introduces an updated method for displaying HBAR balance changes for accounts participating in a transaction, whether directly or as a node. Previously, each HBAR transfer—payments between accounts or fees to a Hedera node or Hedera itself—was listed separately. This included separate entries for the payer's main payment, network fees, and node fees. The new approach consolidates these transfers, showing only the net transfer value for each account involved in the transaction.
+</Info>
+
+<table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td><h3>Accounts</h3></td><td><h3>Consensus</h3></td></tr><tr><td><a href="/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-an-account">AccountCreateTransaction</a></td><td><a href="/hedera/sdks-and-apis/sdks/consensus-service/create-a-topic">TopicCreateTransaction</a></td></tr><tr><td><a href="/hedera/sdks-and-apis/sdks/accounts-and-hbar/update-an-account">AccountUpdateTransaction</a></td><td><a href="/hedera/sdks-and-apis/sdks/consensus-service/update-a-topic">TopicUpdateTransaction</a></td></tr><tr><td><a href="/hedera/sdks-and-apis/sdks/accounts-and-hbar/transfer-cryptocurrency">TransferTransaction</a></td><td><a href="/hedera/sdks-and-apis/sdks/consensus-service/submit-a-message">TopicMessageSubmitTransaction</a></td></tr><tr><td><a href="/hedera/sdks-and-apis/sdks/accounts-and-hbar/delete-an-account">AccountDeleteTransaction</a></td><td><a href="/hedera/sdks-and-apis/sdks/consensus-service/delete-a-topic">TopicDeleteTransaction</a></td></tr><tr><td><a href="/hedera/sdks-and-apis/sdks/accounts-and-hbar/approve-an-allowance">AccountAllowanceApprovalTransaction</a></td><td></td></tr></tbody></table>
+
+| <h3>File Service</h3>                                                                                                           | <h3>Smart Contracts</h3>                                                                                                                      |
+| ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| [FileCreateTransaction](https://github.com/hashgraph/hedera-docs/blob/main/sdks-and-apis/sdks/file-service/create-a-file)    | [ContractCreateTransaction](https://github.com/hashgraph/hedera-docs/blob/main/sdks-and-apis/sdks/smart-contracts/create-a-smart-contract) |
+| [FileAppendTransaction](https://github.com/hashgraph/hedera-docs/blob/main/sdks-and-apis/sdks/file-service/append-to-a-file) | [ContractUpdateTransaction](https://github.com/hashgraph/hedera-docs/blob/main/sdks-and-apis/sdks/smart-contracts/update-a-smart-contract) |
+| [FileUpdateTransaction](https://github.com/hashgraph/hedera-docs/blob/main/sdks-and-apis/sdks/file-service/update-a-file)    | [ContractDeleteTransaction](https://github.com/hashgraph/hedera-docs/blob/main/sdks-and-apis/sdks/smart-contracts/delete-a-smart-contract) |
+| [FileDeleteTransaction](https://github.com/hashgraph/hedera-docs/blob/main/sdks-and-apis/sdks/file-service/delete-a-file)    | [EthereumTransaction](/hedera/sdks-and-apis/sdks/smart-contracts/ethereum-transaction)                                 |
+
+| <h3>Tokens</h3>                                                                                                                 |                                                                                                                                              |
+| ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| [TokenCreateTransaction](/hedera/sdks-and-apis/sdks/token-service/define-a-token)                        | [TokenFeeScheduleUpdateTransaction](/hedera/sdks-and-apis/sdks/token-service/update-a-fee-schedule)                   |
+| [TokenUpdateTransaction](/hedera/sdks-and-apis/sdks/token-service/update-a-token)                        | [TokenUnfreezeTransaction](https://github.com/hashgraph/hedera-docs/blob/main/sdks-and-apis/sdks/token-service/unfreeze-an-account)       |
+| [TokenDeleteTransaction](/hedera/sdks-and-apis/sdks/token-service/delete-a-token)                        | [TokenGrantKycTransaction](https://github.com/hashgraph/hedera-docs/blob/main/sdks-and-apis/sdks/token-service/enable-kyc-account-flag)   |
+| [TokenAssociateTransaction](/hedera/sdks-and-apis/sdks/token-service/associate-tokens-to-an-account)     | [TokenRevokeKycTransaction](https://github.com/hashgraph/hedera-docs/blob/main/sdks-and-apis/sdks/token-service/disable-kyc-account-flag) |
+| [TokenDissociateTransaction](/hedera/sdks-and-apis/sdks/token-service/dissociate-tokens-from-an-account) | [TokenPauseTransaction](https://github.com/hashgraph/hedera-docs/blob/main/sdks-and-apis/sdks/token-service/pause-a-token)                |
+| [TokenMintTransaction](/hedera/sdks-and-apis/sdks/token-service/mint-a-token)                            | [TokenUnpauseTransaction](https://github.com/hashgraph/hedera-docs/blob/main/sdks-and-apis/sdks/token-service/unpause-a-token)            |
+| [TokenBurnTransaction](/hedera/sdks-and-apis/sdks/token-service/burn-a-token)                            | [TokenWipeTransaction](https://github.com/hashgraph/hedera-docs/blob/main/sdks-and-apis/sdks/token-service/wipe-a-token)                  |
+| [TokenFreezeTransaction](/hedera/sdks-and-apis/sdks/token-service/freeze-an-account)                     |                                                                                                                                              |

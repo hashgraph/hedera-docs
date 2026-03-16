@@ -1,0 +1,113 @@
+---
+title: "Creating Smart Contracts"
+---
+
+
+A [smart contract](/hedera/support-and-community/glossary#smart-contract) is an immutable program consisting of a set of logic (state variables, functions, event handlers, etc.) or rules that can be deployed, stored, and accessed on a [distributed ledger technology](/hedera/support-and-community/glossary#distributed-ledger-technology-dlt) such as Hedera. The functions contained within a smart contract can update and manage the state of the contract and read data from the deployed contract. They may also create and call other smart contracts functions on the network. Smart contracts are secure, tamper-proof, and transparent, offering a new level of trust and efficiency.
+
+Hedera supports any language that compiles to the Ethereum Mainnet. This includes [Solidity](/hedera/support-and-community/glossary#solidity) and [Vyper](/hedera/support-and-community/glossary#vyper). These programming languages compile code and produce [bytecode](/hedera/support-and-community/glossary#bytecode) that the [Ethereum Virtual Machine (EVM)](/hedera/support-and-community/glossary#ethereum-virtual-machine-evm) can interpret and understand.
+
+* To learn more about the Solidity programming language, check out the documentation maintained by the Solidity team [here](https://docs.soliditylang.org/en/v0.8.19/).
+* To learn more about Vyper, check out the documentation maintained by the Vyper team [here](https://docs.vyperlang.org/en/stable/).
+
+In addition, many tools are available to write and compile smart contracts, including the popular [Remix IDE](/hedera/support-and-community/glossary#remix-ide) and [Hardhat](/hedera/support-and-community/glossary#hardhat). The Remix IDE is a user-friendly platform that allows you to easily write and compile your smart contracts and perform other tasks such as debugging and testing. Using these tools, you can create powerful and secure smart contracts that can be used for various purposes, from simple token transfers to complex financial instruments.
+
+**Example**
+
+The following is a very simple example of a smart contract written in the Solidity programming language. The smart contract defines the `owner` and `message` state variables, along with functions like `set_message` (which modifies state details by writing) and `get_message`(which reads state details).
+
+```solidity
+pragma solidity >=0.7.0 <0.8.9;
+
+contract HelloHedera {
+    // the contract's owner, set in the constructor
+    address owner;
+
+    // the message we're storing
+    string message;
+
+    constructor(string memory message_) {
+        // set the owner of the contract for `kill()`
+        owner = msg.sender;
+        message = message_;
+    }
+
+    function set_message(string memory message_) public {
+        // only allow the owner to update the message
+        require(msg.sender == owner);
+        message = message_;
+    }
+
+    // return a string
+    function get_message() public view returns (string memory) {
+        return message;
+    }
+}
+```
+
+***
+
+## Things you should consider when creating a contract
+
+#### **Automatic Token Associations**
+
+An auto association slot is one or more slots you approve that allow tokens to be sent to your contract without explicit authorization for each token type. If this property is not set, you must associate each token before it is transferred to the contract for the transfer to be successful via the `TokenAssociateTransaction` in the SDKs. Learn more about auto-token associations [here](/hedera/core-concepts/accounts/account-properties#automatic-token-associations).
+
+This functionality is exclusively accessible when configuring a `ContractCreateTransaction` API through the Hedera SDKs. If you are deploying a contract on Hedera using EVM tools such as Hardhat and the Hedera JSON RPC Relay, please note that this property cannot be configured, as EVM tools lack compatibility with Hedera's unique features.
+
+#### **Admin Key**
+
+Contracts have the option to have an [admin key](https://github.com/hashgraph/hedera-protobufs/blob/main/services/contract_create.proto#L117). This concept is native to Hedera contracts and allows the contract account properties to be updated. Note that this does not impact the contract [bytecode](/hedera/support-and-community/glossary#bytecode) and does not relate to upgradability. If the admin key is not set, you will not be able to update the following Hedera native properties (noted in [ContractUpdateTransactionBody](https://github.com/hashgraph/hedera-protobufs/blob/main/services/contract_update.proto) protobuf) for your contract once it is deployed:
+
+* [`autoRenewPeriod`](https://github.com/hashgraph/hedera-protobufs/blob/main/services/contract_update.proto#L78)
+* [`memoField`](https://github.com/hashgraph/hedera-protobufs/blob/main/services/contract_update.proto#L88)
+* [`max_automatic_token_associations`](https://github.com/hashgraph/hedera-protobufs/blob/main/services/contract_update.proto#L105)
+* [`auto_renew_account_id`](https://github.com/hashgraph/hedera-protobufs/blob/main/services/contract_update.proto#L111)
+* [`staked_id`](https://github.com/hashgraph/hedera-protobufs/blob/main/services/contract_update.proto#L116)
+* [`decline_reward`](https://github.com/hashgraph/hedera-protobufs/blob/main/services/contract_update.proto#L134)
+
+You cannot set the admin key field if you deploy a contract via tools like Hardhat. This field can be set if desired by deploying a contract using one of the Hedera [SDKs](/hedera/sdks-and-apis/sdks).
+
+<Info>
+#### **Note**
+
+Need to deploy a contract with large bytecode? Hedera supports **jumbo ethereum transactions** ([HIP-1086](https://hips.hedera.com/hip/hip-1086)) to handle big payloads directly, no file uploads required for most cases.
+
+*📣 Learn more about jumbo transactions on the* [*Understanding Hedera's EVM Differences and Compatibility*](/hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility#jumbo-ethereum-transactions) *and on the* [*`EthereumTransaction` SDK page*](/hedera/sdks-and-apis/sdks/smart-contracts/ethereum-transaction)*.*
+</Info>
+
+#### **Max Contract Storage Size**
+
+Each contract on Hedera has a storage size limit of 16,384,000 key value pairs (\~500MB).
+
+#### **Rent**
+
+While rent is not enabled for contracts deployed on Hedera today, you will want to be familiar with the concept of rent, as it may potentially impact the costs of maintaining your contract state on the network. Please refer to the Smart Contract Rent documentation [here](/hedera/core-concepts/smart-contracts/smart-contract-rent).
+
+#### **Transaction and Gas Fees**
+
+There are Hedera transaction fees and EVM fees associated with deploying a contract. To view the list of base fees, check out the fees page [here](/hedera/networks/mainnet/fees) and the fee estimator calculator [here](https://hedera.com/fees).
+
+***
+
+## Smart Contract FAQs
+
+<Accordion title="What is a smart contract?">
+A smart contract is a program that is written in a language that can be interpreted by the EVM. Please refer to the [glossary](/hedera/support-and-community/glossary) for more keywords and definitions.
+</Accordion>
+
+<Accordion title="What programming language does Hedera support for smart contracts?">
+Hedera supports the official [Ethereum Virtual Machine](https://ethereum.org/en/developers/docs/evm/) and therefore any smart contract language that conforms to standard EVM code, such as Solidity or Vyper.
+</Accordion>
+
+<Accordion title="Can I write and compile my smart contracts using Remix IDE or other Ethereum ecosystem tools?">
+You can use Remix IDE or other Ethereum ecosystem tools to write, compile, and deploy your smart contract on Hedera. Check out our EVM-compatible tools [here](/hedera/readme#evm-compatible-tools).
+</Accordion>
+
+<Accordion title="Where can I find the smart contracts that are deployed to each Hedera network (previewnet, testnet, mainnet)?">
+On your favorite trusted Block Explorer (also called Mirror Node Explorer on Hedera). To view community-hosted explorers check out the network explorer tools page [here](/hedera/networks/community-mirror-nodes).
+</Accordion>
+
+<Accordion title="Which ERC token standards are supported on Hedera?">
+Hedera supports ERC-20 and ERC-721 token standards and can find the full list of supported standards [here](/hedera/core-concepts/smart-contracts/tokens-managed-by-smart-contracts).
+</Accordion>

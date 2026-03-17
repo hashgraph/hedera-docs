@@ -8,7 +8,7 @@
 # NOTE: Must be placed last to ensure enforcement over all other rules
 
 # Protection Rules for Github Configuration Files and Actions Workflows
-/.github/                                               @hashgraph/platform-ci @hashgraph/platform-ci-committers @hashgraph/release-engineering-managers @hashgraph/hedera-docs
+/.github/                                               @hashgraph/platform-ci @hashgraph/platform-ci-committers @hashgraph/release-engineering-managers @hashgraph/hedera-docs-committers
 /.github/workflows/                                     @hashgraph/platform-ci @hashgraph/platform-ci-committers @hashgraph/release-engineering-managers
 /.github/CODEOWNERS                                     @hashgraph/platform-ci @hashgraph/platform-ci-committers @hashgraph/release-engineering-managers
 
@@ -16,12 +16,12 @@
 /CODEOWNERS                                             @hashgraph/release-engineering-managers
 
 # Protect the repository root files
-/README.md                                              @hashgraph/platform-ci @hashgraph/release-engineering-managers @hashgraph/hedera-docs
+/README.md                                              @hashgraph/platform-ci @hashgraph/release-engineering-managers @hashgraph/hedera-docs-committers
 **/LICENSE                                              @hashgraph/release-engineering-managers
 
 # CodeCov configuration
-**/codecov.yml                                          @hashgraph/platform-ci @hashgraph/release-engineering-managers @hashgraph/hedera-docs
+**/codecov.yml                                          @hashgraph/platform-ci @hashgraph/release-engineering-managers @hashgraph/hedera-docs-committers
 
 # Git Ignore definitions
-**/.gitignore                                           @hashgraph/platform-ci @hashgraph/release-engineering-managers @hashgraph/hedera-docs
-**/.gitignore.*                                         @hashgraph/platform-ci @hashgraph/release-engineering-managers @hashgraph/hedera-docs
+**/.gitignore                                           @hashgraph/platform-ci @hashgraph/release-engineering-managers @hashgraph/hedera-docs-committers
+**/.gitignore.*                                         @hashgraph/platform-ci @hashgraph/release-engineering-managers @hashgraph/hedera-docs-committers

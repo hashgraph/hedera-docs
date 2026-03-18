@@ -87,3 +87,23 @@ Standard documentation edits — add/edit `.mdx` files under `hedera/`, update `
 - Do not run `migrate.sh` on `main` — it's only for the `dev` branch
 - Do not commit `hedera.backup.*` directories (they are gitignored)
 - Do not add the revamp/ directory or new structure directories to `main` branch
+
+## Triggers
+
+When working in these areas, load the indicated context first:
+
+| File Pattern | Load This Context |
+|---|---|
+| `revamp/*.sh` | `revamp/README.md` — migration script documentation and workflow |
+| `revamp/docs.json` or `docs.json` | Code Conventions section above — Mintlify nav format, `/index` suffix rules |
+| `learn/`, `evm/`, `native/`, `operators/`, `reference/`, `solutions/`, `support/` | `revamp/plan.md` — full revamp architecture and tab/group structure |
+| `snippets/` | Code Conventions section above — snippet import paths are absolute (`/snippets/...`) |
+| `hedera/` | Working on `main` Branch section above — production edits only, no migration |
+
+## Quality Gates
+
+After editing files, `.claude/scripts/post-edit-check.sh` runs automatically via PostToolUse hook:
+- Validates `docs.json` as valid JSON
+- Checks MDX files for duplicate imports (causes acorn parse errors)
+
+Run full validation manually: `./revamp/verify.sh`

@@ -419,6 +419,49 @@ else
 fi
 
 # ============================================================================
+# CHECK 10: Sidebar fixups — warn on unacknowledged content changes
+# ============================================================================
+echo ""
+echo -e "${BLUE}━━━ Check 10: Sidebar fixups ━━━${NC}"
+
+FIXUP_FILE="revamp/sidebar-fixups.txt"
+if [ ! -f "$FIXUP_FILE" ]; then
+    warn "revamp/sidebar-fixups.txt not found — skipping sidebar fixups check"
+else
+    FIXUP_TOTAL=0
+    FIXUP_CHANGED=0
+
+    while IFS= read -r line; do
+        [[ "$line" =~ ^[[:space:]]*# ]] && continue
+        [ -z "$line" ] && continue
+        IFS='|' read -r hash src dest title <<< "$line"
+        [ -z "$src" ] && continue
+        FIXUP_TOTAL=$((FIXUP_TOTAL + 1))
+
+        if [ ! -f "$src" ]; then
+            warn "Fixup source no longer exists: $src"
+            detail "Remove entry from revamp/sidebar-fixups.txt if source was deleted"
+            continue
+        fi
+
+        current_hash=$(git hash-object "$src" 2>/dev/null || echo "unknown")
+        if [ "$current_hash" != "$hash" ]; then
+            FIXUP_CHANGED=$((FIXUP_CHANGED + 1))
+            detail "CONTENT CHANGED: $src → $dest (sidebarTitle: $title)"
+            detail "  Verify sidebarTitle is still accurate, then:"
+            detail "  ./revamp/migrate.sh --ack-fixup=$src"
+        fi
+    done < "$FIXUP_FILE"
+
+    if [ "$FIXUP_CHANGED" -eq 0 ]; then
+        pass "$FIXUP_TOTAL sidebar fixup(s) — all up to date"
+    else
+        warn "$FIXUP_CHANGED of $FIXUP_TOTAL sidebar fixup(s) have unacknowledged content changes"
+        [ "$SHOW_FIX" = true ] && detail "Fix: Review source changes and run ./revamp/migrate.sh --ack-fixup=<source> or --ack-fixup=all"
+    fi
+fi
+
+# ============================================================================
 # REPORT
 # ============================================================================
 echo ""

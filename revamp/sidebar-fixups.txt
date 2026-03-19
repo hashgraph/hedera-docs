@@ -1,0 +1,86 @@
+# ============================================================================
+# Sidebar Title Fixups Registry
+# ============================================================================
+# These destination pages have their sidebarTitle: Overview stripped during
+# migration (sync_file() in migrate.sh), then get a meaningful sidebarTitle
+# applied automatically. They are still AUTO-COPIED from hedera/ (unlike
+# protected-pages.txt entries which are skipped).
+#
+# The source hash tracks upstream content changes. When a source file changes,
+# migrate.sh copies the new content, applies the sidebarTitle fix, and WARNS
+# you to review the content for accuracy.
+#
+# FORMAT:
+#   source_git_hash|source_path|destination_path|sidebar_title
+#
+#   source_git_hash  — git hash-object of source at last review.
+#                      Updated automatically when you --ack-fixup.
+#   source_path      — hedera/ source file (relative to repo root)
+#   destination_path — new-structure destination (relative to repo root)
+#   sidebar_title    — the sidebarTitle value to inject after migration
+#
+# WORKFLOW:
+#   1. migrate.sh copies the source → destination (normal migration)
+#   2. Strips sidebarTitle: Overview (always)
+#   3. Injects the sidebar_title from this file
+#   4. If source hash changed → WARN: "content updated, review for accuracy"
+#   5. Acknowledge all at once: ./revamp/migrate.sh --ack-fixup=all
+#      Or one at a time:        ./revamp/migrate.sh --ack-fixup=<source_path>
+#
+# TO ADD A NEW FIXUP:
+#   1. Find the source in migrate.sh get_explicit_mapping()
+#   2. Add entry: $(git hash-object <source_path>)|<source>|<dest>|<label>
+#   3. Run migrate.sh to apply immediately
+# ============================================================================
+
+# Learn — Core Concepts
+f51244cd25c6bb7e563cc37a8ce1f3dcc0362e19|hedera/core-concepts/hashgraph-consensus-algorithms.mdx|learn/core-concepts/hashgraph/index.mdx|Hashgraph
+c2125a77e12a7f2da56c1251ae265ee3593f1b95|hedera/core-concepts/tokens/hedera-token-service-hts-native-tokenization.mdx|learn/core-concepts/tokens/hts-overview.mdx|HTS Overview
+3141dbabf185c68c4e7882f9158de3835936d762|hedera/core-concepts/transactions-and-queries.mdx|learn/core-concepts/transactions/index.mdx|Transactions
+
+# EVM — Migration / Differences
+abd21401ba5805fda1ca36746d5e599e639eda83|hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility.mdx|evm/migration/index.mdx|EVM Differences
+be17e5aca2bce8d9aeae0e77a8926491b43d5f36|hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility/for-evm-developers-migrating-to-hedera.mdx|evm/migration/key-differences-overview.mdx|Key Differences
+47b3191ba93ac793dd071056a0f361a5709bc796|hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility/for-hedera-native-developers-adding-smart-contract-functionality.mdx|evm/migration/native-devs/index.mdx|For Native Devs
+
+# EVM — Token Standards & System Contracts
+4c559863ad1ea7eda1b7db3e70ee25750d691815|hedera/core-concepts/smart-contracts/tokens-managed-by-smart-contracts.mdx|evm/tokens/index.mdx|ERC Tokens
+d94cf81cf1a7f95793d8047a2d325df390b0bbe7|hedera/core-concepts/smart-contracts/system-smart-contracts.mdx|evm/hedera-services/system-contracts/index.mdx|System Contracts
+
+# EVM — Tutorials & Integrations
+a1f75449fae2dd6638d99320cca3740da364e8a3|hedera/tutorials/smart-contracts.mdx|evm/tutorials/index.mdx|EVM Tutorials
+49cf42a58b006cc0f256d2c3842d05c6adaf4b0c|hedera/open-source-solutions/hedera-wallet-snap-by-metamask.mdx|evm/integrations/wallets/metamask-snap.mdx|MetaMask Snap
+
+# Native SDK — Local Dev & Tutorials
+af78c6517a642131c4e87a6e6a4af583044bce5b|hedera/tutorials/local-node/how-to-run-hedera-local-node-in-a-cloud-development-environment-cde.mdx|native/local-dev/cde/index.mdx|Cloud Dev Environment
+3d696a131904ea00cb2fd323c2fbd2bb0f0dc443|hedera/tutorials/more-tutorials/get-started-with-the-hedera-consensus-service-fabric-plugin.mdx|native/tutorials/advanced/hcs-fabric-plugin/index.mdx|HCS Fabric Plugin
+3ecc4c0a0f488e444fb624542018cbb3c0dec07b|hedera/tutorials/more-tutorials/HSM-signing.mdx|native/tutorials/advanced/hsm-signing/index.mdx|HSM Signing
+
+# Native SDK — AI Integrations
+3fdeb69397c87cefeb9d7ad0e51a62ca9e5790bf|hedera/open-source-solutions/ai-tools-for-developers.mdx|native/integrations/ai/tools/index.mdx|AI Tools
+c3e9ba76eb8ba6dbef6aa18d3fd5a99ac1e9b56d|hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit.mdx|native/integrations/ai/agent-kit/index.mdx|Agent Kit
+
+# Solutions & Operators
+c3e9ba76eb8ba6dbef6aa18d3fd5a99ac1e9b56d|hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit.mdx|solutions/ai/agent-kit.mdx|Agent Kit
+3bc46fc0e29ad87503d6d914be16fc45b8debd10|hedera/open-source-solutions/hedera-custodians-library.mdx|solutions/tools/custodians-library.mdx|Custodians Library
+aa789ff9420a5bbe3ca8b11cc46fd8f6eac90943|hedera/core-concepts/mirror-nodes/run-your-own-beta-mirror-node.mdx|operators/mirror-node/run-your-own/index.mdx|Run Your Own
+48ba186d8f8e35cb1d8e9d2eeaa4d403487454f2|hedera/networks/mainnet/mainnet-nodes/node-requirements.mdx|operators/consensus-node/requirements/index.mdx|Requirements
+
+# Reference — REST API (long title → short label)
+885b38d3fbaa44eec4c9c42fa44e5c5740db0668|hedera/sdks-and-apis/rest-api.mdx|reference/rest-api/index.mdx|REST API
+1f2d17c9b761260b612ce33ee750f24dd4aa3d6d|hedera/sdks-and-apis/rest-api/schedule-transactions.mdx|reference/rest-api/schedules/index.mdx|Schedules
+
+# Reference — other long titles
+aa7c5657253c08b092d9852edd596916eedac0cd|hedera/sdks-and-apis/smart-contract-verification-api.mdx|reference/verification-api.mdx|Verification API
+cb290177ee959fe38a3fe22633a6f1fb4111c612|hedera/sdks-and-apis/hedera-status-api.mdx|reference/status-api.mdx|Status API
+29b2fabf4281f56927f439a81a46b06ada559ca6|hedera/sdks-and-apis/hedera-api/cryptocurrency-accounts.mdx|reference/protobuf/crypto/index.mdx|Crypto Accounts
+
+# Native SDK — section landings with long titles
+37af2ad049890eb07f791227816b73922b4e36ca|hedera/getting-started-hedera-native-developers.mdx|native/index.mdx|Native SDKs
+ea7f4a670cb00ece726201fa7c336f6fd9188d55|hedera/open-source-solutions/ai-studio-on-hedera.mdx|native/integrations/ai/index.mdx|AI Studio
+
+# Solutions & Support — long titles
+6ad4e48347ae722e46c37b8e7a90c2ccd3757c17|hedera/open-source-solutions.mdx|solutions/index.mdx|Solutions
+9b88b6f5b46e16b2856781dfa9219bc16cc2b8b9|hedera/support-and-community.mdx|support/index.mdx|Support
+f1767ac0c7e7dfc30653c36b5470db706fd32118|hedera/support-and-community/contributing-guide.mdx|support/contributing/index.mdx|Contributing
+dc2c2d11218f88dbd813c68f34585e70c2967ae4|hedera/support-and-community/contributing-guide/contribution-guidelines.mdx|support/contributing/contribution-guidelines/index.mdx|Guidelines

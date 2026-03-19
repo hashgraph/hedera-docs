@@ -199,30 +199,16 @@
     }
   ],
   "navigation": {
+    "global": {
+      "anchors": [
+        {"anchor": "Status", "href": "http://status.hedera.com/", "icon": "signal"},
+        {"anchor": "Discord", "href": "https://hedera.com/discord", "icon": "discord"},
+        {"anchor": "Playground", "href": "https://portal.hedera.com/playground", "icon": "code"},
+        {"anchor": "Blog", "href": "https://hedera.com/blog", "icon": "newspaper"}
+      ]
+    },
     "pages": [
       "index"
-    ],
-    "anchors": [
-      {
-        "anchor": "Status",
-        "href": "http://status.hedera.com/",
-        "icon": "signal"
-      },
-      {
-        "anchor": "Discord",
-        "href": "https://hedera.com/discord",
-        "icon": "discord"
-      },
-      {
-        "anchor": "Playground",
-        "href": "https://portal.hedera.com/playground",
-        "icon": "code"
-      },
-      {
-        "anchor": "Blog",
-        "href": "https://hedera.com/blog",
-        "icon": "newspaper"
-      }
     ],
     "tabs": [
       {
@@ -237,7 +223,6 @@
               "learn/getting-started/what-is-hedera",
               "learn/getting-started/why-hedera",
               "learn/getting-started/choose-your-path",
-              "learn/getting-started/create-portal-account",
               "learn/getting-started/testnet-faucet",
               "learn/getting-started/portal-playground"
             ]
@@ -606,6 +591,7 @@
             "pages": [
               "native/index",
               "native/quickstart/index",
+              "learn/getting-started/create-portal-account",
               "native/quickstart/javascript",
               "native/quickstart/java",
               "native/quickstart/go"

@@ -44,6 +44,8 @@ UNMAPPED=0
 ORPHANED=0
 PROTECTED_SKIPPED=0
 PROTECTED_CHANGED=0
+FIXUP_APPLIED=0
+FIXUP_CONTENT_CHANGED=0
 
 # ── Temp files ──────────────────────────────────────────────────────────────
 DEST_MANIFEST=$(mktemp)
@@ -81,22 +83,28 @@ DRY_RUN=false
 VERBOSE=false
 
 ACK_SOURCE=""
+ACK_FIXUP_SOURCE=""
 for arg in "$@"; do
     case "$arg" in
-        --clean)    CLEAN_ORPHANS=true ;;
-        --dry-run)  DRY_RUN=true ;;
-        --verbose)  VERBOSE=true ;;
-        --ack=*)    ACK_SOURCE="${arg#--ack=}" ;;
+        --clean)         CLEAN_ORPHANS=true ;;
+        --dry-run)       DRY_RUN=true ;;
+        --verbose)       VERBOSE=true ;;
+        --ack=*)         ACK_SOURCE="${arg#--ack=}" ;;
+        --ack-fixup=*)   ACK_FIXUP_SOURCE="${arg#--ack-fixup=}" ;;
         --help)
             echo "Usage: ./migrate.sh [OPTIONS]"
             echo ""
             echo "Options:"
-            echo "  --dry-run        Preview changes without modifying files"
-            echo "  --clean          Remove destination files whose source no longer exists"
-            echo "  --verbose        Show all files including unchanged ones"
-            echo "  --ack=<source>   Acknowledge upstream changes in a protected page"
-            echo "                   Updates the stored hash in protected-pages.txt"
-            echo "                   Example: --ack=hedera/readme.mdx"
+            echo "  --dry-run              Preview changes without modifying files"
+            echo "  --clean                Remove destination files whose source no longer exists"
+            echo "  --verbose              Show all files including unchanged ones"
+            echo "  --ack=<source>         Acknowledge upstream changes in a protected page"
+            echo "                         Updates the stored hash in protected-pages.txt"
+            echo "                         Example: --ack=hedera/readme.mdx"
+            echo "  --ack-fixup=<source>   Acknowledge upstream changes in a sidebar-fixup page"
+            echo "  --ack-fixup=all        Acknowledge all sidebar-fixup pages at once"
+            echo "                         Updates the stored hash in sidebar-fixups.txt"
+            echo "                         Example: --ack-fixup=hedera/core-concepts/hashgraph-consensus-algorithms.mdx"
             echo ""
             echo "This script is idempotent and safe to run multiple times."
             echo "It auto-detects new, updated, and deleted files."
@@ -159,6 +167,63 @@ get_protected_dest_for() {
     done
 }
 
+# ── Load sidebar fixups ──────────────────────────────────────────────────────
+# Sidebar fixup pages are auto-copied from hedera/ but need sidebarTitle: Overview
+# stripped and replaced with a meaningful label. The hash tracks content changes.
+# See revamp/sidebar-fixups.txt for the registry and workflow documentation.
+# Uses parallel indexed arrays (bash 3 compatible — macOS ships bash 3).
+FIXUP_SRCS=()
+FIXUP_DESTS_ARR=()
+FIXUP_HASHES=()
+FIXUP_TITLES=()
+FIXUP_FILE="$SCRIPT_DIR/sidebar-fixups.txt"
+if [ -f "$FIXUP_FILE" ]; then
+    while IFS= read -r line; do
+        [[ "$line" =~ ^[[:space:]]*# ]] && continue
+        [ -z "$line" ] && continue
+        IFS='|' read -r hash src dest title <<< "$line"
+        [ -z "$src" ] && continue
+        FIXUP_SRCS+=("$src")
+        FIXUP_DESTS_ARR+=("$dest")
+        FIXUP_HASHES+=("$hash")
+        FIXUP_TITLES+=("$title")
+    done < "$FIXUP_FILE"
+fi
+
+# Returns 0 if the given source path has a sidebar fixup entry.
+is_fixup_src() {
+    local target="$1"
+    local s
+    for s in "${FIXUP_SRCS[@]}"; do
+        [ "$s" = "$target" ] && return 0
+    done
+    return 1
+}
+
+# Echoes the sidebarTitle for a fixup source path.
+get_fixup_title() {
+    local target="$1"
+    local i
+    for i in "${!FIXUP_SRCS[@]}"; do
+        if [ "${FIXUP_SRCS[$i]}" = "$target" ]; then
+            echo "${FIXUP_TITLES[$i]}"
+            return
+        fi
+    done
+}
+
+# Echoes the stored hash for a fixup source path.
+get_fixup_hash() {
+    local target="$1"
+    local i
+    for i in "${!FIXUP_SRCS[@]}"; do
+        if [ "${FIXUP_SRCS[$i]}" = "$target" ]; then
+            echo "${FIXUP_HASHES[$i]}"
+            return
+        fi
+    done
+}
+
 # ── Handle --ack flag ────────────────────────────────────────────────────────
 # Updates the stored hash for a protected page after the user has reviewed
 # upstream changes and incorporated any relevant content.
@@ -197,6 +262,68 @@ if [ -n "$ACK_SOURCE" ]; then
     echo -e "  Destination: $dest_display"
     echo -e "  No further warnings until this source changes again."
     exit 0
+fi
+
+# ── Handle --ack-fixup flag ──────────────────────────────────────────────────
+# Updates the stored hash for a sidebar-fixup page after the user has reviewed
+# upstream content changes and confirmed the sidebarTitle is still accurate.
+if [ -n "$ACK_FIXUP_SOURCE" ]; then
+    if [ ! -f "$FIXUP_FILE" ]; then
+        echo -e "${RED}Error: revamp/sidebar-fixups.txt not found${NC}"
+        exit 1
+    fi
+    if [ "$ACK_FIXUP_SOURCE" = "all" ]; then
+        # Acknowledge all fixup entries at once
+        tmp=$(mktemp)
+        ACK_COUNT=0
+        while IFS= read -r line; do
+            if [[ "$line" =~ ^[[:space:]]*# || -z "$line" ]]; then
+                echo "$line"
+            else
+                IFS='|' read -r h s d t <<< "$line"
+                if [ -n "$s" ] && [ -f "$s" ]; then
+                    new_hash=$(git hash-object "$s")
+                    echo "${new_hash}|${s}|${d}|${t}"
+                    ACK_COUNT=$((ACK_COUNT + 1))
+                else
+                    echo "$line"
+                fi
+            fi
+        done < "$FIXUP_FILE" > "$tmp"
+        mv "$tmp" "$FIXUP_FILE"
+        echo -e "${GREEN}✓${NC} Acknowledged all $ACK_COUNT sidebar-fixup entries"
+        echo -e "  No further warnings until source files change again."
+        exit 0
+    else
+        # Acknowledge a single fixup entry
+        if [ ! -f "$ACK_FIXUP_SOURCE" ]; then
+            echo -e "${RED}Error: source file not found: $ACK_FIXUP_SOURCE${NC}"
+            exit 1
+        fi
+        if ! is_fixup_src "$ACK_FIXUP_SOURCE"; then
+            echo -e "${RED}Error: '$ACK_FIXUP_SOURCE' is not listed in revamp/sidebar-fixups.txt${NC}"
+            exit 1
+        fi
+        new_hash=$(git hash-object "$ACK_FIXUP_SOURCE")
+        tmp=$(mktemp)
+        while IFS= read -r line; do
+            if [[ "$line" =~ ^[[:space:]]*# || -z "$line" ]]; then
+                echo "$line"
+            else
+                IFS='|' read -r h s d t <<< "$line"
+                if [ "$s" = "$ACK_FIXUP_SOURCE" ]; then
+                    echo "${new_hash}|${s}|${d}|${t}"
+                else
+                    echo "$line"
+                fi
+            fi
+        done < "$FIXUP_FILE" > "$tmp"
+        mv "$tmp" "$FIXUP_FILE"
+        echo -e "${GREEN}✓${NC} Acknowledged: $ACK_FIXUP_SOURCE"
+        echo -e "  New hash: $new_hash"
+        echo -e "  No further warnings until this source changes again."
+        exit 0
+    fi
 fi
 
 # ── Backup ──────────────────────────────────────────────────────────────────
@@ -1018,15 +1145,70 @@ sync_file() {
 
     if [ ! -f "$dest" ]; then
         cp "$src" "$dest"
+        _strip_overview_sidebar "$dest"
+        _apply_fixup_sidebar "$src" "$dest"
         echo -e "  ${GREEN}+ NEW${NC}     $dest"
         COPIED=$((COPIED + 1))
     elif ! cmp -s "$src" "$dest"; then
         cp "$src" "$dest"
+        _strip_overview_sidebar "$dest"
+        _apply_fixup_sidebar "$src" "$dest"
         echo -e "  ${CYAN}~ UPDATE${NC}  $dest"
         UPDATED=$((UPDATED + 1))
     else
         [ "$VERBOSE" = true ] && echo -e "  ${DIM}= SAME${NC}    $dest"
         UNCHANGED=$((UNCHANGED + 1))
+        # Still strip and apply fixup on UNCHANGED files — handles the case where
+        # a previous migration run left sidebarTitle: "Overview" (quoted form that
+        # the old sed missed) or a fixup entry was added after the initial copy.
+        _strip_overview_sidebar "$dest"
+        _apply_fixup_sidebar "$src" "$dest"
+    fi
+}
+
+# Strips sidebarTitle: Overview (both quoted and unquoted, handles CRLF) from a file.
+# Uses Python because hedera/ source files have CRLF line endings and
+# BSD sed's ^...$ anchors do not match CRLF-terminated lines on macOS.
+# Only writes back the file if the sidebarTitle line was actually present —
+# avoids touching unrelated files and prevents perpetual UPDATE churn.
+_strip_overview_sidebar() {
+    local dest="$1"
+    python3 -c "
+import sys, re
+dest = sys.argv[1]
+with open(dest, newline='') as f:
+    content = f.read()
+normalized = content.replace('\r\n', '\n').replace('\r', '\n')
+# Two passes: unquoted and double-quoted (single-quoted form is not used in practice)
+stripped = re.sub(r'^sidebarTitle: Overview\n', '', normalized, flags=re.MULTILINE)
+stripped = re.sub(r'^sidebarTitle: \"Overview\"\n', '', stripped, flags=re.MULTILINE)
+# Only write back if sidebarTitle: Overview was actually removed (avoids CRLF churn)
+if stripped != normalized:
+    with open(dest, 'w') as f:
+        f.write(stripped)
+" "$dest"
+}
+
+# Injects the correct sidebarTitle into dest if src has a fixup entry.
+_apply_fixup_sidebar() {
+    local src="$1"
+    local dest="$2"
+    if is_fixup_src "$src"; then
+        local title
+        title=$(get_fixup_title "$src")
+        python3 -c "
+import sys, re
+dest, title = sys.argv[1], sys.argv[2]
+with open(dest) as f:
+    content = f.read()
+# Remove any remaining sidebarTitle line
+content = re.sub(r'^sidebarTitle:.*\n', '', content, flags=re.MULTILINE)
+# Insert sidebarTitle after the title: line
+content = re.sub(r'^(title:.*)$', r'\1\nsidebarTitle: ' + title, content, count=1, flags=re.MULTILINE)
+with open(dest, 'w') as f:
+    f.write(content)
+" "$dest" "$title"
+        FIXUP_APPLIED=$((FIXUP_APPLIED + 1))
     fi
 }
 
@@ -1063,6 +1245,18 @@ while IFS= read -r -d '' src; do
             fi
         else
             sync_file "$src" "$dest"
+
+            # Check fixup hash change once per source (after primary sync)
+            if is_fixup_src "$src"; then
+                current_hash=$(git hash-object "$src" 2>/dev/null || echo "unknown")
+                stored_hash=$(get_fixup_hash "$src")
+                if [ "$current_hash" != "$stored_hash" ]; then
+                    FIXUP_CONTENT_CHANGED=$((FIXUP_CONTENT_CHANGED + 1))
+                    echo -e "    ${YELLOW}⚠ FIXUP-CHANGED${NC}  $dest"
+                    echo -e "    ${DIM}  ↑ source changed — verify sidebarTitle is still accurate, then:${NC}"
+                    echo -e "    ${DIM}    ./revamp/migrate.sh --ack-fixup=$src${NC}"
+                fi
+            fi
 
             # Handle additional copies
             extra=$(get_additional_destinations "$src")
@@ -1238,12 +1432,45 @@ if [ "$TOTAL_PROTECTED" -gt 0 ]; then
     fi
 fi
 
+if [ "$FIXUP_APPLIED" -gt 0 ] || [ "$FIXUP_CONTENT_CHANGED" -gt 0 ]; then
+    echo ""
+    echo -e "  ${DIM}✎ sidebarTitle fixups applied:${NC}  $FIXUP_APPLIED"
+    if [ "$FIXUP_CONTENT_CHANGED" -gt 0 ]; then
+        echo -e "  ${YELLOW}⚠ Fixups needing review:${NC}        $FIXUP_CONTENT_CHANGED"
+        echo -e ""
+        echo -e "  ${YELLOW}  One or more fixup sources changed upstream.${NC}"
+        echo -e "  ${YELLOW}  Verify the sidebarTitle is still accurate, then:${NC}"
+        echo -e "  ${YELLOW}    ./revamp/migrate.sh --ack-fixup=<source_path>${NC}"
+        echo -e "  ${YELLOW}    ./revamp/migrate.sh --ack-fixup=all   (approve all at once)${NC}"
+        echo -e "  ${YELLOW}  See revamp/sidebar-fixups.txt for the full registry.${NC}"
+    fi
+fi
+
 if [ "$DRY_RUN" = true ]; then
     echo ""
     echo -e "  ${YELLOW}DRY RUN - no files were modified${NC}"
 else
     echo ""
     echo -e "  📁 Backup: $BACKUP"
+
+    # ── Append to sync log ───────────────────────────────────────────────────
+    SYNC_LOG="$SCRIPT_DIR/sync-log.md"
+    if [ -f "$SYNC_LOG" ]; then
+        MAIN_COMMIT=$(git log main -1 --format="%h" 2>/dev/null || echo "unknown")
+        MAIN_MSG=$(git log main -1 --format="%s" 2>/dev/null || echo "unknown")
+        DEV_COMMIT=$(git log HEAD -1 --format="%h" 2>/dev/null || echo "unknown")
+        DEV_MSG=$(git log HEAD -1 --format="%s" 2>/dev/null || echo "unknown")
+        RUN_TIMESTAMP=$(date -u "+%Y-%m-%d %H:%M UTC")
+        {
+            echo ""
+            echo "## $RUN_TIMESTAMP"
+            echo ""
+            echo "- **main HEAD**: \`$MAIN_COMMIT\` — $MAIN_MSG"
+            echo "- **dev HEAD**: \`$DEV_COMMIT\` — $DEV_MSG"
+            echo "- **Stats**: $COPIED new · $UPDATED updated · $UNCHANGED unchanged · $PROTECTED_SKIPPED protected skipped · $FIXUP_APPLIED fixups applied"
+        } >> "$SYNC_LOG"
+        echo -e "  📋 Sync record appended to revamp/sync-log.md"
+    fi
 fi
 
 echo ""

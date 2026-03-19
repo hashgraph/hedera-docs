@@ -2,7 +2,7 @@
 
 **Date:** 2026-03-19
 **Last updated:** 2026-03-19
-**Status:** 599 total pages in new structure, 536 migrated, 59 placeholders remaining (4 written this session)
+**Status:** 599 total pages in new structure, 536 migrated, 59 placeholders remaining
 
 ---
 
@@ -20,10 +20,16 @@
   - `learn/getting-started/choose-your-path.mdx` — EVM vs Native SDK persona funnel
 - [x] `learn/index.mdx` — stale `hedera/` links updated to new 7-tab paths
 - [x] **Protected pages system** — `revamp/protected-pages.txt` + `--ack` workflow in `migrate.sh` + Check 9 in `verify.sh`
+- [x] **Sidebar fixups system** — `revamp/sidebar-fixups.txt` (30 entries) + auto-inject sidebarTitle after every migration + `--ack-fixup` workflow + Check 10 in `verify.sh`
+- [x] **"Overview" sidebar labels eliminated** — stripped `sidebarTitle: Overview` (quoted + unquoted + CRLF) from all destination files; Python-based strip handles CRLF line endings in hedera/ source files
+- [x] **Sync log** — `revamp/sync-log.md` records every `migrate.sh` run with main HEAD commit + stats
+- [x] **sidebar-fixups applied to UNCHANGED files** — fixup titles and Overview-stripping now run even when source == dest, so adding new fixup entries takes effect immediately on next migration run
+- [x] **Global nav anchors** — Status, Discord, Playground, Blog added to `docs.json` (matching docs.hedera.com)
+- [x] **Sidebar naming** — "Getting Started" renamed to "Start Here" to avoid group/page name clash; "Create an Account" moved to Native SDK Quick Start
 
 ---
 
-## What's MISSING — 63 Placeholder Pages (New Content to Write)
+## What's MISSING — 59 Placeholder Pages (New Content to Write)
 
 ### Learn Tab (1 placeholder remaining)
 The Getting Started section is complete. One placeholder remains.

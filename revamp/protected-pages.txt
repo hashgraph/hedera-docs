@@ -1,0 +1,37 @@
+# ============================================================================
+# Protected Pages Registry
+# ============================================================================
+# These destination pages are manually authored on the dev branch and are NOT
+# overwritten by migrate.sh, even though a mapping exists in EXPLICIT FILE
+# MAPPING. The source mapping is kept there for documentation purposes only.
+#
+# WHY THIS EXISTS:
+#   Some pages in the revamp are so structurally different from their hedera/
+#   source that auto-migration would destroy the revamp content. These pages
+#   must be maintained manually on dev. When the source changes in main, this
+#   system warns you so you can review and incorporate relevant changes.
+#
+# FORMAT:
+#   source_git_hash|source_path|destination_path|reason
+#
+#   source_git_hash  — git hash-object of source at time of last review.
+#                      Used to detect upstream changes. Update with --ack.
+#   source_path      — path in hedera/ (relative to repo root)
+#   destination_path — path in new structure (relative to repo root)
+#   reason           — why this page is protected
+#
+# WORKFLOW:
+#   1. migrate.sh checks if source hash changed since last review.
+#   2. If changed: WARNING is shown. The source is NOT copied to destination.
+#   3. Review the source diff manually and incorporate relevant content.
+#   4. Acknowledge: ./revamp/migrate.sh --ack hedera/readme.mdx
+#      This updates the hash, silencing the warning until next upstream change.
+#
+# TO PROTECT A NEW PAGE:
+#   1. Keep the mapping in migrate.sh EXPLICIT FILE MAPPING (for documentation).
+#   2. Add an entry here: echo "<hash>|<src>|<dest>|<reason>"
+#      where <hash> = $(git hash-object <source_path>)
+#   3. Rewrite the destination on dev as needed.
+# ============================================================================
+
+5966193496764b1af59a57379b99fd810a29ef27|hedera/readme.mdx|learn/index.mdx|Revamped as Learn tab landing page — links updated to 7-tab structure; source is old root README with hedera/ links

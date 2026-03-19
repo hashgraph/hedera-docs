@@ -1,35 +1,88 @@
 ---
 title: "What is Hedera?"
-description: "An introduction to Hedera, the enterprise-grade public network."
+description: "Hedera is a public, open-source, proof-of-stake distributed ledger built on Hashgraph consensus — not a blockchain."
 icon: "circle-question"
 ---
 
-{/* TODO: This page needs content */}
+Hedera is a public distributed ledger network designed for production-grade decentralized applications. It is used by enterprises, startups, and developers around the world to build tokenization platforms, supply chain systems, AI data pipelines, DeFi protocols, and more. Unlike traditional blockchain networks, Hedera is built on the Hashgraph consensus algorithm — delivering faster finality, predictable fees, and enterprise-grade governance.
+
+## The Hedera Network
+
+Hedera is a **public, permissionless network** — anyone can submit transactions, deploy smart contracts, and build applications on it. Key characteristics:
+
+- **Not a blockchain.** Hedera uses a directed acyclic graph (DAG) data structure with Hashgraph consensus instead of a chain of blocks.
+- **Governed by the Hedera Governing Council** — a body of up to 39 global enterprises (including Google, IBM, Boeing, LG, and Deutsche Telekom) that oversee network operations and roadmap decisions. No single entity controls the network.
+- **~10,000 TPS** on the public network with 3–5 second absolute finality.
+- **Carbon-negative certified** — Hedera offsets more carbon than it produces, verified annually.
+- **Open-source via Hiero** — All Hedera SDKs and node software are governed by the Hiero project under the Linux Foundation.
 
 <Info>
-  **Coming Soon** — This page is under construction.
+  A free **testnet** is available for development. No real HBAR required — fund your testnet account from the [faucet](/learn/getting-started/testnet-faucet).
 </Info>
 
-## Overview
+## Hashgraph Consensus
 
-An introduction to Hedera, the enterprise-grade public network.
+Hedera's consensus mechanism is **Hashgraph**, invented by Dr. Leemon Baird. It uses two core techniques:
 
-{/*
-## Content Checklist
-- [ ] Write introduction
-- [ ] Add code examples
-- [ ] Include diagrams if needed
-- [ ] Add related links
-- [ ] Review and polish
-*/}
+**Gossip about gossip** — Nodes spread transaction information to random peers, and each message carries a history of who told whom, forming a graph of events rather than a linear chain.
 
-## Need Help?
+**Virtual voting** — Instead of sending vote messages across the network, nodes calculate what other nodes *would* vote based on the shared event graph. This eliminates communication overhead and enables high throughput.
+
+Key properties:
+- **Fair** — Transaction ordering is mathematically fair; no miner or validator can manipulate the order.
+- **Fast** — Consensus is reached in seconds, not minutes.
+- **Byzantine fault-tolerant** — The network is secure as long as fewer than 1/3 of nodes are malicious.
+- **ABFT** — Asynchronous Byzantine Fault Tolerant, the highest security grade in distributed systems theory.
+
+For a deeper technical dive, see [Hashgraph Consensus](/learn/core-concepts/hashgraph/index).
+
+## What Can You Build on Hedera?
+
+Hedera offers four native network services, each accessible via the SDK or smart contracts:
 
 <CardGroup cols={2}>
-  <Card title="Discord" icon="discord" href="https://hedera.com/discord">
-    Join our developer community
+  <Card title="Smart Contracts (EVM)" icon="file-code" href="/evm/quickstart/index">
+    Deploy Solidity contracts using Hardhat, Foundry, or Remix. Full EVM compatibility with Ethereum tooling.
   </Card>
-  <Card title="GitHub" icon="github" href="https://github.com/hashgraph">
-    Explore our repositories
+  <Card title="Token Service (HTS)" icon="coins" href="/learn/core-concepts/tokens/index">
+    Create and manage fungible tokens and NFTs natively on the network — no smart contract required.
+  </Card>
+  <Card title="Consensus Service (HCS)" icon="list-check" href="/learn/core-concepts/services/index">
+    Publish ordered, timestamped, verifiable messages to a topic. Ideal for audit logs, supply chain, and AI data provenance.
+  </Card>
+  <Card title="File Service (HFS)" icon="file" href="/learn/core-concepts/services/index">
+    Store immutable files on the network. Used for smart contract bytecode and configuration data.
   </Card>
 </CardGroup>
+
+## Key Properties at a Glance
+
+| Property | Hedera |
+|---|---|
+| Throughput | ~10,000 TPS |
+| Finality | 3–5 seconds (absolute) |
+| Average Fee | ~$0.0001 per transaction |
+| Governance | Hedera Governing Council (39 enterprises) |
+| Consensus | Hashgraph (ABFT) |
+| EVM Compatible | Yes — full Solidity and Ethereum tooling support |
+| Carbon | Negative (certified) |
+
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="Is Hedera a blockchain?">
+    No. Hedera uses a directed acyclic graph (DAG) with Hashgraph consensus, not a chain of blocks. The result is faster finality and higher throughput than traditional blockchains, while maintaining the same decentralized, tamper-proof properties.
+  </Accordion>
+  <Accordion title="What is HBAR?">
+    HBAR is the native cryptocurrency of the Hedera network. It is used to pay transaction fees and to stake to nodes for network security. Transaction fees on Hedera are denominated in USD and paid in HBAR at the current exchange rate, making costs predictable.
+  </Accordion>
+  <Accordion title="Who governs Hedera?">
+    The Hedera Governing Council — up to 39 global enterprises serving rotating, term-limited seats. Council members include Google, IBM, Boeing, LG, Deutsche Telekom, Ubisoft, and others. No single member controls the network, and all node software is open-source via the Hiero project under the Linux Foundation.
+  </Accordion>
+  <Accordion title="Is Hedera EVM compatible?">
+    Yes. Hedera supports the Ethereum Virtual Machine (EVM). You can deploy Solidity smart contracts and use Ethereum tooling (Hardhat, Foundry, MetaMask, Ethers.js, Viem) via Hedera's JSON-RPC Relay. In addition to EVM contracts, Hedera offers native services (HTS, HCS, HFS) accessible directly from smart contracts via precompile interfaces.
+  </Accordion>
+  <Accordion title="What networks are available?">
+    Hedera has three networks: **Mainnet** (production, real HBAR), **Testnet** (free development environment, test HBAR from faucet), and **Previewnet** (early access to upcoming features). Start with Testnet.
+  </Accordion>
+</AccordionGroup>

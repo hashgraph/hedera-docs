@@ -376,6 +376,49 @@ else
 fi
 
 # ============================================================================
+# CHECK 9: Protected pages — detect unacknowledged upstream changes
+# ============================================================================
+echo ""
+echo -e "${BLUE}━━━ Check 9: Protected pages ━━━${NC}"
+
+PROTECTED_FILE="revamp/protected-pages.txt"
+if [ ! -f "$PROTECTED_FILE" ]; then
+    warn "revamp/protected-pages.txt not found — skipping protected pages check"
+else
+    PROT_TOTAL=0
+    PROT_CHANGED=0
+
+    while IFS= read -r line; do
+        [[ "$line" =~ ^[[:space:]]*# ]] && continue
+        [ -z "$line" ] && continue
+        IFS='|' read -r hash src dest reason <<< "$line"
+        [ -z "$src" ] && continue
+        PROT_TOTAL=$((PROT_TOTAL + 1))
+
+        if [ ! -f "$src" ]; then
+            warn "Protected source no longer exists: $src"
+            detail "Remove entry from revamp/protected-pages.txt if source was deleted"
+            continue
+        fi
+
+        current_hash=$(git hash-object "$src" 2>/dev/null || echo "unknown")
+        if [ "$current_hash" != "$hash" ]; then
+            PROT_CHANGED=$((PROT_CHANGED + 1))
+            detail "UPSTREAM CHANGE: $src → $dest"
+            detail "  Review source, update destination if needed, then:"
+            detail "  ./revamp/migrate.sh --ack=$src"
+        fi
+    done < "$PROTECTED_FILE"
+
+    if [ "$PROT_CHANGED" -eq 0 ]; then
+        pass "$PROT_TOTAL protected page(s) — all up to date"
+    else
+        warn "$PROT_CHANGED of $PROT_TOTAL protected page(s) have unacknowledged upstream changes"
+        [ "$SHOW_FIX" = true ] && detail "Fix: Review source changes and run ./revamp/migrate.sh --ack=<source>"
+    fi
+fi
+
+# ============================================================================
 # REPORT
 # ============================================================================
 echo ""

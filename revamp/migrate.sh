@@ -42,6 +42,8 @@ UPDATED=0
 UNCHANGED=0
 UNMAPPED=0
 ORPHANED=0
+PROTECTED_SKIPPED=0
+PROTECTED_CHANGED=0
 
 # ── Temp files ──────────────────────────────────────────────────────────────
 DEST_MANIFEST=$(mktemp)
@@ -78,18 +80,23 @@ CLEAN_ORPHANS=false
 DRY_RUN=false
 VERBOSE=false
 
+ACK_SOURCE=""
 for arg in "$@"; do
     case "$arg" in
-        --clean)   CLEAN_ORPHANS=true ;;
-        --dry-run) DRY_RUN=true ;;
-        --verbose) VERBOSE=true ;;
+        --clean)    CLEAN_ORPHANS=true ;;
+        --dry-run)  DRY_RUN=true ;;
+        --verbose)  VERBOSE=true ;;
+        --ack=*)    ACK_SOURCE="${arg#--ack=}" ;;
         --help)
             echo "Usage: ./migrate.sh [OPTIONS]"
             echo ""
             echo "Options:"
-            echo "  --dry-run   Preview changes without modifying files"
-            echo "  --clean     Remove destination files whose source no longer exists"
-            echo "  --verbose   Show all files including unchanged ones"
+            echo "  --dry-run        Preview changes without modifying files"
+            echo "  --clean          Remove destination files whose source no longer exists"
+            echo "  --verbose        Show all files including unchanged ones"
+            echo "  --ack=<source>   Acknowledge upstream changes in a protected page"
+            echo "                   Updates the stored hash in protected-pages.txt"
+            echo "                   Example: --ack=hedera/readme.mdx"
             echo ""
             echo "This script is idempotent and safe to run multiple times."
             echo "It auto-detects new, updated, and deleted files."
@@ -97,6 +104,100 @@ for arg in "$@"; do
             ;;
     esac
 done
+
+# ── Load protected pages ────────────────────────────────────────────────────
+# Protected pages are manually maintained on dev and NOT overwritten by migration.
+# See revamp/protected-pages.txt for the registry and workflow documentation.
+# Uses parallel indexed arrays (bash 3 compatible — macOS ships bash 3).
+PROTECTED_SRCS=()
+PROTECTED_DESTS_ARR=()
+PROTECTED_HASHES=()
+PROTECTED_FILE="$SCRIPT_DIR/protected-pages.txt"
+if [ -f "$PROTECTED_FILE" ]; then
+    while IFS= read -r line; do
+        [[ "$line" =~ ^[[:space:]]*# ]] && continue
+        [ -z "$line" ] && continue
+        IFS='|' read -r hash src dest reason <<< "$line"
+        [ -z "$src" ] && continue
+        PROTECTED_SRCS+=("$src")
+        PROTECTED_DESTS_ARR+=("$dest")
+        PROTECTED_HASHES+=("$hash")
+    done < "$PROTECTED_FILE"
+fi
+
+# Returns 0 if the given source path is protected, 1 otherwise.
+is_protected_src() {
+    local target="$1"
+    local s
+    for s in "${PROTECTED_SRCS[@]}"; do
+        [ "$s" = "$target" ] && return 0
+    done
+    return 1
+}
+
+# Echoes the stored hash for a protected source path.
+get_stored_hash() {
+    local target="$1"
+    local i
+    for i in "${!PROTECTED_SRCS[@]}"; do
+        if [ "${PROTECTED_SRCS[$i]}" = "$target" ]; then
+            echo "${PROTECTED_HASHES[$i]}"
+            return
+        fi
+    done
+}
+
+# Echoes the destination for a protected source path.
+get_protected_dest_for() {
+    local target="$1"
+    local i
+    for i in "${!PROTECTED_SRCS[@]}"; do
+        if [ "${PROTECTED_SRCS[$i]}" = "$target" ]; then
+            echo "${PROTECTED_DESTS_ARR[$i]}"
+            return
+        fi
+    done
+}
+
+# ── Handle --ack flag ────────────────────────────────────────────────────────
+# Updates the stored hash for a protected page after the user has reviewed
+# upstream changes and incorporated any relevant content.
+if [ -n "$ACK_SOURCE" ]; then
+    if [ ! -f "$PROTECTED_FILE" ]; then
+        echo -e "${RED}Error: revamp/protected-pages.txt not found${NC}"
+        exit 1
+    fi
+    if [ ! -f "$ACK_SOURCE" ]; then
+        echo -e "${RED}Error: source file not found: $ACK_SOURCE${NC}"
+        exit 1
+    fi
+    if ! is_protected_src "$ACK_SOURCE"; then
+        echo -e "${RED}Error: '$ACK_SOURCE' is not listed in revamp/protected-pages.txt${NC}"
+        exit 1
+    fi
+    new_hash=$(git hash-object "$ACK_SOURCE")
+    dest_display=$(get_protected_dest_for "$ACK_SOURCE")
+    # Rewrite the file preserving comments and all other entries
+    tmp=$(mktemp)
+    while IFS= read -r line; do
+        if [[ "$line" =~ ^[[:space:]]*# || -z "$line" ]]; then
+            echo "$line"
+        else
+            IFS='|' read -r h s d r <<< "$line"
+            if [ "$s" = "$ACK_SOURCE" ]; then
+                echo "${new_hash}|${s}|${d}|${r}"
+            else
+                echo "$line"
+            fi
+        fi
+    done < "$PROTECTED_FILE" > "$tmp"
+    mv "$tmp" "$PROTECTED_FILE"
+    echo -e "${GREEN}✓${NC} Acknowledged: $ACK_SOURCE"
+    echo -e "  New hash: $new_hash"
+    echo -e "  Destination: $dest_display"
+    echo -e "  No further warnings until this source changes again."
+    exit 0
+fi
 
 # ── Backup ──────────────────────────────────────────────────────────────────
 if [ "$DRY_RUN" = false ]; then
@@ -945,14 +1046,31 @@ while IFS= read -r -d '' src; do
     fi
 
     if [ -n "$dest" ]; then
-        sync_file "$src" "$dest"
+        # Check if this source is protected (manually maintained on dev)
+        if is_protected_src "$src"; then
+            # Register in manifest to avoid false orphan detection
+            echo "$dest" >> "$DEST_MANIFEST"
+            # Check if source changed since last review
+            current_hash=$(git hash-object "$src" 2>/dev/null || echo "unknown")
+            stored_hash=$(get_stored_hash "$src")
+            if [ "$current_hash" != "$stored_hash" ]; then
+                PROTECTED_CHANGED=$((PROTECTED_CHANGED + 1))
+                echo -e "  ${YELLOW}⚠ PROTECTED-CHANGED${NC}  $dest"
+                echo -e "    ${DIM}↑ source $src changed upstream — review manually${NC}"
+            else
+                PROTECTED_SKIPPED=$((PROTECTED_SKIPPED + 1))
+                [ "$VERBOSE" = true ] && echo -e "  ${DIM}⊞ PROTECTED${NC}   $dest"
+            fi
+        else
+            sync_file "$src" "$dest"
 
-        # Handle additional copies
-        extra=$(get_additional_destinations "$src")
-        if [ -n "$extra" ]; then
-            while IFS= read -r extra_dest; do
-                [ -n "$extra_dest" ] && sync_file "$src" "$extra_dest"
-            done <<< "$extra"
+            # Handle additional copies
+            extra=$(get_additional_destinations "$src")
+            if [ -n "$extra" ]; then
+                while IFS= read -r extra_dest; do
+                    [ -n "$extra_dest" ] && sync_file "$src" "$extra_dest"
+                done <<< "$extra"
+            fi
         fi
     else
         UNMAPPED=$((UNMAPPED + 1))
@@ -966,7 +1084,41 @@ done < <(find hedera -name "*.mdx" -type f -print0 | sort -z)
 # ============================================================================
 # Find destination files that no longer have a corresponding source file.
 # These may be from files that were deleted or renamed in hedera/.
+#
+# NOTE: Dev-authored pages (no hedera/ source) are excluded from orphan
+# detection if they appear in the docs.json navigation. This ensures that
+# pages like learn/getting-started/index.mdx (written directly on dev) are
+# not falsely flagged as orphans.
 # ============================================================================
+
+# Pre-populate manifest with all nav-referenced files so dev-authored pages
+# that are in the nav are never flagged as orphans.
+python3 -c "
+import json, sys
+
+def extract_pages(obj):
+    pages = set()
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if k == 'pages' and isinstance(v, list):
+                for item in v:
+                    if isinstance(item, str):
+                        pages.add(item + '.mdx')
+                    elif isinstance(item, dict):
+                        pages.update(extract_pages(item))
+            elif k in ('groups', 'tabs'):
+                pages.update(extract_pages(v))
+    elif isinstance(obj, list):
+        for item in obj:
+            pages.update(extract_pages(item))
+    return pages
+
+with open('docs.json') as f:
+    data = json.load(f)
+nav = data.get('navigation', {})
+for p in extract_pages(nav):
+    print(p)
+" 2>/dev/null >> "$DEST_MANIFEST"
 
 echo ""
 echo -e "${BLUE}━━━ Checking for orphaned destination files ━━━${NC}"
@@ -1068,6 +1220,21 @@ if [ "$ORPHANED" -gt 0 ]; then
     else
         echo -e "  ${YELLOW}! Orphaned files:${NC}      $ORPHANED"
         echo -e "  ${YELLOW}  Run with --clean to remove them${NC}"
+    fi
+fi
+
+TOTAL_PROTECTED=$((PROTECTED_SKIPPED + PROTECTED_CHANGED))
+if [ "$TOTAL_PROTECTED" -gt 0 ]; then
+    echo ""
+    echo -e "  ${DIM}⊞ Protected (skipped):${NC}  $PROTECTED_SKIPPED"
+    if [ "$PROTECTED_CHANGED" -gt 0 ]; then
+        echo -e "  ${YELLOW}⚠ Need review:${NC}         $PROTECTED_CHANGED"
+        echo -e ""
+        echo -e "  ${YELLOW}  One or more protected pages have upstream changes.${NC}"
+        echo -e "  ${YELLOW}  Review the source file(s) above, incorporate any relevant${NC}"
+        echo -e "  ${YELLOW}  changes into the destination, then acknowledge:${NC}"
+        echo -e "  ${YELLOW}    ./revamp/migrate.sh --ack=<source_path>${NC}"
+        echo -e "  ${YELLOW}  See revamp/protected-pages.txt for the full registry.${NC}"
     fi
 fi
 

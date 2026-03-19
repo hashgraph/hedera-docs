@@ -1,35 +1,102 @@
 ---
 title: "Choose Your Path"
-description: "Find the right development path based on your background and goals."
+description: "Two ways to build on Hedera — find the one that fits your background."
 icon: "signs-post"
 ---
 
-{/* TODO: This page needs content */}
+Hedera supports two development approaches. Pick the one that matches your background and goals.
 
-<Info>
-  **Coming Soon** — This page is under construction.
-</Info>
+## Quick Decision Guide
 
-## Overview
+<Tabs>
+  <Tab title="I know Solidity / EVM">
+    You're an Ethereum or web3 developer familiar with Solidity, Hardhat, Foundry, or Remix. Hedera is fully EVM-compatible — deploy your existing contracts with minimal changes.
 
-Find the right development path based on your background and goals.
+    **What you'll use:** MetaMask, Hardhat, Foundry, Remix, Ethers.js, Viem
 
-{/*
-## Content Checklist
-- [ ] Write introduction
-- [ ] Add code examples
-- [ ] Include diagrams if needed
-- [ ] Add related links
-- [ ] Review and polish
-*/}
+    **What you'll build:** Solidity smart contracts, ERC-20/ERC-721 tokens, dApps with wallet integrations
 
-## Need Help?
+    <Card title="Start the EVM path →" href="/evm/quickstart/index" />
+  </Tab>
+  <Tab title="I want native SDK (JS / Java / Go)">
+    You're a backend or enterprise developer, or new to web3. The Hiero SDKs give you direct access to all Hedera services without needing Solidity.
 
-<CardGroup cols={2}>
-  <Card title="Discord" icon="discord" href="https://hedera.com/discord">
-    Join our developer community
-  </Card>
-  <Card title="GitHub" icon="github" href="https://github.com/hashgraph">
-    Explore our repositories
-  </Card>
-</CardGroup>
+    **What you'll use:** Hiero JavaScript, Java, Go, or Python SDK
+
+    **What you'll build:** HBAR transfers, native tokens via HTS, verifiable event streams via HCS
+
+    <Card title="Start the Native SDK path →" href="/native/quickstart/index" />
+  </Tab>
+</Tabs>
+
+---
+
+## Path 1: EVM Developer
+
+**For:** Ethereum and Solidity developers, web3 veterans
+
+Deploy Solidity contracts to Hedera using the tools you already know. Hedera's JSON-RPC Relay makes it seamless — MetaMask, Hardhat, and Foundry all work out of the box.
+
+<Steps>
+  <Step title="Set up MetaMask">
+    Add Hedera Testnet to MetaMask and fund your wallet.
+    [Set Up MetaMask →](/evm/quickstart/setup-metamask)
+  </Step>
+  <Step title="Get testnet HBAR">
+    Fund your account from the testnet faucet to pay for transactions.
+    [Get Test HBAR →](/learn/getting-started/testnet-faucet)
+  </Step>
+  <Step title="Deploy your first contract">
+    Deploy a Solidity contract using Hardhat or Foundry.
+    [Deploy with Hardhat →](/evm/quickstart/deploy-with-hardhat)
+  </Step>
+</Steps>
+
+<Card title="Start EVM path →" href="/evm/quickstart/index" />
+
+---
+
+## Path 2: Native SDK Developer
+
+**For:** Backend and enterprise developers, developers new to web3
+
+Use the Hiero SDK in your preferred language to interact with Hedera services directly. No Solidity required — create accounts, transfer HBAR, mint tokens, and publish to HCS topics using familiar programming patterns.
+
+<Steps>
+  <Step title="Create a testnet account">
+    Set up your Hedera developer portal account and testnet credentials.
+    [Create Testnet Account →](/learn/getting-started/create-portal-account)
+  </Step>
+  <Step title="Get test HBAR">
+    Fund your testnet account from the faucet.
+    [Get Test HBAR →](/learn/getting-started/testnet-faucet)
+  </Step>
+  <Step title="Build with the SDK">
+    Follow the quickstart for your language: JavaScript, Java, or Go.
+    [Native SDK Quickstart →](/native/quickstart/index)
+  </Step>
+</Steps>
+
+<Card title="Start Native SDK path →" href="/native/quickstart/index" />
+
+---
+
+## Not Sure Which Path?
+
+<AccordionGroup>
+  <Accordion title="I want to build a token or NFT">
+    Both paths work. Use the **EVM path** if you want ERC-20/ERC-721 token standards and compatibility with existing Ethereum tooling. Use the **Native SDK path** if you want the full feature set of Hedera Token Service (HTS), including native fractional fees, royalty schedules, and token-level KYC.
+  </Accordion>
+  <Accordion title="I want to build a dApp with a wallet">
+    Use the **EVM path**. MetaMask and WalletConnect work natively with Hedera via the JSON-RPC Relay. Your existing frontend code (Ethers.js, Viem, Wagmi) requires minimal changes.
+  </Accordion>
+  <Accordion title="I want enterprise-grade data integrity or messaging">
+    Use the **Native SDK path**. Hedera Consensus Service (HCS) lets you publish ordered, timestamped, and verifiable messages to a topic — ideal for audit logs, supply chain events, and AI data provenance.
+  </Accordion>
+  <Accordion title="I'm new to blockchain / web3 entirely">
+    Start with the **Native SDK path**. The SDK abstracts away the complexity of key management and transactions, letting you focus on learning Hedera concepts with familiar language patterns (JS, Java, Go).
+  </Accordion>
+  <Accordion title="Can I use both paths in the same project?">
+    Yes. Many production applications combine both: smart contracts deployed via the EVM path, with HCS or HTS operations performed via the Native SDK. They share the same account system and HBAR balance.
+  </Accordion>
+</AccordionGroup>

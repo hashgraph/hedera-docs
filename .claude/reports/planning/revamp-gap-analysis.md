@@ -1,7 +1,8 @@
 # Revamp Gap Analysis — Plan vs. Implemented
 
 **Date:** 2026-03-19
-**Status:** 599 total pages in new structure, 536 migrated, 63 placeholders (new content needed)
+**Last updated:** 2026-03-19
+**Status:** 599 total pages in new structure, 536 migrated, 59 placeholders remaining (4 written this session)
 
 ---
 
@@ -12,20 +13,27 @@
 - [x] Directory structure created for all 7 tabs
 - [x] `revamp/migrate.sh`, `revamp/verify.sh`, `revamp/create-placeholders.sh` tooling
 - [x] Navigation integrity verified (all referenced pages exist on disk)
+- [x] **Learn / Getting Started section** — 4 pages written (2026-03-19):
+  - `learn/getting-started/index.mdx` — section hub with 4-step journey + shortcut cards
+  - `learn/getting-started/what-is-hedera.mdx` — foundational intro, Hashgraph, services, FAQ
+  - `learn/getting-started/why-hedera.mdx` — value prop, comparison table, use cases
+  - `learn/getting-started/choose-your-path.mdx` — EVM vs Native SDK persona funnel
+- [x] `learn/index.mdx` — stale `hedera/` links updated to new 7-tab paths
+- [x] **Protected pages system** — `revamp/protected-pages.txt` + `--ack` workflow in `migrate.sh` + Check 9 in `verify.sh`
 
 ---
 
 ## What's MISSING — 63 Placeholder Pages (New Content to Write)
 
-### Learn Tab (5 placeholders)
-These are the most important — they form the onboarding entry point for ALL users.
+### Learn Tab (1 placeholder remaining)
+The Getting Started section is complete. One placeholder remains.
 
-| Page | Path | Priority |
-|------|------|----------|
-| Getting Started landing | `learn/getting-started/index.mdx` | 🔴 HIGH |
-| What is Hedera | `learn/getting-started/what-is-hedera.mdx` | 🔴 HIGH |
-| Why Hedera | `learn/getting-started/why-hedera.mdx` | 🟡 MED |
-| Choose Your Path | `learn/getting-started/choose-your-path.mdx` | 🔴 HIGH |
+| Page | Path | Status |
+|------|------|--------|
+| ~~Getting Started landing~~ | ~~`learn/getting-started/index.mdx`~~ | ✅ Done |
+| ~~What is Hedera~~ | ~~`learn/getting-started/what-is-hedera.mdx`~~ | ✅ Done |
+| ~~Why Hedera~~ | ~~`learn/getting-started/why-hedera.mdx`~~ | ✅ Done |
+| ~~Choose Your Path~~ | ~~`learn/getting-started/choose-your-path.mdx`~~ | ✅ Done |
 | Hedera Services overview | `learn/core-concepts/services/index.mdx` | 🟡 MED |
 
 ### EVM Tab (32 placeholders)
@@ -152,7 +160,7 @@ The `index.mdx` files for each tab's main section need to be proper landing page
 
 ### 3. User journey "Choose Your Path" pages
 The plan shows a flow: Learn → Getting Started → Choose Your Path → EVM or Native.
-- `learn/getting-started/choose-your-path.mdx` — placeholder
+- `learn/getting-started/choose-your-path.mdx` — ✅ **DONE**
 - `evm/overview/choose-your-path.mdx` — placeholder
 
 ### 4. EVM Differences/Migration — content accuracy review
@@ -167,7 +175,7 @@ The style guide sub-pages and community pages exist but need content review.
 
 ## Suggested Priority Order
 
-1. **Learn / Getting Started** — onboarding entry point for all users (5 pages)
+1. ~~**Learn / Getting Started**~~ — ✅ DONE (2026-03-19)
 2. **Tab landing pages** — the index.mdx for each major tab (makes nav usable)
 3. **EVM Overview** — the "why Hedera for EVM" and orientation pages (4 pages)
 4. **EVM Troubleshooting** — highest developer value, all new content (4 pages)

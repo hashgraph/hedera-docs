@@ -226,3 +226,44 @@ To ensure consistency and avoid confusion:
 | Native → Local Dev | Operators → Mirror Nodes (if they need to query data) |
 | Operators → Any | Reference → REST API (for API details) |
 | Learn → Core Concepts | "Ready to build?" → Links to EVM or Native tabs |
+
+---
+
+## Dev-Only Content (Not Migrated from `hedera/`)
+
+Some pages on the `dev` branch are authored directly — they have no source in `hedera/` and are **never overwritten by `migrate.sh`**. These are new content unique to the revamp.
+
+### Fully Dev-Authored Pages (safe from migration by design)
+
+| File | Why dev-only |
+|---|---|
+| `learn/getting-started/index.mdx` | New section hub for the 4-page onboarding journey |
+| `learn/getting-started/what-is-hedera.mdx` | Foundational intro written for revamp |
+| `learn/getting-started/why-hedera.mdx` | Value proposition page, new content |
+| `learn/getting-started/choose-your-path.mdx` | Persona funnel (most critical UX page), new content |
+
+These are safe because `migrate.sh` only writes files that have a mapping in `get_explicit_mapping()` or `get_directory_mapping()`. Pages with no `hedera/` source are never touched.
+
+### Protected Pages (have a mapping, but are manually maintained on dev)
+
+Some pages have a source mapping in `migrate.sh` but the dev version is so structurally different that auto-sync would destroy the revamp content. These are tracked in `revamp/protected-pages.txt`.
+
+| Source (`hedera/`) | Destination (dev) | Why Protected |
+|---|---|---|
+| `hedera/readme.mdx` | `learn/index.mdx` | Dev version links to new 7-tab structure; source is old root README with hedera/ links |
+
+**Workflow for protected pages:**
+1. `git merge main` brings changes to `hedera/` onto dev
+2. Run `./revamp/migrate.sh` — warns if a protected source changed
+3. Review the source diff manually and incorporate relevant content into the destination
+4. Run `./revamp/migrate.sh --ack=<source_path>` to acknowledge and silence the warning
+5. `./revamp/verify.sh` Check 9 also reports unacknowledged changes
+
+**To add a new protected page:**
+1. Keep the mapping in `migrate.sh` `get_explicit_mapping()` (for documentation)
+2. Add an entry to `revamp/protected-pages.txt` with `$(git hash-object <source>)`
+3. Rewrite the destination on `dev` as needed
+
+### Nav-Only Changes (`docs.json` / `revamp/docs.json`)
+
+`migrate.sh` installs `revamp/docs.json` → `docs.json`. All nav changes (new groups, page additions, reordering) must be made to `revamp/docs.json`. That file is the source of truth for navigation on dev.

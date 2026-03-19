@@ -233,6 +233,7 @@
             "group": "Getting Started",
             "pages": [
               "learn/index",
+              "learn/getting-started/index",
               "learn/getting-started/what-is-hedera",
               "learn/getting-started/why-hedera",
               "learn/getting-started/choose-your-path",

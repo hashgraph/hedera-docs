@@ -64,7 +64,7 @@ c3e9ba76eb8ba6dbef6aa18d3fd5a99ac1e9b56d|hedera/open-source-solutions/ai-studio-
 c3e9ba76eb8ba6dbef6aa18d3fd5a99ac1e9b56d|hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit.mdx|solutions/ai/agent-kit.mdx|Agent Kit
 3bc46fc0e29ad87503d6d914be16fc45b8debd10|hedera/open-source-solutions/hedera-custodians-library.mdx|solutions/tools/custodians-library.mdx|Custodians Library
 aa789ff9420a5bbe3ca8b11cc46fd8f6eac90943|hedera/core-concepts/mirror-nodes/run-your-own-beta-mirror-node.mdx|operators/mirror-node/run-your-own/index.mdx|Run Your Own
-48ba186d8f8e35cb1d8e9d2eeaa4d403487454f2|hedera/networks/mainnet/mainnet-nodes/node-requirements.mdx|operators/consensus-node/requirements/index.mdx|Requirements
+44b5ebb630fe70ed2091984feecbda49ddabbac1|hedera/networks/mainnet/mainnet-nodes/node-requirements.mdx|operators/consensus-node/requirements/index.mdx|Requirements
 
 # Reference — REST API (long title → short label)
 885b38d3fbaa44eec4c9c42fa44e5c5740db0668|hedera/sdks-and-apis/rest-api.mdx|reference/rest-api/index.mdx|REST API

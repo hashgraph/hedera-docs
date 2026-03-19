@@ -1454,22 +1454,30 @@ else
     echo -e "  📁 Backup: $BACKUP"
 
     # ── Append to sync log ───────────────────────────────────────────────────
+    # Only log when main HEAD has changed since the last recorded entry.
+    # Re-running migrate.sh on the same commit produces no new log entry.
     SYNC_LOG="$SCRIPT_DIR/sync-log.md"
     if [ -f "$SYNC_LOG" ]; then
         MAIN_COMMIT=$(git log main -1 --format="%h" 2>/dev/null || echo "unknown")
         MAIN_MSG=$(git log main -1 --format="%s" 2>/dev/null || echo "unknown")
         DEV_COMMIT=$(git log HEAD -1 --format="%h" 2>/dev/null || echo "unknown")
         DEV_MSG=$(git log HEAD -1 --format="%s" 2>/dev/null || echo "unknown")
-        RUN_TIMESTAMP=$(date -u "+%Y-%m-%d %H:%M UTC")
-        {
-            echo ""
-            echo "## $RUN_TIMESTAMP"
-            echo ""
-            echo "- **main HEAD**: \`$MAIN_COMMIT\` — $MAIN_MSG"
-            echo "- **dev HEAD**: \`$DEV_COMMIT\` — $DEV_MSG"
-            echo "- **Stats**: $COPIED new · $UPDATED updated · $UNCHANGED unchanged · $PROTECTED_SKIPPED protected skipped · $FIXUP_APPLIED fixups applied"
-        } >> "$SYNC_LOG"
-        echo -e "  📋 Sync record appended to revamp/sync-log.md"
+        # Check if the last logged main commit matches the current one
+        LAST_MAIN=$(grep -m1 '^\- \*\*main HEAD\*\*' "$SYNC_LOG" 2>/dev/null | grep -o '`[a-f0-9]*`' | tr -d '`' || echo "")
+        if [ "$LAST_MAIN" = "$MAIN_COMMIT" ]; then
+            echo -e "  ${DIM}📋 Sync log unchanged (main still at $MAIN_COMMIT)${NC}"
+        else
+            RUN_TIMESTAMP=$(date -u "+%Y-%m-%d %H:%M UTC")
+            {
+                echo ""
+                echo "## $RUN_TIMESTAMP"
+                echo ""
+                echo "- **main HEAD**: \`$MAIN_COMMIT\` — $MAIN_MSG"
+                echo "- **dev HEAD**: \`$DEV_COMMIT\` — $DEV_MSG"
+                echo "- **Stats**: $COPIED new · $UPDATED updated · $UNCHANGED unchanged · $PROTECTED_SKIPPED protected skipped · $FIXUP_APPLIED fixups applied"
+            } >> "$SYNC_LOG"
+            echo -e "  📋 Sync record appended to revamp/sync-log.md"
+        fi
     fi
 fi
 

@@ -1,26 +1,72 @@
 # Hedera Documentation Revamp
 
-This directory contains all tooling and planning for restructuring the Hedera documentation from its current flat `hedera/` layout into a persona-driven 7-tab structure.
+This directory contains all tooling, planning, and registries for restructuring the Hedera documentation from its current flat `hedera/` layout into a persona-driven 7-tab structure.
+
+**Branch:** All revamp work lives on the `dev` branch. The `main` branch continues to serve the live `hedera/` docs as-is. See [Branch Strategy](#branch-strategy) below.
+
+---
+
+## Current Status (as of 2026-03-19)
+
+| Metric | Value |
+|--------|-------|
+| Total pages in new structure | 599 |
+| Pages migrated from `hedera/` | 532 (100% coverage) |
+| Pages protected (dev-authored, have hedera/ source) | 1 |
+| Pages dev-authored (no hedera/ source) | 4 |
+| Placeholder pages remaining | 59 |
+| Sidebar fixup entries | 30 |
+| verify.sh checks | 11 (all passing) |
+
+**What's complete:**
+- 7-tab navigation wired in `docs.json` with all groups and pages
+- 100% of `hedera/` pages mapped and migrated to correct tabs
+- `sidebarTitle: Overview` eliminated from all destination files
+- Learn / Getting Started section fully written (4 pages)
+- Migration tooling: `migrate.sh`, `verify.sh`, `create-placeholders.sh`
+- Automated systems: protected pages, sidebar fixups, sync log
+- Global nav anchors: Status, Discord, Playground, Blog
+
+**What still needs content written** (59 placeholder pages):
+- See `.claude/reports/planning/revamp-gap-analysis.md` for the full list by tab and priority
+
+---
 
 ## Directory Contents
 
 | File | Purpose |
 |------|---------|
-| `plan.md` | Full revamp plan: persona model, navigation architecture, content mapping, user journeys |
-| `migrate.sh` | Migration script: copies `hedera/` content to new tab structure, injects sidebarTitles, updates `docs.json`, writes sync log |
-| `create-placeholders.sh` | Creates placeholder pages for new content that doesn't exist in the old docs |
-| `verify.sh` | Validation script: 11 checks covering nav integrity, coverage, orphans, protected pages, sidebar fixups |
-| `docs.json` | The new Mintlify navigation config with 7-tab structure (installed by `migrate.sh`) |
+| `plan.md` | Full revamp plan: persona model, tab architecture, content mapping, user journeys |
+| `migrate.sh` | Migration script: copies `hedera/` → new structure, strips/injects sidebarTitles, updates `docs.json`, appends to sync log |
+| `create-placeholders.sh` | Creates "Coming Soon" placeholder pages for new content that doesn't exist in `hedera/` |
+| `verify.sh` | Validation script: 11 checks covering JSON, nav integrity, coverage, orphans, protected pages, sidebar fixups |
+| `docs.json` | The new Mintlify navigation config (7-tab structure) — installed as the root `docs.json` by `migrate.sh` |
 | `protected-pages.txt` | Registry of dev-authored pages that must NOT be overwritten by migration |
-| `sidebar-fixups.txt` | Registry of pages that need a meaningful `sidebarTitle` injected after migration |
+| `sidebar-fixups.txt` | Registry of pages needing a meaningful `sidebarTitle` injected after migration (replaces generic "Overview") |
 | `sync-log.md` | Append-only log of every `migrate.sh` run — tracks which `main` commit dev is synced to |
 | `README.md` | This file |
 
 ---
 
+## Branch Strategy
+
+| Branch | Purpose | Source of truth |
+|--------|---------|----------------|
+| `main` | Production docs, served live | `hedera/` directory |
+| `dev` | Revamp in progress | `learn/`, `evm/`, `native/`, `operators/`, `reference/`, `solutions/`, `support/` directories |
+
+`hedera/` exists on **both** branches. When content is updated on `main`, you merge `main` → `dev` then re-run `migrate.sh` to propagate changes into the new structure. See [Keeping Dev in Sync with Main](#keeping-dev-in-sync-with-main).
+
+**Rules:**
+- Never edit files under `hedera/` on the `dev` branch — edit on `main`, then sync
+- Never run `migrate.sh` on `main` — it only applies to `dev`
+- Never delete `hedera/` on `dev` — it's the migration source
+
+---
+
 ## New Structure
 
-The revamp reorganizes 500+ pages from `hedera/` into 7 top-level tabs:
+The revamp reorganizes 500+ pages from `hedera/` into 7 persona-driven tabs:
 
 ```
 learn/          # Core concepts, getting started, networks (for everyone)
@@ -32,6 +78,39 @@ solutions/      # Tokenization studios, governance, sustainability, tools
 support/        # FAQs, contributing guide, style guide, glossary
 ```
 
+See `plan.md` for the full architecture, persona model, and content mapping rationale.
+
+---
+
+## Dev-Authored Pages
+
+Some pages in the new structure have no equivalent in `hedera/` and were written directly on `dev`. These are never at risk from migration (no mapping exists for them) and do not need to be in `protected-pages.txt`.
+
+| Page | Status |
+|------|--------|
+| `learn/getting-started/index.mdx` | ✅ Written — section hub with guided 4-step journey |
+| `learn/getting-started/what-is-hedera.mdx` | ✅ Written — Hashgraph, services, FAQ |
+| `learn/getting-started/why-hedera.mdx` | ✅ Written — performance, fees, governance, comparison table |
+| `learn/getting-started/choose-your-path.mdx` | ✅ Written — EVM vs Native SDK persona funnel |
+
+**Protected pages** (have a `hedera/` source but are manually maintained on `dev`) are tracked separately in `protected-pages.txt`. Currently:
+
+| Page | Source | Reason |
+|------|--------|--------|
+| `learn/index.mdx` | `hedera/readme.mdx` | Fully rewritten as Learn tab landing — stale `hedera/` links replaced with new 7-tab paths |
+
+---
+
+## Running Locally
+
+```bash
+# Requires Node.js 22 (NOT 25+)
+nvm use 22
+npx mintlify dev
+```
+
+The dev server starts at `localhost:3000`. All 7 tabs are visible in the left nav.
+
 ---
 
 ## Workflow
@@ -39,7 +118,7 @@ support/        # FAQs, contributing guide, style guide, glossary
 ### Initial Setup (one-time)
 
 ```bash
-# Run the migration (preview first)
+# Preview what will happen (no files modified)
 ./revamp/migrate.sh --dry-run
 
 # Run for real
@@ -48,42 +127,45 @@ support/        # FAQs, contributing guide, style guide, glossary
 # Create placeholder pages for new content
 ./revamp/create-placeholders.sh
 
-# Verify everything is correct
+# Validate everything
 ./revamp/verify.sh
 ```
 
 ### Keeping Dev in Sync with Main
 
-When new commits land on `main` (adding, updating, or deleting pages in `hedera/`), sync them into the new structure:
+When new commits land on `main`, sync them into the new structure on `dev`:
 
 ```bash
 # 1. Pull latest main
 git checkout main && git pull
 
-# 2. Switch back to dev and merge
+# 2. Switch to dev and merge
 git checkout dev
 git merge main
 
 # 3. Re-run migration — auto-detects all changes
 ./revamp/migrate.sh
 
-# 4. Review the output
-#    NEW     — new file copied to the correct destination
-#    UPDATE  — existing destination overwritten with latest content
-#    SAME    — source and destination are identical, skipped
-#    UNMAPPED — new file with no mapping rule (see Handling Unmapped Files)
-#    ORPHAN  — destination whose source was deleted (run --clean to remove)
-#    PROTECTED-CHANGED — a protected page's source changed upstream (review manually)
-#    FIXUP-CHANGED — a sidebar-fixup source changed (verify sidebarTitle is still accurate)
+# 4. Understand the output symbols:
+#    + NEW              new file copied to the correct destination
+#    ~ UPDATE           existing destination overwritten with latest content
+#    = SAME             source and destination match, skipped
+#    ? UNMAPPED         new file with no mapping rule → add one (see below)
+#    ! ORPHAN           destination whose source was deleted → run --clean
+#    ⚠ PROTECTED-CHANGED  protected page's source changed → review manually
+#    ⚠ FIXUP-CHANGED    sidebar-fixup source changed → verify sidebarTitle
 
-# 5. Clean up orphaned files if needed
+# 5. Remove orphaned files if needed
 ./revamp/migrate.sh --clean
 
-# 6. Check the sync log to confirm what was recorded
+# 6. Check what was recorded in the sync log
 cat revamp/sync-log.md
+
+# 7. Validate
+./revamp/verify.sh
 ```
 
-**Why this works:** `hedera/` exists on both `main` and `dev`. When you merge `main` → `dev`, git brings all `hedera/` changes in. The migration script then compares current `hedera/` content against destination files and syncs differences — including re-applying sidebarTitle fixups automatically.
+> **Note on UPDATE count:** ~85 files will always show as UPDATE on every migration run. These are files whose content we transform (sidebarTitle stripped or replaced with a custom label). The processed destination always differs from the raw source — this is expected and correct, not a bug.
 
 ---
 
@@ -92,46 +174,46 @@ cat revamp/sync-log.md
 ### 3-Layer Mapping Strategy
 
 **Layer 1 — Explicit File Mappings** (`get_explicit_mapping()`):
-Cross-tab reorganizations and renames where directory rules can't determine the correct destination.
+For individual files that move across tabs or need specific renaming.
 ```bash
 "hedera/core-concepts/smart-contracts.mdx") echo "learn/core-concepts/services/smart-contracts.mdx" ;;
 ```
 
 **Layer 2 — Directory Rules** (`get_directory_mapping()`):
-Bulk sections where files preserve their names but change their path prefix. **Auto-picks up new files** added to those directories.
+For bulk sections where files keep their names but change their path prefix. **Automatically picks up new files** added under those paths.
 ```bash
 if [[ "$src" == hedera/sdks-and-apis/hedera-api/basic-types/* ]]; then
     echo "reference/protobuf/basic-types/${src#hedera/sdks-and-apis/hedera-api/basic-types/}"; return
 fi
 ```
-> Important: rules are checked in order — more specific prefixes must come before general ones.
+> Rules are checked in order — more specific prefixes must come before general ones.
 
 **Layer 3 — Additional Copies** (`get_additional_destinations()`):
-Files that must exist in multiple locations (e.g., testnet faucet page appears under both `evm/quickstart/` and `learn/getting-started/`).
+For files that must exist in multiple locations (e.g., testnet faucet page appears under both `evm/quickstart/` and `learn/getting-started/`).
 
 ### Sync Behavior
 
 | Source State | Destination State | Action |
 |---|---|---|
 | New file, no dest | — | **COPY** (new file created) |
-| File changed | Dest exists, different content | **UPDATE** (overwrite) |
-| File unchanged | Dest exists, same content | **SKIP** |
+| File changed | Dest exists, different content | **UPDATE** (overwrite + transform) |
+| File unchanged | Dest exists, matches source | **SKIP** (but still applies fixups if needed) |
 | File deleted | Dest still exists | **ORPHAN** (report, or remove with `--clean`) |
-| File has no mapping | — | **UNMAPPED** (error — add a rule) |
-| File is in `protected-pages.txt` | — | **SKIP** (never overwrite) |
+| File has no mapping | — | **UNMAPPED** (script exits with error) |
+| File is in `protected-pages.txt` | — | **SKIP** (never overwrite, warns if source changed) |
 
 ### Post-Copy Transformations
 
-After every file copy, `migrate.sh` applies two transformations:
+After every file copy (and also on UNCHANGED files to catch late-added fixup entries):
 
-1. **Strip `sidebarTitle: Overview`** — removes this frontmatter key from every copied file, since it caused ~50 pages to show "Overview" in the sidebar.
-2. **Inject meaningful sidebarTitle** — if the destination is listed in `sidebar-fixups.txt`, injects the correct `sidebarTitle` value (e.g., `sidebarTitle: Hashgraph`).
+1. **Strip `sidebarTitle: Overview`** — removed from all destination files. Handles both quoted (`"Overview"`) and unquoted forms, and CRLF line endings in `hedera/` source files (BSD `sed` fails on CRLF; Python handles it correctly).
+2. **Inject meaningful sidebarTitle** — if the source is in `sidebar-fixups.txt`, the correct label is injected after the `title:` line (e.g., `sidebarTitle: Hashgraph`).
 
 ---
 
 ## Protected Pages
 
-Some pages are written directly on the `dev` branch (not just migrated from `hedera/`) and must never be overwritten by `migrate.sh`. These are tracked in `revamp/protected-pages.txt`.
+Pages written directly on `dev` that have a `hedera/` source mapping must never be overwritten. They are tracked in `revamp/protected-pages.txt`.
 
 ### Format
 
@@ -139,16 +221,11 @@ Some pages are written directly on the `dev` branch (not just migrated from `hed
 source_git_hash|source_path|destination_path|reason
 ```
 
-Example:
-```
-5966193496764b1af59a57379b99fd810a29ef27|hedera/readme.mdx|learn/index.mdx|Revamped as Learn tab landing page
-```
-
 ### How it Works
 
-- `migrate.sh` skips copying when a source is listed in `protected-pages.txt`.
-- The hash tracks the hedera/ source content. If the source changes on `main` (e.g., new content added to `hedera/readme.mdx`), migrate.sh **warns you** so you can manually incorporate relevant changes into the dev-authored destination.
-- After reviewing, acknowledge the change to clear the warning:
+- `migrate.sh` skips the copy entirely when a source is protected.
+- The hash tracks source content. If `hedera/readme.mdx` changes on `main`, migrate.sh warns that the protected destination (`learn/index.mdx`) may need to be updated manually.
+- After reviewing and incorporating relevant changes, acknowledge to clear the warning:
 
 ```bash
 ./revamp/migrate.sh --ack=hedera/readme.mdx
@@ -156,18 +233,18 @@ Example:
 
 ### Adding a New Protected Page
 
-1. Write the destination page on `dev` (do not depend on migration to create it)
-2. Add an entry to `protected-pages.txt`:
+1. Write the destination page directly on `dev`
+2. Add to `protected-pages.txt`:
    ```
-   $(git hash-object hedera/path/to/source.mdx)|hedera/path/to/source.mdx|dest/path.mdx|Reason why this is protected
+   $(git hash-object hedera/path/to/source.mdx)|hedera/path/to/source.mdx|dest/path.mdx|Reason
    ```
-3. Add the destination to `docs.json` navigation manually
+3. The destination must already be in `docs.json` navigation (add manually)
 
 ---
 
 ## Sidebar Fixups
 
-Some page titles in `hedera/` are too long to display well in the sidebar (e.g., "Understanding Hedera's EVM Differences and Compatibility"). These need a short, meaningful `sidebarTitle` after migration. The registry is in `revamp/sidebar-fixups.txt`.
+Many pages in `hedera/` have long titles (e.g., "Understanding Hedera's EVM Differences and Compatibility") that look bad in the sidebar. The fix registry is `revamp/sidebar-fixups.txt`. Currently 30 entries.
 
 ### Format
 
@@ -175,44 +252,41 @@ Some page titles in `hedera/` are too long to display well in the sidebar (e.g.,
 source_git_hash|source_path|destination_path|sidebar_title
 ```
 
-Example:
-```
-f51244cd25c6bb7e563cc37a8ce1f3dcc0362e19|hedera/core-concepts/hashgraph-consensus-algorithms.mdx|learn/core-concepts/hashgraph/index.mdx|Hashgraph
-```
-
 ### How it Works
 
-On every migration run, after copying a file and stripping `sidebarTitle: Overview`:
-1. `migrate.sh` checks if the destination is in `sidebar-fixups.txt`
-2. If so, it injects `sidebarTitle: <label>` immediately after the `title:` line
-3. If the source file's content has changed since the hash was recorded, it **warns you** to verify the sidebarTitle is still accurate
+On every migration run, for every file processed:
+1. `sidebarTitle: Overview` is stripped (always)
+2. If the source is in `sidebar-fixups.txt`, the correct label is injected: `sidebarTitle: <label>`
+3. This runs even on UNCHANGED files — so adding a new fixup entry takes effect on the very next migration run without waiting for upstream changes
+4. If the source file's content has changed since the hash was recorded, migrate.sh warns you to verify the sidebarTitle is still accurate
 
-To acknowledge a content change (clear the warning):
+To acknowledge a content change:
 ```bash
-# Acknowledge one page
+# One page
 ./revamp/migrate.sh --ack-fixup=hedera/core-concepts/hashgraph-consensus-algorithms.mdx
 
-# Acknowledge all at once
+# All at once
 ./revamp/migrate.sh --ack-fixup=all
 ```
 
 ### Adding a New Sidebar Fixup
 
-1. Find the source file and compute its hash:
-   ```bash
-   git hash-object hedera/path/to/source.mdx
-   ```
-2. Add an entry to `sidebar-fixups.txt`:
-   ```
-   <hash>|hedera/path/to/source.mdx|dest/path/index.mdx|Short Label
-   ```
-3. Run `./revamp/migrate.sh` — the sidebarTitle will be injected automatically
+```bash
+# 1. Get the source hash
+git hash-object hedera/path/to/source.mdx
+
+# 2. Add to sidebar-fixups.txt:
+#    <hash>|hedera/path/to/source.mdx|dest/path/index.mdx|Short Label
+
+# 3. Run migration — label is injected automatically
+./revamp/migrate.sh
+```
 
 ---
 
 ## Sync Log
 
-Every successful `migrate.sh` run (non-dry-run) appends an entry to `revamp/sync-log.md`:
+Every successful `migrate.sh` run (non-dry-run) appends an entry to `revamp/sync-log.md` **only when `main` has advanced to a new commit**. Re-running on the same commit produces no duplicate entry — you'll see `📋 Sync log unchanged (main still at <hash>)` instead.
 
 ```markdown
 ## 2026-03-19 17:04 UTC
@@ -222,23 +296,20 @@ Every successful `migrate.sh` run (non-dry-run) appends an entry to `revamp/sync
 - **Stats**: 0 new · 51 updated · 484 unchanged · 1 protected skipped · 19 fixups applied
 ```
 
-This lets anyone see at a glance:
-- Which `main` commit dev is currently synced to
-- How many files changed in each migration run
-- The full history of sync operations
+Use `cat revamp/sync-log.md` to see which `main` commit dev is currently synced to.
 
 ---
 
 ## Handling Unmapped Files
 
-If a page is added under a **new directory** in `hedera/` (not covered by any existing rule), the migration script flags it as `UNMAPPED` and exits with error code 1.
+If a file is added under a **new directory** in `hedera/` that no existing rule covers, migrate.sh flags it as `UNMAPPED` and exits with error code 1.
 
 **Fix:**
-1. Decide where the new content belongs in the new 7-tab structure
+1. Decide where it belongs in the 7-tab structure
 2. Add an explicit mapping or directory rule to `migrate.sh`
-3. Re-run the migration
+3. Re-run
 
-If the file is added under an **already-mapped directory** (e.g., a new protobuf type under `hedera-api/basic-types/`), the directory rules handle it automatically — no script changes needed.
+If the new file is under an **already-mapped directory** (e.g., a new protobuf type under `hedera-api/basic-types/`), directory rules handle it automatically — no script changes needed.
 
 ---
 
@@ -254,14 +325,14 @@ Options:
   --clean                Remove orphaned destination files
   --verbose              Show all files including unchanged ones
   --ack=<source>         Acknowledge upstream change in a protected page
-                         Updates stored hash in protected-pages.txt
+                         (updates hash in protected-pages.txt)
   --ack-fixup=<source>   Acknowledge upstream change in a sidebar-fixup page
   --ack-fixup=all        Acknowledge all sidebar-fixup pages at once
-                         Updates stored hashes in sidebar-fixups.txt
+                         (updates hashes in sidebar-fixups.txt)
   --help                 Show usage information
 ```
 
-Creates a timestamped `hedera/` backup before making changes (e.g., `hedera.backup.20260316_143022`). Appends a sync record to `revamp/sync-log.md` on every successful non-dry-run.
+Creates a timestamped `hedera/` backup before making changes (e.g., `hedera.backup.20260316_143022`). These are gitignored. Appends to `revamp/sync-log.md` on every successful non-dry-run.
 
 ### `create-placeholders.sh`
 
@@ -269,7 +340,7 @@ Creates a timestamped `hedera/` backup before making changes (e.g., `hedera.back
 ./revamp/create-placeholders.sh
 ```
 
-Creates "Coming Soon" placeholder `.mdx` files for pages in the new structure that need to be written from scratch. Skips files that already exist.
+Creates "Coming Soon" placeholder `.mdx` files for any pages referenced in `docs.json` that don't exist on disk. Skips existing files.
 
 ### `verify.sh`
 
@@ -277,48 +348,62 @@ Creates "Coming Soon" placeholder `.mdx` files for pages in the new structure th
 ./revamp/verify.sh [OPTIONS]
 
 Options:
-  --fix    Show suggested fixes for issues found
+  --fix    Show suggested fixes alongside failures
   --help   Show usage information
 ```
 
-Runs 10 numbered checks (Check 1 produces 2 PASS outputs, so the summary reports "11 checks passed"):
+Runs 10 numbered checks. Check 1 produces 2 PASS outputs, so the final tally reads "All 11 checks passed":
 
-| # | Check | What it validates |
-|---|-------|-------------------|
-| 1 | **JSON validity** | `docs.json` is valid JSON; also verifies it matches `revamp/docs.json` (2 PASSes) |
-| 2 | **Nav references** | Every page path in `docs.json` has a corresponding `.mdx` file on disk |
-| 3 | **Migration coverage** | Every `.mdx` in `hedera/` has a mapping in `migrate.sh` |
-| 4 | **No duplicates** | No page path appears more than once in `docs.json` navigation |
-| 5 | **No orphans** | Every `.mdx` in destination dirs is in nav or a known placeholder |
-| 6 | **Snippet imports** | All `import ... from '/snippets/...'` statements resolve to real files |
-| 7 | **Tab structure** | All tabs in `docs.json` have groups or pages defined |
-| 8 | **Directory structure** | All 7 destination directories exist with `.mdx` files |
-| 9 | **Protected pages** | Warns if any protected page's source has changed upstream |
-| 10 | **Sidebar fixups** | Warns if any sidebar-fixup source has changed (hash mismatch) |
+| # | Check | Pass/Fail |
+|---|-------|-----------|
+| 1 | `docs.json` is valid JSON | FAIL stops here |
+| 1b | `docs.json` matches `revamp/docs.json` | WARN |
+| 2 | Every nav page path has a `.mdx` file on disk | FAIL |
+| 3 | Every `.mdx` in `hedera/` has a mapping | FAIL |
+| 4 | No page path appears twice in nav | FAIL |
+| 5 | Every `.mdx` in dest dirs is in nav or a placeholder | FAIL |
+| 6 | All snippet imports resolve to real files | FAIL |
+| 7 | All tabs have groups or pages defined | FAIL |
+| 8 | All 7 destination directories exist | FAIL |
+| 9 | No unacknowledged protected-page upstream changes | WARN |
+| 10 | No unacknowledged sidebar-fixup hash mismatches | WARN |
 
-Exits with code 0 if all checks pass, 1 if any fail. Checks 9–10 produce warnings (not failures) — they require human review.
+Checks 9–10 are warnings — they don't cause a non-zero exit, but require human review. All others cause exit code 1 on failure.
 
 ---
 
 ## Two Types of Dev-Authored Content
 
-Not everything in the new structure is migrated from `hedera/`. Some pages are written directly on `dev`:
-
-| Type | Example | How it's handled |
-|------|---------|-----------------|
-| **No hedera/ source** | `learn/getting-started/what-is-hedera.mdx` | Never at risk — no migration mapping exists for it. Orphan detection is suppressed for nav-referenced pages. |
-| **Protected from hedera/ source** | `learn/index.mdx` (source: `hedera/readme.mdx`) | Listed in `protected-pages.txt`. Migration skips copy; warns on upstream changes. |
+| Type | How to identify | Risk from migration |
+|------|----------------|---------------------|
+| **No hedera/ source** | Not in any `get_explicit_mapping()` or `get_directory_mapping()` case | None — migration never touches it. Orphan detection skips nav-referenced pages. |
+| **Protected (has hedera/ source)** | Listed in `protected-pages.txt` | None — migration skips copy. Warns if upstream source changes. |
 
 ---
 
 ## Migration Coverage
 
-The migration script covers **100% of existing pages** in `hedera/`, including:
+532 pages in `hedera/` are mapped (100% coverage):
 
-- ~60 Learn section pages (core concepts, networks, getting started)
-- ~80 EVM section pages (smart contracts, tokens, tools, tutorials)
-- ~100 Native SDK pages (accounts, tokens, consensus, files, keys, tutorials)
-- ~10 Operators pages (mirror nodes, consensus nodes)
-- ~140 Reference pages (REST API, Protobuf API with all sub-types)
-- ~30 Solutions pages (tokenization studios, governance, tools, Hiero CLI)
-- ~15 Support pages (FAQs, contributing guide, style guide)
+| Tab | Approx pages |
+|-----|-------------|
+| Learn | ~60 (core concepts, networks, release notes) |
+| EVM | ~80 (smart contracts, tokens, tools, tutorials, integrations) |
+| Native SDKs | ~100 (accounts, tokens, consensus, files, keys, tutorials, local dev) |
+| Operators | ~10 (mirror nodes, consensus nodes) |
+| Reference | ~140 (REST API, Protobuf API with all sub-types, HCS, Status) |
+| Solutions | ~30 (tokenization studios, governance, sustainability, tools, Hiero CLI) |
+| Support | ~15 (FAQs, contributing guide, style guide) |
+
+---
+
+## What Still Needs to Be Done
+
+59 placeholder pages need real content written. The full prioritized list is in `.claude/reports/planning/revamp-gap-analysis.md`. High-priority gaps:
+
+- **EVM tab** — 32 placeholders (overview pages, quickstart, development guides, most tutorials)
+- **Native SDK tab** — 17 placeholders (quickstart, fundamentals, service references)
+- **Learn tab** — 1 placeholder (`learn/core-concepts/services/index.mdx`)
+- **Operators / Solutions / Support** — 9 placeholders
+
+These are all net-new content (don't exist in `hedera/`). They require writing from scratch.

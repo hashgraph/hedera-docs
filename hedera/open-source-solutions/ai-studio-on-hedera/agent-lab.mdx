@@ -158,7 +158,7 @@ By default, the editor opens in **Block Mode**. You can switch to **Advanced Mod
     <img
       src="/images/ai-studio/agent-lab-04.png"
       alt="Agent Lab"
-      className="w-full h-72 object-cover"
+      className="w-full h-80 object-contain object-left"
       noZoom
     />
   </Frame>
@@ -166,7 +166,7 @@ By default, the editor opens in **Block Mode**. You can switch to **Advanced Mod
     <img
       src="/images/ai-studio/agent-lab-05.png"
       alt="Agent Lab"
-      className="w-full h-72 object-cover"
+      className="w-full h-80 object-contain object-right"
       noZoom
     />
   </Frame>
@@ -179,3 +179,64 @@ By default, the editor opens in **Block Mode**. You can switch to **Advanced Mod
 - Manual code changes won't sync back if you choose to switch back to Block Mode
  
 The AI coding assistant in the right panel is only available in Advanced Mode. Use it to extend your agent with custom logic, ask questions about the Hedera Agent Kit, or debug issues.
+
+### Step 3: Chat — Agent Chat Interface
+ 
+The **Run** view is the chat interface for interacting with the agent you built. It executes your agent code against Hedera Testnet in real time.
+ 
+#### Accessing the Chat View
+
+<div className="grid grid-cols-1 lg:grid-cols-5 gap-6 not-prose">
+  <div className="lg:col-span-3 prose dark:prose-invert max-w-none">
+    <ul>
+      <li>Click <strong>Open Chat</strong> in the left sidebar of the code editor</li>
+      <li>If your code compiles cleanly, you'll enter the chat interface directly</li>
+      <li>If there is a runtime error in your code, a modal will appear before you enter the chat view</li>
+    </ul>
+  </div>
+  <div className="lg:col-span-2">
+    <Frame>
+      <img src="/images/ai-studio/agent-lab-07.png" alt="Agent Chat" noZoom />
+    </Frame>
+  </div>
+</div>
+
+#### Chatting with Your Agent
+ 
+The chat interface shows a greeting and a text input at the bottom. Type any natural language request — for example:
+ 
+- *"Create a new Hedera account"*
+- *"Check my account balance"*
+- *"Create a fungible token called MyToken"*
+- *"Get the current HBAR exchange rate"*
+
+![Agent Chat](/images/ai-studio/agent-lab-08.png)
+
+The agent processes your request and executes the corresponding Hedera operations using the plugins configured in your agent. Response messages appear in the chat, reflecting the agent's tool calls and results.
+ 
+#### Transaction Approval (Human-In-The-Loop Mode)
+ 
+If your agent was configured in **Human-In-The-Loop** mode, transactions are returned as unsigned bytes rather than executed automatically. A **Transaction Approval** modal will appear showing:
+ 
+- Transaction ID
+- Transaction type and details (e.g., recipient, amount, memo)
+- Max fee
+- Raw bytes (expandable)
+ 
+You can **Sign & Execute** to submit the transaction using your Developer Portal account credentials, or **Reject** to cancel it. Successful transactions display a link to [HashScan](https://hashscan.io) for verification.
+
+![Human in the Loop Transaction](/images/ai-studio/agent-lab-09.png)
+
+### Step4: Download and Test Your Agent
+Once you are done prototyping, you can export your agent code to test it locally or integrate it into your own applications.
+
+When you're ready to test your agent locally, click the **Download** button in the top right corner of the chat interface. 
+![Human in the Loop Transaction](/images/ai-studio/agent-lab-10.png)
+
+This will download a zip file containing your agent code and dependencies. Simply run `npm install` and `npm start` to test your agent locally.
+
+The README file in the downloaded package provides detailed instructions, and even provides information if you choose to try your agent out on Mainnet.
+
+<Info>
+    Mainnet agents spend real HBAR, be cautious when using your agent on Mainnet. To test your agent on Mainnet, you will need to create a wallet and fund the agent account associated with the one you put in the `.env` file.
+</Info>

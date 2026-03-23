@@ -88,10 +88,47 @@ description: "Experiment with and evaluate AI agents built with Hedera AI Studio
 ## Overview
 
 Agent Lab is an interactive development environment within the [Hedera Developer Portal](https://portal.hedera.com) for visually designing, building, and testing AI agents powered by the [Hedera Agent Kit](https://docs.hedera.com/hedera/open-source-solutions/ai-studio-on-hedera/hedera-agent-kit). It is accessible on the [**Hedera Portal under the Agent Lab tab**](https://portal.hedera.com/agent-lab).
+
+![Agent Lab Overview](/images/ai-studio/agent-lab-01.png)
+
+Agent Lab provides a guided path from no-code experimentation to and the ability to **export your agent code** enabling rapid agent prototyping prototype quickly and developers who want a working starting point they can customize and deploy.
+
+The tool provides different ways to build and interact with the agent:
+
+- Use the **Agent Builder** to configure your agent with no code.
+- Low-Code Mode provides **Agent Mode, Framework,** and **Plugin selection** that enables you to choose and configure the basics for your Hedera Agent as the code is built for you.
+- **Advanced Mode** enableyou to edit the code directly, with the help of an AI Assistance on the right hand side.
+- Run your agent in the terminal at the bottom of the screen, or interact with the **Agent Chat** to get a previous of what your Hedera Agent will look like for end users.
+
+![Agent Lab Overview](/images/ai-studio/agent-lab-02.png)
+
+## The Three-Step Workflow
  
-The tool provides a guided path from no-code experimentation to production-ready agent code — supporting both non-technical users who want to prototype quickly and developers who want a working starting point they can customize and deploy.
+Agent Lab organizes agent development into three sequential steps: **Build → Code → Run**.
  
-There are two AI models at work in Agent Lab:
+| Step | Description |
+|------|-------------|
+| **Build** | No-code wizard to configure your agent type, framework, and behavior mode |
+| **Code** | Interactive low-code editor to inspect, extend, and customize the generated agent code by selecting your framework, mode, and plugins|
+| **Run** | Chat interface for executing your agent against Hedera Testnet |
  
+You can move between these steps at any time. Clicking **Agent Chat** from the code view opens the Run interface; clicking **Back to Code Editor** returns you to the code.
+ 
+ ## Quickstart
+
+You can start directly with agent code by visiting the [Hedera Portal](https://portal.hedera.com/agent-lab) and clicking on the **Agent Lab** tab, or use the button at the top of the page to start with the **Agent Builder**.
+
+<Info>
+ There are two AI models at work in Agent Lab:
 - The **AI coding assistant** (right panel in the code editor) helps you write and extend Hedera Agent Kit code.
 - The **agent you build** is the Hedera AI agent that executes on-chain transactions when you interact with it in the Run view.
+</Info>
+
+### Step 1: Build — Agent Builder Wizard
+ 
+When you first open Agent Lab (or click **Start Building**), a no-code wizard walks you through three configuration choices.
+
+Here you can choose:
+- Agent Type - _Autonomous Mode_ or _Conversational Mode_
+- Framework
+- Plugin selection - [_Vercel AI SDK_](https://ai-sdk.dev/docs/introduction), [_Langchain_](https://docs.langchain.com/oss/python/langchain/overview), or _[Google ADK](https://google.github.io/adk-docs/) (Coming soon)_

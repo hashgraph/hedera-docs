@@ -96,7 +96,7 @@ Agent Lab provides a guided path from no-code experimentation to and the ability
 The tool provides different ways to build and interact with the agent:
 
 - Use the **Agent Builder** to configure your agent with no code.
-- Low-Code Mode provides **Agent Mode, Framework,** and **Plugin selection** that enables you to choose and configure the basics for your Hedera Agent as the code is built for you.
+- Low-Code Mode provides **Agent Mode, Framework,** and **Plugin selection** buttons that enable you to choose and configure the basics for your Hedera Agent as the code is built for you.
 - **Advanced Mode** enableyou to edit the code directly, with the help of an AI Assistance on the right hand side.
 - Run your agent in the terminal at the bottom of the screen, or interact with the **Agent Chat** to get a previous of what your Hedera Agent will look like for end users.
 
@@ -128,7 +128,54 @@ You can start directly with agent code by visiting the [Hedera Portal](https://p
  
 When you first open Agent Lab (or click **Start Building**), a no-code wizard walks you through three configuration choices.
 
+![Agent Builder](/images/ai-studio/agent-lab-03.png)
+
 Here you can choose:
-- Agent Type - _Autonomous Mode_ or _Conversational Mode_
-- Framework
-- Plugin selection - [_Vercel AI SDK_](https://ai-sdk.dev/docs/introduction), [_Langchain_](https://docs.langchain.com/oss/python/langchain/overview), or _[Google ADK](https://google.github.io/adk-docs/) (Coming soon)_
+- **Agent Type** - Choose a basic template agent with different features and functionality
+- **Framework** - Choose the framework you want to use for your agent to handle tools, execution, prompts & memory, and execution patterns.
+- **Agent Mode** - Choose how your agent operates and interprets prompts _Autonomous Mode_ or _Human-in-the-Loop Mode_. With human-in-the-loop mode, users will have to sign every transction before execution, and if you are building an agentic application, you will need to integrate with a wallet.
+
+### Step 2: Code — The Code Editor
+The code editor is the central workspace in Agent Lab. It opens automatically after the wizard, or directly when you click the **Agent Lab** tab.
+
+Within the code editor, you can build your agent in different ways, chat with your agent when you run it in the terminal below, switch to Advanced Mode, switch to Chat and Agent Builder views, and Download your agent code.
+![Agent Coding](/images/ai-studio/agent-lab-06.png)
+
+The code editor has three panels:
+ 
+- **Left sidebar** — Toggle plugins, frameworks, and agent controls
+- **Center panel** — The Monaco-based code editor (the same engine that powers VS Code) showing your generated TypeScript agent code
+- **Right panel** — The AI coding assistant (available in Advanced Mode)
+
+Below the center panel is an **Output** terminal showing compilation results and agent runtime logs.
+
+#### Block Mode and Advanced Mode
+
+By default, the editor opens in **Block Mode**. You can switch to **Advanced Mode** using the toggle in the toolbar.
+ 
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-2 not-prose">
+  <Frame>
+    <img
+      src="/images/ai-studio/agent-lab-04.png"
+      alt="Agent Lab"
+      className="w-full h-72 object-cover"
+      noZoom
+    />
+  </Frame>
+  <Frame>
+    <img
+      src="/images/ai-studio/agent-lab-05.png"
+      alt="Agent Lab"
+      className="w-full h-72 object-cover"
+      noZoom
+    />
+  </Frame>
+</div>
+
+**Block Mode** is for users who want to configure their agent visually without editing code. In this mode, the left sidebar controls generate and update the agent code automatically. You cannot type directly in the code editor. Any change to the sidebar — adding a plugin, switching frameworks, toggling a control — regenerates the code.
+ 
+**Advanced Mode** enables direct code editing. When you switch to Advanced Mode, a dialog warns you that:
+- The left-panel form controls will be hidden
+- Manual code changes won't sync back if you choose to switch back to Block Mode
+ 
+The AI coding assistant in the right panel is only available in Advanced Mode. Use it to extend your agent with custom logic, ask questions about the Hedera Agent Kit, or debug issues.

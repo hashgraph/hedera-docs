@@ -97,8 +97,8 @@ The tool provides different ways to build and interact with the agent:
 
 - Use the **Agent Builder** to configure your agent with no code.
 - Low-Code Mode provides **Agent Mode, Framework,** and **Plugin selection** buttons that enable you to choose and configure the basics for your Hedera Agent as the code is built for you.
-- **Advanced Mode** enableyou to edit the code directly, with the help of an AI Assistance on the right hand side.
-- Run your agent in the terminal at the bottom of the screen, or interact with the **Agent Chat** to get a previous of what your Hedera Agent will look like for end users.
+- The **Advanced Mode** toggle enables you to edit the code directly, with the help of an AI Assistance on the right hand side.
+- Run your agent in the terminal at the bottom of the screen, or interact with the **Run Agent** to get a previous of what your Hedera Agent will look like for end users.
 
 ![Agent Lab Overview](/images/ai-studio/agent-lab-02.png)
 
@@ -112,7 +112,7 @@ Agent Lab organizes agent development into three sequential steps: **Build → C
 | **Code** | Interactive low-code editor to inspect, extend, and customize the generated agent code by selecting your framework, mode, and plugins|
 | **Run** | Chat interface for executing your agent against Hedera Testnet |
  
-You can move between these steps at any time. Clicking **Agent Chat** from the code view opens the Run interface; clicking **Back to Code Editor** returns you to the code.
+You can move between these steps at any time. Clicking **Open Chat** from the code view opens the Run interface; clicking **Close Builder** returns you to the code.
  
  ## Quickstart
 
@@ -147,7 +147,7 @@ The code editor has three panels:
 - **Center panel** — The Monaco-based code editor (the same engine that powers VS Code) showing your generated TypeScript agent code
 - **Right panel** — The AI coding assistant (available in Advanced Mode)
 
-Below the center panel is an **Output** terminal showing compilation results and agent runtime logs.
+Below the center panel is an **Terminal** showing the agent chat, compilation results and agent runtime logs.
 
 #### Block Mode and Advanced Mode
 
@@ -203,12 +203,12 @@ The **Run** view is the chat interface for interacting with the agent you built.
 
 #### Chatting with Your Agent
  
-The chat interface shows a greeting and a text input at the bottom. Type any natural language request — for example:
+The chat interface shows a greeting and a text input at the bottom. Type any natural language request to execute queries and transactions on Hedera Testnet:
  
 - *"Create a new Hedera account"*
 - *"Check my account balance"*
 - *"Create a fungible token called MyToken"*
-- *"Get the current HBAR exchange rate"*
+- *"Send 10 Hbar to account 0.0.123456"*
 
 ![Agent Chat](/images/ai-studio/agent-lab-08.png)
 

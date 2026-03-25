@@ -69,7 +69,7 @@ A key in Hedera can be a [public key](/hedera/support-and-community/glossary#pub
 </Accordion>
 
 <Accordion title="Which key type should I use?">
-Use **ECDSA secp256k1** for all new accounts and applications. ECDSA keys are compatible with Ethereum and the EVM ecosystem, can be assigned an EVM alias (EVM address) at account creation using `setECDSAKeyWithAlias()`, and work with tools like MetaMask, Hardhat, and Solidity smart contracts. Ed25519 is supported but does not provide an EVM address and is not compatible with EVM tooling.
+Use **ECDSA secp256k1** for all new accounts and applications. ECDSA keys are compatible with Ethereum and the EVM ecosystem, can be assigned an EVM alias (EVM address) at account creation using `setECDSAKeyWithAlias()`, and work with tools like MetaMask, Hardhat, and Solidity smart contracts. Ed25519 is supported but does not provide an EVM address and is not compatible with EVM tooling. Ed25519 accounts can still interact with smart contracts through [HIP-632 system contract functions](/hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-account-service).
 </Accordion>
 
 <Accordion title="What is an EVM alias and why does it matter?">

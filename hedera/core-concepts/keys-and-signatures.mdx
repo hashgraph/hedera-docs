@@ -31,7 +31,9 @@ const txCreateAccount = new AccountCreateTransaction()
 
 ### Ed25519 (Supported)
 
-Ed25519 is a supported key type on Hedera. It does **not** produce an EVM alias, so Ed25519 accounts cannot be used directly with EVM tooling, MetaMask, or Solidity contracts that rely on `msg.sender`. 
+Ed25519 is a supported key type on Hedera. It does **not** produce an EVM alias, so Ed25519 accounts cannot use EVM tooling, MetaMask, or Solidity's native `ECRECOVER` function directly. However, Ed25519 accounts can interact with smart contracts through the [HIP-632 system contract functions](/hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-account-service) (`isAuthorized` and `isAuthorizedRaw`), which enable on-chain verification of Ed25519 signatures.
+
+Ed25519 is appropriate for HCS-based applications, Hedera-native workflows, and scenarios where EVM compatibility is not required
 
 ### Comparison
 

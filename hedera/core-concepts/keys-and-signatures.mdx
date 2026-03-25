@@ -73,7 +73,7 @@ Use **ECDSA secp256k1** for all new accounts and applications. ECDSA keys are co
 </Accordion>
 
 <Accordion title="What is an EVM alias and why does it matter?">
-An EVM address account alias is the rightmost 20 bytes of the 32-byte Keccak-256 hash of the ECDSA public key of the account, calculated in the manner described by the Ethereum Yellow Paper. The recovery ID is not formally part of the public key and is not included in the hash. To set this alias, use `setECDSAKeyWithAlias()` when creating the account. This alias is the account's EVM address — what Solidity contracts see as `msg.sender` — and enables full compatibility with smart contracts and EVM-based tooling.
+An EVM address account alias is the rightmost 20 bytes of the 32-byte Keccak-256 hash of the ECDSA public key of the account, calculated in the manner described by the Ethereum Yellow Paper. The recovery ID is not formally part of the public key and is not included in the hash. To set this alias, use `setECDSAKeyWithAlias()` when creating the account. This alias is the account's EVM address, what Solidity contracts see as `msg.sender`, and enables full compatibility with smart contracts and EVM-based tooling. See [ECDSA secp256k1 (Recommended)](/hedera/core-concepts/keys-and-signatures#ecdsa-secp256k1-recommended) above for the full derivation details.
 </Accordion>
 
 <Accordion title="What happens if I lose my private key?">

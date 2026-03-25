@@ -29,6 +29,10 @@ const txCreateAccount = new AccountCreateTransaction()
 ```
 </Info>
 
+<Warning>
+Do not use `setECDSAKeyWithAlias()` if you plan to update or rotate the account key in the future. The EVM alias is permanently bound to the original ECDSA public key and does not change when the key is rotated. Use `setKeyWithoutAlias()` instead if key rotation is a requirement. See the [Create an Account](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-an-account) reference for details.
+</Warning>
+
 ### Ed25519 (Supported)
 
 Ed25519 is a supported key type on Hedera. It does **not** produce an EVM alias, so Ed25519 accounts cannot use EVM tooling, MetaMask, or Solidity's native `ECRECOVER` function directly. However, Ed25519 accounts can interact with smart contracts through the [HIP-632 system contract functions](/hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-account-service) (`isAuthorized` and `isAuthorizedRaw`), which enable on-chain verification of Ed25519 signatures.

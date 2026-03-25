@@ -37,7 +37,14 @@ Ed25519 is appropriate for HCS-based applications, Hedera-native workflows, and 
 
 ### Comparison
 
-<table><thead><tr><th></th><th></th><th></th></tr></thead><tbody><tr><td></td><td><strong>ECDSA secp256k1</strong></td><td><strong>Ed25519</strong></td></tr><tr><td><strong>Recommendation</strong></td><td>✅ Recommended for all new accounts and applications</td><td>Supported; not recommended for new development</td></tr><tr><td><strong>EVM Address (alias)</strong></td><td>Yes — set at account creation using <code>setECDSAKeyWithAlias()</code>; derived as the rightmost 20 bytes of the Keccak-256 hash of the ECDSA public key</td><td>No — Ed25519 accounts have no EVM address</td></tr><tr><td><strong>Smart Contract Compatibility</strong></td><td>Full — works with <code>msg.sender</code>, Solidity, and EVM tooling</td><td>Not compatible with EVM tooling or smart contracts</td></tr><tr><td><strong>Wallet Support</strong></td><td>MetaMask, HashPack, and all EVM-compatible wallets</td><td>HashPack and Hedera-native wallets only</td></tr><tr><td><strong>Use Cases</strong></td><td>All use cases, especially dApps, DeFi, smart contracts, and any EVM-compatible integration</td><td>Non-EVM use cases only</td></tr></tbody></table>
+| | **ECDSA secp256k1** | **Ed25519** |
+|---|---|---|
+| **Recommendation** | ✅ Recommended for all new accounts and applications | Supported, not recommended for new development |
+| **EVM Address (alias)** | Yes. Set at account creation using `setECDSAKeyWithAlias()`, derived from the Keccak-256 hash of the ECDSA public key | No. Ed25519 accounts have no EVM address |
+| **Smart Contract Compatibility** | Full. Works with `msg.sender`, `ECRECOVER`, Solidity, and EVM tooling | Limited. Requires [HIP-632 system contract functions](/hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-account-service) (`isAuthorized`/`isAuthorizedRaw`) for on-chain signature verification. Not compatible with `ECRECOVER` or standard EVM tooling |
+| **Wallet Support** | MetaMask, HashPack, and all EVM-compatible wallets | HashPack and Hedera-native wallets only |
+| **Use Cases** | All use cases, especially dApps, DeFi, smart contracts, and EVM-compatible integrations | HCS-based applications, Hedera-native workflows, and scenarios where EVM compatibility is not required |
+
 
 <Info>
 **Note**: Hedera wallets such as [HashPack](https://www.hashpack.app/) support both key types.

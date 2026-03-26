@@ -36,6 +36,86 @@ The lifecycle of a transaction in the Hedera ecosystem begins when a client crea
 
 The receiving node validates (for instance, confirms the paying account has sufficient balance to pay the fee) the transaction and, if validation is successful, submits the transaction to the Hedera network for consensus by adding the transaction to an event and gossiping that event to another node. Quickly, that event flows out to all the other nodes. The network receives this transaction exponentially fast via the [gossip about gossip protocol](/hedera/core-concepts/hashgraph-consensus-algorithms/gossip-about-gossip). The consensus timestamp for an event (and so the transactions within) is calculated by each node independently calculating the median of the times that the network nodes received that event. You may find more information on how the consensus timestamp is calculated [here](https://docs.hedera.com/docs/hashgraph-overview#section-fair-timestamps). The hashgraph algorithm delivers the finality of consensus. Once assigned a consensus timestamp the transaction is then applied to the consensus state in the order determined by each transaction’s consensus timestamp. At that point, the transaction fees are also processed. In this manner, every node in the network maintains a consensus state because they all apply the same transactions in the same order. Each node also creates and temporarily stores receipts/records in support of the client, subsequently querying for the status of a transaction.
 
+
+## Transaction Fees
+
+Every transaction on the Hedera network has an associated fee to compensate the network for processing and state storage. With the implementation of **[HIP-1259](https://hips.hedera.com/hip/hip-1259)**, the mechanism for handling these fees has been significantly streamlined to improve network efficiency and simplify transaction records for users.
+
+### Fee Collection and Distribution ([HIP-1259](https://hips.hedera.com/hip/hip-1259))
+
+Previously, transaction fees were immediately split and distributed to multiple accounts with every transaction. This immediate distribution created challenges. For a simple crypto transfer between two accounts, the system must read and update up to six accounts: the sender, receiver, submitting node, `0.0.98`, `0.0.800`, and `0.0.801`. This increases processing overhead and slows performance. In the [block stream](/hedera/support-and-community/glossary#block-stream), every transaction must record balance changes for all these accounts, inflating data size and storage costs. Users viewing transactions on explorers like HashScan see a complex web of transfers, which can be confusing even with visualizations.
+
+The new system introduces the **Fee Collection Account (`0.0.802`)**, a network-controlled account that consolidates all transaction fees. 
+
+**How it Works:**
+
+1.  **Collection**: When a transaction is processed, the entire fee is transferred in a single payment to the Fee Collection Account (`0.0.802`).
+2.  **Distribution**: Once per day, at the end of each staking period, a single, large synthetic transaction distributes the accumulated fees from the `0.0.802` account to the appropriate destinations. 
+
+<Info>
+  #### **Key Takeaway**
+
+  This enhancement **does not change the amount you pay** for transactions. It only optimizes how the network processes the fees behind the scenes, resulting in a cleaner experience for users and a more efficient network for everyone.
+</Info>
+
+These destinations include:
+- **Node Operator Rewards**: Payments to individual nodes for their services.
+- **Staking Rewards (`0.0.800`)**: Funds allocated to accounts participating in staking.
+- **Node Rewards (`0.0.801`)**: Rewards distributed to nodes.
+- **Network Treasury (`0.0.98`)**: The account that receives network fees.
+
+<Frame>
+  <img src="/images/core-concepts/transactions-and-queries/fee-collection-account-flow.png" />
+</Frame>
+
+### Example 1: Fee Collection in Action (Crypto Transfer)
+
+Let's look at a standard `CRYPTO TRANSFER` transaction to see how the fee is collected.
+
+**Transaction Link:** [https://hashscan.io/mainnet/transaction/1771485699.125401461](https://hashscan.io/mainnet/transaction/1771485699.125401461)
+
+In this transaction, account `0.0.10231006` sends a small amount of HBAR to `0.0.37`. The HBAR transfers clearly show the fee consolidation:
+
+| Account | Amount | Description |
+| :--- | :--- | :--- |
+| `0.0.10231006` | **-0.00102456ℏ** | Payer (Sent transfer + fee) |
+| `0.0.37` | **+0.00000009ℏ** | Receiver (Node 34) |
+| **`0.0.802`** | **+0.00102447ℏ** | **Fee Collection Account** |
+
+
+### Example 2: Fee Collection Across All Transaction Types
+
+The HIP-1259 fee collection mechanism applies to all transaction types, not just crypto transfers. Let's look at a `SUBMIT MESSAGE` transaction to see the same streamlined process.
+
+**Transaction Link:** [https://hashscan.io/mainnet/transaction/1771486013.122401000](https://hashscan.io/mainnet/transaction/1771486013.122401000)
+
+#### Transaction Details
+
+- **ID:** `0.0.85243@1771485974.183471116`
+- **Type:** `SUBMIT MESSAGE`
+- **Fee:** `0.00902194ℏ`
+
+#### HBAR Transfers Breakdown
+
+This transaction submitted a message to the Hedera Consensus Service. Notice how simple the HBAR transfers are:
+
+| Account | Amount | Description |
+| :--- | :--- | :--- |
+| `0.0.85243` | **-0.00902194ℏ** | Payer (Paid the transaction fee) |
+| **`0.0.802`** | **+0.00902194ℏ** | **Fee Collection Account** |
+
+That's it. The entire fee is cleanly transferred to account `0.0.802`. There are no other transfers related to the fee in this transaction, making the record simple and easy to understand.
+
+### Before vs. After HIP-1259
+
+| Aspect | Before HIP-1259 | After HIP-1259 |
+| :--- | :--- | :--- |
+| **Fee Distribution** | Immediate, per-transaction splits to multiple accounts. | Consolidated into a single account (`0.0.802`) and distributed daily. |
+| **Transaction Record** | Shows multiple fee-related transfers. | Shows a single, clear fee transfer to `0.0.802`. |
+| **Network Overhead** | Higher, due to multiple balance updates per transaction. | Lower, improving overall network throughput. |
+| **Block Stream** | Larger and more complex. | Smaller and more efficient, reducing costs for mirror nodes. |
+
+
 ## Transaction Types
 
 ### Standard Transactions
@@ -175,7 +255,7 @@ Once a transaction has been submitted to the network, clients may seek confirmat
 
 For a more detailed review of the confirmation methods, please check out this [blog post](https://www.hedera.com/blog/transaction-confirmation-methods-in-hedera).
 
-## FAQ
+## FAQs
 
 <AccordionGroup>
 <Accordion title="What are the transaction and query fees associated with using Hedera?">
@@ -226,14 +306,14 @@ Batch transactions have a specific fee structure:
 This means different accounts can pay for different parts of the batch, allowing for flexible payment arrangements.
 </Accordion>
 
-<Accordion title="What is a <code>BatchKey</code> and why is it required?">
-A BatchKey is a key that must sign the outer batch transaction and is set on each inner transaction. It serves several critical purposes:
+<Accordion title="What is a BatchKey and why is it required?">
+A `BatchKey` is a key that must sign the outer batch transaction and is set on each inner transaction. It serves several critical purposes:
 
 * **Security**: Ensures that batch transactions can only be submitted as a whole and prevents tampering with the batch
 * **Authorization**: Signals the trusted entity who can finalize the batch
 * **Integrity**: Guarantees that the inner transactions haven't been modified after being prepared for the batch
 
-Every inner transaction must have a BatchKey set, and the outer batch transaction must be signed by all BatchKeys specified in the inner transactions.
+Every inner transaction must have a `BatchKey` set, and the outer batch transaction must be signed by all BatchKeys specified in the inner transactions.
 </Accordion>
 
 <Accordion title="How do I properly prepare transactions for a batch?">
@@ -270,6 +350,26 @@ Learn more [here](/hedera/sdks-and-apis/sdks/transactions/create-a-batch-transac
 </Accordion>
 
 <Accordion title="What are the most common errors with batch transactions and how do I fix them?">
-<table><thead><tr><th>Error</th><th>Code</th><th>Cause</th><th>Solution</th></tr></thead><tbody><tr><td><code>BATCH_LIST_EMPTY</code></td><td>388</td><td>Submitting a batch with no inner transactions</td><td>Add at least one inner transaction to the batch</td></tr><tr><td><code>BATCH_LIST_CONTAINS_DUPLICATES</code></td><td>389</td><td>The batch contains duplicate inner transactions</td><td>Ensure each inner transaction in the batch is unique</td></tr><tr><td><code>BATCH_TRANSACTION_IN_BLACKLIST</code></td><td>390</td><td>An inner transaction is of a type that's not allowed in batches</td><td>Only use allowed transaction types in batches</td></tr><tr><td><code>INNER_TRANSACTION_FAILED</code></td><td>391</td><td>One or more inner transactions failed during execution</td><td>Check the specific error for the inner transaction and fix the issue</td></tr><tr><td><code>BATCH_KEY_SET_ON_NON_INNER_TRANSACTION</code></td><td>393</td><td>BatchKey is set on the outer transaction</td><td>Only set BatchKey on inner transactions, not on the outer batch transaction</td></tr><tr><td><code>INVALID_BATCH_KEY</code></td><td>394</td><td>The BatchKey is missing or invalid</td><td>Ensure all inner transactions have a valid BatchKey set</td></tr><tr><td><code>INVALID_NODE_ACCOUNT_ID</code></td><td>341</td><td>Inner transaction has a nodeAccountID other than 0.0.0</td><td>Use the <code>batchify()</code> method which automatically sets nodeAccountID to 0.0.0</td></tr></tbody></table>
+<table><thead><tr><th>Error</th><th>Code</th><th>Cause</th><th>Solution</th></tr></thead><tbody><tr><td><code>BATCH_LIST_EMPTY</code></td><td>388</td><td>Submitting a batch with no inner transactions</td><td>Add at least one inner transaction to the batch</td></tr><tr><td><code>BATCH_LIST_CONTAINS_DUPLICATES</code></td><td>389</td><td>The batch contains duplicate inner transactions</td><td>Ensure each inner transaction in the batch is unique</td></tr><tr><td><code>BATCH_TRANSACTION_IN_BLACKLIST</code></td><td>390</td><td>An inner transaction is of a type that's not allowed in batches</td><td>Only use allowed transaction types in batches</td></tr><tr><td><code>INNER_TRANSACTION_FAILED</code></td><td>391</td><td>One or more inner transactions failed during execution</td><td>Check the specific error for the inner transaction and fix the issue</td></tr><tr><td><code>BATCH_KEY_SET_ON_NON_INNER_TRANSACTION</code></td><td>393</td><td>`BatchKey` is set on the outer transaction</td><td>Only set BatchKey on inner transactions, not on the outer batch transaction</td></tr><tr><td><code>INVALID_BATCH_KEY</code></td><td>394</td><td>The `BatchKey` is missing or invalid</td><td>Ensure all inner transactions have a valid `BatchKey` set</td></tr><tr><td><code>INVALID_NODE_ACCOUNT_ID</code></td><td>341</td><td>Inner transaction has a nodeAccountID other than 0.0.0</td><td>Use the <code>batchify()</code> method which automatically sets nodeAccountID to 0.0.0</td></tr></tbody></table>
 </Accordion>
 </AccordionGroup>
+
+> #### HIP-1259 FAQs
+> 
+> <AccordionGroup>
+>   <Accordion title="Why do I see transaction fees going to account 0.0.802?">
+>     This is part of a network enhancement called HIP-1259, which introduced the **Fee Collection Account (0.0.802)**. Instead of splitting fees across multiple accounts with every transaction, all fees are now sent to this single, network-controlled account. This simplifies transaction records and improves network performance.
+>   </Accordion>
+>   <Accordion title="When are staking rewards distributed?">
+>     Staking rewards are distributed to individual stakers at the end of each 24-hour staking period. The funds for these rewards are moved into the staking rewards account (`0.0.800`) once per day at the **beginning** of the staking period from the Fee Collection Account (`0.0.802`).
+>   </Accordion>
+>   <Accordion title="Can I send HBAR to account 0.0.802?">
+>     No. The Fee Collection Account (`0.0.802`) is a special, network-controlled account that **does not accept HBAR deposits** from users. It has no keys and is designed to only receive network fees. Any direct transfer attempts will be rejected.
+>   </Accordion>
+>   <Accordion title="Does HIP-1259 change how much I pay for transactions?">
+>     No. This enhancement **does not change the amount you pay** for transactions. It only optimizes how the network processes fees behind the scenes. The cost of transactions remains the same.
+>   </Accordion>
+>   <Accordion title="What is the daily synthetic transaction?">
+>     The daily synthetic transaction is a single, large, network-generated transaction that occurs once per day at the start of each staking period. It distributes all the fees accumulated in the Fee Collection Account (`0.0.802`) to their final destinations, including the staking rewards account (`0.0.800`), node reward account (`0.0.801`), and the network treasury (`0.0.98`).
+>   </Accordion>
+> </AccordionGroup>

@@ -1,0 +1,354 @@
+---
+title: Hedera Docs MCP Server Setup Guide
+---
+
+Connect your AI tools to the official Hedera documentation for real-time, accurate answers to your Hedera-related questions — directly from the source.
+
+---
+
+## What Is the Hedera MCP Server?
+
+The [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) is an open standard that creates direct connections between AI applications and external data sources. Instead of relying on general web search results, MCP lets AI tools search your documentation directly for more accurate, up-to-date information.
+
+Hedera's MCP server exposes a **`SearchHedera`** tool that gives any MCP-compatible AI application the ability to search across the entire Hedera knowledge base, including:
+
+- API references and SDK documentation
+- Code examples and tutorials
+- How-to guides and quickstarts
+- Network concepts and architecture docs
+
+### MCP Server URL
+
+```
+https://docs.hedera.com/mcp
+```
+
+Use this URL to connect any supported AI tool to the Hedera documentation.
+
+### Why MCP Over Web Search?
+
+| Feature | Web Search | MCP |
+| :--- | :--- | :--- |
+| **Source** | Search engine index (may be stale) | Live documentation content |
+| **Noise** | Affected by SEO and ranking algorithms | Goes straight to official docs |
+| **Integration** | Separate step from response generation | Searches during response generation |
+| **Accuracy** | May surface outdated or third-party content | Always returns the most up to date Hedera documentation. No stale indexes or outdated training data training |
+
+---
+
+## Installation
+
+The Hedera MCP server is a remote `HTTP` server hosted by Mintlify. No code is downloaded or executed on your machine. Your AI tool connects directly to https://docs.hedera.com/mcp over `HTTPS` and queries the documentation through the `SearchHedera` tool.
+
+To connect, you manually add the server URL to your AI tool's configuration using the setup instructions below. This is the recommended approach because it gives you full visibility into what's being configured, and no third-party packages are installed or executed on your system.
+
+---
+
+## Setup by Tool
+
+<Note>
+
+#### Note
+If you run into issues, refer to the [Additional Resources](/hedera/tutorials/more-tutorials/hedera-mcp-server-setup-guide#additional-resources) section below as setup instructions can change and that's where you'll find the most current guidance.
+
+</Note>
+
+### Claude (Web & Mobile)
+
+Claude supports MCP servers as custom connectors. Available on free, Pro, Max, Team, and Enterprise plans (free users are limited to one custom connector).
+
+**Steps:**
+
+1. Navigate to **Customize → Connectors** (or go directly to [claude.ai/settings/connectors](https://claude.ai/settings/connectors)).
+2. Click the **"+"** button next to Connectors, then select **"Add custom connector"**.
+3. Enter the details:
+   - **Name:** `Hedera Docs`
+   - **URL:** `https://docs.hedera.com/mcp`
+4. Click **Add**.
+5. In any chat, click the **"+"** button in the lower left of the chat interface, then hover over **"Connectors"** to enable **Hedera Docs** for that conversation.
+
+Claude will automatically use the `SearchHedera` tool when your questions relate to Hedera development.
+
+---
+
+### Claude Desktop
+
+Claude Desktop supports remote MCP servers through custom connectors and local servers through Desktop Extensions.
+
+**For remote servers (like Hedera's):**
+
+1. Click the **"+"** button at the bottom of the chat box, then select **"Connectors"**.
+2. If you haven't added the Hedera connector yet, navigate to **Settings → Developer → Connectors** and click **"Add custom connector"**.
+3. Enter the details:
+   - **Name:** `Hedera Docs`
+   - **URL:** `https://docs.hedera.com/mcp`
+4. Click **Add** and restart Claude Desktop if prompted.
+
+> **Note:** Custom connectors added on Claude web (claude.ai) are also available in Claude Desktop and Claude mobile when signed in with the same account.
+
+---
+
+### Claude Code
+
+Claude Code connects to MCP servers via CLI commands.
+
+**Steps:**
+
+Run the following command in your terminal:
+
+```bash
+claude mcp add --transport http hedera-docs https://docs.hedera.com/mcp
+```
+
+**Verify the connection:**
+
+```bash
+claude mcp list
+```
+
+You should see `hedera-docs` listed as a connected server.
+
+---
+
+### Cursor IDE
+
+Cursor supports MCP servers through its `mcp.json` configuration file.
+
+**Option A: Command Palette (Recommended)**
+
+1. Press `Cmd + Shift + P` (macOS) or `Ctrl + Shift + P` (Windows/Linux).
+2. Search for **"Open MCP settings"**.
+3. Select **Add custom MCP**.
+4. Add the following to `mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "hedera-docs": {
+      "url": "https://docs.hedera.com/mcp"
+    }
+  }
+}
+```
+
+**Option B: Manual Configuration**
+
+Create or edit the `mcp.json` file at one of these locations:
+
+| Scope | Path |
+| :--- | :--- |
+| **Global** (all projects) | `~/.cursor/mcp.json` |
+| **Project-specific** | `.cursor/mcp.json` (in project root) |
+
+**Verify the connection:** In Cursor's chat, ask *"What tools do you have available?"* and confirm the Hedera Docs server appears.
+
+---
+
+### VS Code (GitHub Copilot)
+
+VS Code supports MCP servers via the `.vscode/mcp.json` file, available when using GitHub Copilot in Agent mode.
+
+**Steps:**
+
+1. Create the file `.vscode/mcp.json` in your project root.
+2. Add the following configuration:
+
+```json
+{
+  "servers": {
+    "hedera-docs": {
+      "type": "http",
+      "url": "https://docs.hedera.com/mcp"
+    }
+  }
+}
+```
+
+3. In the Copilot chat panel, switch to **Agent mode** and restart the MCP server if prompted.
+
+> **Note:** VS Code uses a `"servers"` key (not `"mcpServers"`) and requires a `"type"` field.
+
+---
+
+### Windsurf IDE
+
+Windsurf supports MCP servers through its Cascade AI agent. It supports `stdio`, `Streamable HTTP`, and `SSE` transport types.
+
+**Option A: MCP Marketplace**
+
+1. Click the **MCPs icon** in the Cascade panel (top-right).
+2. Browse or search for the Hedera MCP server and click **Install**.
+
+**Option B: Manual Configuration**
+
+1. Press `Cmd + Shift + P` (macOS) or `Ctrl + Shift + P` (Windows/Linux).
+2. Search for **"Open Windsurf Settings"**.
+3. Navigate to **Cascade → MCP Servers** or directly edit:
+
+```
+~/.codeium/windsurf/mcp_config.json
+```
+
+4. Add the following:
+
+```json
+{
+  "mcpServers": {
+    "hedera-docs": {
+      "serverUrl": "https://docs.hedera.com/mcp"
+    }
+  }
+}
+```
+
+> **Note:** Windsurf has a limit of **100 total tools** across all connected MCP servers. You can toggle individual tools on/off per server.
+
+---
+
+### ChatGPT
+
+ChatGPT supports remote MCP servers through its Apps feature (formerly called "Connectors"). Developer Mode is required for full MCP tool support and is available for Plus, Pro, Business, Enterprise, and Edu plans.
+
+**Steps:**
+
+1. Open **Settings → Apps** (or **Settings → Connectors** in some UI versions).
+2. Navigate to **Advanced settings** and toggle on **Developer Mode**.
+3. Click **Create** to add a new app/connector.
+4. Enter the details:
+   - **Name:** `Hedera Docs`
+   - **Description:** `Search the official Hedera documentation.`
+   - **URL:** `https://docs.hedera.com/mcp`
+5. Click **Create**.
+6. In a new chat, click the **"+"** button in the composer area, enable Developer Mode for the session, and select **Hedera Docs**.
+
+> **Important:** Developer Mode is required because without it, ChatGPT only accepts MCP servers that implement a specific `search` + `fetch` tool pattern. The Hedera MCP server exposes a `SearchHedera` tool, which requires Developer Mode to be accessible in chat. See the [ChatGPT Developer Mode guide](https://platform.openai.com/docs/guides/developer-mode) for details.
+
+---
+
+### Gemini CLI
+
+Google's Gemini CLI supports MCP servers through a `settings.json` configuration file. It supports `stdio`, `SSE`, and `Streamable HTTP` transports.
+
+**Steps:**
+
+1. Open or create the Gemini CLI settings file:
+
+```
+~/.gemini/settings.json
+```
+
+2. Add the Hedera MCP server:
+
+```json
+{
+  "mcpServers": {
+    "hedera-docs": {
+      "url": "https://docs.hedera.com/mcp"
+    }
+  }
+}
+```
+
+3. Launch Gemini CLI and verify with:
+
+```
+/mcp
+```
+
+You should see the `hedera-docs` server listed with its available tools.
+
+> **Prerequisite:** Install Gemini CLI with `npm install -g @google/gemini-cli@latest`.
+
+---
+
+---
+
+## Using Multiple MCP Servers
+
+You can connect the Hedera MCP server alongside other documentation MCP servers. Here's an example Cursor configuration with multiple servers:
+
+```json
+{
+  "mcpServers": {
+    "hedera-docs": {
+      "url": "https://docs.hedera.com/mcp"
+    },
+    "another-docs": {
+      "url": "https://example.com/docs/mcp"
+    }
+  }
+}
+```
+
+**Best practices for multiple servers:**
+
+- Connect only the servers relevant to your current work to keep context focused.
+- Be specific in your prompts so the AI searches the most relevant server.
+- MCP servers don't consume context until the AI actively calls a search tool.
+- Disconnect servers you're not actively using to reduce context usage.
+
+---
+
+## Configuration Reference
+
+A quick-reference table of config file paths and JSON formats for each tool:
+
+| Tool | Config File Path | Server Key | URL Key |
+| :--- | :--- | :--- | :--- |
+| **Cursor** (global) | `~/.cursor/mcp.json` | `mcpServers` | `url` |
+| **Cursor** (project) | `.cursor/mcp.json` | `mcpServers` | `url` |
+| **VS Code** | `.vscode/mcp.json` | `servers` | `url` (+ `type: "http"`) |
+| **Windsurf** | `~/.codeium/windsurf/mcp_config.json` | `mcpServers` | `serverUrl` |
+| **Claude (Web)** | Customize → Connectors | UI-based | URL field |
+| **Claude Desktop** | Settings → Developer → Connectors | UI-based | URL field |
+| **Claude Code** | CLI: `claude mcp add` | — | — |
+| **Gemini CLI** | `~/.gemini/settings.json` | `mcpServers` | `url` |
+| **ChatGPT** | Settings → Apps → Create (Developer Mode required) | UI-based | URL field |
+
+---
+
+## Troubleshooting
+
+**Server not connecting?**
+- Verify the URL is exactly `https://docs.hedera.com/mcp` (no trailing slash).
+- Ensure you have an active internet connection.
+- Restart your AI tool after adding the configuration.
+
+**Tools not appearing?**
+- In Cursor/VS Code, click the refresh button next to the server entry.
+- In Claude Code, run `claude mcp list` to verify the server is registered.
+- In Windsurf, check the MCPs icon for server status — a red indicator means the connection failed.
+
+**Search returning no results?**
+- Try rephrasing your query with more specific Hedera terminology.
+- Ensure the MCP server is enabled/active for your current chat session.
+
+**Rate limits:**
+Mintlify-hosted MCP servers enforce rate limits to protect availability: 200 requests/hour per user (IP) and 1,000 requests/hour per documentation site.
+
+---
+
+## Additional Resources
+
+- [Model Context Protocol Specification](https://modelcontextprotocol.io/)
+- [Mintlify MCP Documentation](https://www.mintlify.com/docs/ai/model-context-protocol)
+- [Claude MCP Connectors](https://claude.ai/settings/connectors)
+- [Cursor MCP Docs](https://docs.cursor.com/en/context/mcp)
+- [VS Code MCP Servers](https://code.visualstudio.com/docs/copilot/chat/mcp-servers)
+- [Windsurf MCP Integration](https://docs.windsurf.com/windsurf/cascade/mcp)
+- [ChatGPT Developer Mode](https://platform.openai.com/docs/guides/developer-mode)
+- [Gemini CLI MCP Setup](https://google-gemini.github.io/gemini-cli/docs/tools/mcp-server.html)
+- [Claude Code MCP Docs](https://docs.anthropic.com/en/docs/claude-code/mcp)
+
+---
+
+<Columns cols={2}>
+  <Card title="Writer: Krystal, Senior DX Engineer" arrow>
+    [GitHub](https://github.com/theekrystallee) |
+    [X](https://X.com/theekrystallee)
+  </Card>
+
+<Card title="Editor: Ty, Senior Product Manager" arrow>
+    [LinkedIn](https://www.linkedin.com/in/ty-patches-smith)
+  </Card>
+</Columns>

@@ -24,7 +24,7 @@ The amount of gas used, as well as other attributes of the transaction, e.g. siz
 
 ```java Java
 //Create the transaction
-ContractCreateTransaction transaction = new ContractExecuteTransaction()
+ContractExecuteTransaction transaction = new ContractExecuteTransaction()
      .setContractId(newContractId)
      .setGas(100_000_000)
      .setFunction("set_message", new ContractFunctionParameters()

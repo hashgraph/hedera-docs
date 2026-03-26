@@ -62,16 +62,16 @@
   },
   "fonts": {
     "heading": {
-      "family": "Styrene A",
-      "source": "/public/fonts/styrene/StyreneA-Regular-Web.woff2",
+      "family": "Styrene A Medium",
+      "source": "/public/fonts/styrene/StyreneA-Medium-Web.woff2",
       "format": "woff2",
-      "weight": 400
+      "weight": 700
     },
     "body": {
-      "family": "Styrene A",
-      "source": "/public/fonts/styrene/StyreneA-Regular-Web.woff2",
+      "family": "Styrene Light Web",
+      "source": "/public/fonts/styrene/StyreneA-Light-Web.woff2",
       "format": "woff2",
-      "weight": 400
+      "weight": 500
     }
   },
   "background": {
@@ -90,8 +90,15 @@
       "perplexity",
       "mcp",
       "cursor",
-      "vscode"
+      "vscode",
+      "add-mcp",
+      "grok"
     ]
+  },
+  "integrations": {
+    "gtm": {
+      "tagId": "GTM-NHLK548"
+    }
   },
   "navigation": {
     "global": {
@@ -228,6 +235,7 @@
                 "group": "More Tutorials",
                 "pages": [
                   "hedera/tutorials/more-tutorials",
+                  "hedera/tutorials/more-tutorials/hedera-mcp-server-setup-guide",
                   "hedera/tutorials/more-tutorials/create-and-fund-your-hedera-testnet-account",
                   "hedera/tutorials/more-tutorials/how-to-create-a-personal-access-token-api-key-on-the-hedera-portal",
                   "hedera/tutorials/more-tutorials/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers",
@@ -241,7 +249,16 @@
                     ]
                   },
                   "hedera/tutorials/more-tutorials/schedule-your-first-transaction",
-                  "hedera/tutorials/more-tutorials/javascript-testing"
+                  "hedera/tutorials/more-tutorials/javascript-testing",
+                  {
+                    "group": "HSM/KMS Signing Solutions",
+                    "pages": [
+                      "hedera/tutorials/more-tutorials/HSM-signing",
+                      "hedera/tutorials/more-tutorials/HSM-signing/aws-kms",
+                      "hedera/tutorials/more-tutorials/HSM-signing/azure-key-vault",
+                      "hedera/tutorials/more-tutorials/HSM-signing/gcp-kms"
+                    ]
+                  }
                 ]
               },
               "hedera/tutorials/demo-applications",
@@ -319,6 +336,7 @@
                   "hedera/core-concepts/accounts/account-creation",
                   "hedera/core-concepts/accounts/auto-account-creation",
                   "hedera/core-concepts/accounts/account-properties",
+                  "hedera/core-concepts/accounts/network-accounts",
                   "hedera/core-concepts/accounts/hiero-hooks"
                 ]
               },
@@ -458,32 +476,55 @@
                 "group": "AI Studio on Hedera",
                 "pages": [
                   "hedera/open-source-solutions/ai-studio-on-hedera",
+                  "hedera/open-source-solutions/ai-studio-on-hedera/agent-lab",
                   "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/elizaos-plugin",
                   {
                     "group": "Hedera AI Agent Kit",
                     "pages": [
-                     "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit",
-                      
+                      "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit",
+                      "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/plugins",
                       {
                         "group": "JavaScript SDK",
                         "pages": [
                           "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/quickstart",
-                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/plugins",
-                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/how-to-publish-plugin"
-                          
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/create-js-plugins"
                         ]
                       },
                       {
                         "group": "Python SDK",
                         "pages": [
                           "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/quickstart",
-                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/plugins",
-                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/how-to-publish-plugin"
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/create-py-plugins"
                         ]
                       }
                     ]
                   }
               
+                ]
+              },
+              {
+                "group": "Hiero CLI",
+                "pages": [
+                  "hedera/open-source-solutions/hiero-cli/overview",
+                  {
+                    "group": "Plugins",
+                    "pages": [
+                      "/hedera/open-source-solutions/hiero-cli/plugins/credentials-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/network-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/hbar-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/account-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/token-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/topic-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/config-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/plugin-management-plugin"
+                    ]
+                  },
+                  {
+                    "group": "Scripting",
+                    "pages": [
+                      "/hedera/open-source-solutions/hiero-cli/scripting/quickstart"
+                    ]
+                  }
                 ]
               },
               {
@@ -513,7 +554,6 @@
                   "hedera/open-source-solutions/hashiodao/local-environment-setup"
                 ]
               },
-              "hedera/open-source-solutions/hedera-cli",
               "hedera/open-source-solutions/hedera-contract-builder",
               {
                 "group": "Hedera Custodians Library",
@@ -1146,6 +1186,14 @@
     "href": "https://hedera.com/"
   },
   "navbar": {
+      "links": [
+      {
+        "label": "Join Hackathon",
+        "href": "https://hedera.com/hackathon",
+        "target": "_blank",
+        "icon": "code"
+      }
+    ],
     "primary": {
       "type": "button",
       "label": "Dev Portal",

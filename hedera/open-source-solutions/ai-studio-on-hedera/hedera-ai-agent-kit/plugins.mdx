@@ -1,0 +1,61 @@
+---
+title: "Plugins"
+description: "Introduction to the plugin architecture, and an overview of Hedera and third-party plugins."
+---
+
+## Overview
+
+The Hedera Agent Kit provides a comprehensive set of tools organized into **plugins**, which can be installed alongside the Hedera Agent Kit and used to extend the core functionality of the Hedera Agent Kit SDK. These tools can be used both by the conversational agent and when you are building with the SDK.
+
+The Hedera services built into this agent toolkit are also implemented as plugins. You can see a description of each plugin in the [HEDERAPLUGINS.md](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/HEDERAPLUGINS.md) file, as well as a list of the individual tools for each Hedera service that are included in each plugin.
+
+### Contribute
+Developers can contribute new plugins to the Hedera Agent Kit by following the guidelines in the plugin docs for each SDK:
+* **[Create a JavaScript Plugin](./hedera-agent-kit-js/create-js-plugins)**
+* **[Create a Python Plugin](./hedera-agent-kit-py/create-py-plugins)**
+
+## Hedera Plugins & Architecture
+All tools in the Hedera Agent Kit, including tools available to use Hedera native services and EVM features, are organized into groups as plugins, each containing a set functionality related to the Hedera service or project they are created for.
+
+The SDKs also provide an extensive plugin system that allows developers to create their own third-party plugins for use with the Hedera Agent Kit.
+
+### Hedera Plugins
+Available plugins built into the Hedera Agent Kit include:
+* **Core Account Plugin**: Tools for Hedera Account Service operations
+* **Core Account Query Plugin**: Tools for querying Hedera Account Service related data
+* **Core Consensus Plugin**: Tools for Hedera Consensus Service (HCS) operations
+* **Core Consensus Query Plugin**: Tools for querying Hedera Consensus Service (HCS) related data
+* **Core Token Plugin**: Tools for Hedera Token Service (HTS) operations
+* **Core Token Query Plugin**: Tools for querying Hedera Token Service related data
+* **Core EVM Plugin**: Tools for interacting with EVM smart contracts on Hedera (ERC-20 and ERC-721)
+* **Core EVM Query Plugin**: Tools for querying smart contract-related data on Hedera
+* **Core Misc Query Plugin**: Tools for fetching miscellaneous information from Hedera Mirror Node
+* **Core Transaction Query Plugin**: Tools for handling Hedera transaction–related queries
+
+See the full documentation to understand how to use them with parameters and examples can be found in the `docs/HEDERAPLUGINS.md` file in the [JavaScript SDK](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/HEDERAPLUGINS.md) and the [Python SDK](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/HEDERAPLUGINS.md).
+
+### Available Third Party Plugins 
+The Hedera Agent Kit is extensible with third party plugins created by third parties projects. 
+- [Memejob Plugin](https://www.npmjs.com/package/@buidlerlabs/hak-memejob-plugin) provides a streamlined interface to the [**memejob**](https://memejob.fun/) protocol, exposing the core actions (`create`, `buy`, `sell`) for interacting with meme tokens on Hedera:
+
+  Github repository: https://github.com/buidler-labs/hak-memejob-plugin
+
+- [Bonzo Plugin](https://www.npmjs.com/package/@bonzofinancelabs/hak-bonzo-plugin) is a unified SDK to the [**Bonzo**](https://bonzo.finance) protocol, exposing the core actions (`deposit`, `withdraw`, `repay`, `borrow`) for decentralised lending and borrowing on Hedera:
+
+  Github repository: [https://github.com/Bonzo-Labs/bonzoPlugin](https://github.com/Bonzo-Labs/bonzoPlugin)
+
+- [SaucerSwap Plugin](https://www.npmjs.com/package/saucer-swap-plugin) A plugin for the Hedera Agent Kit that enables [**SaucerSwap**](https://www.saucerswap.finance/) V2 DeFi operations on Hedera, including token swaps and quote queries.
+
+  Github repository: [https://github.com/saucerswaplabs/hedera-agent-kit-saucer-swap-plugin](https://github.com/saucerswaplabs/hedera-agent-kit-saucer-swap-plugin)
+
+- [CoinCap Plugin](https://www.npmjs.com/package/coincap-hedera-plugin) provides access to the [**CoinCap API service**](https://www.coincap.io) to access cryptocurrency market data. It exposes the action (`get HBAR price in USD`) to get the current price of HBAR in USD currency, by using it you can ask your agent to get your current HBAR balance expressed in USD.
+
+  Github repository: [https://github.com/henrytongv/coincap-hedera-plugin](https://github.com/henrytongv/coincap-hedera-plugin). Tested/endorsed version of plugin: coincap-hedera-plugin@1.0.4
+
+
+
+
+
+
+
+

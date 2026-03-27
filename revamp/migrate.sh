@@ -698,21 +698,21 @@ get_explicit_mapping() {
     "hedera/tutorials/local-node/how-to-run-hedera-local-node-in-a-cloud-development-environment-cde/gitpod.mdx") echo "native/local-dev/cde/gitpod.mdx" ;;
     "hedera/tutorials/local-node/how-to-run-hedera-local-node-in-a-cloud-development-environment-cde/codespaces.mdx") echo "native/local-dev/cde/codespaces.mdx" ;;
 
-    # AI Integrations (Native)
-    "hedera/open-source-solutions/ai-studio-on-hedera.mdx") echo "native/integrations/ai/index.mdx" ;;
-    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit.mdx") echo "native/integrations/ai/agent-kit/index.mdx" ;;
-    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/plugins.mdx") echo "native/integrations/ai/agent-kit/plugins.mdx" ;;
-    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/quickstart.mdx") echo "native/integrations/ai/agent-kit/js/quickstart.mdx" ;;
-    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/plugins.mdx") echo "native/integrations/ai/agent-kit/js/plugins.mdx" ;;
-    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/create-js-plugins.mdx") echo "native/integrations/ai/agent-kit/js/create-plugins.mdx" ;;
-    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/quickstart.mdx") echo "native/integrations/ai/agent-kit/python/quickstart.mdx" ;;
-    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/plugins.mdx") echo "native/integrations/ai/agent-kit/python/plugins.mdx" ;;
-    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/create-py-plugins.mdx") echo "native/integrations/ai/agent-kit/python/create-plugins.mdx" ;;
-    "hedera/open-source-solutions/ai-studio-on-hedera/agent-lab.mdx") echo "native/integrations/ai/agent-lab.mdx" ;;
-    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/elizaos-plugin.mdx") echo "native/integrations/ai/elizaos.mdx" ;;
-    "hedera/open-source-solutions/ai-tools-for-developers.mdx") echo "native/integrations/ai/tools/index.mdx" ;;
-    "hedera/open-source-solutions/ai-tools-for-developers/hedera-hivemind.mdx") echo "native/integrations/ai/tools/hivemind.mdx" ;;
-    "hedera/open-source-solutions/ai-tools-for-developers/kapa-ai.mdx") echo "native/integrations/ai/tools/kapa.mdx" ;;
+    # AI Studio & Tools (Solutions)
+    "hedera/open-source-solutions/ai-studio-on-hedera.mdx") echo "solutions/ai/index.mdx" ;;
+    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit.mdx") echo "solutions/ai/agent-kit/index.mdx" ;;
+    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/plugins.mdx") echo "solutions/ai/agent-kit/plugins.mdx" ;;
+    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/quickstart.mdx") echo "solutions/ai/agent-kit/js/quickstart.mdx" ;;
+    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/plugins.mdx") echo "solutions/ai/agent-kit/js/plugins.mdx" ;;
+    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/create-js-plugins.mdx") echo "solutions/ai/agent-kit/js/create-plugins.mdx" ;;
+    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/quickstart.mdx") echo "solutions/ai/agent-kit/python/quickstart.mdx" ;;
+    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/plugins.mdx") echo "solutions/ai/agent-kit/python/plugins.mdx" ;;
+    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/create-py-plugins.mdx") echo "solutions/ai/agent-kit/python/create-plugins.mdx" ;;
+    "hedera/open-source-solutions/ai-studio-on-hedera/agent-lab.mdx") echo "solutions/ai/agent-lab.mdx" ;;
+    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/elizaos-plugin.mdx") echo "solutions/ai/elizaos.mdx" ;;
+    "hedera/open-source-solutions/ai-tools-for-developers.mdx") echo "solutions/ai/tools/index.mdx" ;;
+    "hedera/open-source-solutions/ai-tools-for-developers/hedera-hivemind.mdx") echo "solutions/ai/tools/hivemind.mdx" ;;
+    "hedera/open-source-solutions/ai-tools-for-developers/kapa-ai.mdx") echo "solutions/ai/tools/kapa.mdx" ;;
 
     # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     # OPERATORS SECTION
@@ -965,12 +965,12 @@ get_directory_mapping() {
 
     # New pages under open-source-solutions/ai-studio-on-hedera/
     if [[ "$src" == hedera/open-source-solutions/ai-studio-on-hedera/* ]]; then
-        echo "native/integrations/ai/${src#hedera/open-source-solutions/ai-studio-on-hedera/}"; return
+        echo "solutions/ai/${src#hedera/open-source-solutions/ai-studio-on-hedera/}"; return
     fi
 
     # New pages under open-source-solutions/ai-tools-for-developers/
     if [[ "$src" == hedera/open-source-solutions/ai-tools-for-developers/* ]]; then
-        echo "native/integrations/ai/tools/${src#hedera/open-source-solutions/ai-tools-for-developers/}"; return
+        echo "solutions/ai/tools/${src#hedera/open-source-solutions/ai-tools-for-developers/}"; return
     fi
 
     # New pages under open-source-solutions/oracle-networks/
@@ -1105,15 +1105,6 @@ get_additional_destinations() {
     case "$src" in
     "hedera/getting-started-evm-developers/hedera-testnet-faucet.mdx")
         echo "learn/getting-started/testnet-faucet.mdx"
-        ;;
-    "hedera/open-source-solutions/ai-studio-on-hedera.mdx")
-        echo "solutions/ai/index.mdx"
-        ;;
-    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit.mdx")
-        echo "solutions/ai/agent-kit.mdx"
-        ;;
-    "hedera/open-source-solutions/ai-tools-for-developers/hedera-hivemind.mdx")
-        echo "solutions/ai/hivemind.mdx"
         ;;
     *) echo "" ;;
     esac

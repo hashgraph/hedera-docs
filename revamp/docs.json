@@ -851,46 +851,7 @@
           {
             "group": "Integrations",
             "pages": [
-              "native/integrations/index",
-              {
-                "group": "AI Studio",
-                "pages": [
-                  "native/integrations/ai/index",
-                  "native/integrations/ai/agent-lab",
-                  {
-                    "group": "Agent Kit",
-                    "pages": [
-                      "native/integrations/ai/agent-kit/index",
-                      "native/integrations/ai/agent-kit/plugins",
-                      {
-                        "group": "JavaScript",
-                        "pages": [
-                          "native/integrations/ai/agent-kit/js/quickstart",
-                          "native/integrations/ai/agent-kit/js/plugins",
-                          "native/integrations/ai/agent-kit/js/create-plugins"
-                        ]
-                      },
-                      {
-                        "group": "Python",
-                        "pages": [
-                          "native/integrations/ai/agent-kit/python/quickstart",
-                          "native/integrations/ai/agent-kit/python/plugins",
-                          "native/integrations/ai/agent-kit/python/create-plugins"
-                        ]
-                      }
-                    ]
-                  },
-                  "native/integrations/ai/elizaos",
-                  {
-                    "group": "AI Tools",
-                    "pages": [
-                      "native/integrations/ai/tools/index",
-                      "native/integrations/ai/tools/hivemind",
-                      "native/integrations/ai/tools/kapa"
-                    ]
-                  }
-                ]
-              }
+              "native/integrations/index"
             ]
           }
         ]
@@ -940,8 +901,39 @@
             "group": "AI & Agents",
             "pages": [
               "solutions/ai/index",
-              "solutions/ai/agent-kit",
-              "solutions/ai/hivemind"
+              "solutions/ai/agent-lab",
+              {
+                "group": "Agent Kit",
+                "pages": [
+                  "solutions/ai/agent-kit/index",
+                  "solutions/ai/agent-kit/plugins",
+                  {
+                    "group": "JavaScript",
+                    "pages": [
+                      "solutions/ai/agent-kit/js/quickstart",
+                      "solutions/ai/agent-kit/js/plugins",
+                      "solutions/ai/agent-kit/js/create-plugins"
+                    ]
+                  },
+                  {
+                    "group": "Python",
+                    "pages": [
+                      "solutions/ai/agent-kit/python/quickstart",
+                      "solutions/ai/agent-kit/python/plugins",
+                      "solutions/ai/agent-kit/python/create-plugins"
+                    ]
+                  }
+                ]
+              },
+              "solutions/ai/elizaos",
+              {
+                "group": "AI Tools",
+                "pages": [
+                  "solutions/ai/tools/index",
+                  "solutions/ai/tools/hivemind",
+                  "solutions/ai/tools/kapa"
+                ]
+              }
             ]
           },
           {

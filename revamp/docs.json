@@ -856,6 +856,7 @@
                 "group": "AI Studio",
                 "pages": [
                   "native/integrations/ai/index",
+                  "native/integrations/ai/agent-lab",
                   {
                     "group": "Agent Kit",
                     "pages": [

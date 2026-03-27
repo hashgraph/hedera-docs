@@ -7,7 +7,7 @@ This is the Hedera documentation portal, built with [Mintlify](https://mintlify.
 ### Branch Strategy
 
 - **`main`** — Production branch. All documentation updates (new pages, content edits, fixes) land here. The `hedera/` directory is the source of truth for the current live documentation.
-- **`dev`** — Revamp branch. Contains the new 7-tab documentation structure (`learn/`, `evm/`, `native/`, `operators/`, `reference/`, `solutions/`, `support/`) plus migration tooling in `revamp/`. Periodically synced from `main` via `git merge main`, then `./revamp/migrate.sh` to propagate changes.
+- **`dev`** — Revamp branch. Contains the new 7-tab documentation structure (`learn/`, `evm/`, `native/`, `operators/`, `reference/`, `solutions/`, `support/`) plus migration tooling in `revamp/`. Periodically synced from `main` via `./revamp/merge-main.sh`, then `./revamp/migrate.sh` to propagate changes.
 
 ### Key Directories
 
@@ -22,9 +22,10 @@ This is the Hedera documentation portal, built with [Mintlify](https://mintlify.
 ### Important Files
 
 - `docs.json` — Mintlify navigation and site configuration
+- `revamp/merge-main.sh` — **Use instead of `git merge main`** — handles docs.json conflict, reports new pages needing attention
 - `revamp/migrate.sh` — Migrates content from `hedera/` to the new structure
 - `revamp/create-placeholders.sh` — Creates placeholder pages for new content
-- `revamp/verify.sh` — Validates migration integrity (nav refs, coverage, orphans)
+- `revamp/verify.sh` — Validates migration integrity (12 checks: nav refs, coverage, orphans, nav parity)
 - `revamp/plan.md` — Full revamp architecture plan
 
 ## Commit Rules
@@ -51,21 +52,34 @@ npx mintlify dev
 
 ```bash
 # Sync latest changes from main
-git checkout main && git pull
-git checkout dev && git merge main
+# NOTE: Use merge-main.sh — NOT git merge main directly.
+# docs.json always conflicts (dev has revamp nav, main has production nav).
+# merge-main.sh auto-resolves the conflict and reports new pages needing attention.
+git checkout dev
+./revamp/merge-main.sh --dry-run   # preview first
+./revamp/merge-main.sh             # then merge
 
 # Run migration to propagate hedera/ changes to new structure
 ./revamp/migrate.sh
 
+# Acknowledge any warnings (if reported by migrate.sh):
+# ./revamp/migrate.sh --ack-fixup=all    (sidebar fixup source changed)
+# ./revamp/migrate.sh --ack=<source>     (protected page source changed)
+
 # Create any new placeholder pages
 ./revamp/create-placeholders.sh
 
-# Verify everything is correct
+# Verify everything is correct (12 checks)
 ./revamp/verify.sh
 
 # Test locally
 nvm use 22 && npx mintlify dev
 ```
+
+**When main adds a new page:** `merge-main.sh --dry-run` will report it. Before running migrate.sh, add:
+1. An explicit mapping in `revamp/migrate.sh` → `get_explicit_mapping()`
+2. A nav entry in `revamp/docs.json`
+3. Optionally a sidebarTitle fixup in `revamp/sidebar-fixups.txt`
 
 ### Working on `main` Branch (Production)
 
@@ -94,7 +108,7 @@ When working in these areas, load the indicated context first:
 
 | File Pattern | Load This Context |
 |---|---|
-| `revamp/*.sh` | `revamp/README.md` — migration script documentation and workflow |
+| `revamp/*.sh` | `revamp/README.md` — migration script documentation, merge workflow, and how all systems work |
 | `revamp/docs.json` or `docs.json` | Code Conventions section above — Mintlify nav format, `/index` suffix rules |
 | `learn/`, `evm/`, `native/`, `operators/`, `reference/`, `solutions/`, `support/` | `revamp/plan.md` — full revamp architecture and tab/group structure |
 | `snippets/` | Code Conventions section above — snippet import paths are absolute (`/snippets/...`) |

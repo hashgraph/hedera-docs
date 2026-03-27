@@ -46,11 +46,13 @@ PROTECTED_SKIPPED=0
 PROTECTED_CHANGED=0
 FIXUP_APPLIED=0
 FIXUP_CONTENT_CHANGED=0
+FALLBACK_NEEDS_NAV=0   # new/updated files using directory fallback — may need nav entry
 
 # ── Temp files ──────────────────────────────────────────────────────────────
 DEST_MANIFEST=$(mktemp)
 UNMAPPED_LOG=$(mktemp)
-trap "rm -f $DEST_MANIFEST $UNMAPPED_LOG" EXIT
+FALLBACK_NAV_LOG=$(mktemp)
+trap "rm -f $DEST_MANIFEST $UNMAPPED_LOG $FALLBACK_NAV_LOG" EXIT
 
 # ── Banner ──────────────────────────────────────────────────────────────────
 echo -e "${BLUE}═══════════════════════════════════════════════════${NC}"
@@ -706,6 +708,7 @@ get_explicit_mapping() {
     "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/quickstart.mdx") echo "native/integrations/ai/agent-kit/python/quickstart.mdx" ;;
     "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/plugins.mdx") echo "native/integrations/ai/agent-kit/python/plugins.mdx" ;;
     "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/create-py-plugins.mdx") echo "native/integrations/ai/agent-kit/python/create-plugins.mdx" ;;
+    "hedera/open-source-solutions/ai-studio-on-hedera/agent-lab.mdx") echo "native/integrations/ai/agent-lab.mdx" ;;
     "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/elizaos-plugin.mdx") echo "native/integrations/ai/elizaos.mdx" ;;
     "hedera/open-source-solutions/ai-tools-for-developers.mdx") echo "native/integrations/ai/tools/index.mdx" ;;
     "hedera/open-source-solutions/ai-tools-for-developers/hedera-hivemind.mdx") echo "native/integrations/ai/tools/hivemind.mdx" ;;
@@ -1120,9 +1123,65 @@ get_additional_destinations() {
 # SYNC ENGINE
 # ============================================================================
 
+# Returns 0 (true) if dest already contains the correctly-transformed version
+# of src. Applies the same transforms that sync_file would apply:
+#   1. CRLF → LF normalization
+#   2. sidebarTitle: Overview stripped (quoted + unquoted)
+#   3. sidebarTitle fixup injected (if src is in sidebar-fixups.txt)
+#
+# Fast path: cmp -s catches byte-identical files (no transforms needed).
+# Slow path: Python comparison for the ~85 transform-touched files per run.
+# This prevents showing UPDATE for files whose real content hasn't changed.
+_src_matches_dest() {
+    local src="$1"
+    local dest="$2"
+    [ -f "$dest" ] || return 1
+
+    # Fast path: byte-for-byte identical (no transforms, no CRLF)
+    cmp -s "$src" "$dest" && return 0
+
+    # Slow path: compare after applying our full transform pipeline
+    FIXUP_TITLE="$(get_fixup_title "$src")" python3 - "$src" "$dest" <<'PYEOF'
+import sys, re, os
+
+src, dest = sys.argv[1], sys.argv[2]
+# Strip any trailing \r from title (sidebar-fixups.txt may have CRLF endings)
+fixup_title = os.environ.get('FIXUP_TITLE', '').rstrip('\r')
+
+try:
+    with open(src, newline='') as f:
+        content = f.read()
+except Exception:
+    sys.exit(1)
+
+# Normalize CRLF
+content = content.replace('\r\n', '\n').replace('\r', '\n')
+# Strip sidebarTitle: Overview (unquoted and double-quoted)
+content = re.sub(r'^sidebarTitle: Overview\n', '', content, flags=re.MULTILINE)
+content = re.sub(r'^sidebarTitle: "Overview"\n', '', content, flags=re.MULTILINE)
+# Apply fixup sidebarTitle if applicable
+if fixup_title:
+    content = re.sub(r'^sidebarTitle:.*\n', '', content, flags=re.MULTILINE)
+    content = re.sub(
+        r'^(title:.*)$',
+        lambda m: m.group(0) + '\nsidebarTitle: ' + fixup_title,
+        content, count=1, flags=re.MULTILINE
+    )
+
+try:
+    with open(dest) as f:
+        dest_content = f.read()
+except Exception:
+    sys.exit(1)
+
+sys.exit(0 if content == dest_content else 1)
+PYEOF
+}
+
 sync_file() {
     local src="$1"
     local dest="$2"
+    local used_fallback="${3:-false}"  # true if dest came from directory rule not explicit case
 
     # Record in manifest (for orphan detection later)
     echo "$dest" >> "$DEST_MANIFEST"
@@ -1131,9 +1190,17 @@ sync_file() {
         if [ ! -f "$dest" ]; then
             echo -e "  ${GREEN}+ NEW${NC}     $dest"
             COPIED=$((COPIED + 1))
-        elif ! cmp -s "$src" "$dest"; then
+            if [ "$used_fallback" = true ]; then
+                FALLBACK_NEEDS_NAV=$((FALLBACK_NEEDS_NAV + 1))
+                echo "$src → $dest" >> "$FALLBACK_NAV_LOG"
+            fi
+        elif ! _src_matches_dest "$src" "$dest"; then
             echo -e "  ${CYAN}~ UPDATE${NC}  $dest"
             UPDATED=$((UPDATED + 1))
+            if [ "$used_fallback" = true ]; then
+                FALLBACK_NEEDS_NAV=$((FALLBACK_NEEDS_NAV + 1))
+                echo "$src → $dest" >> "$FALLBACK_NAV_LOG"
+            fi
         else
             [ "$VERBOSE" = true ] && echo -e "  ${DIM}= SAME${NC}    $dest"
             UNCHANGED=$((UNCHANGED + 1))
@@ -1149,20 +1216,23 @@ sync_file() {
         _apply_fixup_sidebar "$src" "$dest"
         echo -e "  ${GREEN}+ NEW${NC}     $dest"
         COPIED=$((COPIED + 1))
-    elif ! cmp -s "$src" "$dest"; then
+        if [ "$used_fallback" = true ]; then
+            FALLBACK_NEEDS_NAV=$((FALLBACK_NEEDS_NAV + 1))
+            echo "$src → $dest" >> "$FALLBACK_NAV_LOG"
+        fi
+    elif ! _src_matches_dest "$src" "$dest"; then
         cp "$src" "$dest"
         _strip_overview_sidebar "$dest"
         _apply_fixup_sidebar "$src" "$dest"
         echo -e "  ${CYAN}~ UPDATE${NC}  $dest"
         UPDATED=$((UPDATED + 1))
+        if [ "$used_fallback" = true ]; then
+            FALLBACK_NEEDS_NAV=$((FALLBACK_NEEDS_NAV + 1))
+            echo "$src → $dest" >> "$FALLBACK_NAV_LOG"
+        fi
     else
         [ "$VERBOSE" = true ] && echo -e "  ${DIM}= SAME${NC}    $dest"
         UNCHANGED=$((UNCHANGED + 1))
-        # Still strip and apply fixup on UNCHANGED files — handles the case where
-        # a previous migration run left sidebarTitle: "Overview" (quoted form that
-        # the old sed missed) or a fixup entry was added after the initial copy.
-        _strip_overview_sidebar "$dest"
-        _apply_fixup_sidebar "$src" "$dest"
     fi
 }
 
@@ -1223,8 +1293,10 @@ echo -e "${BLUE}━━━ Scanning hedera/ for .mdx files ━━━${NC}"
 while IFS= read -r -d '' src; do
     # Get destination
     dest=$(get_explicit_mapping "$src")
+    USED_FALLBACK=false
     if [ -z "$dest" ]; then
         dest=$(get_directory_mapping "$src")
+        [ -n "$dest" ] && USED_FALLBACK=true
     fi
 
     if [ -n "$dest" ]; then
@@ -1244,7 +1316,7 @@ while IFS= read -r -d '' src; do
                 [ "$VERBOSE" = true ] && echo -e "  ${DIM}⊞ PROTECTED${NC}   $dest"
             fi
         else
-            sync_file "$src" "$dest"
+            sync_file "$src" "$dest" "$USED_FALLBACK"
 
             # Check fixup hash change once per source (after primary sync)
             if is_fixup_src "$src"; then
@@ -1258,11 +1330,11 @@ while IFS= read -r -d '' src; do
                 fi
             fi
 
-            # Handle additional copies
+            # Handle additional copies (never flag as fallback — these are intentional extra destinations)
             extra=$(get_additional_destinations "$src")
             if [ -n "$extra" ]; then
                 while IFS= read -r extra_dest; do
-                    [ -n "$extra_dest" ] && sync_file "$src" "$extra_dest"
+                    [ -n "$extra_dest" ] && sync_file "$src" "$extra_dest" "false"
                 done <<< "$extra"
             fi
         fi
@@ -1407,6 +1479,17 @@ if [ "$UNMAPPED" -gt 0 ]; then
     done < "$UNMAPPED_LOG"
 fi
 
+if [ "$FALLBACK_NEEDS_NAV" -gt 0 ]; then
+    echo ""
+    echo -e "  ${YELLOW}⚠ New/updated via directory rule:${NC}  $FALLBACK_NEEDS_NAV"
+    echo -e "  ${YELLOW}  These are new or changed files placed by a directory fallback rule.${NC}"
+    echo -e "  ${YELLOW}  Verify each destination appears in revamp/docs.json nav,${NC}"
+    echo -e "  ${YELLOW}  then run ./revamp/verify.sh to confirm no orphans.${NC}"
+    while IFS= read -r line; do
+        [ -n "$line" ] && echo -e "    ${CYAN}→${NC} $line"
+    done < "$FALLBACK_NAV_LOG"
+fi
+
 if [ "$ORPHANED" -gt 0 ]; then
     echo ""
     if [ "$CLEAN_ORPHANS" = true ] && [ "$DRY_RUN" = false ]; then
@@ -1456,27 +1539,36 @@ else
     # ── Append to sync log ───────────────────────────────────────────────────
     # Only log when main HEAD has changed since the last recorded entry.
     # Re-running migrate.sh on the same commit produces no new log entry.
+    # Entries are prepended (newest first) so the file reads top-to-bottom newest→oldest.
+    # grep -m1 on "- **main HEAD**" therefore always hits the most recent entry.
     SYNC_LOG="$SCRIPT_DIR/sync-log.md"
     if [ -f "$SYNC_LOG" ]; then
-        MAIN_COMMIT=$(git log main -1 --format="%h" 2>/dev/null || echo "unknown")
-        MAIN_MSG=$(git log main -1 --format="%s" 2>/dev/null || echo "unknown")
+        MAIN_COMMIT=$(git log origin/main -1 --format="%h" 2>/dev/null || git log main -1 --format="%h" 2>/dev/null || echo "unknown")
+        MAIN_MSG=$(git log origin/main -1 --format="%s" 2>/dev/null || git log main -1 --format="%s" 2>/dev/null || echo "unknown")
         DEV_COMMIT=$(git log HEAD -1 --format="%h" 2>/dev/null || echo "unknown")
         DEV_MSG=$(git log HEAD -1 --format="%s" 2>/dev/null || echo "unknown")
-        # Check if the last logged main commit matches the current one
+        # grep -m1 gets the FIRST (most recent) main HEAD line because entries are newest-first
         LAST_MAIN=$(grep -m1 '^\- \*\*main HEAD\*\*' "$SYNC_LOG" 2>/dev/null | grep -o '`[a-f0-9]*`' | tr -d '`' || echo "")
         if [ "$LAST_MAIN" = "$MAIN_COMMIT" ]; then
             echo -e "  ${DIM}📋 Sync log unchanged (main still at $MAIN_COMMIT)${NC}"
         else
             RUN_TIMESTAMP=$(date -u "+%Y-%m-%d %H:%M UTC")
-            {
-                echo ""
-                echo "## $RUN_TIMESTAMP"
-                echo ""
-                echo "- **main HEAD**: \`$MAIN_COMMIT\` — $MAIN_MSG"
-                echo "- **dev HEAD**: \`$DEV_COMMIT\` — $DEV_MSG"
-                echo "- **Stats**: $COPIED new · $UPDATED updated · $UNCHANGED unchanged · $PROTECTED_SKIPPED protected skipped · $FIXUP_APPLIED fixups applied"
-            } >> "$SYNC_LOG"
-            echo -e "  📋 Sync record appended to revamp/sync-log.md"
+            # Prepend new entry after the "---" header separator (keeps newest at top)
+            NEW_ENTRY="## $RUN_TIMESTAMP
+
+- **main HEAD**: \`$MAIN_COMMIT\` — $MAIN_MSG
+- **dev HEAD**: \`$DEV_COMMIT\` — $DEV_MSG
+- **Stats**: $COPIED new · $UPDATED updated · $UNCHANGED unchanged · $PROTECTED_SKIPPED protected skipped · $FIXUP_APPLIED fixups applied"
+            python3 -c "
+import sys
+log = open('$SYNC_LOG').read()
+sep = log.find('\n---\n')
+if sep == -1:
+    open('$SYNC_LOG', 'a').write('\n' + '''$NEW_ENTRY''' + '\n')
+else:
+    open('$SYNC_LOG', 'w').write(log[:sep+5] + '\n' + '''$NEW_ENTRY''' + '\n' + log[sep+5:].lstrip('\n'))
+"
+            echo -e "  📋 Sync record added to revamp/sync-log.md"
         fi
     fi
 fi

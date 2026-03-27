@@ -1,8 +1,8 @@
 # Revamp Gap Analysis — Plan vs. Implemented
 
 **Date:** 2026-03-19
-**Last updated:** 2026-03-19
-**Status:** 599 total pages in new structure, 536 migrated, 59 placeholders remaining
+**Last updated:** 2026-03-27
+**Status:** 600 total pages in new structure, 533 migrated, 59 placeholders remaining
 
 ---
 
@@ -26,6 +26,10 @@
 - [x] **sidebar-fixups applied to UNCHANGED files** — fixup titles and Overview-stripping now run even when source == dest, so adding new fixup entries takes effect immediately on next migration run
 - [x] **Global nav anchors** — Status, Discord, Playground, Blog added to `docs.json` (matching docs.hedera.com)
 - [x] **Sidebar naming** — "Getting Started" renamed to "Start Here" to avoid group/page name clash; "Create an Account" moved to Native SDK Quick Start
+- [x] **`merge-main.sh`** — smart merge helper replaces `git merge main`; auto-resolves docs.json conflict, detects new pages before merge, reports action checklist
+- [x] **Fallback mapping tracking** — `migrate.sh` now counts and logs files that used directory fallback rules (not explicit mappings); warns in summary
+- [x] **Check 11: Nav parity** — `verify.sh` now detects production hedera/ pages that have no revamp equivalent on disk
+- [x] **Agent Lab page** — `hedera/open-source-solutions/ai-studio-on-hedera/agent-lab.mdx` added to explicit mapping, `revamp/docs.json` nav (Native SDKs → AI Studio), and sidebar-fixups (31 entries total)
 
 ---
 

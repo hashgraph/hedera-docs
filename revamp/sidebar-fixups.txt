@@ -58,10 +58,11 @@ af78c6517a642131c4e87a6e6a4af583044bce5b|hedera/tutorials/local-node/how-to-run-
 
 # Native SDK — AI Integrations
 3fdeb69397c87cefeb9d7ad0e51a62ca9e5790bf|hedera/open-source-solutions/ai-tools-for-developers.mdx|native/integrations/ai/tools/index.mdx|AI Tools
-c3e9ba76eb8ba6dbef6aa18d3fd5a99ac1e9b56d|hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit.mdx|native/integrations/ai/agent-kit/index.mdx|Agent Kit
+a96fd722ecbbff88385797b1f5808d430556a6a0|hedera/open-source-solutions/ai-studio-on-hedera/agent-lab.mdx|native/integrations/ai/agent-lab.mdx|Agent Lab
+ac6f40c90cbb253adaec2070684faccbaa14a72f|hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit.mdx|native/integrations/ai/agent-kit/index.mdx|Agent Kit
 
 # Solutions & Operators
-c3e9ba76eb8ba6dbef6aa18d3fd5a99ac1e9b56d|hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit.mdx|solutions/ai/agent-kit.mdx|Agent Kit
+ac6f40c90cbb253adaec2070684faccbaa14a72f|hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit.mdx|solutions/ai/agent-kit.mdx|Agent Kit
 3bc46fc0e29ad87503d6d914be16fc45b8debd10|hedera/open-source-solutions/hedera-custodians-library.mdx|solutions/tools/custodians-library.mdx|Custodians Library
 aa789ff9420a5bbe3ca8b11cc46fd8f6eac90943|hedera/core-concepts/mirror-nodes/run-your-own-beta-mirror-node.mdx|operators/mirror-node/run-your-own/index.mdx|Run Your Own
 44b5ebb630fe70ed2091984feecbda49ddabbac1|hedera/networks/mainnet/mainnet-nodes/node-requirements.mdx|operators/consensus-node/requirements/index.mdx|Requirements
@@ -77,7 +78,7 @@ cb290177ee959fe38a3fe22633a6f1fb4111c612|hedera/sdks-and-apis/hedera-status-api.
 
 # Native SDK — section landings with long titles
 37af2ad049890eb07f791227816b73922b4e36ca|hedera/getting-started-hedera-native-developers.mdx|native/index.mdx|Native SDKs
-ea7f4a670cb00ece726201fa7c336f6fd9188d55|hedera/open-source-solutions/ai-studio-on-hedera.mdx|native/integrations/ai/index.mdx|AI Studio
+bba8eb07696083ad3936a138af5397b17d5cf8dc|hedera/open-source-solutions/ai-studio-on-hedera.mdx|native/integrations/ai/index.mdx|AI Studio
 
 # Solutions & Support — long titles
 6ad4e48347ae722e46c37b8e7a90c2ccd3757c17|hedera/open-source-solutions.mdx|solutions/index.mdx|Solutions

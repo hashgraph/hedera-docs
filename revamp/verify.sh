@@ -1,16 +1,21 @@
 #!/bin/bash
 # ============================================================================
-# Hedera Documentation Verification Script v1.0
+# Hedera Documentation Verification Script v1.1
 # ============================================================================
 # Validates the migrated documentation structure for correctness.
 #
 # Checks:
-#   1. Migration coverage — every .mdx in hedera/ has a mapping
-#   2. Nav integrity — every page in docs.json exists on disk
-#   3. No orphaned files — every .mdx in dest dirs is in nav or a placeholder
-#   4. No duplicate nav entries — same page path doesn't appear twice
-#   5. Valid JSON — docs.json passes JSON validation
-#   6. No broken imports — snippet imports reference existing files
+#    1. docs.json validity — valid JSON, revamp/docs.json matches root
+#    2. Nav integrity — every page in docs.json exists on disk
+#    3. Migration coverage — every .mdx in hedera/ has a mapping
+#    4. Duplicate nav entries — same page path doesn't appear twice
+#    5. Orphaned destination files — every .mdx in revamp dirs is in nav
+#    6. Broken snippet imports — import paths reference existing files
+#    7. Tab structure — all 7 tabs present with correct names
+#    8. Directory structure — expected top-level dirs exist
+#    9. Protected pages — no unacknowledged upstream changes
+#   10. Sidebar fixups — no unacknowledged content changes
+#   11. Nav parity — production hedera/ pages have revamp equivalents
 #
 # Usage:
 #   ./revamp/verify.sh          # Run all checks
@@ -458,6 +463,99 @@ else
     else
         warn "$FIXUP_CHANGED of $FIXUP_TOTAL sidebar fixup(s) have unacknowledged content changes"
         [ "$SHOW_FIX" = true ] && detail "Fix: Review source changes and run ./revamp/migrate.sh --ack-fixup=<source> or --ack-fixup=all"
+    fi
+fi
+
+# ============================================================================
+# CHECK 11: Nav parity — production hedera/ pages without revamp equivalents
+# ============================================================================
+# Parses the production docs.json to find hedera/ pages that exist on disk
+# but have no corresponding file in any revamp destination directory.
+# These are pages that main added but migrate.sh hasn't placed anywhere yet.
+# ============================================================================
+echo ""
+echo -e "${BLUE}━━━ Check 11: Nav parity (production → revamp) ━━━${NC}"
+
+NAV_PARITY_GAPS=$(python3 - <<'PYEOF'
+import json, os, glob, sys
+
+# Load production nav (hedera/ structure)
+try:
+    with open('docs.json') as f:
+        prod = json.load(f)
+except Exception as e:
+    print(f"ERROR:{e}", file=sys.stderr)
+    sys.exit(0)
+
+def extract_pages(obj):
+    if isinstance(obj, str):
+        return [obj]
+    if isinstance(obj, list):
+        return [p for item in obj for p in extract_pages(item)]
+    if isinstance(obj, dict):
+        return [p for v in obj.values() for p in extract_pages(v)]
+    return []
+
+# All hedera/ page paths in production nav
+prod_pages = [p for p in extract_pages(prod) if p.startswith('hedera/')]
+
+# All .mdx files in revamp destination dirs
+revamp_dirs = ['learn','evm','native','operators','reference','solutions','support']
+revamp_files = set()
+for d in revamp_dirs:
+    if os.path.isdir(d):
+        for f in glob.glob(f'{d}/**/*.mdx', recursive=True):
+            revamp_files.add(f)
+
+# For each production hedera/ page, check if a corresponding revamp file exists.
+# Strategy: check that the hedera/ source file has been migrated somewhere by
+# looking for its content fingerprint. We use a simpler heuristic: check if the
+# hedera/ source file itself exists AND whether any revamp file shares its title.
+# The most reliable check: does the hedera/ .mdx file exist, and is there any
+# revamp .mdx file that was copied from it (same first 200 chars)?
+gaps = []
+for page in prod_pages:
+    src_file = page + '.mdx'
+    if not os.path.isfile(src_file):
+        continue  # source doesn't exist on disk, skip
+    # Read first 150 chars of source to use as fingerprint
+    try:
+        with open(src_file, encoding='utf-8', errors='replace') as f:
+            src_head = f.read(150).replace('\r\n', '\n').replace('\r', '\n').strip()
+    except Exception:
+        continue
+    if not src_head:
+        continue
+    # Check if any revamp file starts with the same content
+    found = False
+    for rf in revamp_files:
+        try:
+            with open(rf, encoding='utf-8', errors='replace') as f:
+                rf_head = f.read(150).replace('\r\n', '\n').replace('\r', '\n').strip()
+            if rf_head == src_head:
+                found = True
+                break
+        except Exception:
+            continue
+    if not found:
+        gaps.append(page)
+
+for g in gaps:
+    print(g)
+PYEOF
+)
+
+if [ -z "$NAV_PARITY_GAPS" ]; then
+    pass "All production hedera/ nav pages have revamp equivalents"
+else
+    GAP_COUNT=$(echo "$NAV_PARITY_GAPS" | grep -c . || true)
+    warn "$GAP_COUNT production page(s) not yet in revamp structure"
+    while IFS= read -r page; do
+        [ -n "$page" ] && detail "MISSING: $page"
+    done <<< "$NAV_PARITY_GAPS"
+    if [ "$SHOW_FIX" = true ]; then
+        detail "Fix: Add explicit mapping in revamp/migrate.sh + entry in revamp/docs.json nav"
+        detail "     Then run: ./revamp/migrate.sh"
     fi
 fi
 

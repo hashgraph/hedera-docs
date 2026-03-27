@@ -6,24 +6,24 @@ This directory contains all tooling, planning, and registries for restructuring 
 
 ---
 
-## Current Status (as of 2026-03-19)
+## Current Status (as of 2026-03-27)
 
 | Metric | Value |
 |--------|-------|
-| Total pages in new structure | 599 |
-| Pages migrated from `hedera/` | 532 (100% coverage) |
+| Total pages in new structure | 600 |
+| Pages migrated from `hedera/` | 533 (100% coverage) |
 | Pages protected (dev-authored, have hedera/ source) | 1 |
 | Pages dev-authored (no hedera/ source) | 4 |
 | Placeholder pages remaining | 59 |
-| Sidebar fixup entries | 30 |
-| verify.sh checks | 11 (all passing) |
+| Sidebar fixup entries | 31 |
+| verify.sh checks | 12 (all passing) |
 
 **What's complete:**
 - 7-tab navigation wired in `docs.json` with all groups and pages
 - 100% of `hedera/` pages mapped and migrated to correct tabs
 - `sidebarTitle: Overview` eliminated from all destination files
 - Learn / Getting Started section fully written (4 pages)
-- Migration tooling: `migrate.sh`, `verify.sh`, `create-placeholders.sh`
+- Migration tooling: `migrate.sh`, `verify.sh`, `create-placeholders.sh`, `merge-main.sh`
 - Automated systems: protected pages, sidebar fixups, sync log
 - Global nav anchors: Status, Discord, Playground, Blog
 
@@ -37,9 +37,10 @@ This directory contains all tooling, planning, and registries for restructuring 
 | File | Purpose |
 |------|---------|
 | `plan.md` | Full revamp plan: persona model, tab architecture, content mapping, user journeys |
+| `merge-main.sh` | **Use this instead of `git merge main`** — safely merges origin/main into dev, auto-resolves docs.json conflict, reports new pages needing attention |
 | `migrate.sh` | Migration script: copies `hedera/` → new structure, strips/injects sidebarTitles, updates `docs.json`, appends to sync log |
 | `create-placeholders.sh` | Creates "Coming Soon" placeholder pages for new content that doesn't exist in `hedera/` |
-| `verify.sh` | Validation script: 11 checks covering JSON, nav integrity, coverage, orphans, protected pages, sidebar fixups |
+| `verify.sh` | Validation script: 12 checks covering JSON, nav integrity, coverage, orphans, protected pages, sidebar fixups, nav parity |
 | `docs.json` | The new Mintlify navigation config (7-tab structure) — installed as the root `docs.json` by `migrate.sh` |
 | `protected-pages.txt` | Registry of dev-authored pages that must NOT be overwritten by migration |
 | `sidebar-fixups.txt` | Registry of pages needing a meaningful `sidebarTitle` injected after migration (replaces generic "Overview") |
@@ -55,7 +56,7 @@ This directory contains all tooling, planning, and registries for restructuring 
 | `main` | Production docs, served live | `hedera/` directory |
 | `dev` | Revamp in progress | `learn/`, `evm/`, `native/`, `operators/`, `reference/`, `solutions/`, `support/` directories |
 
-`hedera/` exists on **both** branches. When content is updated on `main`, you merge `main` → `dev` then re-run `migrate.sh` to propagate changes into the new structure. See [Keeping Dev in Sync with Main](#keeping-dev-in-sync-with-main).
+`hedera/` exists on **both** branches. When content is updated on `main`, you run `merge-main.sh` then `migrate.sh` to propagate changes into the new structure. See [Keeping Dev in Sync with Main](#keeping-dev-in-sync-with-main).
 
 **Rules:**
 - Never edit files under `hedera/` on the `dev` branch — edit on `main`, then sync
@@ -133,39 +134,73 @@ The dev server starts at `localhost:3000`. All 7 tabs are visible in the left na
 
 ### Keeping Dev in Sync with Main
 
-When new commits land on `main`, sync them into the new structure on `dev`:
+When new commits land on `main`, use `merge-main.sh` — **do not use `git merge main` directly**.
+
+#### Why not `git merge main`?
+
+`dev`'s `docs.json` is the 7-tab revamp nav. `main`'s `docs.json` is the production nav. They are structurally incompatible and **always conflict** on every merge. `merge-main.sh` auto-resolves this conflict correctly (keeps dev's version) and also detects new pages that need attention.
+
+#### Standard sync workflow
 
 ```bash
-# 1. Pull latest main
-git checkout main && git pull
+# 1. Check what's coming in (safe, no changes)
+./revamp/merge-main.sh --dry-run
 
-# 2. Switch to dev and merge
-git checkout dev
-git merge main
+# 2. If new hedera/ pages are reported, handle them FIRST (see below)
+#    Then run the real merge:
+./revamp/merge-main.sh
 
-# 3. Re-run migration — auto-detects all changes
+# 3. Propagate content changes to the revamp structure
 ./revamp/migrate.sh
 
-# 4. Understand the output symbols:
-#    + NEW              new file copied to the correct destination
-#    ~ UPDATE           existing destination overwritten with latest content
-#    = SAME             source and destination match, skipped
-#    ? UNMAPPED         new file with no mapping rule → add one (see below)
-#    ! ORPHAN           destination whose source was deleted → run --clean
-#    ⚠ PROTECTED-CHANGED  protected page's source changed → review manually
-#    ⚠ FIXUP-CHANGED    sidebar-fixup source changed → verify sidebarTitle
+# 4. Handle any warnings in migrate.sh output:
+#    ⚠ FIXUP-CHANGED  — source content changed; verify sidebarTitle still accurate:
+./revamp/migrate.sh --ack-fixup=<source>   # or --ack-fixup=all
 
-# 5. Remove orphaned files if needed
-./revamp/migrate.sh --clean
+#    ⚠ PROTECTED-CHANGED  — protected page source changed; review + acknowledge:
+./revamp/migrate.sh --ack=<source>
 
-# 6. Check what was recorded in the sync log
-cat revamp/sync-log.md
-
-# 7. Validate
+# 5. Validate all 12 checks pass
 ./revamp/verify.sh
+
+# 6. Commit
+git add -A
+git commit -S -s -m "docs: sync dev with main (<short-hash> — <brief description>)"
 ```
 
-> **Note on UPDATE count:** ~85 files will always show as UPDATE on every migration run. These are files whose content we transform (sidebarTitle stripped or replaced with a custom label). The processed destination always differs from the raw source — this is expected and correct, not a bug.
+#### migrate.sh output symbols
+
+| Symbol | Meaning |
+|--------|---------|
+| `+ NEW` | New file copied to the correct destination |
+| `~ UPDATE` | Existing destination overwritten with latest content |
+| `= SAME` | Source and destination match, skipped |
+| `? UNMAPPED` | New file with no mapping rule — add one (see [Handling Unmapped Files](#handling-unmapped-files)) |
+| `! ORPHAN` | Destination whose source was deleted — run `--clean` |
+| `⚠ PROTECTED-CHANGED` | Protected page's source changed — review manually |
+| `⚠ FIXUP-CHANGED` | Sidebar-fixup source changed — verify sidebarTitle |
+| `⚠ New/updated via directory rule` | A new or changed file was placed by a directory fallback rule — verify it's in revamp/docs.json nav |
+
+> **On UPDATE count:** `migrate.sh` compares *transformed* source content to the destination (CRLF normalization + sidebarTitle strip + fixup injection applied before comparing). This means files only show as `UPDATE` when the actual source content changed — not when the only difference is formatting transforms. A clean run with no upstream changes shows `0 updated, N unchanged`.
+
+#### Handling new pages from main
+
+When `--dry-run` or `merge-main.sh` reports new hedera/ pages, you need to handle them **before or immediately after** the merge:
+
+1. **Add an explicit mapping** in `revamp/migrate.sh` → `get_explicit_mapping()`:
+   ```bash
+   "hedera/path/to/new-page.mdx") echo "native/section/new-page.mdx" ;;
+   ```
+   If the file falls under an already-mapped directory (e.g., `hedera/sdks-and-apis/hedera-api/basic-types/`), the directory rule handles it automatically — no explicit mapping needed.
+
+2. **Add the destination to `revamp/docs.json` nav** in the appropriate tab/group.
+
+3. **Optionally add a sidebarTitle fixup** in `revamp/sidebar-fixups.txt` if the page title is long or generic:
+   ```
+   $(git hash-object hedera/path/to/new-page.mdx)|hedera/path/to/new-page.mdx|dest/path.mdx|Short Label
+   ```
+
+4. Re-run `./revamp/migrate.sh` — the new page is picked up as a NEW file.
 
 ---
 
@@ -187,6 +222,8 @@ if [[ "$src" == hedera/sdks-and-apis/hedera-api/basic-types/* ]]; then
 fi
 ```
 > Rules are checked in order — more specific prefixes must come before general ones.
+>
+> When a new or changed file lands via a Layer 2 rule, migrate.sh warns `⚠ New/updated via directory rule` and lists it. This only fires on actual new/updated files — stable, already-mapped pages are silent. If you see this warning, verify the destination appears in `revamp/docs.json` nav, then run `./revamp/verify.sh`.
 
 **Layer 3 — Additional Copies** (`get_additional_destinations()`):
 For files that must exist in multiple locations (e.g., testnet faucet page appears under both `evm/quickstart/` and `learn/getting-started/`).
@@ -197,7 +234,7 @@ For files that must exist in multiple locations (e.g., testnet faucet page appea
 |---|---|---|
 | New file, no dest | — | **COPY** (new file created) |
 | File changed | Dest exists, different content | **UPDATE** (overwrite + transform) |
-| File unchanged | Dest exists, matches source | **SKIP** (but still applies fixups if needed) |
+| File unchanged | Dest is up to date (transforms already applied) | **SKIP** |
 | File deleted | Dest still exists | **ORPHAN** (report, or remove with `--clean`) |
 | File has no mapping | — | **UNMAPPED** (script exits with error) |
 | File is in `protected-pages.txt` | — | **SKIP** (never overwrite, warns if source changed) |
@@ -244,7 +281,7 @@ source_git_hash|source_path|destination_path|reason
 
 ## Sidebar Fixups
 
-Many pages in `hedera/` have long titles (e.g., "Understanding Hedera's EVM Differences and Compatibility") that look bad in the sidebar. The fix registry is `revamp/sidebar-fixups.txt`. Currently 30 entries.
+Many pages in `hedera/` have long titles (e.g., "Understanding Hedera's EVM Differences and Compatibility") that look bad in the sidebar. The fix registry is `revamp/sidebar-fixups.txt`. Currently 31 entries.
 
 ### Format
 
@@ -289,11 +326,16 @@ git hash-object hedera/path/to/source.mdx
 Every successful `migrate.sh` run (non-dry-run) appends an entry to `revamp/sync-log.md` **only when `main` has advanced to a new commit**. Re-running on the same commit produces no duplicate entry — you'll see `📋 Sync log unchanged (main still at <hash>)` instead.
 
 ```markdown
-## 2026-03-19 17:04 UTC
+## 2026-03-27 11:52 UTC   ← newest at top
 
-- **main HEAD**: `946bde0` — docs: update 71 mainnet date (#479)
-- **dev HEAD**: `11bf2b8` — docs: implement Learn/Getting Started section
-- **Stats**: 0 new · 51 updated · 484 unchanged · 1 protected skipped · 19 fixups applied
+- **main HEAD**: `5c065f1` — docs: Update ecdsa messaging (#486)
+- **dev HEAD**: `e3ece80` — Merge remote-tracking branch 'origin/main' into dev
+- **Stats**: 1 new · 89 updated · 446 unchanged · 1 protected skipped · 32 fixups applied
+
+## 2026-03-19 21:55 UTC
+
+- **main HEAD**: `f9b2de0` — docs: Add Ubuntu 24 LTS to list of supported OS (#482)
+...
 ```
 
 Use `cat revamp/sync-log.md` to see which `main` commit dev is currently synced to.
@@ -314,6 +356,18 @@ If the new file is under an **already-mapped directory** (e.g., a new protobuf t
 ---
 
 ## Script Reference
+
+### `merge-main.sh`
+
+```
+./revamp/merge-main.sh [OPTIONS]
+
+Options:
+  --dry-run    Preview new pages and nav changes; do not merge
+  --help       Show usage information
+```
+
+Use this **instead of `git merge main`** when syncing `dev` with `main`. Handles the inevitable `docs.json` conflict automatically (always keeps dev's revamp structure). Reports new pages that need explicit mappings or nav entries. Always produces a GPG-signed, DCO-signedoff merge commit.
 
 ### `migrate.sh`
 
@@ -352,11 +406,11 @@ Options:
   --help   Show usage information
 ```
 
-Runs 10 numbered checks. Check 1 produces 2 PASS outputs, so the final tally reads "All 11 checks passed":
+Runs 11 numbered checks. Check 1 produces 2 PASS outputs, so the final tally reads "All 12 checks passed":
 
-| # | Check | Pass/Fail |
-|---|-------|-----------|
-| 1 | `docs.json` is valid JSON | FAIL stops here |
+| # | Check | Severity |
+|---|-------|----------|
+| 1 | `docs.json` is valid JSON | FAIL |
 | 1b | `docs.json` matches `revamp/docs.json` | WARN |
 | 2 | Every nav page path has a `.mdx` file on disk | FAIL |
 | 3 | Every `.mdx` in `hedera/` has a mapping | FAIL |
@@ -367,8 +421,9 @@ Runs 10 numbered checks. Check 1 produces 2 PASS outputs, so the final tally rea
 | 8 | All 7 destination directories exist | FAIL |
 | 9 | No unacknowledged protected-page upstream changes | WARN |
 | 10 | No unacknowledged sidebar-fixup hash mismatches | WARN |
+| 11 | All production hedera/ nav pages have revamp equivalents | WARN |
 
-Checks 9–10 are warnings — they don't cause a non-zero exit, but require human review. All others cause exit code 1 on failure.
+Checks 9–11 are warnings — they don't cause a non-zero exit, but require human review. All others cause exit code 1 on failure.
 
 ---
 
@@ -383,7 +438,7 @@ Checks 9–10 are warnings — they don't cause a non-zero exit, but require hum
 
 ## Migration Coverage
 
-532 pages in `hedera/` are mapped (100% coverage):
+533 pages in `hedera/` are mapped (100% coverage):
 
 | Tab | Approx pages |
 |-----|-------------|

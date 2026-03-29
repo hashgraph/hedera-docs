@@ -7,6 +7,154 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Latest Releases
 
+## [v0.151.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.151.0)
+
+Support for [HIP-1261](https://hips.hedera.com/HIP/hip-1261) Simple Fees saw support for full intrinsic mode estimation added to our fee estimationPOST `/api/v1/network/fees` API. The next release should additionally bring support for stateful mode.
+
+Historically, searching for transactions by an account ID did not return results for accounts that were involved in NFT transfers. Instead, it only included transactions for the payer account or accounts involved in hbar transfers or fungible transfers. In this release, the `/api/v1/accounts/{id}` and `/api/v1/transactions?account.id={id}` can now search for accounts that are either the sender or receiver of NFTs. This functionality is currently disabled but should be enabled in the next release after finalizing our testing.
+
+To support downstream systems that need to reconstruct the raw Ethereum transaction from our APIs, we now store the raw "weibar" value in our database instead of the truncated tinybar value that the consensus node actually transferred. A new optional hbar query parameter was added to `/api/v1/contracts/results`, `/api/v1/contracts/results/{id}`, `/api/v1/contracts/{id}/results/{timestamp}` REST APIs. When set to false, it will return the full 256 bit weibar values from the original Ethereum transaction. When omitted or set to true (the default), it will return it in tinybars as it did before.
+
+A number of improvements were implemented for [HIP-1340](https://hips.hedera.com/HIP/hip-1340) Pectra Ethereum Upgrade. This includes adding support for EOA code delegation for `CryptoCreateTransaction` and `CryptoCreateTransaction`. Support for Pectra in our `/api/v1/contracts/call` API was also merged. However, while complete, all of the Pectra changes remain in a feature branch as we await official consensus node artifacts.
+
+Block node integration saw a number of improvements including updates to [HIP-1137](https://hips.hedera.com/HIP/hip-1137) for filtering by type and incorporating upstream protobuf changes. Block streams now allow signed transactions without a preceding event header. The maximum streaming response size was increased to 36 MiB to support larger blocks that could be sent. Finally, support for verifying the running hash during [HIP-1193](https://docs.hedera.com/hedera/networks/release-notes/mirror-node#hip-1193-record-stream-to-block-stream-cut-over) cutover was added.
+
+The `/api/v1/network/nodes` REST API was converted from JavaScript to Java. This conversion results in about a 25% performance improvement and an easier to maintain codebase. The existing JavaScript API will remain for two releases and is still the default in this release as we finalize its testing.
+
+<Accordion title="Enhancements">
+  * Increase web3 user pgbouncer connection limit #13171
+  * Misc blockstreams improvement #13161
+  * Switch to self hosted buildkit image in workflows #13152
+  * HIP-1137 Add type column to registered node table #13131
+  * Remove besu from importer and common #13125
+  * HIP-1137 Address changes from node_update proto file in NodeUpdateTransactionHandler #13108
+  * Move RecordItemBuilder from importer to common #13100
+  * HIP-1193 Cutover running hash #13098
+  * HIP-1340 Adapt CryptoUpdateTransactionHandler for code delegation #13065
+  * Optimize the performance of opcode web3 endpoint #13062
+  * HIP-1340 Adapt CryptoCreateTransactionHandler for code delegation #13061
+  * Stored weibars in db and expose via API #13023
+  * NFT Transaction Visibility Around Accounts #12978
+  * HIP-1261 add fee calculation library #12944
+  * Converted /network/nodes API to Java #12889
+</Accordion>
+
+<Accordion title="Bug Fixes">
+  * Made weibar migration to async (#13202) #13207
+  * Fix non-zero realm issues #13169
+  * Fix exchange rate cache in web3 #13162
+  * Revert deletion of copied classes in web3 #13150
+  * Fix js REST performance degradation #13146
+  * Improve fund reclaim resilience in acceptance test #13129
+  * Fix null previous hash in blockstream acceptance test #13119
+</Accordion>
+
+<Accordion title="Dependency Upgrades">
+  * Bump flatted from 3.4.1 to 3.4.2 in /rest/monitoring #13173
+  * Bump flatted to 3.4.0 #13167
+  * Bump google.golang.org/grpc from 1.78.0 to 1.79.3 in /pinger #13164
+  * Bump google.golang.org/grpc from 1.78.0 to 1.79.3 in /rosetta #13163
+  * Bump golang.org/x/text from 0.34.0 to 0.35.0 in /tools/bootstrap in the dependencies group #13145
+  * Bump jest from 30.2.0 to 30.3.0 in /rest in the dependencies group #13144
+  * Bump jest from 30.2.0 to 30.3.0 in /tools/mirror-report in the dependencies group #13143
+  * Bump fluxcd/flux2 from 2.8.1 to 2.8.2 in the dependencies group #13142
+  * Bump software.amazon.awssdk:bom from 2.42.8 to 2.42.13 #13141
+  * Bump org.cyclonedx:cyclonedx-gradle-plugin from 3.0.1 to 3.2.2 #13140
+  * Bump com.hedera.cryptography:hedera-cryptography-wraps from 3.7.6 to 3.7.7 #13139
+  * Bump org.flywaydb:flyway-database-postgresql from 12.0.3 to 12.1.0 #13138
+  * Bump undici from 7.22.0 to 7.24.1 in /rest #13136
+  * Bump flatted from 3.3.3 to 3.4.1 in /rest/monitoring #13133
+  * Bump tar from 7.5.10 to 7.5.11 in /rest #13116
+  * Bump the dependencies group with 2 updates #13095
+  * Bump gradle-wrapper from 9.3.1 to 9.4.0 #13094
+  * Bump software.amazon.awssdk:bom from 2.42.6 to 2.42.8 #13093
+  * Bump com.hedera.cryptography:hedera-cryptography-wraps from 3.6.0 to 3.7.5 #13092
+  * Bump hedera-app to 0.72.0-rc.1 #13091
+  * Bump versions for v0.151.0-SNAPSHOT #13090
+</Accordion>
+
+## [v0.150.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.150.0)
+
+There were a number of efforts toward finalizing our block node integration. The importer now persists new pricing multiplier fields from the block stream. [HIP-1200](https://github.com/hiero-ledger/hiero-improvement-proposals/blob/main/HIP/hip-1200.md) TSS saw support for verifying the state proof in a BlockProof item. [HIP-1137](https://hips.hedera.com/HIP/hip-1137) Block Node Discoverability support was implemented to persist the new registered node transactions. API support will come in a future release.
+
+The importer will now generate [synthetic contract events](https://github.com/hiero-ledger/hiero-mirror-node/tree/main/docs/importer#synthetic-contract-logs) for additional scenarios. Downstream systems expect Hedera to produce contract logs/events for any token transfers even if it was a native transfer and did not originate from an EVM call. The mirror node previously supported single pair transfers, but adding multi-party transfers was challenging due to how credits and debits in Hedera are not modeled as pairs and can be aggregated by the user. This release implements a deterministic algorithm to break multi-party fungible token transfers into pairs and generate synthetic events for them.
+
+### Breaking Changes
+The state proof alpha REST API was removed in this release. This `/api/v1/transactions/{id}/stateproof` API has been disabled in production for weeks as part of its deprecation timeline noted in the Hedera blog. As part of this, we also removed the state proof specific `hiero.mirror.rest.stateproof` properties.
+
+<Accordion title="Enhancements">
+  * Switch to self hosted buildkit image in workflows (0.150) #13165
+  * Remove node-flywaydb dependency #13086
+  * Add timeout to flux reconcile in cluster management scripts #13063
+  * Lazy load rest dependencies #13056
+  * Add go pinger for solo #13050
+  * HIP-1056 Persist pricing multiplier fields #13047
+  * Add throttling to /opcodes endpoint #13016
+  * Remove stateproof alpha REST API #13015
+  * HIP-1200 Verify StateProof in a BlockProof #13012
+  * HIP-1137 Persist new registered node transactions #13011
+  * Add block label to web3 metrics #13010
+  * Verify ethereum transaction with emtpy authorization list is properly processed #12992
+  * Refactor bootstrap tool #12945
+  * Adding support for multi-party fungible token transfer synthetic events #12750
+</Accordion>
+
+<Accordion title="Bug Fixes">
+  * Fix exchange rate cache in web3 (0.150) #13166
+  * Fix js REST performance degradation (0.150) #13149
+  * Revert removal of copied state base classes in web3 (0.150) #13147
+  * Add missing global config for pinger #13089
+  * Move docker.io image proxy to a CI variable #13088
+  * Fix non-zero realm test failure in rest #13066
+  * Fix lodash and use named imports #13049
+  * Restore k6 property in CI #13014
+  * Ensure latest exchange rate is used in web3 #12943
+</Accordion>
+
+<Accordion title="Dependency Upgrades">
+  * Bump hedera-app to 0.72.0-rc.1 (0.150) #13101
+  * Update multer and @tootallnate/once #13084
+  * Bump the dependencies group with 4 updates #13083
+  * Bump com.hedera.hashgraph:sdk from 2.66.0 to 2.67.0 #13081
+  * Bump com.diffplug.spotless:spotless-plugin-gradle from 8.2.1 to 8.3.0 #13080
+  * Bump software.amazon.awssdk:bom from 2.42.4 to 2.42.6 #13079
+  * Bump org.graalvm.buildtools:native-gradle-plugin from 0.11.4 to 0.11.5 #13078
+  * Bump consensusNodeVersion from 0.71.1 to 0.71.2 #13076
+  * Bump the dependencies group in /rest with 3 updates #13075
+  * Bump org.hiero.block-node:protobuf-sources from 0.28.0 to 0.28.1 #13074
+  * Bump io.fabric8:kubernetes-client-bom from 7.5.2 to 7.6.1 #13073
+  * Bump io.cucumber:cucumber-bom from 7.34.1 to 7.34.3 #13072
+  * Bump github.com/docker/cli from 27.4.1+incompatible to 29.2.0+incompatible in /rosetta #13067
+  * Bump golang.org/x/text from 0.29.0 to 0.34.0 in /tools/bootstrap in the dependencies group #13048
+  * Remove mathjs dependency and bump Jackson #13039
+  * Bump minimatch in /rest #13038
+  * Bump minimatch from 10.2.2 to 10.2.4 in /rest/monitoring #13037
+  * Bump minimatch in /tools/mirror-report #13036
+  * Bump ioredis from 5.9.3 to 5.10.0 in /rest in the dependencies group #13035
+  * Bump the dependencies group with 3 updates #13034
+  * Bump org.flywaydb:flyway-database-postgresql from 12.0.2 to 12.0.3 #13033
+  * Bump com.graphql-java-generator:graphql-gradle-plugin3 from 4.0 to 4.0.2 #13032
+  * Bump net.ltgt.gradle:gradle-errorprone-plugin from 5.0.0 to 5.1.0 #13031
+  * Bump protobufVersion from 4.33.5 to 4.34.0 #13029
+  * Bump software.amazon.awssdk:bom from 2.42.2 to 2.42.4 #13027
+  * Bump the dependencies group with 3 updates #13022
+  * Bump pg from 8.18.0 to 8.19.0 in /rest in the dependencies group #13020
+  * Bump software.amazon.awssdk:bom from 2.41.34 to 2.42.2 #13019
+  * Bump com.hedera.hashgraph:sdk from 2.66.0 to 2.67.0 #13018
+  * Bump com.graphql-java-generator:graphql-java-client-runtime from 4.0 to 4.0.2 #13017
+  * Remove @trufflesuite/bigint-buffer dependency #13006
+  * Bump the dependencies group in /rest with 2 updates #13005
+  * Bump nodemon from 3.1.12 to 3.1.14 in /rest/monitoring in the dependencies group #13004
+  * Bump helm/kind-action from 1.13.0 to 1.14.0 in the dependencies group #13003
+  * Bump software.amazon.awssdk:bom from 2.41.29 to 2.41.34 #13002
+  * Bump com.hedera.cryptography:hedera-cryptography-wraps from 3.5.1 to 3.6.0 #13001
+  * Bump org.openapitools:openapi-generator-gradle-plugin from 7.19.0 to 7.20.0 #13000
+  * Bump org.flywaydb:flyway-database-postgresql from 12.0.1 to 12.0.2 #12999
+  * Bump consensusNodeVersion from 0.71.0 to 0.71.1 #12998
+  * Bump versions for v0.150.0-SNAPSHOT #12996
+</Accordion>
+
+
 ## [v0.149.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.149.0)
 
 There were a ton of changes integrated in support of the block node project in this release. [HIP-1200](https://hips.hedera.com/hip/hip-1200) worked kicked off with support for verifying `TssSignedBlockProof` in the block stream. The mirror node can now process the new `LedgerIdPublicationTransaction` synthetic transaction that externalizes the network ledger ID which is used in the block proof verification. The latest block root hash changes from [HIP-1056](https://hips.hedera.com/hip/hip-1056) were integrated to ensure we hash and verify the full block stream hierarchy. Finally, [HIP-1193](https://hips.hedera.com/hip/hip-1193) saw support for downloading block stream files from the cloud bucket and automatic cut-over to block streams.

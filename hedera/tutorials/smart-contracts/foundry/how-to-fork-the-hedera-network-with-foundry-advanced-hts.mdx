@@ -683,6 +683,107 @@ For reproducible tests, use `--fork-block-number` with a block where your contra
 
 ---
 
+## Bonus: Real-World SaucerSwap Mainnet Fork Test
+
+The tutorial repository includes a bonus test that demonstrates one of the most powerful use cases for fork testing: interacting with **production DeFi contracts** on Hedera mainnet without spending real HBAR.
+
+The `SaucerSwapForkTest.t.sol` file forks Hedera mainnet and executes a **real token swap** through [SaucerSwap V2](https://www.saucerswap.finance/) - swapping WHBAR for USDC at the current mainnet exchange rate, using real liquidity pools.
+
+### Run the SaucerSwap Tests
+
+```bash
+forge test --match-contract SaucerSwapForkTest \
+  --fork-url https://mainnet.hashio.io/api \
+  -vvv
+```
+
+<Info>
+  These tests use **mainnet** (not testnet). No `.env` configuration is needed -
+  fork tests don't require a private key because all balances are created locally
+  with Foundry cheatcodes.
+</Info>
+
+### The Real Swap Test
+
+The headline test (`test_SwapWHBARForUSDCViaSaucerSwap`) executes a real swap through SaucerSwap V2's `exactInput` function:
+
+```solidity
+function test_SwapWHBARForUSDCViaSaucerSwap() public {
+    // Give the trader 10 WHBAR using deal() - no real tokens needed
+    uint256 whbarAmount = 10 * 1e8;
+    deal(WHBAR, trader, whbarAmount);
+
+    // Approve the SaucerSwap router
+    vm.startPrank(trader);
+    whbar.approve(SAUCERSWAP_ROUTER, whbarAmount);
+
+    // Encode the swap path: WHBAR -> 0.15% fee tier -> USDC
+    bytes memory path = abi.encodePacked(
+        WHBAR,
+        uint24(1500),   // 0.15% fee tier for WHBAR/USDC pool
+        USDC
+    );
+
+    // Execute the swap
+    ExactInputParams memory params = ExactInputParams({
+        path: path,
+        recipient: trader,
+        deadline: block.timestamp + 300,
+        amountIn: whbarAmount,
+        amountOutMinimum: 0
+    });
+
+    (bool success, bytes memory returnData) = SAUCERSWAP_ROUTER.call(
+        abi.encodeWithSignature(
+            "exactInput((bytes,address,uint256,uint256,uint256))",
+            params
+        )
+    );
+    require(success, "Swap failed");
+    uint256 amountOut = abi.decode(returnData, (uint256));
+    vm.stopPrank();
+
+    // Trader received real USDC at mainnet exchange rate
+    assertGt(amountOut, 0, "Should have received USDC from swap");
+}
+```
+
+### How It Works
+
+**Where does the WHBAR come from if the test account doesn't exist on mainnet?**
+
+Foundry's `deal(token, account, amount)` writes directly to the token's storage slots on the forked EVM. It sets the balance for the given account without any real transfer. The account doesn't need to exist on mainnet. Similarly, `vm.deal(account, amount)` sets native HBAR balances locally. Both cheatcodes only affect the fork - mainnet is never touched.
+
+**How does the swap execute against real liquidity?**
+
+The fork is a snapshot of mainnet state. The SaucerSwap V2 Router has real bytecode, and the WHBAR/USDC pool has real liquidity deposited by real LPs. When the test calls `exactInput`, the router reads real pool state (liquidity, tick, price), pulls WHBAR from the trader, swaps through the pool, and sends USDC to the trader - all at the real exchange rate. The entire execution happens locally on the fork.
+
+**Can I impersonate a real mainnet account instead?**
+
+Yes. `vm.prank(realMainnetAddress)` makes the next call appear to come from any address - no private key needed. You could impersonate a whale with millions in HBAR and use their real balances for testing:
+
+```solidity
+address whale = 0x...; // A real mainnet account
+vm.prank(whale);
+whbar.transfer(trader, 50000 * 1e8); // Uses the whale's real balance
+```
+
+**Why does this need `htsSetup()`?**
+
+Both WHBAR and USDC are HTS tokens. When the SaucerSwap router calls `transferFrom` on these tokens during the swap, the call goes through the HIP-719 proxy to `0x167`. Without `htsSetup()`, that address returns `0xfe` and the entire swap reverts.
+
+### Mainnet Addresses
+
+| Contract/Token | Hedera ID | EVM Address | Decimals |
+| -------------- | --------- | ----------- | -------- |
+| SaucerSwap V2 Router | `0.0.3949434` | `0x00000000000000000000000000000000003c437A` | - |
+| WHBAR | `0.0.1456986` | `0x0000000000000000000000000000000000163B5a` | 8 |
+| USDC (Native) | `0.0.456858` | `0x000000000000000000000000000000000006f89a` | 6 |
+
+> **Source:** [SaucerSwap Contract Deployments](https://docs.saucerswap.finance/developerx/contract-deployments)
+
+---
+
 ## Understanding HTS Fork Testing with Foundry
 
 ### Why Standard Fork Testing Breaks on Hedera

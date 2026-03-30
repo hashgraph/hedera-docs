@@ -13,10 +13,10 @@
 # What it does:
 #   1. Fetches origin/main
 #   2. Detects new hedera/ pages and new docs.json nav entries (pre-merge)
-#   3. Merges origin/main → dev with --no-commit so we can sign properly
+#   3. Merges origin/main → dev with --no-commit (staged but NOT committed)
 #   4. Auto-resolves the inevitable docs.json conflict (keeps dev's revamp nav)
-#   5. Commits the merge with GPG signing + DCO signoff (-S -s)
-#   6. Prints an action checklist for any new pages that need attention
+#   5. Prints an action checklist for any new pages that need attention
+#   6. YOU commit manually after reviewing the staged changes
 #
 # Why docs.json always conflicts:
 #   dev's docs.json is the 7-tab revamp navigation structure.
@@ -191,7 +191,9 @@ if [ -n "$CONFLICT_FILES" ]; then
     echo -e "  ${DIM}   This is expected — main and dev have incompatible nav structures.${NC}"
 fi
 
-# Commit the merge (signed + DCO signoff)
+# ── Merge is staged but NOT committed ────────────────────────────────────────
+# The user should review and commit manually.
+
 MERGE_MSG_FILE=".git/MERGE_MSG"
 if [ -f "$MERGE_MSG_FILE" ]; then
     MERGE_HEADLINE=$(head -1 "$MERGE_MSG_FILE")
@@ -199,11 +201,7 @@ else
     MERGE_HEADLINE="Merge origin/main into dev"
 fi
 
-git commit -S -s -m "$MERGE_HEADLINE" 2>/dev/null || \
-git commit -s -m "$MERGE_HEADLINE"
-
-NEW_DEV_SHORT=$(git rev-parse --short HEAD)
-echo -e "  ${GREEN}✓${NC}  Merged → dev at ${CYAN}$NEW_DEV_SHORT${NC}"
+echo -e "  ${GREEN}✓${NC}  Merge staged (not committed yet)"
 echo ""
 
 # ── Post-merge action checklist ──────────────────────────────────────────────
@@ -224,7 +222,8 @@ if [ "$NEEDS_ACTION" = true ] && [ -n "$NEW_MDX" ]; then
     echo ""
 fi
 
-echo -e "  Run: ${CYAN}./revamp/migrate.sh${NC}       propagate content to revamp structure"
-echo -e "  Run: ${CYAN}./revamp/verify.sh${NC}        validate all 11 checks"
-echo -e "  Run: ${CYAN}git add -A && git commit -S -s -m 'docs: sync dev with main ($MAIN_SHORT — ...)'${NC}"
+echo -e "  1. Review staged changes:    ${CYAN}git diff --cached --stat${NC}"
+echo -e "  2. Commit the merge:         ${CYAN}git commit -S -s -m '$MERGE_HEADLINE'${NC}"
+echo -e "  3. Run migration:            ${CYAN}./revamp/migrate.sh${NC}"
+echo -e "  4. Validate:                 ${CYAN}./revamp/verify.sh${NC}"
 echo ""

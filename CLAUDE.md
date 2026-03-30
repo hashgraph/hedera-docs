@@ -57,7 +57,9 @@ npx mintlify dev
 # merge-main.sh auto-resolves the conflict and reports new pages needing attention.
 git checkout dev
 ./revamp/merge-main.sh --dry-run   # preview first
-./revamp/merge-main.sh             # then merge
+./revamp/merge-main.sh             # stages merge, does NOT commit
+git diff --cached --stat            # review what changed
+git commit -S -s -m "Merge remote-tracking branch 'origin/main' into dev"
 
 # Run migration to propagate hedera/ changes to new structure
 ./revamp/migrate.sh

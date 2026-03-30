@@ -8,6 +8,12 @@ Use this to track how current `dev` is relative to `main` at any time.
 
 ---
 
+## 2026-03-30 17:32 UTC
+
+- **main HEAD**: `4c6691a` — docs: added v72 consensus node and mirror node release notes (#489)
+- **dev HEAD**: `c3fd470` — chore: move AI Studio content from native/integrations to solutions/ai
+- **Stats**: 0 new · 2 updated · 531 unchanged · 1 protected skipped · 0 fixups applied
+
 ## 2026-03-27 11:52 UTC
 
 - **main HEAD**: `5c065f1` — docs: Update ecdsa messaging (#486)

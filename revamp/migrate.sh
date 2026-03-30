@@ -1557,7 +1557,8 @@ sep = log.find('\n---\n')
 if sep == -1:
     open('$SYNC_LOG', 'a').write('\n' + '''$NEW_ENTRY''' + '\n')
 else:
-    open('$SYNC_LOG', 'w').write(log[:sep+5] + '\n' + '''$NEW_ENTRY''' + '\n' + log[sep+5:].lstrip('\n'))
+    rest = log[sep+5:].lstrip('\n')
+    open('$SYNC_LOG', 'w').write(log[:sep+5] + '\n' + '''$NEW_ENTRY''' + '\n\n' + rest)
 "
             echo -e "  📋 Sync record added to revamp/sync-log.md"
         fi

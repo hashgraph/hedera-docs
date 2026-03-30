@@ -147,23 +147,27 @@ When new commits land on `main`, use `merge-main.sh` — **do not use `git merge
 ./revamp/merge-main.sh --dry-run
 
 # 2. If new hedera/ pages are reported, handle them FIRST (see below)
-#    Then run the real merge:
+#    Then run the real merge (stages changes but does NOT commit):
 ./revamp/merge-main.sh
 
-# 3. Propagate content changes to the revamp structure
+# 3. Review and commit the merge
+git diff --cached --stat
+git commit -S -s -m "Merge remote-tracking branch 'origin/main' into dev"
+
+# 4. Propagate content changes to the revamp structure
 ./revamp/migrate.sh
 
-# 4. Handle any warnings in migrate.sh output:
+# 5. Handle any warnings in migrate.sh output:
 #    ⚠ FIXUP-CHANGED  — source content changed; verify sidebarTitle still accurate:
 ./revamp/migrate.sh --ack-fixup=<source>   # or --ack-fixup=all
 
 #    ⚠ PROTECTED-CHANGED  — protected page source changed; review + acknowledge:
 ./revamp/migrate.sh --ack=<source>
 
-# 5. Validate all 12 checks pass
+# 6. Validate all 12 checks pass
 ./revamp/verify.sh
 
-# 6. Commit
+# 7. Commit migration results
 git add -A
 git commit -S -s -m "docs: sync dev with main (<short-hash> — <brief description>)"
 ```
@@ -367,7 +371,7 @@ Options:
   --help       Show usage information
 ```
 
-Use this **instead of `git merge main`** when syncing `dev` with `main`. Handles the inevitable `docs.json` conflict automatically (always keeps dev's revamp structure). Reports new pages that need explicit mappings or nav entries. Always produces a GPG-signed, DCO-signedoff merge commit.
+Use this **instead of `git merge main`** when syncing `dev` with `main`. Handles the inevitable `docs.json` conflict automatically (always keeps dev's revamp structure). Reports new pages that need explicit mappings or nav entries. Stages the merge but does **not** commit — you review and commit manually.
 
 ### `migrate.sh`
 

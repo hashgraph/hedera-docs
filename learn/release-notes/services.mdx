@@ -5,6 +5,121 @@ description: "Consensus Node release information"
 
 Visit the [Hedera status page](https://status.hedera.com/) for the latest versions supported on each network.
 
+## Release v0.72
+<Info>
+  **MAINNET UPDATE: APRIL 15, 2026**
+</Info>
+<Info>
+  **TESTNET UPDATE: APRIL 2, 2026**
+</Info>
+
+### [**Build 0.72.0**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.72.0)
+
+<Accordion title="What's Changed">
+
+**Features**
+
+- Made `virtualMap.fullRehashTimeoutMs` configurable for State Operator [#24138](https://github.com/hiero-ledger/hiero-consensus-node/pull/24138) by @imalygin
+- Add the ability to make threads used by Netty configurable [#24049](https://github.com/hiero-ledger/hiero-consensus-node/pull/24049) by @timo0
+- Added a config property to enable disk-based indices [#24022](https://github.com/hiero-ledger/hiero-consensus-node/pull/24022) by @imalygin
+- Added a config property to disable periodic snapshots [#24024](https://github.com/hiero-ledger/hiero-consensus-node/pull/24024) by @imalygin
+- Null metric snapshots when no exporter [#23828](https://github.com/hiero-ledger/hiero-consensus-node/pull/23828) by @akugal
+- Event hasher reuses PBJ hasher [#23844](https://github.com/hiero-ledger/hiero-consensus-node/pull/23844) by @mxtartaglia-sl
+- Add broadcast experiment [#23875](https://github.com/hiero-ledger/hiero-consensus-node/pull/23875) by @mxtartaglia-sl
+- Run concurrent token check under PRs [#23557](https://github.com/hiero-ledger/hiero-consensus-node/pull/23557) by @petreze
+- Don't verify self-created events [#23774](https://github.com/hiero-ledger/hiero-consensus-node/pull/23774) by @lpetrovic05
+- Add GC log option to Otter [#23834](https://github.com/hiero-ledger/hiero-consensus-node/pull/23834) by @lpetrovic05
+- Return correct valid phase [#23759](https://github.com/hiero-ledger/hiero-consensus-node/pull/23759) by @mxtartaglia-sl
+- Add deploy and run script [#23745](https://github.com/hiero-ledger/hiero-consensus-node/pull/23745) by @mxtartaglia-sl
+- Add `simpleFeeSchedules.json` to environment folders in `hedera-node/configuration` [#22951](https://github.com/hiero-ledger/hiero-consensus-node/pull/22951) by @aderevets
+- Support file upgrade for simple fees JSON in yahcli [#23731](https://github.com/hiero-ledger/hiero-consensus-node/pull/23731) by @aderevets
+- Custom Grafana dashboards for Otter [#23694](https://github.com/hiero-ledger/hiero-consensus-node/pull/23694) by @lpetrovic05
+- Performance benchmark experiments with configs [#23668](https://github.com/hiero-ledger/hiero-consensus-node/pull/23668) by @mxtartaglia-sl
+- Allow auto creations to use high-volume throttles [#23575](https://github.com/hiero-ledger/hiero-consensus-node/pull/23575) by @Neeharika-Sompalli
+- Improve intake benchmark [#23665](https://github.com/hiero-ledger/hiero-consensus-node/pull/23665) by @lpetrovic05
+- Export benchmark metrics for gaining visibility of results [#23608](https://github.com/hiero-ledger/hiero-consensus-node/pull/23608) by @mxtartaglia-sl
+- Automate Yahcli Docker image push [#23607](https://github.com/hiero-ledger/hiero-consensus-node/pull/23607) by @mhess-swl
+- Introduce protobuf definitions for HIP-1137 [#23560](https://github.com/hiero-ledger/hiero-consensus-node/pull/23560) by @petreze
+- Write wrapped record file hashes to disk [#23404](https://github.com/hiero-ledger/hiero-consensus-node/pull/23404) by @derektriley
+- Enable HIP-1313 high-volume throttles on previewnet [#23611](https://github.com/hiero-ledger/hiero-consensus-node/pull/23611) by @akdev
+- Enable simple fees on previewnet [#23593](https://github.com/hiero-ledger/hiero-consensus-node/pull/23593) by @joshmarinacci
+- Add an option to disable Toxiproxy in Otter completely [#23519](https://github.com/hiero-ledger/hiero-consensus-node/pull/23519) by @abies
+- Improve config/performance of OpenMetrics HTTP server [#23332](https://github.com/hiero-ledger/hiero-consensus-node/pull/23332) by @akugal
+- `BehindPublisher` limit [#23321](https://github.com/hiero-ledger/hiero-consensus-node/pull/23321) by @petreze
+- Add primitive broadcast support, disabled by default [#20348](https://github.com/hiero-ledger/hiero-consensus-node/pull/20348) by @abies
+- Intake benchmark [#23305](https://github.com/hiero-ledger/hiero-consensus-node/pull/23305) by @lpetrovic05
+- Add high-volume pricing curve multiplier when `highVolume=true` [#22961](https://github.com/hiero-ledger/hiero-consensus-node/pull/22961) by @Neeharika-Sompalli
+- Migrate `BYTES` extra to `STATE_BYTES` and `PROCESSING_BYTES` [#23324](https://github.com/hiero-ledger/hiero-consensus-node/pull/23324) by @aderevets
+- Remove `MerkleLeaf` message, add fields to `MerklePath` [#23331](https://github.com/hiero-ledger/hiero-consensus-node/pull/23331) by @mhess-swl
+- Add JMH tests for OpenMetrics HTTP [#23175](https://github.com/hiero-ledger/hiero-consensus-node/pull/23175) by @akugal
+- When selecting a block node, use the block node server status [#22713](https://github.com/hiero-ledger/hiero-consensus-node/pull/22713) by @timfn-hg
+- Implement congestion multiplier support in `SimpleFeeCalculatorImpl`
+- State snapshot manager should release state reference earlier [#22882](https://github.com/hiero-ledger/hiero-consensus-node/pull/22882) by @thenswan
+- Standalone fee calculator [#22996](https://github.com/hiero-ledger/hiero-consensus-node/pull/22996) by @joshmarinacci
+- `diff` command for State Operator [#23129](https://github.com/hiero-ledger/hiero-consensus-node/pull/23129) by @imalygin
+- Prune code related to reading public keys from disk [#22927](https://github.com/hiero-ledger/hiero-consensus-node/pull/22927) by @thenswan
+- MOP consensus algorithm [#22877](https://github.com/hiero-ledger/hiero-consensus-node/pull/22877) by @lpetrovic05
+- Handle transaction sizes in prehandle [#22482](https://github.com/hiero-ledger/hiero-consensus-node/pull/22482) by @petreze
+- Add HTTP server metrics exporter for OpenMetrics standard [#23007](https://github.com/hiero-ledger/hiero-consensus-node/pull/23007) by @akugal
+
+**Bug Fixes**
+
+- Avoid NPE in `TipsetEventCreator` when unable to create selfless events [#24199](https://github.com/hiero-ledger/hiero-consensus-node/pull/24199) by @abies
+- Reject file append on files with empty key list [#23831](https://github.com/hiero-ledger/hiero-consensus-node/pull/23831) by @AlexKehayov
+- `StakePeriodChanges` roster weighting [#23747](https://github.com/hiero-ledger/hiero-consensus-node/pull/23747) by @derektriley
+- Create file `0.0.113` during post upgrade if missing
+- Made full rehash timeout configurable [#23818](https://github.com/hiero-ledger/hiero-consensus-node/pull/23818) by @imalygin
+- Fix flaky `PLATFORM_TRANSACTION_NOT_CREATED` in CI [#23776](https://github.com/hiero-ledger/hiero-consensus-node/pull/23776) by @AlexKehayov
+- Latest complete state null [#23833](https://github.com/hiero-ledger/hiero-consensus-node/pull/23833) by @lpetrovic05
+- `log4j` initialization in `test-client` test runs [#23813](https://github.com/hiero-ledger/hiero-consensus-node/pull/23813) by @jjohannes
+- Otter generate command [#23810](https://github.com/hiero-ledger/hiero-consensus-node/pull/23810) by @lpetrovic05
+- Revert changes for #23762 [#23821](https://github.com/hiero-ledger/hiero-consensus-node/pull/23821) by @artemananiev
+- `ConcurrentModificationException` in `HapiSpecRegistry` [#23773](https://github.com/hiero-ledger/hiero-consensus-node/pull/23773) by @AlexKehayov
+- `QueryWorkflowImpl` returns `FAIL_INVALID` for missing query payment [#23688](https://github.com/hiero-ledger/hiero-consensus-node/pull/23688) by @derektriley
+- Leak the bucket throttle right before checking capacity [#23738](https://github.com/hiero-ledger/hiero-consensus-node/pull/23738) by @Neeharika-Sompalli
+- Fix NPE when loading state for `0.0.113` [#23765](https://github.com/hiero-ledger/hiero-consensus-node/pull/23765) by @Neeharika-Sompalli
+- Skip HDHM updates for leaves that are updated but not moved [#23763](https://github.com/hiero-ledger/hiero-consensus-node/pull/23763) by @artemananiev
+- Strip leading zeros from storage keys in `test-client` validations [#23735](https://github.com/hiero-ledger/hiero-consensus-node/pull/23735) by @tinker-michaelj
+- `RepeatableOperatorQueryTests` works with simple fees [#23730](https://github.com/hiero-ledger/hiero-consensus-node/pull/23730) by @ibankov
+- Trigger scheduled tx with round timestamp only when completely empty [#23687](https://github.com/hiero-ledger/hiero-consensus-node/pull/23687) by @tinker-michaelj
+- Fix NPE when toggling `fees.simpleFeesEnabled=true` [#23689](https://github.com/hiero-ledger/hiero-consensus-node/pull/23689) by @Neeharika-Sompalli
+- `SequentialTaskSchedulerTests.multipleCountersInternalBackpressureTest` [#23604](https://github.com/hiero-ledger/hiero-consensus-node/pull/23604) by @mxtartaglia-sl
+- `ScheduleRecordTest` with enabling simple fees [#23598](https://github.com/hiero-ledger/hiero-consensus-node/pull/23598) by @aderevets
+- Fix logging formatted messages in Hiero metrics [#23647](https://github.com/hiero-ledger/hiero-consensus-node/pull/23647) by @akugal
+- Update bytes for hash of a Merkle leaf [#23635](https://github.com/hiero-ledger/hiero-consensus-node/pull/23635) by @imalygin
+- Fix Hapi Misc XTS timeouts [#23623](https://github.com/hiero-ledger/hiero-consensus-node/pull/23623) by @ibankov
+- Add missing `CIVILIAN_PAYER` setup in `Hip1313DisabledTest` [#23620](https://github.com/hiero-ledger/hiero-consensus-node/pull/23620) by @akdev
+- `shadowJar` duplicate class handling in `swirlds-platform-core` [#23613](https://github.com/hiero-ledger/hiero-consensus-node/pull/23613) by @akdev
+- Fix flaky `CryptoTransfer` simple fees test [#23590](https://github.com/hiero-ledger/hiero-consensus-node/pull/23590) by @ibankov
+- Use correct txn identifier [#23581](https://github.com/hiero-ledger/hiero-consensus-node/pull/23581) by @petreze
+- Fix `BlockingResourceProvider` blocks if no consumer is waiting [#23493](https://github.com/hiero-ledger/hiero-consensus-node/pull/23493) by @mxtartaglia-sl
+- Inner batch transactions include `sigMapBytes` in `txnFee` [#23551](https://github.com/hiero-ledger/hiero-consensus-node/pull/23551) by @ibankov
+- Schedule KV state purges are not user state changes for `BlockUnitSplit` purposes [#23549](https://github.com/hiero-ledger/hiero-consensus-node/pull/23549) by @tinker-michaelj
+- Introduce `TOKEN_TYPES` extra [#23520](https://github.com/hiero-ledger/hiero-consensus-node/pull/23520) by @ibankov
+- Move token validation to handle time instead of ingest [#23534](https://github.com/hiero-ledger/hiero-consensus-node/pull/23534) by @aderevets
+- Eliminate stale tx fee info from base builder in stack used for stake period changes [#23495](https://github.com/hiero-ledger/hiero-consensus-node/pull/23495) by @tinker-michaelj
+- Implement `NUMBER` via `BlockRecordManager` until cutover [#23497](https://github.com/hiero-ledger/hiero-consensus-node/pull/23497) by @tinker-michaelj
+- `state getMerkleProof` uses `isLeft()` boolean [#23441](https://github.com/hiero-ledger/hiero-consensus-node/pull/23441) by @edward-swirldslabs
+- `FileRecordsSanityCheckSuite` under simple fees [#23498](https://github.com/hiero-ledger/hiero-consensus-node/pull/23498) by @joshmarinacci
+- Use full prefix for deterministic fee calculation [#23517](https://github.com/hiero-ledger/hiero-consensus-node/pull/23517) by @petreze
+- Avoid NPE if R2/R3 grace period expires with no WRAPS messages [#23443](https://github.com/hiero-ledger/hiero-consensus-node/pull/23443) by @tinker-michaelj
+- Consensus service unit tests when simple fees are enabled [#23452](https://github.com/hiero-ledger/hiero-consensus-node/pull/23452) by @joshmarinacci
+- Purge hinTS preprocessing votes in `HistoryProofVote` dispatch stack [#23411](https://github.com/hiero-ledger/hiero-consensus-node/pull/23411) by @tinker-michaelj
+- Still answer free queries if platform is `ACTIVE`/`FREEZING`/`FREEZE_COMPLETE` [#23439](https://github.com/hiero-ledger/hiero-consensus-node/pull/23439) by @tinker-michaelj
+- Cache owner priority address in hook execution context [#23103](https://github.com/hiero-ledger/hiero-consensus-node/pull/23103) by @tinker-michaelj
+- Fix contract queries simple fees [#23150](https://github.com/hiero-ledger/hiero-consensus-node/pull/23150) by @Neeharika-Sompalli
+- Fix Consensus, File, and Token Service tests when simple fees is enabled [#23363](https://github.com/hiero-ledger/hiero-consensus-node/pull/23363) by @joshmarinacci
+- Resolved OOM in `entityIds` validation [#23300](https://github.com/hiero-ledger/hiero-consensus-node/pull/23300) by @imalygin
+- Ensure `HOOK_DISPATCH` records are translated in a `ContractOpContext` [#23050](https://github.com/hiero-ledger/hiero-consensus-node/pull/23050) by @tinker-michaelj
+- Change `TopicSubmitMessage` and Crypto Approve/Delete Allowance fee [#23013](https://github.com/hiero-ledger/hiero-consensus-node/pull/23013) by @ibankov
+- Update Topic fee calculator missing check for `feeExemptKeys` [#23078](https://github.com/hiero-ledger/hiero-consensus-node/pull/23078) by @joshmarinacci
+- Ensure explicit `NodeStakeUpdate` at genesis [#23039](https://github.com/hiero-ledger/hiero-consensus-node/pull/23039) by @tinker-michaelj
+- (0.72) Ensure HTS transfer gas cost reflects HBAR auto-creations [#23183](https://github.com/hiero-ledger/hiero-consensus-node/pull/23183) by @tinker-michaelj
+
+**Full Release Notes**: [**v0.72.0**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.72.0)
+
+</Accordion>
+
 ## Release v0.71
 <Check>
   **MAINNET UPDATED: MARCH 18, 2026**

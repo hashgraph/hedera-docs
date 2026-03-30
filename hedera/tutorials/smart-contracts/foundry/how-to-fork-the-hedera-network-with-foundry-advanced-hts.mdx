@@ -784,6 +784,53 @@ Both WHBAR and USDC are HTS tokens. When the SaucerSwap router calls `transferFr
 
 ---
 
+## Bonus: Bonzo Finance Mainnet Fork Test (Lending/Borrowing)
+
+The tutorial repository also includes a test that forks Hedera mainnet and interacts with [Bonzo Finance](https://bonzo.finance/) - an Aave V2 fork and the first lending/borrowing protocol on Hedera. The test deposits WHBAR as collateral and borrows USDC against it, using real contracts with ~7M USDC in real liquidity.
+
+### Run the Bonzo Tests
+
+```bash
+forge test --match-contract BonzoForkTest \
+  --fork-url https://mainnet.hashio.io/api \
+  -vvv
+```
+
+### What It Tests
+
+| Test | What It Does |
+| ---- | ------------ |
+| `test_DepositWHBAR` | Deposits 5000 WHBAR as collateral, receives aWHBAR tokens |
+| `test_DepositWHBARAndBorrowUSDC` | Full flow: deposit collateral, check account data, borrow 10 USDC, verify debt position |
+| `test_ReadBonzoUSDCLiquidity` | Reads real USDC liquidity in Bonzo (~7M USDC) |
+
+### How the Deposit + Borrow Works
+
+```
+deal(WHBAR, depositor, 5000e8)         → Create 5000 WHBAR on the fork
+whbar.approve(LENDING_POOL, amount)    → Approve LendingPool to pull WHBAR
+LendingPool.deposit(WHBAR, ...)        → Deposit as collateral → receive aWHBAR
+LendingPool.getUserAccountData(...)    → Check collateral, LTV (62.72%), borrow capacity
+LendingPool.borrow(USDC, 10e6, 2, ..) → Borrow 10 USDC at variable rate
+                                       → Receive USDC + variable debt token minted
+```
+
+The LendingPool uses Bonzo's real oracle pricing to calculate collateral value, LTV ratios, and health factors - all against production state on the fork.
+
+**Why this matters:** If you're building on top of Bonzo (or any Aave V2 fork on Hedera), fork testing lets you test your integration against real protocol state, verify borrowing logic against real oracle prices, and simulate liquidation scenarios - without risking real funds.
+
+### Bonzo Mainnet Addresses
+
+| Contract | Address |
+| -------- | ------- |
+| LendingPool | `0x236897c518996163E7b313aD21D1C9fCC7BA1afc` |
+| aWHBAR | `0x6e96a607F2F5657b39bf58293d1A006f9415aF32` |
+| Variable Debt USDC | `0x8a90C2f80Fc266e204cb37387c69EA2ed42A3cc1` |
+
+> **Source:** [Bonzo Lend Contracts](https://docs.bonzo.finance/hub/developer/bonzo-lend/lend-contracts)
+
+---
+
 ## Understanding HTS Fork Testing with Foundry
 
 ### Why Standard Fork Testing Breaks on Hedera

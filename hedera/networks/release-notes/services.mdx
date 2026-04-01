@@ -13,6 +13,22 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
   **TESTNET UPDATE: APRIL 2, 2026**
 </Info>
 
+### Release highlights
+
+Release v0.72 highlights include support for programmable transaction extensions via [Hiero Hooks (HIP-1195)](https://hips.hedera.com/#hip-1195). This capability introduces a new model for extending native Hedera services with custom logic, enabling more dynamic, application-specific behavior directly within transaction execution.
+
+<Accordion title="What's new in Release v0.72?">
+
+**Programmable Transaction Extensions (HIP-1195)**
+This release introduces Hiero Hooks, a framework for attaching custom logic to native Hedera transactions. Hooks can be configured on accounts and executed during transaction processing, allowing developers to define application-specific rules, validation, and automation without requiring standalone smart contracts.
+
+**Benefits**
+Enables application-specific logic to execute directly within native transaction flows
+Improves composability between Hedera services and custom business logic
+Provides a lightweight extension model alongside smart contracts, giving developers more flexibility in how functionality is implemented
+
+</Accordion>
+
 ### [**Build 0.72.0**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.72.0)
 
 <Accordion title="What's Changed">
@@ -125,7 +141,7 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
   **MAINNET UPDATED: MARCH 18, 2026**
 </Check>
 
-## Release highlights
+### Release highlights
 
 Release 0.71 focuses on strengthening core infrastructure and expanding observability to support downstream services and future network capabilities.
 
@@ -303,19 +319,17 @@ Tests
   **TESTNET UPDATED: FEBRUARY 5, 2026**
 </Check>
 
-## Release highlights
+### Release highlights
 
 Release 0.70 delivers significant advancements in fee processing efficiency and foundational infrastructure for future scalability, building on Hedera’s focus on performance and simplicity.
-The headline feature implements HIP-1259 Fee Collection Account, centralizing fee accumulation for streamlined operations, while incremental progress on several multi-phase HIPs and block node enhancements prepares the network for higher throughput and enhanced data handling.
-
-
+The headline feature implements [HIP-1259 Fee Collection Account](https://hips.hedera.com/#hip-1259), centralizing fee accumulation for streamlined operations, while incremental progress on several multi-phase HIPs and block node enhancements prepares the network for higher throughput and enhanced data handling.
 
 <Accordion title="What's new in Release v0.70?">
 
-Fee Collection Account (HIP-1259)
+**Fee Collection Account (HIP-1259)**
 This release fully implements HIP-1259, introducing a dedicated, network-controlled fee collection account (default address 0.0.802). All transaction fees are now routed to this single account instead of immediate distribution across multiple system accounts. Fees accumulate at collection account and are disbursed in a single synthetic transaction at the start of each staking period—to node accounts (via accumulated node payments), network admin fee account (0.0.98), staking reward account (0.0.800), and node reward account (0.0.801).
 
-Key benefits:
+**Key benefits**:
 Simplified transaction records: Explorers show a clean, single fee payment to 0.0.802, reducing visual complexity for users.
 Enhanced performance: Fewer account updates per transaction improve processing speed and throughput.
 Reduced overhead: Smaller network output for lower storage and ingestion costs for block nodes and mirror nodes.
@@ -365,7 +379,7 @@ HIP-1081: Block Node — Updates to Block Node communications including new supp
   **TESTNET UPDATE: DECEMBER 30, 2025**
 </Check>
 
-## Release highlights
+### Release highlights
 
 Release v0.69 highlights include support for a new operations-based throttling model for smart-contract execution (HIP-1249), and an update to the ConsensusSubmitMessage fee schedule. Together, these changes significantly expand contract throughput capacity, and ensure sustainable pricing for high-volume consensus messaging.
 

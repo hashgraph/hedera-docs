@@ -40,7 +40,7 @@ With [HIP-904](https://hips.hedera.com/hip/hip-904), contracts now support Admin
 
 **Smart Contract Properties**
 
-| Field                            | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| **Field**                            | **Description**                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Admin Key**                    | Sets the state of the instance and its fields can be modified arbitrarily if this key signs a transaction to modify it. If this is null, then such modifications are not possible, and there is no administrator that can override the normal operation of this smart contract instance. Note that if it is created with no admin keys, then there is no administrator to authorize changing the admin keys, so there can never be any admin keys for that instance. |
 | **Gas**                          | The gas to run the constructor.                                                                                                                                                                                                                                                                                                                                                                                                                                      |
@@ -68,7 +68,7 @@ The response will return the contract create transaction information like the ne
 **Note:** Please refer to [ContractCreateTransaction()](#contractcreatetransaction) for a complete list of applicable methods.
 </Info>
 
-| Method                     | Type       |
+| **Method**                     | **Type**       |
 | -------------------------- | ---------- |
 | `setBytecode(<bytecode>)`  | byte       |
 | `setBytecode(<bytecode>)`  | String     |
@@ -176,27 +176,30 @@ println!("The new contract ID is {:?}", new_contract_id);
 
 Creates a smart contract instance using the file ID of the contract bytecode.
 
-| Constructor                       | Description                                        |
-| --------------------------------- | -------------------------------------------------- |
+### Constructor
+
+| **Constructor** | **Description** |
+|---|---|
 | `new ContractCreateTransaction()` | Initializes the ContractCreateTransaction() object |
 
 ### Methods
 
-| Method                                              | Type                                                                            | Requirement |
-| --------------------------------------------------- | ------------------------------------------------------------------------------- | ----------- |
-| `setGas(<gas>)`                                     | long                                                                            | Required    |
-| `setBytecodeFileId(<fileId>)`                       | [FileId](/hedera/sdks-and-apis/sdks/specialized-types#fileid) | Required    |
-| `setInitialBalance(<initialBalance>)`               | Hbar                                                                            | Optional    |
-| `setAdminKey(<keys>)`                               | Key                                                                             | Optional    |
-| `setConstructorParameters(<constructorParameters>)` | byte \[ ]                                                                       | Optional    |
-| `setConstructorParameters(<constructorParameters>)` | ContractFunctionParameters                                                      | Optional    |
-| `setContractMemo(<memo>)`                           | String                                                                          | Optional    |
-| `setStakedNodeId(<stakedNodeId>)`                   | long                                                                            | Optional    |
-| `setStakedAccountId(<stakedAccountId>)`             | AccountId                                                                       | Optional    |
-| `setDeclineStakingReward(<declineStakingReward>)`   | boolean                                                                         | Optional    |
-| `setAutoRenewAccountId(<accountId)`                 | AccountId                                                                       | Optional    |
-| `setAutoRenewPeriod(<autoRenewPeriod>)`             | Duration                                                                        | Optional    |
-| `setMaxAutomaticTokenAssociations()`                | int                                                                             | Optional    |
+| **Method** | **Type** | **Requirement** |
+|---|---|---|
+| `setGas(<gas>)` | long | Required |
+| `setBytecodeFileId(<fileId>)` | [FileId](/sdks-and-apis/sdks/file-service/create-a-file) | Required |
+| `setInitialBalance(<initialBalance>)` | Hbar | Optional |
+| `setAdminKey(<keys>)` | Key | Optional |
+| `setConstructorParameters(<constructorParameters>)` | byte [ ] | Optional |
+| `setConstructorParameters(<constructorParameters>)` | ContractFunctionParameters | Optional |
+| `setContractMemo(<memo>)` | String | Optional |
+| `setStakedNodeId(<stakedNodeId>)` | long | Optional |
+| `setStakedAccountId(<stakedAccountId>)` | AccountId | Optional |
+| `setDeclineStakingReward(<declineStakingReward>)` | boolean | Optional |
+| `setAutoRenewAccountId(<accountId>)` | AccountId | Optional |
+| `setAutoRenewPeriod(<autoRenewPeriod>)` | Duration | Optional |
+| `setMaxAutomaticTokenAssociations()` | int | Optional |
+| `setHighVolume(<highVolume>)` | boolean | Optional |
 
 <CodeGroup>
 
@@ -272,22 +275,27 @@ fmt.Printf("The new topic ID is %v\n", newContractId)
 
 </CodeGroup>
 
-## Get transaction values
+### Get Transaction Values
 
-| Method                                              | Type       | Requirement |
-| --------------------------------------------------- | ---------- | ----------- |
-| `getAdminKey(<keys>)`                               | Key        | Optional    |
-| `getGas(<gas>)`                                     | long       | Optional    |
-| `getInitialBalance(<initialBalance>)`               | Hbar       | Optional    |
-| `getBytecodeFileId(<fileId>)`                       | FileId     | Optional    |
-| `getProxyAccountId(<accountId>`)                    | AccountId  | Optional    |
-| `getConstructorParameters(<constructorParameters>)` | ByteString | Optional    |
-| `getContractMemo(<memo>)`                           | String     | Optional    |
-| `getDeclineStakingReward()`                         | boolean    | Optional    |
-| `getStakedNodeId()`                                 | long       | Optional    |
-| `getStakedAccountId()`                              | AccountId  | Optional    |
-| `getAutoRenewAccountId()`                           | AccountId  | Required    |
-| `getAutoRenewPeriod()`                              | Duration   | Required    |
+| **Method** | **Type** | **Requirement** |
+|---|---|---|
+| `getAdminKey(<keys>)` | Key | Optional |
+| `getGas(<gas>)` | long | Optional |
+| `getInitialBalance(<initialBalance>)` | Hbar | Optional |
+| `getBytecodeFileId(<fileId>)` | FileId | Optional |
+| `getProxyAccountId(<accountId>)` | AccountId | Optional |
+| `getConstructorParameters(<constructorParameters>)` | ByteString | Optional |
+| `getContractMemo(<memo>)` | String | Optional |
+| `getDeclineStakingReward()` | boolean | Optional |
+| `getStakedNodeId()` | long | Optional |
+| `getStakedAccountId()` | AccountId | Optional |
+| `getAutoRenewAccountId()` | AccountId | Required |
+| `getAutoRenewPeriod()` | Duration | Required |
+| `getHighVolume()` | boolean | Optional |
+
+<Info>
+This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation) (HIP-1313) for **HAPI-based contract creation only**. Setting `setHighVolume(true)` routes the transaction through dedicated high-volume throttle capacity with variable-rate pricing. Contract deployments via EVM `CREATE` / `CREATE2` opcodes are **not** included — a subsequent HIP will address EVM-specific high-volume behavior. Always pair with `setMaxTransactionFee()` to cap your costs.
+</Info>
 
 <CodeGroup>
 

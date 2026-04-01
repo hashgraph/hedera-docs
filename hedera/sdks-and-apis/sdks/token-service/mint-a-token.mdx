@@ -5,7 +5,7 @@ title: "Mint a token"
 
 Minting fungible token allows you to increase the total supply of the token. Minting a non-fungible token creates an NFT with its unique metadata for the class of NFTs defined by the token ID. The Supply Key must sign the transaction.
 
-* If no Supply Key is defined, the transaction will resolve to TOKEN\_HAS\_NO\_SUPPLY\_KEY. The maximum total supply a token can have is 2^63-1.
+* If no Supply Key is defined, the transaction will resolve to `TOKEN\_HAS\_NO\_SUPPLY\_KEY`. The maximum total supply a token can have is `2^63-1`.
 * The amount provided must be in the lowest denomination possible.
   * Example: Token A has 2 decimals. In order to mint 100 tokens, one must provide an amount of 10000. In order to mint 100.55 tokens, one must provide an amount of 10055.
 * The metadata field is specific to NFTs. Once an NFT is minted, the metadata cannot be changed and is immutable.
@@ -24,9 +24,38 @@ Minting fungible token allows you to increase the total supply of the token. Min
 * Please see the transaction and query [fees](/hedera/networks/mainnet/fees#transaction-and-query-fees) table for the base transaction fee.
 * Please use the [Hedera fee estimator](https://hedera.com/fees) to estimate your transaction fee cost.
 
-### Methods
+## Constructor
 
-<table><thead><tr><th>Method</th><th>Type</th><th>Description</th><th>Requirement</th></tr></thead><tbody><tr><td><code>setTokenId(&#x3C;tokenId>)</code></td><td>TokenId</td><td>The token ID for which to mint additional tokens</td><td>Required</td></tr><tr><td><code>setAmount(&#x3C;amount>)</code></td><td>long</td><td>Applicable to tokens of type <code>FUNGIBLE_COMMON</code>.The amount to mint to the Treasury Account. The amount must be a positive non-zero number represented in the lowest denomination of the token. The new supply must be lower than <code>2^63-1</code>.</td><td>Optional</td></tr><tr><td><code>setMetadata(&#x3C;metaDatas>)</code></td><td>List&#x3C;byte[]></td><td>Applicable to tokens of type <code>NON_FUNGIBLE_UNIQUE</code>. A list of metadata that are being created. The maximum allowed size of each metadata is 100 bytes and is immutable.</td><td>Optional</td></tr><tr><td><code>addMetadata(&#x3C;metaData>)</code></td><td>byte []</td><td>Applicable to tokens of type <code>NON_FUNGIBLE_UNIQUE</code>. A list of metadata that are being created. The maximum allowed size of each metadata is 100 bytes and is immutable.</td><td>Optional</td></tr></tbody></table>
+| Constructor | Description |
+|-------------|-------------|
+| `new TokenMintTransaction()` | Initializes the TokenMintTransaction object |
+
+## Transaction Properties
+
+| **Method** | **Type** | **Requirement** |
+|--------|------|-------------|
+| `setTokenId(<tokenId>)` | TokenId | Required |
+| `setAmount(<amount>)` | long | Optional (fungible) |
+| `addMetadata(<metadata>)` | byte[] | Optional (NFT) |
+| `setMetadata(<metadataList>)` | List&lt;byte[]&gt; | Optional (NFT) |
+| `setHighVolume(<highVolume>)` | boolean | Optional |
+
+## Get Transaction Values
+
+| **Method** | **Type** | **Description** |
+|--------|------|-------------|
+| `getTokenId()` | TokenId | Returns the token ID |
+| `getAmount()` | long | Returns the amount to mint (fungible) |
+| `getMetadata()` | List&lt;byte[]&gt; | Returns the metadata list (NFT) |
+| `getHighVolume()` | boolean | Returns whether this transaction uses [high-volume throttles](/hedera/core-concepts/high-volume-entity-creation) |
+
+
+<Note>
+     This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation)
+     (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated
+     high-volume throttle capacity with variable-rate pricing for both fungible and NFT mints.
+     Always pair this with `setMaxTransactionFee()` to cap your costs.
+</Note>
 
 <CodeGroup>
 

@@ -31,6 +31,16 @@ Gas fees for EVM transactions consist of:
 - **EVM Opcode Gas**: The gas required to execute the defined opcodes for the smart contract call
 - **Hedera System Contract Gas**: The required gas associated with Hedera-defined transactions, such as using the Hedera Token Service system contract
 
+<Note>
+    **High-volume contract creation.** `ContractCreateTransaction` supports the
+    `high_volume` flag ([HIP-1313](https://hips.hedera.com/hip/hip-1313)), which routes
+    the transaction through dedicated high-volume throttle capacity with variable-rate
+    pricing. This applies to **HAPI-based contract creation only** — contract deployments
+    via EVM `CREATE` / `CREATE2` opcodes are not included. See the
+    [High-Volume Entity Creation](/hedera/core-concepts/high-volume-entity-creation) guide
+    for details.
+</Note>
+
 ### Intrinsic Gas
 
 A transaction submitted to the smart contract service must be sent with enough gas to cover **intrinsic gas**. With the **Cancun fork** of the EVM update, intrinsic gas is calculated as:

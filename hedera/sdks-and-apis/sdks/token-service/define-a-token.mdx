@@ -45,12 +45,69 @@ For non-fungible tokens, the token ID represents an NFT class. Once the token is
 * Please see the transaction and query [fees](/hedera/networks/mainnet/fees#transaction-and-query-fees) table for the base transaction fee
 * Please use the [Hedera fee estimator](https://hedera.com/fees) to estimate your transaction fee cost
 
-## Methods
+## Constructor
 
-<table><thead><tr><th>Method</th><th>Type</th><th>Requirement</th></tr></thead><tbody><tr><td><code>setTokenName(&#x3C;name>)</code></td><td>String</td><td>Required</td></tr><tr><td><code>setTokenType(&#x3C;tokenType>)</code></td><td><a href="/hedera/sdks-and-apis/sdks/token-service/token-types">TokenType</a></td><td>Optional</td></tr><tr><td><code>setTokenSymbol(&#x3C;symbol>)</code></td><td>String</td><td>Required</td></tr><tr><td><code>setDecimals(&#x3C;decimal>)</code></td><td>int</td><td>Optional</td></tr><tr><td><code>setInitialSupply(&#x3C;initialSupply>)</code></td><td>int</td><td>Optional</td></tr><tr><td><code>setTreasuryAccountId(&#x3C;treasury>)</code></td><td><a href="https://github.com/hashgraph/hedera-docs/blob/main/sdks-and-apis/sdks/token-service/broken-reference/README.md">AccountId</a></td><td>Required</td></tr><tr><td><code>setAdminKey(&#x3C;key>)</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>setKycKey(&#x3C;key>)</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>setFreezeKey(&#x3C;key>)</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>setWipeKey(&#x3C;key>)</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>setSupplyKey(&#x3C;key>)</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>setPauseKey(&#x3C;key>)</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>setFreezeDefault(&#x3C;freeze></code>)</td><td>boolean</td><td>Optional</td></tr><tr><td><code>setExpirationTime(&#x3C;expirationTime>)</code></td><td>Instant</td><td>Optional</td></tr><tr><td><code>setFeeScheduleKey(&#x3C;key>)</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>setCustomFees(&#x3C;customFees>)</code></td><td>List&#x3C;<a href="/hedera/sdks-and-apis/sdks/token-service/custom-token-fees#custom-fee">CustomFee</a>></td><td>Optional</td></tr><tr><td><code>setSupplyType(&#x3C;supplyType>)</code></td><td>TokenSupplyType</td><td>Optional</td></tr><tr><td><code>setMaxSupply(&#x3C;maxSupply>)</code></td><td>long</td><td>Optional</td></tr><tr><td><code>setTokenMemo(&#x3C;memo>)</code></td><td>String</td><td>Optional</td></tr><tr><td><code>setAutoRenewAccountId(&#x3C;account>)</code></td><td><a href="../accounts-and-hbar/get-account-info">AccountId</a></td><td>Optional</td></tr><tr><td><code>setAutoRenewPeriod(&#x3C;period>)</code></td><td>Duration</td><td>Optional</td></tr><tr><td><code>setMetadataKey(&#x3C;key>)</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>setMetadata(&#x3C;bytes>)</code></td><td>bytes</td><td>Optional</td></tr></tbody></table>
+| **Constructor** | **Description** |
+|-------------|-------------|
+| `new TokenCreateTransaction()` | Initializes the TokenCreateTransaction object |
+
+## Transaction Properties
+
+| **Method** | ****Type**** | **Requirement** |
+|--------|------|-------------|
+| `setTokenName(<name>)` | String | Required |
+| `setTokenSymbol(<symbol>)` | String | Required |
+| `setDecimals(<decimals>)` | int | Optional |
+| `setInitialSupply(<initialSupply>)` | long | Optional |
+| `setTreasuryAccountId(<treasuryAccountId>)` | AccountId | Required |
+| `setAdminKey(<key>)` | Key | Optional |
+| `setKycKey(<key>)` | Key | Optional |
+| `setFreezeKey(<key>)` | Key | Optional |
+| `setWipeKey(<key>)` | Key | Optional |
+| `setSupplyKey(<key>)` | Key | Optional |
+| `setPauseKey(<key>)` | Key | Optional |
+| `setFeeScheduleKey(<key>)` | Key | Optional |
+| `setMetadataKey(<key>)` | Key | Optional |
+| `setFreezeDefault(<freezeDefault>)` | boolean | Optional |
+| `setExpirationTime(<expirationTime>)` | Instant | Optional |
+| `setAutoRenewAccountId(<autoRenewAccountId>)` | AccountId | Optional |
+| `setAutoRenewPeriod(<autoRenewPeriod>)` | Duration | Optional |
+| `setTokenMemo(<memo>)` | String | Optional |
+| `setTokenType(<tokenType>)` | TokenType | Optional |
+| `setSupplyType(<supplyType>)` | TokenSupplyType | Optional |
+| `setMaxSupply(<maxSupply>)` | long | Optional |
+| `setCustomFees(<customFees>)` | List&lt;CustomFee&gt; | Optional |
+| `setMetadata(<metadata>)` | byte[] | Optional |
+| `setHighVolume(<highVolume>)` | boolean | Optional |
+
+## Get Transaction Values
+
+| **Method** | ****Type**** | **Description** |
+|--------|------|-------------|
+| `getTokenName()` | String | Returns the name of the token |
+| `getTokenSymbol()` | String | Returns the symbol of the token |
+| `getDecimals()` | int | Returns the number of decimals |
+| `getInitialSupply()` | long | Returns the initial supply of tokens |
+| `getTreasuryAccountId()` | AccountId | Returns the treasury account ID |
+| `getAdminKey()` | Key | Returns the admin key |
+| `getKycKey()` | Key | Returns the KYC key |
+| `getFreezeKey()` | Key | Returns the freeze key |
+| `getWipeKey()` | Key | Returns the wipe key |
+| `getSupplyKey()` | Key | Returns the supply key |
+| `getPauseKey()` | Key | Returns the pause key |
+| `getFeeScheduleKey()` | Key | Returns the fee schedule key |
+| `getMetadataKey()` | Key | Returns the metadata key |
+| `getFreezeDefault()` | boolean | Returns the freeze default value |
+| `getTokenType()` | TokenType | Returns the token type |
+| `getSupplyType()` | TokenSupplyType | Returns the supply type |
+| `getMaxSupply()` | long | Returns the max supply |
+| `getHighVolume()` | boolean | Returns whether this transaction uses [high-volume throttles](/core-concepts/high-volume-entity-creation) |
 
 <Info>
-**Note**: Where the Admin, Pause, Freeze, and Wipe keys are left blank, the Supply key will be required as a minimum.
+This transaction supports [high-volume entity creation](/core-concepts/high-volume-entity-creation)
+(HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated
+high-volume throttle capacity with variable-rate pricing. Always pair this with
+`setMaxTransactionFee()` to cap your costs.
 </Info>
 
 <CodeGroup>
@@ -58,14 +115,14 @@ For non-fungible tokens, the token ID represents an NFT class. Once the token is
 ```java Java
 //Create the transaction
 TokenCreateTransaction transaction = new TokenCreateTransaction()
-        .setTokenName("Your Token Name")
-        .setTokenSymbol("F")
-        .setTreasuryAccountId(treasuryAccountId)
-        .setInitialSupply(5000)
-        .setAdminKey(adminKey.getPublicKey())
-        .setMetadataKey(metadataKey)
-        .setMetadata(metadata)
-        .setMaxTransactionFee(new Hbar(30)); //Change the default max transaction fee
+    .setTokenName("Your Token Name")
+    .setTokenSymbol("F")
+    .setTreasuryAccountId(treasuryAccountId)
+    .setInitialSupply(5000)
+    .setAdminKey(adminKey.getPublicKey())
+    .setMetadataKey(metadataKey)
+    .setMetadata(metadata)
+    .setMaxTransactionFee(new Hbar(30)); //Change the default max transaction fee
 
 //Build the unsigned transaction, sign with admin private key of the token, sign with the token treasury private key, submit the transaction to a Hedera network
 TransactionResponse txResponse = transaction.freezeWith(client).sign(adminKey).sign(treasuryKey).execute(client);
@@ -77,7 +134,6 @@ TransactionReceipt receipt = txResponse.getReceipt(client);
 TokenId tokenId = receipt.tokenId;
 
 System.out.println("The new token ID is " + tokenId);
-
 //v2.0.1
 ```
 
@@ -85,18 +141,18 @@ System.out.println("The new token ID is " + tokenId);
 ```javascript JavaScript
 //Create the transaction and freeze for manual signing
 const transaction = await new TokenCreateTransaction()
-     .setTokenName("Your Token Name")
-     .setTokenSymbol("F")
-     .setTreasuryAccountId(treasuryAccountId)
-     .setInitialSupply(5000)
-     .setAdminKey(adminPublicKey)
-     .setMetadataKey(metadataKey)
-     .setMetadata(metadata)
-     .setMaxTransactionFee(new Hbar(30)) //Change the default max transaction fee
-     .freezeWith(client);
+    .setTokenName("Your Token Name")
+    .setTokenSymbol("F")
+    .setTreasuryAccountId(treasuryAccountId)
+    .setInitialSupply(5000)
+    .setAdminKey(adminKey.publicKey)
+    .setMetadataKey(metadataKey)
+    .setMetadata(metadata)
+    .setMaxTransactionFee(new Hbar(30)) //Change the default max transaction fee
+    .freezeWith(client);
 
 //Sign the transaction with the token adminKey and the token treasury account private key
-const signTx =  await (await transaction.sign(adminKey)).sign(treasuryKey);
+const signTx = await (await transaction.sign(adminKey)).sign(treasuryKey);
 
 //Sign the transaction with the client operator private key and submit to a Hedera network
 const txResponse = await signTx.execute(client);
@@ -108,23 +164,23 @@ const receipt = await txResponse.getReceipt(client);
 const tokenId = receipt.tokenId;
 
 console.log("The new token ID is " + tokenId);
-
-//v2.0.5
+//v2.0.28
 ```
+
 
 
 ```go Go
 //Create the transaction and freeze the unsigned transaction
 tokenCreateTransaction, err := hedera.NewTokenCreateTransaction().
-      SetTokenName("Your Token Name").
-        SetTokenSymbol("F").
-        SetTreasuryAccountID(treasuryAccountId).
-        SetInitialSupply(1000).
-        SetAdminKey(adminKey).
-        SetMetadataKey(metadataKey).
-        SetMetadata(metadata)
-        SetMaxTransactionFee(hedera.NewHbar(30)). //Change the default max transaction fee
-        FreezeWith(client)
+    SetTokenName("Your Token Name").
+    SetTokenSymbol("F").
+    SetTreasuryAccountId(treasuryAccountId).
+    SetInitialSupply(5000).
+    SetAdminKey(adminKey.PublicKey()).
+    SetMetadataKey(metadataKey).
+    SetTokenMetadata(metadata).
+    SetMaxTransactionFee(hedera.HbarFrom(30, hedera.HbarUnits.Hbar)).
+    FreezeWith(client)
 
 if err != nil {
     panic(err)
@@ -139,17 +195,19 @@ if err != nil {
 
 //Request the receipt of the transaction
 receipt, err := txResponse.GetReceipt(client)
+
 if err != nil {
     panic(err)
 }
 
 //Get the token ID from the receipt
-tokenId := *receipt.TokenID
+tokenId := receipt.TokenID
 
 fmt.Printf("The new token ID is %v\n", tokenId)
-
 //v2.1.0
 ```
+
+
 
 
 ```rust Rust

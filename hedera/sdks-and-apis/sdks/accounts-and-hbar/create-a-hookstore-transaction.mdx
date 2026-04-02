@@ -43,9 +43,11 @@ The signing requirements depend on if an `adminKey` was set when the hook was cr
 | `setHookId(<HookId>)` | `HookId` | **Required.** Sets the unique identifier of the EVM Hook whose storage is being updated. |
 | `addStorageUpdate(<update>)` | `EvmHookStorageUpdate` | **Optional.** Adds a single storage update (slot or mapping entry) to the transaction. |
 | `setStorageUpdates(<updates>)` | `list<EvmHookStorageUpdate>` | **Optional.** Sets the full list of storage updates for the transaction. |
+| `getHookId()` | `HookId` | Returns the hook ID for this transaction. |
+| `getStorageUpdates()` | `list<EvmHookStorageUpdate>` | Returns the list of storage updates. |
 
 <Note>
-`EvmHookStorageUpdate` is an abstract class with two concrete implementations: `EvmHookStorageSlot` for direct slot updates and `EvmHookMappingEntries` for updating entries within a Solidity mapping. See the Hiero Hooks SDK Reference for details.
+`EvmHookStorageUpdate` is an abstract class with two concrete implementations: `EvmHookStorageSlot` for direct slot updates and `EvmHookMappingEntries` for updating entries within a Solidity mapping. See [Create and Manage Hooks](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks) for full property details on both types.
 </Note>
 
 ---

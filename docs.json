@@ -680,6 +680,8 @@
                       "hedera/sdks-and-apis/sdks/accounts-and-hbar/update-an-account",
                       "hedera/sdks-and-apis/sdks/accounts-and-hbar/transfer-cryptocurrency",
                       "hedera/sdks-and-apis/sdks/accounts-and-hbar/approve-an-allowance",
+                      "hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks",
+                      "hedera/sdks-and-apis/sdks/accounts-and-hbar/create-a-hookstore-transaction",
                       "hedera/sdks-and-apis/sdks/accounts-and-hbar/adjust-an-allowance",
                       "hedera/sdks-and-apis/sdks/accounts-and-hbar/delete-an-account",
                       "hedera/sdks-and-apis/sdks/accounts-and-hbar/get-account-balance",

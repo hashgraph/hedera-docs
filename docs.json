@@ -192,6 +192,13 @@
                 ]
               },
               {
+                "group": "Hiero Hooks",
+                "pages": [
+                  "hedera/tutorials/hooks/hello-hooks",
+                  "hedera/tutorials/hooks/managed-transfer-cap"
+                ]
+              },
+              {
                 "group": "Consensus",
                 "pages": [
                   "hedera/tutorials/consensus",

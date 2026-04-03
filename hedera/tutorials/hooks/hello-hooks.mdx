@@ -1,0 +1,979 @@
+---
+title: "Hiero Hooks - HelloHooks: Your First Hook (Part 1)"
+---
+
+On most blockchains, accounts have zero control over incoming transfers - if someone sends you tokens, they arrive whether you want them or not. **[Hiero Hooks (HIP-1195)](https://hips.hedera.com/hip/hip-1195)** changes this by letting accounts attach custom EVM logic that runs automatically when a transfer targets them. Think of it as **account abstraction for Hedera** - your account gets a programmable gatekeeper that inspects every incoming transfer and decides whether to approve or reject it.
+
+In this tutorial, you will build **HelloHooks** - a hook contract that approves only transfers of exactly 1 HBAR by inspecting the `ProposedTransfers` struct passed to it by the network.
+
+<Note>
+  You can take a look at the **complete code** in the [**demo-hiero-hooks
+  repository**](https://github.com/hedera-dev/demo-hiero-hooks).
+</Note>
+
+---
+
+## Prerequisites
+
+- ECDSA account from the [Hedera Portal](https://portal.hedera.com/).
+- [Node.js](https://nodejs.org/) >= 18 installed.
+- Basic understanding of Solidity.
+- ~50 HBAR on testnet (free from the [Hedera Faucet](https://portal.hedera.com/)).
+
+---
+
+## Table of Contents <a href="#table-of-contents" id="table-of-contents"></a>
+
+1. [Setup Project](#setup-project)
+2. [Step 1: Write the HelloHooks Contract](#step-1%3A-write-the-hellohooks-contract)
+3. [Step 2: Compile the Contract](#step-2%3A-compile-the-contract)
+4. [Step 3: Create the Utility Files](#step-3%3A-create-the-utility-files)
+5. [Step 4: Deploy the Hook Contract](#step-4%3A-deploy-the-hook-contract)
+6. [Step 5: Create Test Account and Attach Hook](#step-5%3A-create-test-account-and-attach-hook)
+7. [Step 6: Trigger the Hook (1 HBAR - Approved)](#step-6%3A-trigger-the-hook-1-hbar---approved)
+8. [Step 7: Trigger with Wrong Amount (Rejected)](#step-7%3A-trigger-with-wrong-amount-rejected)
+9. [Step 8: Query Mirror Node](#step-8%3A-query-mirror-node)
+10. [Step 9: Clean Up](#step-9%3A-clean-up)
+11. [Conclusion](#conclusion)
+12. [Additional Resources](#additional-resources)
+
+---
+
+## Setup Project
+
+Initialize a new project directory and install dependencies.
+
+```bash
+mkdir demo-hiero-hooks && cd demo-hiero-hooks
+npm init -y
+```
+
+#### Install Dependencies
+
+```bash
+npm install @hiero-ledger/sdk@2.83.0 dotenv
+npm install -D tsx solc@0.8.34 typescript @types/node
+```
+
+<Note>
+  The `@hiero-ledger/sdk@2.83.0` package includes full support for HIP-1195
+  hooks - including `HookCreationDetails`, `FungibleHookCall`, and
+  `addHbarTransferWithHook`.
+</Note>
+
+#### Configure Environment
+
+Create a `.env` file in the project root with your Hedera credentials:
+
+```bash .env
+HEDERA_NETWORK=testnet
+OPERATOR_ACCOUNT_ID=0.0.7536968
+OPERATOR_PRIVATE_KEY=your-ecdsa-private-key-here
+```
+
+Replace `OPERATOR_ACCOUNT_ID` and `OPERATOR_PRIVATE_KEY` with the values from your [Hedera Portal](https://portal.hedera.com/) account.
+
+#### Create the Directory Structure
+
+```bash
+mkdir -p scripts src/contracts src/utils src/hello-hooks
+```
+
+---
+
+## Step 1: Write the HelloHooks Contract
+
+Create the Solidity contract that implements `IHieroAccountAllowanceHook`. The interfaces are inlined since they are not yet published as an npm package.
+
+```solidity src/contracts/HelloHooks.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity 0.8.34;
+
+interface IHieroHook {
+    struct HookContext {
+        address owner;
+        uint256 txnFee;
+        uint256 gasCost;
+        string memo;
+        bytes data;
+    }
+}
+
+interface IHieroAccountAllowanceHook {
+    struct AccountAmount { address account; int64 amount; }
+    struct NftTransfer { address sender; address receiver; int64 serialNo; }
+    struct TokenTransferList {
+        address token;
+        AccountAmount[] adjustments;
+        NftTransfer[] nftTransfers;
+    }
+    struct Transfers { AccountAmount[] hbarAdjustments; TokenTransferList[] tokens; }
+    struct ProposedTransfers { Transfers direct; Transfers customFee; }
+
+    function allow(
+        IHieroHook.HookContext calldata context,
+        ProposedTransfers memory proposedTransfers
+    ) external payable returns (bool);
+}
+
+/// @title  HelloHooks
+/// @notice Approves only transfers that credit exactly 1 HBAR to the hook owner.
+contract HelloHooks is IHieroAccountAllowanceHook {
+    address constant HOOK_ADDR = address(uint160(0x16d));
+    uint256 constant ONE_HBAR = 100_000_000; // 1 HBAR = 100M tinybars
+
+    function allow(
+        IHieroHook.HookContext calldata context,
+        ProposedTransfers memory proposedTransfers
+    ) external payable override returns (bool) {
+        require(address(this) == HOOK_ADDR, "only callable as hook");
+
+        uint256 totalCredit = 0;
+        AccountAmount[] memory hbarAdj = proposedTransfers.direct.hbarAdjustments;
+        for (uint256 i = 0; i < hbarAdj.length; i++) {
+            if (hbarAdj[i].account == context.owner && hbarAdj[i].amount > 0) {
+                totalCredit += uint256(uint64(hbarAdj[i].amount));
+            }
+        }
+        return totalCredit == ONE_HBAR;
+    }
+}
+```
+
+<Accordion title="Understanding the key parts of the contract">
+
+**`HOOK_ADDR` guard (`0x16d`):** When Hedera executes a hook, it runs the contract bytecode inside a special EVM frame at address `0x16d`. The `require(address(this) == HOOK_ADDR)` check ensures the contract logic only executes when invoked as a hook - not when called directly.
+
+**`ProposedTransfers` inspection:** The network passes the full transfer details to the hook's `allow()` function. The contract loops through `hbarAdjustments` looking for credits (positive amounts) to the `context.owner` (the account the hook is attached to).
+
+**`ONE_HBAR` constant:** 1 HBAR equals 100,000,000 tinybars. The hook sums all HBAR credits to the owner and returns `true` only if the total is exactly 1 HBAR.
+
+**Hook type:** This contract uses `PRE_TX_ALLOWANCE_HOOK` - a single-phase hook where `allow()` fires once before the transfer commits. Part 2 covers the two-phase `PRE_POST_TX_ALLOWANCE_HOOK` pattern with `allowPre()` and `allowPost()`.
+
+</Accordion>
+
+---
+
+## Step 2: Compile the Contract
+
+Create a compile script that uses `solcjs` to produce bytecode and ABI. The script compiles all `.sol` files in `src/contracts/`, renames the mangled output files, and writes `build/contracts/HelloHooks.bytecode.txt` and `HelloHooks.abi.json`.
+
+<Accordion title="Full source code for scripts/compile.ts">
+
+```typescript scripts/compile.ts
+import { execSync } from "child_process";
+import fs from "fs";
+import path from "path";
+
+const SRC_DIR = "src/contracts";
+const OUT_DIR = "build/contracts";
+
+const solFiles = fs.readdirSync(SRC_DIR).filter((f) => f.endsWith(".sol"));
+if (solFiles.length === 0) {
+  console.error("No .sol files found in src/contracts/");
+  process.exit(1);
+}
+
+fs.mkdirSync(OUT_DIR, { recursive: true });
+console.log(`Compiling ${solFiles.length} contract(s)...`);
+
+const solPaths = solFiles.map((f) => path.join(SRC_DIR, f)).join(" ");
+execSync(`npx solcjs --bin --abi --base-path . ${solPaths} -o ${OUT_DIR}`, {
+  stdio: "inherit",
+});
+
+for (const file of fs.readdirSync(OUT_DIR)) {
+  const fullPath = path.join(OUT_DIR, file);
+  if (file.endsWith(".bin")) {
+    const contractName = file.replace(/.*_sol_/, "").replace(".bin", "");
+    if (fs.statSync(fullPath).size === 0) { fs.unlinkSync(fullPath); continue; }
+    const newName = `${contractName}.bytecode.txt`;
+    fs.renameSync(fullPath, path.join(OUT_DIR, newName));
+    console.log(`  ${newName}`);
+  } else if (file.endsWith(".abi")) {
+    const contractName = file.replace(/.*_sol_/, "").replace(".abi", "");
+    fs.renameSync(fullPath, path.join(OUT_DIR, `${contractName}.abi.json`));
+    console.log(`  ${contractName}.abi.json`);
+  }
+}
+console.log(`\nCompilation complete. Output in ${OUT_DIR}/`);
+```
+
+</Accordion>
+
+Add a compile script to your `package.json`:
+
+```json
+{
+  "scripts": {
+    "compile": "npx tsx scripts/compile.ts"
+  }
+}
+```
+
+Run the compiler:
+
+```bash
+npm run compile
+```
+
+Expected output:
+
+```
+Compiling 1 contract(s)...
+  HelloHooks.bytecode.txt (694 bytes)
+  HelloHooks.abi.json
+
+Compilation complete. Output in build/contracts/
+```
+
+---
+
+## Step 3: Create the Utility Files
+
+These shared utilities handle environment configuration, SDK client creation, and state persistence between scripts. The `.state.json` file passes values like `contractId` and `testAccountId` between numbered scripts so you do not need to copy-paste IDs between steps.
+
+Create four files:
+
+- **`src/utils/config.ts`** - Reads `.env`, validates `HEDERA_NETWORK`, `OPERATOR_ACCOUNT_ID`, and `OPERATOR_PRIVATE_KEY`, and resolves the mirror node URL.
+- **`src/utils/client.ts`** - Exports a `createClient()` function that returns a configured `Client` instance using ECDSA credentials from `config.ts`.
+- **`src/utils/state.ts`** - Exports `loadState()`, `saveState()`, and `removeStateKeys()` for reading/writing `.state.json`.
+- **`src/utils/cost.ts`** - Records actual transaction fees to `.costs.json` and regenerates `COSTS.md`. Uses `getRecord()` to fetch the real fee (not the `setMaxTransactionFee` ceiling). Falls back gracefully for rejected transactions.
+
+<Accordion title="Full source code for all four utility files">
+
+**`src/utils/config.ts`**
+
+```typescript src/utils/config.ts
+import "dotenv/config";
+
+const SUPPORTED_NETWORKS = ["previewnet", "testnet", "mainnet"] as const;
+type Network = (typeof SUPPORTED_NETWORKS)[number];
+
+const MIRROR_NODE_URLS: Record<Network, string> = {
+  previewnet: "https://previewnet.mirrornode.hedera.com",
+  testnet: "https://testnet.mirrornode.hedera.com",
+  mainnet: "https://mainnet-public.mirrornode.hedera.com",
+};
+
+export interface NetworkConfig {
+  network: Network;
+  operatorId: string;
+  operatorKey: string;
+  mirrorNodeUrl: string;
+}
+
+export function getNetworkConfig(): NetworkConfig {
+  const network = (process.env.HEDERA_NETWORK || "testnet") as string;
+  if (!SUPPORTED_NETWORKS.includes(network as Network)) {
+    throw new Error(`Unsupported network: "${network}".`);
+  }
+  const operatorId = process.env.OPERATOR_ACCOUNT_ID;
+  const operatorKey = process.env.OPERATOR_PRIVATE_KEY;
+  if (!operatorId || operatorId === "0.0.XXXX") {
+    throw new Error("OPERATOR_ACCOUNT_ID must be set in .env");
+  }
+  if (!operatorKey || operatorKey === "your-ecdsa-private-key-here") {
+    throw new Error("OPERATOR_PRIVATE_KEY must be set in .env");
+  }
+  return {
+    network: network as Network,
+    operatorId,
+    operatorKey,
+    mirrorNodeUrl: MIRROR_NODE_URLS[network as Network],
+  };
+}
+```
+
+**`src/utils/client.ts`**
+
+```typescript src/utils/client.ts
+import { Client, PrivateKey } from "@hiero-ledger/sdk";
+import { getNetworkConfig } from "./config.js";
+
+export function createClient(): Client {
+  const { network, operatorId, operatorKey } = getNetworkConfig();
+  let client: Client;
+  if (network === "mainnet") client = Client.forMainnet();
+  else if (network === "testnet") client = Client.forTestnet();
+  else client = Client.forPreviewnet();
+  client.setOperator(operatorId, PrivateKey.fromStringECDSA(operatorKey));
+  return client;
+}
+```
+
+**`src/utils/state.ts`**
+
+```typescript src/utils/state.ts
+import fs from "fs";
+const STATE_FILE = ".state.json";
+
+export interface DemoState {
+  contractId?: string;
+  testAccountId?: string;
+  testAccountPrivKey?: string;
+  hookId?: number;
+  [key: string]: unknown;
+}
+
+export function loadState(requiredKeys: string[] = [], hint: string = ""): DemoState {
+  if (!fs.existsSync(STATE_FILE)) {
+    if (requiredKeys.length > 0) throw new Error(`.state.json not found - ${hint}`);
+    return {};
+  }
+  const state: DemoState = JSON.parse(fs.readFileSync(STATE_FILE, "utf8"));
+  for (const key of requiredKeys) {
+    if (state[key] == null) throw new Error(`${key} missing in .state.json - ${hint}`);
+  }
+  return state;
+}
+
+export function saveState(updates: Partial<DemoState>): void {
+  const state: DemoState = fs.existsSync(STATE_FILE)
+    ? JSON.parse(fs.readFileSync(STATE_FILE, "utf8")) : {};
+  Object.assign(state, updates);
+  fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
+}
+
+export function removeStateKeys(keys: string[]): void {
+  if (!fs.existsSync(STATE_FILE)) return;
+  const state: DemoState = JSON.parse(fs.readFileSync(STATE_FILE, "utf8"));
+  for (const key of keys) delete state[key];
+  fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
+}
+```
+
+**`src/utils/cost.ts`**
+
+```typescript src/utils/cost.ts
+import fs from "fs";
+import type { Client, TransactionReceipt, TransactionResponse } from "@hiero-ledger/sdk";
+import { getNetworkConfig } from "./config.js";
+
+const COSTS_FILE = ".costs.json";
+const COSTS_MD = "COSTS.md";
+
+interface CostEntry {
+  script: string;
+  operation: string;
+  feeHbar: string;
+  txId: string;
+  network: string;
+  timestamp: string;
+}
+
+export function resetDemoCosts(demoPrefix: string): void {
+  if (!fs.existsSync(COSTS_FILE)) return;
+  try {
+    const costs: CostEntry[] = JSON.parse(fs.readFileSync(COSTS_FILE, "utf8"));
+    const filtered = costs.filter((e) => !e.script.startsWith(demoPrefix));
+    fs.writeFileSync(COSTS_FILE, JSON.stringify(filtered, null, 2));
+  } catch {
+    fs.unlinkSync(COSTS_FILE);
+  }
+}
+
+export function resetCosts(): void {
+  if (fs.existsSync(COSTS_FILE)) fs.unlinkSync(COSTS_FILE);
+  if (fs.existsSync(COSTS_MD)) fs.unlinkSync(COSTS_MD);
+}
+
+export async function recordCost(
+  script: string,
+  operation: string,
+  txResponse: TransactionResponse,
+  client: Client,
+): Promise<TransactionReceipt | null> {
+  try {
+    const record = await txResponse.getRecord(client);
+    const { network } = getNetworkConfig();
+    const feeHbar = record.transactionFee.toString();
+    const txId = txResponse.transactionId.toString();
+
+    const entry: CostEntry = {
+      script, operation, feeHbar, txId, network,
+      timestamp: new Date().toISOString(),
+    };
+
+    let costs: CostEntry[] = [];
+    if (fs.existsSync(COSTS_FILE)) {
+      try { costs = JSON.parse(fs.readFileSync(COSTS_FILE, "utf8")); } catch { costs = []; }
+    }
+    costs.push(entry);
+    fs.writeFileSync(COSTS_FILE, JSON.stringify(costs, null, 2));
+
+    console.log(`  Fee charged: ${feeHbar}`);
+    return record.receipt;
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.log(`  Fee: not recorded (${message.split("\n")[0]})`);
+    try { return await txResponse.getReceipt(client); } catch { return null; }
+  }
+}
+```
+
+</Accordion>
+
+---
+
+## Step 4: Deploy the Hook Contract
+
+This script reads the compiled bytecode and deploys the HelloHooks contract using `ContractCreateFlow`.
+
+```typescript src/hello-hooks/01-deploy.ts
+import fs from "fs";
+import { ContractCreateFlow } from "@hiero-ledger/sdk";
+import { createClient } from "../utils/client.js";
+import { loadState, saveState } from "../utils/state.js";
+
+const BYTECODE_PATH = new URL(
+  "../../build/contracts/HelloHooks.bytecode.txt",
+  import.meta.url
+).pathname;
+
+async function main() {
+  loadState();
+  const client = createClient();
+
+  if (!fs.existsSync(BYTECODE_PATH)) {
+    throw new Error(
+      "Bytecode not found. Run `npm run compile` first to compile the Solidity contracts."
+    );
+  }
+  const bytecode = fs.readFileSync(BYTECODE_PATH, "utf8").trim();
+
+  console.log("=== Step 1: Deploy HelloHooks Hook Contract ===");
+  console.log(`Bytecode length: ${bytecode.length / 2} bytes`);
+  console.log("Submitting ContractCreateFlow...");
+
+  const createTx = await new ContractCreateFlow()
+    .setBytecode(bytecode)
+    .setGas(1_000_000)
+    .execute(client);
+
+  const receipt = await createTx.getReceipt(client);
+  const contractId = receipt.contractId;
+  if (!contractId) {
+    throw new Error("ContractCreate succeeded but contractId is null");
+  }
+
+  console.log(`Contract deployed: ${contractId}`);
+  console.log(`Transaction ID:   ${createTx.transactionId}`);
+
+  saveState({ contractId: contractId.toString() });
+  console.log("Saved contractId to .state.json");
+
+  client.close();
+}
+
+main().catch((err) => {
+  console.error("Deployment failed:", err.message);
+  process.exit(1);
+});
+```
+
+Run the deployment:
+
+```bash
+npx tsx src/hello-hooks/01-deploy.ts
+```
+
+Expected output:
+
+```
+Contract deployed: 0.0.8498982
+Saved contractId to .state.json
+```
+
+---
+
+## Step 5: Create Test Account and Attach Hook
+
+This is where hooks come to life. You create a new account and attach the HelloHooks contract as an `ACCOUNT_ALLOWANCE_HOOK` at creation time using `addHook()`.
+
+```typescript src/hello-hooks/02-create-account.ts
+import {
+  AccountCreateTransaction,
+  Hbar,
+  PrivateKey,
+  ContractId,
+  HookCreationDetails,
+  HookExtensionPoint,
+  EvmHook,
+} from "@hiero-ledger/sdk";
+import { createClient } from "../utils/client.js";
+import { loadState, saveState } from "../utils/state.js";
+
+const HOOK_ID = 1;
+
+async function main() {
+  const state = loadState(
+    ["contractId"],
+    "run hello-hooks/01-deploy.ts first"
+  );
+  const client = createClient();
+
+  const testAccountKey = PrivateKey.generateECDSA();
+  console.log("=== Step 2: Create Test Account and Attach Hook ===");
+  console.log("Generated ECDSA key for test account");
+  console.log(`Creating test account with hookId=${HOOK_ID}...`);
+
+  const hookDetails = new HookCreationDetails({
+    extensionPoint: HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
+    hookId: HOOK_ID,
+    evmHook: new EvmHook({
+      contractId: ContractId.fromString(state.contractId!),
+    }),
+  });
+
+  const accountCreate = await new AccountCreateTransaction()
+    .setECDSAKeyWithAlias(testAccountKey.publicKey)
+    .setInitialBalance(new Hbar(10))
+    .setMaxTransactionFee(new Hbar(15))
+    .addHook(hookDetails)
+    .freezeWith(client);
+
+  const accountSigned = await accountCreate.sign(testAccountKey);
+  const accountTx = await accountSigned.execute(client);
+  const accountReceipt = await accountTx.getReceipt(client);
+
+  const testAccountId = accountReceipt.accountId;
+  if (!testAccountId) throw new Error("AccountCreate succeeded but accountId is null");
+
+  console.log(`Test account created: ${testAccountId}`);
+  console.log(
+    `Hook attached with hookId=${HOOK_ID} -> contract ${state.contractId}`
+  );
+  console.log(`Transaction ID: ${accountTx.transactionId}`);
+
+  saveState({
+    testAccountId: testAccountId.toString(),
+    testAccountPrivKey: testAccountKey.toStringRaw(),
+    hookId: HOOK_ID,
+  });
+  console.log(`\nSaved testAccountId, hookId=${HOOK_ID} to .state.json`);
+
+  client.close();
+}
+
+main().catch((err) => {
+  console.error("Failed:", err.message);
+  process.exit(1);
+});
+```
+
+<Info>
+**How Hook Attachment Works**
+
+1. **`HookCreationDetails`** bundles the hook configuration: which extension point, a client-chosen `hookId`, and which contract to run.
+2. **`hookId` is client-chosen** - you pick any integer. The same `hookId` must be referenced later in `FungibleHookCall` when triggering transfers.
+3. **`addHook()`** on `AccountCreateTransaction` attaches the hook at account creation. You can also use `AccountUpdateTransaction` to add hooks to existing accounts.
+4. The account's key must sign the transaction (via `.sign(testAccountKey)`) because attaching a hook modifies account properties.
+
+</Info>
+
+Run the script:
+
+```bash
+npx tsx src/hello-hooks/02-create-account.ts
+```
+
+Expected output:
+
+```
+Test account created: 0.0.8498983
+Hook attached with hookId=1 -> contract 0.0.8498982
+Saved testAccountId, hookId=1 to .state.json
+```
+
+---
+
+## Step 6: Trigger the Hook (1 HBAR - Approved)
+
+Now send exactly 1 HBAR to the hooked account. The transfer includes a `FungibleHookCall` that tells the network which hook to invoke.
+
+```typescript src/hello-hooks/03-trigger.ts
+import Long from "long";
+import {
+  TransferTransaction,
+  FungibleHookCall,
+  FungibleHookType,
+  EvmHookCall,
+  Hbar,
+  AccountId,
+} from "@hiero-ledger/sdk";
+import { createClient } from "../utils/client.js";
+import { getNetworkConfig } from "../utils/config.js";
+import { loadState } from "../utils/state.js";
+
+const TRANSFER_AMOUNT_HBAR = 1;
+
+async function main() {
+  const state = loadState(
+    ["contractId", "testAccountId", "hookId"],
+    "run 01-deploy.ts and 02-create-account.ts first"
+  );
+  const { operatorId } = getNetworkConfig();
+  const client = createClient();
+
+  const testAccountId = AccountId.fromString(state.testAccountId!);
+  const operatorAccountId = AccountId.fromString(operatorId);
+
+  console.log("=== Step 3: Transfer Exactly 1 HBAR (Hook Approves) ===");
+  console.log(`Sending ${TRANSFER_AMOUNT_HBAR} HBAR:`);
+  console.log(`  From: ${operatorId} (operator)`);
+  console.log(`  To:   ${testAccountId}`);
+  console.log(`  Hook: hookId=${state.hookId}`);
+
+  const hookCall = new FungibleHookCall({
+    hookId: Long.fromInt(state.hookId!),
+    evmHookCall: new EvmHookCall({ gasLimit: Long.fromInt(100_000) }),
+    type: FungibleHookType.PRE_TX_ALLOWANCE_HOOK,
+  });
+
+  const transferTx = await new TransferTransaction()
+    .addHbarTransfer(operatorAccountId, new Hbar(-TRANSFER_AMOUNT_HBAR))
+    .addHbarTransferWithHook(
+      testAccountId,
+      new Hbar(TRANSFER_AMOUNT_HBAR),
+      hookCall
+    )
+    .setMaxTransactionFee(new Hbar(10))
+    .execute(client);
+
+  const receipt = await transferTx.getReceipt(client);
+
+  console.log(`\nTransfer succeeded! Status: ${receipt.status}`);
+  console.log(`Transaction ID: ${transferTx.transactionId}`);
+  console.log(
+    "\nThe hook read ProposedTransfers, found exactly 1 HBAR credit, and approved."
+  );
+
+  client.close();
+}
+
+main().catch((err) => {
+  console.error("Transfer failed:", err.message);
+  process.exit(1);
+});
+```
+
+<Info>
+**How `FungibleHookCall` Works**
+
+- **`hookId`** references the hook attached in Step 5 (must match exactly).
+- **`type: PRE_TX_ALLOWANCE_HOOK`** tells the network to call `allow()` before committing the transfer.
+- **`addHbarTransferWithHook`** is the hook-aware variant of `addHbarTransfer`. It attaches the `FungibleHookCall` to the receiving side of the transfer.
+- The same `FungibleHookCall` pattern works for both HBAR and HTS fungible token transfers.
+
+</Info>
+
+Run the script:
+
+```bash
+npx tsx src/hello-hooks/03-trigger.ts
+```
+
+Expected output:
+
+```
+Transfer succeeded! Status: SUCCESS
+The hook read ProposedTransfers, found exactly 1 HBAR credit, and approved.
+```
+
+---
+
+## Step 7: Trigger with Wrong Amount (Rejected)
+
+Send 2 HBAR to prove the hook rejects non-conforming transfers. This script is identical to Step 6 except it uses `WRONG_AMOUNT_HBAR = 2` and wraps `getReceipt()` in a try/catch to handle the expected rejection.
+
+<Accordion title="Full source code for src/hello-hooks/04-trigger-wrong-amount.ts">
+
+```typescript src/hello-hooks/04-trigger-wrong-amount.ts
+import Long from "long";
+import {
+  TransferTransaction, FungibleHookCall, FungibleHookType,
+  EvmHookCall, Hbar, AccountId,
+} from "@hiero-ledger/sdk";
+import { createClient } from "../utils/client.js";
+import { getNetworkConfig } from "../utils/config.js";
+import { loadState } from "../utils/state.js";
+
+const WRONG_AMOUNT_HBAR = 2;
+
+async function main() {
+  const state = loadState(
+    ["contractId", "testAccountId", "hookId"],
+    "run 01-deploy.ts and 02-create-account.ts first"
+  );
+  const { operatorId } = getNetworkConfig();
+  const client = createClient();
+  const testAccountId = AccountId.fromString(state.testAccountId!);
+  const operatorAccountId = AccountId.fromString(operatorId);
+
+  const hookCall = new FungibleHookCall({
+    hookId: Long.fromInt(state.hookId!),
+    evmHookCall: new EvmHookCall({ gasLimit: Long.fromInt(100_000) }),
+    type: FungibleHookType.PRE_TX_ALLOWANCE_HOOK,
+  });
+
+  const transferTx = await new TransferTransaction()
+    .addHbarTransfer(operatorAccountId, new Hbar(-WRONG_AMOUNT_HBAR))
+    .addHbarTransferWithHook(testAccountId, new Hbar(WRONG_AMOUNT_HBAR), hookCall)
+    .setMaxTransactionFee(new Hbar(10))
+    .execute(client);
+
+  try {
+    const receipt = await transferTx.getReceipt(client);
+    console.log(`Unexpected success: ${receipt.status}`);
+  } catch (err: unknown) {
+    const message = (err as Error).message;
+    if (message.includes("REJECTED_BY_ACCOUNT_ALLOWANCE_HOOK") || message.includes("FAIL_INVALID")) {
+      console.log(`Transfer correctly rejected: ${message}`);
+      console.log("Hook enforcement is working - 2 HBAR is not exactly 1 HBAR.");
+    } else {
+      throw err;
+    }
+  }
+  client.close();
+}
+
+main().catch((err) => { console.error("Unexpected error:", err.message); process.exit(1); });
+```
+
+</Accordion>
+
+Run the script:
+
+```bash
+npx tsx src/hello-hooks/04-trigger-wrong-amount.ts
+```
+
+Expected output:
+
+```
+Transfer correctly rejected: receipt for transaction 0.0.7536968@1775242802.197862793 contained error status REJECTED_BY_ACCOUNT_ALLOWANCE_HOOK
+Hook enforcement is working - 2 HBAR is not exactly 1 HBAR.
+```
+
+<Warning>
+  The network still charges a transaction fee even when a hook rejects the
+  transfer. The fee covers the gas used to execute the hook's `allow()` function.
+</Warning>
+
+---
+
+## Step 8: Query Mirror Node
+
+Verify the hook is attached to the test account by querying the Hedera mirror node REST API. The key endpoint is `GET /api/v1/accounts/{accountId}/hooks` - no SDK client needed, just the native `fetch` API.
+
+<Accordion title="Full source code for src/hello-hooks/05-query.ts">
+
+```typescript src/hello-hooks/05-query.ts
+import { getNetworkConfig } from "../utils/config.js";
+import { loadState } from "../utils/state.js";
+
+async function main() {
+  const state = loadState(
+    ["testAccountId", "hookId"],
+    "run 01-deploy.ts through 03-trigger.ts first"
+  );
+  const { mirrorNodeUrl } = getNetworkConfig();
+  const accountId = state.testAccountId;
+
+  console.log("=== Step 5: Query Mirror Node for Hook State ===");
+  console.log("Waiting 5 seconds for mirror node propagation...");
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+
+  const hooksUrl = `${mirrorNodeUrl}/api/v1/accounts/${accountId}/hooks`;
+  console.log(`\nQuerying: ${hooksUrl}`);
+
+  const hooksRes = await fetch(hooksUrl);
+  if (!hooksRes.ok) {
+    throw new Error(`Mirror node returned ${hooksRes.status}: ${await hooksRes.text()}`);
+  }
+  const hooksData = await hooksRes.json();
+  console.log(JSON.stringify(hooksData, null, 2));
+
+  const hooks = hooksData.hooks ?? [];
+  if (hooks.length === 0) {
+    console.warn("\nNo hooks found. Mirror node may lag ~3-5 seconds. Try again.");
+  } else {
+    const hook = hooks[0];
+    console.log(`extension_point: ${hook.extension_point}`);
+    console.log(`deleted: ${hook.deleted}`);
+    console.log(`contract_id: ${hook.contract_id}`);
+  }
+}
+
+main().catch((err) => {
+  console.error("Mirror node query failed:", err.message);
+  process.exit(1);
+});
+```
+
+</Accordion>
+
+Run the script:
+
+```bash
+npx tsx src/hello-hooks/05-query.ts
+```
+
+Expected output (the mirror node returns the hook metadata as JSON):
+
+```json
+{
+  "hooks": [
+    {
+      "hook_id": 1,
+      "extension_point": "ACCOUNT_ALLOWANCE_HOOK",
+      "contract_id": "0.0.8498982",
+      "deleted": false
+    }
+  ]
+}
+```
+
+---
+
+## Step 9: Clean Up
+
+Remove the hook from the test account using `AccountUpdateTransaction.addHookToDelete()`, then verify deletion via the mirror node and clean up local state.
+
+The key operation is straightforward:
+
+```typescript
+const deleteHookTx = await new AccountUpdateTransaction()
+  .setAccountId(testAccountId)
+  .addHookToDelete(Long.fromInt(hookId))
+  .setMaxTransactionFee(new Hbar(15))
+  .freezeWith(client);
+
+const signed = await deleteHookTx.sign(testAccountKey);
+const response = await signed.execute(client);
+const receipt = await response.getReceipt(client);
+```
+
+<Accordion title="Full source code for src/hello-hooks/06-cleanup.ts">
+
+```typescript src/hello-hooks/06-cleanup.ts
+import Long from "long";
+import { AccountUpdateTransaction, AccountId, PrivateKey, Hbar } from "@hiero-ledger/sdk";
+import { createClient } from "../utils/client.js";
+import { getNetworkConfig } from "../utils/config.js";
+import { loadState, removeStateKeys } from "../utils/state.js";
+
+async function main() {
+  const state = loadState(
+    ["testAccountId", "testAccountPrivKey", "hookId"],
+    "run 01-deploy.ts through 05-query.ts first"
+  );
+  const { mirrorNodeUrl } = getNetworkConfig();
+  const client = createClient();
+
+  console.log("=== Step 6: Cleanup - Delete HelloHooks Hook ===");
+
+  const testAccountKey = PrivateKey.fromStringECDSA(state.testAccountPrivKey!);
+  const testAccountId = AccountId.fromString(state.testAccountId!);
+
+  const deleteHookTx = await new AccountUpdateTransaction()
+    .setAccountId(testAccountId)
+    .addHookToDelete(Long.fromInt(state.hookId!))
+    .setMaxTransactionFee(new Hbar(15))
+    .freezeWith(client);
+  const signed = await deleteHookTx.sign(testAccountKey);
+  const response = await signed.execute(client);
+  const receipt = await response.getReceipt(client);
+  console.log(`Hook deleted. Status: ${receipt.status}`);
+
+  console.log("Waiting 5 seconds for mirror node propagation...");
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+  const hooksUrl = `${mirrorNodeUrl}/api/v1/accounts/${state.testAccountId}/hooks`;
+  try {
+    const res = await fetch(hooksUrl);
+    if (res.ok) {
+      const data = await res.json();
+      const hook = data.hooks?.find((h: Record<string, unknown>) => h.hook_id === state.hookId);
+      if (hook) console.log(`hookId=${hook.hook_id}, deleted=${hook.deleted}`);
+      else console.log("Hook not found (already purged).");
+    }
+  } catch (err: unknown) {
+    console.log(`Mirror node query failed: ${(err as Error).message}`);
+  }
+
+  removeStateKeys(["testAccountId", "testAccountPrivKey", "hookId", "contractId"]);
+  console.log("Removed HelloHooks keys from .state.json");
+  client.close();
+}
+
+main().catch((err) => { console.error("Cleanup failed:", err.message); process.exit(1); });
+```
+
+</Accordion>
+
+Run the cleanup:
+
+```bash
+npx tsx src/hello-hooks/06-cleanup.ts
+```
+
+Expected output:
+
+```
+=== Step 6: Cleanup - Delete HelloHooks Hook ===
+HelloHooks account: 0.0.8498983, hookId=1
+
+--- Phase 1: Delete hook ---
+Deleting hookId=1 from account 0.0.8498983...
+  Fee charged: 11.36000565 ℏ
+HelloHooks hook deleted. Status: SUCCESS
+
+--- Phase 2: Mirror node verification ---
+Waiting 5 seconds for mirror node propagation...
+Querying: https://testnet.mirrornode.hedera.com/api/v1/accounts/0.0.8498983/hooks
+hookId=1, deleted=true (expected: true)
+
+--- Phase 3: Local cleanup ---
+Removed HelloHooks keys from .state.json
+
+HelloHooks cleanup complete: deleted successfully
+To re-run the HelloHooks demo, start from hello-hooks/01-deploy.ts.
+```
+
+---
+
+## Conclusion
+
+You have just built your first Hiero Hook - a programmable gatekeeper that inspects incoming transfers and enforces a policy entirely on-chain, with no off-chain infrastructure.
+
+### Key Takeaways
+
+- **Hooks are account abstraction for Hedera** - programmable rules for incoming transfers without requiring sender cooperation.
+- **`hookId` is client-chosen, not network-assigned.** You pick the ID when creating the hook; senders reference it in `FungibleHookCall`.
+- **The `HOOK_ADDR` guard (`0x16d`) is critical.** It ensures your contract logic only runs inside the hook EVM frame.
+- **`FungibleHookCall` works for both HBAR and HTS tokens.** The same pattern covers all fungible transfers.
+- **Rejected transfers still cost gas.** The network charges for executing the hook even when `allow()` returns `false`.
+
+In Part 2, you will build **ManagedTransferCap** - a two-phase hook that uses `allowPre()` and `allowPost()` with on-chain storage to enforce a daily transfer cap across multiple transactions.
+
+<Card
+  title="Hiero Hooks - ManagedTransferCap: Two-Phase Hooks (Part 2)"
+  href="/hedera/tutorials/hooks/managed-transfer-cap"
+/>
+
+---
+
+## Additional Resources
+
+- [HIP-1195: Hiero hooks and an application to allowances](https://hips.hedera.com/hip/hip-1195)
+- [Core Concepts - Hiero Hooks](/hedera/core-concepts/accounts/hiero-hooks)
+- [Hiero SDK for JavaScript](https://github.com/hiero-ledger/hiero-sdk-js)
+- [Full Demo Repository](https://github.com/hedera-dev/demo-hiero-hooks)
+
+<Columns cols={2}>
+  <Card title="Writer: Kiran Pachhai, Developer Advocate" arrow>
+    [GitHub](https://github.com/kpachhai) |
+    [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
+  </Card>
+</Columns>

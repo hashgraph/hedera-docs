@@ -1,0 +1,1031 @@
+---
+title: "Hiero Hooks - ManagedTransferCap: Two-Phase Transfer Control (Part 2)"
+---
+
+In [Part 1](/hedera/tutorials/hooks/hello-hooks), you deployed a simple hook that approves or rejects transfers based on an exact amount check. Now it is time to build something production-relevant: an **owner-managed transfer cap** that uses the two-phase hook model to validate before and update state after each transfer.
+
+**What makes this different from Part 1?**
+
+- **Two-phase dispatch** - `allowPre()` checks the cap; `allowPost()` deducts the amount. The cap is only decremented when the transfer actually commits.
+- **Owner-managed state** - The account owner writes and adjusts the cap via `HookStoreTransaction`, a cheap Hedera-native storage write that bypasses the EVM entirely.
+- **Mandatory enforcement** - `receiver_sig_required=true` forces every inbound transfer through the hook. Without it, senders can bypass the cap by omitting the hook reference.
+- **ProposedTransfers inspection** - The hook sums positive (credit) amounts across HBAR and token adjustments to calculate the total inbound value.
+
+<Note>
+  You can find the **complete demo repository** with all scripts at [**demo-hiero-hooks repository**](https://github.com/hedera-dev/demo-hiero-hooks). The code below is adapted from that repo for a standalone walkthrough.
+</Note>
+
+---
+
+## What You'll Build
+
+A `ManagedTransferCap` hook contract that:
+
+1. **Reads a remaining cap** from hook-scoped storage slot `0x00`
+2. **Validates transfers** in `allowPre()` - rejects if the proposed credit exceeds the remaining cap
+3. **Deducts the amount** in `allowPost()` - writes the updated cap back to storage
+4. **Lets the owner adjust the cap at any time** via `HookStoreTransaction` - no contract redeployment needed
+
+---
+
+## Prerequisites
+
+- Completion of [Part 1: HelloHooks](/hedera/tutorials/hooks/hello-hooks) (or familiarity with hook deployment and `FungibleHookCall`)
+- An ECDSA account with ~80 HBAR on testnet from the [Hedera Portal](https://portal.hedera.com/)
+- [Node.js](https://nodejs.org/) >= 18
+
+---
+
+## Table of Contents <a href="#table-of-contents" id="table-of-contents"></a>
+
+1. [Project Setup](#project-setup)
+2. [Step 1: Write the ManagedTransferCap Contract](#step-1-write-the-managedtransfercap-contract)
+3. [Step 2: Compile the Contract](#step-2-compile-the-contract)
+4. [Step 3: Deploy the Hook Contract](#step-3-deploy-the-hook-contract)
+5. [Step 4: Create Test Account, Token, and Attach Hook](#step-4-create-test-account-token-and-attach-hook)
+6. [Step 5: Set Transfer Cap (500)](#step-5-set-transfer-cap-500)
+7. [Step 6: Transfer Within Cap (200 tokens)](#step-6-transfer-within-cap-200-tokens)
+8. [Step 7: Transfer Exceeding Cap (400 tokens)](#step-7-transfer-exceeding-cap-400-tokens)
+9. [Step 8: Query Mirror Node](#step-8-query-mirror-node)
+10. [Step 9: Increase Cap (1000)](#step-9-increase-cap-1000)
+11. [Step 10: Transfer After Increase (400 tokens)](#step-10-transfer-after-increase-400-tokens)
+12. [Step 11: Clean Up](#step-11-clean-up)
+13. [Conclusion](#conclusion)
+14. [Additional Resources](#additional-resources)
+
+---
+
+## Project Setup
+
+If you completed Part 1, you can reuse the same project directory. Otherwise, create a new project:
+
+```bash
+mkdir demo-hiero-hooks && cd demo-hiero-hooks
+npm init -y
+npm install @hiero-ledger/sdk@2.83.0 dotenv long tsx typescript
+```
+
+Create a `.env` file with your testnet credentials:
+
+```bash .env
+HEDERA_NETWORK=testnet
+OPERATOR_ACCOUNT_ID=0.0.7536968
+OPERATOR_PRIVATE_KEY=your-ecdsa-private-key-here
+```
+
+<Warning>
+  Never commit `.env` to version control. Add it to your `.gitignore`.
+</Warning>
+
+If you completed Part 1, your `src/utils/` directory already has `config.ts`, `client.ts`, `state.ts`, and `cost.ts`. This tutorial adds one more utility:
+
+**`src/utils/crypto.ts`** - Converts values to minimal big-endian byte representation (required by HookStoreTransaction).
+
+<Accordion title="src/utils/crypto.ts">
+
+```typescript src/utils/crypto.ts
+/**
+ * Converts a Buffer to its minimal big-endian byte representation
+ * by stripping leading zero bytes.
+ *
+ * EVM hook storage keys and values must use minimal representation
+ * per HIP-1195. A fully-zero buffer (e.g., slot 0x00) becomes
+ * empty bytes [].
+ */
+export function toMinimalBytes(buf: Buffer): Buffer {
+  let start = 0;
+  while (start < buf.length && buf[start] === 0) start++;
+  return buf.slice(start);
+}
+```
+
+</Accordion>
+
+---
+
+## Step 1: Write the ManagedTransferCap Contract
+
+Create the Solidity contract. This hook uses `PRE_POST_TX_ALLOWANCE_HOOK`, which causes the Hedera node to call `allowPre()` before the transfer commits and `allowPost()` after.
+
+```solidity contracts/ManagedTransferCap.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity 0.8.34;
+
+// HIP-1195 interfaces (IHieroHook, IHieroAccountAllowanceHook) are the same as
+// Part 1. They define HookContext, ProposedTransfers, AccountAmount, and
+// TokenTransferList. See Part 1 or the full source in the demo repo for the
+// complete interface definitions.
+
+interface IHieroHook {
+    struct HookContext {
+        address owner; uint256 txnFee; uint256 gasCost; string memo; bytes data;
+    }
+}
+
+interface IHieroAccountAllowanceHook {
+    struct AccountAmount { address account; int64 amount; }
+    struct NftTransfer { address sender; address receiver; int64 serialNo; }
+    struct TokenTransferList {
+        address token; AccountAmount[] adjustments; NftTransfer[] nftTransfers;
+    }
+    struct Transfers { AccountAmount[] hbarAdjustments; TokenTransferList[] tokens; }
+    struct ProposedTransfers { Transfers direct; Transfers customFee; }
+    function allow(
+        IHieroHook.HookContext calldata context,
+        ProposedTransfers memory proposedTransfers
+    ) external payable returns (bool);
+}
+
+/// @title  ManagedTransferCap
+/// @notice Two-phase hook: allowPre validates, allowPost deducts.
+///         Storage slot 0x00 = remaining cap (uint256).
+contract ManagedTransferCap is IHieroAccountAllowanceHook {
+
+    address constant HOOK_ADDR = address(uint160(0x16d));
+
+    function allowPre(
+        IHieroHook.HookContext calldata context,
+        ProposedTransfers memory proposedTransfers
+    ) external payable returns (bool) {
+        require(address(this) == HOOK_ADDR, "only callable as hook");
+
+        uint256 remaining;
+        assembly { remaining := sload(0) }
+
+        if (remaining == 0) return false;
+
+        uint256 totalCredit = _calculateCredit(context.owner, proposedTransfers);
+        return totalCredit <= remaining;
+    }
+
+    function allowPost(
+        IHieroHook.HookContext calldata context,
+        ProposedTransfers memory proposedTransfers
+    ) external payable returns (bool) {
+        require(address(this) == HOOK_ADDR, "only callable as hook");
+
+        uint256 remaining;
+        assembly { remaining := sload(0) }
+
+        uint256 totalCredit = _calculateCredit(context.owner, proposedTransfers);
+        uint256 newRemaining = remaining - totalCredit;
+
+        assembly { sstore(0, newRemaining) }
+        return true;
+    }
+
+    function allow(
+        IHieroHook.HookContext calldata,
+        ProposedTransfers memory
+    ) external payable override returns (bool) {
+        require(address(this) == HOOK_ADDR, "only callable as hook");
+        return true;
+    }
+
+    function _calculateCredit(
+        address owner,
+        ProposedTransfers memory proposed
+    ) internal pure returns (uint256) {
+        uint256 total = 0;
+
+        AccountAmount[] memory hbarAdj = proposed.direct.hbarAdjustments;
+        for (uint256 i = 0; i < hbarAdj.length; i++) {
+            if (hbarAdj[i].account == owner && hbarAdj[i].amount > 0) {
+                total += uint256(uint64(hbarAdj[i].amount));
+            }
+        }
+
+        TokenTransferList[] memory tokenLists = proposed.direct.tokens;
+        for (uint256 i = 0; i < tokenLists.length; i++) {
+            AccountAmount[] memory adj = tokenLists[i].adjustments;
+            for (uint256 j = 0; j < adj.length; j++) {
+                if (adj[j].account == owner && adj[j].amount > 0) {
+                    total += uint256(uint64(adj[j].amount));
+                }
+            }
+        }
+
+        return total;
+    }
+}
+```
+
+<Note>
+
+**How the two-phase split works:**
+
+- **allowPre()** reads the remaining cap from storage via `sload(0)`, calculates the total credit to the hook owner from `ProposedTransfers`, and returns `true` only if the credit fits within the cap. If it returns `false`, the transfer is rejected before commit.
+- **allowPost()** runs only if `allowPre()` approved. It deducts the credit from the remaining cap and writes the new value back via `sstore(0, newRemaining)`.
+- **\_calculateCredit()** iterates over HBAR adjustments and all token transfer lists, summing every positive (credit) amount for the hook owner's address. This means the cap covers both HBAR and token transfers in a single check.
+- **HOOK\_ADDR guard** (`address(this) == 0x16d`) ensures the function only executes inside the Hiero hook EVM frame, not via a direct contract call.
+
+</Note>
+
+---
+
+## Step 2: Compile the Contract
+
+Compile all contracts using the compile script (same as Part 1):
+
+```bash
+npm run compile
+```
+
+This produces `build/contracts/ManagedTransferCap.bytecode.txt`, `ManagedTransferCap.abi.json`, and `ManagedTransferCap.metadata.json`.
+
+---
+
+## Step 3: Deploy the Hook Contract
+
+Deploy the compiled bytecode using `ContractCreateFlow`, which handles file upload and contract creation in a single call.
+
+```typescript src/managed-transfer-cap/01-deploy.ts
+import fs from "fs";
+import { ContractCreateFlow, Client, PrivateKey } from "@hiero-ledger/sdk";
+import "dotenv/config";
+
+const BYTECODE_PATH = "build/contracts/ManagedTransferCap.bytecode.txt";
+
+async function main() {
+  const client = Client.forTestnet().setOperator(
+    process.env.OPERATOR_ACCOUNT_ID!,
+    PrivateKey.fromStringECDSA(process.env.OPERATOR_PRIVATE_KEY!),
+  );
+
+  const bytecode = fs.readFileSync(BYTECODE_PATH, "utf8").trim();
+  console.log("Deploying ManagedTransferCap...");
+  console.log(`Bytecode length: ${bytecode.length / 2} bytes`);
+
+  const createTx = await new ContractCreateFlow()
+    .setBytecode(bytecode)
+    .setGas(1_000_000)
+    .execute(client);
+
+  const receipt = await createTx.getReceipt(client);
+  const contractId = receipt.contractId!;
+
+  console.log(`Contract deployed: ${contractId}`);
+  console.log(`Transaction ID:   ${createTx.transactionId}`);
+
+  // Save for subsequent scripts
+  fs.writeFileSync(
+    ".state.json",
+    JSON.stringify({ capContractId: contractId.toString() }, null, 2),
+  );
+  console.log("Saved capContractId to .state.json");
+
+  client.close();
+}
+
+main().catch((err) => { console.error(err.message); process.exit(1); });
+```
+
+Run:
+
+```bash
+npx tsx src/managed-transfer-cap/01-deploy.ts
+```
+
+---
+
+## Step 4: Create Test Account, Token, and Attach Hook
+
+This step creates a new test account with `receiver_sig_required=true` and a `PRE_POST_TX_ALLOWANCE_HOOK` attached at creation time. It also creates an HTS fungible token and associates it with the account.
+
+<Warning>
+
+**Why receiver\_sig\_required=true?**
+
+Hooks fire whenever the sender includes a `FungibleHookCall` in their transfer. But without `receiver_sig_required=true`, a sender can simply omit the hook reference and transfer tokens directly - bypassing the cap entirely.
+
+Setting `receiver_sig_required=true` means every inbound transfer needs authorization: either the receiver's co-signature or a hook returning `true`. This makes the cap mandatory, not optional.
+
+</Warning>
+
+```typescript src/managed-transfer-cap/02-create-account.ts
+import fs from "fs";
+import Long from "long";
+import {
+  AccountCreateTransaction,
+  TokenCreateTransaction,
+  TokenAssociateTransaction,
+  TokenType,
+  TokenSupplyType,
+  Hbar,
+  PrivateKey,
+  ContractId,
+  HookCreationDetails,
+  HookExtensionPoint,
+  EvmHook,
+  Client,
+  AccountId,
+} from "@hiero-ledger/sdk";
+import "dotenv/config";
+
+const HOOK_ID = 2;
+
+async function main() {
+  const state = JSON.parse(fs.readFileSync(".state.json", "utf8"));
+  const operatorId = process.env.OPERATOR_ACCOUNT_ID!;
+  const client = Client.forTestnet().setOperator(
+    operatorId,
+    PrivateKey.fromStringECDSA(process.env.OPERATOR_PRIVATE_KEY!),
+  );
+
+  const capAccountKey = PrivateKey.generateECDSA();
+  console.log("Creating test account with hook and receiver_sig_required=true...");
+
+  const hookDetails = new HookCreationDetails({
+    extensionPoint: HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
+    hookId: HOOK_ID,
+    evmHook: new EvmHook({
+      contractId: ContractId.fromString(state.capContractId),
+    }),
+  });
+
+  const accountCreate = await new AccountCreateTransaction()
+    .setECDSAKeyWithAlias(capAccountKey.publicKey)
+    .setInitialBalance(new Hbar(10))
+    .setReceiverSignatureRequired(true)
+    .setMaxTransactionFee(new Hbar(15))
+    .addHook(hookDetails)
+    .freezeWith(client);
+
+  const accountTx = await (await accountCreate.sign(capAccountKey)).execute(client);
+  const accountReceipt = await accountTx.getReceipt(client);
+  const capAccountId = accountReceipt.accountId!;
+
+  console.log(`Test account created: ${capAccountId}`);
+  console.log(`Hook attached: hookId=${HOOK_ID} -> contract ${state.capContractId}`);
+
+  // Create HTS fungible token (MCT - Managed Cap Token)
+  console.log("Creating HTS fungible token (MCT)...");
+  const tokenTx = await new TokenCreateTransaction()
+    .setTokenName("Managed Cap Token")
+    .setTokenSymbol("MCT")
+    .setTokenType(TokenType.FungibleCommon)
+    .setDecimals(0)
+    .setInitialSupply(10_000)
+    .setSupplyType(TokenSupplyType.Finite)
+    .setMaxSupply(10_000)
+    .setTreasuryAccountId(AccountId.fromString(operatorId))
+    .execute(client);
+
+  const tokenReceipt = await tokenTx.getReceipt(client);
+  const capTokenId = tokenReceipt.tokenId!;
+  console.log(`Token created: ${capTokenId} (MCT, supply=10000, decimals=0)`);
+
+  // Associate token with the cap account
+  console.log("Associating MCT with cap account...");
+  const assocTx = await new TokenAssociateTransaction()
+    .setAccountId(capAccountId)
+    .setTokenIds([capTokenId])
+    .freezeWith(client);
+  await (await assocTx.sign(capAccountKey)).execute(client);
+  console.log("Token associated.");
+
+  // Save state
+  Object.assign(state, {
+    capAccountId: capAccountId.toString(),
+    capAccountPrivKey: capAccountKey.toStringRaw(),
+    capTokenId: capTokenId.toString(),
+    capHookId: HOOK_ID,
+  });
+  fs.writeFileSync(".state.json", JSON.stringify(state, null, 2));
+  console.log("Saved capAccountId, capTokenId, capHookId to .state.json");
+
+  client.close();
+}
+
+main().catch((err) => { console.error(err.message); process.exit(1); });
+```
+
+Run:
+
+```bash
+npx tsx src/managed-transfer-cap/02-create-account.ts
+```
+
+---
+
+## Step 5: Set Transfer Cap (500)
+
+Write the initial cap value to the hook's storage slot `0x00` using `HookStoreTransaction`. This is a Hedera-native transaction that writes 32-byte keys and values directly - no EVM execution, no gas cost. The fee is $0.005 per transaction.
+
+<Note>
+
+**Minimal bytes encoding for uint256 values**
+
+HIP-1195 requires storage keys and values to use minimal big-endian byte representation. This means you strip leading zero bytes:
+
+- `500` in uint256 is `0x00000000...01F4` (32 bytes). Minimal form: `0x01F4` (2 bytes).
+- Slot `0x00` is all zeros. Minimal form: empty bytes `[]`.
+
+The `toMinimalBytes()` helper handles this conversion.
+
+</Note>
+
+```typescript src/managed-transfer-cap/03-set-cap.ts
+import fs from "fs";
+import Long from "long";
+import {
+  HookStoreTransaction,
+  HookId,
+  HookEntityId,
+  AccountId,
+  PrivateKey,
+  Hbar,
+  EvmHookStorageSlot,
+  Client,
+} from "@hiero-ledger/sdk";
+import "dotenv/config";
+
+const CAP_VALUE = 500;
+
+function toMinimalBytes(buf: Buffer): Buffer {
+  let start = 0;
+  while (start < buf.length && buf[start] === 0) start++;
+  return buf.slice(start);
+}
+
+async function main() {
+  const state = JSON.parse(fs.readFileSync(".state.json", "utf8"));
+  const client = Client.forTestnet().setOperator(
+    process.env.OPERATOR_ACCOUNT_ID!,
+    PrivateKey.fromStringECDSA(process.env.OPERATOR_PRIVATE_KEY!),
+  );
+
+  const capAccountKey = PrivateKey.fromStringECDSA(state.capAccountPrivKey);
+  const capAccountId = AccountId.fromString(state.capAccountId);
+
+  console.log(`Setting transfer cap to ${CAP_VALUE} token units...`);
+
+  // Encode 500 as big-endian uint256, then strip leading zeros
+  const capBuffer = Buffer.alloc(32, 0);
+  capBuffer.writeBigUInt64BE(BigInt(CAP_VALUE), 24);
+  const minimalValue = toMinimalBytes(capBuffer);
+  console.log(`Encoded value (minimal): 0x${minimalValue.toString("hex")}`);
+
+  // Slot key 0x00 in minimal form is empty bytes
+  const slotKey = new Uint8Array(0);
+
+  const hookStoreTx = await new HookStoreTransaction()
+    .setHookId(
+      new HookId({
+        entityId: new HookEntityId({ accountId: capAccountId }),
+        hookId: Long.fromInt(state.capHookId),
+      }),
+    )
+    .addStorageUpdate(
+      new EvmHookStorageSlot({ key: slotKey, value: minimalValue }),
+    )
+    .setMaxTransactionFee(new Hbar(10))
+    .freezeWith(client);
+
+  const signedTx = await hookStoreTx.sign(capAccountKey);
+  const txResponse = await signedTx.execute(client);
+  const receipt = await txResponse.getReceipt(client);
+
+  console.log(`Cap set! Status: ${receipt.status}`);
+  console.log("Slot 0x00 now holds uint256(500).");
+  console.log("Transfers up to 500 token units will be approved.");
+
+  client.close();
+}
+
+main().catch((err) => { console.error(err.message); process.exit(1); });
+```
+
+Run:
+
+```bash
+npx tsx src/managed-transfer-cap/03-set-cap.ts
+```
+
+Expected output:
+
+```
+=== Step 3: Set Transfer Cap via HookStoreTransaction ===
+Cap value: 500 token units
+Encoded value (minimal): 0x01f4
+Writing to hook-scoped storage slot 0x00...
+  Fee charged: 0.05678064 ℏ
+Cap set! Status: SUCCESS
+Transaction ID: 0.0.7536968@1775242910.594492207
+
+Cap set to 500 token units
+Slot 0x00 now holds uint256(500). Transfers up to 500 will be approved.
+Run managed-transfer-cap/04-transfer-within-cap.ts to test a transfer within the cap.
+```
+
+---
+
+## Step 6: Transfer Within Cap (200 tokens)
+
+Send 200 MCT tokens to the cap account. The hook runs in two phases: `allowPre()` checks `200 <= 500` and approves; `allowPost()` deducts 200, leaving 300 remaining.
+
+```typescript src/managed-transfer-cap/04-transfer-within-cap.ts
+import fs from "fs";
+import Long from "long";
+import {
+  TransferTransaction,
+  FungibleHookCall,
+  FungibleHookType,
+  EvmHookCall,
+  Hbar,
+  TokenId,
+  AccountId,
+  Client,
+  PrivateKey,
+} from "@hiero-ledger/sdk";
+import "dotenv/config";
+
+const TRANSFER_AMOUNT = 200;
+
+async function main() {
+  const state = JSON.parse(fs.readFileSync(".state.json", "utf8"));
+  const operatorId = process.env.OPERATOR_ACCOUNT_ID!;
+  const client = Client.forTestnet().setOperator(
+    operatorId,
+    PrivateKey.fromStringECDSA(process.env.OPERATOR_PRIVATE_KEY!),
+  );
+
+  const tokenId = TokenId.fromString(state.capTokenId);
+  const capAccountId = AccountId.fromString(state.capAccountId);
+  const operatorAccountId = AccountId.fromString(operatorId);
+
+  console.log(`Transferring ${TRANSFER_AMOUNT} MCT tokens...`);
+  console.log(`  From: ${operatorId} (operator)`);
+  console.log(`  To:   ${capAccountId} (receiver_sig_required=true)`);
+  console.log("  Hook: PRE_POST_TX_ALLOWANCE_HOOK");
+
+  const hookCall = new FungibleHookCall({
+    hookId: Long.fromInt(state.capHookId),
+    evmHookCall: new EvmHookCall({ gasLimit: Long.fromInt(100_000) }),
+    type: FungibleHookType.PRE_POST_TX_ALLOWANCE_HOOK,
+  });
+
+  const transferTx = await new TransferTransaction()
+    .addTokenTransfer(tokenId, operatorAccountId, -TRANSFER_AMOUNT)
+    .addTokenTransferWithHook(tokenId, capAccountId, TRANSFER_AMOUNT, hookCall)
+    .setMaxTransactionFee(new Hbar(10))
+    .execute(client);
+
+  const receipt = await transferTx.getReceipt(client);
+  console.log(`Transfer succeeded! Status: ${receipt.status}`);
+  console.log("allowPre() approved (200 <= 500), allowPost() deducted 200.");
+  console.log("Remaining cap: 300 token units.");
+
+  client.close();
+}
+
+main().catch((err) => { console.error(err.message); process.exit(1); });
+```
+
+Run:
+
+```bash
+npx tsx src/managed-transfer-cap/04-transfer-within-cap.ts
+```
+
+---
+
+## Step 7: Transfer Exceeding Cap (400 tokens)
+
+Attempt to transfer 400 tokens. The remaining cap is 300, so `allowPre()` returns `false` and the transfer is rejected.
+
+```typescript src/managed-transfer-cap/05-transfer-exceeds-cap.ts
+import fs from "fs";
+import Long from "long";
+import {
+  TransferTransaction,
+  FungibleHookCall,
+  FungibleHookType,
+  EvmHookCall,
+  Hbar,
+  TokenId,
+  AccountId,
+  Client,
+  PrivateKey,
+} from "@hiero-ledger/sdk";
+import "dotenv/config";
+
+const TRANSFER_AMOUNT = 400;
+
+async function main() {
+  const state = JSON.parse(fs.readFileSync(".state.json", "utf8"));
+  const operatorId = process.env.OPERATOR_ACCOUNT_ID!;
+  const client = Client.forTestnet().setOperator(
+    operatorId,
+    PrivateKey.fromStringECDSA(process.env.OPERATOR_PRIVATE_KEY!),
+  );
+
+  const tokenId = TokenId.fromString(state.capTokenId);
+  const capAccountId = AccountId.fromString(state.capAccountId);
+  const operatorAccountId = AccountId.fromString(operatorId);
+
+  console.log(`Attempting to transfer ${TRANSFER_AMOUNT} MCT tokens...`);
+  console.log("Expected: 400 > 300 remaining cap -> REJECTED");
+
+  const hookCall = new FungibleHookCall({
+    hookId: Long.fromInt(state.capHookId),
+    evmHookCall: new EvmHookCall({ gasLimit: Long.fromInt(100_000) }),
+    type: FungibleHookType.PRE_POST_TX_ALLOWANCE_HOOK,
+  });
+
+  const transferTx = await new TransferTransaction()
+    .addTokenTransfer(tokenId, operatorAccountId, -TRANSFER_AMOUNT)
+    .addTokenTransferWithHook(tokenId, capAccountId, TRANSFER_AMOUNT, hookCall)
+    .setMaxTransactionFee(new Hbar(10))
+    .execute(client);
+
+  try {
+    const receipt = await transferTx.getReceipt(client);
+    console.log(`Status: ${receipt.status}`);
+  } catch (err: unknown) {
+    const message = (err as Error).message;
+    if (message.includes("REJECTED_BY_ACCOUNT_ALLOWANCE_HOOK") ||
+        message.includes("FAIL_INVALID")) {
+      console.log(`Transfer correctly rejected: ${message}`);
+      console.log("Hook enforcement is working - 400 exceeds remaining cap of 300.");
+    } else {
+      throw err;
+    }
+  }
+
+  client.close();
+}
+
+main().catch((err) => { console.error(err.message); process.exit(1); });
+```
+
+Run:
+
+```bash
+npx tsx src/managed-transfer-cap/05-transfer-exceeds-cap.ts
+```
+
+Expected output:
+
+```
+=== Step 5: Transfer Exceeding Cap (400 tokens) ===
+Sending 400 MCT tokens:
+  From:      0.0.7536968 (operator)
+  To:        0.0.8498994 (receiver_sig_required=true)
+  Hook:      hookId=2
+  Type:      PRE_POST_TX_ALLOWANCE_HOOK
+
+Expected: 400 > 300 remaining cap -> REJECTED_BY_ACCOUNT_ALLOWANCE_HOOK
+Submitting TransferTransaction...
+  Fee: not recorded (receipt for transaction 0.0.7536968@1775242917.014004733 contained error status REJECTED_BY_ACCOUNT_ALLOWANCE_HOOK)
+
+Transfer correctly rejected: receipt for transaction 0.0.7536968@1775242917.014004733 contained error status REJECTED_BY_ACCOUNT_ALLOWANCE_HOOK
+Hook enforcement is working - 400 exceeds remaining cap of 300.
+Run managed-transfer-cap/07-increase-cap.ts to raise the cap.
+```
+
+<Note>
+  Even though the transfer is rejected, the transaction fee is still charged.
+  The transaction reaches consensus and the hook executes - it just returns
+  `false`, which causes the network to deny the transfer.
+</Note>
+
+---
+
+## Step 8: Query Mirror Node
+
+Verify the hook attachment and storage writes via the Hedera mirror node REST API.
+
+```typescript src/managed-transfer-cap/06-query.ts
+import fs from "fs";
+import "dotenv/config";
+
+async function main() {
+  const state = JSON.parse(fs.readFileSync(".state.json", "utf8"));
+  const mirrorNodeUrl = "https://testnet.mirrornode.hedera.com";
+  const accountId = state.capAccountId;
+  const operatorId = process.env.OPERATOR_ACCOUNT_ID!;
+
+  console.log("Waiting 5 seconds for mirror node propagation...");
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+
+  // Query 1: List hooks on the account
+  const hooksUrl = `${mirrorNodeUrl}/api/v1/accounts/${accountId}/hooks`;
+  console.log(`\nQuerying: ${hooksUrl}`);
+  const hooksRes = await fetch(hooksUrl);
+  const hooksData = await hooksRes.json();
+  console.log("Hooks response:");
+  console.log(JSON.stringify(hooksData, null, 2));
+
+  // Query 2: HOOKSTORE transactions
+  const hookstoreUrl =
+    `${mirrorNodeUrl}/api/v1/transactions?account.id=${operatorId}&transactiontype=HOOKSTORE&limit=5&order=desc`;
+  console.log(`\nQuerying: ${hookstoreUrl}`);
+  const hookstoreRes = await fetch(hookstoreUrl);
+  const hookstoreData = await hookstoreRes.json();
+
+  const transactions = hookstoreData.transactions ?? [];
+  console.log(`Found ${transactions.length} HOOKSTORE transaction(s):`);
+  for (const tx of transactions) {
+    console.log(`  ${tx.transaction_id} - ${tx.result} (${tx.consensus_timestamp})`);
+  }
+}
+
+main().catch((err) => { console.error(err.message); process.exit(1); });
+```
+
+Run:
+
+```bash
+npx tsx src/managed-transfer-cap/06-query.ts
+```
+
+The hooks response confirms `extension_point: ACCOUNT_ALLOWANCE_HOOK` and `deleted: false` for hookId 2.
+
+---
+
+## Step 9: Increase Cap (1000)
+
+The owner can adjust the cap at any time by writing a new value to slot `0x00`. No contract redeployment needed.
+
+```typescript src/managed-transfer-cap/07-increase-cap.ts
+import fs from "fs";
+import Long from "long";
+import {
+  HookStoreTransaction,
+  HookId,
+  HookEntityId,
+  AccountId,
+  PrivateKey,
+  Hbar,
+  EvmHookStorageSlot,
+  Client,
+} from "@hiero-ledger/sdk";
+import "dotenv/config";
+
+const NEW_CAP_VALUE = 1000;
+
+function toMinimalBytes(buf: Buffer): Buffer {
+  let start = 0;
+  while (start < buf.length && buf[start] === 0) start++;
+  return buf.slice(start);
+}
+
+async function main() {
+  const state = JSON.parse(fs.readFileSync(".state.json", "utf8"));
+  const client = Client.forTestnet().setOperator(
+    process.env.OPERATOR_ACCOUNT_ID!,
+    PrivateKey.fromStringECDSA(process.env.OPERATOR_PRIVATE_KEY!),
+  );
+
+  const capAccountKey = PrivateKey.fromStringECDSA(state.capAccountPrivKey);
+  const capAccountId = AccountId.fromString(state.capAccountId);
+
+  console.log(`Increasing transfer cap to ${NEW_CAP_VALUE}...`);
+
+  const capBuffer = Buffer.alloc(32, 0);
+  capBuffer.writeBigUInt64BE(BigInt(NEW_CAP_VALUE), 24);
+  const minimalValue = toMinimalBytes(capBuffer);
+  console.log(`Encoded value (minimal): 0x${minimalValue.toString("hex")}`);
+
+  const hookStoreTx = await new HookStoreTransaction()
+    .setHookId(
+      new HookId({
+        entityId: new HookEntityId({ accountId: capAccountId }),
+        hookId: Long.fromInt(state.capHookId),
+      }),
+    )
+    .addStorageUpdate(
+      new EvmHookStorageSlot({
+        key: new Uint8Array(0),
+        value: minimalValue,
+      }),
+    )
+    .setMaxTransactionFee(new Hbar(10))
+    .freezeWith(client);
+
+  const signedTx = await hookStoreTx.sign(capAccountKey);
+  const txResponse = await signedTx.execute(client);
+  const receipt = await txResponse.getReceipt(client);
+
+  console.log(`Cap updated! Status: ${receipt.status}`);
+  console.log("Cap increased to 1000 token units.");
+
+  client.close();
+}
+
+main().catch((err) => { console.error(err.message); process.exit(1); });
+```
+
+Run:
+
+```bash
+npx tsx src/managed-transfer-cap/07-increase-cap.ts
+```
+
+Expected output:
+
+```
+=== Step 7: Increase Transfer Cap ===
+New cap value: 1000 token units
+Encoded value (minimal): 0x03e8
+Writing to hook-scoped storage slot 0x00...
+  Fee charged: 0.05678064 ℏ
+Cap updated! Status: SUCCESS
+Transaction ID: 0.0.7536968@1775242923.867976376
+
+Cap increased to 1000 token units
+Transfers up to 1000 will now be approved.
+Run managed-transfer-cap/08-transfer-after-increase.ts to test.
+```
+
+---
+
+## Step 10: Transfer After Increase (400 tokens)
+
+The same 400-token transfer that was rejected in Step 7 now succeeds because the cap is 1000.
+
+```typescript src/managed-transfer-cap/08-transfer-after-increase.ts
+import fs from "fs";
+import Long from "long";
+import {
+  TransferTransaction,
+  FungibleHookCall,
+  FungibleHookType,
+  EvmHookCall,
+  Hbar,
+  TokenId,
+  AccountId,
+  Client,
+  PrivateKey,
+} from "@hiero-ledger/sdk";
+import "dotenv/config";
+
+const TRANSFER_AMOUNT = 400;
+
+async function main() {
+  const state = JSON.parse(fs.readFileSync(".state.json", "utf8"));
+  const operatorId = process.env.OPERATOR_ACCOUNT_ID!;
+  const client = Client.forTestnet().setOperator(
+    operatorId,
+    PrivateKey.fromStringECDSA(process.env.OPERATOR_PRIVATE_KEY!),
+  );
+
+  const tokenId = TokenId.fromString(state.capTokenId);
+  const capAccountId = AccountId.fromString(state.capAccountId);
+  const operatorAccountId = AccountId.fromString(operatorId);
+
+  console.log(`Transferring ${TRANSFER_AMOUNT} MCT tokens (cap is now 1000)...`);
+
+  const hookCall = new FungibleHookCall({
+    hookId: Long.fromInt(state.capHookId),
+    evmHookCall: new EvmHookCall({ gasLimit: Long.fromInt(100_000) }),
+    type: FungibleHookType.PRE_POST_TX_ALLOWANCE_HOOK,
+  });
+
+  const transferTx = await new TransferTransaction()
+    .addTokenTransfer(tokenId, operatorAccountId, -TRANSFER_AMOUNT)
+    .addTokenTransferWithHook(tokenId, capAccountId, TRANSFER_AMOUNT, hookCall)
+    .setMaxTransactionFee(new Hbar(10))
+    .execute(client);
+
+  const receipt = await transferTx.getReceipt(client);
+  console.log(`Transfer succeeded! Status: ${receipt.status}`);
+  console.log("allowPre() approved (400 <= 1000), allowPost() deducted 400.");
+  console.log("Remaining cap: 600 token units.");
+
+  client.close();
+}
+
+main().catch((err) => { console.error(err.message); process.exit(1); });
+```
+
+Run:
+
+```bash
+npx tsx src/managed-transfer-cap/08-transfer-after-increase.ts
+```
+
+---
+
+## Step 11: Clean Up
+
+Clean up by clearing the hook's storage and deleting the hook from the account.
+
+```typescript src/managed-transfer-cap/09-cleanup.ts
+import fs from "fs";
+import Long from "long";
+import {
+  HookStoreTransaction,
+  AccountUpdateTransaction,
+  HookId,
+  HookEntityId,
+  AccountId,
+  PrivateKey,
+  Hbar,
+  EvmHookStorageSlot,
+  Client,
+} from "@hiero-ledger/sdk";
+import "dotenv/config";
+
+async function main() {
+  const state = JSON.parse(fs.readFileSync(".state.json", "utf8"));
+  const client = Client.forTestnet().setOperator(
+    process.env.OPERATOR_ACCOUNT_ID!,
+    PrivateKey.fromStringECDSA(process.env.OPERATOR_PRIVATE_KEY!),
+  );
+
+  const capAccountKey = PrivateKey.fromStringECDSA(state.capAccountPrivKey);
+  const capAccountId = AccountId.fromString(state.capAccountId);
+
+  // Phase 1: Clear slot 0x00
+  console.log("Phase 1: Clearing hook storage (slot 0x00)...");
+  try {
+    const clearTx = await new HookStoreTransaction()
+      .setHookId(
+        new HookId({
+          entityId: new HookEntityId({ accountId: capAccountId }),
+          hookId: Long.fromInt(state.capHookId),
+        }),
+      )
+      .addStorageUpdate(
+        new EvmHookStorageSlot({ key: new Uint8Array(0) }),
+      )
+      .setMaxTransactionFee(new Hbar(10))
+      .freezeWith(client);
+
+    const clearSigned = await clearTx.sign(capAccountKey);
+    const clearResponse = await clearSigned.execute(client);
+    const clearReceipt = await clearResponse.getReceipt(client);
+    console.log(`Slot 0x00 cleared. Status: ${clearReceipt.status}`);
+  } catch (err: unknown) {
+    console.error(`Storage clearance failed: ${(err as Error).message}`);
+  }
+
+  // Phase 2: Delete hook
+  console.log("\nPhase 2: Deleting hook...");
+  try {
+    const deleteTx = await new AccountUpdateTransaction()
+      .setAccountId(capAccountId)
+      .addHookToDelete(Long.fromInt(state.capHookId))
+      .setMaxTransactionFee(new Hbar(15))
+      .freezeWith(client);
+
+    const deleteSigned = await deleteTx.sign(capAccountKey);
+    const deleteResponse = await deleteSigned.execute(client);
+    const deleteReceipt = await deleteResponse.getReceipt(client);
+    console.log(`Hook deleted. Status: ${deleteReceipt.status}`);
+  } catch (err: unknown) {
+    const message = (err as Error).message;
+    if (message.includes("HOOK_DELETION_REQUIRES_ZERO_STORAGE_SLOTS")) {
+      console.warn("Hook deletion failed: HOOK_DELETION_REQUIRES_ZERO_STORAGE_SLOTS");
+      console.warn("The hook wrote to storage via sstore during execution.");
+      console.warn("Those slots must also be zeroed before deletion.");
+    } else {
+      console.error(`Hook deletion failed: ${message}`);
+    }
+  }
+
+  client.close();
+}
+
+main().catch((err) => { console.error(err.message); process.exit(1); });
+```
+
+Run:
+
+```bash
+npx tsx src/managed-transfer-cap/09-cleanup.ts
+```
+
+
+---
+
+## Conclusion
+
+You built a two-phase hook that enforces a transfer cap on a Hedera account. Here is what you covered:
+
+- **PRE\_POST\_TX\_ALLOWANCE\_HOOK** - two-phase dispatch where `allowPre()` validates and `allowPost()` mutates state
+- **HookStoreTransaction** - cheap owner-managed storage writes ($0.005/tx) that bypass the EVM
+- **ProposedTransfers inspection** - summing credits across HBAR and token adjustments
+- **receiver\_sig\_required=true** - forcing all transfers through the hook so the cap cannot be bypassed
+- **Dynamic cap adjustment** - changing the cap without redeploying the contract
+
+This pattern extends to per-token caps (Solidity mappings with multiple storage slots), time-based rate limiting, or multi-signature approval workflows. To revisit the basics, see [Part 1: HelloHooks](/hedera/tutorials/hooks/hello-hooks).
+
+---
+
+## Additional Resources
+
+- [HIP-1195: Hiero hooks and an application to allowances](https://hips.hedera.com/hip/hip-1195)
+- [Core Concepts - Hiero Hooks](/hedera/core-concepts/accounts/hiero-hooks)
+- [Hiero SDK for JavaScript](https://github.com/hiero-ledger/hiero-sdk-js)
+- [Full Demo Repository](https://github.com/hedera-dev/demo-hiero-hooks)
+- [Part 1: HelloHooks Tutorial](/hedera/tutorials/hooks/hello-hooks)
+
+<Columns cols={2}>
+  <Card title="Writer: Kiran Pachhai, Developer Advocate" arrow>
+    [GitHub](https://github.com/kpachhai) |
+    [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
+  </Card>
+</Columns>

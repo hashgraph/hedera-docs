@@ -18,11 +18,37 @@ A transaction that allows you to modify the smart contract entity state like adm
 
 **Smart Contract Properties**
 
-<table><thead><tr><th>Field</th><th>Description</th></tr></thead><tbody><tr><td><strong>Admin Key</strong></td><td>Sets the new admin key and its fields can be modified arbitrarily if this key signs a transaction to modify it. If this is null, then such modifications are not possible, and there is no administrator that can override the normal operation of this smart contract instance. Note that if it is created with no admin keys, then there is no administrator to authorize changing the admin keys, so there can never be any admin keys for that instance. The bytecode will also be immutable.</td></tr><tr><td><strong>Expiration Time</strong></td><td>The new expiry of the contract, no earlier than the current expiry (resolves to EXPIRATION_REDUCTION_NOT_ALLOWED otherwise).</td></tr><tr><td><strong>Staked ID</strong></td><td>The new node account ID or node ID this contract is being staked to. If set to the sentinel 1, this removes the contract's staked node ID. See <a href="https://hips.hedera.com/hip/hip-406">HIP-406.</a><br/><br/><strong>Note:</strong> Accounts cannot stake to contract accounts. This will fixed in a future release.</td></tr><tr><td><strong>Decline Rewards</strong></td><td>Updates the contract to decline receiving staking rewards if set to true. The default value is false. See <a href="https://hips.hedera.com/hip/hip-406">HIP-406.</a></td></tr><tr><td><strong>Auto Renew Period</strong></td><td>The new period that the instance will charge its account every this many seconds to renew.</td></tr><tr><td><strong>Auto Renew Account ID</strong></td><td>Indicates the account that will pay the contract's auto-renew fee. If the Auto Renew account id is cleared, then the smart contract's account will be charged the auto-renew fee</td></tr><tr><td><strong>Automatic Token Associations</strong></td><td>The maximum number of tokens that this contract can be automatically associated with (i.e., receive air-drops from).</td></tr><tr><td><strong>Memo</strong></td><td>The new memo to be associated with this contract.</td></tr></tbody></table>
+| Field | Description |
+| --- | --- |
+| **Admin Key** | Sets the new admin key and its fields can be modified arbitrarily if this key signs a transaction to modify it. If this is null, then such modifications are not possible, and there is no administrator that can override the normal operation of this smart contract instance. Note that if it is created with no admin keys, then there is no administrator to authorize changing the admin keys, so there can never be any admin keys for that instance. The bytecode will also be immutable. |
+| **Expiration Time** | The new expiry of the contract, no earlier than the current expiry (resolves to EXPIRATION_REDUCTION_NOT_ALLOWED otherwise). |
+| **Staked ID** | The new node account ID or node ID this contract is being staked to. If set to the sentinel 1, this removes the contract's staked node ID. See [HIP-406.](https://hips.hedera.com/hip/hip-406) **Note:** Accounts cannot stake to contract accounts. This will be fixed in a future release. |
+| **Decline Rewards** | Updates the contract to decline receiving staking rewards if set to true. The default value is false. See [HIP-406.](https://hips.hedera.com/hip/hip-406) |
+| **Auto Renew Period** | The new period that the instance will charge its account every this many seconds to renew. |
+| **Auto Renew Account ID** | Indicates the account that will pay the contract's auto-renew fee. If the Auto Renew account id is cleared, then the smart contract's account will be charged the auto-renew fee. |
+| **Automatic Token Associations** | The maximum number of tokens that this contract can be automatically associated with (i.e., receive air-drops from). |
+| **Memo** | The new memo to be associated with this contract. |
+| **Hooks** | Add or remove [Hiero Hooks](/hedera/core-concepts/accounts/hiero-hooks) from the contract. Deletions are processed before creations, enabling atomic hook replacement. See [Create and Manage Hooks](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks). |
 
 ### Methods
 
-<table><thead><tr><th>Method</th><th>Type</th><th>Requirement</th></tr></thead><tbody><tr><td><code>setContractId(&#x3C;contractId>)</code></td><td><a href="/hedera/sdks-and-apis/sdks/specialized-types#contractid">ContractId</a></td><td>Required</td></tr><tr><td><code>setAdminKey(&#x3C;keys>)</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>setContractMemo(&#x3C;memo>)</code></td><td>String</td><td>Optional</td></tr><tr><td><code>setExpirationTime(&#x3C;expirationTime)</code></td><td>Instant</td><td>Optional</td></tr><tr><td><code>setMaxAutomaticTokenAssociations()</code></td><td>int</td><td>Optional</td></tr><tr><td><code>setContractMemo(&#x3C;memo>)</code></td><td>String</td><td>Optional</td></tr><tr><td><code>setStakedAccountId(&#x3C;stakedAccountId>)</code></td><td><a href="/hedera/sdks-and-apis/sdks/specialized-types#accountid">AccountId</a></td><td>Optional</td></tr><tr><td><code>setStakedNodeId(&#x3C;stakedNodeId>)</code></td><td>long</td><td>Optional</td></tr><tr><td><code>setDeclineStakingReward(&#x3C;declineStakingReward>)</code></td><td>boolean</td><td>Optional</td></tr><tr><td><code>setAutoRenewPeriod(&#x3C;autoRenewPeriod>)</code></td><td>Duration</td><td>Optional</td></tr><tr><td><code>setAutoRenewAccountId(&#x3C;accountId>)</code></td><td><a href="/hedera/sdks-and-apis/sdks/specialized-types#accountid">AccountId</a></td><td>Optional</td></tr><tr><td><code>clearAutoRenewAccountId()</code></td><td></td><td>Optional</td></tr></tbody></table>
+| Method | Type | Requirement |
+| --- | --- | --- |
+| `setContractId(<contractId>)` | [ContractId](/hedera/sdks-and-apis/sdks/specialized-types#contractid) | Required |
+| `setAdminKey(<keys>)` | Key | Optional |
+| `setContractMemo(<memo>)` | String | Optional |
+| `setExpirationTime(<expirationTime>)` | Instant | Optional |
+| `setMaxAutomaticTokenAssociations()` | int | Optional |
+| `setStakedAccountId(<stakedAccountId>)` | [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid) | Optional |
+| `setStakedNodeId(<stakedNodeId>)` | long | Optional |
+| `setDeclineStakingReward(<declineStakingReward>)` | boolean | Optional |
+| `setAutoRenewPeriod(<autoRenewPeriod>)` | Duration | Optional |
+| `setAutoRenewAccountId(<accountId>)` | [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid) | Optional |
+| `clearAutoRenewAccountId()` | | Optional |
+| `addHookToCreate(<hook>)` | [HookCreationDetails](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks) | Optional |
+| `setHooksToCreate(<hooks>)` | list\<[HookCreationDetails](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks)> | Optional |
+| `addHookToDelete(<hookId>)` | long | Optional |
+| `setHooksToDelete(<hookIds>)` | list\<long> | Optional |
 
 <Info>
 ***Note:** The new expiration time must be an instance of type **`Timestamp`**, thus, the **`Timestamp`** object has to be imported from the SDK package. The new expiration time has to be initialized as a new instance of that type.*
@@ -115,9 +141,154 @@ fmt.Printf("The transaction consensus status %v\n", transactionStatus)
 
 </CodeGroup>
 
+#### Add hooks to an existing contract
+
+This example adds an [account allowance hook](/hedera/core-concepts/accounts/hiero-hooks) to an existing smart contract. The hook's implementing contract must be deployed separately first.
+
+<CodeGroup>
+
+```java Java
+// Create hook details
+HookCreationDetails hookDetails = new HookCreationDetails()
+    .setExtensionPoint(HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK)
+    .setHookId(1L)
+    .setEvmHook(new EvmHook().setContractId(hookContractId))
+    .setAdminKey(adminKey.getPublicKey());
+
+// Add the hook to the contract
+TransactionResponse txResponse = new ContractUpdateTransaction()
+    .setContractId(contractId)
+    .addHookToCreate(hookDetails)
+    .setMaxTransactionFee(new Hbar(20))
+    .freezeWith(client)
+    .sign(adminKey)
+    .execute(client);
+
+TransactionReceipt receipt = txResponse.getReceipt(client);
+System.out.println("Hook added to contract: " + receipt.status);
+```
+
+```javascript JavaScript
+import {
+    ContractUpdateTransaction,
+    HookCreationDetails,
+    EvmHook,
+    HookExtensionPoint,
+    Long,
+    Hbar,
+} from "@hashgraph/sdk";
+
+// Create hook details
+const hookDetails = new HookCreationDetails({
+    extensionPoint: HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
+    hookId: Long.fromInt(1),
+    evmHook: new EvmHook({ contractId: hookContractId }),
+    adminKey: adminKey.publicKey,
+});
+
+// Add the hook to the contract
+const txResponse = await (
+    await new ContractUpdateTransaction()
+        .setContractId(contractId)
+        .addHookToCreate(hookDetails)
+        .setMaxTransactionFee(new Hbar(20))
+        .freezeWith(client)
+        .sign(adminKey)
+).execute(client);
+
+const receipt = await txResponse.getReceipt(client);
+console.log("Hook added to contract: " + receipt.status);
+```
+
+```go Go
+// Create hook details
+hookDetails := hook.NewHookCreationDetails().
+    SetExtensionPoint(hook.AccountAllowanceHook).
+    SetHookID(1).
+    SetEvmHook(hook.NewEvmHook().SetContractID(hookContractID)).
+    SetAdminKey(adminKey.PublicKey())
+
+// Add the hook to the contract
+txResponse, err := hedera.NewContractUpdateTransaction().
+    SetContractID(contractID).
+    AddHookToCreate(hookDetails).
+    SetMaxTransactionFee(hedera.NewHbar(20)).
+    FreezeWith(client).
+    Sign(adminKey).
+    Execute(client)
+
+receipt, err := txResponse.GetReceipt(client)
+fmt.Printf("Hook added to contract: %v\n", receipt.Status)
+```
+
+</CodeGroup>
+
+#### Delete hooks from an existing contract
+
+This example removes a hook by its ID. A hook must have zero storage slots before it can be deleted — clear storage first using [`HookStoreTransaction`](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-a-hookstore-transaction).
+
+<CodeGroup>
+
+```java Java
+TransactionResponse txResponse = new ContractUpdateTransaction()
+    .setContractId(contractId)
+    .addHookToDelete(1L)
+    .setMaxTransactionFee(new Hbar(20))
+    .freezeWith(client)
+    .sign(adminKey)
+    .execute(client);
+
+TransactionReceipt receipt = txResponse.getReceipt(client);
+System.out.println("Hook deleted from contract: " + receipt.status);
+```
+
+```javascript JavaScript
+import { ContractUpdateTransaction, Long, Hbar } from "@hashgraph/sdk";
+
+const txResponse = await (
+    await new ContractUpdateTransaction()
+        .setContractId(contractId)
+        .addHookToDelete(Long.fromNumber(1))
+        .setMaxTransactionFee(new Hbar(20))
+        .freezeWith(client)
+        .sign(adminKey)
+).execute(client);
+
+const receipt = await txResponse.getReceipt(client);
+console.log("Hook deleted from contract: " + receipt.status);
+```
+
+```go Go
+txResponse, err := hedera.NewContractUpdateTransaction().
+    SetContractID(contractID).
+    AddHookToDelete(1).
+    SetMaxTransactionFee(hedera.NewHbar(20)).
+    FreezeWith(client).
+    Sign(adminKey).
+    Execute(client)
+
+receipt, err := txResponse.GetReceipt(client)
+fmt.Printf("Hook deleted from contract: %v\n", receipt.Status)
+```
+
+</CodeGroup>
+
 ## Get transaction values
 
-<table><thead><tr><th>Method</th><th>Type</th><th>Requirement</th></tr></thead><tbody><tr><td><code>getContractId()</code></td><td><a href="/hedera/sdks-and-apis/sdks/specialized-types#contractid">ContractId</a></td><td>Required</td></tr><tr><td><code>getAdminKey()</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>getBytecodeFileId()</code></td><td><a href="/hedera/sdks-and-apis/sdks/specialized-types#fileid">FileId</a></td><td>Optional</td></tr><tr><td><code>getProxyAccountId()</code></td><td><a href="/hedera/sdks-and-apis/sdks/specialized-types#accountid">AccountId</a></td><td>Optional</td></tr><tr><td><code>getContractMemo()</code></td><td>String</td><td>Optional</td></tr><tr><td><code>getStakedAccountId()</code></td><td><a href="/hedera/sdks-and-apis/sdks/specialized-types#accountid">AccountId</a></td><td>Optional</td></tr><tr><td><code>getStakedNodeId()</code></td><td>long</td><td>Optional</td></tr><tr><td><code>getDeclineStakingReward()</code></td><td>boolean</td><td>Optional</td></tr><tr><td><code>getAutoRenewAccountId()</code></td><td><a href="/hedera/sdks-and-apis/sdks/specialized-types#accountid">AccountId</a></td><td>Required</td></tr><tr><td><code>getAutoRenewPeriod()</code></td><td>Duration</td><td>Required</td></tr></tbody></table>
+| Method | Type | Requirement |
+| --- | --- | --- |
+| `getContractId()` | [ContractId](/hedera/sdks-and-apis/sdks/specialized-types#contractid) | Required |
+| `getAdminKey()` | Key | Optional |
+| `getBytecodeFileId()` | [FileId](/hedera/sdks-and-apis/sdks/specialized-types#fileid) | Optional |
+| `getProxyAccountId()` | [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid) | Optional |
+| `getContractMemo()` | String | Optional |
+| `getStakedAccountId()` | [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid) | Optional |
+| `getStakedNodeId()` | long | Optional |
+| `getDeclineStakingReward()` | boolean | Optional |
+| `getAutoRenewAccountId()` | [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid) | Required |
+| `getAutoRenewPeriod()` | Duration | Required |
+| `getHooksToCreate()` | list\<HookCreationDetails> | Optional |
+| `getHooksToDelete()` | list\<long> | Optional |
 
 <CodeGroup>
 
@@ -134,7 +305,7 @@ transaction.getAdminKey()
 ```
 
 
-```java JavaScript
+```javascript JavaScript
 //Create the transaction with an admin key
 const transaction = new ContractUpdateTransaction()
     .setContractId(contractId)
@@ -147,7 +318,7 @@ transaction.getAdminKey()
 ```
 
 
-```java Go
+```go Go
 //Create the transaction
 transaction := hedera.NewContractUpdateTransaction().
         SetContractID(contractId).

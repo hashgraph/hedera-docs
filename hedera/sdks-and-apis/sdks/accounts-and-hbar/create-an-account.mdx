@@ -32,7 +32,11 @@ When creating a **new account** using the`AccountCreateTransaction()`API you wil
 
 Accounts have a property, `maxAutoAssociations`, and the property's value determines the maximum number of automatic token associations allowed.
 
-<table><thead><tr><th align="center">Property Value</th><th>Description</th></tr></thead><tbody><tr><td align="center"><code>0</code></td><td>Automatic <strong>token</strong> associations or <strong>token airdrops</strong> are not allowed, and the account must be manually associated with a token. This also applies if the value is less than or equal to <code>usedAutoAssociations</code>.</td></tr><tr><td align="center"><code>-1</code></td><td>Unlimited automatic token associations are allowed, and this is the default for accounts created via <a href="../../../core-concepts/accounts/auto-account-creation">auto account creation</a> and for accounts that began as hollow accounts and are now complete. Accounts with <code>-1</code> can receive new tokens without manually associating them. The sender still pays the <code>maxAutoAssociations</code> fee and initial rent for each association.</td></tr><tr><td align="center"><code>> 0</code></td><td>If the value is a positive number (number greater than 0), the number of automatic token associations an account can have is limited to that number.</td></tr></tbody></table>
+| Property Value | Description |
+| :---: | --- |
+| `0` | Automatic **token** associations or **token airdrops** are not allowed, and the account must be manually associated with a token. This also applies if the value is less than or equal to `usedAutoAssociations`. |
+| `-1` | Unlimited automatic token associations are allowed, and this is the default for accounts created via [auto account creation](../../../core-concepts/accounts/auto-account-creation) and for accounts that began as hollow accounts and are now complete. Accounts with `-1` can receive new tokens without manually associating them. The sender still pays the `maxAutoAssociations` fee and initial rent for each association. |
+| `> 0` | If the value is a positive number (number greater than 0), the number of automatic token associations an account can have is limited to that number. |
 
 <Info>
 The sender pays the `maxAutoAssociations` fee and the rent for the first auto-renewal period for the association. This is in addition to the typical transfer fees. This ensures the receiver can receive tokens without association and makes it a smoother transfer process.
@@ -42,13 +46,32 @@ The sender pays the `maxAutoAssociations` fee and the rent for the first auto-re
 
 #### Methods
 
-<table><thead><tr><th>Method</th><th>Type</th><th>Requirement</th></tr></thead><tbody><tr><td><code>setKey(&#x3C;key>)</code></td><td>Key</td><td>Required</td></tr><tr><td><code>setAlias(&#x3C;alias>)</code></td><td>EvmAddress</td><td>Optional</td></tr><tr><td><code>setInitialBalance(&#x3C;initialBalance>)</code></td><td>HBar</td><td>Optional</td></tr><tr><td><code>setReceiverSignatureRequired(&#x3C;booleanValue>)</code></td><td>boolean</td><td>Optional</td></tr><tr><td><code>setMaxAutomaticTokenAssociations(&#x3C;amount>)</code></td><td>int</td><td>Optional</td></tr><tr><td><code>setStakedAccountId(&#x3C;stakedAccountId>)</code></td><td>AccountId</td><td>Optional</td></tr><tr><td><code>setStakedNodeId(&#x3C;stakedNodeId>)</code></td><td>long</td><td>Optional</td></tr><tr><td><code>setDeclineStakingReward(&#x3C;declineStakingReward>)</code></td><td>boolean</td><td>Optional</td></tr><tr><td><code>setAccountMemo(&#x3C;memo>)</code></td><td>String</td><td>Optional</td></tr><tr><td><code>setAutoRenewPeriod(&#x3C;autoRenewPeriod>)</code></td><td>Duration</td><td>Disabled</td></tr></tbody></table>
+| Method | Type | Requirement |
+| --- | --- | --- |
+| `setKey(<key>)` | Key | Required |
+| `setAlias(<alias>)` | EvmAddress | Optional |
+| `setInitialBalance(<initialBalance>)` | HBar | Optional |
+| `setReceiverSignatureRequired(<booleanValue>)` | boolean | Optional |
+| `setMaxAutomaticTokenAssociations(<amount>)` | int | Optional |
+| `setStakedAccountId(<stakedAccountId>)` | AccountId | Optional |
+| `setStakedNodeId(<stakedNodeId>)` | long | Optional |
+| `setDeclineStakingReward(<declineStakingReward>)` | boolean | Optional |
+| `setAccountMemo(<memo>)` | String | Optional |
+| `setAutoRenewPeriod(<autoRenewPeriod>)` | Duration | Disabled |
+| `addHook(<hook>)` | [HookCreationDetails](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks) | Optional |
+| `setHooks(<hooks>)` | list\<[HookCreationDetails](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks)> | Optional |
 
 <Warning>
 **Account Alias**
 
 If an alias is set during account creation, it becomes [immutable](/hedera/support-and-community/glossary#immutability), meaning it cannot be changed. If you plan to update or rotate keys in the future, do not set the alias at the time of initial account creation. The alias can be set after finalizing all key updates.
 </Warning>
+
+<Info>
+**Account Hooks ([HIP-1195](https://hips.hedera.com/hip/hip-1195))**
+
+You can attach [Hiero Hooks](/hedera/core-concepts/accounts/hiero-hooks) to an account at creation time using `addHook()`. Hooks are programmable EVM extension points that let you enforce custom validation logic on transfers involving this account. See [Create and Manage Hooks](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks) for full details and utility class reference.
+</Info>
 
 <CodeGroup>
 
@@ -159,17 +182,112 @@ println!("The new account ID is {}", new_account_id);
 
 </CodeGroup>
 
+#### Create an account with an EVM hook
+
+This example creates a new account with an [account allowance hook](/hedera/core-concepts/accounts/hiero-hooks) attached. The hook contract must be deployed first via `ContractCreateTransaction`.
+
+<CodeGroup>
+
+```java Java
+// Step 1: Deploy hook contract first (standard ContractCreateTransaction)
+ContractId contractId = /* ... your deployed hook contract ... */;
+
+// Step 2: Create the hook details
+HookCreationDetails hookDetails = new HookCreationDetails()
+    .setExtensionPoint(HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK)
+    .setHookId(1002L)
+    .setEvmHook(new EvmHook().setContractId(contractId))
+    .setAdminKey(adminKey.getPublicKey());
+
+// Step 3: Create the account with the hook attached
+TransactionResponse txResponse = new AccountCreateTransaction()
+    .setKey(accountKey.getPublicKey())
+    .setInitialBalance(Hbar.from(1))
+    .addHook(hookDetails)
+    .setMaxTransactionFee(new Hbar(10))
+    .freezeWith(client)
+    .sign(accountKey)
+    .execute(client);
+
+AccountId newAccountId = txResponse.getReceipt(client).accountId;
+System.out.println("Account created with hook: " + newAccountId);
+```
+
+```javascript JavaScript
+import {
+    AccountCreateTransaction,
+    HookCreationDetails,
+    EvmHook,
+    HookExtensionPoint,
+    Hbar,
+    Long,
+} from "@hashgraph/sdk";
+
+// Step 1: Deploy hook contract first (standard ContractCreateTransaction)
+const contractId = /* ... your deployed hook contract ... */;
+
+// Step 2: Create the hook details
+const hookDetails = new HookCreationDetails({
+    extensionPoint: HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
+    hookId: Long.fromInt(1002),
+    evmHook: new EvmHook({ contractId }),
+    adminKey: adminKey.publicKey,
+});
+
+// Step 3: Create the account with the hook attached
+const txResponse = await (
+    await new AccountCreateTransaction()
+        .setKeyWithoutAlias(accountKey.publicKey)
+        .setInitialBalance(new Hbar(1))
+        .addHook(hookDetails)
+        .setMaxTransactionFee(new Hbar(10))
+        .freezeWith(client)
+        .sign(accountKey)
+).execute(client);
+
+const { accountId } = await txResponse.getReceipt(client);
+console.log(`Account created with hook: ${accountId}`);
+```
+
+```go Go
+// Step 1: Deploy hook contract first (standard ContractCreateTransaction)
+// contractId := ... your deployed hook contract ...
+
+// Step 2: Create the hook details
+hookDetails := hook.NewHookCreationDetails().
+    SetExtensionPoint(hook.AccountAllowanceHook).
+    SetHookID(1002).
+    SetEvmHook(hook.NewEvmHook().SetContractID(contractId)).
+    SetAdminKey(adminKey.PublicKey())
+
+// Step 3: Create the account with the hook attached
+txResponse, err := hedera.NewAccountCreateTransaction().
+    SetKey(accountKey.PublicKey()).
+    SetInitialBalance(hedera.NewHbar(1)).
+    AddHook(hookDetails).
+    SetMaxTransactionFee(hedera.NewHbar(10)).
+    FreezeWith(client).
+    Sign(accountKey).
+    Execute(client)
+
+receipt, err := txResponse.GetReceipt(client)
+fmt.Printf("Account created with hook: %v\n", receipt.AccountID)
+```
+
+</CodeGroup>
+
 #### Get transaction values
 
-| Method                           | Type      | Description                                               |
-| -------------------------------- | --------- | --------------------------------------------------------- |
-| `getKey()`                       | Key       | Returns the public key on the account                     |
-| `getInitialBalance()`            | Hbar      | Returns the initial balance of the account                |
-| `getAutoRenewPeriod()`           | Duration  | Returns the auto renew period on the account              |
-| `getDeclineStakingReward()`      | boolean   | Returns whether or not the account declined rewards       |
-| `getStakedNodeId()`              | long      | Returns the node ID                                       |
-| `getStakedAccountId()`           | AccountId | Returns the node account ID                               |
-| `getReceiverSignatureRequired()` | boolean   | Returns whether the receiver signature is required or not |
+| Method | Type | Description |
+| --- | --- | --- |
+| `getKey()` | Key | Returns the public key on the account |
+| `getInitialBalance()` | Hbar | Returns the initial balance of the account |
+| `getAutoRenewPeriod()` | Duration | Returns the auto renew period on the account |
+| `getDeclineStakingReward()` | boolean | Returns whether or not the account declined rewards |
+| `getStakedNodeId()` | long | Returns the node ID |
+| `getStakedAccountId()` | AccountId | Returns the node account ID |
+| `getReceiverSignatureRequired()` | boolean | Returns whether the receiver signature is required or not |
+| `getHooks()` | list\<HookCreationDetails> | Returns the hooks to be created with the account |
 
 <CodeGroup>
 

@@ -15,17 +15,26 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ### Release highlights
 
-Release v0.72 highlights include support for programmable transaction extensions via [Hiero Hooks (HIP-1195)](https://hips.hedera.com/#hip-1195). This capability introduces a new model for extending native Hedera services with custom logic, enabling more dynamic, application-specific behavior directly within transaction execution.
+Release v0.72 highlights include continued Block Node and Block Stream integration improvements, along with enhancements to platform reliability and state handling. Together, these changes improve network stability and advance readiness for a Block Stream–based architecture.
 
 <Accordion title="What's new in Release v0.72?">
 
-**Programmable Transaction Extensions (HIP-1195)**
-This release introduces Hiero Hooks, a framework for attaching custom logic to native Hedera transactions. Hooks can be configured on accounts and executed during transaction processing, allowing developers to define application-specific rules, validation, and automation without requiring standalone smart contracts.
+**Enhanced Block Node Communication**
+
+Improves the clarity and resilience of block node connection management by refining connection type naming and introducing smarter node selection logic. Nodes are now validated for reachability and block range before establishing streaming connections. Additionally, the block buffer service attempts to flush any remaining buffered blocks to disk during shutdown, reducing the risk of data loss.
 
 **Benefits**
-  * Enables application-specific logic to execute directly within native transaction flows
-  * Improves composability between Hedera services and custom business logic
-  * Provides a lightweight extension model alongside smart contracts, giving developers more flexibility in how functionality is implemented
+  * Improves reliability by ensuring only healthy and in-range block nodes are selected
+  * Reduces risk of data loss during node restarts
+
+**Platform Reliability and State Handling Improvements**
+
+Improves state consistency, reconnect behavior, and overall node stability through fixes to state management, lifecycle handling, and platform coordination.
+
+**Benefits**
+  * Enhances node stability and recovery
+  * Improves consistency of state across nodes
+  * Reduces operational risk for node operators
 
 </Accordion>
 

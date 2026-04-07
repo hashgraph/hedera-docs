@@ -193,11 +193,12 @@ This example creates a new account with an [account allowance hook](/hedera/core
 ContractId contractId = /* ... your deployed hook contract ... */;
 
 // Step 2: Create the hook details
-HookCreationDetails hookDetails = new HookCreationDetails()
-    .setExtensionPoint(HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK)
-    .setHookId(1002L)
-    .setEvmHook(new EvmHook().setContractId(contractId))
-    .setAdminKey(adminKey.getPublicKey());
+HookCreationDetails hookDetails = new HookCreationDetails(
+    HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
+    1002L,
+    new EvmHook(contractId),
+    adminKey.getPublicKey()
+);
 
 // Step 3: Create the account with the hook attached
 TransactionResponse txResponse = new AccountCreateTransaction()
@@ -221,7 +222,7 @@ import {
     HookExtensionPoint,
     Hbar,
     Long,
-} from "@hashgraph/sdk";
+} from "@hiero-ledger/sdk";
 
 // Step 1: Deploy hook contract first (standard ContractCreateTransaction)
 const contractId = /* ... your deployed hook contract ... */;
@@ -254,10 +255,10 @@ console.log(`Account created with hook: ${accountId}`);
 // contractId := ... your deployed hook contract ...
 
 // Step 2: Create the hook details
-hookDetails := hook.NewHookCreationDetails().
-    SetExtensionPoint(hook.AccountAllowanceHook).
-    SetHookID(1002).
-    SetEvmHook(hook.NewEvmHook().SetContractID(contractId)).
+hookDetails := hedera.NewHookCreationDetails().
+    SetExtensionPoint(hedera.ACCOUNT_ALLOWANCE_HOOK).
+    SetHookId(1002).
+    SetEvmHook(*hedera.NewEvmHook().SetContractId(&contractId)).
     SetAdminKey(adminKey.PublicKey())
 
 // Step 3: Create the account with the hook attached

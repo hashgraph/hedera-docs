@@ -1,5 +1,5 @@
 ---
-title: "Create and Manage Hooks"
+title: "Create and manage hooks"
 ---
 
 Hooks are created by adding `HookCreationDetails` to account or contract creation and update transactions. Once attached, hooks can be deleted through update transactions and their storage can be modified via [`HookStoreTransaction`](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-a-hookstore-transaction). This page covers the utility classes, hook creation, update, and deletion across all supported transaction types.
@@ -13,7 +13,7 @@ Hooks are created by adding `HookCreationDetails` to account or contract creatio
 Every hook requires a `HookCreationDetails` object that specifies the extension point, a unique hook ID, the EVM implementation contract, and an optional admin key.
 
 | Property | Type | Required | Description |
-|:---------|:-----|:---------|:------------|
+| --- | --- | --- | --- |
 | **extensionPoint** | `HookExtensionPoint` | Yes | The type of hook. Currently only `ACCOUNT_ALLOWANCE_HOOK` is supported. |
 | **hookId** | `long` | Yes | A 64-bit identifier for the hook, unique within the owning entity. Does not need to be sequential. |
 | **evmHook** | `EvmHook` | Yes | The hook implementation, including the deployed contract ID and optional initial storage updates. |
@@ -30,7 +30,7 @@ enum HookExtensionPoint {
 ### EvmHook
 
 | Property | Type | Required | Description |
-|:---------|:-----|:---------|:------------|
+| --- | --- | --- | --- |
 | **contractId** | `ContractId` | Yes | The ID of a previously deployed contract whose bytecode implements the hook's logic. |
 | **storageUpdates** | `list<EvmHookStorageUpdate>` | No | Initial storage slot values to set when the hook is created. |
 
@@ -43,7 +43,7 @@ enum HookExtensionPoint {
 Directly sets a 32-byte key/value pair in the hook's storage.
 
 | Property | Type | Description |
-|:---------|:-----|:------------|
+| --- | --- | --- |
 | **key** | `bytes` | 32-byte storage slot key. |
 | **value** | `bytes` | 32-byte storage slot value. Set to empty bytes to delete the slot. |
 
@@ -52,14 +52,14 @@ Directly sets a 32-byte key/value pair in the hook's storage.
 Updates entries within a Solidity mapping at a specific storage slot.
 
 | Property | Type | Description |
-|:---------|:-----|:------------|
+| --- | --- | --- |
 | **mappingSlot** | `bytes` | The slot corresponding to the Solidity mapping declaration. |
 | **entries** | `list<EvmHookMappingEntry>` | The entries to update in the mapping. |
 
 #### EvmHookMappingEntry
 
 | Property | Type | Required | Description |
-|:---------|:-----|:---------|:------------|
+| --- | --- | --- | --- |
 | **key** | `bytes` | One of `key` or `preimage` | 32-byte key of the mapping entry. |
 | **preimage** | `bytes` | One of `key` or `preimage` | The bytes whose Keccak256 hash forms the mapping key. Useful when block stream consumers need to follow the metaprotocol without inverting hashes. |
 | **value** | `bytes` | Yes | 32-byte value of the mapping entry. Set to empty bytes to delete. |
@@ -69,11 +69,11 @@ Updates entries within a Solidity mapping at a specific storage slot.
 Used by `HookStoreTransaction` to identify a specific hook on a specific entity.
 
 | Class | Property | Type | Description |
-|:------|:---------|:-----|:------------|
+| --- | --- | --- | --- |
 | **HookId** | `entityId` | `HookEntityId` | The entity that owns the hook. |
 | **HookId** | `hookId` | `long` | The hook's 64-bit identifier. |
-| **HookEntityId** | `accountId` | `AccountId` (optional) | The account that owns the hook. One of `accountId` or `contractId` must be set. |
-| **HookEntityId** | `contractId` | `ContractId` (optional) | The contract that owns the hook. One of `accountId` or `contractId` must be set. |
+| **HookEntityId** | `accountId` | `AccountId` (optional) | The account that owns the hook. One of `accountId` or `contractId` must be set. (JavaScript SDK currently only supports `accountId`.) |
+| **HookEntityId** | `contractId` | `ContractId` (optional) | The contract that owns the hook. One of `accountId` or `contractId` must be set. (Not supported in the JavaScript SDK.) |
 
 ---
 
@@ -84,7 +84,7 @@ Hooks can be attached at entity creation time using `AccountCreateTransaction` o
 ### AccountCreateTransaction Methods
 
 | Method | Type | Description |
-|:-------|:-----|:------------|
+| --- | --- | --- |
 | `addHook(<hook>)` | `HookCreationDetails` | Adds a hook to be created with the new account. |
 | `setHooks(<hooks>)` | `list<HookCreationDetails>` | Sets all hooks to be created with the new account. |
 | `getHooks()` | `list<HookCreationDetails>` | Returns the list of hooks to be created. |
@@ -92,7 +92,7 @@ Hooks can be attached at entity creation time using `AccountCreateTransaction` o
 ### ContractCreateTransaction Methods
 
 | Method | Type | Description |
-|:-------|:-----|:------------|
+| --- | --- | --- |
 | `addHook(<hook>)` | `HookCreationDetails` | Adds a hook to be created with the new contract. |
 | `setHooks(<hooks>)` | `list<HookCreationDetails>` | Sets all hooks to be created with the new contract. |
 | `getHooks()` | `list<HookCreationDetails>` | Returns the list of hooks to be created. |
@@ -108,15 +108,15 @@ import com.hedera.hashgraph.sdk.*;
 ContractId contractId = /* ... your deployed hook contract ... */;
 
 // Step 2: Define the EVM hook
-EvmHook evmHook = new EvmHook()
-    .setContractId(contractId);
+EvmHook evmHook = new EvmHook(contractId);
 
 // Step 3: Create hook details
-HookCreationDetails hookDetails = new HookCreationDetails()
-    .setExtensionPoint(HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK)
-    .setHookId(1002L)
-    .setEvmHook(evmHook)
-    .setAdminKey(adminKey.getPublicKey());
+HookCreationDetails hookDetails = new HookCreationDetails(
+    HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
+    1002L,
+    evmHook,
+    adminKey.getPublicKey()
+);
 
 // Step 4: Create the account with the hook attached
 TransactionResponse response = new AccountCreateTransaction()
@@ -141,7 +141,7 @@ import {
     Hbar,
     Long,
     PrivateKey,
-} from "@hashgraph/sdk";
+} from "@hiero-ledger/sdk";
 
 // Step 1: Deploy the hook contract (standard ContractCreateTransaction)
 const contractId = /* ... your deployed hook contract ... */;
@@ -182,14 +182,14 @@ import (
 // contractId := ... your deployed hook contract ...
 
 // Step 2: Create hook details
-hookDetails := hook.NewHookCreationDetails().
-    SetExtensionPoint(hook.AccountAllowanceHook).
-    SetHookID(1002).
-    SetEvmHook(hook.NewEvmHook().SetContractID(contractId)).
+hookDetails := hedera.NewHookCreationDetails().
+    SetExtensionPoint(hedera.ACCOUNT_ALLOWANCE_HOOK).
+    SetHookId(1002).
+    SetEvmHook(*hedera.NewEvmHook().SetContractId(&contractId)).
     SetAdminKey(adminKey.PublicKey())
 
 // Step 3: Create the account with the hook attached
-response, err := transaction.NewAccountCreateTransaction().
+response, err := hedera.NewAccountCreateTransaction().
     SetKey(accountKey.PublicKey()).
     SetInitialBalance(hedera.NewHbar(1)).
     AddHook(hookDetails).
@@ -213,19 +213,16 @@ import {
     AccountCreateTransaction,
     HookCreationDetails,
     EvmHook,
-    EvmHookStorageUpdate,
     EvmHookStorageSlot,
     HookExtensionPoint,
     Long,
-} from "@hashgraph/sdk";
+} from "@hiero-ledger/sdk";
 
-// Create initial storage: set slot key 0x01 to value 100
+// Create initial storage: set slot key 0x01 to value 100 (0x64)
 const storageUpdates = [
-    new EvmHookStorageUpdate().setStorageSlot(
-        new EvmHookStorageSlot()
-            .setKey(new Uint8Array(32).fill(1))     // slot key
-            .setValue(new Uint8Array(32).fill(100))  // slot value
-    ),
+    new EvmHookStorageSlot()
+        .setKey(new Uint8Array([0x01]))
+        .setValue(new Uint8Array([0x64])),
 ];
 
 const evmHook = new EvmHook({
@@ -263,7 +260,7 @@ Use `AccountUpdateTransaction` or `ContractUpdateTransaction` to add new hooks o
 ### AccountUpdateTransaction Methods
 
 | Method | Type | Description |
-|:-------|:-----|:------------|
+| --- | --- | --- |
 | `addHookToCreate(<hook>)` | `HookCreationDetails` | Adds a hook to be created on the existing account. |
 | `setHooksToCreate(<hooks>)` | `list<HookCreationDetails>` | Sets all hooks to be created on the existing account. |
 | `addHookToDelete(<hookId>)` | `long` | Marks a hook for deletion by its hook ID. |
@@ -274,7 +271,7 @@ Use `AccountUpdateTransaction` or `ContractUpdateTransaction` to add new hooks o
 ### ContractUpdateTransaction Methods
 
 | Method | Type | Description |
-|:-------|:-----|:------------|
+| --- | --- | --- |
 | `addHookToCreate(<hook>)` | `HookCreationDetails` | Adds a hook to be created on the existing contract. |
 | `setHooksToCreate(<hooks>)` | `list<HookCreationDetails>` | Sets all hooks to be created on the existing contract. |
 | `addHookToDelete(<hookId>)` | `long` | Marks a hook for deletion by its hook ID. |
@@ -287,17 +284,19 @@ Use `AccountUpdateTransaction` or `ContractUpdateTransaction` to add new hooks o
 <CodeGroup>
 
 ```java Java
-HookCreationDetails hook1 = new HookCreationDetails()
-    .setExtensionPoint(HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK)
-    .setHookId(1L)
-    .setEvmHook(new EvmHook().setContractId(contractId))
-    .setAdminKey(adminKey.getPublicKey());
+HookCreationDetails hook1 = new HookCreationDetails(
+    HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
+    1L,
+    new EvmHook(contractId),
+    adminKey.getPublicKey()
+);
 
-HookCreationDetails hook2 = new HookCreationDetails()
-    .setExtensionPoint(HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK)
-    .setHookId(2L)
-    .setEvmHook(new EvmHook().setContractId(contractId))
-    .setAdminKey(adminKey.getPublicKey());
+HookCreationDetails hook2 = new HookCreationDetails(
+    HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
+    2L,
+    new EvmHook(contractId),
+    adminKey.getPublicKey()
+);
 
 new AccountUpdateTransaction()
     .setAccountId(accountId)
@@ -317,7 +316,7 @@ import {
     EvmHook,
     HookExtensionPoint,
     Long,
-} from "@hashgraph/sdk";
+} from "@hiero-ledger/sdk";
 
 const hook1 = new HookCreationDetails({
     extensionPoint: HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
@@ -349,19 +348,19 @@ console.log("Successfully added hooks to account");
 ```
 
 ```go Go
-hook1 := hook.NewHookCreationDetails().
-    SetExtensionPoint(hook.AccountAllowanceHook).
-    SetHookID(1).
-    SetEvmHook(hook.NewEvmHook().SetContractID(contractId)).
+hook1 := hedera.NewHookCreationDetails().
+    SetExtensionPoint(hedera.ACCOUNT_ALLOWANCE_HOOK).
+    SetHookId(1).
+    SetEvmHook(*hedera.NewEvmHook().SetContractId(&contractId)).
     SetAdminKey(adminKey.PublicKey())
 
-hook2 := hook.NewHookCreationDetails().
-    SetExtensionPoint(hook.AccountAllowanceHook).
-    SetHookID(2).
-    SetEvmHook(hook.NewEvmHook().SetContractID(contractId)).
+hook2 := hedera.NewHookCreationDetails().
+    SetExtensionPoint(hedera.ACCOUNT_ALLOWANCE_HOOK).
+    SetHookId(2).
+    SetEvmHook(*hedera.NewEvmHook().SetContractId(&contractId)).
     SetAdminKey(adminKey.PublicKey())
 
-response, err := transaction.NewAccountUpdateTransaction().
+response, err := hedera.NewAccountUpdateTransaction().
     SetAccountID(accountID).
     AddHookToCreate(hook1).
     AddHookToCreate(hook2).
@@ -401,7 +400,7 @@ System.out.println("Successfully deleted hooks (IDs: 1, 2)");
 ```
 
 ```javascript JavaScript
-import { AccountUpdateTransaction, Long } from "@hashgraph/sdk";
+import { AccountUpdateTransaction, Long } from "@hiero-ledger/sdk";
 
 await (
     await (
@@ -419,7 +418,7 @@ console.log("Successfully deleted hooks (IDs: 1, 2)");
 ```
 
 ```go Go
-response, err := transaction.NewAccountUpdateTransaction().
+response, err := hedera.NewAccountUpdateTransaction().
     SetAccountID(accountID).
     AddHookToDelete(1).
     AddHookToDelete(2).
@@ -457,7 +456,7 @@ await (
 ## Transaction Signing Requirements
 
 | Scenario | Required Signatures |
-|:---------|:-------------------|
+| --- | --- |
 | **Create hook on new account** | Account key (from `AccountCreateTransaction`) + transaction payer |
 | **Create hook on existing account** | Account key + transaction payer |
 | **Delete hook (no admin key)** | Account/entity key + transaction payer |
@@ -468,7 +467,7 @@ await (
 ## Error Codes
 
 | Status Code | Description |
-|:------------|:------------|
+| --- | --- |
 | `HOOK_ID_REPEATED_IN_CREATION_DETAILS` | The same hook ID appears more than once in the `hook_creation_details` list. |
 | `HOOK_ID_IN_USE` | An update transaction tried to create a hook with an ID already occupied on the entity. |
 | `HOOK_NOT_FOUND` | An update transaction tried to delete a hook ID that does not exist on the entity. |

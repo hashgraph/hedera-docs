@@ -1,5 +1,5 @@
 ---
-title: "Create a HookStore transaction"
+title: "Create a HookStore Transaction"
 ---
 
 The `HookStoreTransaction` enables efficient, low-overhead management of an EVM Hook's persistent storage. This transaction allows hook owners to add, update, or remove key/value pairs in the hook's storage without executing the hook's bytecode—significantly more cost-effective and faster than using a `ContractCall`.
@@ -9,7 +9,7 @@ The `HookStoreTransaction` enables efficient, low-overhead management of an EVM 
 ## Transaction Properties
 
 | Field | Description |
-| --- | --- |
+|:------|:------------|
 | **Hook ID** | The unique identifier of the EVM Hook whose storage is being updated, including the owning entity (Account or Contract) and the hook's 64-bit ID. |
 | **Storage Updates** | A list of updates to the hook's persistent storage. Supports direct slot updates (`EvmHookStorageSlot`) or Solidity mapping updates (`EvmHookMappingEntries`). |
 
@@ -39,12 +39,12 @@ The signing requirements depend on if an `adminKey` was set when the hook was cr
 ## Methods
 
 | Method | Type | Description |
-| --- | --- | --- |
+|:-------|:-----|:------------|
 | `setHookId(<HookId>)` | `HookId` | **Required.** Sets the unique identifier of the EVM Hook whose storage is being updated. |
 | `addStorageUpdate(<update>)` | `EvmHookStorageUpdate` | **Optional.** Adds a single storage update (slot or mapping entry) to the transaction. |
 | `setStorageUpdates(<updates>)` | `list<EvmHookStorageUpdate>` | **Optional.** Sets the full list of storage updates for the transaction. |
-| `getHookId()` | `HookId` | Returns the hook ID for this transaction. |
-| `getStorageUpdates()` | `list<EvmHookStorageUpdate>` | Returns the list of storage updates. |
+| `getHookId()` | `HookId` | Returns the hook ID for this transaction. In JavaScript, use the `.hookId` property accessor instead of calling `getHookId()`. |
+| `getStorageUpdates()` | `list<EvmHookStorageUpdate>` | Returns the list of storage updates. In JavaScript, use the `.storageUpdates` property accessor instead of calling `getStorageUpdates()`. |
 
 <Note>
 `EvmHookStorageUpdate` is an abstract class with two concrete implementations: `EvmHookStorageSlot` for direct slot updates and `EvmHookMappingEntries` for updating entries within a Solidity mapping. See [Create and Manage Hooks](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks) for full property details on both types.

@@ -24,17 +24,17 @@ Release v0.72 highlights include continued Block Node and Block Stream integrati
 Improves the clarity and resilience of block node connection management by refining connection type naming and introducing smarter node selection logic. Nodes are now validated for reachability and block range before establishing streaming connections. Additionally, the block buffer service attempts to flush any remaining buffered blocks to disk during shutdown, reducing the risk of data loss.
 
 **Benefits**
-  * Improves reliability by ensuring only healthy and in-range block nodes are selected
-  * Reduces risk of data loss during node restarts
+  * Strengthens robustness by validating block node health and range before establishing connections
+  * Enhances resilience by flushing buffered blocks to disk during node shutdown
 
 **Platform Reliability and State Handling Improvements**
 
 Improves state consistency, reconnect behavior, and overall node stability through fixes to state management, lifecycle handling, and platform coordination.
 
 **Benefits**
-  * Enhances node stability and recovery
-  * Improves consistency of state across nodes
-  * Reduces operational risk for node operators
+  * Strengthens node resilience through improved state management and lifecycle handling
+  * Ensures robust state consistency across nodes during reconnects
+  * Improves overall platform coordination for more predictable node operation
 
 </Accordion>
 

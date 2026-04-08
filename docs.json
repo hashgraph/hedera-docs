@@ -185,7 +185,8 @@
                       "hedera/tutorials/smart-contracts/foundry/configuring-foundry-with-hedera-localnet-testnet-a-step-by-step-guide",
                       "hedera/tutorials/smart-contracts/foundry/how-to-mint-and-burn-an-erc-721-token-using-foundry-part-1",
                       "hedera/tutorials/smart-contracts/foundry/how-to-write-tests-in-solidity-part-2",
-                      "hedera/tutorials/smart-contracts/foundry/how-to-fork-the-hedera-network-with-foundry-basic-erc20"
+                      "hedera/tutorials/smart-contracts/foundry/how-to-fork-the-hedera-network-with-foundry-basic-erc20",
+                      "/hedera/tutorials/smart-contracts/foundry/how-to-fork-the-hedera-network-with-foundry-advanced-hts"
                     ]
                   },
                   "hedera/tutorials/smart-contracts/how-to-connect-metamask-to-hedera"
@@ -499,7 +500,6 @@
                       }
                     ]
                   }
-              
                 ]
               },
               {
@@ -1188,7 +1188,7 @@
     "href": "https://hedera.com/"
   },
   "navbar": {
-      "links": [
+    "links": [
       {
         "label": "Join Hackathon",
         "href": "https://hedera.com/hackathon",

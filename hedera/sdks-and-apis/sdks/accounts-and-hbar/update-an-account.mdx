@@ -178,17 +178,19 @@ This example adds two [account allowance hooks](/hedera/core-concepts/accounts/h
 
 ```java Java
 // Create hook details
-HookCreationDetails hook1 = new HookCreationDetails()
-    .setExtensionPoint(HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK)
-    .setHookId(1L)
-    .setEvmHook(new EvmHook().setContractId(contractId))
-    .setAdminKey(adminKey.getPublicKey());
+HookCreationDetails hook1 = new HookCreationDetails(
+    HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
+    1L,
+    new EvmHook(contractId),
+    adminKey.getPublicKey()
+);
 
-HookCreationDetails hook2 = new HookCreationDetails()
-    .setExtensionPoint(HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK)
-    .setHookId(2L)
-    .setEvmHook(new EvmHook().setContractId(contractId))
-    .setAdminKey(adminKey.getPublicKey());
+HookCreationDetails hook2 = new HookCreationDetails(
+    HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
+    2L,
+    new EvmHook(contractId),
+    adminKey.getPublicKey()
+);
 
 // Add hooks to the account
 TransactionResponse txResponse = new AccountUpdateTransaction()
@@ -212,7 +214,7 @@ import {
     HookExtensionPoint,
     Long,
     Hbar,
-} from "@hashgraph/sdk";
+} from "@hiero-ledger/sdk";
 
 // Create hook details
 const hook1 = new HookCreationDetails({
@@ -247,16 +249,16 @@ console.log("Hooks added: " + txResponse.status);
 
 ```go Go
 // Create hook details
-hook1 := hook.NewHookCreationDetails().
-    SetExtensionPoint(hook.AccountAllowanceHook).
-    SetHookID(1).
-    SetEvmHook(hook.NewEvmHook().SetContractID(contractId)).
+hook1 := hedera.NewHookCreationDetails().
+    SetExtensionPoint(hedera.ACCOUNT_ALLOWANCE_HOOK).
+    SetHookId(1).
+    SetEvmHook(*hedera.NewEvmHook().SetContractId(&contractId)).
     SetAdminKey(adminKey.PublicKey())
 
-hook2 := hook.NewHookCreationDetails().
-    SetExtensionPoint(hook.AccountAllowanceHook).
-    SetHookID(2).
-    SetEvmHook(hook.NewEvmHook().SetContractID(contractId)).
+hook2 := hedera.NewHookCreationDetails().
+    SetExtensionPoint(hedera.ACCOUNT_ALLOWANCE_HOOK).
+    SetHookId(2).
+    SetEvmHook(*hedera.NewEvmHook().SetContractId(&contractId)).
     SetAdminKey(adminKey.PublicKey())
 
 // Add hooks to the account
@@ -296,7 +298,7 @@ System.out.println("Hooks deleted: " + receipt.status);
 ```
 
 ```javascript JavaScript
-import { AccountUpdateTransaction, Long, Hbar } from "@hashgraph/sdk";
+import { AccountUpdateTransaction, Long, Hbar } from "@hiero-ledger/sdk";
 
 const txResponse = await (
     await (

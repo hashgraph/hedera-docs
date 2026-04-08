@@ -72,8 +72,8 @@ Used by `HookStoreTransaction` to identify a specific hook on a specific entity.
 |:------|:---------|:-----|:------------|
 | **HookId** | `entityId` | `HookEntityId` | The entity that owns the hook. |
 | **HookId** | `hookId` | `long` | The hook's 64-bit identifier. |
-| **HookEntityId** | `accountId` | `AccountId` (optional) | The account that owns the hook. One of `accountId` or `contractId` must be set. |
-| **HookEntityId** | `contractId` | `ContractId` (optional) | The contract that owns the hook. One of `accountId` or `contractId` must be set. |
+| **HookEntityId** | `accountId` | `AccountId` (optional) | The account that owns the hook. One of `accountId` or `contractId` must be set. (JavaScript SDK currently only supports `accountId`.) |
+| **HookEntityId** | `contractId` | `ContractId` (optional) | The contract that owns the hook. One of `accountId` or `contractId` must be set. (Not supported in the JavaScript SDK.) |
 
 ---
 
@@ -87,7 +87,7 @@ Hooks can be attached at entity creation time using `AccountCreateTransaction` o
 |:-------|:-----|:------------|
 | `addHook(<hook>)` | `HookCreationDetails` | Adds a hook to be created with the new account. |
 | `setHooks(<hooks>)` | `list<HookCreationDetails>` | Sets all hooks to be created with the new account. |
-| `getHooks()` | `list<HookCreationDetails>` | Returns the list of hooks to be created. |
+| `getHooks()` | `list<HookCreationDetails>` | Returns the list of hooks to be created. In JavaScript, use the `.hooks` property accessor instead of calling `getHooks()`. |
 
 ### ContractCreateTransaction Methods
 
@@ -95,7 +95,7 @@ Hooks can be attached at entity creation time using `AccountCreateTransaction` o
 |:-------|:-----|:------------|
 | `addHook(<hook>)` | `HookCreationDetails` | Adds a hook to be created with the new contract. |
 | `setHooks(<hooks>)` | `list<HookCreationDetails>` | Sets all hooks to be created with the new contract. |
-| `getHooks()` | `list<HookCreationDetails>` | Returns the list of hooks to be created. |
+| `getHooks()` | `list<HookCreationDetails>` | Returns the list of hooks to be created. In JavaScript, use the `.hooks` property accessor instead of calling `getHooks()`. |
 
 ### Example: Create an Account with a Hook
 
@@ -108,15 +108,15 @@ import com.hedera.hashgraph.sdk.*;
 ContractId contractId = /* ... your deployed hook contract ... */;
 
 // Step 2: Define the EVM hook
-EvmHook evmHook = new EvmHook()
-    .setContractId(contractId);
+EvmHook evmHook = new EvmHook(contractId);
 
 // Step 3: Create hook details
-HookCreationDetails hookDetails = new HookCreationDetails()
-    .setExtensionPoint(HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK)
-    .setHookId(1002L)
-    .setEvmHook(evmHook)
-    .setAdminKey(adminKey.getPublicKey());
+HookCreationDetails hookDetails = new HookCreationDetails(
+    HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
+    1002L,
+    evmHook,
+    adminKey.getPublicKey()
+);
 
 // Step 4: Create the account with the hook attached
 TransactionResponse response = new AccountCreateTransaction()
@@ -141,7 +141,7 @@ import {
     Hbar,
     Long,
     PrivateKey,
-} from "@hashgraph/sdk";
+} from "@hiero-ledger/sdk";
 
 // Step 1: Deploy the hook contract (standard ContractCreateTransaction)
 const contractId = /* ... your deployed hook contract ... */;
@@ -182,14 +182,14 @@ import (
 // contractId := ... your deployed hook contract ...
 
 // Step 2: Create hook details
-hookDetails := hook.NewHookCreationDetails().
-    SetExtensionPoint(hook.AccountAllowanceHook).
-    SetHookID(1002).
-    SetEvmHook(hook.NewEvmHook().SetContractID(contractId)).
+hookDetails := hedera.NewHookCreationDetails().
+    SetExtensionPoint(hedera.ACCOUNT_ALLOWANCE_HOOK).
+    SetHookId(1002).
+    SetEvmHook(*hedera.NewEvmHook().SetContractId(&contractId)).
     SetAdminKey(adminKey.PublicKey())
 
 // Step 3: Create the account with the hook attached
-response, err := transaction.NewAccountCreateTransaction().
+response, err := hedera.NewAccountCreateTransaction().
     SetKey(accountKey.PublicKey()).
     SetInitialBalance(hedera.NewHbar(1)).
     AddHook(hookDetails).
@@ -213,19 +213,16 @@ import {
     AccountCreateTransaction,
     HookCreationDetails,
     EvmHook,
-    EvmHookStorageUpdate,
     EvmHookStorageSlot,
     HookExtensionPoint,
     Long,
-} from "@hashgraph/sdk";
+} from "@hiero-ledger/sdk";
 
-// Create initial storage: set slot key 0x01 to value 100
+// Create initial storage: set slot key 0x01 to value 100 (0x64)
 const storageUpdates = [
-    new EvmHookStorageUpdate().setStorageSlot(
-        new EvmHookStorageSlot()
-            .setKey(new Uint8Array(32).fill(1))     // slot key
-            .setValue(new Uint8Array(32).fill(100))  // slot value
-    ),
+    new EvmHookStorageSlot()
+        .setKey(new Uint8Array([0x01]))
+        .setValue(new Uint8Array([0x64])),
 ];
 
 const evmHook = new EvmHook({
@@ -268,8 +265,8 @@ Use `AccountUpdateTransaction` or `ContractUpdateTransaction` to add new hooks o
 | `setHooksToCreate(<hooks>)` | `list<HookCreationDetails>` | Sets all hooks to be created on the existing account. |
 | `addHookToDelete(<hookId>)` | `long` | Marks a hook for deletion by its hook ID. |
 | `setHooksToDelete(<hookIds>)` | `list<long>` | Marks multiple hooks for deletion. |
-| `getHooksToCreate()` | `list<HookCreationDetails>` | Returns the list of hooks to be created. |
-| `getHooksToDelete()` | `list<long>` | Returns the list of hook IDs to be deleted. |
+| `getHooksToCreate()` | `list<HookCreationDetails>` | Returns the list of hooks to be created. In JavaScript, use the `.hooksToCreate` property accessor instead of calling `getHooksToCreate()`. |
+| `getHooksToDelete()` | `list<long>` | Returns the list of hook IDs to be deleted. In JavaScript, use the `.hooksToDelete` property accessor instead of calling `getHooksToDelete()`. |
 
 ### ContractUpdateTransaction Methods
 
@@ -279,25 +276,27 @@ Use `AccountUpdateTransaction` or `ContractUpdateTransaction` to add new hooks o
 | `setHooksToCreate(<hooks>)` | `list<HookCreationDetails>` | Sets all hooks to be created on the existing contract. |
 | `addHookToDelete(<hookId>)` | `long` | Marks a hook for deletion by its hook ID. |
 | `setHooksToDelete(<hookIds>)` | `list<long>` | Marks multiple hooks for deletion. |
-| `getHooksToCreate()` | `list<HookCreationDetails>` | Returns the list of hooks to be created. |
-| `getHooksToDelete()` | `list<long>` | Returns the list of hook IDs to be deleted. |
+| `getHooksToCreate()` | `list<HookCreationDetails>` | Returns the list of hooks to be created. In JavaScript, use the `.hooksToCreate` property accessor instead of calling `getHooksToCreate()`. |
+| `getHooksToDelete()` | `list<long>` | Returns the list of hook IDs to be deleted. In JavaScript, use the `.hooksToDelete` property accessor instead of calling `getHooksToDelete()`. |
 
 ### Example: Add Hooks to an Existing Account
 
 <CodeGroup>
 
 ```java Java
-HookCreationDetails hook1 = new HookCreationDetails()
-    .setExtensionPoint(HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK)
-    .setHookId(1L)
-    .setEvmHook(new EvmHook().setContractId(contractId))
-    .setAdminKey(adminKey.getPublicKey());
+HookCreationDetails hook1 = new HookCreationDetails(
+    HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
+    1L,
+    new EvmHook(contractId),
+    adminKey.getPublicKey()
+);
 
-HookCreationDetails hook2 = new HookCreationDetails()
-    .setExtensionPoint(HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK)
-    .setHookId(2L)
-    .setEvmHook(new EvmHook().setContractId(contractId))
-    .setAdminKey(adminKey.getPublicKey());
+HookCreationDetails hook2 = new HookCreationDetails(
+    HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
+    2L,
+    new EvmHook(contractId),
+    adminKey.getPublicKey()
+);
 
 new AccountUpdateTransaction()
     .setAccountId(accountId)
@@ -317,7 +316,7 @@ import {
     EvmHook,
     HookExtensionPoint,
     Long,
-} from "@hashgraph/sdk";
+} from "@hiero-ledger/sdk";
 
 const hook1 = new HookCreationDetails({
     extensionPoint: HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
@@ -349,19 +348,19 @@ console.log("Successfully added hooks to account");
 ```
 
 ```go Go
-hook1 := hook.NewHookCreationDetails().
-    SetExtensionPoint(hook.AccountAllowanceHook).
-    SetHookID(1).
-    SetEvmHook(hook.NewEvmHook().SetContractID(contractId)).
+hook1 := hedera.NewHookCreationDetails().
+    SetExtensionPoint(hedera.ACCOUNT_ALLOWANCE_HOOK).
+    SetHookId(1).
+    SetEvmHook(*hedera.NewEvmHook().SetContractId(&contractId)).
     SetAdminKey(adminKey.PublicKey())
 
-hook2 := hook.NewHookCreationDetails().
-    SetExtensionPoint(hook.AccountAllowanceHook).
-    SetHookID(2).
-    SetEvmHook(hook.NewEvmHook().SetContractID(contractId)).
+hook2 := hedera.NewHookCreationDetails().
+    SetExtensionPoint(hedera.ACCOUNT_ALLOWANCE_HOOK).
+    SetHookId(2).
+    SetEvmHook(*hedera.NewEvmHook().SetContractId(&contractId)).
     SetAdminKey(adminKey.PublicKey())
 
-response, err := transaction.NewAccountUpdateTransaction().
+response, err := hedera.NewAccountUpdateTransaction().
     SetAccountID(accountID).
     AddHookToCreate(hook1).
     AddHookToCreate(hook2).
@@ -401,7 +400,7 @@ System.out.println("Successfully deleted hooks (IDs: 1, 2)");
 ```
 
 ```javascript JavaScript
-import { AccountUpdateTransaction, Long } from "@hashgraph/sdk";
+import { AccountUpdateTransaction, Long } from "@hiero-ledger/sdk";
 
 await (
     await (
@@ -419,7 +418,7 @@ console.log("Successfully deleted hooks (IDs: 1, 2)");
 ```
 
 ```go Go
-response, err := transaction.NewAccountUpdateTransaction().
+response, err := hedera.NewAccountUpdateTransaction().
     SetAccountID(accountID).
     AddHookToDelete(1).
     AddHookToDelete(2).

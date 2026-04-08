@@ -186,8 +186,8 @@ Hooks use typed call objects that extend a base `HookCall`:
 
 | Class | Used For | Hook Type Enum |
 | --- | --- | --- |
-| `FungibleHookCall` | HBAR and fungible token transfers | `FungibleHookType`: `PRE_HOOK_SENDER`, `PRE_POST_HOOK_SENDER`, `PRE_HOOK_RECEIVER`, `PRE_POST_HOOK_RECEIVER` |
-| `NftHookCall` | NFT transfers | `NftHookType`: `PRE_HOOK`, `PRE_POST_HOOK` |
+| `FungibleHookCall` | HBAR and fungible token transfers | `FungibleHookType`: `PRE_TX_ALLOWANCE_HOOK`, `PRE_POST_TX_ALLOWANCE_HOOK` (Java/JS); `PRE_HOOK`, `PRE_POST_HOOK` (Go) |
+| `NftHookCall` | NFT transfers | `NftHookType`: `PRE_HOOK_SENDER`, `PRE_POST_HOOK_SENDER`, `PRE_HOOK_RECEIVER`, `PRE_POST_HOOK_RECEIVER` |
 
 Each hook call requires a `hookId` (the 64-bit ID of the hook on the owning account) and an `EvmHookCall` containing `data` (extra bytes passed to the hook) and `gasLimit` (maximum gas the payer will pay for this hook).
 
@@ -197,14 +197,11 @@ Each hook call requires a `hookId` (the 64-bit ID of the hook on the owning acco
 
 ```java Java
 // Define the hook call
-FungibleHookCall senderHook = new FungibleHookCall()
-    .setHookId(1001L)
-    .setEvmHookCall(
-        new EvmHookCall()
-            .setData(new byte[]{0x01, 0x02})
-            .setGasLimit(50000L)
-    )
-    .setHookType(FungibleHookType.PRE_HOOK_SENDER);
+FungibleHookCall senderHook = new FungibleHookCall(
+    1001L,
+    new EvmHookCall(new byte[]{0x01, 0x02}, 50000L),
+    FungibleHookType.PRE_TX_ALLOWANCE_HOOK
+);
 
 // Build the transfer with the hook reference
 TransactionResponse response = new TransferTransaction()
@@ -225,17 +222,16 @@ import {
     EvmHookCall,
     FungibleHookType,
     Hbar,
-} from "@hashgraph/sdk";
+} from "@hiero-ledger/sdk";
 
 // Define the hook call
-const senderHook = new FungibleHookCall()
-    .setHookId(1001)
-    .setEvmHookCall(
-        new EvmHookCall()
-            .setData(new Uint8Array([0x01, 0x02]))
-            .setGasLimit(50000)
-    )
-    .setHookType(FungibleHookType.PRE_HOOK_SENDER);
+const senderHook = new FungibleHookCall({
+    hookId: 1001,
+    evmHookCall: new EvmHookCall()
+        .setData(new Uint8Array([0x01, 0x02]))
+        .setGasLimit(50000),
+    type: FungibleHookType.PRE_TX_ALLOWANCE_HOOK,
+});
 
 // Build the transfer with the hook reference
 const tx = await (
@@ -251,12 +247,13 @@ console.log(`Transfer with hook: ${receipt.status}`);
 ```
 
 ```go Go
-senderHook := hook.NewFungibleHookCall().
-    SetHookID(1001).
-    SetEvmHookCall(hook.NewEvmHookCall().
+senderHook := hedera.NewFungibleHookCall(
+    1001,
+    *hedera.NewEvmHookCall().
         SetData([]byte{0x01, 0x02}).
-        SetGasLimit(50000)).
-    SetHookType(hook.PreHookSender)
+        SetGasLimit(50000),
+    hedera.PRE_HOOK,
+)
 
 response, err := hedera.NewTransferTransaction().
     AddHbarTransferWithHook(senderAccountID, hedera.HbarFrom(-100, hedera.HbarUnits.Hbar), senderHook).
@@ -278,19 +275,17 @@ fmt.Printf("Transfer with hook: %v\n", receipt.Status)
 ```java Java
 NftId nftId = new NftId(TokenId.fromString("0.0.12345"), 1);
 
-NftHookCall senderHook = new NftHookCall()
-    .setHookId(1002L)
-    .setEvmHookCall(new EvmHookCall()
-        .setData(new byte[]{0x03, 0x04})
-        .setGasLimit(60000L))
-    .setHookType(NftHookType.PRE_HOOK);
+NftHookCall senderHook = new NftHookCall(
+    1002L,
+    new EvmHookCall(new byte[]{0x03, 0x04}, 60000L),
+    NftHookType.PRE_HOOK_SENDER
+);
 
-NftHookCall receiverHook = new NftHookCall()
-    .setHookId(1003L)
-    .setEvmHookCall(new EvmHookCall()
-        .setData(new byte[]{0x05, 0x06})
-        .setGasLimit(40000L))
-    .setHookType(NftHookType.PRE_HOOK);
+NftHookCall receiverHook = new NftHookCall(
+    1003L,
+    new EvmHookCall(new byte[]{0x05, 0x06}, 40000L),
+    NftHookType.PRE_HOOK_RECEIVER
+);
 
 TransactionResponse response = new TransferTransaction()
     .addNftTransferWithHook(
@@ -315,27 +310,25 @@ import {
     NftHookType,
     NftId,
     TokenId,
-} from "@hashgraph/sdk";
+} from "@hiero-ledger/sdk";
 
 const nftId = new NftId(TokenId.fromString("0.0.12345"), 1);
 
-const senderHook = new NftHookCall()
-    .setHookId(1002)
-    .setEvmHookCall(
-        new EvmHookCall()
-            .setData(new Uint8Array([0x03, 0x04]))
-            .setGasLimit(60000)
-    )
-    .setHookType(NftHookType.PRE_HOOK);
+const senderHook = new NftHookCall({
+    hookId: 1002,
+    evmHookCall: new EvmHookCall()
+        .setData(new Uint8Array([0x03, 0x04]))
+        .setGasLimit(60000),
+    type: NftHookType.PRE_HOOK_SENDER,
+});
 
-const receiverHook = new NftHookCall()
-    .setHookId(1003)
-    .setEvmHookCall(
-        new EvmHookCall()
-            .setData(new Uint8Array([0x05, 0x06]))
-            .setGasLimit(40000)
-    )
-    .setHookType(NftHookType.PRE_HOOK);
+const receiverHook = new NftHookCall({
+    hookId: 1003,
+    evmHookCall: new EvmHookCall()
+        .setData(new Uint8Array([0x05, 0x06]))
+        .setGasLimit(40000),
+    type: NftHookType.PRE_HOOK_RECEIVER,
+});
 
 const tx = await (
     await new TransferTransaction()
@@ -356,19 +349,21 @@ console.log(`NFT transfer with hooks: ${(await tx.getReceipt(client)).status}`);
 ```go Go
 nftID := hedera.NftID{TokenID: hedera.TokenIDFromString("0.0.12345"), SerialNumber: 1}
 
-senderHook := hook.NewNftHookCall().
-    SetHookID(1002).
-    SetEvmHookCall(hook.NewEvmHookCall().
+senderHook := hedera.NewNftHookCall(
+    1002,
+    *hedera.NewEvmHookCall().
         SetData([]byte{0x03, 0x04}).
-        SetGasLimit(60000)).
-    SetHookType(hook.PreHook)
+        SetGasLimit(60000),
+    hedera.PRE_HOOK_SENDER,
+)
 
-receiverHook := hook.NewNftHookCall().
-    SetHookID(1003).
-    SetEvmHookCall(hook.NewEvmHookCall().
+receiverHook := hedera.NewNftHookCall(
+    1003,
+    *hedera.NewEvmHookCall().
         SetData([]byte{0x05, 0x06}).
-        SetGasLimit(40000)).
-    SetHookType(hook.PreHook)
+        SetGasLimit(40000),
+    hedera.PRE_HOOK_RECEIVER,
+)
 
 response, err := hedera.NewTransferTransaction().
     AddNftTransferWithHook(nftID, senderAccountID, receiverAccountID, senderHook, receiverHook).
@@ -389,12 +384,11 @@ fmt.Printf("NFT transfer with hooks: %v\n", receipt.Status)
 ```java Java
 TokenId tokenId = TokenId.fromString("0.0.54321");
 
-FungibleHookCall prePostHook = new FungibleHookCall()
-    .setHookId(1004L)
-    .setEvmHookCall(new EvmHookCall()
-        .setData(new byte[]{0x07, 0x08})
-        .setGasLimit(70000L))
-    .setHookType(FungibleHookType.PRE_POST_HOOK_SENDER);
+FungibleHookCall prePostHook = new FungibleHookCall(
+    1004L,
+    new EvmHookCall(new byte[]{0x07, 0x08}, 70000L),
+    FungibleHookType.PRE_POST_TX_ALLOWANCE_HOOK
+);
 
 TransactionResponse response = new TransferTransaction()
     .addTokenTransferWithHook(tokenId, senderAccountId, -1000L, prePostHook)
@@ -413,18 +407,17 @@ import {
     EvmHookCall,
     FungibleHookType,
     TokenId,
-} from "@hashgraph/sdk";
+} from "@hiero-ledger/sdk";
 
 const tokenId = TokenId.fromString("0.0.54321");
 
-const prePostHook = new FungibleHookCall()
-    .setHookId(1004)
-    .setEvmHookCall(
-        new EvmHookCall()
-            .setData(new Uint8Array([0x07, 0x08]))
-            .setGasLimit(70000)
-    )
-    .setHookType(FungibleHookType.PRE_POST_HOOK_SENDER);
+const prePostHook = new FungibleHookCall({
+    hookId: 1004,
+    evmHookCall: new EvmHookCall()
+        .setData(new Uint8Array([0x07, 0x08]))
+        .setGasLimit(70000),
+    type: FungibleHookType.PRE_POST_TX_ALLOWANCE_HOOK,
+});
 
 const tx = await (
     await new TransferTransaction()
@@ -440,12 +433,13 @@ console.log(`Token transfer with pre/post hook: ${(await tx.getReceipt(client)).
 ```go Go
 tokenID := hedera.TokenIDFromString("0.0.54321")
 
-prePostHook := hook.NewFungibleHookCall().
-    SetHookID(1004).
-    SetEvmHookCall(hook.NewEvmHookCall().
+prePostHook := hedera.NewFungibleHookCall(
+    1004,
+    *hedera.NewEvmHookCall().
         SetData([]byte{0x07, 0x08}).
-        SetGasLimit(70000)).
-    SetHookType(hook.PrePostHookSender)
+        SetGasLimit(70000),
+    hedera.PRE_POST_HOOK,
+)
 
 response, err := hedera.NewTransferTransaction().
     AddTokenTransferWithHook(tokenID, senderAccountID, -1000, prePostHook).

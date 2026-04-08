@@ -1,0 +1,900 @@
+---
+title: "How to Fork the Hedera Network with Foundry - Advanced HTS Contract (Part 2)"
+---
+
+In this advanced tutorial, you'll learn how to interact with the Hedera Token Service (HTS) using System Contracts precompiles on a forked network with Foundry. This guide covers creating HTS tokens, querying token info, and testing ERC-20 level interactions using the [hedera-forking](https://github.com/hashgraph/hedera-forking) emulation layer.
+
+This guide shows how to:
+
+- Create HTS fungible tokens using System Contracts precompiles
+- Query HTS token info (getTokenInfo, getFungibleTokenInfo) on a forked network
+- Read HTS token properties via the ERC-20 interface (name, symbol, decimals, balanceOf)
+- Transfer HTS tokens using ERC-20 methods through the HIP-719 proxy pattern
+
+References:
+
+- Repo: [hashgraph/hedera-forking](https://github.com/hashgraph/hedera-forking)
+- HTS System Contracts: [hedera-smart-contracts](https://github.com/hashgraph/hedera-smart-contracts)
+- Supported methods: [README - Supported Methods](https://github.com/hashgraph/hedera-forking#hedera-token-service-supported-methods)
+
+<Info>
+  For a deeper understanding of how Hedera forking works and its limitations,
+  see [Forking Hedera Network for Local
+  Testing](/hedera/core-concepts/smart-contracts/forking-hedera-network-for-local-testing).
+</Info>
+
+<Note>
+  You can take a look at the complete code in the [**advanced-hts-fork-test-foundry
+  repository**](https://github.com/hedera-dev/tutorial-hedera-fork-testing/tree/main/foundry/advanced-hts-fork-test-foundry).
+</Note>
+
+---
+
+## Prerequisites
+
+- Completed [Part 1](/hedera/tutorials/smart-contracts/foundry/how-to-fork-the-hedera-network-with-foundry-basic-erc20) of this tutorial series
+- [Foundry](https://book.getfoundry.sh/getting-started/installation) installed
+- ECDSA account from the [Hedera Portal](https://portal.hedera.com/) with at least **20 HBAR** (15 HBAR for HTS token creation fee + gas)
+- Familiarity with Hedera System Contracts - more specifically [HTS System Contracts precompiles](https://github.com/hashgraph/hedera-smart-contracts/tree/main/contracts/system-contracts/hedera-token-service)
+- A Hedera JSON-RPC endpoint:
+  - mainnet: `https://mainnet.hashio.io/api`
+  - testnet: `https://testnet.hashio.io/api`
+
+---
+
+## Table of Contents
+
+1. [Step 1: Project Setup](#step-1-project-setup)
+2. [Step 2: Create the HTS Contract and Deploy to Testnet](#step-2-create-the-hts-contract-and-deploy-to-testnet)
+3. [Step 3: Write Tests for the Forked Network](#step-3-write-tests-for-the-forked-network)
+4. [Step 4: Run Tests on the Forked Network](#step-4-run-tests-on-the-forked-network)
+
+---
+
+## Step 1: Project Setup
+
+### Initialize Project
+
+Create a new directory and initialize the Foundry project:
+
+```bash
+mkdir advanced-hts-fork-test-foundry
+cd advanced-hts-fork-test-foundry
+forge init
+```
+
+### Install Dependencies
+
+Install OpenZeppelin contracts and the Hedera forking library:
+
+```bash
+forge install OpenZeppelin/openzeppelin-contracts
+forge install hashgraph/hedera-forking
+```
+
+<Warning>
+  The `hedera-forking` library requires `forge-std >= v1.8.0`. If you're on an
+  older project, update it first with `forge update lib/forge-std`.
+</Warning>
+
+### Configure Remappings
+
+Create or update `remappings.txt` in your project root:
+
+```txt remappings.txt
+@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
+hedera-forking/=lib/hedera-forking/contracts/
+forge-std/=lib/forge-std/src/
+```
+
+<Note>
+  Note that we are updating the `remappings.txt` in our root directory of the
+  project and not in the `lib` directory where the dependencies are installed.
+</Note>
+
+### Set Environment Variables
+
+Create a `.env` file in your project root:
+
+```bash .env
+HEDERA_RPC_URL=https://testnet.hashio.io/api
+HEDERA_PRIVATE_KEY=0x-your-private-key
+```
+
+<Warning>
+  Replace the `0x-your-private-key` environment variable with the **HEX Encoded
+  Private Key** for your **ECDSA** **account.** Note that this account **MUST**
+  exist on **testnet** and have at least **20 HBAR** for the token creation fee and gas.
+</Warning>
+
+Load the environment variables:
+
+```bash
+source .env
+```
+
+### Configure Foundry
+
+Update your `foundry.toml` file:
+
+```toml foundry.toml
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+ffi = true
+solc = "0.8.33"
+
+# Add this section for Hedera testnet
+[rpc_endpoints]
+testnet = "${HEDERA_RPC_URL}"
+```
+
+<Warning>
+  **Why `ffi = true`?** The `hedera-forking` emulation layer uses Foundry's FFI
+  cheatcode to shell out to `curl` and query the Hedera Mirror Node for real
+  token data (balances, metadata, associations). Without `ffi = true`, the
+  emulation cannot fetch data and HTS calls will fail.
+
+  **Security note:** `ffi = true` allows Foundry to execute shell commands. Only
+  enable this in test profiles, never in production deployment scripts.
+</Warning>
+
+Remove the default contracts that come with `forge init`:
+
+```bash
+rm -f script/Counter.s.sol src/Counter.sol test/Counter.t.sol
+```
+
+---
+
+## Step 2: Create the HTS Contract and Deploy to Testnet
+
+### Create the HTS Interaction Contract
+
+Create a new file `src/HTSTokenManager.sol`:
+
+```solidity src/HTSTokenManager.sol
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.33;
+
+import {IHederaTokenService} from "hedera-forking/IHederaTokenService.sol";
+
+/// @title HTSTokenManager
+/// @notice Manages HTS fungible tokens via the Hedera Token Service precompile (0x167).
+/// @dev The HTS precompile at address(0x167) is a Hedera-native system contract.
+///      In fork testing, the hedera-forking library provides a Solidity emulation
+///      layer that responds to the same function signatures at the same address.
+contract HTSTokenManager {
+    address constant HTS_PRECOMPILE = address(0x167);
+    int32 constant SUCCESS = 22;
+
+    address public tokenAddress;
+
+    event ResponseCode(int256 responseCode);
+    event CreatedToken(address tokenAddress);
+    event MintedToken(int64 newTotalSupply, int64[] serialNumbers);
+    event TransferToken(address tokenAddress, address receiver, int64 amount);
+    event TokenInfo(IHederaTokenService.TokenInfo tokenInfo);
+    event FungibleTokenInfo(IHederaTokenService.FungibleTokenInfo tokenInfo);
+
+    receive() external payable {}
+
+    /// @notice Creates an HTS fungible token with this contract as treasury.
+    function createFungibleTokenPublic(
+        string memory _name,
+        string memory _symbol
+    ) public payable {
+        IHederaTokenService.HederaToken memory token;
+        token.name = _name;
+        token.symbol = _symbol;
+        token.treasury = address(this);
+        token.memo = "Created via HTSTokenManager";
+
+        // Assign supply key and admin key to this contract
+        IHederaTokenService.TokenKey[]
+            memory keys = new IHederaTokenService.TokenKey[](2);
+
+        keys[0] = IHederaTokenService.TokenKey({
+            keyType: 0x10, // SUPPLY
+            key: IHederaTokenService.KeyValue({
+                inheritAccountKey: false,
+                contractId: address(this),
+                ed25519: bytes(""),
+                ECDSA_secp256k1: bytes(""),
+                delegatableContractId: address(0)
+            })
+        });
+
+        keys[1] = IHederaTokenService.TokenKey({
+            keyType: 0x01, // ADMIN
+            key: IHederaTokenService.KeyValue({
+                inheritAccountKey: false,
+                contractId: address(this),
+                ed25519: bytes(""),
+                ECDSA_secp256k1: bytes(""),
+                delegatableContractId: address(0)
+            })
+        });
+
+        token.tokenKeys = keys;
+
+        token.expiry = IHederaTokenService.Expiry({
+            second: 0,
+            autoRenewAccount: address(this),
+            autoRenewPeriod: 7_776_000 // 90 days
+        });
+
+        (int256 responseCode, address createdToken) = IHederaTokenService(
+            HTS_PRECOMPILE
+        ).createFungibleToken{value: msg.value}(token, 0, 8);
+
+        emit ResponseCode(responseCode);
+        if (responseCode != SUCCESS) {
+            revert("HTS: token creation failed");
+        }
+
+        tokenAddress = createdToken;
+        emit CreatedToken(createdToken);
+    }
+
+    /// @notice Mints additional fungible tokens.
+    function mintTokenPublic(
+        address token,
+        int64 amount
+    )
+        public
+        returns (
+            int256 responseCode,
+            int64 newTotalSupply,
+            int64[] memory serialNumbers
+        )
+    {
+        bytes[] memory metadata;
+        (responseCode, newTotalSupply, serialNumbers) = IHederaTokenService(
+            HTS_PRECOMPILE
+        ).mintToken(token, amount, metadata);
+
+        emit ResponseCode(responseCode);
+        if (responseCode != SUCCESS) {
+            revert("HTS: mint failed");
+        }
+        emit MintedToken(newTotalSupply, serialNumbers);
+    }
+
+    /// @notice Transfers HTS tokens between accounts.
+    function transferTokenPublic(
+        address token,
+        address sender,
+        address receiver,
+        int64 amount
+    ) public returns (int256 responseCode) {
+        responseCode = IHederaTokenService(HTS_PRECOMPILE).transferToken(
+            token, sender, receiver, amount
+        );
+
+        emit ResponseCode(responseCode);
+        if (responseCode != SUCCESS) {
+            revert("HTS: transfer failed");
+        }
+        emit TransferToken(token, receiver, amount);
+    }
+
+    /// @notice Gets full token info for an HTS token.
+    function getTokenInfoPublic(
+        address token
+    )
+        public
+        returns (
+            int256 responseCode,
+            IHederaTokenService.TokenInfo memory tokenInfo
+        )
+    {
+        (responseCode, tokenInfo) = IHederaTokenService(HTS_PRECOMPILE)
+            .getTokenInfo(token);
+        emit ResponseCode(responseCode);
+        emit TokenInfo(tokenInfo);
+    }
+
+    /// @notice Gets fungible-specific token info.
+    function getFungibleTokenInfoPublic(
+        address token
+    )
+        public
+        returns (
+            int256 responseCode,
+            IHederaTokenService.FungibleTokenInfo memory tokenInfo
+        )
+    {
+        (responseCode, tokenInfo) = IHederaTokenService(HTS_PRECOMPILE)
+            .getFungibleTokenInfo(token);
+        emit ResponseCode(responseCode);
+        emit FungibleTokenInfo(tokenInfo);
+    }
+}
+```
+
+**Key features of this contract:**
+
+- `createFungibleTokenPublic` - Creates new HTS fungible tokens via the precompile at `0x167`
+- `mintTokenPublic` - Mints additional tokens (requires supply key)
+- `transferTokenPublic` - Transfers HTS tokens between accounts
+- `getTokenInfoPublic` / `getFungibleTokenInfoPublic` - Query token information
+- The contract assigns itself as both the **treasury** and the **supply/admin key holder**
+
+### Compile the Contract
+
+```bash
+forge build
+```
+
+### Create Deployment Script
+
+Create a new file `script/DeployHTS.s.sol`:
+
+```solidity script/DeployHTS.s.sol
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.33;
+
+import {Script, console} from "forge-std/Script.sol";
+import {HTSTokenManager} from "../src/HTSTokenManager.sol";
+
+/// @title DeployHTSScript
+/// @notice Deploys HTSTokenManager to Hedera testnet.
+/// @dev This script ONLY deploys the contract. HTS token creation must be done
+///   separately using `cast send` because forge script simulates locally first,
+///   and the HTS precompile at 0x167 has no EVM bytecode to simulate against.
+contract DeployHTSScript is Script {
+    function run() external {
+        uint256 deployerPrivateKey = vm.envUint("HEDERA_PRIVATE_KEY");
+        address deployer = vm.addr(deployerPrivateKey);
+
+        console.log("=== HTSTokenManager Deployment ===");
+        console.log("Deployer address:", deployer);
+        console.log("Deployer balance:", deployer.balance / 1e18, "HBAR");
+
+        vm.startBroadcast(deployerPrivateKey);
+        HTSTokenManager manager = new HTSTokenManager();
+        vm.stopBroadcast();
+
+        console.log("");
+        console.log("=== Deployment Successful ===");
+        console.log("HTSTokenManager deployed to:", address(manager));
+        console.log("Block number:", block.number);
+    }
+}
+```
+
+### Deploy to Testnet
+
+Deployment is a two-step process. The reason is that `forge script` simulates all transactions locally before broadcasting them to the network. Since the HTS precompile at `0x167` has no EVM bytecode (it's a native Hedera system contract), the local simulation fails with `InvalidFEOpcode` when trying to call `createFungibleTokenPublic`. By splitting the deployment, Step 1 deploys using `forge script` (standard EVM deploy), and Step 2 uses `cast send` which sends the transaction directly to the RPC without local simulation.
+
+**Step 1:** Deploy the HTSTokenManager contract:
+
+```bash
+forge script script/DeployHTS.s.sol:DeployHTSScript --rpc-url $HEDERA_RPC_URL --broadcast -vvv
+```
+
+You should see output similar to:
+
+```bash
+=== Deployment Successful ===
+HTSTokenManager deployed to: 0x22723B710D0A1Bdc83706Dd8085414c0570FaB8b
+Block number: 33427480
+```
+
+Save the contract address - you'll need it for the next step.
+
+**Step 2:** Create the HTS token using `cast send`:
+
+```bash
+export CONTRACT_ADDRESS=0x22723B710D0A1Bdc83706Dd8085414c0570FaB8b
+```
+
+```bash
+cast send $CONTRACT_ADDRESS \
+  'createFungibleTokenPublic(string,string)' 'DemoHTS' 'DHTS' \
+  --value 15ether \
+  --rpc-url $HEDERA_RPC_URL \
+  --private-key $HEDERA_PRIVATE_KEY
+```
+
+This sends the transaction directly to Hedera (bypassing local simulation), so the HTS precompile at `0x167` is handled natively by the consensus nodes.
+
+**Step 3:** Get the token address:
+
+```bash
+cast abi-decode 'tokenAddress()(address)' $(cast call $CONTRACT_ADDRESS 'tokenAddress()' --rpc-url $HEDERA_RPC_URL)
+```
+
+**Step 4:** Note the block number for fork testing:
+
+```bash
+cast block-number --rpc-url $HEDERA_RPC_URL
+```
+
+<Warning>
+  Save the deployed contract address, token address, and block number! You'll need
+  these for your fork tests. The contract must exist at the block you're forking from.
+</Warning>
+
+We have already deployed this HTS contract on testnet at [https://hashscan.io/testnet/contract/0x22723B710D0A1Bdc83706Dd8085414c0570FaB8b](https://hashscan.io/testnet/contract/0x22723B710D0A1Bdc83706Dd8085414c0570FaB8b) so we will be using this for the remainder of this exercise.
+
+---
+
+## Step 3: Write Tests for the Forked Network
+
+Now we'll write tests that interact with the deployed HTS contract on the forked testnet. The key difference from the basic ERC-20 tutorial is the `htsSetup()` call - this activates the HTS emulation layer at address `0x167` so that HTS precompile calls work in the forked environment.
+
+Create a new file `test/HTSForkTest.t.sol`:
+
+<Info>
+  Make sure to update the `DEPLOYED_HTS_CONTRACT` and `HTS_TOKEN` constants
+  below with the values from your deployment.
+</Info>
+
+```solidity test/HTSForkTest.t.sol
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.33;
+
+import {Test, console} from "forge-std/Test.sol";
+import {htsSetup} from "hedera-forking/htsSetup.sol";
+import {IHederaTokenService} from "hedera-forking/IHederaTokenService.sol";
+import {IERC20} from "hedera-forking/IERC20.sol";
+import {HTSTokenManager} from "../src/HTSTokenManager.sol";
+
+contract HTSForkTest is Test {
+    int32 constant SUCCESS = 22;
+
+    // UPDATE THESE with your deployed addresses
+    address payable constant DEPLOYED_HTS_CONTRACT =
+        payable(0x22723B710D0A1Bdc83706Dd8085414c0570FaB8b);
+    address constant HTS_TOKEN =
+        0x000000000000000000000000000000000080d4f4;
+
+    HTSTokenManager public htsManager;
+    IERC20 public token;
+    address public alice;
+    address public bob;
+
+    function setUp() public {
+        // CRITICAL: Initialize the HTS emulation layer FIRST.
+        // This deploys the emulation contract at 0x167 so HTS calls work.
+        // Without this, all HTS calls revert with InvalidFEOpcode.
+        htsSetup();
+
+        // Bind to deployed contracts on the fork
+        htsManager = HTSTokenManager(DEPLOYED_HTS_CONTRACT);
+        token = IERC20(HTS_TOKEN);
+
+        // Create and fund test accounts
+        alice = makeAddr("alice");
+        bob = makeAddr("bob");
+        vm.deal(alice, 100 ether);
+        vm.deal(bob, 100 ether);
+        vm.deal(DEPLOYED_HTS_CONTRACT, 100 ether);
+    }
+
+    /* =========================
+          Token Info Tests
+       ========================= */
+
+    function test_GetTokenInfo() public {
+        (int256 responseCode, IHederaTokenService.TokenInfo memory info) =
+            htsManager.getTokenInfoPublic(HTS_TOKEN);
+
+        assertEq(responseCode, int256(SUCCESS), "getTokenInfo should succeed");
+        assertTrue(bytes(info.token.name).length > 0, "name not empty");
+        assertTrue(bytes(info.token.symbol).length > 0, "symbol not empty");
+
+        console.log("Token name:", info.token.name);
+        console.log("Token symbol:", info.token.symbol);
+    }
+
+    function test_GetFungibleTokenInfo() public {
+        (int256 responseCode, IHederaTokenService.FungibleTokenInfo memory info) =
+            htsManager.getFungibleTokenInfoPublic(HTS_TOKEN);
+
+        assertEq(responseCode, int256(SUCCESS), "getFungibleTokenInfo should succeed");
+        console.log("Fungible token decimals:", info.decimals);
+    }
+
+    /* =========================
+        ERC-20 Interface Tests
+       ========================= */
+
+    function test_ReadNameAndSymbol() public view {
+        string memory name = token.name();
+        string memory symbol = token.symbol();
+        console.log("Token name:", name);
+        console.log("Token symbol:", symbol);
+        assertEq(name, "DemoHTS");
+        assertEq(symbol, "DHTS");
+    }
+
+    function test_ReadDecimals() public view {
+        uint8 decimals = token.decimals();
+        console.log("Token decimals:", decimals);
+        assertEq(decimals, 8);
+    }
+
+    function test_ReadTotalSupply() public view {
+        uint256 totalSupply = token.totalSupply();
+        console.log("Total supply:", totalSupply);
+        assertGe(totalSupply, 0);
+    }
+
+    function test_ReadTreasuryBalance() public view {
+        uint256 balance = token.balanceOf(DEPLOYED_HTS_CONTRACT);
+        console.log("Treasury balance:", balance);
+        assertGe(balance, 0);
+    }
+
+    /* =========================
+          Transfer Tests
+       ========================= */
+
+    function test_DealAndTransfer() public {
+        // Give alice tokens using Foundry's deal cheatcode
+        uint256 amount = 1000;
+        deal(HTS_TOKEN, alice, amount);
+        assertEq(token.balanceOf(alice), amount);
+
+        // Alice transfers to bob via ERC-20 interface
+        vm.prank(alice);
+        token.transfer(bob, 400);
+
+        assertEq(token.balanceOf(alice), 600);
+        assertEq(token.balanceOf(bob), 400);
+    }
+
+    function test_ApproveAndTransferFrom() public {
+        deal(HTS_TOKEN, alice, 2000);
+
+        vm.prank(alice);
+        token.approve(bob, 1000);
+
+        vm.prank(bob);
+        token.transferFrom(alice, bob, 500);
+
+        assertEq(token.balanceOf(alice), 1500);
+        assertEq(token.balanceOf(bob), 500);
+    }
+
+    function test_TransferToMultipleRecipients() public {
+        deal(HTS_TOKEN, alice, 5000);
+
+        vm.prank(alice);
+        token.transfer(bob, 2000);
+
+        address charlie = makeAddr("charlie");
+        vm.prank(alice);
+        token.transfer(charlie, 1000);
+
+        assertEq(token.balanceOf(alice), 2000);
+        assertEq(token.balanceOf(bob), 2000);
+        assertEq(token.balanceOf(charlie), 1000);
+    }
+
+    /* =========================
+        Fork State Verification
+       ========================= */
+
+    function test_ConnectedToForkedNetwork() public view {
+        uint256 blockNumber = block.number;
+        console.log("Fork block number:", blockNumber);
+        assertGt(blockNumber, 0);
+    }
+
+    function test_ContractHasBytecode() public view {
+        uint256 codeSize;
+        address contractAddr = DEPLOYED_HTS_CONTRACT;
+        assembly { codeSize := extcodesize(contractAddr) }
+        assertGt(codeSize, 0, "HTSTokenManager should have bytecode");
+    }
+
+    function test_HTSPrecompileHasEmulation() public view {
+        uint256 htsCodeSize;
+        address hts = address(0x167);
+        assembly { htsCodeSize := extcodesize(hts) }
+        assertGt(htsCodeSize, 0, "0x167 should have emulation bytecode");
+    }
+
+    function test_TokenHasBytecode() public view {
+        uint256 tokenCodeSize;
+        address tokenAddr = HTS_TOKEN;
+        assembly { tokenCodeSize := extcodesize(tokenAddr) }
+        assertGt(tokenCodeSize, 0, "HTS token should have proxy bytecode");
+    }
+}
+```
+
+**Key points about these tests:**
+
+- **`htsSetup()` is critical** - Must be the first call in `setUp()` before any HTS interaction. It deploys the Solidity emulation layer at `0x167` so that HTS precompile calls work.
+- **ERC-20 interface** - HTS tokens expose standard ERC-20 methods (`name`, `symbol`, `decimals`, `balanceOf`, `transfer`, `approve`, `transferFrom`) through the HIP-719 proxy pattern. The emulation layer fetches real data from the Hedera Mirror Node via FFI.
+- **`deal()` for balances** - Foundry's `deal()` cheatcode sets token balances directly, which works with HTS tokens because the emulation layer maps storage slots correctly.
+- **`vm.prank` for impersonation** - Act as any account without their private key.
+- **Fork verification** - Tests confirm the fork is connected, contracts have bytecode, and the HTS emulation layer is active at `0x167`.
+
+<Info>
+  **Foundry vs. Hardhat approach:** The Hardhat advanced tutorial tests
+  `mintToken` and `transferToken` directly through the HTS precompile because
+  the Hardhat plugin intercepts at the JSON-RPC level. In Foundry, the emulation
+  layer excels at **read operations** and **ERC-20 level interactions**. For
+  setting balances in tests, use Foundry's `deal()` cheatcode and standard
+  ERC-20 methods (`transfer`, `approve`, `transferFrom`) which work through the
+  HIP-719 proxy redirect pattern.
+</Info>
+
+---
+
+## Step 4: Run Tests on the Forked Network
+
+Run your tests against the forked Hedera testnet:
+
+```bash
+forge test --fork-url $HEDERA_RPC_URL -vvv
+```
+
+Pin to a specific block for reproducible tests:
+
+```bash
+forge test --fork-url $HEDERA_RPC_URL --fork-block-number 33427481 -vvv
+```
+
+You should see output similar to:
+
+```bash
+Ran 13 tests for test/HTSForkTest.t.sol:HTSForkTest
+[PASS] test_ApproveAndTransferFrom() (gas: 1788900)
+[PASS] test_ConnectedToForkedNetwork() (gas: 3768)
+[PASS] test_ContractHasBytecode() (gas: 6379)
+[PASS] test_DealAndTransfer() (gas: 1688928)
+[PASS] test_GetFungibleTokenInfo() (gas: 1413178)
+[PASS] test_GetTokenInfo() (gas: 1403795)
+[PASS] test_HTSPrecompileHasEmulation() (gas: 6422)
+[PASS] test_ReadDecimals() (gas: 1204125)
+[PASS] test_ReadNameAndSymbol() (gas: 1216338)
+[PASS] test_ReadTotalSupply() (gas: 1204165)
+[PASS] test_ReadTreasuryBalance() (gas: 2055646)
+[PASS] test_TokenHasBytecode() (gas: 6425)
+[PASS] test_TransferToMultipleRecipients() (gas: 1853280)
+Suite result: ok. 13 passed; 0 failed; 0 skipped
+```
+
+### Pin to a Specific Block
+
+For reproducible tests, use `--fork-block-number` with a block where your contract exists. If you try to fork at a block before your contract was deployed, `setUp()` will fail because the contract doesn't exist yet at that block.
+
+---
+
+## Best Practices for HTS Fork Testing with Foundry
+
+1. **Always call `htsSetup()` first** - It must be the very first call in `setUp()`, before any HTS interaction
+
+2. **Use `ffi = true` only in test profiles** - FFI allows arbitrary shell execution; never enable it in production deployment scripts
+
+3. **Pin your block number** - Use `--fork-block-number` for deterministic, reproducible tests in CI/CD
+
+4. **Use supported methods** - Stick to the [currently supported HTS methods](https://github.com/hashgraph/hedera-forking#hedera-token-service-supported-methods)
+
+5. **Always verify on real network** - Fork testing is for development speed; always test on testnet/mainnet before production
+
+---
+
+## Bonus: Real-World SaucerSwap Mainnet Fork Test
+
+The tutorial repository includes a bonus test that demonstrates one of the most powerful use cases for fork testing: interacting with **production DeFi contracts** on Hedera mainnet without spending real HBAR.
+
+The `SaucerSwapForkTest.t.sol` file forks Hedera mainnet and executes a **real token swap** through [SaucerSwap V2](https://www.saucerswap.finance/) - swapping WHBAR for USDC at the current mainnet exchange rate, using real liquidity pools.
+
+### Run the SaucerSwap Tests
+
+```bash
+forge test --match-contract SaucerSwapForkTest \
+  --fork-url https://mainnet.hashio.io/api \
+  -vvv
+```
+
+<Info>
+  These tests use **mainnet** (not testnet). No `.env` configuration is needed -
+  fork tests don't require a private key because all balances are created locally
+  with Foundry cheatcodes.
+</Info>
+
+### The Real Swap Test
+
+The headline test (`test_SwapWHBARForUSDCViaSaucerSwap`) executes a real swap through SaucerSwap V2's `exactInput` function:
+
+```solidity
+function test_SwapWHBARForUSDCViaSaucerSwap() public {
+    // Give the trader 10 WHBAR using deal() - no real tokens needed
+    uint256 whbarAmount = 10 * 1e8;
+    deal(WHBAR, trader, whbarAmount);
+
+    // Approve the SaucerSwap router
+    vm.startPrank(trader);
+    whbar.approve(SAUCERSWAP_ROUTER, whbarAmount);
+
+    // Encode the swap path: WHBAR -> 0.15% fee tier -> USDC
+    bytes memory path = abi.encodePacked(
+        WHBAR,
+        uint24(1500),   // 0.15% fee tier for WHBAR/USDC pool
+        USDC
+    );
+
+    // Execute the swap
+    ExactInputParams memory params = ExactInputParams({
+        path: path,
+        recipient: trader,
+        deadline: block.timestamp + 300,
+        amountIn: whbarAmount,
+        amountOutMinimum: 0
+    });
+
+    (bool success, bytes memory returnData) = SAUCERSWAP_ROUTER.call(
+        abi.encodeWithSignature(
+            "exactInput((bytes,address,uint256,uint256,uint256))",
+            params
+        )
+    );
+    require(success, "Swap failed");
+    uint256 amountOut = abi.decode(returnData, (uint256));
+    vm.stopPrank();
+
+    // Trader received real USDC at mainnet exchange rate
+    assertGt(amountOut, 0, "Should have received USDC from swap");
+}
+```
+
+### How It Works
+
+**Where does the WHBAR come from if the test account doesn't exist on mainnet?**
+
+Foundry's `deal(token, account, amount)` writes directly to the token's storage slots on the forked EVM. It sets the balance for the given account without any real transfer. The account doesn't need to exist on mainnet. Similarly, `vm.deal(account, amount)` sets native HBAR balances locally. Both cheatcodes only affect the fork - mainnet is never touched.
+
+**How does the swap execute against real liquidity?**
+
+The fork is a snapshot of mainnet state. The SaucerSwap V2 Router has real bytecode, and the WHBAR/USDC pool has real liquidity deposited by real LPs. When the test calls `exactInput`, the router reads real pool state (liquidity, tick, price), pulls WHBAR from the trader, swaps through the pool, and sends USDC to the trader - all at the real exchange rate. The entire execution happens locally on the fork.
+
+**Can I impersonate a real mainnet account instead?**
+
+Yes. `vm.prank(realMainnetAddress)` makes the next call appear to come from any address - no private key needed. You could impersonate a whale with millions in HBAR and use their real balances for testing:
+
+```solidity
+address whale = 0x...; // A real mainnet account
+vm.prank(whale);
+whbar.transfer(trader, 50000 * 1e8); // Uses the whale's real balance
+```
+
+**Why does this need `htsSetup()`?**
+
+Both WHBAR and USDC are HTS tokens. When the SaucerSwap router calls `transferFrom` on these tokens during the swap, the call goes through the HIP-719 proxy to `0x167`. Without `htsSetup()`, that address returns `0xfe` and the entire swap reverts.
+
+### Mainnet Addresses
+
+| Contract/Token | Hedera ID | EVM Address | Decimals |
+| -------------- | --------- | ----------- | -------- |
+| SaucerSwap V2 Router | `0.0.3949434` | `0x00000000000000000000000000000000003c437A` | - |
+| WHBAR | `0.0.1456986` | `0x0000000000000000000000000000000000163B5a` | 8 |
+| USDC (Native) | `0.0.456858` | `0x000000000000000000000000000000000006f89a` | 6 |
+
+> **Source:** [SaucerSwap Contract Deployments](https://docs.saucerswap.finance/developerx/contract-deployments)
+
+---
+
+## Bonus: Bonzo Finance Mainnet Fork Test (Lending/Borrowing)
+
+The tutorial repository also includes a test that forks Hedera mainnet and interacts with [Bonzo Finance](https://bonzo.finance/) - an Aave V2 fork and the first lending/borrowing protocol on Hedera. The test deposits WHBAR as collateral and borrows USDC against it, using real contracts with ~7M USDC in real liquidity.
+
+### Run the Bonzo Tests
+
+```bash
+forge test --match-contract BonzoForkTest \
+  --fork-url https://mainnet.hashio.io/api \
+  -vvv
+```
+
+### What It Tests
+
+| Test | What It Does |
+| ---- | ------------ |
+| `test_DepositWHBAR` | Deposits 5000 WHBAR as collateral, receives aWHBAR tokens |
+| `test_DepositWHBARAndBorrowUSDC` | Full flow: deposit collateral, check account data, borrow 10 USDC, verify debt position |
+| `test_ReadBonzoUSDCLiquidity` | Reads real USDC liquidity in Bonzo (~7M USDC) |
+
+### How the Deposit + Borrow Works
+
+```
+deal(WHBAR, depositor, 5000e8)         → Create 5000 WHBAR on the fork
+whbar.approve(LENDING_POOL, amount)    → Approve LendingPool to pull WHBAR
+LendingPool.deposit(WHBAR, ...)        → Deposit as collateral → receive aWHBAR
+LendingPool.getUserAccountData(...)    → Check collateral, LTV (62.72%), borrow capacity
+LendingPool.borrow(USDC, 10e6, 2, ..) → Borrow 10 USDC at variable rate
+                                       → Receive USDC + variable debt token minted
+```
+
+The LendingPool uses Bonzo's real oracle pricing to calculate collateral value, LTV ratios, and health factors - all against production state on the fork.
+
+**Why this matters:** If you're building on top of Bonzo (or any Aave V2 fork on Hedera), fork testing lets you test your integration against real protocol state, verify borrowing logic against real oracle prices, and simulate liquidation scenarios - without risking real funds.
+
+### Bonzo Mainnet Addresses
+
+| Contract | Address |
+| -------- | ------- |
+| LendingPool | `0x236897c518996163E7b313aD21D1C9fCC7BA1afc` |
+| aWHBAR | `0x6e96a607F2F5657b39bf58293d1A006f9415aF32` |
+| Variable Debt USDC | `0x8a90C2f80Fc266e204cb37387c69EA2ed42A3cc1` |
+
+> **Source:** [Bonzo Lend Contracts](https://docs.bonzo.finance/hub/developer/bonzo-lend/lend-contracts)
+
+---
+
+## Understanding HTS Fork Testing with Foundry
+
+### Why Standard Fork Testing Breaks on Hedera
+
+On standard EVM chains, every contract is on-chain bytecode. When you fork and call any contract, the fork fetches its bytecode and executes it locally. Hedera's system contracts (HTS at `0x167`, Exchange Rate at `0x168`, PRNG at `0x169`) are native services implemented in the consensus node software - they have no EVM bytecode. When your fork tries to fetch code at `0x167`, the JSON-RPC relay returns `0xfe` (the INVALID opcode), and your test crashes with `InvalidFEOpcode`.
+
+### How `htsSetup()` Fixes It
+
+The `htsSetup()` function from the `hedera-forking` library:
+
+1. Deploys the `HtsSystemContractJson` emulation contract at `0x167` using `vm.etch`
+2. Creates a `MirrorNodeFFI` instance that queries the Hedera Mirror Node via curl
+3. Calls `vm.allowCheatcodes(0x167)` so the emulation can use `vm.store`, `vm.ffi`, and `vm.parseJson`
+
+After `htsSetup()`, HTS calls work because they hit a Solidity contract that fetches real token data from the Mirror Node.
+
+### How the HIP-719 Proxy Pattern Works
+
+Every HTS token address on Hedera contains identical proxy bytecode (defined by [HIP-719](https://hips.hedera.com/hip/hip-719)). When you call `token.balanceOf()`, the proxy delegates the call to `0x167` via `redirectForToken`. The emulation contract at `0x167` receives the call, fetches the real balance from the Mirror Node via FFI, and returns it.
+
+### Foundry vs. Hardhat Comparison for HTS Fork Testing
+
+| Aspect | Foundry | Hardhat |
+| ------ | ------- | ------- |
+| Emulation approach | Proactive: deploys Solidity emulation via `htsSetup()` | Reactive: worker thread intercepts JSON-RPC calls |
+| Data fetch mechanism | FFI + curl to Mirror Node | Node.js fetch to Mirror Node |
+| Required config | `ffi = true` in `foundry.toml` | `chainId` + `workerPort` in hardhat config |
+| HTS read operations | Fully supported via emulation | Fully supported via interception |
+| HTS write operations | Use `deal()` + ERC-20 methods | Direct precompile calls work |
+| Test language | Solidity | TypeScript |
+
+### Local vs. Remote State
+
+| Action                     | Affects Local Fork | Affects Testnet |
+| -------------------------- | ------------------ | --------------- |
+| Read balances              | ✅ (cached)        | ❌ (read-only)  |
+| Transfer tokens (ERC-20)   | ✅                 | ❌              |
+| Query token info (HTS)     | ✅                 | ❌              |
+| `deal()` set balances      | ✅                 | ❌              |
+| Impersonate accounts       | ✅                 | ❌              |
+| Changes persist after test | ❌ (reset)         | N/A             |
+
+---
+
+## Further Learning & Next Steps
+
+1. [**Forking Hedera Network for Local Testing**](/hedera/core-concepts/smart-contracts/forking-hedera-network-for-local-testing)\
+   Deep dive into how Hedera forking works under the hood
+
+2. [**How to Fork Hedera with Foundry (Part 1)**](/hedera/tutorials/smart-contracts/foundry/how-to-fork-the-hedera-network-with-foundry-basic-erc20)\
+   Start with basic ERC-20 fork testing
+
+3. [**How to Fork Hedera with Hardhat - Advanced HTS**](/hedera/tutorials/smart-contracts/how-to-fork-the-hedera-network-with-hardhat-advanced-hts)\
+   Compare the Hardhat approach to HTS fork testing
+
+4. [**hedera-forking Repository**](https://github.com/hashgraph/hedera-forking)\
+   Explore examples and documentation
+
+5. [**Hedera Smart Contracts Repository**](https://github.com/hashgraph/hedera-smart-contracts)\
+   Explore HTS System Contracts interfaces
+
+<Columns cols={2}>
+  <Card title="Writer: Kiran Pachhai, Developer Advocate" arrow>
+    [GitHub](https://github.com/kpachhai) |
+    [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
+  </Card>
+</Columns>

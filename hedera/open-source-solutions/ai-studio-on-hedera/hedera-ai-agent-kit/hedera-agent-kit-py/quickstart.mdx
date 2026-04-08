@@ -219,7 +219,9 @@ See the full [Developer Examples](https://github.com/hashgraph/hedera-agent-kit-
 - **Option B** - [Tool Calling Agent (LangChain Classic)](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/DEVEXAMPLES.md#option-b-run-the-tool-calling-agent-langchain-classic): Basic tool-calling with LangChain Classic
 - **Option C** - [Plugin Tool Calling Agent (LangChain Classic)](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/DEVEXAMPLES.md#option-c-run-the-plugin-tool-calling-agent-langchain-classic): Plugin-based agent with LangChain Classic
 - **Option D** - [Structured Chat Agent (LangChain Classic)](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/DEVEXAMPLES.md#option-d-run-the-structured-chat-agent-langchain-classic): Structured chat with LangChain Classic
-
+- **Option E** - [Preconfigured MCPs Agent (LangChain v1)](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/DEVEXAMPLES.md#option-e-run-the-preconfigured-mcps-agent-langchain-v1): Integrate Hederion MCP & Hgraph MCP via LangChain v1
+- **Option F** - [Plugin Tool Calling Agent (Google ADK)](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/DEVEXAMPLES.md#option-f-run-the-google-adk-agents): Build and run agents with Google ADK (Gemini models)
+- **Option G** - [Return Bytes Mode Agents (ADK & LangChain)](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/DEVEXAMPLES.md#option-g-run-the-return-bytes-mode-agents-human-in-the-loop): Return raw transaction bytes for manual signing and execution
 ---
 
 ## About the Agent Kit
@@ -231,7 +233,7 @@ The Python SDK currently supports one execution mode:
 | Mode                     | Status         | Description                                                     |
 |--------------------------|----------------|-----------------------------------------------------------------|
 | `AgentMode.AUTONOMOUS`   | ✅ Supported    | Transactions are executed directly using the operator account   |
-| `AgentMode.RETURN_BYTES` | 🔜 Coming Soon | Transaction bytes returned for user signing (human-in-the-loop) |
+| `AgentMode.RETURN_BYTES` | ✅ Supported | Transaction bytes returned for user signing (human-in-the-loop) |
 
 ---
 

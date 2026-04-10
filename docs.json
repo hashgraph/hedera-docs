@@ -321,7 +321,8 @@
                 "pages": [
                   "hedera/networks/release-notes",
                   "hedera/networks/release-notes/services",
-                  "hedera/networks/release-notes/mirror-node"
+                  "hedera/networks/release-notes/mirror-node",
+                  "hedera/networks/release-notes/json-rpc-relay"
                 ]
               }
             ]

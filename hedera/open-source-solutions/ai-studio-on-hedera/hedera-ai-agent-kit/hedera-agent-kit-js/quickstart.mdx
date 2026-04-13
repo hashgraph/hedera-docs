@@ -5,7 +5,7 @@ description: "Get started with the Hedera Agent Kit using JavaScript/TypeScript"
 
 ## Quickstart - Create a Hedera Agent
 
-See the npm package: https://www.npmjs.com/package/hedera-agent-kit
+See the npm package: https://www.npmjs.com/package/@hashgraph/hedera-agent-kit
 
 ### 1. Create your project directory
 
@@ -25,41 +25,25 @@ npm init -y
 Open `package.json` and add `"type": "module"` to enable ES modules.
 
 ```bash
-npm install hedera-agent-kit @langchain/core langchain @langchain/langgraph @hashgraph/sdk dotenv
+npm install @hashgraph/sdk @hashgraph/hedera-agent-kit @hashgraph/hedera-agent-kit-langchain dotenv
 ```
 
-> **Note**: The Hedera Agent Kit supports both **LangChain v1** (recommended) and **LangChain classic** (v0.3, legacy). The examples below use LangChain v1.
+> **Note**: `@langchain/core` and `langchain` are bundled inside `@hashgraph/hedera-agent-kit-langchain`. You do **not** need to install them separately. You only need to install your LLM provider package.
 
 ### 3. Install ONE of these AI provider packages
 
 ```bash
 # Option 1: OpenAI (requires API key)
-# for Langchain classic
-npm install @langchain/openai@^0.6
-
-# for LangChain v1
-npm install @langchain/openai@^1npm install @langchain/openai@^0.6
+npm install @langchain/openai
 
 # Option 2: Anthropic Claude (requires API key)
-# for LangChain classic
-npm install @langchain/anthropic@^0.3
-
-# for LangChain v1
-npm install @langchain/anthropic@^1
+npm install @langchain/anthropic
 
 # Option 3: Groq (free tier available)
-# for Langchain classic
-npm install @langchain/groq@^0.2
-
-# for LangChain v1
-npm install @langchain/groq@^1
+npm install @langchain/groq
 
 # Option 4: Ollama (100% free, runs locally)
-# for Langchain classic
-npm install @langchain/ollama@^0.2
-
-# for LangChain v1
-npm install @langchain/ollama@^1
+npm install @langchain/ollama
 ```
 
 ### 4. Add Environment Variables
@@ -97,7 +81,14 @@ touch index.js
 ```javascript index.js
 // index.js
 import { Client, PrivateKey } from '@hashgraph/sdk';
-import { HederaLangchainToolkit, AgentMode } from 'hedera-agent-kit';
+import { AgentMode } from '@hashgraph/hedera-agent-kit';
+import {
+  coreAccountPlugin,
+  coreAccountQueryPlugin,
+  coreTokenPlugin,
+  coreConsensusPlugin,
+} from '@hashgraph/hedera-agent-kit/plugins';
+import { HederaLangchainToolkit } from '@hashgraph/hedera-agent-kit-langchain';
 import { createAgent } from 'langchain';
 import { MemorySaver } from '@langchain/langgraph';
 import { ChatOpenAI } from '@langchain/openai';
@@ -115,19 +106,23 @@ async function main() {
     PrivateKey.fromStringECDSA(process.env.PRIVATE_KEY)
   );
 
-  // Prepare Hedera toolkit
+  // Prepare Hedera toolkit — plugins must be passed explicitly; an empty array means no tools
   const hederaAgentToolkit = new HederaLangchainToolkit({
     client,
     configuration: {
-      tools: [], // Add specific tools here if needed, or leave empty for defaults/plugins
-      plugins: [], // Add plugins here
+      plugins: [
+        coreAccountPlugin,
+        coreAccountQueryPlugin,
+        coreTokenPlugin,
+        coreConsensusPlugin,
+      ],
       context: {
         mode: AgentMode.AUTONOMOUS,
       },
     },
   });
 
-  // Fetch tools from a toolkit
+  // Fetch tools from the toolkit
   const tools = hederaAgentToolkit.getTools();
 
   const llm = new ChatOpenAI({
@@ -212,6 +207,6 @@ This tool has two execution modes with AI agents:
 ## Resources
 
 - **GitHub**: https://github.com/hashgraph/hedera-agent-kit-js
-- **npm**: [hedera-agent-kit](https://www.npmjs.com/package/hedera-agent-kit)
+- **npm**: [@hashgraph/hedera-agent-kit](https://www.npmjs.com/package/@hashgraph/hedera-agent-kit)
 - **Issues**: https://github.com/hashgraph/hedera-agent-kit-js/issues
 - **Developer Examples**: [DEVEXAMPLES.md](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/DEVEXAMPLES.md)

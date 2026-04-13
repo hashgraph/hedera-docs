@@ -152,13 +152,10 @@ tools = hedera_toolkit.get_tools()
 
 ## Agent Modes
 
-The Python SDK currently supports one agent mode:
-
-| Mode                   | Description                                                    |
-|------------------------|----------------------------------------------------------------|
-| `AgentMode.AUTONOMOUS` | The agent executes transactions directly on the Hedera network |
-
-> **Coming Soon:** `AgentMode.RETURN_BYTES` - In this mode, the agent creates the transaction and returns the bytes for the user to execute.
+| Mode                     | Description                                                                              |
+|--------------------------|-------------------------------------------------------------------------------------------|
+| `AgentMode.AUTONOMOUS`   | The agent executes transactions directly on the Hedera network                            |
+| `AgentMode.RETURN_BYTES` | The agent creates the transaction and returns the bytes for the user to sign and execute  |
 
 ---
 

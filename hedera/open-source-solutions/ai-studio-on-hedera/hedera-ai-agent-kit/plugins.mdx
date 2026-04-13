@@ -52,6 +52,105 @@ The Hedera Agent Kit is extensible with third party plugins created by third par
 
   Github repository: [https://github.com/henrytongv/coincap-hedera-plugin](https://github.com/henrytongv/coincap-hedera-plugin). Tested/endorsed version of plugin: coincap-hedera-plugin@1.0.4
 
+---
+
+## Using Plugins
+
+### JavaScript / TypeScript
+
+Starting with **v4**, the Hedera Agent Kit is published under the `@hashgraph` scope and plugins are imported from the `@hashgraph/hedera-agent-kit/plugins` subpath. Framework integrations (LangChain, Vercel AI SDK, ElizaOS, MCP) are now separate packages.
+
+**Which packages do I need?**
+
+| Package | Purpose |
+|---|---|
+| `@hashgraph/hedera-agent-kit` | Core types, `AgentMode`, `Plugin`, `Tool`, `HederaBuilder` |
+| `@hashgraph/hedera-agent-kit/plugins` | All built-in Hedera plugins (subpath of core) |
+| `@hashgraph/hedera-agent-kit-langchain` | LangChain toolkit (`HederaLangchainToolkit`) |
+| `@hashgraph/hedera-agent-kit-ai-sdk` | Vercel AI SDK toolkit (`HederaAIToolkit`) |
+| `@hashgraph/hedera-agent-kit-elizaos` | ElizaOS toolkit (`HederaElizaOSToolkit`) |
+| `@hashgraph/hedera-agent-kit-mcp` | Standalone MCP server and CLI |
+
+Install the core package plus your chosen framework toolkit and LLM provider:
+
+```bash
+# LangChain + OpenAI
+npm install @hashgraph/sdk @hashgraph/hedera-agent-kit @hashgraph/hedera-agent-kit-langchain @langchain/openai dotenv
+
+# LangChain + Anthropic
+npm install @hashgraph/sdk @hashgraph/hedera-agent-kit @hashgraph/hedera-agent-kit-langchain @langchain/anthropic dotenv
+
+# Vercel AI SDK + OpenAI
+npm install @hashgraph/sdk @hashgraph/hedera-agent-kit @hashgraph/hedera-agent-kit-ai-sdk @ai-sdk/openai dotenv
+```
+
+Import plugins from the `/plugins` subpath and pass them **explicitly** in the toolkit configuration:
+
+```typescript
+import { AgentMode } from '@hashgraph/hedera-agent-kit';
+import {
+  coreAccountPlugin,
+  coreAccountQueryPlugin,
+  coreTokenPlugin,
+  coreTokenQueryPlugin,
+  coreConsensusPlugin,
+  coreConsensusQueryPlugin,
+  coreEVMPlugin,
+  coreEVMQueryPlugin,
+  coreMiscQueriesPlugin,
+  coreTransactionQueryPlugin,
+} from '@hashgraph/hedera-agent-kit/plugins';
+import { HederaLangchainToolkit } from '@hashgraph/hedera-agent-kit-langchain';
+
+const toolkit = new HederaLangchainToolkit({
+  client,
+  configuration: {
+    plugins: [
+      coreAccountPlugin,
+      coreAccountQueryPlugin,
+      coreTokenPlugin,
+      coreConsensusPlugin,
+    ], // Plugins must be listed explicitly — an empty array means zero tools
+    context: { mode: AgentMode.AUTONOMOUS },
+  },
+});
+
+const tools = toolkit.getTools();
+```
+
+> **Important:** Plugins must be explicitly opted in. Passing an empty `plugins` array will result in an agent with no tools available. This is a **silent behavioral change** — the code will not throw an error.
+
+### Python
+
+In the Python SDK, plugins are imported from `hedera_agent_kit.plugins`:
+
+```python
+from hedera_agent_kit.langchain.toolkit import HederaLangchainToolkit
+from hedera_agent_kit.plugins import (
+    core_account_plugin,
+    core_account_query_plugin,
+    core_token_plugin,
+    core_consensus_plugin,
+)
+from hedera_agent_kit.shared.configuration import Configuration, Context, AgentMode
+
+configuration = Configuration(
+    plugins=[
+        core_account_plugin,
+        core_account_query_plugin,
+        core_token_plugin,
+        core_consensus_plugin,
+    ],
+    context=Context(
+        mode=AgentMode.AUTONOMOUS,
+        account_id=str(account_id),
+    ),
+)
+
+hedera_toolkit = HederaLangchainToolkit(client=client, configuration=configuration)
+tools = hedera_toolkit.get_tools()
+```
+
 
 
 

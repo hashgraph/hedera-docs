@@ -91,6 +91,7 @@ npm install @hashgraph/sdk @hashgraph/hedera-agent-kit @hashgraph/hedera-agent-k
 Import plugins from the `/plugins` subpath and pass them **explicitly** in the toolkit configuration:
 
 ```typescript
+import { Client, PrivateKey } from '@hashgraph/sdk';
 import { AgentMode } from '@hashgraph/hedera-agent-kit';
 import {
   coreAccountPlugin,
@@ -105,6 +106,11 @@ import {
   coreTransactionQueryPlugin,
 } from '@hashgraph/hedera-agent-kit/plugins';
 import { HederaLangchainToolkit } from '@hashgraph/hedera-agent-kit-langchain';
+
+const client = Client.forTestnet().setOperator(
+  process.env.ACCOUNT_ID!,
+  PrivateKey.fromStringECDSA(process.env.PRIVATE_KEY!),
+);
 
 const toolkit = new HederaLangchainToolkit({
   client,
@@ -154,11 +160,3 @@ configuration = Configuration(
 hedera_toolkit = HederaLangchainToolkit(client=client, configuration=configuration)
 tools = hedera_toolkit.get_tools()
 ```
-
-
-
-
-
-
-
-

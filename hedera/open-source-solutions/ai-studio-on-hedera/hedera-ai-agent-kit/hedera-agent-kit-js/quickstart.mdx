@@ -5,7 +5,7 @@ description: "Get started with the Hedera Agent Kit using JavaScript/TypeScript"
 
 ## Quickstart - Create a Hedera Agent
 
-See the npm package: https://www.npmjs.com/package/hedera-agent-kit
+See the npm package: https://www.npmjs.com/package/@hashgraph/hedera-agent-kit
 
 ### 1. Create your project directory
 
@@ -25,7 +25,7 @@ npm init -y
 Open `package.json` and add `"type": "module"` to enable ES modules.
 
 ```bash
-npm install @hashgraph/sdk hedera-agent-kit @langchain/langgraph dotenv
+npm install @hashgraph/sdk @hashgraph/hedera-agent-kit @hashgraph/hedera-agent-kit-langchain dotenv
 ```
 
 ### 3. Install one of these AI provider packages
@@ -64,9 +64,8 @@ Add the following to the `.env` file:
 
 ```env
 # Required: Hedera credentials (get free testnet account at https://portal.hedera.com/dashboard)
-HEDERA_ACCOUNT_ID="0.0.xxxxx"
-HEDERA_PRIVATE_KEY="0x..." # ECDSA encoded private key
-HEDERA_NETWORK="testnet"
+ACCOUNT_ID="0.0.xxxxx"
+PRIVATE_KEY="0x..." # ECDSA encoded private key
 
 # Optional: Add the API key for your chosen AI provider
 OPENAI_API_KEY="sk-proj-..."      # For OpenAI (https://platform.openai.com/api-keys)
@@ -80,23 +79,19 @@ GROQ_API_KEY="gsk_..."            # For Groq free tier (https://console.groq.com
 Once you have your project set up, create an `index.js` file:
 
 ```bash
-touch index.js
+touch index.mjs
 ```
 
-```javascript index.js
-// index.js
-import {
-  HederaAgentKit,
-  createHederaTools,
-  coreAccountPlugin,
-  coreTokenPlugin,
-  coreConsensusPlugin,
-  AgentMode,
-} from 'hedera-agent-kit';
-import { createReactAgent } from '@langchain/langgraph/prebuilt';
-import { MemorySaver } from '@langchain/langgraph';
-import { ChatOpenAI } from '@langchain/openai';
-// import { ChatAnthropic } from '@langchain/anthropic';
+```javascript
+// index.mjs
+import { Client, PrivateKey } from '@hashgraph/sdk';
+import { AgentMode } from '@hashgraph/hedera-agent-kit';
+import { allCorePlugins } from '@hashgraph/hedera-agent-kit/plugins';
+import { HederaLangchainToolkit } from '@hashgraph/hedera-agent-kit-langchain';
+import { AgentExecutor, createToolCallingAgent } from '@langchain/classic/agents';
+import { ChatAnthropic } from '@langchain/anthropic';
+import { ChatPromptTemplate } from '@langchain/core/prompts';
+//import { ChatOpenAI } from '@langchain/openai';
 // import { ChatGroq } from '@langchain/groq';
 // import { ChatOllama } from '@langchain/ollama';
 import dotenv from 'dotenv';
@@ -104,33 +99,32 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 async function main() {
-  const hederaKit = new HederaAgentKit(
-    {
-      accountId: process.env.HEDERA_ACCOUNT_ID,
-      privateKey: process.env.HEDERA_PRIVATE_KEY,
-      network: process.env.HEDERA_NETWORK || 'testnet',
-      mode: AgentMode.AUTONOMOUS,
-    },
-    {
-      plugins: [
-        coreAccountPlugin,
-        coreTokenPlugin,
-        coreConsensusPlugin,
-      ],
-    }
+  const client = Client.forTestnet().setOperator(
+    process.env.ACCOUNT_ID,
+    PrivateKey.fromStringECDSA(process.env.PRIVATE_KEY),
   );
 
-  const tools = createHederaTools(hederaKit);
-
-  const llm = new ChatOpenAI({
-    model: 'gpt-4o-mini',
-    apiKey: process.env.OPENAI_API_KEY,
+  const toolkit = new HederaLangchainToolkit({
+    client,
+    configuration: {
+      plugins: allCorePlugins,
+      context: {
+        mode: AgentMode.AUTONOMOUS,
+      },
+    },
   });
 
-  // const llm = new ChatAnthropic({
-  //   model: 'claude-3-5-sonnet-20241022',
-  //   apiKey: process.env.ANTHROPIC_API_KEY,
-  // });
+  const tools = toolkit.getTools();
+
+  const llm = new ChatAnthropic({
+    model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6',
+    apiKey: process.env.ANTHROPIC_API_KEY,
+  });
+
+//   const llm = new ChatOpenAI({
+//     model: 'gpt-4o-mini',
+//     apiKey: process.env.OPENAI_API_KEY,
+//   });
 
   // const llm = new ChatGroq({
   //   model: 'llama-3.3-70b-versatile',
@@ -142,21 +136,31 @@ async function main() {
   //   baseUrl: process.env.OLLAMA_BASE_URL || 'http://127.0.0.1:11434',
   // });
 
-  const agent = createReactAgent({
+  const prompt = ChatPromptTemplate.fromMessages([
+    [
+      'system',
+      'You are a helpful assistant with access to Hedera blockchain tools',
+    ],
+    ['human', '{input}'],
+    ['placeholder', '{agent_scratchpad}'],
+  ]);
+
+  const agent = createToolCallingAgent({
     llm,
     tools,
-    checkpointSaver: new MemorySaver(),
-    messageModifier: 'You are a helpful assistant with access to Hedera blockchain tools',
+    prompt,
+  });
+
+  const agentExecutor = new AgentExecutor({
+    agent,
+    tools,
   });
 
   console.log('Sending a message to the agent...');
 
-  const response = await agent.invoke(
-    { messages: [{ role: 'user', content: "what's my balance?" }] },
-    { configurable: { thread_id: '1' } }
-  );
+  const response = await agentExecutor.invoke({ input: "what's my balance?" });
 
-  console.log(response.messages[response.messages.length - 1].content);
+  console.log(response?.output ?? response);
 }
 
 main().catch(console.error);
@@ -169,7 +173,7 @@ main().catch(console.error);
 From the root directory, run your example agent:
 
 ```bash
-node index.js
+node index.mjs
 ```
 
 ---
@@ -203,6 +207,6 @@ This tool has two execution modes with AI agents:
 ## Resources
 
 - **GitHub**: https://github.com/hashgraph/hedera-agent-kit-js
-- **npm**: [hedera-agent-kit](https://www.npmjs.com/package/hedera-agent-kit)
+- **npm**: [@hashgraph/hedera-agent-kit](https://www.npmjs.com/package/@hashgraph/hedera-agent-kit)
 - **Issues**: https://github.com/hashgraph/hedera-agent-kit-js/issues
 - **Developer Examples**: [DEVEXAMPLES.md](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/DEVEXAMPLES.md)

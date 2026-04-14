@@ -159,7 +159,7 @@ Create your plugin index file (index.ts):
 
 ### Tool Output Parsing
 
-The Hedera Agent Kit tools return a structured JSON output. When using `createReactAgent` from LangGraph, tool outputs are handled natively by the agent runtime. Each tool returns:
+The Hedera Agent Kit tools return a structured JSON output. Each tool returns:
 
 ```typescript
 {
@@ -177,8 +177,8 @@ import { Client, PrivateKey } from "@hashgraph/sdk";
 import { AgentMode } from "@hashgraph/hedera-agent-kit";
 import { myCustomPlugin } from "./plugins/my-custom-plugin";
 import { HederaLangchainToolkit } from "@hashgraph/hedera-agent-kit-langchain";
-import { createReactAgent } from "@langchain/langgraph/prebuilt";
-import { MemorySaver } from "@langchain/langgraph";
+import { AgentExecutor, createToolCallingAgent } from "langchain/agents";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
 
 const client = Client.forTestnet().setOperator(
   process.env.ACCOUNT_ID!,
@@ -197,11 +197,19 @@ const toolkit = new HederaLangchainToolkit({
 
 const tools = toolkit.getTools();
 
-const agent = createReactAgent({
-  llm,
-  tools,
-  checkpointSaver: new MemorySaver(),
-});
+const prompt = ChatPromptTemplate.fromMessages([
+  ['system', 'You are a helpful assistant with access to Hedera blockchain tools'],
+  ['human', '{input}'],
+  ['placeholder', '{agent_scratchpad}'],
+]);
+
+const agent = createToolCallingAgent({ llm, tools, prompt });
+
+const agentExecutor = new AgentExecutor({ agent, tools });
+
+const response = await agentExecutor.invoke({ input: "what's my balance?" });
+
+console.log(response?.output ?? response);
 ```
 
 #### Examples and References

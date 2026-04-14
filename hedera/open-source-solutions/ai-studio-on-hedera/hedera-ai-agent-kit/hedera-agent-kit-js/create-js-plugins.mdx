@@ -54,7 +54,7 @@ Create your tool file (e.g., tools/my-service/my-tool.ts):
 
 ```typescript
 import { z } from "zod";
-import { Context, Tool, handleTransaction } from "@hashgraph/hedera-agent-kit";
+import { Context, Tool, handleTransaction } from "hedera-agent-kit";
 import { Client, PrivateKey, AccountId } from "@hashgraph/sdk";
 import dotenv from "dotenv";
 
@@ -118,7 +118,7 @@ export default tool;
 Create your plugin index file (index.ts):
 
 ```typescript
-  import { Context, Plugin } from '@hashgraph/hedera-agent-kit';
+  import { Context, Plugin } from 'hedera-agent-kit';
   import myTool, { MY_TOOL } from './tools/my-service/my-tool';
 
   export const myCustomPlugin: Plugin = {
@@ -159,13 +159,7 @@ Create your plugin index file (index.ts):
 
 ### Tool Output Parsing
 
-The Hedera Agent Kit tools return a structured JSON output that needs to be parsed to be useful for the agent and the user.
-
-**LangChain v0.3 (Classic)**
-In the classic approach, the agent handles the tool output automatically, but you may need to parse it if you are handling tool calls manually.
-
-**LangChain v1 (New)**
-In LangChain v1, we use the `ResponseParserService` to handle tool outputs. This service normalizes the output from both transaction and query tools into a consistent format:
+The Hedera Agent Kit tools return a structured JSON output. When using `createReactAgent` from LangGraph, tool outputs are handled natively by the agent runtime. Each tool returns:
 
 ```typescript
 {
@@ -178,71 +172,44 @@ This allows you to easily display a user-friendly message while still having acc
 
 ### Using Your Custom Plugin
 
-**LangChain v0.3 (Classic)**
-
 ```typescript
-import { AgentMode } from "@hashgraph/hedera-agent-kit";
-import { HederaLangchainToolkit } from "@hashgraph/hedera-agent-kit-langchain";
 import {
-  myCustomPlugin,
-  myCustomPluginToolNames,
-} from "./plugins/my-custom-plugin";
+  HederaAgentKit,
+  createHederaTools,
+  AgentMode,
+  type Configuration,
+  type Context,
+} from "hedera-agent-kit";
+import { myCustomPlugin } from "./plugins/my-custom-plugin";
+import { createReactAgent } from "@langchain/langgraph/prebuilt";
+import { MemorySaver } from "@langchain/langgraph";
 
-const toolkit = new HederaLangchainToolkit({
-  client,
-  configuration: {
-    tools: [myCustomPluginToolNames.MY_TOOL],
-    plugins: [myCustomPlugin],
-    context: {
-      mode: AgentMode.AUTONOMOUS,
-    },
-  },
+const config: Configuration = {
+  accountId: process.env.HEDERA_ACCOUNT_ID!,
+  privateKey: process.env.HEDERA_PRIVATE_KEY!,
+  network: (process.env.HEDERA_NETWORK as "testnet" | "mainnet") || "testnet",
+  mode: AgentMode.AUTONOMOUS,
+};
+
+const context: Context = {
+  plugins: [myCustomPlugin],
+};
+
+const hederaKit = new HederaAgentKit(config, context);
+const tools = createHederaTools(hederaKit);
+
+const agent = createReactAgent({
+  llm,
+  tools,
+  checkpointSaver: new MemorySaver(),
 });
-```
-
-**LangChain v1 (New)**
-
-```typescript
-import { AgentMode } from "@hashgraph/hedera-agent-kit";
-import { HederaLangchainToolkit, ResponseParserService } from "@hashgraph/hedera-agent-kit-langchain";
-import {
-  myCustomPlugin,
-  myCustomPluginToolNames,
-} from "./plugins/my-custom-plugin";
-
-// Initialize toolkit
-const toolkit = new HederaLangchainToolkit({
-  client,
-  configuration: {
-    tools: [myCustomPluginToolNames.MY_TOOL],
-    plugins: [myCustomPlugin],
-    context: {
-      mode: AgentMode.AUTONOMOUS,
-    },
-  },
-});
-
-// Initialize response parser
-const responseParsingService = new ResponseParserService(toolkit.getTools());
-
-// ... inside your agent loop ...
-const response = await agent.invoke({ messages: [/* ... */] });
-
-// Parse tool outputs
-const parsedToolData = responseParsingService.parseNewToolMessages(response);
-const toolCall = parsedToolData[0]; // assuming only one tool was called
-
-if (toolCall) {
-  console.log('Human Message:', toolCall.parsedData.humanMessage);
-  console.log('Raw Data:', toolCall.parsedData.raw);
-}
 ```
 
 #### Examples and References
 
 - See existing core plugins in typescript/src/plugins/core-\*-plugin/
 - Follow the patterns established in tools like [transfer-hbar.ts](../typescript/src/plugins/core-account-plugin/tools/account/transfer-hbar.ts)
-- See [typescript/examples/langchain-v1/tool-calling-agent.ts](../typescript/examples/langchain/tool-calling-agent.ts) for usage examples
+- See [typescript/examples/langchain/tool-calling-agent.ts](../typescript/examples/langchain/tool-calling-agent.ts) for usage examples
 
 ## Publish and Register Your Plugin
 
@@ -275,16 +242,22 @@ npm install <plugin-name>
 import { myPlugin } from '<plugin-name>';
 ```
 
-```javascript
- const hederaAgentToolkit = new HederaLangchainToolkit({
-    client,
-    configuration: {
-      context: {
-        mode: AgentMode.AUTONOMOUS,
-      },
-      plugins: [coreTokenPlugin, coreAccountPlugin, coreConsensusPlugin, coreQueriesPlugin, myPlugin],
-    },
-  });
+```typescript
+import { HederaAgentKit, createHederaTools, AgentMode } from 'hedera-agent-kit';
+
+const hederaKit = new HederaAgentKit(
+  {
+    accountId: process.env.HEDERA_ACCOUNT_ID,
+    privateKey: process.env.HEDERA_PRIVATE_KEY,
+    network: process.env.HEDERA_NETWORK || 'testnet',
+    mode: AgentMode.AUTONOMOUS,
+  },
+  {
+    plugins: [myPlugin],
+  }
+);
+
+const tools = createHederaTools(hederaKit);
 ```
 
 ### Functionality

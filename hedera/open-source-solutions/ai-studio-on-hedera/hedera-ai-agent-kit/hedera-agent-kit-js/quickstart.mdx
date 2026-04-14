@@ -5,7 +5,7 @@ description: "Get started with the Hedera Agent Kit using JavaScript/TypeScript"
 
 ## Quickstart - Create a Hedera Agent
 
-See the npm package: https://www.npmjs.com/package/@hashgraph/hedera-agent-kit
+See the npm package: https://www.npmjs.com/package/hedera-agent-kit
 
 ### 1. Create your project directory
 
@@ -25,10 +25,8 @@ npm init -y
 Open `package.json` and add `"type": "module"` to enable ES modules.
 
 ```bash
-npm install @hashgraph/sdk @hashgraph/hedera-agent-kit @hashgraph/hedera-agent-kit-langchain dotenv
+npm install @hashgraph/sdk hedera-agent-kit @langchain/langgraph dotenv
 ```
-
-> **Note**: `@langchain/core` and `langchain` are bundled inside `@hashgraph/hedera-agent-kit-langchain`. You do **not** need to install them separately. You only need to install your LLM provider package.
 
 ### 3. Install ONE of these AI provider packages
 
@@ -60,8 +58,9 @@ Add the following to the `.env` file:
 
 ```env
 # Required: Hedera credentials (get free testnet account at https://portal.hedera.com/dashboard)
-ACCOUNT_ID="0.0.xxxxx"
-PRIVATE_KEY="0x..." # ECDSA encoded private key
+HEDERA_ACCOUNT_ID="0.0.xxxxx"
+HEDERA_PRIVATE_KEY="0x..." # ECDSA encoded private key
+HEDERA_NETWORK="testnet"
 
 # Optional: Add the API key for your chosen AI provider
 OPENAI_API_KEY="sk-proj-..."      # For OpenAI (https://platform.openai.com/api-keys)
@@ -80,16 +79,15 @@ touch index.js
 
 ```javascript index.js
 // index.js
-import { Client, PrivateKey } from '@hashgraph/sdk';
-import { AgentMode } from '@hashgraph/hedera-agent-kit';
 import {
+  HederaAgentKit,
+  createHederaTools,
   coreAccountPlugin,
-  coreAccountQueryPlugin,
   coreTokenPlugin,
   coreConsensusPlugin,
-} from '@hashgraph/hedera-agent-kit/plugins';
-import { HederaLangchainToolkit } from '@hashgraph/hedera-agent-kit-langchain';
-import { createAgent } from 'langchain';
+  AgentMode,
+} from 'hedera-agent-kit';
+import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { MemorySaver } from '@langchain/langgraph';
 import { ChatOpenAI } from '@langchain/openai';
 // import { ChatAnthropic } from '@langchain/anthropic';
@@ -100,30 +98,23 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 async function main() {
-  // Hedera client setup (Testnet by default)
-  const client = Client.forTestnet().setOperator(
-    process.env.ACCOUNT_ID,
-    PrivateKey.fromStringECDSA(process.env.PRIVATE_KEY)
-  );
-
-  // Prepare Hedera toolkit — plugins must be passed explicitly; an empty array means no tools
-  const hederaAgentToolkit = new HederaLangchainToolkit({
-    client,
-    configuration: {
+  const hederaKit = new HederaAgentKit(
+    {
+      accountId: process.env.HEDERA_ACCOUNT_ID,
+      privateKey: process.env.HEDERA_PRIVATE_KEY,
+      network: process.env.HEDERA_NETWORK || 'testnet',
+      mode: AgentMode.AUTONOMOUS,
+    },
+    {
       plugins: [
         coreAccountPlugin,
-        coreAccountQueryPlugin,
         coreTokenPlugin,
         coreConsensusPlugin,
       ],
-      context: {
-        mode: AgentMode.AUTONOMOUS,
-      },
-    },
-  });
+    }
+  );
 
-  // Fetch tools from the toolkit
-  const tools = hederaAgentToolkit.getTools();
+  const tools = createHederaTools(hederaKit);
 
   const llm = new ChatOpenAI({
     model: 'gpt-4o-mini',
@@ -131,7 +122,7 @@ async function main() {
   });
 
   // const llm = new ChatAnthropic({
-  //   model: 'claude-sonnet-4-5-20250929',
+  //   model: 'claude-3-5-sonnet-20241022',
   //   apiKey: process.env.ANTHROPIC_API_KEY,
   // });
 
@@ -139,21 +130,21 @@ async function main() {
   //   model: 'llama-3.3-70b-versatile',
   //   apiKey: process.env.GROQ_API_KEY,
   // });
-  
+
   // const llm = new ChatOllama({
   //   model: 'llama3.1',
   //   baseUrl: process.env.OLLAMA_BASE_URL || 'http://127.0.0.1:11434',
   // });
 
-  const agent = createAgent({
-    model: llm,
-    tools: tools,
-    systemPrompt: 'You are a helpful assistant with access to Hedera blockchain tools',
-    checkpointer: new MemorySaver(),
+  const agent = createReactAgent({
+    llm,
+    tools,
+    checkpointSaver: new MemorySaver(),
+    messageModifier: 'You are a helpful assistant with access to Hedera blockchain tools',
   });
 
   console.log('Sending a message to the agent...');
-  
+
   const response = await agent.invoke(
     { messages: [{ role: 'user', content: "what's my balance?" }] },
     { configurable: { thread_id: '1' } }
@@ -179,17 +170,16 @@ node index.js
 
 ## Examples
 
-Clone the repository and try out different example agents. Both **LangChain v1** (recommended) and **LangChain classic** (v0.3) examples are available.
+Clone the repository and try out different example agents.
 
 See the full [Developer Examples](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/DEVEXAMPLES.md) documentation for detailed setup instructions.
 
 **Available Examples:**
 
 - **Option A** - [Tool Calling Agent](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/DEVEXAMPLES.md#option-a-run-the-example-tool-calling-agent): Simple tasks with Hedera tools in autonomous mode
-- **Option B** - [Structured Chat Agent](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/DEVEXAMPLES.md#option-b-run-the-structured-chat-agent-langchain-v03-only): Complex multistep tasks (LangChain v0.3 only)
-- **Option C** - [Human in the Loop Agent](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/DEVEXAMPLES.md#option-c-try-the-human-in-the-loop-chat-agent): Controlled workflow with RETURN_BYTES mode
-- **Option D** - [MCP Server](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/DEVEXAMPLES.md#option-d-try-out-the-mcp-server): Interact with Hedera via Claude Desktop or IDEs like Cursor
-- **Option E** - [ElizaOS Agent](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/DEVEXAMPLES.md#option-e-try-out-the-hedera-agent-kit-with-elizaos): Build autonomous AI agents with ElizaOS framework
+- **Option B** - [Human in the Loop Agent](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/DEVEXAMPLES.md#option-c-try-the-human-in-the-loop-chat-agent): Controlled workflow with RETURN_BYTES mode
+- **Option C** - [MCP Server](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/DEVEXAMPLES.md#option-d-try-out-the-mcp-server): Interact with Hedera via Claude Desktop or IDEs like Cursor
+- **Option D** - [ElizaOS Agent](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/DEVEXAMPLES.md#option-e-try-out-the-hedera-agent-kit-with-elizaos): Build autonomous AI agents with ElizaOS framework
 
 ---
 
@@ -207,6 +197,6 @@ This tool has two execution modes with AI agents:
 ## Resources
 
 - **GitHub**: https://github.com/hashgraph/hedera-agent-kit-js
-- **npm**: [@hashgraph/hedera-agent-kit](https://www.npmjs.com/package/@hashgraph/hedera-agent-kit)
+- **npm**: [hedera-agent-kit](https://www.npmjs.com/package/hedera-agent-kit)
 - **Issues**: https://github.com/hashgraph/hedera-agent-kit-js/issues
 - **Developer Examples**: [DEVEXAMPLES.md](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/DEVEXAMPLES.md)

@@ -16,15 +16,15 @@ permissions:
 
 jobs:
   run-java-example:
-    runs-on: hashgraph-docs-linux-medium
+    runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
 
     env:
       HEDERA_NETWORK: local
-      MIRROR_NODE_URL: http://localhost:8080/api/v1
-      MIRROR_HEALTH_URL: http://localhost:8080/health
+      MIRROR_NODE_URL: http://localhost:8081/api/v1
+      MIRROR_HEALTH_URL: http://localhost:8081/health
       MIRROR_HEALTH_TRIES: "180"
       MIRROR_HEALTH_INTERVAL: "2"
       STATUS_DIR: .github/example-status
@@ -58,27 +58,26 @@ jobs:
           verbosity: 3
           wait: 120s
 
-      - name: Set up Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
-        with:
-          node-version: 22.12.0
+      - name: Install Homebrew
+        run:
+          set -euo pipefail
+          NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          echo "/home/linuxbrew/.linuxbrew/bin" >> "$GITHUB_PATH"
+          echo "/home/linuxbrew/.linuxbrew/sbin" >> "$GITHUB_PATH"
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          brew --version
 
       - name: Install Solo CLI
         run: |
           set -euo pipefail
-          npm install -g @hashgraph/solo
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          brew install hiero-ledger/tools/solo
           solo --version
-          kind --version
 
       - name: Deploy Solo
-        env:
-          SOLO_CLUSTER_NAME: solo
-          SOLO_NAMESPACE: solo
-          SOLO_CLUSTER_SETUP_NAMESPACE: solo-cluster
-          SOLO_DEPLOYMENT: solo-deployment
-        run: |
+        run:
           set -euo pipefail
-          kind create cluster -n "${SOLO_CLUSTER_NAME}"
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           solo one-shot single deploy | tee solo-deploy.log
 
       - name: Wait for Mirror Node data (/network/nodes)

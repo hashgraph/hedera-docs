@@ -143,7 +143,7 @@ Create your tool file (e.g., tools/my-service/my-tool.ts):
 ```typescript
 import { z } from "zod";
 import { Context, BaseTool, handleTransaction } from "@hashgraph/hedera-agent-kit";
-import { Client } from "@hashgraph/sdk";
+import { Client } from "@hiero-ledger/sdk";
 
 // Define parameter schema
 const myToolParameters = (context: Context = {}) =>
@@ -268,7 +268,7 @@ This allows you to easily display a user-friendly message while still having acc
 ### Using Your Custom Plugin
 
 ```typescript
-import { Client, PrivateKey } from "@hashgraph/sdk";
+import { Client, PrivateKey } from "@hiero-ledger/sdk";
 import { AgentMode } from "@hashgraph/hedera-agent-kit";
 import { myCustomPlugin } from "./plugins/my-custom-plugin";
 import { HederaLangchainToolkit } from "@hashgraph/hedera-agent-kit-langchain";

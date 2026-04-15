@@ -20,7 +20,7 @@ export interface Plugin {
 
 ### Tool Interface
 
-Each tool must implement the Tool interface:
+Each tool must implement the `Tool` interface:
 
 ```typescript
 export type Tool = {
@@ -35,6 +35,93 @@ export type Tool = {
 ```
 
 See [typescript/src/shared/tools.ts](../typescript/src/shared/tools.ts) for the full definition.
+
+#### BaseTool (Recommended for v4)
+
+<Note>
+  **This is NOT a breaking change.** `BaseTool` is an abstract class that *implements* the `Tool` interface — plain object tools continue to work exactly as before. However, they do not support the hooks and policies system introduced in v4 (e.g., `HcsAuditTrailHook`, `MaxRecipientsPolicy`, `RejectToolPolicy`). To enable those features, migrate your tool to `BaseTool`.
+</Note>
+
+Extending `BaseTool` splits execution into a 7-stage lifecycle that hooks and policies tap into automatically — you never call them manually:
+
+```text
+[1] preToolExecutionHook
+[2] normalizeParams        ← your logic
+[3] postParamsNormalizationHook
+[4] coreAction             ← your logic
+[5] postCoreActionHook
+[6] secondaryAction        ← your logic (optional, e.g. tx signing)
+[7] postToolExecutionHook
+```
+
+**Before (v3 — functional `Tool` object)**
+
+```typescript
+import type { Tool } from '@/shared/tools';
+
+const tool = (context: Context): Tool => ({
+  method: MY_TOOL,
+  name: 'My Tool',
+  description: myToolPrompt(context),
+  parameters: myToolParameters(context),
+  execute: myToolExecute, // all logic in one function; no hook/policy entry points
+});
+
+export default tool;
+```
+
+**After (v4 — `BaseTool` class)**
+
+```typescript
+import { BaseTool } from '@/shared/tools'; // BaseTool implements Tool
+
+export class MyTool extends BaseTool {
+  method = MY_TOOL;
+  name = 'My Tool';
+  description: string;
+  parameters: ReturnType<typeof myToolParameters>;
+  outputParser = myOutputParser; // optional
+
+  constructor(context: Context) {
+    super();
+    this.description = myToolPrompt(context);
+    this.parameters = myToolParameters(context);
+  }
+
+  // Stage 2: normalize/validate params
+  async normalizeParams(params: any, context: Context, client: Client) {
+    return await MyNormaliser.normalise(params, context, client);
+  }
+
+  // Stage 4: build tx or run query
+  async coreAction(normalisedParams: any, _context: Context, _client: Client) {
+    return MyBuilder.buildTx(normalisedParams);
+  }
+
+  // Stage 6: sign and submit (override shouldSecondaryAction() to skip for query-only tools)
+  async secondaryAction(transaction: any, client: Client, context: Context) {
+    return await handleTransaction(transaction, client, context, postProcess);
+  }
+
+  // Optional: custom error handling (BaseTool provides a sensible default)
+  async handleError(error: unknown, _context: Context) {
+    const msg = `Failed: ${error instanceof Error ? error.message : error}`;
+    return { raw: { error: msg }, humanMessage: msg };
+  }
+}
+
+const tool = (context: Context): BaseTool => new MyTool(context);
+export default tool;
+```
+
+| | v3 (`Tool` object) | v4 (`BaseTool` class) |
+|---|---|---|
+| Import | `import type { Tool }` | `import { BaseTool }` |
+| Declaration | Object literal | Class extending `BaseTool` |
+| Lifecycle | Single `execute()` | `normalizeParams` → `coreAction` → `secondaryAction` |
+| Hooks & policies | ✗ None | ✓ Automatic at stages 1, 3, 5, 7 |
+| Error handling | Manual `try/catch` in `execute` | Override `handleError()` |
+| Breaking change | — | **No** |
 
 ## Step-by-Step Guide
 
@@ -51,15 +138,12 @@ See [typescript/src/shared/tools.ts](../typescript/src/shared/tools.ts) for the 
 ### Step 2: Implement Your Tool
 
 Create your tool file (e.g., tools/my-service/my-tool.ts):
+> This example uses Hedera Agent Kit v4 which extends the BaseTool class to enable policies & hooks 
 
 ```typescript
 import { z } from "zod";
-import { Context, Tool, handleTransaction } from "@hashgraph/hedera-agent-kit";
-import { Client, PrivateKey, AccountId } from "@hashgraph/sdk";
-import dotenv from "dotenv";
-
-// Load environment variables
-dotenv.config();
+import { Context, BaseTool, handleTransaction } from "@hashgraph/hedera-agent-kit";
+import { Client } from "@hashgraph/sdk";
 
 // Define parameter schema
 const myToolParameters = (context: Context = {}) =>
@@ -72,44 +156,55 @@ const myToolParameters = (context: Context = {}) =>
   });
 
 // Create prompt function
-const myToolPrompt = (context: Context = {}) => {
-  return `
+const myToolPrompt = (context: Context = {}) => `
   This tool performs a specific operation.
 
   Parameters:
   - requiredParam (string, required): Description
   - optionalParam (string, optional): Description
-  `;
-};
-
-// Implement tool logic
-const myToolExecute = async (
-  client: Client,
-  context: Context,
-  params: z.infer<ReturnType<typeof myToolParameters>>,
-) => {
-  try {
-    // Your implementation here
-    const result = await someHederaOperation(params);
-    return result;
-  } catch (error) {
-    if (error instanceof Error) {
-      return error.message;
-    }
-    return "Operation failed";
-  }
-};
+`;
 
 export const MY_TOOL = "my_tool";
 
-const tool = (context: Context): Tool => ({
-  method: MY_TOOL,
-  name: "My Custom Tool",
-  description: myToolPrompt(context),
-  parameters: myToolParameters(context),
-  execute: myToolExecute,
-});
+export class MyCustomTool extends BaseTool {
+  method = MY_TOOL;
+  name = "My Custom Tool";
+  description: string;
+  parameters: ReturnType<typeof myToolParameters>;
 
+  constructor(context: Context) {
+    super();
+    this.description = myToolPrompt(context);
+    this.parameters = myToolParameters(context);
+  }
+
+  // Stage 2: normalize/validate params before core logic runs
+  async normalizeParams(
+    params: z.infer<ReturnType<typeof myToolParameters>>,
+    _context: Context,
+    _client: Client,
+  ) {
+    return params; // transform or enrich params here if needed
+  }
+
+  // Stage 4: build the transaction or run the query
+  async coreAction(normalisedParams: any, _context: Context, _client: Client) {
+    return await someHederaOperation(normalisedParams);
+  }
+
+  // Stage 6: sign and submit (omit or override shouldSecondaryAction() for query-only tools)
+  async secondaryAction(result: any, client: Client, context: Context) {
+    return await handleTransaction(result, client, context);
+  }
+
+  // Optional: override for tool-specific error messages
+  async handleError(error: unknown, _context: Context) {
+    const msg = `Operation failed: ${error instanceof Error ? error.message : error}`;
+    return { raw: { error: msg }, humanMessage: msg };
+  }
+}
+
+const tool = (context: Context): BaseTool => new MyCustomTool(context);
 export default tool;
 ```
 

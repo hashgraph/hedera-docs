@@ -34,6 +34,20 @@ The Agent Kit is available in two languages:
 </CardGroup>
 
 ---
+## Hedera Agent Kit JavaScript Packages
+Starting with **v4**, the Hedera Agent Kit is published under the `@hashgraph` scope and plugins are imported from the `@hashgraph/hedera-agent-kit/plugins` subpath. Framework integrations (LangChain, Vercel AI SDK, ElizaOS, MCP) are now separate packages.
+
+**Which packages do I need?**
+
+| Package | Purpose |
+|---|---|
+| `@hashgraph/hedera-agent-kit` | Core types, `AgentMode`, `Plugin`, `Tool`, `HederaBuilder` |
+| `@hashgraph/hedera-agent-kit/plugins` | All built-in Hedera plugins (subpath of core) |
+| `@hashgraph/hedera-agent-kit-langchain` | LangChain toolkit (`HederaLangchainToolkit`) |
+| `@hashgraph/hedera-agent-kit-ai-sdk` | Vercel AI SDK toolkit (`HederaAIToolkit`) |
+| `@hashgraph/hedera-agent-kit-elizaos` | ElizaOS toolkit (`HederaElizaOSToolkit`) |
+| `@hashgraph/hedera-agent-kit-mcp` | Standalone MCP server and CLI |
+
 
 ## Key Features
 

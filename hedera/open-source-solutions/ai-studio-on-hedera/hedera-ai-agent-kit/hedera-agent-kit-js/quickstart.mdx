@@ -25,7 +25,7 @@ npm init -y
 Open `package.json` and add `"type": "module"` to enable ES modules.
 
 ```bash
-npm install @hashgraph/sdk @hashgraph/hedera-agent-kit @hashgraph/hedera-agent-kit-langchain dotenv
+npm install @hiero-ledger/sdk @hashgraph/hedera-agent-kit @hashgraph/hedera-agent-kit-langchain dotenv
 ```
 
 ### 3. Install one of these AI provider packages
@@ -84,7 +84,7 @@ touch index.mjs
 
 ```javascript
 // index.mjs
-import { Client, PrivateKey } from '@hashgraph/sdk';
+import { Client, PrivateKey } from '@hiero-ledger/sdk';
 import { AgentMode } from '@hashgraph/hedera-agent-kit';
 import {
   coreAccountPlugin,

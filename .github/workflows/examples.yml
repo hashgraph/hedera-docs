@@ -80,16 +80,6 @@ jobs:
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           solo one-shot single deploy | tee solo-deploy.log
 
-      - name: Get all service ports
-        run: |
-          echo "=== SERVICES ==="
-          kubectl get svc -A
-          echo "=== SERVICES (detailed ports) ==="
-          kubectl get svc -A -o json | jq -r '
-          .items[] |
-          "\(.metadata.namespace)/\(.metadata.name) -> " +
-          (.spec.ports[] | "\(.name // "no-name"):\(.port)")'
-
       - name: Verify Mirror Node REST API
         shell: bash
         run: |

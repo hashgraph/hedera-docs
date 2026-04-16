@@ -484,18 +484,21 @@
                     "pages": [
                       "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit",
                       "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/plugins",
+                      "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hooks-and-polices",
                       {
                         "group": "JavaScript SDK",
                         "pages": [
                           "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/quickstart",
-                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/create-js-plugins"
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/create-js-plugins",
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/create-js-hooks-and-policies"
                         ]
                       },
                       {
                         "group": "Python SDK",
                         "pages": [
                           "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/quickstart",
-                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/create-py-plugins"
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/create-py-plugins",
+                          "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/create-py-hooks-and-policies"
                         ]
                       }
                     ]

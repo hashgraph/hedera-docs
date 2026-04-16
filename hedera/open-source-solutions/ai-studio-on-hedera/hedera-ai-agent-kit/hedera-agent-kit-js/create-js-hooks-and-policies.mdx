@@ -1,0 +1,387 @@
+---
+title: "Hooks and Policies (JS)"
+description: "Learn how to use and create Hooks and Policies in the Hedera Agent Kit JavaScript SDK."
+---
+
+# Agent Hooks and Policies
+
+The Hedera Agent Kit provides a flexible and powerful system for putting limits on tool usage and enforcing business
+logic, effectively enabling you to limit the functionality of AI agents through **Hooks** and **Policies**. These hooks
+and policies can be used to enforce security, compliance, and other business rules.
+
+---
+
+## Table of Contents
+
+### Part 1: For Hooks and Policies Users
+
+- [Quick Overview](#quick-overview)
+- [When Hooks and Policies are Called](#when-hooks-and-policies-are-called)
+- [How to Use Hooks and Policies](#how-to-use-hooks-and-policies)
+- [Available Hooks](#available-hooks)
+    - [HcsAuditTrailHook](#1-hcsaudittrailhook-hook)
+    - [HolAuditTrailHook](#2-holaudittrailhook-hook)
+- [Available Policies](#available-policies)
+    - [MaxRecipientsPolicy](#1-maxrecipientspolicy-policy)
+    - [RejectToolPolicy](#2-rejecttoolpolicy-policy)
+
+### Part 2: For Policy and Hook Developers
+
+- [Tool Lifecycle Deep Dive](#tool-lifecycle-deep-dive)
+- [Hook Parameter Structures](#hook-parameter-structures)
+- [Hooks vs. Policies](#hooks-vs-policies)
+- [Type Safety & Multi-Tool Context](#type-safety--multi-tool-context)
+- [Creating New Hooks/Policies](#creating-new-hookspolicies)
+
+---
+
+# Part 1: For Hooks and Policies Users
+
+## Quick Overview
+
+**Hooks** and **Policies** let you customize how tools behave:
+
+- **Hooks**: Extensions that observe and modify tool execution (logging, tracking, etc.)
+- **Policies**: Validation rules that can **block** tool execution if certain conditions aren't met
+
+<Note>
+  Only tools extending `BaseTool` support hooks and policies. Tools that directly implement the basic `Tool` interface (the functional pattern) do not support these extensions. See [Create JavaScript Plugins](./create-js-plugins) for instructions on using `BaseTool`.
+</Note>
+
+## When Hooks and Policies are Called
+
+Hooks can execute at 4 different points during a tool's lifecycle:
+
+1. **Pre-Tool Execution** - Before anything happens, when parameters are passed
+2. **Post-Parameter Normalization** - After parameters are validated and cleaned
+3. **Post-Core Action** - After the main logic executes (e.g., transaction created), before tool execution when a
+   transaction has been formed
+4. **Post-Tool Execution** - After everything completes; after tool execution when a transaction has been signed and
+   submitted
+
+## How to Use Hooks and Policies
+
+Add hooks and policies to your agent's context during initialization:
+
+```typescript
+import { HcsAuditTrailHook, MaxRecipientsPolicy, RejectToolPolicy } from '@hashgraph/hedera-agent-kit';
+
+const context = {
+  hooks: [
+    new HcsAuditTrailHook(['transfer_hbar'], '0.0.12345'),
+    new MaxRecipientsPolicy(5),
+    new RejectToolPolicy(['delete_account']),
+  ],
+  // ... other configuration
+};
+```
+
+## Available Hooks
+
+### 1. `HcsAuditTrailHook` (Hook)
+
+**Description**:  
+Provides an immutable audit trail by logging tool executions to a Hedera Consensus Service (HCS) topic.
+
+<Info>
+  **Autonomous Mode Only**: This hook is strictly available in `AUTONOMOUS` mode. It will throw an error if used in
+  `RETURN_BYTES` mode.
+</Info>
+
+<Warning>
+  **HIP-991 (Paid Topics)**: If a paid topic is used, it will incur submission fees. Ensure the `loggingClient` has
+  sufficient funds to avoid draining the account.
+</Warning>
+
+**Prerequisites**:
+
+1. **Topic Creation**: The HCS topic must be created before initializing the hook.
+2. **Permissions**: The Hedera account associated with the `loggingClient` (or the agent's operator account) must have
+   permissions to submit messages to the topic (i.e., it must hold the `submitKey` if one is defined).
+
+**Parameters**:
+
+- `relevantTools`: `string[]` - List of tools to audit (e.g., `['transfer_hbar', 'create_token']`).
+- `hcsTopicId`: `string` - The pre-created Hedera topic ID (e.g., `'0.0.12345'`).
+- `loggingClient?`: `Client` - (Optional) A separate Hedera client for logging. If not provided, defaults to the agent's
+  operator client. Must have submission access to the topic.
+
+**Example Usage**:
+
+```typescript
+import { HcsAuditTrailHook } from '@hashgraph/hedera-agent-kit/hooks';
+
+const auditHook = new HcsAuditTrailHook(
+  ['transfer_hbar', 'create_token'],
+  '0.0.12345' // Ensure this topic exists and the agent can post to it
+);
+
+// Add to your agent configuration
+const context = {
+  hooks: [auditHook],
+  // ...
+};
+```
+
+---
+
+### 2. `HolAuditTrailHook` (Hook)
+
+**Description**:  
+Hook that writes [HOL-standards-compliant](https://hol.org) audit trails to an HCS session topic. It uses an HCS-2
+INDEXED registry as the session topic to list audit entries.
+
+<Info>
+  **Autonomous Mode Only**: This hook is strictly available in `AUTONOMOUS` mode. It will throw an error if used in
+  `RETURN_BYTES` mode.
+</Info>
+
+**Prerequisites**:
+
+1. **Topic Creation**: The HCS topic must be created before initializing the hook.
+2. **Standard Compliance**: To be fully compliant with the HCS-2 standard, the topic should be created with the memo
+   `hcs-2:0:0`.
+
+**Parameters**:
+
+- `relevantTools`: `string[]` - List of tool names that trigger audit trail logging.
+- `sessionId`: `string` - The Hedera topic ID (format `0.0.xxx`) used as the audit session registry.
+
+**Example Usage**:
+
+```typescript
+import { HolAuditTrailHook } from '@hashgraph/hedera-agent-kit/hooks';
+
+const holAuditHook = new HolAuditTrailHook({
+  relevantTools: ['transfer_hbar', 'create_token'],
+  sessionId: '0.0.12345'
+});
+
+// Add to your agent configuration
+const context = {
+  hooks: [holAuditHook],
+  // ...
+};
+```
+
+---
+
+## Available Policies
+
+### 1. `MaxRecipientsPolicy` (Policy)
+
+**Description**:  
+A security policy that limits the number of recipients in transfer and airdrop operations. It blocks requests that
+exceed a defined threshold to prevent massive unauthorized transfers.
+
+**Default Supported Tools**:
+By default, the policy knows how to count recipients for:
+
+- `transfer_hbar`
+- `transfer_hbar_with_allowance`
+- `airdrop_fungible_token`
+- `transfer_fungible_token_with_allowance`
+- `transfer_non_fungible_token`
+- `transfer_non_fungible_token_with_allowance`
+
+**Parameters**:
+
+- `maxRecipients`: `number` - Maximum number of recipients allowed.
+- `additionalTools?`: `string[]` - (Optional) Extra tools to apply this policy to.
+- `customStrategies?`: `Record<string, (params: any) => number>` - (Optional) A mapping of tool names to functions that
+  count recipients. **If you add tools via `additionalTools`, you must provide a strategy for each one**, otherwise the
+  policy will throw an error at runtime.
+
+**Example with Custom Strategies**:
+
+```typescript
+import { MaxRecipientsPolicy } from '@hashgraph/hedera-agent-kit/policies';
+
+// Basic usage with default tools only
+const basicPolicy = new MaxRecipientsPolicy(5);
+
+// With custom tool - strategy is REQUIRED
+const extendedPolicy = new MaxRecipientsPolicy(
+  5, // max 5 recipients
+  ['my_custom_bulk_tool'], // additional tool
+  {
+    // This strategy is required for the custom tool
+    'my_custom_bulk_tool': (params) => params.recipients.length
+  }
+);
+```
+
+---
+
+### 2. `RejectToolPolicy` (Policy)
+
+**Description**:
+A restrictive policy used to explicitly disable specific tools. Even if a tool is technically available in a plugin,
+this policy ensures the agent cannot execute it under any circumstances.
+
+**Parameters**:
+
+- `relevantTools`: `string[]` - The list of tool methods to be blocked (e.g., `['delete_account', 'freeze_token']`).
+
+**Example Usage**:
+
+```typescript
+import { RejectToolPolicy } from '@hashgraph/hedera-agent-kit/policies';
+
+const safetyPolicy = new RejectToolPolicy(['delete_account']);
+
+const context = {
+  hooks: [safetyPolicy],
+  // ...
+};
+```
+
+---
+
+# Part 2: For Policy and Hook Developers
+
+## Tool Lifecycle Deep Dive
+
+Every tool in the kit follows a standardized 7-stage lifecycle.
+
+```text
+[1. Pre-Tool Execution] --------> Hook: preToolExecutionHook
+         |
+[2. Parameter Normalization]
+         |
+[3. Post-Parameter Normalization] --> Hook: postParamsNormalizationHook
+         |
+[4. Core Action]
+         |
+[5. Post-Core Action] --------------> Hook: postCoreActionHook
+         |
+[6. Secondary Action]
+         |
+[7. Post-Tool Execution] -----------> Hook: postToolExecutionHook
+         |
+[Result Returned]
+```
+
+**Stage Details:**
+
+1. **Pre-Tool Execution**: Before any processing begins. Use for early validation or logging.
+2. **Parameter Normalization**: The tool validates and cleans user input (not hookable).
+3. **Post-Parameter Normalization**: After parameters are normalized. Use for parameter-based validation.
+4. **Core Action**: Primary business logic executes (e.g., creating a transaction).
+5. **Post-Core Action**: After core logic completes. Use to inspect or modify the result before submission.
+6. **Secondary Action**: Transaction signing/submission happens (not hookable).
+7. **Post-Tool Execution**: After everything completes. Use for final logging or cleanup.
+
+## Hook Parameter Structures
+
+Each hook receives specialized parameter objects and the **`method`** name (string) representing the tool being
+executed. This allows hooks to target specific tools or apply general logic.
+
+| Hook Stage                    | Params Object Contains                                                                 | Method Parameter | Use Case                                     |
+|:------------------------------|:---------------------------------------------------------------------------------------|:-----------------|:---------------------------------------------|
+| `preToolExecutionHook`        | `context`, `rawParams`, `client`                                                       | `method: string` | Early validation, logging initial state      |
+| `postParamsNormalizationHook` | `context`, `rawParams`, `normalisedParams`, `client`                                   | `method: string` | Parameter-based policies, data enrichment    |
+| `postCoreActionHook`          | `context`, `rawParams`, `normalisedParams`, `coreActionResult`, `client`               | `method: string` | Inspect/modify transaction before submission |
+| `postToolExecutionHook`       | `context`, `rawParams`, `normalisedParams`, `coreActionResult`, `toolResult`, `client` | `method: string` | Final logging, audit trails, cleanup         |
+
+<Tip>
+  Use the `method` parameter to filter execution and apply **Type Guards** for safe parameter access.
+</Tip>
+
+---
+
+## Hooks vs. Policies
+
+### Hooks (`AbstractHook`)
+
+Hooks are **non-blocking extensions** that observe and modify execution flow. They can:
+
+- Log data
+- Modify context state
+- Enrich parameters
+- Track metrics
+
+They should not stop execution unless an error occurs.
+
+**Example**: `HcsAuditTrailHook` logs execution details to an HCS topic without blocking.
+
+### Policies (`AbstractPolicy`)
+
+Policies are specialized Hooks designed to **validate** and **block** execution. They use `shouldBlock...` methods that
+return boolean values. If `true` is returned, the `AbstractPolicy` base class throws an error, immediately halting the tool's
+lifecycle.
+
+<Info>
+  **Policy Implementation Rule**: When creating a custom Policy, you **should** define logic in at least one of the
+  `shouldBlock...`
+  methods (e.g., `shouldBlockPreToolExecution`, `shouldBlockPostParamsNormalization`, etc.). While the tool won't break
+  if they are undefined, the policy won't perform any blocking logic. You **must not** override the native hook methods (
+  e.g., `preToolExecutionHook`) as the `AbstractPolicy` base class uses these internally to trigger the blocking logic and throw
+  errors.
+</Info>
+
+---
+
+## Type Safety & Multi-Tool Context
+
+Hooks are configured for a specific set of tools (the `relevantTools` list). However, because `AbstractHook` is generic,
+there is **no compile-time type safety** for parameters. When a hook targets multiple tools, you must handle the various
+parameter structures using patterns like **Universal Logic**, **Type Guards**, or the **Strategy Pattern**.
+
+---
+
+## Creating New Hooks/Policies
+
+### Template for New Hook
+
+```typescript
+import {
+  AbstractHook,
+  Context,
+  PreToolExecutionParams,
+  PostParamsNormalizationParams,
+  PostCoreActionParams,
+  PostSecondaryActionParams
+} from '@/shared';
+
+export class MyCustomHook extends AbstractHook {
+  name = 'My Custom Hook';
+  description = 'Detailed explanation of what this hook does';
+  relevantTools = ['create_account', 'transfer_hbar'];
+
+  async preToolExecutionHook(context: Context, params: PreToolExecutionParams, method: string) {
+    if (!this.relevantTools.includes(method)) return;
+    // Your logic here
+  }
+  // Implement other hooks as needed...
+}
+```
+
+### Template for New Policy
+
+```typescript
+import {
+  AbstractPolicy,
+  Context,
+  PreToolExecutionParams,
+  PostParamsNormalizationParams
+} from '@/shared';
+
+export class MyCustomPolicy extends AbstractPolicy {
+  name = 'My Custom Policy';
+  description = 'Detailed explanation of what this policy blocks';
+  relevantTools = ['transfer_hbar', 'transfer_fungible_token'];
+
+  protected shouldBlockPostParamsNormalization(
+    context: Context,
+    params: PostParamsNormalizationParams,
+    method: string
+  ): boolean | Promise<boolean> {
+    const {normalisedParams} = params;
+    if ('amount' in normalisedParams) {
+      return normalisedParams.amount > 1000;
+    }
+    return false;
+  }
+}
+```

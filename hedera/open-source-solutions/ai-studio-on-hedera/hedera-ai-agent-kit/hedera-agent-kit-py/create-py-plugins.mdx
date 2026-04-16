@@ -53,6 +53,69 @@ class Tool(ABC):
 
 See `hedera_agent_kit/shared/tool.py` for the full definition.
 
+#### ToolV2 (Recommended for 3.4.0+)
+
+<Note>
+  **This is NOT a breaking change.** `ToolV2` is an abstract class that *implements* the `Tool` interface. Plain `Tool` implementations continue to work exactly as before. However, they do not support the hooks and policies system (e.g., `HcsAuditTrailHook`, `MaxRecipientsPolicy`, `RejectToolPolicy`). To enable those features, migrate your tool to `ToolV2`.
+  
+  For complete step-by-step instructions, see the **[Python ToolV2 Migration Guide](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/MIGRATION_TO_BASETOOLV2.md)**.
+</Note>
+
+Extending `ToolV2` splits execution into a 7-stage lifecycle that hooks and policies tap into automatically:
+
+```text
+[1] pre_tool_execution_hook
+[2] normalize_params        ← your logic
+[3] post_params_normalization_hook
+[4] core_action             ← your logic
+[5] post_core_action_hook
+[6] secondary_action        ← your logic (optional, e.g. tx signing)
+[7] post_tool_execution_hook
+```
+
+**Before (Functional Pattern)**
+
+```python
+def tool(context: Context) -> Tool:
+    return Tool(
+        method=MY_TOOL,
+        name="My Custom Tool",
+        description=my_tool_prompt(context),
+        parameters=MyToolParams,
+        execute=my_tool_execute, # all logic in one function
+    )
+```
+
+**After (ToolV2 Pattern)**
+
+```python
+from hedera_agent_kit.shared.tool import ToolV2
+
+class MyCustomTool(ToolV2):
+    def __init__(self, context: Context):
+        super().__init__()
+        self.method = MY_TOOL
+        self.name = "My Custom Tool"
+        self.description = my_tool_prompt(context)
+        self.parameters = MyToolParams
+
+    async def normalize_params(self, params: Any, context: Context, client: Client) -> Any:
+        # Stage 2: normalize/validate params
+        return params
+
+    async def core_action(self, normalized_params: Any, context: Context, client: Client) -> Any:
+        # Stage 4: build tx or run query
+        return await some_hedera_operation(normalized_params)
+
+    async def secondary_action(self, core_action_result: Any, client: Client, context: Context) -> ToolResponse:
+        # Stage 6: sign and submit
+        return await handle_transaction(core_action_result, client, context)
+
+def tool(context: Context) -> ToolV2:
+    return MyCustomTool(context)
+```
+
+
 ---
 
 ## Creating a Plugin

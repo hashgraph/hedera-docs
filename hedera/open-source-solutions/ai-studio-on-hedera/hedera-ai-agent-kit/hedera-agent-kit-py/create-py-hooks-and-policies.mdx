@@ -1,0 +1,223 @@
+---
+title: "Hooks and Policies (Python)"
+description: "Learn how to use and create Hooks and Policies in the Hedera Agent Kit Python SDK."
+---
+
+# Agent Hooks and Policies
+
+The Hedera Agent Kit provides a flexible and powerful system for putting limits on tool usage and enforcing business logic, effectively enabling you to limit the functionality of AI agents through **Hooks** and **Policies**. These hooks and policies can be used to enforce security, compliance, and other business rules.
+
+---
+
+## Table of Contents
+
+### Part 1: For Hooks and Policies Users
+- [Quick Overview](#quick-overview)
+- [How to Use Hooks and Policies](#how-to-use-hooks-and-policies)
+- [Available Hooks and Policies](#available-hooks-and-policies)
+  - [HcsAuditTrailHook](#1-hcsaudittrailhook-hook)
+  - [MaxRecipientsPolicy](#2-maxrecipientspolicy-policy)
+  - [RejectToolPolicy](#3-rejecttoolpolicy-policy)
+
+### Part 2: For Policy and Hook Developers
+- [Tool Lifecycle Deep Dive](#tool-lifecycle-deep-dive)
+- [Hook Parameter Structures](#hook-parameter-structures)
+- [Hooks vs. Policies](#hooks-vs-policies)
+- [Type Safety & Multi-Tool Context](#type-safety--multi-tool-context)
+- [Creating New Hooks/Policies](#creating-new-hookspolicies)
+
+---
+
+# Part 1: For Hooks and Policies Users
+
+## Quick Overview
+
+**Hooks** and **Policies** let you customize how tools behave:
+
+- **Hooks**: Extensions that observe and modify tool execution (logging, tracking, etc.)
+- **Policies**: Validation rules that can **block** tool execution if certain conditions aren't met
+
+<Note>
+  Only tools extending `ToolV2` support hooks and policies. Tools that directly implement the basic `Tool` interface (the functional pattern) do not support these extensions. See [Create Python Plugins](./create-py-plugins) for instructions on using `ToolV2`.
+</Note>
+
+## When Hooks and Policies are Called
+
+Hooks can execute at 4 different points during a tool's lifecycle:
+
+1. **Pre-Tool Execution** - Before anything happens, when parameters are passed.
+2. **Post-Parameter Normalization** - After parameters are validated and cleaned.
+3. **Post-Core Action** - After the main logic executes (e.g., transaction created), before tool execution when a transaction has been formed.
+4. **Post-Tool Execution** - After everything completes; after tool execution when a transaction has been signed and submitted.
+
+## How to Use Hooks and Policies
+
+Add hooks and policies to your agent's context during initialization:
+
+```python
+from hedera_agent_kit.hooks.hcs_audit_trail_hook import HcsAuditTrailHook
+from hedera_agent_kit.policies.max_recipients_policy import MaxRecipientsPolicy
+from hedera_agent_kit.policies.reject_tool_policy import RejectToolPolicy
+from hedera_agent_kit.shared.configuration import Context
+
+context = Context(
+    account_id="0.0.1234",
+    hooks=[
+        HcsAuditTrailHook(['transfer_hbar'], '0.0.12345'),
+        MaxRecipientsPolicy(5),
+        RejectToolPolicy(['delete_account']),
+    ]
+)
+```
+
+## Available Hooks and Policies
+
+### 1. `HcsAuditTrailHook` (Hook)
+
+**Description**:
+Provides an immutable audit trail by logging tool executions to a Hedera Consensus Service (HCS) topic.
+
+<Info>
+  **Autonomous Mode Only**: This hook is strictly available in `AUTONOMOUS` mode. It will throw an error if used in `RETURN_BYTES` mode.
+</Info>
+
+**Parameters**:
+
+- `relevant_tools`: `List[str]` - List of tools to audit (e.g., `['transfer_hbar', 'create_token']`).
+- `hcs_topic_id`: `str` - The pre-created Hedera topic ID (e.g., `'0.0.12345'`).
+
+---
+
+### 2. `MaxRecipientsPolicy` (Policy)
+
+**Description**:
+A security policy that limits the number of recipients in transfer and airdrop operations. It blocks requests that exceed a defined threshold.
+
+**Parameters**:
+
+- `max_recipients`: `int` - Maximum number of recipients allowed.
+- `additional_tools`: `List[str]` - (Optional) Extra tools to apply this policy to.
+- `custom_strategies`: `Dict[str, Callable[[Any], int]]` - (Optional) A mapping of tool names to functions that count recipients.
+
+---
+
+### 3. `RejectToolPolicy` (Policy)
+
+**Description**:
+A restrictive policy used to explicitly disable specific tools.
+
+**Parameters**:
+
+- `relevant_tools`: `List[str]` - The list of tool methods to be blocked (e.g., `['delete_account', 'freeze_token']`).
+
+---
+
+# Part 2: For Policy and Hook Developers
+
+## Tool Lifecycle Deep Dive
+
+Every tool in the kit follows a standardized 7-stage lifecycle:
+
+```text
+[1. Pre-Tool Execution] --------> Hook: pre_tool_execution_hook
+         |
+[2. Parameter Normalization]
+         |
+[3. Post-Parameter Normalization] --> Hook: post_params_normalization_hook
+         |
+[4. Core Action]
+         |
+[5. Post-Core Action] --------------> Hook: post_core_action_hook
+         |
+[6. Secondary Action]
+         |
+[7. Post-Tool Execution] -----------> Hook: post_secondary_action_hook
+         |
+[Result Returned]
+```
+
+## Hook Parameter Structures
+
+Each hook receives specialized parameter objects and the **`method`** name (str) representing the tool being executed.
+
+| Hook Stage | Params Object Contains | Method Parameter | Use Case |
+|:---|:---|:---|:---|
+| `pre_tool_execution_hook` | `context`, `raw_params`, `client` | `method: str` | Early validation, logging initial state |
+| `post_params_normalization_hook` | `context`, `raw_params`, `normalized_params`, `client` | `method: str` | Parameter-based policies, data enrichment |
+| `post_core_action_hook` | `context`, `raw_params`, `normalized_params`, `core_action_result`, `client` | `method: str` | Inspect/modify transaction before submission |
+| `post_secondary_action_hook`| `context`, `raw_params`, `normalized_params`, `core_action_result`, `tool_result`, `client`| `method: str` | Final logging, audit trails, cleanup |
+
+---
+
+## Hooks vs. Policies
+
+### Hooks (`AbstractHook`)
+
+Hooks are **non-blocking extensions** that observe and modify execution flow.
+
+### Policies (`AbstractPolicy`)
+
+Policies are specialized Hooks designed to **validate** and **block** execution. If `True` is returned from a `should_block...` method, the `Policy` base class raises a ValueError.
+
+<Info>
+  **Policy Implementation Rule**: When creating a custom Policy, you **should** define logic in at least one of the `should_block...` methods. You **must not** override the native hook methods.
+</Info>
+
+---
+
+## Creating New Hooks/Policies
+
+### Template for New Hook
+
+```python
+from typing import Any
+from hedera_agent_kit.shared.hook import AbstractHook, PreToolExecutionParams
+from hedera_agent_kit.shared.configuration import Context
+
+class MyCustomHook(AbstractHook):
+    @property
+    def name(self) -> str:
+        return 'My Custom Hook'
+
+    @property
+    def description(self) -> str:
+        return 'Detailed explanation of what this hook does'
+
+    @property
+    def relevant_tools(self) -> list[str]:
+        return ['create_account', 'transfer_hbar']
+
+    async def pre_tool_execution_hook(
+            self, context: Context, params: PreToolExecutionParams, method: str
+    ) -> Any:
+        if method not in self.relevant_tools:
+            return
+        # Your logic here
+```
+
+### Template for New Policy
+
+```python
+from hedera_agent_kit.shared.policy import AbstractPolicy
+from hedera_agent_kit.shared.hook import PreToolExecutionParams
+from hedera_agent_kit.shared.configuration import Context
+
+class MyCustomPolicy(AbstractPolicy):
+    @property
+    def name(self) -> str:
+        return 'My Custom Policy'
+
+    @property
+    def description(self) -> str:
+        return 'Detailed explanation of what this policy blocks'
+
+    @property
+    def relevant_tools(self) -> list[str]:
+        return ['transfer_hbar']
+
+    async def should_block_pre_tool_execution(
+            self, context: Context, params: PreToolExecutionParams, method: str
+    ) -> bool:
+        """Return True to BLOCK execution, False to ALLOW."""
+        return False
+```

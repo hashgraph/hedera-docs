@@ -87,7 +87,7 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y jq
 
-          url="http://localhost:38081/api/v1/tranactions"
+          url="http://localhost:38081/api/v1/transactions"
 
           echo "Waiting for ${url} ..."
           for i in $(seq 1 180); do

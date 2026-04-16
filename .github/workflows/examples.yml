@@ -84,16 +84,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          sudo apt-get update -y
-          sudo apt-get install -y jq
-
           url="http://localhost:38081/api/v1/transactions"
 
           echo "Waiting for ${url} ..."
           for i in $(seq 1 180); do
             code="$(curl -s -o response.json -w '%{http_code}' "$url" || true)"
             if [ "$code" = "200" ]; then
-              count="$(jq '.nodes | length' response.json 2>/dev/null || echo 0)"
+              count="$(jq '.transactions | length' response.json 2>/dev/null || echo 0)"
               if [ "$count" -ge 1 ]; then
                 echo "REST API response:"
                 cat response.json | jq .

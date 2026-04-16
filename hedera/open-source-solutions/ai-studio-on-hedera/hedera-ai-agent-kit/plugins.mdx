@@ -52,6 +52,9 @@ The Hedera Agent Kit is extensible with third party plugins created by third par
 
   Github repository: [https://github.com/henrytongv/coincap-hedera-plugin](https://github.com/henrytongv/coincap-hedera-plugin). Tested/endorsed version of plugin: coincap-hedera-plugin@1.0.4
 
+- [Terminal 3 Plugin](https://www.npmjs.com/package/@terminal3/hedera-t3n-plugin) provides access to [Terminal 3 Network (T3N)](https://docs.terminal3.io/t3n/) to enable identity verification, authentication, and last mile-delivery or selective disclosure of private and sensitive information for AI-driven applications, ensuring compliant and auditable interactions.
+
+  Github repository: [https://github.com/Terminal-3/hedera-t3n-plugin](https://github.com/Terminal-3/hedera-t3n-plugin)
 ---
 
 ## Using Plugins
@@ -69,7 +72,7 @@ Starting with **v4**, the Hedera Agent Kit is published under the `@hashgraph` s
 | `@hashgraph/hedera-agent-kit-langchain` | LangChain toolkit (`HederaLangchainToolkit`) |
 | `@hashgraph/hedera-agent-kit-ai-sdk` | Vercel AI SDK toolkit (`HederaAIToolkit`) |
 | `@hashgraph/hedera-agent-kit-elizaos` | ElizaOS toolkit (`HederaElizaOSToolkit`) |
-| `@hashgraph/hedera-agent-kit-mcp` | Standalone MCP server and CLI |
+| `@hashgraph/hedera-agent-kit-mcp` | MCP toolkit (`HederaMCPToolkit`) |
 
 Install the core package plus your chosen framework toolkit and LLM provider:
 
@@ -88,23 +91,12 @@ npm install @hiero-ledger/sdk @hashgraph/hedera-agent-kit @hashgraph/hedera-agen
 npm install @hiero-ledger/sdk @hashgraph/hedera-agent-kit @hashgraph/hedera-agent-kit-ai-sdk @ai-sdk/openai dotenv
 ```
 
-Import plugins from the `/plugins` subpath and pass them **explicitly** in the toolkit configuration:
+Import plugins from the `/plugins` subpath and pass them **explicitly** in the toolkit configuration. Use `allCorePlugins` to load every built-in plugin at once, or list individual plugins to narrow the tool surface:
 
 ```typescript
 import { Client, PrivateKey } from '@hiero-ledger/sdk';
 import { AgentMode } from '@hashgraph/hedera-agent-kit';
-import {
-  coreAccountPlugin,
-  coreAccountQueryPlugin,
-  coreTokenPlugin,
-  coreTokenQueryPlugin,
-  coreConsensusPlugin,
-  coreConsensusQueryPlugin,
-  coreEVMPlugin,
-  coreEVMQueryPlugin,
-  coreMiscQueriesPlugin,
-  coreTransactionQueryPlugin,
-} from '@hashgraph/hedera-agent-kit/plugins';
+import { allCorePlugins } from '@hashgraph/hedera-agent-kit/plugins';
 import { HederaLangchainToolkit } from '@hashgraph/hedera-agent-kit-langchain';
 
 const client = Client.forTestnet().setOperator(
@@ -115,12 +107,7 @@ const client = Client.forTestnet().setOperator(
 const toolkit = new HederaLangchainToolkit({
   client,
   configuration: {
-    plugins: [
-      coreAccountPlugin,
-      coreAccountQueryPlugin,
-      coreTokenPlugin,
-      coreConsensusPlugin,
-    ], // Plugins must be listed explicitly — an empty array means zero tools
+    plugins: allCorePlugins,
     context: { mode: AgentMode.AUTONOMOUS },
   },
 });
@@ -128,7 +115,26 @@ const toolkit = new HederaLangchainToolkit({
 const tools = toolkit.getTools();
 ```
 
-> **Important:** Plugins must be explicitly opted in. Passing an empty `plugins` array will result in an agent with no tools available. This is a **silent behavioral change** — the code will not throw an error.
+If you only want a subset of the tools, import individual plugins instead of `allCorePlugins`:
+
+```typescript
+import {
+  coreAccountPlugin,
+  coreAccountQueryPlugin,
+  coreTokenPlugin,
+  coreConsensusPlugin,
+} from '@hashgraph/hedera-agent-kit/plugins';
+
+const toolkit = new HederaLangchainToolkit({
+  client,
+  configuration: {
+    plugins: [coreAccountPlugin, coreAccountQueryPlugin, coreTokenPlugin, coreConsensusPlugin],
+    context: { mode: AgentMode.AUTONOMOUS },
+  },
+});
+```
+
+> **Important:** Plugins must be explicitly opted in. Passing an empty `plugins` array will result in an agent with no tools available. Use `allCorePlugins` if you want the full tool surface without listing every plugin by hand.
 
 ### Python
 

@@ -15,8 +15,12 @@ The Hedera Agent Kit (Python) provides:
 
 - **Plugin Architecture**: Extensible design for easy customization
 - **LangChain Integration**: Support for LangChain v1 and LangChain Classic
+- **ADK Integration**: Support for Google’s AI Development Kit (ADK)
 - **Comprehensive Hedera Tools**: Token creation (HTS), smart contracts (EVM), account operations, topics (HCS), and more
 - **Autonomous Execution**: Direct transaction execution on the Hedera network
+- **Return Bytes Mode**: Option to return raw transaction bytes for manual signing and execution (human-in-the-loop)
+- **Hooks and policies**: Customize agent behavior with pre- and post-tool call hooks, and execution policies
+- **Extensive Examples**: Ready-to-run examples demonstrating various agent configurations and use cases, including MCP server integration
 
 ---
 
@@ -222,6 +226,8 @@ See the full [Developer Examples](https://github.com/hashgraph/hedera-agent-kit-
 - **Option E** - [Preconfigured MCPs Agent (LangChain v1)](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/DEVEXAMPLES.md#option-e-run-the-preconfigured-mcps-agent-langchain-v1): Integrate Hederion MCP & Hgraph MCP via LangChain v1
 - **Option F** - [Plugin Tool Calling Agent (Google ADK)](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/DEVEXAMPLES.md#option-f-run-the-google-adk-agents): Build and run agents with Google ADK (Gemini models)
 - **Option G** - [Return Bytes Mode Agents (ADK & LangChain)](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/DEVEXAMPLES.md#option-g-run-the-return-bytes-mode-agents-human-in-the-loop): Return raw transaction bytes for manual signing and execution
+- **Option H** - [Audit Hook Agent](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/DEVEXAMPLES.md#option-h-try-out-the-audit-hook-agent): Demonstrates using `HcsAuditTrailHook` to create an immutable audit trail on HCS
+- **Option I** - [Policy Agent](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/DEVEXAMPLES.md#option-i-try-out-the-policy-agent): Demonstrates using `MaxRecipientsPolicy` to restrict recipients in transfer operations
 ---
 
 ## About the Agent Kit

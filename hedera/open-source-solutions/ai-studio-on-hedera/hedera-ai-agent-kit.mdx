@@ -5,8 +5,8 @@ sidebarTitle: Overview
 ---
 
 <Note>
- **v4 Breaking Changes (JavaScript SDK):** The package has moved to the `@hashgraph` scope, framework integrations are now separate packages, and plugins must be explicitly imported from `@hashgraph/hedera-agent-kit/plugins`. See the [JavaScript Quickstart](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/MIGRATION-v4.md) and [Plugins](/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/plugins) pages for updated setup instructions. 
-  You can also see the [Migration Guide](/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/migration-guide) on Github for more details.
+ **v4 Breaking Changes (JavaScript SDK):** The package has moved to the `@hashgraph` scope, framework integrations are now separate packages, and plugins must be explicitly imported from `@hashgraph/hedera-agent-kit/plugins`. See the [JavaScript Quickstart](/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/quickstart) and [Plugins](/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/plugins) pages for updated setup instructions.
+  You can also see the [Migration Guide](/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/migration-guide) for more details.
 </Note>
 
 
@@ -16,7 +16,7 @@ The **Hedera Agent Kit** is an open-source framework for building AI-powered app
 Create conversational agents that understand natural language and execute Hedera transactions,
 or build backend systems that leverage AI for on-chain operations.
 
-The Agent Kit is available in two languages:
+The Agent Kit is available in two languages and provides different tools:
 
 <CardGroup cols={2}>
   <Card title="JavaScript SDK" icon="js" href="/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/quickstart">
@@ -35,7 +35,7 @@ The Agent Kit is available in two languages:
 
 ---
 ## Hedera Agent Kit JavaScript Packages
-Starting with **v4**, the Hedera Agent Kit is published under the `@hashgraph` scope and plugins are imported from the `@hashgraph/hedera-agent-kit/plugins` subpath. Framework integrations (LangChain, Vercel AI SDK, ElizaOS, MCP) are now separate packages.
+The JavaScript Agent Kit ships as a core package with separate framework toolkit packages. Plugins are imported from the `@hashgraph/hedera-agent-kit/plugins` subpath.
 
 **Which packages do I need?**
 
@@ -43,10 +43,13 @@ Starting with **v4**, the Hedera Agent Kit is published under the `@hashgraph` s
 |---|---|
 | `@hashgraph/hedera-agent-kit` | Core types, `AgentMode`, `Plugin`, `Tool`, `HederaBuilder` |
 | `@hashgraph/hedera-agent-kit/plugins` | All built-in Hedera plugins (subpath of core) |
+| `@hashgraph/hedera-agent-kit/hooks` | Hook base classes and built-in hooks (subpath of core) |
+| `@hashgraph/hedera-agent-kit/policies` | Policy base classes and built-in policies (subpath of core) |
 | `@hashgraph/hedera-agent-kit-langchain` | LangChain toolkit (`HederaLangchainToolkit`) |
 | `@hashgraph/hedera-agent-kit-ai-sdk` | Vercel AI SDK toolkit (`HederaAIToolkit`) |
+| `@hashgraph/hedera-agent-kit-adk` | Google ADK toolkit (`HederaADKToolkit`) |
 | `@hashgraph/hedera-agent-kit-elizaos` | ElizaOS toolkit (`HederaElizaOSToolkit`) |
-| `@hashgraph/hedera-agent-kit-mcp` | Standalone MCP server and CLI |
+| `@hashgraph/hedera-agent-kit-mcp` | MCP toolkit (`HederaMCPToolkit`) |
 
 
 ## Key Features
@@ -55,6 +58,8 @@ Both SDKs provide:
 
 - **🔌 Plugin Architecture**: Extensible design for easy customization
 - **🧠 LangChain Integration**: Support for LangChain v1 and LangChain Classic
+- **🧠 ADK Integration**: Support for Google ADK
+- **🛡️ Hooks and Policies**: Enforce business logic and security rules
 - **🪙 Comprehensive Hedera Tools**:
   - Token creation and management (HTS)
   - Smart contract execution (EVM)
@@ -71,15 +76,16 @@ Both SDKs provide:
 |-------------------------|--------------------|--------------------|
 | **Package Manager**     | npm                | pip                |
 | **Package Name**        | `@hashgraph/hedera-agent-kit` | `hedera-agent-kit` |
-| **Hedera SDK**          | `@hashgraph/sdk`   | `hiero_sdk_python` |
-| **Google ADK**          | 🔜 Coming Soon     | ✅ Supported     |
+| **Hedera SDK**          | `@hiero-ledger/sdk` | `hiero_sdk_python` |
 | **AUTONOMOUS Mode**     | ✅ Supported        | ✅ Supported        |
 | **LangChain v1**        | ✅ Supported        | ✅ Supported        |
 | **LangChain Classic**   | ✅ Supported        | ✅ Supported        |
 | **Vercel AI SDK**       | ✅ Supported        | ❌ Not Available    |
+| **Google ADK**          | ✅ Supported        | ✅ Supported        |
 | **RETURN_BYTES Mode**   | ✅ Supported        | ✅ Supported     |
 | **ElizaOS Integration** | ✅ Supported        | ❌ Not Available    |
-| **MCP Server**          | ✅ Supported        | 🔜 Coming Soon     |
+| **MCP Server**          | ✅ Supported        | ✅ Coming Soon     |
+| **Hooks & Policies**    | ✅ Supported        | ✅ Supported     |
 
 ---
 
@@ -96,6 +102,7 @@ Both SDKs provide the same core functionality through plugins:
 | **Core Token Plugin**             | Create/mint/transfer fungible and non-fungible tokens (HTS)     |
 | **Core Token Query Plugin**       | Query token info and pending airdrops                           |
 | **Core EVM Plugin**               | Deploy and interact with ERC-20 and ERC-721 contracts           |
+| **Core EVM Query Plugin**         | Query ERC-20 / ERC-721 contract data                            |
 | **Core Transaction Query Plugin** | Query transaction records                                       |
 | **Core Misc Query Plugin**        | Exchange rates and other utilities                              |
 
@@ -108,7 +115,7 @@ Both SDKs provide the same core functionality through plugins:
 Best for:
 - Web applications
 - Node.js backends
-- Full feature set including ElizaOS and MCP Server
+- Full feature set including ElizaOS
 
 [Get Started with JavaScript →](/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/quickstart
 )

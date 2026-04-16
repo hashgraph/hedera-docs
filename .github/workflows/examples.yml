@@ -59,7 +59,7 @@ jobs:
           wait: 120s
 
       - name: Install Homebrew
-        run:
+        run: |
           set -euo pipefail
           NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           echo "/home/linuxbrew/.linuxbrew/bin" >> "$GITHUB_PATH"
@@ -75,7 +75,7 @@ jobs:
           solo --version
 
       - name: Deploy Solo
-        run:
+        run: |
           set -euo pipefail
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           solo one-shot single deploy | tee solo-deploy.log
@@ -87,7 +87,7 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y jq
 
-          url="${MIRROR_NODE_URL}/network/nodes?limit=1"
+          url="http://localhost:38081/api/v1/tranactions"
 
           echo "Waiting for ${url} ..."
           for i in $(seq 1 180); do

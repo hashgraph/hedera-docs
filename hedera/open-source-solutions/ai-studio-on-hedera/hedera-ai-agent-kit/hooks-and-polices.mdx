@@ -1,0 +1,63 @@
+---
+title: "Hooks and Policies"
+description: "Learn how to use Hooks and Policies to customize tool behavior and enforce business logic in the Hedera Agent Kit."
+---
+
+## Overview
+
+The Hedera Agent Kit provides a flexible and powerful system for putting limits on tool usage and enforcing business logic, effectively enabling you to limit the functionality of AI agents through **Hooks** and **Policies**. 
+
+These can be used to enforce security, compliance, and other business rules.
+
+### Concepts
+
+* **Hooks**: Extensions that observe and modify tool execution (logging, tracking, etc.). They are generally non-blocking.
+* **Policies**: Specialized hooks that act as validation rules. They can **block** tool execution if certain conditions aren't met.
+
+<Note>
+  Hooks and policies are available from **v4** of the JavaScript SDK and from **v3.4.0** of the Python SDK. 
+  
+  Only tools extending `BaseTool` (JavaScript) or `ToolV2` (Python) support hooks and policies. All core tools provided with the kit support these features by default. While classic tool interfaces continue to be supported for backward compatibility, they do not gain hook or policy support until migrated to the new base classes.
+  
+  **Migration Guides:**
+  - **JavaScript**: [Migrating Custom Tools to BaseTool](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/MIGRATION-v4.md#migrating-custom-tools-to-basetool-recommended-non-breaking)
+  - **Python**: [Python ToolV2 Migration Guide](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/MIGRATION_TO_BASETOOLV2.md)
+</Note>
+
+---
+
+## Tool Lifecycle
+
+Every tool in the kit follows a standardized 7-stage lifecycle. Hooks and policies can execute at 4 specific points during this lifecycle:
+
+1. **Pre-Tool Execution** - Before anything happens, when raw parameters are passed.
+2. **Post-Parameter Normalization** - After parameters are validated and cleaned.
+3. **Post-Core Action** - After the main logic (e.g., transaction creation) executes, but before any secondary actions (like submission).
+4. **Post-Tool Execution** - After everything completes, including transaction signing and submission.
+
+```text
+[1. Pre-Tool Execution] --------> Hook Stage 1
+         |
+[2. Parameter Normalization]
+         |
+[3. Post-Parameter Normalization] --> Hook Stage 2
+         |
+[4. Core Action]
+         |
+[5. Post-Core Action] --------------> Hook Stage 3
+         |
+[6. Secondary Action]
+         |
+[7. Post-Tool Execution] -----------> Hook Stage 4
+         |
+[Result Returned]
+```
+
+---
+
+## Implementation Guides
+
+Select your preferred SDK to see available hooks and policies, learn how to configure them, or see how to create your own:
+
+* **[JavaScript/TypeScript Hooks & Policies](./hedera-agent-kit-js/create-js-hooks-and-policies)**
+* **[Python Hooks & Policies](./hedera-agent-kit-py/create-py-hooks-and-policies)**

@@ -53,29 +53,17 @@ class Tool(ABC):
 
 See `hedera_agent_kit/shared/tool.py` for the full definition.
 
-#### ToolV2 (Recommended for 3.4.0+)
+#### BaseToolV2 (Recommended for v3.4.0+)
 
 <Note>
-  **This is NOT a breaking change.** `ToolV2` is an abstract class that *implements* the `Tool` interface. Plain `Tool` implementations continue to work exactly as before. However, they do not support the hooks and policies system (e.g., `HcsAuditTrailHook`, `MaxRecipientsPolicy`, `RejectToolPolicy`). To enable those features, migrate your tool to `ToolV2`.
-  
-  For complete step-by-step instructions, see the **[Python ToolV2 Migration Guide](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/MIGRATION_TO_BASETOOLV2.md)**.
+  **This is NOT a breaking change.** `BaseToolV2` is an abstract class that *implements* the `Tool` interface — plain `Tool` implementations continue to work exactly as before. However, they do not support the hooks and policies system (e.g., `HcsAuditTrailHook`, `MaxRecipientsPolicy`, `RejectToolPolicy`). To enable those features, migrate your tool to `BaseToolV2`.
 </Note>
 
-Extending `ToolV2` splits execution into a 7-stage lifecycle that hooks and policies tap into automatically:
+Extending `BaseToolV2` splits execution into a 7-stage lifecycle that hooks and policies tap into automatically. For complete step-by-step instructions, see the **[Python ToolV2 Migration Guide](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/MIGRATION_TO_BASETOOLV2.md)**.
 
-```text
-[1] pre_tool_execution_hook
-[2] normalize_params        ← your logic
-[3] post_params_normalization_hook
-[4] core_action             ← your logic
-[5] post_core_action_hook
-[6] secondary_action        ← your logic (optional, e.g. tx signing)
-[7] post_tool_execution_hook
-```
+<CodeGroup>
 
-**Before (Functional Pattern)**
-
-```python
+```python v3 (Legacy Pattern)
 def tool(context: Context) -> Tool:
     return Tool(
         method=MY_TOOL,
@@ -86,12 +74,10 @@ def tool(context: Context) -> Tool:
     )
 ```
 
-**After (ToolV2 Pattern)**
+```python v4 (BaseToolV2 Pattern)
+from hedera_agent_kit.shared.tool_v2 import BaseToolV2
 
-```python
-from hedera_agent_kit.shared.tool import ToolV2
-
-class MyCustomTool(ToolV2):
+class MyCustomTool(BaseToolV2):
     def __init__(self, context: Context):
         super().__init__()
         self.method = MY_TOOL
@@ -111,9 +97,18 @@ class MyCustomTool(ToolV2):
         # Stage 6: sign and submit
         return await handle_transaction(core_action_result, client, context)
 
-def tool(context: Context) -> ToolV2:
+def tool(context: Context) -> BaseToolV2:
     return MyCustomTool(context)
 ```
+
+</CodeGroup>
+
+| Aspect | v3 (Legacy) | v4 (BaseToolV2) |
+|---|---|---|
+| Declaration | Functional factory (`Tool(...)`) | Class extending `BaseToolV2` |
+| Lifecycle stages | All inside a single `execute()` | `normalize_params` → `core_action` → `secondary_action` |
+| Hook/Policy support | ✗ None | ✓ Automatic at stages 1, 3, 5, 7 |
+| Breaking change? | — | **No** |
 
 
 ---
@@ -134,8 +129,13 @@ my_custom_plugin/
 
 ```python
 # tools/my_tool.py
+from typing import Any
 from pydantic import BaseModel, Field
-from hedera_agent_kit.shared.types import Tool, Context
+from hiero_sdk_python import Client
+from hedera_agent_kit.shared.configuration import Context
+from hedera_agent_kit.shared.models import ToolResponse
+from hedera_agent_kit.shared.tool_v2 import BaseToolV2
+from hedera_agent_kit.shared.strategies.tx_mode_strategy import handle_transaction
 
 class MyToolParams(BaseModel):
     required_param: str = Field(..., description="Description of required parameter")
@@ -150,24 +150,44 @@ def my_tool_prompt(context: Context = None) -> str:
     - optional_param (string, optional): Description
     """
 
-async def my_tool_execute(client, context: Context, params: MyToolParams):
-    try:
-        # Your implementation here
-        result = await some_hedera_operation(params)
-        return result
-    except Exception as e:
-        return str(e)
-
 MY_TOOL = "my_tool"
 
-def tool(context: Context) -> Tool:
-    return Tool(
-        method=MY_TOOL,
-        name="My Custom Tool",
-        description=my_tool_prompt(context),
-        parameters=MyToolParams,
-        execute=my_tool_execute,
-    )
+class MyCustomTool(BaseToolV2):
+    def __init__(self, context: Context):
+        self.method: str = MY_TOOL
+        self.name: str = "My Custom Tool"
+        self.description: str = my_tool_prompt(context)
+        self.parameters: type[MyToolParams] = MyToolParams
+
+    async def normalize_params(
+        self, params: Any, context: Context, client: Client
+    ) -> MyToolParams:
+        # Stage 2: normalize/validate params
+        return params
+
+    async def core_action(
+        self,
+        normalized_params: MyToolParams,
+        context: Context,
+        client: Client,
+    ) -> Any:
+        # Stage 4: build the transaction or run the query
+        return await some_hedera_operation(normalized_params)
+
+    async def secondary_action(
+        self, result: Any, client: Client, context: Context
+    ) -> ToolResponse:
+        # Stage 6: sign and submit
+        return await handle_transaction(result, client, context)
+
+    async def handle_error(self, error: Exception, context: Context) -> ToolResponse:
+        # Optional: override for tool-specific error messages
+        message: str = f"Operation failed: {str(error)}"
+        print(f"[{self.method}]", message)
+        return ToolResponse(human_message=message, error=message)
+
+def tool(context: Context) -> BaseToolV2:
+    return MyCustomTool(context)
 ```
 
 ### Step 3: Create Plugin Definition

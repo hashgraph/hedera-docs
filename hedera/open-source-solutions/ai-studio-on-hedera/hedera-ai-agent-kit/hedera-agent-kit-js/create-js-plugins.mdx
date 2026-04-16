@@ -42,21 +42,11 @@ See [typescript/src/shared/tools.ts](../typescript/src/shared/tools.ts) for the 
   **This is NOT a breaking change.** `BaseTool` is an abstract class that *implements* the `Tool` interface — plain object tools continue to work exactly as before. However, they do not support the hooks and policies system introduced in v4 (e.g., `HcsAuditTrailHook`, `MaxRecipientsPolicy`, `RejectToolPolicy`). To enable those features, migrate your tool to `BaseTool`.
 </Note>
 
-Extending `BaseTool` splits execution into a 7-stage lifecycle that hooks and policies tap into automatically — you never call them manually:
+Extending `BaseTool` splits execution into a 7-stage lifecycle that hooks and policies tap into automatically — you never call them manually. For a detailed step-by-step guide on refactoring your tools, see the [Migration Guide](/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/migration-guide#migrating-custom-tools-to-basetool-recommended-non-breaking).
 
-```text
-[1] preToolExecutionHook
-[2] normalizeParams        ← your logic
-[3] postParamsNormalizationHook
-[4] coreAction             ← your logic
-[5] postCoreActionHook
-[6] secondaryAction        ← your logic (optional, e.g. tx signing)
-[7] postToolExecutionHook
-```
+<CodeGroup>
 
-**Before (v3 — functional `Tool` object)**
-
-```typescript
+```typescript v3 (Functional Tool object)
 import type { Tool } from '@/shared/tools';
 
 const tool = (context: Context): Tool => ({
@@ -70,9 +60,7 @@ const tool = (context: Context): Tool => ({
 export default tool;
 ```
 
-**After (v4 — `BaseTool` class)**
-
-```typescript
+```typescript v4 (BaseTool class)
 import { BaseTool } from '@/shared/tools'; // BaseTool implements Tool
 
 export class MyTool extends BaseTool {
@@ -113,6 +101,8 @@ export class MyTool extends BaseTool {
 const tool = (context: Context): BaseTool => new MyTool(context);
 export default tool;
 ```
+
+</CodeGroup>
 
 | | v3 (`Tool` object) | v4 (`BaseTool` class) |
 |---|---|---|

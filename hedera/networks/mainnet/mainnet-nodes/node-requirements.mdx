@@ -56,12 +56,13 @@ It is recommended to configure a **240 GB SSD in RAID 1** for the root volume (`
   * Data: 2 × NVMe drives (7.5TB RAID 0) or 4× in RAID 10 array
 
 **Performance:**\
-If mounted to root volume, the root volume must meet these requirements. If provisioned via RAID, the RAID array should meet these requirements:
+If mounted to root volume, the root volume must meet these requirements. If provisioned via RAID, the RAID array should meet these requirements. Lower values are minimum, higher values are recommended:
 
 - Sequential Write: 2,000–3,000 MB/s
 - Sequential Read: 3,000–6,200 MB/s
 - Random Read (sync): 250k–1M IOPS
 - Random Write (sync): 100k–170k IOPS
+- Random Read AIO (async): 500k-1M IOPS
 - Avg. Latency: ≤ 200µs
 
 > 📁 **Note**: Nodes must pass the Hedera performance test suite at installation time.

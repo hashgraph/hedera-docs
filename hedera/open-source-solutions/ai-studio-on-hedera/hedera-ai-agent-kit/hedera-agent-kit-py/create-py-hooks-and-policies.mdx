@@ -72,43 +72,41 @@ context = Context(
 
 ## Available Hooks and Policies
 
-### 1. `HcsAuditTrailHook` (Hook)
+<AccordionGroup>
+  <Accordion title="1. HcsAuditTrailHook (Hook)">
+    **Description**:
+    Provides an immutable audit trail by logging tool executions to a Hedera Consensus Service (HCS) topic.
 
-**Description**:
-Provides an immutable audit trail by logging tool executions to a Hedera Consensus Service (HCS) topic.
+    <Info>
+      **Autonomous Mode Only**: This hook is strictly available in `AUTONOMOUS` mode. It will throw an error if used in `RETURN_BYTES` mode.
+    </Info>
 
-<Info>
-  **Autonomous Mode Only**: This hook is strictly available in `AUTONOMOUS` mode. It will throw an error if used in `RETURN_BYTES` mode.
-</Info>
+    **Parameters**:
 
-**Parameters**:
+    - `relevant_tools`: `List[str]` - List of tools to audit (e.g., `['transfer_hbar', 'create_token']`).
+    - `hcs_topic_id`: `str` - The pre-created Hedera topic ID (e.g., `'0.0.12345'`).
+  </Accordion>
 
-- `relevant_tools`: `List[str]` - List of tools to audit (e.g., `['transfer_hbar', 'create_token']`).
-- `hcs_topic_id`: `str` - The pre-created Hedera topic ID (e.g., `'0.0.12345'`).
+  <Accordion title="2. MaxRecipientsPolicy (Policy)">
+    **Description**:
+    A security policy that limits the number of recipients in transfer and airdrop operations. It blocks requests that exceed a defined threshold.
 
----
+    **Parameters**:
 
-### 2. `MaxRecipientsPolicy` (Policy)
+    - `max_recipients`: `int` - Maximum number of recipients allowed.
+    - `additional_tools`: `List[str]` - (Optional) Extra tools to apply this policy to.
+    - `custom_strategies`: `Dict[str, Callable[[Any], int]]` - (Optional) A mapping of tool names to functions that count recipients.
+  </Accordion>
 
-**Description**:
-A security policy that limits the number of recipients in transfer and airdrop operations. It blocks requests that exceed a defined threshold.
+  <Accordion title="3. RejectToolPolicy (Policy)">
+    **Description**:
+    A restrictive policy used to explicitly disable specific tools.
 
-**Parameters**:
+    **Parameters**:
 
-- `max_recipients`: `int` - Maximum number of recipients allowed.
-- `additional_tools`: `List[str]` - (Optional) Extra tools to apply this policy to.
-- `custom_strategies`: `Dict[str, Callable[[Any], int]]` - (Optional) A mapping of tool names to functions that count recipients.
-
----
-
-### 3. `RejectToolPolicy` (Policy)
-
-**Description**:
-A restrictive policy used to explicitly disable specific tools.
-
-**Parameters**:
-
-- `relevant_tools`: `List[str]` - The list of tool methods to be blocked (e.g., `['delete_account', 'freeze_token']`).
+    - `relevant_tools`: `List[str]` - The list of tool methods to be blocked (e.g., `['delete_account', 'freeze_token']`).
+  </Accordion>
+</AccordionGroup>
 
 ---
 
@@ -167,9 +165,8 @@ Policies are specialized Hooks designed to **validate** and **block** execution.
 
 ## Creating New Hooks/Policies
 
-### Template for New Hook
-
-```python
+<CodeGroup>
+```python New Hook
 from typing import Any
 from hedera_agent_kit.shared.hook import AbstractHook, PreToolExecutionParams
 from hedera_agent_kit.shared.configuration import Context
@@ -195,9 +192,7 @@ class MyCustomHook(AbstractHook):
         # Your logic here
 ```
 
-### Template for New Policy
-
-```python
+```python New Policy
 from hedera_agent_kit.shared.policy import AbstractPolicy
 from hedera_agent_kit.shared.hook import PreToolExecutionParams
 from hedera_agent_kit.shared.configuration import Context
@@ -221,3 +216,4 @@ class MyCustomPolicy(AbstractPolicy):
         """Return True to BLOCK execution, False to ALLOW."""
         return False
 ```
+</CodeGroup>

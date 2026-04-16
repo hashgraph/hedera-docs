@@ -78,163 +78,163 @@ const context = {
 
 ## Available Hooks
 
-### 1. `HcsAuditTrailHook` (Hook)
+<AccordionGroup>
+  <Accordion title="1. HcsAuditTrailHook (Hook)">
+    **Description**:  
+    Provides an immutable audit trail by logging tool executions to a Hedera Consensus Service (HCS) topic.
 
-**Description**:  
-Provides an immutable audit trail by logging tool executions to a Hedera Consensus Service (HCS) topic.
+    <Info>
+      **Autonomous Mode Only**: This hook is strictly available in `AUTONOMOUS` mode. It will throw an error if used in
+      `RETURN_BYTES` mode.
+    </Info>
 
-<Info>
-  **Autonomous Mode Only**: This hook is strictly available in `AUTONOMOUS` mode. It will throw an error if used in
-  `RETURN_BYTES` mode.
-</Info>
+    <Warning>
+      **HIP-991 (Paid Topics)**: If a paid topic is used, it will incur submission fees. Ensure the `loggingClient` has
+      sufficient funds to avoid draining the account.
+    </Warning>
 
-<Warning>
-  **HIP-991 (Paid Topics)**: If a paid topic is used, it will incur submission fees. Ensure the `loggingClient` has
-  sufficient funds to avoid draining the account.
-</Warning>
+    **Prerequisites**:
 
-**Prerequisites**:
+    1. **Topic Creation**: The HCS topic must be created before initializing the hook.
+    2. **Permissions**: The Hedera account associated with the `loggingClient` (or the agent's operator account) must have
+       permissions to submit messages to the topic (i.e., it must hold the `submitKey` if one is defined).
 
-1. **Topic Creation**: The HCS topic must be created before initializing the hook.
-2. **Permissions**: The Hedera account associated with the `loggingClient` (or the agent's operator account) must have
-   permissions to submit messages to the topic (i.e., it must hold the `submitKey` if one is defined).
+    **Parameters**:
 
-**Parameters**:
+    - `relevantTools`: `string[]` - List of tools to audit (e.g., `['transfer_hbar', 'create_token']`).
+    - `hcsTopicId`: `string` - The pre-created Hedera topic ID (e.g., `'0.0.12345'`).
+    - `loggingClient?`: `Client` - (Optional) A separate Hedera client for logging. If not provided, defaults to the agent's
+      operator client. Must have submission access to the topic.
 
-- `relevantTools`: `string[]` - List of tools to audit (e.g., `['transfer_hbar', 'create_token']`).
-- `hcsTopicId`: `string` - The pre-created Hedera topic ID (e.g., `'0.0.12345'`).
-- `loggingClient?`: `Client` - (Optional) A separate Hedera client for logging. If not provided, defaults to the agent's
-  operator client. Must have submission access to the topic.
+    **Example Usage**:
 
-**Example Usage**:
+    ```typescript
+    import { HcsAuditTrailHook } from '@hashgraph/hedera-agent-kit/hooks';
 
-```typescript
-import { HcsAuditTrailHook } from '@hashgraph/hedera-agent-kit/hooks';
+    const auditHook = new HcsAuditTrailHook(
+      ['transfer_hbar', 'create_token'],
+      '0.0.12345' // Ensure this topic exists and the agent can post to it
+    );
 
-const auditHook = new HcsAuditTrailHook(
-  ['transfer_hbar', 'create_token'],
-  '0.0.12345' // Ensure this topic exists and the agent can post to it
-);
+    // Add to your agent configuration
+    const context = {
+      hooks: [auditHook],
+      // ...
+    };
+    ```
+  </Accordion>
 
-// Add to your agent configuration
-const context = {
-  hooks: [auditHook],
-  // ...
-};
-```
+  <Accordion title="2. HolAuditTrailHook (Hook)">
+    **Description**:  
+    Hook that writes [HOL-standards-compliant](https://hol.org) audit trails to an HCS session topic. It uses an HCS-2
+    INDEXED registry as the session topic to list audit entries.
 
----
+    <Info>
+      **Autonomous Mode Only**: This hook is strictly available in `AUTONOMOUS` mode. It will throw an error if used in
+      `RETURN_BYTES` mode.
+    </Info>
 
-### 2. `HolAuditTrailHook` (Hook)
+    **Prerequisites**:
 
-**Description**:  
-Hook that writes [HOL-standards-compliant](https://hol.org) audit trails to an HCS session topic. It uses an HCS-2
-INDEXED registry as the session topic to list audit entries.
+    1. **Topic Creation**: The HCS topic must be created before initializing the hook.
+    2. **Standard Compliance**: To be fully compliant with the HCS-2 standard, the topic should be created with the memo
+       `hcs-2:0:0`.
 
-<Info>
-  **Autonomous Mode Only**: This hook is strictly available in `AUTONOMOUS` mode. It will throw an error if used in
-  `RETURN_BYTES` mode.
-</Info>
+    **Parameters**:
 
-**Prerequisites**:
+    - `relevantTools`: `string[]` - List of tool names that trigger audit trail logging.
+    - `sessionId`: `string` - The Hedera topic ID (format `0.0.xxx`) used as the audit session registry.
 
-1. **Topic Creation**: The HCS topic must be created before initializing the hook.
-2. **Standard Compliance**: To be fully compliant with the HCS-2 standard, the topic should be created with the memo
-   `hcs-2:0:0`.
+    **Example Usage**:
 
-**Parameters**:
+    ```typescript
+    import { HolAuditTrailHook } from '@hashgraph/hedera-agent-kit/hooks';
 
-- `relevantTools`: `string[]` - List of tool names that trigger audit trail logging.
-- `sessionId`: `string` - The Hedera topic ID (format `0.0.xxx`) used as the audit session registry.
+    const holAuditHook = new HolAuditTrailHook({
+      relevantTools: ['transfer_hbar', 'create_token'],
+      sessionId: '0.0.12345'
+    });
 
-**Example Usage**:
-
-```typescript
-import { HolAuditTrailHook } from '@hashgraph/hedera-agent-kit/hooks';
-
-const holAuditHook = new HolAuditTrailHook({
-  relevantTools: ['transfer_hbar', 'create_token'],
-  sessionId: '0.0.12345'
-});
-
-// Add to your agent configuration
-const context = {
-  hooks: [holAuditHook],
-  // ...
-};
-```
+    // Add to your agent configuration
+    const context = {
+      hooks: [holAuditHook],
+      // ...
+    };
+    ```
+  </Accordion>
+</AccordionGroup>
 
 ---
 
 ## Available Policies
 
-### 1. `MaxRecipientsPolicy` (Policy)
+<AccordionGroup>
+  <Accordion title="1. MaxRecipientsPolicy (Policy)">
+    **Description**:  
+    A security policy that limits the number of recipients in transfer and airdrop operations. It blocks requests that
+    exceed a defined threshold to prevent massive unauthorized transfers.
 
-**Description**:  
-A security policy that limits the number of recipients in transfer and airdrop operations. It blocks requests that
-exceed a defined threshold to prevent massive unauthorized transfers.
+    **Default Supported Tools**:
+    By default, the policy knows how to count recipients for:
 
-**Default Supported Tools**:
-By default, the policy knows how to count recipients for:
+    - `transfer_hbar`
+    - `transfer_hbar_with_allowance`
+    - `airdrop_fungible_token`
+    - `transfer_fungible_token_with_allowance`
+    - `transfer_non_fungible_token`
+    - `transfer_non_fungible_token_with_allowance`
 
-- `transfer_hbar`
-- `transfer_hbar_with_allowance`
-- `airdrop_fungible_token`
-- `transfer_fungible_token_with_allowance`
-- `transfer_non_fungible_token`
-- `transfer_non_fungible_token_with_allowance`
+    **Parameters**:
 
-**Parameters**:
+    - `maxRecipients`: `number` - Maximum number of recipients allowed.
+    - `additionalTools?`: `string[]` - (Optional) Extra tools to apply this policy to.
+    - `customStrategies?`: `Record<string, (params: any) => number>` - (Optional) A mapping of tool names to functions that
+      count recipients. **If you add tools via `additionalTools`, you must provide a strategy for each one**, otherwise the
+      policy will throw an error at runtime.
 
-- `maxRecipients`: `number` - Maximum number of recipients allowed.
-- `additionalTools?`: `string[]` - (Optional) Extra tools to apply this policy to.
-- `customStrategies?`: `Record<string, (params: any) => number>` - (Optional) A mapping of tool names to functions that
-  count recipients. **If you add tools via `additionalTools`, you must provide a strategy for each one**, otherwise the
-  policy will throw an error at runtime.
+    **Example with Custom Strategies**:
 
-**Example with Custom Strategies**:
+    ```typescript
+    import { MaxRecipientsPolicy } from '@hashgraph/hedera-agent-kit/policies';
 
-```typescript
-import { MaxRecipientsPolicy } from '@hashgraph/hedera-agent-kit/policies';
+    // Basic usage with default tools only
+    const basicPolicy = new MaxRecipientsPolicy(5);
 
-// Basic usage with default tools only
-const basicPolicy = new MaxRecipientsPolicy(5);
+    // With custom tool - strategy is REQUIRED
+    const extendedPolicy = new MaxRecipientsPolicy(
+      5, // max 5 recipients
+      ['my_custom_bulk_tool'], // additional tool
+      {
+        // This strategy is required for the custom tool
+        'my_custom_bulk_tool': (params) => params.recipients.length
+      }
+    );
+    ```
+  </Accordion>
 
-// With custom tool - strategy is REQUIRED
-const extendedPolicy = new MaxRecipientsPolicy(
-  5, // max 5 recipients
-  ['my_custom_bulk_tool'], // additional tool
-  {
-    // This strategy is required for the custom tool
-    'my_custom_bulk_tool': (params) => params.recipients.length
-  }
-);
-```
+  <Accordion title="2. RejectToolPolicy (Policy)">
+    **Description**:
+    A restrictive policy used to explicitly disable specific tools. Even if a tool is technically available in a plugin,
+    this policy ensures the agent cannot execute it under any circumstances.
 
----
+    **Parameters**:
 
-### 2. `RejectToolPolicy` (Policy)
+    - `relevantTools`: `string[]` - The list of tool methods to be blocked (e.g., `['delete_account', 'freeze_token']`).
 
-**Description**:
-A restrictive policy used to explicitly disable specific tools. Even if a tool is technically available in a plugin,
-this policy ensures the agent cannot execute it under any circumstances.
+    **Example Usage**:
 
-**Parameters**:
+    ```typescript
+    import { RejectToolPolicy } from '@hashgraph/hedera-agent-kit/policies';
 
-- `relevantTools`: `string[]` - The list of tool methods to be blocked (e.g., `['delete_account', 'freeze_token']`).
+    const safetyPolicy = new RejectToolPolicy(['delete_account']);
 
-**Example Usage**:
-
-```typescript
-import { RejectToolPolicy } from '@hashgraph/hedera-agent-kit/policies';
-
-const safetyPolicy = new RejectToolPolicy(['delete_account']);
-
-const context = {
-  hooks: [safetyPolicy],
-  // ...
-};
-```
+    const context = {
+      hooks: [safetyPolicy],
+      // ...
+    };
+    ```
+  </Accordion>
+</AccordionGroup>
 
 ---
 
@@ -332,9 +332,8 @@ parameter structures using patterns like **Universal Logic**, **Type Guards**, o
 
 ## Creating New Hooks/Policies
 
-### Template for New Hook
-
-```typescript
+<CodeGroup>
+```typescript New Hook
 import {
   AbstractHook,
   Context,
@@ -357,9 +356,7 @@ export class MyCustomHook extends AbstractHook {
 }
 ```
 
-### Template for New Policy
-
-```typescript
+```typescript New Policy
 import {
   AbstractPolicy,
   Context,
@@ -385,3 +382,4 @@ export class MyCustomPolicy extends AbstractPolicy {
   }
 }
 ```
+</CodeGroup>

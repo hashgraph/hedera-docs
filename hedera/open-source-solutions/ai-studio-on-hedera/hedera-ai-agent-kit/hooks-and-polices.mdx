@@ -19,9 +19,11 @@ These can be used to enforce security, compliance, and other business rules.
   
   Only tools extending `BaseTool` (JavaScript) or `ToolV2` (Python) support hooks and policies. All core tools provided with the kit support these features by default. While classic tool interfaces continue to be supported for backward compatibility, they do not gain hook or policy support until migrated to the new base classes.
   
-  **Migration Guides:**
-  - **JavaScript**: [Migrating Custom Tools to BaseTool](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/MIGRATION-v4.md#migrating-custom-tools-to-basetool-recommended-non-breaking)
-  - **Python**: [Python ToolV2 Migration Guide](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/MIGRATION_TO_BASETOOLV2.md)
+  <Accordion title="Migration Guides">
+    - **JavaScript**: [Migrating Custom Tools to BaseTool](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/MIGRATION-v4.md#migrating-custom-tools-to-basetool-recommended-non-breaking)
+    - **Python**: [Python ToolV2 Migration Guide](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/MIGRATION_TO_BASETOOLV2.md)
+  </Accordion>
+
 </Note>
 
 ---
@@ -30,10 +32,20 @@ These can be used to enforce security, compliance, and other business rules.
 
 Every tool in the kit follows a standardized 7-stage lifecycle. Hooks and policies can execute at 4 specific points during this lifecycle:
 
-1. **Pre-Tool Execution** - Before anything happens, when raw parameters are passed.
-2. **Post-Parameter Normalization** - After parameters are validated and cleaned.
-3. **Post-Core Action** - After the main logic (e.g., transaction creation) executes, but before any secondary actions (like submission).
-4. **Post-Tool Execution** - After everything completes, including transaction signing and submission.
+<AccordionGroup>
+  <Accordion title="1. Pre-Tool Execution" icon="bolt">
+    Before anything happens, when raw parameters are passed.
+  </Accordion>
+  <Accordion title="2. Post-Parameter Normalization" icon="filter">
+    After parameters are validated and cleaned.
+  </Accordion>
+  <Accordion title="3. Post-Core Action" icon="gears">
+    After the main logic (e.g., transaction creation) executes, but before any secondary actions (like submission).
+  </Accordion>
+  <Accordion title="4. Post-Tool Execution" icon="check-double">
+    After everything completes, including transaction signing and submission.
+  </Accordion>
+</AccordionGroup>
 
 ```text
 [1. Pre-Tool Execution] --------> Hook Stage 1
@@ -59,5 +71,11 @@ Every tool in the kit follows a standardized 7-stage lifecycle. Hooks and polici
 
 Select your preferred SDK to see available hooks and policies, learn how to configure them, or see how to create your own:
 
-* **[JavaScript/TypeScript Hooks & Policies](./hedera-agent-kit-js/create-js-hooks-and-policies)**
-* **[Python Hooks & Policies](./hedera-agent-kit-py/create-py-hooks-and-policies)**
+<CardGroup cols={2}>
+  <Card title="JavaScript SDK" icon="js" href="./hedera-agent-kit-js/create-js-hooks-and-policies">
+    Available Hooks & Policies, configuration, and developer templates for JS/TS.
+  </Card>
+  <Card title="Python SDK" icon="python" href="./hedera-agent-kit-py/create-py-hooks-and-policies">
+    Available Hooks & Policies, configuration, and developer templates for Python.
+  </Card>
+</CardGroup>

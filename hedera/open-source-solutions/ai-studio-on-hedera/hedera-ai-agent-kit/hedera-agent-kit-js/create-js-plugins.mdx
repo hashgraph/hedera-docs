@@ -20,7 +20,7 @@ export interface Plugin {
 
 ### Tool Interface
 
-Each tool must implement the Tool interface:
+Each tool must implement the `Tool` interface:
 
 ```typescript
 export type Tool = {
@@ -35,6 +35,83 @@ export type Tool = {
 ```
 
 See [typescript/src/shared/tools.ts](../typescript/src/shared/tools.ts) for the full definition.
+
+#### BaseTool (Recommended for v4)
+
+<Note>
+  **This is NOT a breaking change.** `BaseTool` is an abstract class that *implements* the `Tool` interface — plain object tools continue to work exactly as before. However, they do not support the hooks and policies system introduced in v4 (e.g., `HcsAuditTrailHook`, `MaxRecipientsPolicy`, `RejectToolPolicy`). To enable those features, migrate your tool to `BaseTool`.
+</Note>
+
+Extending `BaseTool` splits execution into a 7-stage lifecycle that hooks and policies tap into automatically — you never call them manually. For a detailed step-by-step guide on refactoring your tools, see the [Migration Guide](/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/migration-guide#migrating-custom-tools-to-basetool-recommended-non-breaking).
+
+<CodeGroup>
+
+```typescript v3 (Functional Tool object)
+import type { Tool } from '@/shared/tools';
+
+const tool = (context: Context): Tool => ({
+  method: MY_TOOL,
+  name: 'My Tool',
+  description: myToolPrompt(context),
+  parameters: myToolParameters(context),
+  execute: myToolExecute, // all logic in one function; no hook/policy entry points
+});
+
+export default tool;
+```
+
+```typescript v4 (BaseTool class)
+import { BaseTool } from '@/shared/tools'; // BaseTool implements Tool
+
+export class MyTool extends BaseTool {
+  method = MY_TOOL;
+  name = 'My Tool';
+  description: string;
+  parameters: ReturnType<typeof myToolParameters>;
+  outputParser = myOutputParser; // optional
+
+  constructor(context: Context) {
+    super();
+    this.description = myToolPrompt(context);
+    this.parameters = myToolParameters(context);
+  }
+
+  // Stage 2: normalize/validate params
+  async normalizeParams(params: any, context: Context, client: Client) {
+    return await MyNormaliser.normalise(params, context, client);
+  }
+
+  // Stage 4: build tx or run query
+  async coreAction(normalisedParams: any, _context: Context, _client: Client) {
+    return MyBuilder.buildTx(normalisedParams);
+  }
+
+  // Stage 6: sign and submit (override shouldSecondaryAction() to skip for query-only tools)
+  async secondaryAction(transaction: any, client: Client, context: Context) {
+    return await handleTransaction(transaction, client, context, postProcess);
+  }
+
+  // Optional: custom error handling (BaseTool provides a sensible default)
+  async handleError(error: unknown, _context: Context) {
+    const msg = `Failed: ${error instanceof Error ? error.message : error}`;
+    return { raw: { error: msg }, humanMessage: msg };
+  }
+}
+
+const tool = (context: Context): BaseTool => new MyTool(context);
+export default tool;
+```
+
+</CodeGroup>
+
+| | v3 (`Tool` object) | v4 (`BaseTool` class) |
+|---|---|---|
+| Import | `import type { Tool }` | `import { BaseTool }` |
+| Declaration | Object literal | Class extending `BaseTool` |
+| Lifecycle | Single `execute()` | `normalizeParams` → `coreAction` → `secondaryAction` |
+| Hooks & policies | ✗ None | ✓ Automatic at stages 1, 3, 5, 7 |
+| Error handling | Manual `try/catch` in `execute` | Override `handleError()` |
+| Breaking change | — | **No** |
 
 ## Step-by-Step Guide
 
@@ -51,15 +128,12 @@ See [typescript/src/shared/tools.ts](../typescript/src/shared/tools.ts) for the 
 ### Step 2: Implement Your Tool
 
 Create your tool file (e.g., tools/my-service/my-tool.ts):
+> This example uses Hedera Agent Kit v4 which extends the BaseTool class to enable policies & hooks 
 
 ```typescript
 import { z } from "zod";
-import { Context, Tool, handleTransaction } from "hedera-agent-kit";
-import { Client, PrivateKey, AccountId } from "@hashgraph/sdk";
-import dotenv from "dotenv";
-
-// Load environment variables
-dotenv.config();
+import { Context, BaseTool, handleTransaction } from "@hashgraph/hedera-agent-kit";
+import { Client } from "@hiero-ledger/sdk";
 
 // Define parameter schema
 const myToolParameters = (context: Context = {}) =>
@@ -72,44 +146,55 @@ const myToolParameters = (context: Context = {}) =>
   });
 
 // Create prompt function
-const myToolPrompt = (context: Context = {}) => {
-  return `
+const myToolPrompt = (context: Context = {}) => `
   This tool performs a specific operation.
 
   Parameters:
   - requiredParam (string, required): Description
   - optionalParam (string, optional): Description
-  `;
-};
-
-// Implement tool logic
-const myToolExecute = async (
-  client: Client,
-  context: Context,
-  params: z.infer<ReturnType<typeof myToolParameters>>,
-) => {
-  try {
-    // Your implementation here
-    const result = await someHederaOperation(params);
-    return result;
-  } catch (error) {
-    if (error instanceof Error) {
-      return error.message;
-    }
-    return "Operation failed";
-  }
-};
+`;
 
 export const MY_TOOL = "my_tool";
 
-const tool = (context: Context): Tool => ({
-  method: MY_TOOL,
-  name: "My Custom Tool",
-  description: myToolPrompt(context),
-  parameters: myToolParameters(context),
-  execute: myToolExecute,
-});
+export class MyCustomTool extends BaseTool {
+  method = MY_TOOL;
+  name = "My Custom Tool";
+  description: string;
+  parameters: ReturnType<typeof myToolParameters>;
 
+  constructor(context: Context) {
+    super();
+    this.description = myToolPrompt(context);
+    this.parameters = myToolParameters(context);
+  }
+
+  // Stage 2: normalize/validate params before core logic runs
+  async normalizeParams(
+    params: z.infer<ReturnType<typeof myToolParameters>>,
+    _context: Context,
+    _client: Client,
+  ) {
+    return params; // transform or enrich params here if needed
+  }
+
+  // Stage 4: build the transaction or run the query
+  async coreAction(normalisedParams: any, _context: Context, _client: Client) {
+    return await someHederaOperation(normalisedParams);
+  }
+
+  // Stage 6: sign and submit (omit or override shouldSecondaryAction() for query-only tools)
+  async secondaryAction(result: any, client: Client, context: Context) {
+    return await handleTransaction(result, client, context);
+  }
+
+  // Optional: override for tool-specific error messages
+  async handleError(error: unknown, _context: Context) {
+    const msg = `Operation failed: ${error instanceof Error ? error.message : error}`;
+    return { raw: { error: msg }, humanMessage: msg };
+  }
+}
+
+const tool = (context: Context): BaseTool => new MyCustomTool(context);
 export default tool;
 ```
 
@@ -118,8 +203,7 @@ export default tool;
 Create your plugin index file (index.ts):
 
 ```typescript
-  import { Context } from '@/shared';
-  import { Plugin } from '@/shared/plugin';
+  import { Context, Plugin } from '@hashgraph/hedera-agent-kit';
   import myTool, { MY_TOOL } from './tools/my-service/my-tool';
 
   export const myCustomPlugin: Plugin = {
@@ -160,13 +244,7 @@ Create your plugin index file (index.ts):
 
 ### Tool Output Parsing
 
-The Hedera Agent Kit tools return a structured JSON output that needs to be parsed to be useful for the agent and the user.
-
-**LangChain v0.3 (Classic)**
-In the classic approach, the agent handles the tool output automatically, but you may need to parse it if you are handling tool calls manually.
-
-**LangChain v1 (New)**
-In LangChain v1, we use the `ResponseParserService` to handle tool outputs. This service normalizes the output from both transaction and query tools into a consistent format:
+The Hedera Agent Kit tools return a structured JSON output. Each tool returns:
 
 ```typescript
 {
@@ -179,41 +257,22 @@ This allows you to easily display a user-friendly message while still having acc
 
 ### Using Your Custom Plugin
 
-**LangChain v0.3 (Classic)**
-
 ```typescript
-import { HederaLangchainToolkit } from "hedera-agent-kit";
-import {
-  myCustomPlugin,
-  myCustomPluginToolNames,
-} from "./plugins/my-custom-plugin";
+import { Client, PrivateKey } from "@hiero-ledger/sdk";
+import { AgentMode } from "@hashgraph/hedera-agent-kit";
+import { myCustomPlugin } from "./plugins/my-custom-plugin";
+import { HederaLangchainToolkit } from "@hashgraph/hedera-agent-kit-langchain";
+import { AgentExecutor, createToolCallingAgent } from "langchain/agents";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
+
+const client = Client.forTestnet().setOperator(
+  process.env.ACCOUNT_ID!,
+  PrivateKey.fromStringECDSA(process.env.PRIVATE_KEY!),
+);
 
 const toolkit = new HederaLangchainToolkit({
   client,
   configuration: {
-    tools: [myCustomPluginToolNames.MY_TOOL],
-    plugins: [myCustomPlugin],
-    context: {
-      mode: AgentMode.AUTONOMOUS,
-    },
-  },
-});
-```
-
-**LangChain v1 (New)**
-
-```typescript
-import { HederaLangchainToolkit, ResponseParserService } from "hedera-agent-kit";
-import {
-  myCustomPlugin,
-  myCustomPluginToolNames,
-} from "./plugins/my-custom-plugin";
-
-// Initialize toolkit
-const toolkit = new HederaLangchainToolkit({
-  client,
-  configuration: {
-    tools: [myCustomPluginToolNames.MY_TOOL],
     plugins: [myCustomPlugin],
     context: {
       mode: AgentMode.AUTONOMOUS,
@@ -221,27 +280,28 @@ const toolkit = new HederaLangchainToolkit({
   },
 });
 
-// Initialize response parser
-const responseParsingService = new ResponseParserService(toolkit.getTools());
+const tools = toolkit.getTools();
 
-// ... inside your agent loop ...
-const response = await agent.invoke({ messages: [/* ... */] });
+const prompt = ChatPromptTemplate.fromMessages([
+  ['system', 'You are a helpful assistant with access to Hedera blockchain tools'],
+  ['human', '{input}'],
+  ['placeholder', '{agent_scratchpad}'],
+]);
 
-// Parse tool outputs
-const parsedToolData = responseParsingService.parseNewToolMessages(response);
-const toolCall = parsedToolData[0]; // assuming only one tool was called
+const agent = createToolCallingAgent({ llm, tools, prompt });
 
-if (toolCall) {
-  console.log('Human Message:', toolCall.parsedData.humanMessage);
-  console.log('Raw Data:', toolCall.parsedData.raw);
-}
+const agentExecutor = new AgentExecutor({ agent, tools });
+
+const response = await agentExecutor.invoke({ input: "what's my balance?" });
+
+console.log(response?.output ?? response);
 ```
 
 #### Examples and References
 
 - See existing core plugins in typescript/src/plugins/core-\*-plugin/
-- Follow the patterns established in tools like [transfer-hbar.ts](../typescript/src/plugins/core-account-plugin/tools/account/transfer-hbar.ts)
-- See [typescript/examples/langchain-v1/tool-calling-agent.ts](../typescript/examples/langchain/tool-calling-agent.ts) for usage examples
+- Follow the patterns established in tools like [transfer-hbar.ts](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/packages/core/src/plugins/core-account-plugin/tools/account/transfer-hbar.ts)
+- See [typescript/examples/langchain-v1/plugin-tool-calling-agent.ts](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/examples/langchain-v1/plugin-tool-calling-agent.ts) for usage examples
 
 ## Publish and Register Your Plugin
 
@@ -260,8 +320,7 @@ Please also reach out in the Hedera Discord in the **Support > developer-help-de
 ````
 ## Plugin Name
 This plugin was built by <?> for the <project, platform, etc>. It was built to enable <who?> to <do what?>
-
-_Feel free to include a description of your project and how it can be used with the Hedera Agent Kit. 
+Include a description of your project and how it can be used with the Hedera Agent Kit. 
 
 ### Installation
 
@@ -275,16 +334,22 @@ npm install <plugin-name>
 import { myPlugin } from '<plugin-name>';
 ```
 
-```javascript
- const hederaAgentToolkit = new HederaLangchainToolkit({
-    client,
-    configuration: {
-      context: {
-        mode: AgentMode.AUTONOMOUS,
-      },
-      plugins: [coreTokenPlugin, coreAccountPlugin, coreConsensusPlugin, coreQueriesPlugin, myPlugin],
+```typescript
+import { AgentMode } from '@hashgraph/hedera-agent-kit';
+import { myPlugin } from '<plugin-name>';
+import { HederaLangchainToolkit } from '@hashgraph/hedera-agent-kit-langchain';
+
+const toolkit = new HederaLangchainToolkit({
+  client,
+  configuration: {
+    plugins: [myPlugin],
+    context: {
+      mode: AgentMode.AUTONOMOUS,
     },
-  });
+  },
+});
+
+const tools = toolkit.getTools();
 ```
 
 ### Functionality
@@ -303,3 +368,8 @@ _High level description of the plugin_
 
 - **GitHub**: https://github.com/hashgraph/hedera-agent-kit-js
 - **Discord**: https://hedera.com/discord
+
+### Examples and References
+- See existing core plugins in the [hedera agent kit examples](https://github.com/hashgraph/hedera-agent-kit-js/tree/main/examples)
+- Follow the patterns established in tools like [transfer-hbar.ts](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/packages/core/src/plugins/core-account-plugin/tools/account/transfer-hbar.ts)
+- See [typescript/examples/langchain/tool-calling-agent.ts](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/examples/langchain-v1/plugin-tool-calling-agent.ts) for usage examples

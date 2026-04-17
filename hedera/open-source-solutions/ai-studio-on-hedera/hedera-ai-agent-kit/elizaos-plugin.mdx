@@ -32,16 +32,21 @@ At its core, the plugin is powered by the [hedera-agent-kit](https://github.com/
 
 This ensures a smooth and intuitive user experience, reducing friction when working with the Hedera network.
 
-> ⚠️ **Breaking Change: hedera-agent-kit v3.5.0 Import Update**
+> ⚠️ **Breaking Change: hedera-agent-kit v4 Package Update**
 >
-> If you are using `hedera-aagentgent-kit` version `3.5.0` or higher, the `HederaElizaOSToolkit` import path has changed:
+> Starting with **v4**, the ElizaOS toolkit has moved to its own package. The `hedera-agent-kit/elizaos` subpath no longer exists.
 >
 > ```typescript
-> // ❌ Deprecated (Will fail in v3.5.0+)
-> import { HederaElizaOSToolkit } from 'hedera-agent-kit';
->
-> // ✅ Correct
+> // ❌ Deprecated (removed in v4)
 > import { HederaElizaOSToolkit } from 'hedera-agent-kit/elizaos';
+>
+> // ✅ Correct (v4+)
+> import { HederaElizaOSToolkit } from '@hashgraph/hedera-agent-kit-elizaos';
+> ```
+>
+> Install the new package:
+> ```bash
+> npm install @hiero-ledger/sdk @hashgraph/hedera-agent-kit @hashgraph/hedera-agent-kit-elizaos
 > ```
 
 Building on Hedera means users have all the advantages of the Hedera network:

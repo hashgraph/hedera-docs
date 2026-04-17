@@ -5,9 +5,233 @@ description: "Consensus Node release information"
 
 Visit the [Hedera status page](https://status.hedera.com/) for the latest versions supported on each network.
 
+## Release v0.73
+<Info>
+  **MAINNET UPDATE: MAY 13, 2026**
+</Info>
+<Info>
+  **TESTNET UPDATED: APRIL 29, 2026**
+</Info>
+
+### [**Build 0.73.0**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.73.0)
+
+<Accordion title="What's Changed">
+
+### **Features**
+
+  * make BlockNodeEndpoint.endpoint_api a repeated field (HIP-1137) #24788 by @petreze
+  * cherry-pick BN Communication tracing through gRPC headers #24708 by @derektriley
+  * Add HIP-1340 protobuf changes #24689 by @lukasz-hashgraph
+  * allow to read metric values #24495 by @akugal
+  * WRAPS proving key hash verification #24071 by @mhess-swl
+  * Wrapped record stream migration voting #24281 by @derektriley
+  * Single-concurrent-component event intake #24133 by @mxtartaglia-sl
+  * Force pces sync on shutdown and after freeze #24219 by @mxtartaglia-sl
+  * ATOMIC_BATCH tag speed-up and improvements 23530 #24037 by @Grigorov-Georgi
+  * add per-node reward and eligibility metrics #24326 by @viniciusjssouza
+  * upload BN container logs into the failure artifacts #24333 by @petreze
+  * Actively record active BN to grafana #24287 by @petreze
+  * Enable HIP-1261 Simple Fees #22888 by @ibankov
+  * sloth transaction improvements #24279 by @lpetrovic05
+  * 24072: implement data validation for ReconnectBench #24307 by @thenswan
+  * add support for Block Node Rewards (HIP-1357) #24314 by @viniciusjssouza
+  * Add flag to Simple Fees Schedule to indicate transactions which are exempt from node + network fees #24273 by @aderevets
+  * 12194: improve reusing the generated state in the ReconnectBench JMH test #24293 by @thenswan
+  * Full HIP-1137 implementation #23956 by @petreze
+  * Increase block item hard limit size #24276 by @petreze
+  * Introduce jitter to the periodic stream reset #24283 by @petreze
+  * introduce NodeRewardAmounts for flexible per-node reward distribution #24224 by @viniciusjssouza
+  * 24250: Improve Virtual Map detach #24252 by @akugal
+  * Not otter #24169 by @mxtartaglia-sl
+  * Highest node id in state #21861 by @derektriley
+  * Persist wrapped record hashes in live block info #23976 by @mhess-swl
+  * support legacy Transaction.bodyBytes() in StandaloneFeeCalculator #24163 by @joshmarinacci
+  * 20234: Virtual node cache and virtual data source to use hash chunks #21656 by @artemananiev
+  * SIMPLE_FEES tag speed-up and improvements #23662 by @Grigorov-Georgi
+  * Configuration-based module selection #24020 by @mxtartaglia-sl
+  * 24063 Made virtualMap.fullRehashTimeoutMs configurable for State Operator #24067 by @imalygin
+  * Update block node svc connection logic #23984 by @derektriley
+  * BehindPublisher grace period #23936 by @derektriley
+  * hapi time-consuming tests speed-up #23843 by @AlexKehayov
+  * Add the ability to make threads used by netty configurable #23999 by @timo0
+  * Expose per origin event delays metrics #23753 by @mxtartaglia-sl
+  * custom JVM args in Otter #23959 by @lpetrovic05
+  * reduce heartbeat granularity #23975 by @mxtartaglia-sl
+  * MISC tag speed-up and improvements #23626 by @AlexKehayov
+  * 20403 Added documentation for State API module #23451 by @imalygin
+  * 20882: redesign the validator for validate billion-entry states #22215 by @thenswan
+  * 23547: Increase pull-based reconnect parallelism #23548 by @artemananiev
+  * Calculate all wrapped record block hashes up to freeze block #23674 by @mhess-swl
+  * 23853 Added a config property to disable periodic snapshots #23932 by @imalygin
+  * 23850 Added a config property to enable disk-based indices #23933 by @imalygin
+  * Swap gossip and shadowgraph sync on the wiring logic #23901 by @mxtartaglia-sl
+
+### **Bug Fixes**
+
+  * (0.73) Fix lastUsedTime init #24936 by @tinker-michaelj
+  * 24802 Disable EVM hook count validation for TestNet #24825 by @imalygin
+  * Change the included submit message bytes from 1024 to 100 #24505 #24780 by @joshmarinacci
+  * HookStore leading zero cases #24762 by @tinker-michaelj
+  * throw error if missing extra #24706 by @joshmarinacci
+  * 24435 Fixed cache-cleaner thread leak #24452 #24582 by @imalygin, @rbarker-dev
+  * handle failing atomic batch blacklist tests 24400 #24407 by @Grigorov-Georgi
+  * use retry with exponential backoff for PLATFORM_NOT_ACTIVE #24370 by @AlexKehayov
+  * tagged ensureUnExecutedScheduleIsPurgedDuringCi() serial #24458 by @AlexKehayov
+  * 24347 Prevent stale reads in LongListDisk during chunk recycling #24375 by @imalygin
+  * select node with most blocks for stream validation in restart tests #24147 by @AlexKehayov
+  * mark usesUnclassifiableIfNoClassifiableAvailable embedded to avoid flakes #24335 by @AlexKehayov
+  * use relative expiry in ensureUnExecutedScheduleIsPurgedDuringCi #24337 by @AlexKehayov
+  * Always update override round number to set up override-network.json transplants #24386 by @tinker-michaelj
+  * Stabilize transplant updates in presence of empty consensus rounds #24376 by @tinker-michaelj
+  * sloth deploy-benchmark corrections #24374 by @mxtartaglia-sl
+  * container startup failures in BN XTS #24366 by @petreze
+  * 24349: CompactionInterruptTest may cause JVM crush #24355 by @thenswan
+  * Forced switch and connection map removal #24310 by @petreze
+  * stabilized CryptoDeleteSuite.deletedAccountCannotBePayer() #24311 by @AlexKehayov
+  * Fixed TokenKycSimpleFeesTest suite to prevent flakiness #24257 by @Evdokia-Georgieva
+  * 24198: Reconnect teacher times out waiting for the learner to finish processing leaves #24268 by @artemananiev
+  * stabilize flaky getInfoIdVariantsTreatedAsExpected #24248 by @AlexKehayov
+  * rework HapiTestLifecycle doAdhoc method to be thread-safe 24228 #24254 by @Grigorov-Georgi
+  * Add INSUFFICIENT_TOKEN_BALANCE to RandomTokenBurn #24235 by @AlexKehayov
+  * use Log4J in HederaEVM.java #23780 by @jjohannes
+  * flake in DuplicateManagementTest #24240 by @petreze
+  * use different serial number to fix flaky test #24244 by @petreze
+  * retry getReceipt on RECEIPT_NOT_FOUND in payerCannotOverSendValue #24239 by @AlexKehayov
+  * stabilize updateAccountIdAndSubmitWithOldAccountIdFails test #24237 by @AlexKehayov
+  * prevent VisibleItemsAssertion from dropping items #24230 by @AlexKehayov
+  * GrpBlockItemWriter not handling pending proofs #24190 by @derektriley
+  * Remove round communication overhead from Sloth benchmark #24242 by @abies
+  * flaky test classifiableTakesPriorityOverUnclassifiable #24201 by @petreze
+  * fixing simple fee queries that scale with bytes #24064 by @ibankov
+  * block stream translators - resolve flaky receipt mismatches #24042 by @AlexKehayov
+  * Added TOKEN_WAS_DELETED to RandomTokenFreeze permissible outcomes #24141 by @AlexKehayov
+  * stabilize nodeWithCompleteInactivityReceivesNoReward #24123 by @AlexKehayov
+  * Avoid NPE in TipsetEventCreator in case we cannot create selfless event #24146 by @abies
+  * Fix typo in parameter name parameterSupplier #24136 by @rbarker-dev
+  * ReconnectControllerTest flakiness #23952 by @mxtartaglia-sl
+  * Stabilize flaky tests set Keyfactory defaultSigMapGen to use FULL_PREFIXES #23903 by @aderevets
+  * stabilize stream validation after ND reconnect #23927 by @AlexKehayov
+  * Add gas charging to contract call local simple fee implementation #24028 by @ibankov
+  * resolve stream validation to scan all subdirs #24013 by @AlexKehayov
+  * benchmark scripts #24034 by @lpetrovic05
+  * Fix flaky token suite tests #24012 by @ibankov
+  * make ClasspathFileConfigSource compatible with --module-path #24015 by @jjohannes
+  * Add final polling for untriggered files on disk #23944 by @tinker-michaelj
+  * Remove log error in CustomFeeAssessmentStep #23991 by @derektriley
+  * flaky StartFromState Otter test #23973 by @lpetrovic05
+  * FAIL_INVALID in CustomFeeAssesmentStep recursion fall back #23770 by @derektriley
+  * Open the ivy package to info.picocli #23947 by @mhess-swl
+  * stop gradle daemos after deploy #23951 by @mxtartaglia-sl
+  * 23822: Improve the fix for 23762 #23939 by @artemananiev
+  * 23930 apply-block shouldn't fail fast on hash mismatch #23931 by @imalygin
+  * getInputWire concurrency issue #23805 by @lpetrovic05
+  * Fix deploy benchmark script #23869 by @mxtartaglia-sl
+  * CryptoServiceFeesSuite cryptoTransferBaseUSDFee flaky test #23902 by @petreze
+  * use wrapper instead of pure repeatable for HIP-1137 #23908 by @petreze
+
+### **Other Changes**
+**Build System**
+
+  * bump org.hiero.gradle.build from 0.7.5 to 0.7.6 #24320 by @dependabot[bot]
+  * bump bouncycastle from 1.81 to 1.83 in /hiero-dependency-versions #24056 by @dependabot[bot]
+  * update org.hiero.gradle.build to 0.7.5 #24271 by @jjohannes
+  * bump org.testcontainers:testcontainers from 2.0.2 to 2.0.3 in /hiero-dependency-versions #23889 by @dependabot[bot]
+  * bump dagger from 2.56.2 to 2.59.2 in /hiero-dependency-versions #23792 by @dependabot[bot]
+
+**Chores**
+
+  * Disable Hooks #24900 by @akdev
+  * Remove log statement from BlockRecordManagerImpl #24584 #24719 by @derektriley
+  * Remove trace bn logging from unit tests #24432 by @derektriley
+  * Use 3.7.8 crypto lib #24371 by @tinker-michaelj
+  * temporarily disable test #24403 by @petreze
+  * Add tss.forceMockSignatures=true #24266 by @tinker-michaelj
+  * remove unused NodeAddressMismatchPayload #24301 by @jjohannes
+  * add nft serial generator to avoid flakiness #24340 by @petreze
+  * bump BN version to 0.29.0 #24342 by @petreze
+  * update version of docker buildx to v0.32.1 #24216 by @andrewb1269
+  * remove unncessary assertions #24332 by @petreze
+  * Remove RandomGraph plus some minor cleanups #24299 by @netopyr
+  * add javadoc and additional test coverage #24306 by @petreze
+  * Always send EndStream(RESET) when a block node connection is closed #24253 by @timfn-hg
+  * Add XTS TSS-enablement test for WRAPS #24203 by @tinker-michaelj
+  * Fix review comments #24222 by @Neeharika-Sompalli
+  * Added metric to count number of parents in created events #24238 by @abies
+  * centralize node grouping for rewards #24153 by @viniciusjssouza
+  * Replay hollow account completions #23961 by @tinker-michaelj
+  * Add genesis+incremental WRAPS test for XTS #24134 by @tinker-michaelj
+  * Improve ping metric #23978 by @abies
+  * Update BN Regrssion Panel w 2 TCK tests suites #24158 by @Nana-EC
+  * Adopt latest TSS lib #24048 by @tinker-michaelj
+  * Add non-zero service fee for queries #24043 by @Neeharika-Sompalli
+  * Update Node Reward metrics #24060 by @Neeharika-Sompalli
+  * Add optional aggregate sig verification #23905 by @tinker-michaelj
+  * Remove gui dependencies from production code #24018 by @timo0
+  * Fix minor HIP-1313 issues #23943 by @Neeharika-Sompalli
+  * Minor Version Roll to 0.73.0-SNAPSHOT
+  * Update network node base dockerfile for wrapped record hashes file #23942 by @derektriley
+  * Replace hardcoded file buffer config in FileBlockItemWriter with dynamic config properties #23783 by @timfn-hg
+
+**Continuous Integration**
+
+  * update sizes of HAPI test runners #24596 #24601 by @andrewb1269
+  * Fix issue with Deploy Production Release using incorrect reference. #24467 by @rbarker-dev
+  * Spotless only for doc only changes #24121 by @poulok
+  * remove ability to run SDPT on adhoc8 cluster #24390 by @andrewb1269
+  * Remove determinism checks from PR workflow #24068 by @poulok
+  * update to step-security/buildx and to v0.32.1 #24341 by @andrewb1269
+  * move determinism and snyk checks to MQ #24260 by @andrewb1269
+  * remove cluster iteration from MQPT controller #24185 by @andrewb1269
+  * Update to JDK25 #23447 by @rbarker-dev
+  * add call to MQPT in merge queue workflow #23995 by @andrewb1269
+  * update HAPI tests run in MATS and XTS #24161 by @andrewb1269
+  * move tag reports to build status slack channel #24155 by @andrewb1269
+  * Remove release-team webhook calls for slack reports #24059 by @rbarker-dev
+  * add merge queue performance test workflow #21768 by @alex-kuzmin-hg
+
+**Documentation Updates**
+
+  * fix stale config links in privileged transaction docs #24174 by @akdev
+  * Enhance CITR doc descriptions of performance tests #24361 by @poulok
+  * Fix protobuf docs for correct hashing details #24322 by @jasperpotts
+  * Update quickstart docs. #24183 by @rbarker-dev
+
+**Refactoring**
+
+  * Remove unused code in CommonUtils #24036 by @timo0
+  * 15946 Removed static fields from VirtualHasher and VirtualNodeCache #24061 by @imalygin
+  * 18095 Simplified state initialization flow #23717 by @imalygin
+
+**Tests**
+
+  * integrated NLG 0.13.2 (24475) #24476 by @alex-kuzmin-hg
+  * Added extended coverage for fungible supply and mint test variant #24440 by @diogper
+  * Atomic Batch Boundary Simple Fees Tests #24348 by @Evdokia-Georgieva
+  * crypto transfer schedule simple fees tests #24173 by @aderevets
+  * New Token Claim and Cancel Airdrop with Simple Fees tests #24065 by @Evdokia-Georgieva
+  * MQPT Use new S6 service for Reconnect #24327 by @alex-kuzmin-hg
+  * Atomic Batch Cross-Service Simple Fees Tests #24292 by @Evdokia-Georgieva
+  * Negative tests for Atomic Batch with Simple Fees #24249 by @Evdokia-Georgieva
+  * [Simple Fees] Validate ContractCall charges intrinsic gas on failure #24246 by @ibankov
+  * 24194 switch sdlt sdpt mqpt to jdk25, new artifactory #24263 by @alex-kuzmin-hg
+  * New Token Airdrop with Simple Fees tests #23935 by @Evdokia-Georgieva
+  * File service hapi tests #24200 by @ibankov
+  * Add nodePayment amount checks for queries. Add additional test for queries #24130 by @aderevets
+  * Fix possible flakiness in RpcPeerProtocolTests #24152 by @abies
+  * reduce allocations in CryptoBench.generateKeySet() #24170 by @OlegMazurov
+  * Added extended coverage for allowance inheritance for NFT treasury #24168 by @diogper
+  * Added app.env file copying, fix of #24171 #24172 by @alex-kuzmin-hg
+  * cover extended cases for fee collector operations #23874 by @diogper
+  * Fix flaky BlockNodeStreamingConnectionComponentTest unit test #24001 by @derektriley
+  * 23974 use runners own helm binary #23988 by @alex-kuzmin-hg
+
+  **Full Release Notes**: [**v0.73.0**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.73.0)
+
+</Accordion>
+
 ## Release v0.72
 <Info>
-  **MAINNET UPDATE: APRIL 15, 2026**
+  **MAINNET UPDATE: APRIL 28, 2026**
 </Info>
 <Check>
   **TESTNET UPDATED: APRIL 9, 2026**

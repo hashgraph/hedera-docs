@@ -29,8 +29,8 @@ hcli account list
 <Accordion title="Account Create">
     Creates a new Hedera account.
 
-    <ResponseField name="-b, --balance" type="int" required>
-    Initial HBAR balance. Add "t" for Tinybar units <br/>
+    <ResponseField name="-b, --balance" type="string" required>
+    Initial HBAR balance. Default: display units. Add "t" for Tinybar units <br/>
     `--balance 10`   --> 10 HBAR <br/>
     `--balance 100t` --> 100 Tinybars
     </ResponseField>
@@ -40,20 +40,64 @@ hcli account list
         Default value set to 0
     </ResponseField>
 
+    <ResponseField name="-n, --name" type="string">
+        Alias of the created account to be used
+    </ResponseField>
+
     <ResponseField name="-k, --key-manager" type="string">
         Key manager to use: `local` or `local_encrypted` (defaults to config setting) <br/>
     </ResponseField>
 
-    <ResponseField name="-n, --name" type="string" required>
-        Alias of the created account to be used <br/>
-    </ResponseField>
-
     <ResponseField name="-t, --key-type" type="string(ecdsa|ed25519)">
-        Set the default key type. Defaults to ecdsa (recommended for full usability) <br/>
+        Key type for the account. Default: ecdsa. Mutually exclusive with `--key`.
     </ResponseField>
 
-    <ResponseField name="-p, --payer" type="string">
-        Set the payer account, can be an account ID or alias
+    <ResponseField name="-K, --key" type="string">
+        Existing key for the new account (ecdsa/ed25519 private or public key, key reference `kr_xxx`, or alias name). Mutually exclusive with `--key-type`.
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Account Update">
+    Update properties of an existing Hedera account on-chain.
+
+    <ResponseField name="-a, --account" type="string" required>
+        Account ID or alias of the account to update
+    </ResponseField>
+
+    <ResponseField name="-K, --key" type="string">
+        New key for the account (private/public key, key reference, or alias). Requires private key in KMS.
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string">
+        Key manager to use: `local` or `local_encrypted` (defaults to config setting)
+    </ResponseField>
+
+    <ResponseField name="-m, --memo" type="string">
+        Account memo (max 100 characters). Pass `null` to clear.
+    </ResponseField>
+
+    <ResponseField name="--max-auto-associations" type="number">
+        Max automatic token associations (-1 for unlimited, 0 to disable)
+    </ResponseField>
+
+    <ResponseField name="--staked-account-id" type="string">
+        Account ID to stake to. Pass `null` to clear.
+    </ResponseField>
+
+    <ResponseField name="--staked-node-id" type="number">
+        Node ID to stake to. Pass `null` to clear.
+    </ResponseField>
+
+    <ResponseField name="--decline-staking-reward" type="boolean">
+        Decline staking reward
+    </ResponseField>
+
+    <ResponseField name="--auto-renew-period" type="number">
+        Auto renew period in seconds
+    </ResponseField>
+
+    <ResponseField name="--receiver-signature-required" type="boolean">
+        Require receiver signature for transfers
     </ResponseField>
 </Accordion>
 
@@ -64,8 +108,8 @@ hcli account list
         Specify the private key in `accountId:privateKey` format (e.g., "`0.0.123456:abc123...`")
     </ResponseField>
 
-    <ResponseField name="-n, --name" type="string" required>
-        Alias for the account to be used
+    <ResponseField name="-n, --name" type="string">
+        Name of the account to be used
     </ResponseField>
 
     <ResponseField name="-k, --key-manager" type="string">
@@ -114,13 +158,17 @@ hcli account list
 </Accordion>
 
 <Accordion title="Account Delete">
-    Delete an account from the address book. You need to specify either name or ID to delete the account.
+    Delete an account on Hedera and remove it from local state if present, or remove from local state only with `--state-only`. On-chain delete requires `--transfer-id` for the beneficiary account.
 
-    <ResponseField name="-n, --name" type="string">
-        Account name to be deleted from the store.
+    <ResponseField name="-a, --account" type="string" required>
+        With `--state-only`: Hedera account ID or local alias. Otherwise: account key (ID, `id:private key`, key reference, alias with stored key, etc.)
     </ResponseField>
 
-    <ResponseField name="-i, --id" type="string">
-        Account ID to be deleted from the store.
+    <ResponseField name="-t, --transfer-id" type="string">
+        Required when deleting on Hedera: account that receives remaining HBAR (Hedera ID or alias). Mutually exclusive with `--state-only`.
+    </ResponseField>
+
+    <ResponseField name="-s, --state-only">
+        Remove the account only from local CLI state. Do not submit AccountDeleteTransaction. Mutually exclusive with `--transfer-id`.
     </ResponseField>
 </Accordion>

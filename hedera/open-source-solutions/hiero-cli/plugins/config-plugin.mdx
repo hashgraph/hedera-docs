@@ -22,8 +22,8 @@ title: "Config Plugin"
         Option name to set. Use `list` command to check what options could be set.
     </ResponseField>
 
-    <ResponseField name="-v, --value" type="(boolean|number|string)" required>
-        Value to set (boolean|number|string). Booleans: true/false.
+    <ResponseField name="-v, --value" type="string" required>
+        Value to set (boolean, number, or string as text). Booleans: true/false.
     </ResponseField>
 </Accordion>
 
@@ -52,8 +52,12 @@ The config plugin allows you to control global Hiero CLI behavior. Configuration
     - `debug`: Verbose output for troubleshooting
 </ResponseField>
 
-<ResponseField name="default_key_manager" type="string" default="local_encrypted" required>
-    Defines which key manager the CLI uses by default when creating or managing keys. Keep the default `local_encrypted` setting unless you are working in a controlled test environment.<br/>
+<ResponseField name="default_key_manager" type="string" default="local" required>
+    Defines which key manager the CLI uses by default when creating or managing keys.<br/>
     - `local`: Keys are stored locally in plaintext (not recommended for production).<br/>
     - `local_encrypted`: Keys are stored locally and encrypted (recommended).<br/>
+</ResponseField>
+
+<ResponseField name="skip_confirmations" type="boolean" default="false" required>
+    When true, the CLI skips interactive confirmation prompts where supported (use with care).
 </ResponseField>

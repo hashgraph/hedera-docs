@@ -515,6 +515,7 @@
                     "pages": [
                       "/hedera/open-source-solutions/hiero-cli/plugins/batch-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/schedule-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/contract-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/credentials-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/network-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/hbar-plugin",

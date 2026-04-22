@@ -513,19 +513,19 @@
                   {
                     "group": "Plugins",
                     "pages": [
+                      "/hedera/open-source-solutions/hiero-cli/plugins/network-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/credentials-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/account-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/hbar-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/token-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/topic-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/config-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/plugin-management-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/batch-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/schedule-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/contract-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/contract-erc20-plugin",
-                      "/hedera/open-source-solutions/hiero-cli/plugins/contract-erc721-plugin",
-                      "/hedera/open-source-solutions/hiero-cli/plugins/credentials-plugin",
-                      "/hedera/open-source-solutions/hiero-cli/plugins/network-plugin",
-                      "/hedera/open-source-solutions/hiero-cli/plugins/hbar-plugin",
-                      "/hedera/open-source-solutions/hiero-cli/plugins/account-plugin",
-                      "/hedera/open-source-solutions/hiero-cli/plugins/token-plugin",
-                      "/hedera/open-source-solutions/hiero-cli/plugins/topic-plugin",
-                      "/hedera/open-source-solutions/hiero-cli/plugins/config-plugin",
-                      "/hedera/open-source-solutions/hiero-cli/plugins/plugin-management-plugin"
+                      "/hedera/open-source-solutions/hiero-cli/plugins/contract-erc721-plugin"
                     ]
                   },
                   {

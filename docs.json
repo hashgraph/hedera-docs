@@ -517,6 +517,7 @@
                       "/hedera/open-source-solutions/hiero-cli/plugins/schedule-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/contract-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/contract-erc20-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/contract-erc721-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/credentials-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/network-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/hbar-plugin",

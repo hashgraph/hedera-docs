@@ -1,0 +1,208 @@
+---
+title: "Contract ERC-20 Plugin"
+---
+
+The **Contract ERC-20** plugin calls standard **EIP-20** methods on a contract already deployed on Hedera. Deploy or import the contract first with the [Contract plugin](/hedera/open-source-solutions/hiero-cli/plugins/contract-plugin).
+
+## Most Used Commands
+
+**Read token metadata and an account balance**
+
+```sh
+hcli contract-erc20 name --contract my-token
+hcli contract-erc20 decimals --contract my-token
+hcli contract-erc20 balance-of --contract my-token --account alice
+```
+
+**Transfer and approve (state-changing, signed by the operator)**
+
+```sh
+hcli contract-erc20 transfer --contract my-token --to bob --value 1000000
+hcli contract-erc20 approve --contract my-token --spender bob --value 500000
+```
+
+## Full Command Reference
+
+Commands use the **`contract-erc20`** namespace (for example **`hcli contract-erc20 name`**). **`--contract` / `-c`** accepts a local alias, Hedera contract ID (`0.0.xxx`), or EVM address (`0x…`) where the manifest says so.
+
+<Accordion title="Contract ERC-20 Name">
+    Call **`name()`** on the ERC-20 contract (read-only).
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Smart contract ID or local alias.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli contract-erc20 name --contract my-token
+    ```
+</Accordion>
+
+<Accordion title="Contract ERC-20 Symbol">
+    Call **`symbol()`** (read-only).
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Smart contract ID or local alias.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli contract-erc20 symbol --contract my-token
+    ```
+</Accordion>
+
+<Accordion title="Contract ERC-20 Decimals">
+    Call **`decimals()`** (read-only).
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Smart contract ID or local alias.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli contract-erc20 decimals --contract my-token
+    ```
+</Accordion>
+
+<Accordion title="Contract ERC-20 Total-Supply">
+    Call **`totalSupply()`** (read-only).
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Smart contract ID or local alias.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli contract-erc20 total-supply --contract my-token
+    ```
+</Accordion>
+
+<Accordion title="Contract ERC-20 Balance-Of">
+    Call **`balanceOf(address)`** (read-only).
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Smart contract ID, alias, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-a, --account" type="string" required>
+        Account to query: alias, Hedera account ID, or EVM address.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli contract-erc20 balance-of --contract my-token --account 0.0.123456
+    ```
+</Accordion>
+
+<Accordion title="Contract ERC-20 Allowance">
+    Call **`allowance(owner, spender)`** (read-only).
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Smart contract ID or local alias.
+    </ResponseField>
+
+    <ResponseField name="-o, --owner" type="string" required>
+        Owner account: alias, account ID, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-s, --spender" type="string" required>
+        Spender account: alias, account ID, or EVM address.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli contract-erc20 allowance --contract my-token --owner alice --spender bob
+    ```
+</Accordion>
+
+<Accordion title="Contract ERC-20 Transfer">
+    Call **`transfer(to, value)`**. Submits a contract call transaction (operator signs).
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Smart contract ID, alias, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-t, --to" type="string" required>
+        Recipient: alias, account ID, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-v, --value" type="number" required>
+        Amount passed to **`transfer`** as configured by the token (often smallest units—confirm against **`decimals`** for your contract).
+    </ResponseField>
+
+    <ResponseField name="-g, --gas" type="number" default="100000">
+        Gas for the contract call.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli contract-erc20 transfer --contract my-token --to bob --value 1000000
+    ```
+</Accordion>
+
+<Accordion title="Contract ERC-20 Transfer-From">
+    Call **`transferFrom(from, to, value)`**. Requires a sufficient allowance from **`from`** for the signing account (typically the operator). Submits a contract call transaction.
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Smart contract ID, alias, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-f, --from" type="string" required>
+        Source account: alias, account ID, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-t, --to" type="string" required>
+        Recipient: alias, account ID, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-v, --value" type="number" required>
+        Amount for **`transferFrom`**.
+    </ResponseField>
+
+    <ResponseField name="-g, --gas" type="number" default="100000">
+        Gas for the contract call.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli contract-erc20 transfer-from --contract my-token --from alice --to bob --value 500000
+    ```
+</Accordion>
+
+<Accordion title="Contract ERC-20 Approve">
+    Call **`approve(spender, value)`**. Submits a contract call transaction.
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Smart contract ID, alias, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-s, --spender" type="string" required>
+        Spender account: alias, account ID, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-v, --value" type="number" required>
+        Approved amount for **`approve`**.
+    </ResponseField>
+
+    <ResponseField name="-g, --gas" type="number" default="100000">
+        Gas for the contract call.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli contract-erc20 approve --contract my-token --spender bob --value 1000000
+    ```
+</Accordion>
+
+## Related
+
+NFT contract helpers live in the **`contract-erc721`** plugin. Until the docs page is added, see the [contract-erc721 README in the Hiero CLI repository](https://github.com/hiero-ledger/hiero-cli/blob/main/src/plugins/contract-erc721/README.md).

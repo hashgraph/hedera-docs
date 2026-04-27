@@ -4,53 +4,61 @@ title: "Overview"
 
 ## Introduction to Hiero CLI
 
-The [Hiero CLI ](https://github.com/hiero-ledger/hiero-cli) is a command‑line interface that offers a simple way to interact with the Hedera network. It consolidates many common network operations into easy-to‑use commands so you can:
+The [Hiero CLI](https://github.com/hiero-ledger/hiero-cli) is a command‑line interface that offers a simple way to interact with the Hedera network. It consolidates many common network operations into easy-to‑use commands so you can:
 
-* **Test** your Hedera applications quickly.
-* **Automate** repetitive tasks without writing bulky code.
-* **Simplify** key management, letting you focus on building and scaling your solutions.
+- **Test** your Hedera applications quickly.
+- **Automate** repetitive tasks without writing bulky code.
+- **Simplify** key management, letting you focus on building and scaling your solutions.
 
-***
+---
 
 ## Getting Started
 
 **Prerequisites**:
 
-* Node.js installation: LTS 16.20.2 or higher
-* [Hedera Account](https://portal.hedera.com/) (for mainnet, testnet, or previewnet) or [Hedera Local Node](/hedera/tutorials/local-node/how-to-set-up-a-hedera-local-node) (for localnet)
+- Node.js installation: 18.0.0 or higher
+- [Hedera Account](https://portal.hedera.com/) (for mainnet, testnet, or previewnet) or [Hedera Local Node](/hedera/tutorials/local-node/how-to-set-up-a-hedera-local-node) (for localnet)
 
-The easiest way to get started with Hiero CLI is to install it globally via NPM:
+Install the CLI globally with npm:
 
 ```
 npm install -g @hiero-ledger/hiero-cli
 ```
 
-Once installed, you can use the CLI with the `hcli` command:
+On macOS you can also install with [Homebrew](https://brew.sh/):
+
+```sh
+brew install hiero-ledger/tools/hiero-cli
+```
+
+Once installed, use the `hcli` command:
 
 ```sh
 # Check available commands
 hcli --help
 
 # Example: Check account balance
-hcli account balance --account-id 0.0.123456
+hcli account balance --account 0.0.123456
 
 # Example: Transfer HBAR
 hcli hbar transfer --to 0.0.123456 --amount 10
 ```
 
 <Note>
-#### **First-time setup (Initialization):** 
-When you run any command that requires an operator (like transferring HBAR or creating tokens) in interactive mode, the CLI will automatically launch an initialization wizard to guide you through configuring the operator account, private key, and settings. In script mode (non-interactive), an error will be thrown instead, requiring you to use `hcli` network set-operator to configure the operator first.
+#### **First-time setup (Initialization):**
+
+When you run any command that requires an operator (like transferring HBAR or creating tokens) in interactive mode, the CLI will automatically launch an initialization wizard to guide you through configuring the operator account, private key, and settings. In script mode (non-interactive), an error will be thrown instead, requiring you to use `hcli network set-operator` to configure the operator first.
+
 </Note>
 
-<Accordion title="Manual Setup (Build custom plugins)" icon="alien-8bit">
+<Accordion title="Manual Setup (For Developers)" icon="alien-8bit">
     ## Manual Setup (For Developers)
 
-    If you want to contribute to the development of the Hiero CLI or create your own version or plugins, follow these instructions.
+    If you want to contribute to the development of the Hiero CLI or run it from source, follow these instructions.
 
-    **Prerequisites** 
+    **Prerequisites**
 
-    * Node.js installation: LTS 16.20.2 or higher
+    * Node.js installation: 18.0.0 or higher
     * [Hedera Account](https://portal.hedera.com/) (for mainnet, testnet, or previewnet) or [Hedera Local Node](/hedera/tutorials/local-node/how-to-set-up-a-hedera-local-node) (for localnet)
     * Git
 
@@ -71,7 +79,7 @@ When you run any command that requires an operator (like transferring HBAR or cr
 
     ```sh
     npm run build
-    ``` 
+    ```
 
     **Step 4: CLI Initialization**
 
@@ -84,7 +92,7 @@ When you run any command that requires an operator (like transferring HBAR or cr
     * Register all plugin commands
     * Use testnet as the default network
 
-    **Note:** There is a test plugin available that is required for running integration tests.
+    **Note:** There is a test plugin in the repository that is required for running integration tests.
 
     You can verify the installation by checking available commands:
 
@@ -109,7 +117,7 @@ When you run any command that requires an operator (like transferring HBAR or cr
 
     The operator credentials are stored in the CLI's state management system. Make sure that each operator account contains at least 1 HBAR for transaction fees.
 
-    **Step 6: Setting Up an Alias (Optional)
+    **Step 6: Setting Up an Alias (Optional)**
 
     To avoid typing the full command each time, you can set an alias in your shell profile. Replace the path with the absolute path to your hiero-cli installation.
 
@@ -126,7 +134,7 @@ When you run any command that requires an operator (like transferring HBAR or cr
         ```sh
         # For bash
         source ~/.bashrc
-        
+
         # or
         source ~/.bash_profile
 
@@ -161,48 +169,174 @@ When you run any command that requires an operator (like transferring HBAR or cr
         Now you can use `hcli` with arguments just like on Unix systems.
     </Tab>
     </Tabs>
+
 </Accordion>
 
 ## Global Flags
 
-These flags are available on **all Hiero CLI commands**. They control output, help, and versioning, regardless of the specific plugin or command you’re using.
+These options are defined on the root `hcli` program (see `hcli --help`). They work together with each command’s own flags.
 
-- `--format <type>`: Controls how command output is formatted.<br/>Supported values `human` (default) or `json` for machine-readable output.
-- `-h, --help`: Displays help information for a command.
-- `-V, --version`: Outputs the installed Hiero CLI version.
+- `--format <type>`: Output format: `human` (default) or `json` for machine-readable output.
+- `-N, --network <network>`: Target network: `testnet`, `mainnet`, `previewnet`, or `localnet`. Runs the command against this network without necessarily changing your saved default (see the Network plugin for switching defaults).
+- `-P, --payer <payer>`: Payer for transactions in this command: account alias, or `account-id:private-key` format. Overrides the default operator as payer when supported by the command.
+- `--confirm`: Skip interactive confirmation prompts for commands that would otherwise ask for confirmation (for example, some delete operations).
+- `-h, --help`: Show help for the current command.
+- `-V, --version`: Print the installed Hiero CLI version.
+
+## Configuration and State
+
+Runtime state (accounts, tokens, operator settings, and other plugin data) is stored under your home directory by default:
+
+- **Default directory:** `~/.hiero-cli/state/`
+
+Each plugin uses its own JSON files there. You normally should not edit them by hand.
+
+**Key storage** supports two modes:
+
+- **`local`** — keys stored in plain text in the state directory (typical for development)
+- **`local_encrypted`** — keys encrypted with AES-256-GCM before storage (stronger protection)
+
+Set the default storage mode with the [Config plugin](/hedera/open-source-solutions/hiero-cli/plugins/config-plugin):
+
+```sh
+hcli config set -o default_key_manager -v local
+hcli config set -o default_key_manager -v local_encrypted
+```
+
+Override per command with `--key-manager` where the command supports it (for example `account import` or `network set-operator`). Details are covered in the plugin reference pages.
+
+## Local Hedera Network (Localnet)
+
+To use the CLI against a [local Hedera node](/hedera/tutorials/local-node/how-to-set-up-a-hedera-local-node), configure an operator for `localnet` and select that network. Default connection settings shipped with the CLI match the usual local node layout (see `src/core/services/network/network.config.ts` in the [Hiero CLI repository](https://github.com/hiero-ledger/hiero-cli)).
+
+Example:
+
+```sh
+hcli network set-operator --operator 0.0.2:302e020100300506032b65700123456789132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137 --network localnet
+hcli network use --global localnet
+```
+
+Use an operator key and account ID that match **your** local node setup; the values above are only an illustration from the Hiero CLI README.
 
 ## Plugins Overview
 
-<Card title="Credentials Plugin" icon="puzzle-piece-simple" href="/hedera/open-source-solutions/hiero-cli/plugins/credentials-plugin" horizontal>
-  Manage operator credentials and keys
-</Card>
-<Card title="Network Plugin" icon="puzzle-piece-simple" href="/hedera/open-source-solutions/hiero-cli/plugins/network-plugin" horizontal>
+The CLI loads a fixed set of default plugins. The pages below document the shipped plugins and their CLI commands.
+
+<Card
+  title="Network Plugin"
+  icon="puzzle-piece-simple"
+  href="/hedera/open-source-solutions/hiero-cli/plugins/network-plugin"
+  horizontal
+>
   Switch networks, manage operator credentials, and check network health
 </Card>
-<Card title="HBAR Plugin" icon="puzzle-piece-simple" href="/hedera/open-source-solutions/hiero-cli/plugins/hbar-plugin" horizontal>
-  Transfer HBAR between accounts
+<Card
+  title="Credentials Plugin"
+  icon="puzzle-piece-simple"
+  href="/hedera/open-source-solutions/hiero-cli/plugins/credentials-plugin"
+  horizontal
+>
+  Manage operator credentials and keys
 </Card>
-<Card title="Account Plugin" icon="puzzle-piece-simple" href="/hedera/open-source-solutions/hiero-cli/plugins/account-plugin" horizontal>
+<Card
+  title="Account Plugin"
+  icon="puzzle-piece-simple"
+  href="/hedera/open-source-solutions/hiero-cli/plugins/account-plugin"
+  horizontal
+>
   Create, import, manage accounts, and view balances
 </Card>
-<Card title="Token Plugin" icon="puzzle-piece-simple" href="/hedera/open-source-solutions/hiero-cli/plugins/token-plugin" horizontal>
+<Card
+  title="HBAR Plugin"
+  icon="puzzle-piece-simple"
+  href="/hedera/open-source-solutions/hiero-cli/plugins/hbar-plugin"
+  horizontal
+>
+  Transfer HBAR between accounts
+</Card>
+<Card
+  title="Token Plugin"
+  icon="puzzle-piece-simple"
+  href="/hedera/open-source-solutions/hiero-cli/plugins/token-plugin"
+  horizontal
+>
   Create, associate, and transfer tokens
 </Card>
-<Card title="Topic Plugin" icon="puzzle-piece-simple" href="/hedera/open-source-solutions/hiero-cli/plugins/topic-plugin" horizontal>
+<Card
+  title="Topic Plugin"
+  icon="puzzle-piece-simple"
+  href="/hedera/open-source-solutions/hiero-cli/plugins/topic-plugin"
+  horizontal
+>
   Create topics and manage topic messages
 </Card>
-<Card title="Config Plugin" icon="puzzle-piece-simple" href="/hedera/open-source-solutions/hiero-cli/plugins/config-plugin" horizontal>
+<Card
+  title="Config Plugin"
+  icon="puzzle-piece-simple"
+  href="/hedera/open-source-solutions/hiero-cli/plugins/config-plugin"
+  horizontal
+>
   Inspect and update CLI configuration values
 </Card>
-<Card title="Plugin Management Plugin" icon="puzzle-piece-simple" href="/hedera/open-source-solutions/hiero-cli/plugins/plugin-management-plugin" horizontal>
+<Card
+  title="Plugin Management Plugin"
+  icon="puzzle-piece-simple"
+  href="/hedera/open-source-solutions/hiero-cli/plugins/plugin-management-plugin"
+  horizontal
+>
   Add, remove, enable/disable, and inspect plugins
 </Card>
+<Card
+  title="Batch Plugin"
+  icon="puzzle-piece-simple"
+  href="/hedera/open-source-solutions/hiero-cli/plugins/batch-plugin"
+  horizontal
+>
+  Create, execute, list, and delete batches of Hedera transactions
+</Card>
+<Card
+  title="Schedule Plugin"
+  icon="puzzle-piece-simple"
+  href="/hedera/open-source-solutions/hiero-cli/plugins/schedule-plugin"
+  horizontal
+>
+  Create, sign, delete, and verify Hedera scheduled transactions
+</Card>
+<Card
+  title="Contract Plugin"
+  icon="puzzle-piece-simple"
+  href="/hedera/open-source-solutions/hiero-cli/plugins/contract-plugin"
+  horizontal
+>
+  Compile, deploy, import, list, and delete Solidity smart contracts
+</Card>
+<Card
+  title="Contract ERC-20 Plugin"
+  icon="puzzle-piece-simple"
+  href="/hedera/open-source-solutions/hiero-cli/plugins/contract-erc20-plugin"
+  horizontal
+>
+  Call ERC-20 view and state-changing functions on deployed contracts
+</Card>
+<Card
+  title="Contract ERC-721 Plugin"
+  icon="puzzle-piece-simple"
+  href="/hedera/open-source-solutions/hiero-cli/plugins/contract-erc721-plugin"
+  horizontal
+>
+  Call ERC-721 view and state-changing functions on deployed NFT contracts
+</Card>
 
-## Scripting 
+## Scripting
 
 Once you’re familiar with the available CLI commands, you can take the next step with scripting. Scripting is especially useful for CI/CD pipelines, setting up test environments, and automating repeated workflows.
 
-<Card title="Scripting Quickstart" icon="scroll" href="/hedera/open-source-solutions/hiero-cli/scripting/quickstart" horizontal>
+<Card
+  title="Scripting Quickstart"
+  icon="scroll"
+  href="/hedera/open-source-solutions/hiero-cli/scripting/quickstart"
+  horizontal
+>
   Learn how to create your first script using Hiero CLI commands.
 </Card>
 
@@ -211,5 +345,6 @@ Once you’re familiar with the available CLI commands, you can take the next st
 <Tip>
 ### 💡 Feature Requests?
 
-Feel free to contribute to the Hiero CLI or submit a feature request or bug via the [**issues tab**](https://github.com/hiero-ledger/hiero-cli/issues)**.**
+Feel free to contribute to the Hiero CLI or submit a feature request or bug via the [**issues tab**](https://github.com/hiero-ledger/hiero-cli/issues).
+
 </Tip>

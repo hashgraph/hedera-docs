@@ -36,7 +36,7 @@ hcli topic find-message \
 <Accordion title="Topic Create">
     Create a new Hedera Consensus Service topic with optional memo and keys.
 
-    <ResponseField name="-n, --name" type="string" required>
+    <ResponseField name="-n, --name" type="string">
         Define the name for this topic.
     </ResponseField>
 
@@ -44,13 +44,20 @@ hcli topic find-message \
         The memo for a topic.
     </ResponseField>
 
-    <ResponseField name="-a, --admin-key" type="string">
-        Pass an admin key as name or private key for the topic. Private key can be optionally prefixed with key type<br/>
-        (e.g., "ed25519:..." or "ecdsa:..."). Defaults to ecdsa if no prefix.
+    <ResponseField name="-a, --admin-key" type="string (repeatable)">
+        Admin key(s) of the topic. Pass multiple times for multiple keys. Format: `{accountId}:{privateKey}`, private key in `{ed25519|ecdsa}:private:{key}` format, key reference, or account alias.
     </ResponseField>
 
-    <ResponseField name="-s, --submit-key" type="string">
-        Submit key as account name or `{accountId}:{private_key}` format.
+    <ResponseField name="-s, --submit-key" type="string (repeatable)">
+        Submit key(s) of the topic. Pass multiple times for multiple keys. Format: `{accountId}:{privateKey}`, public/private key in `{ed25519|ecdsa}:public|private:{key}` format, key reference, or account alias.
+    </ResponseField>
+
+    <ResponseField name="-A, --admin-key-threshold" type="int">
+        Number of admin keys required to sign (M-of-N). Default: all keys must sign. Only applies when multiple `--admin-key` values are provided.
+    </ResponseField>
+
+    <ResponseField name="-S, --submit-key-threshold" type="int">
+        Number of submit keys required to sign (M-of-N). Default: all keys must sign. Only applies when multiple `--submit-key` values are provided.
     </ResponseField>
 
     <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
@@ -58,12 +65,20 @@ hcli topic find-message \
     </ResponseField>
 </Accordion>
 
+<Accordion title="Topic Import">
+    Import an existing topic into state. Provide the topic ID (for example `0.0.123456`).
+
+    <ResponseField name="-t, --topic" type="string" required>
+        Topic ID to import (e.g., 0.0.123456)
+    </ResponseField>
+
+    <ResponseField name="-n, --name" type="string">
+        Name or alias for the topic
+    </ResponseField>
+</Accordion>
+
 <Accordion title="Topic List">
     List all topics stored in the state.
-
-    <ResponseField name="-n, --network" type="string">
-        Filter topics by network.
-    </ResponseField>
 </Accordion>
 
 <Accordion title="Topic Submit-Message">
@@ -77,13 +92,76 @@ hcli topic find-message \
         Submit a message to the topic.
     </ResponseField>
 
-    <ResponseField name="-s, --signer" type="string">
-        Account to use for signing the message. Can be an alias or `{accountId}:{private_key}`.<br/>
-        Required for public topics (without submit keys). For topics with submit keys, must be one of the authorized signers.
+    <ResponseField name="-s, --signer" type="string (repeatable)">
+        Key(s) to sign the message with. Pass multiple times for threshold topics. Can be `{accountId}:{privateKey}` pair, account private key in `{ed25519|ecdsa}:private:{private-key}` format, key reference, or account alias.
     </ResponseField>
 
     <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
         Key manager to use: local or local_encrypted (defaults to config setting)
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Topic Update">
+    Update a Hedera Consensus Service topic. Requires admin key for most updates. Pass `null` to clear memo, submit key, or auto-renew account.
+
+    <ResponseField name="-t, --topic" type="string" required>
+        Topic ID or alias to update
+    </ResponseField>
+
+    <ResponseField name="-m, --memo" type="string">
+        New memo for the topic. Pass `null` to clear.
+    </ResponseField>
+
+    <ResponseField name="-a, --admin-key" type="string (repeatable)">
+        New admin key(s). Pass multiple times for multiple keys. Cannot be cleared, only replaced.
+    </ResponseField>
+
+    <ResponseField name="-s, --submit-key" type="string (repeatable)">
+        New submit key(s). Pass `null` to clear (makes the topic public).
+    </ResponseField>
+
+    <ResponseField name="-A, --admin-key-threshold" type="int">
+        Number of admin keys required to sign (M-of-N). Only applies when multiple `--admin-key` values are provided.
+    </ResponseField>
+
+    <ResponseField name="-S, --submit-key-threshold" type="int">
+        Number of submit keys required to sign (M-of-N). Only applies when multiple `--submit-key` values are provided.
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager to use: local or local_encrypted (defaults to config setting)
+    </ResponseField>
+
+    <ResponseField name="-r, --auto-renew-account" type="string">
+        Auto-renew account ID or alias. Pass `null` to clear.
+    </ResponseField>
+
+    <ResponseField name="-p, --auto-renew-period" type="number">
+        Auto-renew period in seconds (min 2592000 / 30 days, max 8000000 / ~92 days)
+    </ResponseField>
+
+    <ResponseField name="-e, --expiration-time" type="string">
+        Expiration time as ISO datetime string
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Topic Delete">
+    Delete a Hedera topic on the network and remove it from local state, or remove from local state only with `--state-only`.
+
+    <ResponseField name="-t, --topic" type="string" required>
+        Topic name or topic ID
+    </ResponseField>
+
+    <ResponseField name="-s, --state-only">
+        Remove only from local CLI state (no TopicDeleteTransaction on Hedera)
+    </ResponseField>
+
+    <ResponseField name="-a, --admin-key" type="string (repeatable)">
+        Admin credential(s) for signing TopicDeleteTransaction on Hedera. Required for network delete unless `--state-only` is used.
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager when resolving `--admin-key` (defaults to config)
     </ResponseField>
 </Accordion>
 

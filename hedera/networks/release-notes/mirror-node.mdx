@@ -7,6 +7,190 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Latest Releases
 
+## [v0.153.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.153.0)
+ 
+[HIP-1313](https://hips.hedera.com/hip/hip-1313) High-Volume Entity Creation is now fully delivered with this release. The `high_volume_pricing_multiplier` field was added to the `/api/v1/transactions`, `/api/v1/transactions/{id}`, and `/api/v1/accounts/{id}` REST APIs. This field shows the multiplier that was applied to the transaction fees if the high volume flag was set in the transaction body. Additionally, a new `high_volume_throttle` query parameter is added to the fee estimate API to estimate the effects of having a high volume multiplier applied. This parameter is measured in basis points and can be in the range 0 to 10000 where 10000 is equivalent to 100.00%. A `high_volume_multiplier` was added to the fee estimate response and all other fees in the response are adjusted accordingly.
+ 
+A large focus of this release was geared towards block node related work. [HIP-1193](https://hips.hedera.com/hip/hip-1193) support was reworked to support the new intermediate cut-over approach of streaming wrapped record blocks (WRBs) from block nodes while falling back to the existing bucket in case of an error. Speaking of WRBs, [HIP-1427](https://hips.hedera.com/hip/hip-1427) saw further refinement with support for sidecar files, amendments/errata, and signature verification. [HIP-1137](https://hips.hedera.com/hip/hip-1137) saw an `associated_registered_nodes` field added to `/api/v1/network/nodes`. Finally, a new `/api/v1/network/registered-nodes` REST API was added. Below is an example response:
+ 
+```
+ {
+    "registered_nodes": [
+      {
+        "admin_key": {
+          "_type": "ProtobufEncoded",
+          "key": "421050820e1485acdd59726088e0e4a2130ebbbb70009f640ad95c78dd5a7b38"
+        },
+        "created_timestamp": "1586567700.453054001",
+        "description": "alpha",
+        "registered_node_id": 1,
+        "service_endpoints": [
+          {
+            "block_node": {
+              "endpoint_apis": ["STATUS", "PUBLISH", "SUBSCRIBE_STREAM"]
+            },
+            "domain_name": "block1.alpha.com",
+            "general_service": null,
+            "ip_address": "192.168.1.79",
+            "mirror_node": null,
+            "port": 40840,
+            "requires_tls": true,
+            "rpc_relay": null,
+            "type": "BLOCK_NODE"
+          }
+        ],
+        "timestamp": {
+          "from": "1586567700.453054001",
+          "to": null
+        }
+      }
+    ],
+    "links": {
+      "next": "/api/v1/network/registered-nodes?limit=1&registerednode.id=gt:1"
+    }
+  }
+```
+ 
+A new GitHub workflow was added to publish experimental OCI images to our [GitHub Container Registry (GHCR)](https://github.com/hiero-ledger/hiero-mirror-node/packages). The new docker images are available under the naming format `ghcr.io/hiero-ledger/hiero-mirror-node/importer:0.153.0` where `importer` can be replaced with the different Java module names. Note that not all modules are available in GHCR yet and the ones that are have not been validated for production use. These images are compiled to native code using GraalVM. They include a Software Bill of Materials (SBOM) inside the image that provides a list of software components to help aid in supply chain risk management. The images are deterministic aiding in caching, reproducibility, and auditability. Finally, the new images are also signed using [cosign](https://github.com/sigstore/cosign) so users can verify the provenance of the artifacts.
+ 
+Application startup performance was another focus area. The startup time of all modules was reduced from 59 seconds to 15 seconds by optimizing the database ready check and other improvements. Memory consumption of the REST API was reduced by removing log4js in favor of a simple, custom logger. The `@hiero-ledger/proto` dependency was replaced with `@bufbuild/protobuf`, further reducing memory.
+ 
+<Accordion title="Enhancements">
+  * Show block nodes in registered nodes API response (0.153) #13369
+  * HIP-1137 Add associated_registered_nodes to `/api/v1/network/nodes` (0.153) #13367
+  * HIP-1427 Support amendments in RecordFileItem #13340
+  * chore: [StepSecurity] Apply security best practices #13334
+  * Update copy script to use static snapshot by default #13332
+  * HIP-1193 Support two-stage cutover #13331
+  * Bumped up hedera app version and added support for list of block node endpoint_api #13330
+  * Add a workflow to push GHCR native images #13329
+  * HIP-1313 add high_volume_pricing_multiplier to REST #13306
+  * HIP-1137 Add registered-nodes REST API #13305
+  * Add migration scripts for removing duplicated synthetic logs #13303
+  * HIP-1427 Support Wrapped Record Block RSA signature verification #13302
+  * HIP-1341 Add integration tests for BLS precompiles #13296
+  * Bump minimum HAPI version for hooks to 0.73.0 #13295
+  * HIP-1427 Support sidecar file in RecordFileItem #13294
+  * Remove log4js #13280
+  * Harden application start #13273
+  * Replace `@hiero-ledger/proto` with `@bufbuild/protobuf` #13272
+  * HIP-1313 high volume multiplier to fee estimate #13243
+</Accordion>
+<Accordion title="Bug Fixes">
+  * fix(rest-java): pass shard/realm to AppEntityIdFactory in FeeEstimationService (0.153) #13374
+  * Fix volume snapshot script #13308
+  * Bump `hedera-app` to v0.73.0-rc.1 and disable simple fees #13304
+  * Fix creation of duplicate synthetic events #13248
+</Accordion>
+<Accordion title="Dependency Upgrades">
+  * Bump protobufjs from 7.5.4 to 7.5.5 in /rest (0.153) #13371
+  * Bump protobufjs from 7.5.4 to 7.5.5 in /tools/log-downloader (0.153) #13370
+  * Bump github.com/jackc/pgx/v5 from 5.6.0 to 5.9.0 in /rosetta #13356
+  * Fix dependency check #13355
+  * Bump bcprov-jdk18on from 1.83 to 1.84 #13344
+  * Bump tomcat from 11.0.20 to 11.0.21 #13328
+  * Bump github.com/hiero-ledger/hiero-sdk-go/v2 from 2.77.0 to 2.77.1 in /pinger in the dependencies group #13325
+  * Bump golang.org/x/text from 0.35.0 to 0.36.0 in /tools/bootstrap in the dependencies group #13324
+  * Bump parse-duration from 2.1.5 to 2.1.6 in /tools/log-downloader in the dependencies group #13323
+  * Bump the dependencies group in /rest with 11 updates #13322
+  * Bump github.com/hiero-ledger/hiero-sdk-go/v2 from 2.77.0 to 2.77.1 in /rosetta in the dependencies group #13321
+  * Bump parse-duration from 2.1.5 to 2.1.6 in /rest/monitoring in the dependencies group #13320
+  * Bump the dependencies group with 6 updates #13319
+  * Bump software.amazon.awssdk:bom from 2.42.28 to 2.42.33 #13318
+  * Bump org.gaul:s3proxy from 3.0.0 to 3.1.0 #13317
+  * Bump consensusNodeVersion from 0.72.0 to 0.72.1 #13316
+  * Bump org.cyclonedx:cyclonedx-gradle-plugin from 3.2.3 to 3.2.4 #13314
+  * Bump org.owasp:dependency-check-gradle from 12.2.0 to 12.2.1 #13313
+  * Bump Jackson to 2.21.2 and 3.1.1 #13289
+  * Bump github.com/hiero-ledger/hiero-sdk-go/v2 from 2.76.0 to 2.77.0 in /pinger in the dependencies group #13286
+  * Bump the dependencies group in /rosetta with 2 updates #13285
+  * Bump gradle/actions from 6.0.1 to 6.1.0 in the dependencies group #13284
+  * Bump software.amazon.awssdk:bom from 2.42.25 to 2.42.28 #13283
+  * Bump org.cyclonedx:cyclonedx-gradle-plugin from 3.2.2 to 3.2.3 #13282
+  * Bump com.hedera.cryptography:hedera-cryptography-wraps from 3.7.10 to 3.7.11 #13281
+  * Bump versions for v0.153.0-SNAPSHOT #13276
+  * Bump com.hedera.hashgraph:sdk from 2.68.0 to 2.69.0 #13255
+</Accordion>
+
+
+## [v0.152.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.152.0)
+ 
+Having not been reset in over two years, testnet would take a long time for a mirror node to synchronize from genesis. To ease this burden, we now offer database snapshots for the testnet environment. The [bootstrap tool](https://github.com/hiero-ledger/hiero-mirror-node/blob/main/docs/database/bootstrap.md) has been updated to reflect this.
+ 
+Work continues towards full block stream compatibility via support for a number of related HIPs. The new general service endpoint was added for [HIP-1137](https://hips.hedera.com/hip/hip-1137) Block Node Discoverability. Additionally, the importer can now automatically watch for registered node transactions and update its list of subscribed block node endpoints. The mirror node now has basic support for [HIP-1427](https://hips.hedera.com/hip/hip-1427) Wrapped Record Blocks as we work towards adding sidecars, signature verification, and amendments in the next release.
+ 
+Support for [HIP-1261](https://hips.hedera.com/hip/hip-1261) Simple Fees continues to gain steam with the addition of a new state mode to the `/api/v1/network/fees` estimation API. This mode differs from the default intrinsic mode by querying state for the given transaction details. Work was also completed to support simple fees via the `/api/v1/contracts/call` REST API.
+ 
+A new `delegation_address` field was added to the account REST APIs as defined in [HIP-1340](https://hips.hedera.com/hip/hip-1340) EOA Code Delegation. The contract result REST APIs saw the addition of a new `authorization_list` field to improve support for Ethereum's Pectra upgrade. Finally, the `/api/v1/contracts/call` saw initial support for Pectra code delegations. Most of this work is behind a feature flag and will be enabled at a later time when consensus nodes finalize their support for Pectra.
+ 
+There has been a large push to reduce our application memory, CPU, and image sizes to improve our resource usage in [Solo](https://github.com/hashgraph/solo). Towards that end, we have added initial [GraalVM](https://www.graalvm.org) integration to compile our Java-based modules (gRPC, Importer, REST Java, and Web3) to native code. This dramatically improves our overall startup time for all modules from 59s to 14s. Memory-wise, it reduced the amount of memory consumed to 33% of its original. The overall memory footprint in Solo-based environments went from around 2 GiB down to 600 MiB. Preliminary results show a CPU reduction as well, but we're still quantifying exactly how much. In the next release, we'll start publishing official native images in GHCR so others can take advantage of these gains. Additionally, we integrated esbuild into the node.js based REST API to tree-shake its dependencies, resulting in a memory reduction from 285 MiB down to 150 MiB.
+ 
+<Accordion title="Enhancements">
+  * Bump minimum HAPI version for hooks to 0.73.0 (0.152) #13297
+  * Add a one-shot TSS signature size log #13274
+  * HIP-1137 Support general service endpoint #13262
+  * HIP-1056 Support wrapped record blocks #13223
+  * HIP-1340 Adapt the `/contracts/*` REST endpoints to work with EOA #13222
+  * Switch from swagger-stats to opentelemetry #13209
+  * Bootstrap testnet support #13204
+  * Bundle our application using esbuild so it tree-shakes the app #13200
+  * Configure importer, grpc, rest-java, and web3 to for native images #13168
+  * HIP-1261 Add STATE mode #13153
+  * HIP-1340: Adapt web3 for Pectra code delegations #13121
+  * Enable simple fees in web3 #13113
+  * HIP-1137 Config block nodes through discovered block node endpoints #13085
+  * Enable hooks acceptance test #12814
+  * Extend account REST APIs response with delegation_address field #12785
+</Accordion>
+<Accordion title="Bug Fixes">
+  * Downgrade hedera app to 0.72.0 #13269
+  * Fix error message issue caused by minify in esBuild #13267
+  * Fix mirror_web3 pgbouncer worker user connection lmit #13245
+  * Allow using a smart contract sender in a contract call #13237
+  * Fix vulnerabilities in GCP Marketplace deployer image #13224
+  * Made weibar migration to async #13202
+  * Add x permission back to copy-live-environment.sh #13182
+</Accordion>
+<Accordion title="Dependency Upgrades">
+  * Bump Jackson to 2.21.2 and 3.1.1 (0.152) #13290
+  * Bump lodash from 4.18.0 to 4.18.1 #13275
+  * Bump lodash to 4.18.0 #13266
+  * Bump step-security/harden-runner from 2.16.0 to 2.16.1 in the dependencies group #13258
+  * Bump org.hiero.block-node:protobuf-sources from 0.30.1 to 0.30.2 #13257
+  * Bump org.flywaydb:flyway-database-postgresql from 12.2.0 to 12.3.0 #13256
+  * Bump the dependencies group in /rosetta with 2 updates #13254
+  * Bump io.github.mweirauch:micrometer-jvm-extras from 0.2.2 to 0.3.0 #13253
+  * Bump software.amazon.awssdk:bom from 2.42.18 to 2.42.25 #13251
+  * Bump rest dependencies #13241
+  * Bump the dependencies group with 2 updates #13236
+  * Bump com.diffplug.spotless:spotless-plugin-gradle from 8.3.0 to 8.4.0 #13235
+  * Bump com.hedera.hashgraph:sdk from 2.67.0 to 2.68.0 #13234
+  * Bump org.openapitools:openapi-generator-gradle-plugin from 7.20.0 to 7.21.0 #13232
+  * Bump org.springframework.boot:spring-boot-gradle-plugin from 4.0.4 to 4.0.5 #13231
+  * Bump com.hedera.cryptography:hedera-cryptography-wraps from 3.7.7 to 3.7.10 #13229
+  * Bump org.hiero.block-node:protobuf-sources from 0.29.0 to 0.30.1 #13228
+  * Bump org.flywaydb:flyway-database-postgresql from 12.1.1 to 12.2.0 #13226
+  * Bump path-to-regexp from 8.3.0 to 8.4.0 in /rest/monitoring #13225
+  * Bump picomatch from 2.3.1 to 2.3.2 in /tools/mirror-report #13217
+  * Bump picomatch from 2.3.1 to 2.3.2 in /rest/monitoring #13216
+  * Bump picomatch from 2.3.1 to 2.3.2 in /rest #13215
+  * Bump github.com/hiero-ledger/hiero-sdk-go/v2 from 2.75.0 to 2.76.0 in /pinger in the dependencies group #13199
+  * Bump github.com/jackc/pgx/v5 from 5.8.0 to 5.9.0 in /tools/bootstrap in the dependencies group #13198
+  * Bump the dependencies group in /rest with 5 updates #13197
+  * Bump the dependencies group in /rosetta with 2 updates #13196
+  * Bump the dependencies group with 3 updates #13195
+  * Bump io.grpc:grpc-bom from 1.79.0 to 1.80.0 #13194
+  * Bump org.testcontainers:testcontainers-postgresql from 2.0.3 to 2.0.4 #13192
+  * Bump org.springframework.boot:spring-boot-gradle-plugin from 4.0.3 to 4.0.4 #13190
+  * Bump org.flywaydb:flyway-database-postgresql from 12.1.0 to 12.1.1 #13189
+  * Bump software.amazon.awssdk:bom from 2.42.13 to 2.42.18 #13188
+  * Bump dockerJavaVersion from 3.7.0 to 3.7.1 #13187
+  * Bump gradle-wrapper from 9.4.0 to 9.4.1 #13186
+  * Bump protobufVersion from 4.34.0 to 4.34.1 #13185
+  * Bump versions for v0.152.0-SNAPSHOT #13174
+</Accordion>
+ 
+
 ## [v0.151.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.151.0)
 
 Support for [HIP-1261](https://hips.hedera.com/HIP/hip-1261) Simple Fees saw support for full intrinsic mode estimation added to our fee estimationPOST `/api/v1/network/fees` API. The next release should additionally bring support for stateful mode.

@@ -331,8 +331,8 @@ The following ports must be configured for **public internet access** unless oth
 | Port    | Protocol | Direction      | Description                           |
 | ------- | -------- | -------------- | ------------------------------------- |
 | `50111` | TCP      | Ingress/Egress | Gossip protocol                       |
-| `50211` | TCP      | Ingress        | gRPC (public) API access (HAPI)       |
-| `50212` | TCP      | Ingress        | TLS-encrypted gRPC                    |
+| `50211` | TCP      | Ingress/Egress | gRPC (public) API access (HAPI)       |
+| `50212` | TCP      | Ingress/Egress | TLS-encrypted gRPC                    |
 | `80`    | TCP      | Egress only    | OS package repository connectivity    |
 | `443`   | TCP      | Egress only    | Secure package & system update access |
 | `123`   | UDP      | Ingress/Egress | Time sync via NTP pool                |

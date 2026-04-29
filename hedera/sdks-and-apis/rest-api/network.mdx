@@ -1,15 +1,45 @@
 ---
 title: "Network"
 sidebarTitle: "Overview"
+description: "Mirror Node REST API endpoints for querying network supply, fees, exchange rates, nodes, and staking information."
 ---
-
 
 ## Overview
 
-The **Network Object** in the Hedera Mirror Node REST API allows developers to query **network-related information**, such as network supply, fees, exchange rates, and node details. These object are essential for monitoring network status, estimating transaction costs, and retrieving staking information.
+The Network Object in the Hedera Mirror Node REST API allows developers to query network-related information, such as network supply, fees, exchange rates, and node details. These endpoints are essential for monitoring network status, estimating transaction costs, and retrieving staking information.
 
 ## Endpoints
 
 The following endpoints are available for the Network object:
 
-<table><thead><tr><th>Endpoint</th><th>Description</th></tr></thead><tbody><tr><td><code>GET /api/v1/network/supply</code></td><td>Retrieves the current total supply of HBAR.</td></tr><tr><td><code>GET /api/v1/network/fees</code></td><td>Fetches the latest transaction fee schedules.</td></tr><tr><td><code>GET /api/v1/network/exchangerate</code></td><td>Retrieves exchange rates to estimate transaction costs.</td></tr><tr><td><code>GET /api/v1/network/nodes</code></td><td>Lists the network address book nodes.</td></tr><tr><td><code>GET /api/v1/network/stake</code></td><td>Fetches staking-related information.</td></tr></tbody></table>
+| Endpoint | Description |
+| --- | --- |
+| `GET /api/v1/network/supply` | Retrieves the current total supply of HBAR. |
+| `GET /api/v1/network/fees` | Fetches the latest transaction fee schedules. |
+| `POST /api/v1/network/fees` | Estimates fees for a specific transaction before submission. [HIP-1261](https://hips.hedera.com/hip/hip-1261) |
+| `GET /api/v1/network/exchangerate` | Retrieves exchange rates to estimate transaction costs. |
+| `GET /api/v1/network/nodes` | Lists the network address book nodes. |
+| `GET /api/v1/network/stake` | Fetches staking-related information. |
+
+### Estimate Transaction Fees (POST)
+
+`POST /api/v1/network/fees`
+
+Introduced in [HIP-1261 (Simple Fees)](https://hips.hedera.com/hip/hip-1261), this endpoint estimates the node, network, and service fees for a transaction before it is submitted to the network. It accepts a serialized `Transaction` protobuf in the request body (`application/protobuf` or `application/x-protobuf` Content-Type) and returns a detailed fee breakdown in tinycents.
+
+Two estimation modes are available via the `mode` query parameter:
+
+| Mode | Behavior |
+| --- | --- |
+| `intrinsic` (default) | Estimates based on the transaction's inherent properties (size, signatures, keys). |
+| `state` | Also considers the mirror node's latest known state (e.g., account existence, token associations). |
+
+<Info>
+    For `state` mode, if the required network state is unavailable (e.g., due to data pruning), the endpoint falls back to `intrinsic` mode and includes a note in the response explaining the fallback.
+</Info>
+
+<Warning>
+    This endpoint currently returns stubbed (dummy) data as of mirror node `v0.145.1`. The full fee estimation implementation using the upstream fee estimation library will ship in a future release. You can integrate against the stub now to be ready when the production implementation goes live.
+</Warning>
+
+For full request/response details, parameters, and the interactive API playground, see the [API reference page](/api-reference/network/estimate-network-fees). For an overview of the Simple Fees model, see [Simple Fees](/hedera/core-concepts/transactions-and-queries/simple-fees).

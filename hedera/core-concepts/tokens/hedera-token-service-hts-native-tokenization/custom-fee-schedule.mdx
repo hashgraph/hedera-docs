@@ -78,11 +78,11 @@ Royalty fees function as a convenience feature, but the network cannot enforce r
 Understanding the difference between custom fees and standard transaction fees in HBAR is crucial for token issuers and developers working with Hedera.
 
 * **Custom fees** are designed to enforce complex fee structures, such as royalties and fractional ownership. These fees can be fixed, fractional, or royalty-based and are usually paid in the token being transferred, although other Hedera tokens or HBAR can also be used. You can configure up to 10 custom fees to be automatically disbursed to designated fee collector accounts.
-* On the other hand, **transaction fees** in HBAR serve a different purpose: they compensate network nodes for processing transactions. These fees are uniform across all transaction types and are paid exclusively in HBAR. Unlike custom fees, which can be configured by the user, transaction fees are fixed by the network.
+* **Transaction fees** in HBAR serve a different purpose: they compensate the network for processing transactions. These fees follow a [base fee + extras model](/hedera/core-concepts/transactions-and-queries/simple-fees) defined in the network's fee schedule (system file `0.0.113`). While the fee structure varies by transaction type (each has its own base fee and applicable extras), the fee schedule is set by the network's governing authority, not by individual users. Transaction fees are paid exclusively in HBAR.
 
 ### **Key Differences**
 
-The table below summarizes the key differences between custom fees and transaction fees.
+The key differences are that custom fees offer flexibility and can be paid in various tokens to any account, while transaction fees follow a network-defined schedule and go to the network and node operators, paid only in HBAR. The table below summarizes the key differences between custom fees and transaction fees.
 
 <table><thead><tr><th>Feature</th><th>Custom Fees</th><th>Transaction Fees</th></tr></thead><tbody><tr><td><strong>Purpose</strong></td><td>Enforce token-specific fee structures (e.g., royalties, taxes)</td><td>Compensate network nodes for transaction processing</td></tr><tr><td><strong>Who Collects?</strong></td><td>Designated fee collector(s)</td><td>Hedera network nodes</td></tr><tr><td><strong>Currency</strong></td><td>HBAR or HTS fungible tokens</td><td>HBAR only</td></tr><tr><td><strong>Configurability</strong></td><td>Fully configurable by token issuer</td><td>Fixed by the network</td></tr></tbody></table>
 

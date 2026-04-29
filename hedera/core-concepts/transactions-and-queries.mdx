@@ -220,6 +220,10 @@ The transaction fee for the child transaction is included in the record of the p
 
 **Queries** are processed only by the single node to which they are sent. Clients send queries to retrieve some aspect of the current consensus state, like an account balance. Certain queries are free, but generally, they are subject to fees. The full list of queries can be found [here](/hedera/sdks-and-apis/sdks/queries).
 
+<Info>
+Under the [Simple Fees](/hedera/core-concepts/transactions-and-queries/simple-fees) model, queries can have node, network, and service fee components. However, many common queries (e.g., `TransactionGetReceipt`, `CryptoGetAccountBalance`) are marked as **free** in the fee schedule. For non-free queries, the SDK creates a payment transaction to cover the fees.
+</Info>
+
 A query includes a header that includes a normal HBAR transfer transaction that will serve as how the client pays the node the appropriate fee. There is no way to give partial payment to a node for processing the query, meaning if a user overpaid for the query, the user will not receive a refund. The node processing the query will submit that payment transaction to the network for processing into a consensus statement to receive its fee.
 
 A client can determine the appropriate fee for a query by asking a node for the cost, not the actual data. Such a `COST_ANSWER` query is free to the client.

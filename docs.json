@@ -447,6 +447,7 @@
                 "group": "Transactions and Queries",
                 "pages": [
                   "hedera/core-concepts/transactions-and-queries",
+                  "hedera/core-concepts/transactions-and-queries/simple-fees",
                   "hedera/core-concepts/transactions-and-queries/transaction-properties"
                 ]
               },
@@ -886,6 +887,7 @@
                       "hedera/sdks-and-apis/rest-api/network",
                       "openapi.yaml GET /api/v1/network/supply",
                       "openapi.yaml GET /api/v1/network/fees",
+                      "openapi.yaml POST /api/v1/network/fees",
                       "openapi.yaml GET /api/v1/network/exchangerate",
                       "openapi.yaml GET /api/v1/network/nodes",
                       "openapi.yaml GET /api/v1/network/stake"

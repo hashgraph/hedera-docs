@@ -138,6 +138,7 @@
               "hedera/getting-started-hedera-native-developers/create-an-account",
               "hedera/getting-started-hedera-native-developers/create-a-token",
               "hedera/getting-started-hedera-native-developers/create-a-topic",
+              "hedera/core-concepts/scheduled-transaction",
               "hedera/getting-started-hedera-native-developers/portal-hedera-com-playground"
             ]
           },

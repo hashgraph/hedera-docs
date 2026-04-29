@@ -351,6 +351,12 @@ The contract will return `true` when it is paused. Now, nobody can mint new toke
 Create a `transfer-advanced.ts` script to transfer an NFT to another address. Don't forget to replace the `contractAddress` with your smart contract address.
 
 ```typescript scripts/transfer-advanced.ts
+import { network } from "hardhat";
+
+const { ethers } = await network.connect({
+  network: "testnet",
+});
+
 async function main() {
   const [deployer] = await ethers.getSigners();
   const MyTokenAdvanced = await ethers.getContractFactory(
@@ -360,7 +366,7 @@ async function main() {
 
   // Connect to the deployed contract (REPLACE WITH YOUR CONTRACT ADDRESS)
   const contractAddress = "0x11828533C93F8A1e19623343308dFb4a811005dE";
-  const contract = await MyTokenAdvanced.attach(contractAddress);
+  const contract = MyTokenAdvanced.attach(contractAddress);
 
   // Unpause the token
   const unpauseTx = await contract.unpause();

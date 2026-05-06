@@ -518,6 +518,7 @@
                       "/hedera/open-source-solutions/hiero-cli/plugins/account-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/hbar-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/token-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/swap-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/topic-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/config-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/plugin-management-plugin",

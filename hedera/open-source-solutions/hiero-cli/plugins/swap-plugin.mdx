@@ -1,0 +1,218 @@
+---
+title: "Swap Plugin"
+---
+
+Multi-party exchanges of **HBAR**, **fungible HTS tokens**, and **NFT serials**, composed step by step locally and executed as **one Hedera transfer transaction** (`CryptoTransfer`). If the submission fails (for example insufficient balance), the saved swap stays in CLI state unless you **`swap delete`** it.
+
+<Info>
+  Swaps are **stateful**: nothing is submitted until **`hcli swap execute`**. Inspecting local drafts does not hit the network. Use **`swap list`**, **`swap view`**, and **`hcli swap --help`** on your installed build.
+</Info>
+
+## Typical workflow
+
+**Create a named swap, add each transfer you want, review, then execute**
+
+```sh
+hcli swap create -n exchange --memo "Alice ↔ Bob"
+
+hcli swap add-hbar -n exchange --from alice --to bob --amount 100
+hcli swap add-ft   -n exchange --from bob   --to alice --token my-token --amount 50
+
+hcli swap list
+hcli swap view -n exchange
+
+hcli swap execute -n exchange
+```
+
+**Drop a draft without submitting**
+
+```sh
+hcli swap delete -n exchange
+```
+
+## Limits and behaviour
+
+- **Transfer entry cap:** A single Hedera `TransferTransaction` supports at most **10** transfer entries. The CLI uses the same limit when you add steps.
+- **HBAR and FT:** Each `add-hbar` or `add-ft` step counts as **one** entry.
+- **NFTs:** Each **serial** in `add-nft --serials` counts as **one** entry when capacity is checked for that command.
+- **Atomicity:** All entries are applied in **one transaction** — they succeed or fail together.
+
+On **`swap execute`**, every distinct **source account** (`--from`, operator by default) must be able to sign. The CLI collects the required keys when signing before submission. After a **successful** execute, that swap name is removed from CLI state automatically.
+
+### State storage
+
+Draft swaps persist under your CLI state directory (see [Overview](/hedera/open-source-solutions/hiero-cli/overview#configuration-and-state)), typically **`~/.hiero-cli/state/swap-storage.json`**, **per network**.
+
+## Full command reference
+
+<Accordion title="Swap Create">
+    Create an empty swap with a memo stored for the eventual transaction (optional). No ledger transaction is sent.
+
+    <ResponseField name="-n, --name" type="string" required>
+        Name for this swap (used with all other `swap` subcommands).
+    </ResponseField>
+
+    <ResponseField name="-m, --memo" type="string">
+        Optional memo on the **`swap execute`** transaction.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli swap create -n my-swap --memo "Token exchange"
+    ```
+</Accordion>
+
+<Accordion title="Swap Add HBAR">
+    Append an HBAR transfer from **`--from`** (default: operator) to **`--to`**.
+
+    <ResponseField name="-n, --name" type="string" required>
+        Swap name.
+    </ResponseField>
+
+    <ResponseField name="-t, --to" type="string" required>
+        Destination account (account ID or alias).
+    </ResponseField>
+
+    <ResponseField name="-a, --amount" type="string" required>
+        Amount: plain value is in **HBAR** (for example `10`). The suffix **`t`** means **tinybars** (for example `1000t`).
+    </ResponseField>
+
+    <ResponseField name="-f, --from" type="string">
+        Source account: `accountId:privateKey`, alias, account ID, or key reference. Defaults to the operator.
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager for resolving credentials (defaults to config).
+    </ResponseField>
+
+    **Examples**
+
+    ```sh
+    hcli swap add-hbar -n my-swap --to alice --amount 10
+    hcli swap add-hbar -n my-swap --to 0.0.123456 --amount 1000t --from bob
+    ```
+</Accordion>
+
+<Accordion title="Swap Add FT">
+    Append a fungible HTS transfer. For display amounts (without **`t`**), decimals are resolved from the **mirror node** when you run the command.
+
+    <ResponseField name="-n, --name" type="string" required>
+        Swap name.
+    </ResponseField>
+
+    <ResponseField name="-t, --to" type="string" required>
+        Destination account.
+    </ResponseField>
+
+    <ResponseField name="-T, --token" type="string" required>
+        Fungible token ID or imported alias.
+    </ResponseField>
+
+    <ResponseField name="-a, --amount" type="string" required>
+        Amount in **display units** unless you append **`t`** for **base units** (consistent with other token commands).
+    </ResponseField>
+
+    <ResponseField name="-f, --from" type="string">
+        Source account (defaults to operator).
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager (defaults to config).
+    </ResponseField>
+
+    **Examples**
+
+    ```sh
+    hcli swap add-ft -n my-swap --to alice --token my-token --amount 100
+    hcli swap add-ft -n my-swap --to 0.0.123456 --token 0.0.8849743 --amount 50t --from bob
+    ```
+</Accordion>
+
+<Accordion title="Swap Add NFT">
+    Append one or more NFT serial transfers (**same token**, comma-separated serials).
+
+    <ResponseField name="-n, --name" type="string" required>
+        Swap name.
+    </ResponseField>
+
+    <ResponseField name="-t, --to" type="string" required>
+        Destination account.
+    </ResponseField>
+
+    <ResponseField name="-T, --token" type="string" required>
+        NFT token ID or imported alias.
+    </ResponseField>
+
+    <ResponseField name="-s, --serials" type="string" required>
+        Comma-separated serial numbers (for example `1,2,3`).
+    </ResponseField>
+
+    <ResponseField name="-f, --from" type="string">
+        Source account (defaults to operator).
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager (defaults to config).
+    </ResponseField>
+
+    **Examples**
+
+    ```sh
+    hcli swap add-nft -n my-swap --to alice --token my-nft --serials 1,2,3
+    hcli swap add-nft -n my-swap --to 0.0.123456 --token 0.0.8849743 --serials 5 --from bob
+    ```
+</Accordion>
+
+<Accordion title="Swap Execute">
+    Build the `TransferTransaction`, sign with every required **`from`** key, submit, and on success delete the swap from state.
+
+    <ResponseField name="-n, --name" type="string" required>
+        Swap to execute (must contain at least one transfer).
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli swap execute -n my-swap
+    ```
+</Accordion>
+
+<Accordion title="Swap List">
+    Summaries for all swaps stored for the **current network** (names, transfer counts, limits).
+
+    **Example**
+
+    ```sh
+    hcli swap list
+    ```
+</Accordion>
+
+<Accordion title="Swap View">
+    Full detail for **one** named swap stored in CLI state: memo, transfers (type HBAR / FT / NFT), from/to, and counts versus the protocol limit (**10** entries per transaction).
+
+    **Example**
+
+    ```sh
+    hcli swap view -n my-swap
+    ```
+</Accordion>
+
+<Accordion title="Swap Delete">
+    Remove the named swap from state **without** submitting a transaction.
+
+    <ResponseField name="-n, --name" type="string" required>
+        Swap to delete.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli swap delete -n my-swap
+    ```
+</Accordion>
+
+## Related
+
+- Hedera semantics for moving value between several accounts in one transaction match the topic covered under **[Atomic swaps](/hedera/sdks-and-apis/sdks/token-service/atomic-swaps)** in the SDK documentation.
+- The **[Batch plugin](/hedera/open-source-solutions/hiero-cli/plugins/batch-plugin)** queues **distinct** inner transactions for **HIP-551** atomic batch submission. **`swap`** assembles **one** `CryptoTransfer`. Use whichever matches your operational model.

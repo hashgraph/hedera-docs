@@ -510,6 +510,7 @@
                 "group": "Hiero CLI",
                 "pages": [
                   "hedera/open-source-solutions/hiero-cli/overview",
+                  "hedera/open-source-solutions/hiero-cli/feature-coverage-gap-report",
                   {
                     "group": "Plugins",
                     "pages": [

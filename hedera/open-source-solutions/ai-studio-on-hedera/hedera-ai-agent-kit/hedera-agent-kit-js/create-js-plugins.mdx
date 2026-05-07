@@ -309,9 +309,9 @@ To create a plugin to be used with the Hedera Agent Kit, you will need to create
 
 Once you have a repository, published npm package, and a README with a description of the functionality included in that plugin in your plugin's repo, as well as the required and optional parameters, you can add it to the Hedera Agent Kit by forking and opening a Pull Request to:
 
-1. Include the plugin as a bullet point under the **Available Third Party Plugin** section _on this page_. Include the name, a brief description, and a link to the repository with the README, as well the URL linked to the published npm package.
+1. Include the plugin as a bullet point under the **Available Third Party Plugin** section under the **Third Party Plugin** section in the [README.md in the hedera-agent-kit-js](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/README.md#third-party-plugins). Include the name, a brief description, and a link to the repository with the README, as well the URL linked to the published npm package.
 
-2. Include the same information **in the README.md of this repository** under the **Third Party Plugins** section.
+2. If you would like to include your plugin functionality in the Hedera plugin built for ElizaOS simply make a PR to [add your plugin name to the `plugins` array in the Hedera ElizaOS plugin](https://github.com/elizaos-plugins/plugin-hedera/blob/1.x/src/adapter-plugin/plugin.ts#L72) where the configuration is initiated. The hedera-agent-kit adaptor architecture means your plugin functionality will be usable with no additional configuration needed.
 
 3. All commits for your plugin **must be [DCO signed](https://wiki.linuxfoundation.org/dco)**, have the names of the tools & core actions exposed by the plugin, and **point to the exact version of the npm packages**. To avoid having pull requests blocked in the future, always include a sign-off:
 
@@ -341,7 +341,6 @@ This plugin was built by <?> for the <project, platform, etc>. It was built to e
 npm install <plugin-name>
 '''
 
-
 ### Usage
 
 '''javascript
@@ -350,7 +349,7 @@ import { myPlugin } from "<plugin-name>";
 
 '''typescript
 import { AgentMode } from '@hashgraph/hedera-agent-kit';
-import { coreTokenPlugin, coreAccountPlugin, coreConsensusPlugin } from '@hashgraph/hedera-agent-kit/plugins';
+import { myPlugin } from '<plugin-name>';
 import { HederaLangchainToolkit } from '@hashgraph/hedera-agent-kit-langchain';
 
 const hederaAgentToolkit = new HederaLangchainToolkit({
@@ -359,14 +358,11 @@ const hederaAgentToolkit = new HederaLangchainToolkit({
         context: {
             mode: AgentMode.AUTONOMOUS,
         },
-        plugins: [
-            coreTokenPlugin,
-            coreAccountPlugin,
-            coreConsensusPlugin,
-            myPlugin,
-        ],
+        plugins: [myPlugin],
     },
 });
+
+const tools = toolkit.getTools();
 '''
 
 ### Functionality

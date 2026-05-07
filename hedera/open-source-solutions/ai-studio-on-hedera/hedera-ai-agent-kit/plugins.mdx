@@ -36,6 +36,7 @@ See the full documentation to understand how to use them with parameters and exa
 
 ### Available Third Party Plugins 
 The Hedera Agent Kit is extensible with third party plugins created by third parties projects. 
+
 - [Memejob Plugin](https://www.npmjs.com/package/@buidlerlabs/hak-memejob-plugin) provides a streamlined interface to the [**memejob**](https://memejob.fun/) protocol, exposing the core actions (`create`, `buy`, `sell`) for interacting with meme tokens on Hedera:
 
   NPM: https://www.npmjs.com/package/@buidlerlabs/hak-memejob-plugin
@@ -58,7 +59,7 @@ The Hedera Agent Kit is extensible with third party plugins created by third par
   Status: Not validated by HAK team, v3-compatible release  
 
 
-- [SaucerSwap Plugin](https://www.npmjs.com/package/saucer-swap-plugin) provides a streamlined interface to the [**SaucerSwap**](https://saucerswap.finance) DEX, exposing the core actions (`get_swap_quote_v2_tool`, `swap_v2_tool`) for executing swaps and obtaining swap quotes.
+- [SaucerSwap Labs Plugin](https://www.npmjs.com/package/saucer-swap-plugin) provides a streamlined interface to the [**SaucerSwap**](https://saucerswap.finance) DEX, exposing the core actions (`get_swap_quote_v2_tool`, `swap_v2_tool`) for executing swaps and obtaining swap quotes.
 
   NPM: https://www.npmjs.com/package/saucer-swap-plugin
 
@@ -69,15 +70,26 @@ The Hedera Agent Kit is extensible with third party plugins created by third par
   Status: Validated by HAK team, v4-compatible release
 
 
+- [HAK SaucerSwap Plugin](https://www.npmjs.com/package/hak-saucerswap-plugin) provides a streamlined interface to the [**SaucerSwap**](https://saucerswap.finance) DEX, exposing the core actions (`saucerswap_get_swap_quote`, `saucerswap_swap_tokens`, `saucerswap_get_pools`, `saucerswap_add_liquidity`, `saucerswap_remove_liquidity`, `saucerswap_get_farms`) for swaps, liquidity, and farming insights:
+
+  NPM: https://www.npmjs.com/package/hak-saucerswap-plugin
+
+  Github repository: https://github.com/jmgomezl/hak-saucerswap-plugin
+
+  Version: hak-saucerswap-plugin@2.1.0
+
+  Status: Validated by HAK team, v4-compatible release
+
+
 - [Pyth Plugin](https://www.npmjs.com/package/hak-pyth-plugin) provides access to the [**Pyth Network**](https://www.pyth.network/) price feeds via the Hermes API, exposing tools to list feeds and fetch latest prices:
 
   NPM: https://www.npmjs.com/package/hak-pyth-plugin
 
   Github repository: https://github.com/jmgomezl/hak-pyth-plugin
 
-  Version: hak-pyth-plugin@0.1.1
+  Version: hak-pyth-plugin@0.2.0
 
-  Status: Not validated by HAK team, v3-compatible release
+  Status: Validated by HAK team, v4-compatible release
 
 
 - [CoinCap Plugin](https://www.npmjs.com/package/coincap-hedera-plugin) provides access to the [**CoinCap API service**](https://www.coincap.io) to access cryptocurrency market data. It exposes the action (`get HBAR price in USD`) to get the current price of HBAR in USD currency, by using it you can ask your agent to get your current HBAR balance expressed in USD.
@@ -86,9 +98,9 @@ The Hedera Agent Kit is extensible with third party plugins created by third par
 
   Github repository: https://github.com/henrytongv/coincap-hedera-plugin
 
-  Version: coincap-hedera-plugin@1.0.4
+  Version: coincap-hedera-plugin@1.0.5
 
-  Status: Not validated by HAK team, v3-compatible release  
+  Status: Validated by HAK team, v4-compatible release  
 
 
 - [Chainlink price feed Plugin](https://www.npmjs.com/package/chainlink-pricefeed-plugin) provides access to the [**Chainlink price feeds**](https://docs.chain.link/data-feeds/price-feeds) to get data aggregated from many data sources. It exposes the action (`get price feed`) that allows you to get the current price for ETH, BTC, HBAR, LINK, USDC, UST or DAI.
@@ -97,9 +109,9 @@ The Hedera Agent Kit is extensible with third party plugins created by third par
 
   Github repository: https://github.com/henrytongv/chainlink-price-plugin-js
 
-  Version: chainlink-pricefeed-plugin@1.0.4
+  Version: chainlink-pricefeed-plugin@1.0.5
 
-  Status: Not validated by HAK team, v3-compatible release  
+  Status: Validated by HAK team, v4-compatible release  
 
 
 - [Hedera T3N Plugin](https://www.npmjs.com/package/@terminal3/hedera-t3n-plugin) provides access to [Terminal 3 Network (T3N)](https://docs.terminal3.io/t3n/) to enable identity verification, authentication, and last mile-delivery or selective disclosure of private and sensitive information for AI-driven applications, ensuring compliant and auditable interactions.

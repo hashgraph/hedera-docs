@@ -6,50 +6,90 @@ sidebarTitle: "Overview"
 
 ## Overview
 
-The Sourcify API enables programmatic access to smart contract verification services, allowing developers to verify contract source code, check verification status, and retrieve verified contract files. This decentralized verification service is essential for developers and auditors who need to ensure smart contract transparency and verify that deployed bytecode matches the provided source code across multiple blockchain networks.
+The Sourcify API enables programmatic access to smart contract verification services, allowing developers to verify contract source code, check verification status, and retrieve verified contract files. Sourcify is a decentralized, open-source verification service that's essential for developers and auditors who need to confirm smart contract transparency by proving that the deployed bytecode matches the published source code across EVM-compatible networks.
+
+[Sourcify](https://sourcify.dev) natively supports **Hedera Mainnet (chain ID `295`)** and **Hedera Testnet (chain ID `296`)**, so verification on Hedera uses the same API and tooling as any other supported chain.
 
 ### Key Features
 
-* **Contract Verification**: Submit smart contract source code and metadata for verification against deployed bytecode on various blockchain networks.
-* **Multiple Verification Methods**: Support for direct file upload, Etherscan-verified contract import, and solc-json compilation artifact verification.
-* **Verification Status Checking**: Query the verification status of contracts by address and chain ID, with support for both full and partial matches.
-* **File Retrieval**: Access verified contract source code, metadata, and compilation artifacts for any verified contract.
-* **Multi-Chain Support**: Compatible with Ethereum mainnet, testnets, and other EVM-compatible networks including Hedera.
-* **Repository Access**: Browse and download verified contract files with organized file tree structures.
+* **Contract Verification**: Submit smart contract source code and metadata for verification against deployed bytecode on any supported network.
+* **Multiple Verification Methods**: Support for Solidity Standard JSON input, Solidity metadata.json uploads, Etherscan-verified contract import, and similarity-based verification.
+* **Verification Job Tracking**: Asynchronous verification jobs with a `verificationId` so you can poll for status.
+* **Contract Lookup**: Query verified contract data by address and chain ID, list verified contracts on a given chain, or search all chains for a single address.
+* **Multi-Chain Support**: Compatible with every chain Sourcify recognizes, including Hedera Mainnet and Testnet.
 
-<Check>
-📣 For interactive API exploration and testing, visit https://server-verify.hashscan.io/api-docs/
-</Check>
+<Info>
+  Hedera previously operated a self-hosted Sourcify instance at `verify.hashscan.io` and `server-verify.hashscan.io`. Requests to those hosts are forwarded to `sourcify.dev` so existing integrations continue to work, but the legacy endpoints are deprecated. Please update your tooling and scripts to call `sourcify.dev` directly.
+</Info>
+
+## Hedera Chain IDs
+
+| Network         | Chain ID |
+| --------------- | -------- |
+| Hedera Mainnet  | 295      |
+| Hedera Testnet  | 296      |
 
 ## Base URL
 
 ```
-https://server-verify.hashscan.io
+https://sourcify.dev/server
 ```
+
+<Check>
+📣 For interactive API exploration and testing, visit https://sourcify.dev/server/api-docs/
+</Check>
 
 ## Endpoints
 
-#### Stateless Verification
+#### Verify Contracts
 
-<table><thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead><tbody><tr><td>POST</td><td><code>/verify</code></td><td>verify contracts by uploading source files and metadata</td></tr><tr><td>POST</td><td><code>/verify/etherscan</code></td><td>verify contracts already verified on etherscan</td></tr><tr><td>POST</td><td><code>/verify/solc-json</code></td><td>verify contracts using solc-json compilation artifacts</td></tr></tbody></table>
+<table><thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead><tbody><tr><td>POST</td><td><code>/v2/verify/&#123;chainId&#125;/&#123;address&#125;</code></td><td>verify a contract using Solidity Standard JSON input</td></tr><tr><td>POST</td><td><code>/v2/verify/metadata/&#123;chainId&#125;/&#123;address&#125;</code></td><td>verify a contract using a Solidity <code>metadata.json</code> file</td></tr><tr><td>POST</td><td><code>/v2/verify/etherscan/&#123;chainId&#125;/&#123;address&#125;</code></td><td>import and verify a contract that's already verified on Etherscan</td></tr><tr><td>POST</td><td><code>/v2/verify/similarity/&#123;chainId&#125;/&#123;address&#125;</code></td><td>verify a contract via similarity search against existing verified contracts</td></tr></tbody></table>
 
-#### Repository Access
+#### Verification Jobs
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/check-all-by-addresses` | check verification status (full or partial match) for multiple contracts |
-| GET | `/check-by-addresses` | check verification status (full match only) for multiple contracts |
-| GET | `/files/any/{chain}/{address}` | retrieve all files for a contract (full and partial match) |
-| GET | `/files/{chain}/{address}` | retrieve all files for a contract (full match only) |
-| GET | `/files/contracts/{chain}` | get all verified contract addresses on a specific chain |
-| GET | `/files/tree/any/{chain}/{address}` | get file tree structure (full and partial match) |
-| GET | `/files/tree/{chain}/{address}` | get file tree structure (full match only) |
-| GET | `/repository/contracts/{match_type}/{chain}/{address}/{filePath}` | download specific files from verified contracts |
+| GET | `/v2/verify/{verificationId}` | check the status of a verification job by its `verificationId` |
 
-#### Session Management
+#### Contract Lookup
 
-<table><thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead><tbody><tr><td>GET</td><td><code>/session/data</code></td><td>retrieve current session verification data</td></tr><tr><td>POST</td><td><code>/session/clear</code></td><td>clear session data</td></tr><tr><td>POST</td><td><code>/session/input-files</code></td><td>add files to verification session</td></tr><tr><td>POST</td><td><code>/session/input-contract</code></td><td>import deployed contract from ipfs</td></tr><tr><td>POST</td><td><code>/session/verify-checked</code></td><td>verify contracts in current session</td></tr><tr><td>POST</td><td><code>/session/input-solc-json</code></td><td>add solc-json to session for verification</td></tr><tr><td>POST</td><td><code>/session/verify/etherscan</code></td><td>verify etherscan contracts in session</td></tr></tbody></table>
+<table><thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead><tbody><tr><td>GET</td><td><code>/v2/contract/&#123;chainId&#125;/&#123;address&#125;</code></td><td>fetch verification status and source files for a contract on a specific chain</td></tr><tr><td>GET</td><td><code>/v2/contract/all-chains/&#123;address&#125;</code></td><td>look up a single address across every chain Sourcify supports</td></tr><tr><td>GET</td><td><code>/v2/contracts/&#123;chainId&#125;</code></td><td>paginated list of verified contracts on a given chain</td></tr></tbody></table>
 
-#### Administration
+#### System
 
-<table><thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead><tbody><tr><td>POST</td><td><code>/change-log-level</code></td><td>modify application logging level (requires authentication)</td></tr></tbody></table>
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | service health check |
+| GET | `/version` | running server version |
+| GET | `/chains` | list of supported and deprecated chains |
+
+## API Reference
+
+The full Sourcify v2 API reference (including request/response schemas, authentication details, and worked examples) lives in the official Sourcify documentation:
+
+**➡** [**Sourcify v2 API Documentation**](https://docs.sourcify.dev/docs/api/)
+
+**➡** [**Sourcify Server Swagger UI**](https://sourcify.dev/server/api-docs/)
+
+**➡** [**Sourcify Web UI**](https://sourcify.dev)
+
+## Verifying with Developer Tools
+
+Most developers verify contracts through their build tooling rather than calling the API directly. Both Foundry and Hardhat have first-class Sourcify support:
+
+<Card
+  title="Deploy and Verify a Smart Contract with Foundry"
+  href="/hedera/getting-started-evm-developers/deploy-a-smart-contract-with-foundry"
+/>
+
+<Card
+  title="Deploy and Verify a Smart Contract with Hardhat"
+  href="/hedera/getting-started-evm-developers/deploy-a-smart-contract-with-hardhat"
+/>
+
+<Columns cols={2}>
+  <Card title="Writer: Luke, DevRel Engineer">
+    [GitHub](https://github.com/LukeForrest-Hashgraph) |
+    [X](https://x.com/_LukeForrest)
+  </Card>
+</Columns>

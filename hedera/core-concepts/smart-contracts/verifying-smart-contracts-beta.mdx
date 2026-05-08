@@ -5,12 +5,12 @@ title: "Verifying Smart Contracts"
 
 Smart contract verification is the process of verifying that the smart contract bytecode uploaded to the network matches the expected smart contract source files. Verification is *not* required for contracts deployed on the Hedera network, but it is best practice and essential to maintaining the contract's security and integrity by identifying vulnerabilities that could be exploited, as smart contracts are immutable once deployed. It also enables transparency and builds trust within the user community by proving that the deployed bytecode matches the contract's original source code.
 
-To initiate verification, you can use a community-hosted Hedera Mirror Node Explorer, like [HashScan](https://hashscan.io/) ([Arkhia](https://explorer.arkhia.io/) and [Dragon Glass](https://app.dragonglass.me/) do not currently support this feature), that integrates with [Sourcify](/hedera/support-and-community/glossary#sourcify): A Solidity source code and metadata verification tool. Once you upload your files to the verification tool, Sourcify recompiles the submitted source code and metadata files to check them against the deployed bytecode. If a match is found, the contract's verification status is updated to either a [*Full (Perfect) Match*](https://docs.sourcify.dev/docs/full-vs-partial-match/#full-perfect-matches) or a [*Partial Match*](https://docs.sourcify.dev/docs/full-vs-partial-match/#partial-matches)*.*
+Hedera Mainnet and Testnet are natively supported by [Sourcify](/hedera/support-and-community/glossary#sourcify), the open-source Solidity source code and metadata verification service hosted at [sourcify.dev](https://sourcify.dev). To verify a contract, submit your source files and metadata to Sourcify (directly via the web UI, the [v2 API](https://docs.sourcify.dev/docs/api/), or through your build tooling). Sourcify recompiles the submitted sources and compares them to the deployed bytecode. If a match is found, the contract's verification status is updated to either a [*Full (Perfect) Match*](https://docs.sourcify.dev/docs/full-vs-partial-match/#full-perfect-matches) or a [*Partial Match*](https://docs.sourcify.dev/docs/full-vs-partial-match/#partial-matches)*.*
 
-The verification status is publicly available across all community-hosted Hedera Mirror Node Explorers. To learn what differentiates a *Full (Perfect) Match* from a *Partial Match*, check out the Sourcify documentation [here](https://docs.sourcify.dev/docs/full-vs-partial-match/).
+Once a contract is verified on Sourcify, [HashScan](https://hashscan.io/) and other community-hosted Hedera Mirror Node Explorers read its verification status directly from Sourcify and surface it to users. To learn what differentiates a *Full (Perfect) Match* from a *Partial Match*, check out the Sourcify documentation [here](https://docs.sourcify.dev/docs/full-vs-partial-match/).
 
 <Info>
-**Note**: This is an initial beta release, and both the HashScan user interface and API functionalities are scheduled for enhancements in upcoming updates.
+**Note**: Manual HashScan verification is temporarily disabled. Verify your contracts directly at [sourcify.dev](https://sourcify.dev) or through Foundry/Hardhat. Once verified there, the status will appear on HashScan automatically.
 </Info>
 
 For verification, you will need the following items:
@@ -188,29 +188,27 @@ An example deployed EVM smart contract address:
 
 ***
 
-## Different Instances of Sourcify: Hedera's Custom Approach
-
-It's important to note that multiple instances of Sourcify do exist, tailored to the specific needs of different networks. Hedera runs an independent instance of Sourcify, distinct from the public-facing Sourcify.dev instances like Etherscan and other Etherscan clones.
-
-Running an independent instance of Sourcify allows Hedera to have more control over the verification process, tailoring it to the custom needs of the Hedera ecosystem. For instance, after a testnet reset, Hedera requires the ability to reset testnet smart contract verifications - something Sourcify.dev cannot accommodate.
-
-> ***Verified Smart Contracts Testnet Reset:** When the Hedera Testnet is reset, the contract must be redeployed and verified. The contract will receive a new contract EVM address and contract ID. The smart contract will need to be verified using the new addresses.*
-
-An essential detail to remember is that smart contracts verified on Hedera's Sourcify instance won't automatically appear as verified on Sourcify.dev or vice versa. Users interested in having their smart contract recognized across multiple platforms should consider verifying on both instances.
-
-***
-
 ## Verify Your Smart Contract
 
-Learn how to verify your smart contract on [HashScan](/hedera/tutorials/smart-contracts/how-to-verify-a-smart-contract-on-hashscan) or programmatically using the [Sourcify API](/hedera/sdks-and-apis/smart-contract-verification-api):
+Verify your contract directly at [sourcify.dev](https://sourcify.dev), via the [Sourcify v2 API](/hedera/sdks-and-apis/smart-contract-verification-api), or through Foundry / Hardhat tooling:
 
 <Card
-  title="How To Verify A Smart Contract On Hashscan"
+  title="Verify a Smart Contract on HashScan"
   href="/hedera/tutorials/smart-contracts/how-to-verify-a-smart-contract-on-hashscan"
 />
 
 <Card
-  title="Smart Contract Verification Api"
+  title="Deploy and Verify a Smart Contract with Foundry"
+  href="/hedera/getting-started-evm-developers/deploy-a-smart-contract-with-foundry"
+/>
+
+<Card
+  title="Deploy and Verify a Smart Contract with Hardhat"
+  href="/hedera/getting-started-evm-developers/deploy-a-smart-contract-with-hardhat"
+/>
+
+<Card
+  title="Smart Contract Verification API"
   href="/hedera/sdks-and-apis/smart-contract-verification-api"
 />
 
@@ -224,7 +222,7 @@ Learn how to verify your smart contract on [HashScan](/hedera/tutorials/smart-co
 
 **➡** [**HashScan Network Explorer**](https://hashscan.io/)
 
-**➡** [**Smart Contract Verifier Page**](https://verify.hashscan.io/)
+**➡** [**Sourcify Verification UI**](https://sourcify.dev)
 
 **➡** [**Full vs Partial Match Docs**](https://docs.sourcify.dev/docs/full-vs-partial-match/)
 

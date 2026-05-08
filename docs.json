@@ -1108,26 +1108,7 @@
               {
                 "group": "Smart Contract Verification API",
                 "pages": [
-                  "hedera/sdks-and-apis/smart-contract-verification-api",
-                  "smart-contract-verification-api.yaml POST /verify",
-                  "smart-contract-verification-api.yaml POST /verify/etherscan",
-                  "smart-contract-verification-api.yaml POST /verify/solc-json",
-                  "smart-contract-verification-api.yaml GET /check-all-by-addresses",
-                  "smart-contract-verification-api.yaml GET /check-by-addresses",
-                  "smart-contract-verification-api.yaml GET /files/any/{chain}/{address}",
-                  "smart-contract-verification-api.yaml GET /files/{chain}/{address}",
-                  "smart-contract-verification-api.yaml GET /repository/contracts/{matchType}/{chain}/{address}/{filePath}",
-                  "smart-contract-verification-api.yaml GET /files/contracts/{chain}",
-                  "smart-contract-verification-api.yaml GET /files/tree/any/{chain}/{address}",
-                  "smart-contract-verification-api.yaml GET /files/tree/{chain}/{address}",
-                  "smart-contract-verification-api.yaml GET /session/data",
-                  "smart-contract-verification-api.yaml POST /session/clear",
-                  "smart-contract-verification-api.yaml POST /session/input-files",
-                  "smart-contract-verification-api.yaml POST /session/input-contract",
-                  "smart-contract-verification-api.yaml POST /session/verify-checked",
-                  "smart-contract-verification-api.yaml POST /session/input-solc-json",
-                  "smart-contract-verification-api.yaml POST /session/verify/etherscan",
-                  "smart-contract-verification-api.yaml POST /change-log-level"
+                  "hedera/sdks-and-apis/smart-contract-verification-api"
                 ]
               }
             ]

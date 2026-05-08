@@ -7,6 +7,71 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Latest Releases
 
+## [v0.154.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.154.0)
+
+This release adds support for block hash when simulating or estimating contracts. The `/api/v1/contracts/call` REST API now accepts a 64 or 96 character hexadecimal value for the `block` field. This helps to avoid an extra call to `/api/v1/blocks/{hash}` for clients that only have the block hash.
+
+Support for [HIP-1427](https://hips.hedera.com/hip/hip-1427) Historical Record File Wrapping advanced with a change to allow record stream files with zero transactions inside. This was necessary as a side effect of aligning block stream and record stream blocks.
+
+### Breaking Changes
+
+The `/api/v1/network/nodes` JavaScript implementation is now removed in favor of the newer Java-based implementation. Operators should ensure their routing logic is updated so that requests to `/api/v1/network/nodes` are directed to the rest-java process instead of the rest process. If operators use our docker compose or Helm chart this routing change is handled automatically.
+
+Due to the unclear availability of hooks in consensus nodes, a decision was made to disable the hooks functionality in mirror node. The `/api/v1/accounts/{id}/hooks` and `/api/v1/accounts/{id}/hooks/{id}/storage` REST APIs have been removed from the gateway and will now return 404. Since there is no hook data on mainnet there is no loss of functionality and this would not necessarily be consider a breaking change. However, clients should be cautious and ensure they don't have any code written that depends upon this API returning a 200 status code with an empty list.
+
+<Accordion title="Enhancements">
+  * HIP-1056 Allow empty record stream file #13423
+  * Disable hooks #13422
+  * Sync grafana alerts #13405
+  * Add support for block hash as block value in web3 calls #13404
+  * Log web3 request for server errors #13403
+  * Adjust k6 tests to work with static snapshot #13376
+  * HIP-1137 Add associated_registered_nodes to `/api/v1/network/nodes` #13361
+  * Show block nodes in registered nodes API response #13352
+  * refactor: Update network routes and remove deprecated tests #13342
+</Accordion>
+
+<Accordion title="Bug Fixes">
+  * Increase system file retry attempts #13437
+  * Fix calculation error in consensusSubmitMessageLong #13428
+  * Add missing native libs for tss wraps #13427
+  * Fix incorrect consensus start / end timestamp for empty blocks #13401
+  * Enhance Go plugin and tasks for cross-platform compatibility #13389
+  * Fix errors after upgrade hedera-app to rc.5 in rest-java #13372
+  * Fix k6 tests constant name #13365
+  * Check miniopath exists #13364
+  * fix(rest-java): pass shard/realm to AppEntityIdFactory in FeeEstimationService #13349
+</Accordion>
+
+<Accordion title="Dependency Upgrades">
+  * Bump Gradle from 9.4.1 to 9.5.0 #13438
+  * Bump the dependencies group in /rest with 5 updates #13417
+  * Bump the dependencies group with 5 updates #13416
+  * Bump org.testcontainers:testcontainers-postgresql from 2.0.4 to 2.0.5 #13415
+  * Bump commons-io:commons-io from 2.21.0 to 2.22.0 #13414
+  * Bump io.freefair.gradle:lombok-plugin from 9.2.0 to 9.4.0 #13413
+  * Bump software.amazon.awssdk:bom from 2.42.36 to 2.42.41 #13412
+  * Bump com.google.protobuf:protobuf-gradle-plugin from 0.9.5 to 0.10.0 #13411
+  * Bump org.springframework.boot:spring-boot-gradle-plugin from 4.0.5 to 4.0.6 #13410
+  * Bump springGrpcVersion from 1.0.1 to 1.0.3 #13408
+  * Bump go.opentelemetry.io/otel from 1.39.0 to 1.41.0 in /rosetta #13407
+  * Bump github.com/jackc/pgx/v5 from 5.9.0 to 5.9.2 in /rosetta #13402
+  * Bump github.com/hiero-ledger/hiero-sdk-go/v2 from 2.77.1 to 2.78.1 in /pinger in the dependencies group #13387
+  * Bump github.com/jackc/pgx/v5 from 5.9.1 to 5.9.2 in /tools/bootstrap in the dependencies group #13386
+  * Bump the dependencies group in /rest with 3 updates #13385
+  * Bump github.com/hiero-ledger/hiero-sdk-go/v2 from 2.77.1 to 2.78.1 in /rosetta in the dependencies group #13384
+  * Bump the dependencies group with 7 updates #13383
+  * Bump com.google.guava:guava from 33.5.0-jre to 33.6.0-jre #13382
+  * Bump software.amazon.awssdk:bom from 2.42.33 to 2.42.36 #13381
+  * Bump org.flywaydb:flyway-database-postgresql from 12.3.0 to 12.4.0 #13380
+  * Bump com.hedera.hashgraph:sdk from 2.69.0 to 2.70.0 #13379
+  * Bump org.hiero.block-node:protobuf-sources from 0.30.2 to 0.31.0 #13378
+  * Bump jooqVersion from 3.21.1 to 3.21.2 #13377
+  * Bump protobufjs from 7.5.4 to 7.5.5 in /tools/log-downloader #13363
+  * Bump protobufjs from 7.5.4 to 7.5.5 in /rest #13362
+  * Bump versions for v0.154.0-SNAPSHOT #13359
+</Accordion>
+
 ## [v0.153.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.153.0)
  
 [HIP-1313](https://hips.hedera.com/hip/hip-1313) High-Volume Entity Creation is now fully delivered with this release. The `high_volume_pricing_multiplier` field was added to the `/api/v1/transactions`, `/api/v1/transactions/{id}`, and `/api/v1/accounts/{id}` REST APIs. This field shows the multiplier that was applied to the transaction fees if the high volume flag was set in the transaction body. Additionally, a new `high_volume_throttle` query parameter is added to the fee estimate API to estimate the effects of having a high volume multiplier applied. This parameter is measured in basis points and can be in the range 0 to 10000 where 10000 is equivalent to 100.00%. A `high_volume_multiplier` was added to the fee estimate response and all other fees in the response are adjusted accordingly.

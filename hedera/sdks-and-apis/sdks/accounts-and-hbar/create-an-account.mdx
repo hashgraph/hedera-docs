@@ -58,20 +58,12 @@ The sender pays the `maxAutoAssociations` fee and the rent for the first auto-re
 | `setDeclineStakingReward(<declineStakingReward>)` | boolean | Optional |
 | `setAccountMemo(<memo>)` | String | Optional |
 | `setAutoRenewPeriod(<autoRenewPeriod>)` | Duration | Disabled |
-| `addHook(<hook>)` | [HookCreationDetails](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks) | Optional |
-| `setHooks(<hooks>)` | list\<[HookCreationDetails](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks)> | Optional |
 
 <Warning>
 **Account Alias**
 
 If an alias is set during account creation, it becomes [immutable](/hedera/support-and-community/glossary#immutability), meaning it cannot be changed. If you plan to update or rotate keys in the future, do not set the alias at the time of initial account creation. The alias can be set after finalizing all key updates.
 </Warning>
-
-<Info>
-**Account Hooks ([HIP-1195](https://hips.hedera.com/hip/hip-1195))**
-
-You can attach [Hiero Hooks](/hedera/core-concepts/accounts/hiero-hooks) to an account at creation time using `addHook()`. Hooks are programmable EVM extension points that let you enforce custom validation logic on transfers involving this account. See [Create and Manage Hooks](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks) for full details and utility class reference.
-</Info>
 
 <CodeGroup>
 
@@ -182,101 +174,6 @@ println!("The new account ID is {}", new_account_id);
 
 </CodeGroup>
 
-#### Create an account with an EVM hook
-
-This example creates a new account with an [account allowance hook](/hedera/core-concepts/accounts/hiero-hooks) attached. The hook contract must be deployed first via `ContractCreateTransaction`.
-
-<CodeGroup>
-
-```java Java
-// Step 1: Deploy hook contract first (standard ContractCreateTransaction)
-ContractId contractId = /* ... your deployed hook contract ... */;
-
-// Step 2: Create the hook details
-HookCreationDetails hookDetails = new HookCreationDetails(
-    HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
-    1002L,
-    new EvmHook(contractId),
-    adminKey.getPublicKey()
-);
-
-// Step 3: Create the account with the hook attached
-TransactionResponse txResponse = new AccountCreateTransaction()
-    .setKey(accountKey.getPublicKey())
-    .setInitialBalance(Hbar.from(1))
-    .addHook(hookDetails)
-    .setMaxTransactionFee(new Hbar(10))
-    .freezeWith(client)
-    .sign(accountKey)
-    .execute(client);
-
-AccountId newAccountId = txResponse.getReceipt(client).accountId;
-System.out.println("Account created with hook: " + newAccountId);
-```
-
-```javascript JavaScript
-import {
-    AccountCreateTransaction,
-    HookCreationDetails,
-    EvmHook,
-    HookExtensionPoint,
-    Hbar,
-    Long,
-} from "@hiero-ledger/sdk";
-
-// Step 1: Deploy hook contract first (standard ContractCreateTransaction)
-const contractId = /* ... your deployed hook contract ... */;
-
-// Step 2: Create the hook details
-const hookDetails = new HookCreationDetails({
-    extensionPoint: HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
-    hookId: Long.fromInt(1002),
-    evmHook: new EvmHook({ contractId }),
-    adminKey: adminKey.publicKey,
-});
-
-// Step 3: Create the account with the hook attached
-const txResponse = await (
-    await new AccountCreateTransaction()
-        .setKeyWithoutAlias(accountKey.publicKey)
-        .setInitialBalance(new Hbar(1))
-        .addHook(hookDetails)
-        .setMaxTransactionFee(new Hbar(10))
-        .freezeWith(client)
-        .sign(accountKey)
-).execute(client);
-
-const { accountId } = await txResponse.getReceipt(client);
-console.log(`Account created with hook: ${accountId}`);
-```
-
-```go Go
-// Step 1: Deploy hook contract first (standard ContractCreateTransaction)
-// contractId := ... your deployed hook contract ...
-
-// Step 2: Create the hook details
-hookDetails := hedera.NewHookCreationDetails().
-    SetExtensionPoint(hedera.ACCOUNT_ALLOWANCE_HOOK).
-    SetHookId(1002).
-    SetEvmHook(*hedera.NewEvmHook().SetContractId(&contractId)).
-    SetAdminKey(adminKey.PublicKey())
-
-// Step 3: Create the account with the hook attached
-txResponse, err := hedera.NewAccountCreateTransaction().
-    SetKey(accountKey.PublicKey()).
-    SetInitialBalance(hedera.NewHbar(1)).
-    AddHook(hookDetails).
-    SetMaxTransactionFee(hedera.NewHbar(10)).
-    FreezeWith(client).
-    Sign(accountKey).
-    Execute(client)
-
-receipt, err := txResponse.GetReceipt(client)
-fmt.Printf("Account created with hook: %v\n", receipt.AccountID)
-```
-
-</CodeGroup>
-
 #### Get transaction values
 
 | Method | Type | Description |
@@ -288,7 +185,6 @@ fmt.Printf("Account created with hook: %v\n", receipt.AccountID)
 | `getStakedNodeId()` | long | Returns the node ID |
 | `getStakedAccountId()` | AccountId | Returns the node account ID |
 | `getReceiverSignatureRequired()` | boolean | Returns whether the receiver signature is required or not |
-| `getHooks()` | list\<HookCreationDetails> | Returns the hooks to be created with the account |
 
 <CodeGroup>
 

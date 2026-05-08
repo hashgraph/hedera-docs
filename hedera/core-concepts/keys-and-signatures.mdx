@@ -4,15 +4,51 @@ title: "Keys and Signatures"
 
 ## Key Types: ECDSA vs Ed25519
 
-A key can be a [public key](/hedera/support-and-community/glossary#public-key) of a supported system [Ed25519](/hedera/support-and-community/glossary#ed25519), [ECDSA secp256k1](/hedera/support-and-community/glossary#ecdsa-secp256k1), or an ID of a [smart contract](/hedera/support-and-community/glossary#smart-contract). The corresponding algorithm generates public and private keys which are unique to one another. The public key can be shared and visible to other network users in a [Network Explorer](/hedera/support-and-community/glossary#network-explorer) or [REST APIs](/hedera/support-and-community/glossary#rest-api). The [private key](/hedera/support-and-community/glossary#private-key) is kept secret from the owner and grants access to the owner to modify entities (accounts, tokens, etc.).
+A key can be a [public key](/hedera/support-and-community/glossary#public-key) of a supported type — [ECDSA secp256k1](/hedera/support-and-community/glossary#ecdsa-secp256k1) or [Ed25519](/hedera/support-and-community/glossary#ed25519) — or an ID of a [smart contract](/hedera/support-and-community/glossary#smart-contract). The corresponding algorithm generates a public and private key pair that are unique to one another. The public key can be shared and is visible to other network users in a [Network Explorer](/hedera/support-and-community/glossary#network-explorer) or [REST APIs](/hedera/support-and-community/glossary#rest-api). The [private key](/hedera/support-and-community/glossary#private-key) is kept secret by the owner and grants access to modify entities (accounts, tokens, etc.).
 
 Private keys *can only* be recovered once lost if created with an associated recovery phrase that you can access. Keys are mutable and can be updated once set for an entity. Generally, you will need the current key to sign the transaction to update the keys.
 
-### Choosing between ECDSA and Ed25519 Keys
+### ECDSA secp256k1 (Recommended)
 
-The choice between ECDSA and ED25519 keys primarily depends on your specific use case:
+**ECDSA secp256k1 is the recommended key type for all new accounts and applications on Hedera.** It is the same cryptographic curve used by Ethereum and the broader EVM ecosystem, which means:
 
-<table><thead><tr><th></th><th></th><th></th></tr></thead><tbody><tr><td></td><td><strong>ECDSA</strong></td><td><strong>Ed25519</strong></td></tr><tr><td><strong>Use Cases</strong></td><td>Ideal if you want to use <a href="/hedera/support-and-community/glossary#metamask">MetaMask</a> or need support for more EVM developer tooling. Suited for apps interfacing with Ethereum or EVM-compatible networks due to the associated EVM address.</td><td>Preferred if key length, security, and performance are important. ECDSA public keys are twice as long for the same level of security.</td></tr></tbody></table>
+- ECDSA accounts should set an **EVM alias** — an EVM address derived from the ECDSA public key. The EVM alias is the rightmost 20 bytes of the 32-byte Keccak-256 hash of the ECDSA public key, calculated in the manner described by the Ethereum Yellow Paper. Note that the recovery ID is not formally part of the public key and is not included in the hash. The EVM address is also commonly known as the public address, and the account ID format is `<shardNum>.<realmNum>.<alias>` where alias is the EVM address.
+- The EVM alias enables full compatibility with Solidity smart contracts, `msg.sender` checks, and EVM-based tooling such as MetaMask, Hardhat, and Foundry.
+- ECDSA keys work seamlessly with wallets and dApps built for Ethereum-compatible networks.
+
+<Info>
+For maximum compatibility with Solidity and smart contracts, set the EVM alias when creating an account by using `setECDSAKeyWithAlias()`. This ensures the account's EVM address is derived from its ECDSA public key, so `msg.sender` in a contract resolves correctly to the account's EVM address.
+
+```javascript
+// Generate a new ECDSA key for the account
+const accountPrivateKey = PrivateKey.generateECDSA();
+const accountPublicKey = accountPrivateKey.publicKey;
+
+const txCreateAccount = new AccountCreateTransaction()
+  .setECDSAKeyWithAlias(accountPublicKey);
+```
+</Info>
+
+<Warning>
+Do not use `setECDSAKeyWithAlias()` if you plan to update or rotate the account key in the future. The EVM alias is permanently bound to the original ECDSA public key and does not change when the key is rotated. Use `setKeyWithoutAlias()` instead if key rotation is a requirement. See the [Create an Account](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-an-account) reference for details.
+</Warning>
+
+### Ed25519 (Supported)
+
+Ed25519 is a supported key type on Hedera. It does **not** produce an EVM alias, so Ed25519 accounts cannot use EVM tooling, MetaMask, or Solidity's native `ECRECOVER` function directly. However, Ed25519 accounts can interact with smart contracts through the [HIP-632 system contract functions](/hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-account-service) (`isAuthorized` and `isAuthorizedRaw`), which enable on-chain verification of Ed25519 signatures.
+
+Ed25519 is appropriate for HCS-based applications, Hedera-native workflows, and scenarios where EVM compatibility is not required
+
+### Comparison
+
+| | **ECDSA secp256k1** | **Ed25519** |
+|---|---|---|
+| **Recommendation** | ✅ Recommended for all new accounts and applications | Supported, not recommended for new development |
+| **EVM Address (alias)** | Yes. Set at account creation using `setECDSAKeyWithAlias()`, derived from the Keccak-256 hash of the ECDSA public key | No. Ed25519 accounts have no EVM address |
+| **Smart Contract Compatibility** | Full. Works with `msg.sender`, `ECRECOVER`, Solidity, and EVM tooling | Limited. Requires [HIP-632 system contract functions](/hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-account-service) (`isAuthorized`/`isAuthorizedRaw`) for on-chain signature verification. Not compatible with `ECRECOVER` or standard EVM tooling |
+| **Wallet Support** | MetaMask, HashPack, and all EVM-compatible wallets | HashPack and Hedera-native wallets only |
+| **Use Cases** | All use cases, especially dApps, DeFi, smart contracts, and EVM-compatible integrations | HCS-based applications, Hedera-native workflows, and scenarios where EVM compatibility is not required |
+
 
 <Info>
 **Note**: Hedera wallets such as [HashPack](https://www.hashpack.app/) support both key types.
@@ -33,7 +69,15 @@ All transaction types support the above key structures that specify a key field.
 ## FAQ
 
 <Accordion title="What is a key in Hedera?">
-A key in Hedera can be a [public key](/hedera/support-and-community/glossary#public-key) of a supported system such as [ED25519](/hedera/support-and-community/glossary#ed25519), [ECDSA secp256k1](/hedera/support-and-community/glossary#ecdsa-secp256k), or an ID of a [smart contract](/hedera/support-and-community/glossary#smart-contract). The corresponding algorithm generates public and private keys which are unique to one another. The public key can be shared and visible to other network users in a [Network Explorer](/hedera/support-and-community/glossary#network-explorer) or REST APIs. The [private key](/hedera/support-and-community/glossary#private-key) is kept secret and grants access to the owner to modify entities (accounts, tokens, etc.).
+A key in Hedera can be a [public key](/hedera/support-and-community/glossary#public-key) of a supported type — [ECDSA secp256k1](/hedera/support-and-community/glossary#ecdsa-secp256k1) (recommended) or [ED25519](/hedera/support-and-community/glossary#ed25519) — or an ID of a [smart contract](/hedera/support-and-community/glossary#smart-contract). The corresponding algorithm generates public and private keys which are unique to one another. The public key can be shared and visible to other network users in a [Network Explorer](/hedera/support-and-community/glossary#network-explorer) or REST APIs. The [private key](/hedera/support-and-community/glossary#private-key) is kept secret and grants access to the owner to modify entities (accounts, tokens, etc.).
+</Accordion>
+
+<Accordion title="Which key type should I use?">
+Use **ECDSA secp256k1** for all new accounts and applications. ECDSA keys are compatible with Ethereum and the EVM ecosystem, can be assigned an EVM alias (EVM address) at account creation using `setECDSAKeyWithAlias()`, and work with tools like MetaMask, Hardhat, and Solidity smart contracts. Ed25519 is supported but does not provide an EVM address and is not compatible with EVM tooling. Ed25519 accounts can still interact with smart contracts through [HIP-632 system contract functions](/hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-account-service).
+</Accordion>
+
+<Accordion title="What is an EVM alias and why does it matter?">
+An EVM address account alias is the rightmost 20 bytes of the 32-byte Keccak-256 hash of the ECDSA public key of the account, calculated in the manner described by the Ethereum Yellow Paper. The recovery ID is not formally part of the public key and is not included in the hash. To set this alias, use `setECDSAKeyWithAlias()` when creating the account. This alias is the account's EVM address, what Solidity contracts see as `msg.sender`, and enables full compatibility with smart contracts and EVM-based tooling. See [ECDSA secp256k1 (Recommended)](/hedera/core-concepts/keys-and-signatures#ecdsa-secp256k1-recommended) above for the full derivation details.
 </Accordion>
 
 <Accordion title="What happens if I lose my private key?">

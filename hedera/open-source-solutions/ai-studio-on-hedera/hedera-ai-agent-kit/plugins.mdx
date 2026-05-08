@@ -1,0 +1,237 @@
+---
+title: "Plugins"
+description: "Introduction to the plugin architecture, and an overview of Hedera and third-party plugins."
+---
+
+## Overview
+
+The Hedera Agent Kit provides a comprehensive set of tools organized into **plugins**, which can be installed alongside the Hedera Agent Kit and used to extend the core functionality of the Hedera Agent Kit SDK. These tools can be used both by the conversational agent and when you are building with the SDK.
+
+The Hedera services built into this agent toolkit are also implemented as plugins. You can see a description of each plugin in the [HEDERAPLUGINS.md](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/HEDERAPLUGINS.md) file, as well as a list of the individual tools for each Hedera service that are included in each plugin.
+
+### Contribute
+Developers can contribute new plugins to the Hedera Agent Kit by following the guidelines in the plugin docs for each SDK:
+* **[Create a JavaScript Plugin](./hedera-agent-kit-js/create-js-plugins)**
+* **[Create a Python Plugin](./hedera-agent-kit-py/create-py-plugins)**
+
+## Hedera Plugins & Architecture
+All tools in the Hedera Agent Kit, including tools available to use Hedera native services and EVM features, are organized into groups as plugins, each containing a set functionality related to the Hedera service or project they are created for.
+
+The SDKs also provide an extensive plugin system that allows developers to create their own third-party plugins for use with the Hedera Agent Kit.
+
+### Hedera Plugins
+Available plugins built into the Hedera Agent Kit include:
+* **Core Account Plugin**: Tools for Hedera Account Service operations
+* **Core Account Query Plugin**: Tools for querying Hedera Account Service related data
+* **Core Consensus Plugin**: Tools for Hedera Consensus Service (HCS) operations
+* **Core Consensus Query Plugin**: Tools for querying Hedera Consensus Service (HCS) related data
+* **Core Token Plugin**: Tools for Hedera Token Service (HTS) operations
+* **Core Token Query Plugin**: Tools for querying Hedera Token Service related data
+* **Core EVM Plugin**: Tools for interacting with EVM smart contracts on Hedera (ERC-20 and ERC-721)
+* **Core EVM Query Plugin**: Tools for querying smart contract-related data on Hedera
+* **Core Misc Query Plugin**: Tools for fetching miscellaneous information from Hedera Mirror Node
+* **Core Transaction Query Plugin**: Tools for handling Hedera transaction–related queries
+
+See the full documentation to understand how to use them with parameters and examples can be found in the `docs/HEDERAPLUGINS.md` file in the [JavaScript SDK](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/docs/HEDERAPLUGINS.md) and the [Python SDK](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/docs/HEDERAPLUGINS.md).
+
+### Available Third Party Plugins 
+The Hedera Agent Kit is extensible with third party plugins created by third parties projects. 
+
+- [Memejob Plugin](https://www.npmjs.com/package/@buidlerlabs/hak-memejob-plugin) provides a streamlined interface to the [**memejob**](https://memejob.fun/) protocol, exposing the core actions (`create`, `buy`, `sell`) for interacting with meme tokens on Hedera:
+
+  NPM: https://www.npmjs.com/package/@buidlerlabs/hak-memejob-plugin
+
+  Github repository: https://github.com/buidler-labs/hak-memejob-plugin
+
+  Version: @buidlerlabs/hak-memejob-plugin@1.1.0
+
+  Status: Validated by HAK team, v4-compatible release 
+
+
+- [Bonzo Plugin](https://www.npmjs.com/package/@bonzofinancelabs/hak-bonzo-plugin) is a unified SDK to the [**Bonzo**](https://bonzo.finance) protocol, exposing the core actions (`deposit`, `withdraw`, `repay`, `borrow`) for decentralised lending and borrowing on Hedera:
+
+  NPM: https://www.npmjs.com/package/@bonzofinancelabs/hak-bonzo-plugin
+
+  Github repository: https://github.com/Bonzo-Labs/bonzoPlugin
+
+  Version: @bonzofinancelabs/hak-bonzo-plugin@1.0.1
+
+  Status: Not validated by HAK team, v3-compatible release  
+
+
+- [SaucerSwap Labs Plugin](https://www.npmjs.com/package/saucer-swap-plugin) provides a streamlined interface to the [**SaucerSwap**](https://saucerswap.finance) DEX, exposing the core actions (`get_swap_quote_v2_tool`, `swap_v2_tool`) for executing swaps and obtaining swap quotes.
+
+  NPM: https://www.npmjs.com/package/saucer-swap-plugin
+
+  Github repository: https://github.com/saucerswaplabs/hedera-agent-kit-saucer-swap-plugin
+
+  Version: saucer-swap-plugin@0.2.0
+
+  Status: Validated by HAK team, v4-compatible release
+
+
+- [HAK SaucerSwap Plugin](https://www.npmjs.com/package/hak-saucerswap-plugin) provides a streamlined interface to the [**SaucerSwap**](https://saucerswap.finance) DEX, exposing the core actions (`saucerswap_get_swap_quote`, `saucerswap_swap_tokens`, `saucerswap_get_pools`, `saucerswap_add_liquidity`, `saucerswap_remove_liquidity`, `saucerswap_get_farms`) for swaps, liquidity, and farming insights:
+
+  NPM: https://www.npmjs.com/package/hak-saucerswap-plugin
+
+  Github repository: https://github.com/jmgomezl/hak-saucerswap-plugin
+
+  Version: hak-saucerswap-plugin@2.1.0
+
+  Status: Validated by HAK team, v4-compatible release
+
+
+- [Pyth Plugin](https://www.npmjs.com/package/hak-pyth-plugin) provides access to the [**Pyth Network**](https://www.pyth.network/) price feeds via the Hermes API, exposing tools to list feeds and fetch latest prices:
+
+  NPM: https://www.npmjs.com/package/hak-pyth-plugin
+
+  Github repository: https://github.com/jmgomezl/hak-pyth-plugin
+
+  Version: hak-pyth-plugin@0.2.0
+
+  Status: Validated by HAK team, v4-compatible release
+
+
+- [CoinCap Plugin](https://www.npmjs.com/package/coincap-hedera-plugin) provides access to the [**CoinCap API service**](https://www.coincap.io) to access cryptocurrency market data. It exposes the action (`get HBAR price in USD`) to get the current price of HBAR in USD currency, by using it you can ask your agent to get your current HBAR balance expressed in USD.
+
+  NPM: https://www.npmjs.com/package/coincap-hedera-plugin
+
+  Github repository: https://github.com/henrytongv/coincap-hedera-plugin
+
+  Version: coincap-hedera-plugin@1.0.5
+
+  Status: Validated by HAK team, v4-compatible release  
+
+
+- [Chainlink price feed Plugin](https://www.npmjs.com/package/chainlink-pricefeed-plugin) provides access to the [**Chainlink price feeds**](https://docs.chain.link/data-feeds/price-feeds) to get data aggregated from many data sources. It exposes the action (`get price feed`) that allows you to get the current price for ETH, BTC, HBAR, LINK, USDC, UST or DAI.
+
+  NPM: https://www.npmjs.com/package/chainlink-pricefeed-plugin
+
+  Github repository: https://github.com/henrytongv/chainlink-price-plugin-js
+
+  Version: chainlink-pricefeed-plugin@1.0.5
+
+  Status: Validated by HAK team, v4-compatible release  
+
+
+- [Hedera T3N Plugin](https://www.npmjs.com/package/@terminal3/hedera-t3n-plugin) provides access to [Terminal 3 Network (T3N)](https://docs.terminal3.io/t3n/) to enable identity verification, authentication, and last mile-delivery or selective disclosure of private and sensitive information for AI-driven applications, ensuring compliant and auditable interactions.
+
+  NPM: https://www.npmjs.com/package/@terminal3/hedera-t3n-plugin
+
+  Github repository: https://github.com/Terminal-3/hedera-t3n-plugin
+
+  Version: @terminal3/hedera-t3n-plugin@3.0.0
+
+  Status: Not validated by HAK team, v3-compatible release
+
+---
+
+## Using Plugins
+
+### JavaScript / TypeScript
+
+Starting with **v4**, the Hedera Agent Kit is published under the `@hashgraph` scope and plugins are imported from the `@hashgraph/hedera-agent-kit/plugins` subpath. Framework integrations (LangChain, Vercel AI SDK, ElizaOS, MCP) are now separate packages.
+
+**Which packages do I need?**
+
+| Package | Purpose |
+|---|---|
+| `@hashgraph/hedera-agent-kit` | Core types, `AgentMode`, `Plugin`, `Tool`, `HederaBuilder` |
+| `@hashgraph/hedera-agent-kit/plugins` | All built-in Hedera plugins (subpath of core) |
+| `@hashgraph/hedera-agent-kit-langchain` | LangChain toolkit (`HederaLangchainToolkit`) |
+| `@hashgraph/hedera-agent-kit-ai-sdk` | Vercel AI SDK toolkit (`HederaAIToolkit`) |
+| `@hashgraph/hedera-agent-kit-elizaos` | ElizaOS toolkit (`HederaElizaOSToolkit`) |
+| `@hashgraph/hedera-agent-kit-mcp` | MCP toolkit (`HederaMCPToolkit`) |
+
+Install the core package plus your chosen framework toolkit and LLM provider:
+
+**LangChain + OpenAI**
+```bash
+npm install @hiero-ledger/sdk @hashgraph/hedera-agent-kit @hashgraph/hedera-agent-kit-langchain @langchain/openai dotenv
+```
+
+**LangChain + Anthropic**
+```bash
+npm install @hiero-ledger/sdk @hashgraph/hedera-agent-kit @hashgraph/hedera-agent-kit-langchain @langchain/anthropic dotenv
+``` 
+
+**Vercel AI SDK + OpenAI**
+```bash
+npm install @hiero-ledger/sdk @hashgraph/hedera-agent-kit @hashgraph/hedera-agent-kit-ai-sdk @ai-sdk/openai dotenv
+```
+
+Import plugins from the `/plugins` subpath and pass them **explicitly** in the toolkit configuration. Use `allCorePlugins` to load every built-in plugin at once, or list individual plugins to narrow the tool surface:
+
+```typescript
+import { Client, PrivateKey } from '@hiero-ledger/sdk';
+import { AgentMode } from '@hashgraph/hedera-agent-kit';
+import { allCorePlugins } from '@hashgraph/hedera-agent-kit/plugins';
+import { HederaLangchainToolkit } from '@hashgraph/hedera-agent-kit-langchain';
+
+const client = Client.forTestnet().setOperator(
+  process.env.ACCOUNT_ID!,
+  PrivateKey.fromStringECDSA(process.env.PRIVATE_KEY!),
+);
+
+const toolkit = new HederaLangchainToolkit({
+  client,
+  configuration: {
+    plugins: allCorePlugins,
+    context: { mode: AgentMode.AUTONOMOUS },
+  },
+});
+
+const tools = toolkit.getTools();
+```
+
+If you only want a subset of the tools, import individual plugins instead of `allCorePlugins`:
+
+```typescript
+import {
+  coreAccountPlugin,
+  coreAccountQueryPlugin,
+  coreTokenPlugin,
+  coreConsensusPlugin,
+} from '@hashgraph/hedera-agent-kit/plugins';
+
+const toolkit = new HederaLangchainToolkit({
+  client,
+  configuration: {
+    plugins: [coreAccountPlugin, coreAccountQueryPlugin, coreTokenPlugin, coreConsensusPlugin],
+    context: { mode: AgentMode.AUTONOMOUS },
+  },
+});
+```
+
+> **Important:** Plugins must be explicitly opted in. Passing an empty `plugins` array will result in an agent with no tools available. Use `allCorePlugins` if you want the full tool surface without listing every plugin by hand.
+
+### Python
+
+In the Python SDK, plugins are imported from `hedera_agent_kit.plugins`:
+
+```python
+from hedera_agent_kit.langchain.toolkit import HederaLangchainToolkit
+from hedera_agent_kit.plugins import (
+    core_account_plugin,
+    core_account_query_plugin,
+    core_token_plugin,
+    core_consensus_plugin,
+)
+from hedera_agent_kit.shared.configuration import Configuration, Context, AgentMode
+
+configuration = Configuration(
+    plugins=[
+        core_account_plugin,
+        core_account_query_plugin,
+        core_token_plugin,
+        core_consensus_plugin,
+    ],
+    context=Context(
+        mode=AgentMode.AUTONOMOUS,
+        account_id=str(account_id),
+    ),
+)
+
+hedera_toolkit = HederaLangchainToolkit(client=client, configuration=configuration)
+tools = hedera_toolkit.get_tools()
+```

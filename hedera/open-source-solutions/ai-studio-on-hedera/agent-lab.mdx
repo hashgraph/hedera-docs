@@ -1,0 +1,242 @@
+---
+title: "Agent Lab"
+description: "Experiment with and evaluate AI agents built with Hedera AI Studio."
+---
+
+<div className="flex flex-col sm:flex-row gap-4 mt-6 mb-8 not-prose">
+  <a
+    href="https://portal.hedera.com/agent-lab#code"
+    className="flex-1 rounded-lg p-5 no-underline border border-gray-200 dark:border-gray-800 hover:border-[#8853FF] transition-colors"
+  >
+    <div className="flex items-center gap-3">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-6 w-6 text-[#8853FF]"
+      >
+        <path
+          d="M10 2.5H14"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+        <path
+          d="M12 2.5V8.2"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+        <path
+          d="M9 8.2L6.4 18.6C6.2 19.4 6.8 20.2 7.6 20.2H16.4C17.2 20.2 17.8 19.4 17.6 18.6L15 8.2"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M8.3 13.2H15.7"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+      </svg>
+      <span className="text-base text-gray-1000 dark:text-gray-100">
+        Agent Lab
+      </span>
+    </div>
+    <p className="mt-2 mb-0 text-sm text-gray-700 dark:text-gray-300">
+      Explore, code, and export a Hedera AI Agent.
+    </p>
+  </a>
+
+  <a
+    href="https://portal.hedera.com/agent-lab#build"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="flex-1 rounded-lg p-5 no-underline border border-gray-200 dark:border-gray-800 hover:border-[#8853FF] transition-colors"
+  >
+    <div className="flex items-center gap-3">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-6 w-6 text-[#8853FF]"
+      >
+        <path
+          d="M20.2 7.6C19.3 8.5 18 8.8 16.8 8.3L12 13.1V16.5L8.7 19.8C7.9 20.6 6.6 20.6 5.8 19.8C5 19 5 17.7 5.8 16.9L9.1 13.6H12.5L17.3 8.8C16.8 7.6 17.1 6.3 18 5.4C19.2 4.2 21.1 4.2 22.3 5.4L20.2 7.6Z"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M7.2 18.4L9 16.6"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+      </svg>
+      <span className="text-base text-gray-1000 dark:text-gray-100">
+        Agent Builder
+      </span>
+    </div>
+    <p className="mt-2 mb-0 text-sm text-gray-700 dark:text-gray-300">
+      Quick no-code configuration for your Hedera AI Agent.
+    </p>
+  </a>
+</div>
+
+## Overview
+
+Agent Lab is an interactive development environment within the [Hedera Developer Portal](https://portal.hedera.com) for visually designing, building, and testing AI agents powered by the [Hedera Agent Kit](https://docs.hedera.com/hedera/open-source-solutions/ai-studio-on-hedera/hedera-agent-kit). It is accessible on the [**Hedera Portal under the Agent Lab tab**](https://portal.hedera.com/agent-lab).
+
+![Agent Lab Overview](/images/ai-studio/agent-lab-01.png)
+
+Agent Lab provides a guided path from no-code experimentation to exporting your agent code, enabling developers to prototype quickly and providing a working starting point they can customize and deploy.
+
+The tool provides different ways to build and interact with the agent:
+
+- Use the **Agent Builder** to configure your agent with no code.
+- Low-Code Mode provides **Agent Mode, Framework,** and **Plugin selection** buttons that enable you to choose and configure the basics for your Hedera Agent as the code is built for you.
+- The **Advanced Mode** toggle enables you to edit the code directly, with the help of an AI Assistant on the right-hand side.
+- Run your agent in the terminal at the bottom of the screen, or interact with the **Run Agent** to get a preview of what your Hedera Agent will look like for end users.
+
+![Agent Lab Overview](/images/ai-studio/agent-lab-02.png)
+
+## The Three-Step Workflow
+ 
+Agent Lab organizes agent development into three sequential steps: **Build → Code → Run**.
+ 
+| Step | Description |
+|------|-------------|
+| **Build** | No-code wizard to configure your agent type, framework, and behavior mode |
+| **Code** | Interactive low-code editor to inspect, extend, and customize the generated agent code by selecting your framework, mode, and plugins|
+| **Run** | Chat interface for executing your agent against Hedera Testnet |
+ 
+You can move between these steps at any time. Clicking **Open Chat** from the code view opens the Run interface; clicking **Close Builder** returns you to the code.
+ 
+ ## Quickstart
+
+You can start directly with agent code by visiting the [Hedera Portal](https://portal.hedera.com/agent-lab) and clicking on the **Agent Lab** tab, or use the button at the top of the page to start with the **Agent Builder**.
+
+<Info>
+ There are two AI models at work in Agent Lab:
+- The AI coding assistant (right panel in the code editor) helps you write and extend Hedera Agent Kit code.
+- The agent you build is the Hedera AI agent that executes on-chain transactions when you interact with it when you run the agent, in the terminal.
+</Info>
+
+### Step 1: Build — Agent Builder Wizard
+ 
+When you first open Agent Lab (or click **Close Builder**), a no-code wizard walks you through three configuration choices.
+
+![Agent Builder](/images/ai-studio/agent-lab-03.png)
+
+Here you can choose:
+- **Agent Type** - Choose a basic template agent with different features and functionality
+- **Framework** - Choose the framework you want to use for your agent to handle tools, execution, prompts & memory, and execution patterns.
+- **Agent Mode** - Choose how your agent operates and interprets prompts _Autonomous Mode_ or _Human-in-the-Loop Mode_. With human-in-the-loop mode, users will have to sign every transction before execution, and if you are building an agentic application, you will need to integrate with a wallet.
+
+### Step 2: Code — The Code Editor
+The code editor is the central workspace in Agent Lab. It opens automatically after the wizard, or directly when you click the **Agent Lab** tab.
+
+Within the code editor, you can build your agent in different ways, chat with your agent when you run it in the terminal below, switch to Advanced Mode, switch to Chat and Agent Builder views, and Download your agent code.
+![Agent Coding](/images/ai-studio/agent-lab-06.png)
+
+The code editor has three panels:
+ 
+- **Left sidebar** — Toggle plugins, frameworks, and agent controls
+- **Center panel** — The Monaco-based code editor (the same engine that powers VS Code) showing your generated TypeScript agent code
+- **Right panel** — The AI coding assistant (available in Advanced Mode)
+
+Below the center panel is a **Terminal** showing the agent chat, compilation results and agent runtime logs.
+
+#### Block Mode and Advanced Mode
+
+By default, the editor opens in **Block Mode**. You can switch to **Advanced Mode** using the toggle in the toolbar.
+ 
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-2 not-prose">
+  <Frame>
+    <img
+      src="/images/ai-studio/agent-lab-04.png"
+      alt="Agent Lab"
+      className="w-full h-80 object-contain object-left"
+      noZoom
+    />
+  </Frame>
+  <Frame>
+    <img
+      src="/images/ai-studio/agent-lab-05.png"
+      alt="Agent Lab"
+      className="w-full h-80 object-contain object-right"
+      noZoom
+    />
+  </Frame>
+</div>
+
+**Block Mode** is for users who want to configure their agent visually without editing code. In this mode, the left sidebar controls generate and update the agent code automatically. You cannot type directly in the code editor. Any change to the sidebar — adding a plugin, switching frameworks, toggling a control — regenerates the code.
+ 
+**Advanced Mode** enables direct code editing. When you switch to Advanced Mode, a dialog warns you that:
+- The left-panel form controls will be hidden
+- Manual code changes won't sync back if you choose to switch back to Block Mode
+ 
+The AI coding assistant in the right panel is only available in Advanced Mode. Use it to extend your agent with custom logic, ask questions about the Hedera Agent Kit, or debug issues.
+
+### Step 3: Chat — Agent Chat Interface
+ 
+The **Run** view is the chat interface for interacting with the agent you built. It executes your agent code against Hedera Testnet in real time.
+ 
+#### Accessing the Chat View
+
+<div className="grid grid-cols-1 lg:grid-cols-5 gap-6 not-prose">
+  <div className="lg:col-span-3 prose dark:prose-invert max-w-none">
+    <ul>
+      <li>Click <strong>Open Chat</strong> in the left sidebar of the code editor</li>
+      <li>If your code compiles cleanly, you'll enter the chat interface directly</li>
+      <li>If there is a runtime error in your code, a modal will appear before you enter the chat view</li>
+    </ul>
+  </div>
+  <div className="lg:col-span-2">
+    <Frame>
+      <img src="/images/ai-studio/agent-lab-07.png" alt="Agent Chat" noZoom />
+    </Frame>
+  </div>
+</div>
+
+#### Chatting with Your Agent
+ 
+The chat interface shows a greeting and a text input at the bottom. Type any natural language request to execute queries and transactions on Hedera Testnet:
+ 
+- *"Create a new Hedera account"*
+- *"Check my account balance"*
+- *"Create a fungible token called MyToken"*
+- *"Send 10 Hbar to account 0.0.123456"*
+
+![Agent Chat](/images/ai-studio/agent-lab-08.png)
+
+The agent processes your request and executes the corresponding Hedera operations using the plugins configured in your agent. Response messages appear in the chat, reflecting the agent's tool calls and results.
+ 
+#### Transaction Approval (Human-In-The-Loop Mode)
+ 
+If your agent was configured in **Human-In-The-Loop** mode, transactions are returned as unsigned bytes rather than executed automatically. A **Transaction Approval** modal will appear showing:
+ 
+- Transaction ID
+- Transaction type and details (e.g., recipient, amount, memo)
+- Max fee
+- Raw bytes (expandable)
+ 
+You can **Sign & Execute** to submit the transaction using your Developer Portal account credentials, or **Reject** to cancel it. Successful transactions display a link to [HashScan](https://hashscan.io) for verification.
+
+![Human in the Loop Transaction](/images/ai-studio/agent-lab-09.png)
+
+### Step 4: Download and Test Your Agent
+Once you are done prototyping, you can export your agent code to test it locally or integrate it into your own applications.
+
+When you're ready to test your agent locally, click the **Download** button in the top right corner of the chat interface. 
+![Human in the Loop Transaction](/images/ai-studio/agent-lab-10.png)
+
+This will download a zip file containing your agent code and dependencies. Simply run `npm install` and `npm start` to test your agent locally.
+
+The README file in the downloaded package provides detailed instructions, and even provides information if you choose to try your agent out on Mainnet.
+
+<Info>
+   Agents exported from Advanced Mode will need additional configuration. Please follow the steps provided in the README.md you can find if the .zip export.
+</Info>   

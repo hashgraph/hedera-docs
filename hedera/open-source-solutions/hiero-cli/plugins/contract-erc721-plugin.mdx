@@ -1,0 +1,294 @@
+---
+title: "Contract ERC-721 Plugin"
+---
+
+The **Contract ERC-721** plugin calls standard **EIP-721** methods on an NFT collection contract deployed on Hedera. Deploy or import the contract first with the [Contract plugin](/hedera/open-source-solutions/hiero-cli/plugins/contract-plugin). For fungible (ERC-20) calls, see the [Contract ERC-20 plugin](/hedera/open-source-solutions/hiero-cli/plugins/contract-erc20-plugin).
+
+## Most Used Commands
+
+**Read collection metadata and token ownership**
+
+```sh
+hcli contract-erc721 name --contract my-nft
+hcli contract-erc721 owner-of --contract my-nft --token-id 1
+hcli contract-erc721 token-uri --contract my-nft --token-id 1
+```
+
+**Approve and transfer a specific token**
+
+```sh
+hcli contract-erc721 approve --contract my-nft --to bob --token-id 1
+hcli contract-erc721 safe-transfer-from --contract my-nft --from alice --to bob --token-id 1
+```
+
+## Full Command Reference
+
+Commands use the **`contract-erc721`** namespace (for example **`hcli contract-erc721 name`**). **`--contract` / `-c`** accepts a local alias, Hedera contract ID (`0.0.xxx`), or EVM address (`0x…`) where the manifest allows it.
+
+<Accordion title="Contract ERC-721 Name">
+    Call **`name()`** (read-only).
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Smart contract ID or local alias.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli contract-erc721 name --contract my-nft
+    ```
+</Accordion>
+
+<Accordion title="Contract ERC-721 Symbol">
+    Call **`symbol()`** (read-only).
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Smart contract ID or local alias.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli contract-erc721 symbol --contract my-nft
+    ```
+</Accordion>
+
+<Accordion title="Contract ERC-721 Balance-Of">
+    Call **`balanceOf(address)`** (read-only).
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Smart contract ID or local alias.
+    </ResponseField>
+
+    <ResponseField name="-o, --owner" type="string" required>
+        Owner account: alias, account ID, or EVM address.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli contract-erc721 balance-of --contract my-nft --owner alice
+    ```
+</Accordion>
+
+<Accordion title="Contract ERC-721 Owner-Of">
+    Call **`ownerOf(uint256 tokenId)`** (read-only).
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Smart contract ID or local alias.
+    </ResponseField>
+
+    <ResponseField name="-T, --token-id" type="number" required>
+        Token ID (`uint256`).
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli contract-erc721 owner-of --contract my-nft --token-id 1
+    ```
+</Accordion>
+
+<Accordion title="Contract ERC-721 Get-Approved">
+    Call **`getApproved(uint256 tokenId)`** (read-only).
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Smart contract ID or local alias.
+    </ResponseField>
+
+    <ResponseField name="-T, --token-id" type="number" required>
+        Token ID to query.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli contract-erc721 get-approved --contract my-nft --token-id 1
+    ```
+</Accordion>
+
+<Accordion title="Contract ERC-721 Is-Approved-For-All">
+    Call **`isApprovedForAll(address owner, address operator)`** (read-only).
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Smart contract ID, alias, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-o, --owner" type="string" required>
+        Owner account: alias, account ID, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-p, --operator" type="string" required>
+        Operator account: alias, account ID, or EVM address.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli contract-erc721 is-approved-for-all --contract my-nft --owner alice --operator bob
+    ```
+</Accordion>
+
+<Accordion title="Contract ERC-721 Token-URI">
+    Call **`tokenURI(uint256 tokenId)`** (read-only).
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Smart contract ID or local alias.
+    </ResponseField>
+
+    <ResponseField name="-T, --token-id" type="number" required>
+        Token ID to query.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli contract-erc721 token-uri --contract my-nft --token-id 1
+    ```
+</Accordion>
+
+<Accordion title="Contract ERC-721 Approve">
+    Call **`approve(address to, uint256 tokenId)`**. State-changing (operator signs).
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Smart contract ID, alias, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-t, --to" type="string" required>
+        Address approved to transfer the token: alias, account ID, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-T, --token-id" type="number" required>
+        Token ID to approve.
+    </ResponseField>
+
+    <ResponseField name="-g, --gas" type="number" default="100000">
+        Gas for the contract call.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli contract-erc721 approve --contract my-nft --to bob --token-id 1
+    ```
+</Accordion>
+
+<Accordion title="Contract ERC-721 Set-Approval-For-All">
+    Call **`setApprovalForAll(address operator, bool approved)`**. State-changing.
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Smart contract ID, alias, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-o, --operator" type="string" required>
+        Operator account: alias, account ID, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-a, --approved" type="string" required>
+        Must be the string **`true`** or **`false`**.
+    </ResponseField>
+
+    <ResponseField name="-g, --gas" type="number" default="100000">
+        Gas for the contract call.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli contract-erc721 set-approval-for-all --contract my-nft --operator bob --approved true
+    ```
+</Accordion>
+
+<Accordion title="Contract ERC-721 Safe-Transfer-From">
+    Call **`safeTransferFrom`** (with or without the extra **`bytes`** argument). State-changing.
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Smart contract ID, alias, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-f, --from" type="string" required>
+        Current owner: alias, account ID, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-t, --to" type="string" required>
+        New owner: alias, account ID, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-T, --token-id" type="number" required>
+        Token ID to transfer.
+    </ResponseField>
+
+    <ResponseField name="-g, --gas" type="number" default="100000">
+        Gas for the contract call.
+    </ResponseField>
+
+    <ResponseField name="-d, --data" type="string">
+        Optional data payload for the 4-argument **`safeTransferFrom`** overload.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli contract-erc721 safe-transfer-from --contract my-nft --from alice --to bob --token-id 1
+    ```
+</Accordion>
+
+<Accordion title="Contract ERC-721 Transfer-From">
+    Call **`transferFrom(address from, address to, uint256 tokenId)`**. State-changing.
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Smart contract ID, alias, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-f, --from" type="string" required>
+        Current owner: alias, account ID, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-t, --to" type="string" required>
+        Recipient: alias, account ID, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-T, --token-id" type="number" required>
+        Token ID to transfer.
+    </ResponseField>
+
+    <ResponseField name="-g, --gas" type="number" default="100000">
+        Gas for the contract call.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli contract-erc721 transfer-from --contract my-nft --from alice --to bob --token-id 1
+    ```
+</Accordion>
+
+<Accordion title="Contract ERC-721 Mint">
+    Calls a **custom** **`mint(address to, uint256 tokenId)`** style entry point (experimental). The manifest marks this command as experimental and assumes a contract that exposes a compatible **`mint`** used for testing.
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Smart contract ID, alias, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-t, --to" type="string" required>
+        Recipient of the minted token: alias, account ID, or EVM address.
+    </ResponseField>
+
+    <ResponseField name="-T, --token-id" type="number" required>
+        Token ID to mint.
+    </ResponseField>
+
+    <ResponseField name="-g, --gas" type="number" default="100000">
+        Gas for the contract call.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli contract-erc721 mint --contract my-nft --to alice --token-id 42
+    ```
+</Accordion>
+
+## Related
+
+Fungible token helpers: [Contract ERC-20 plugin](/hedera/open-source-solutions/hiero-cli/plugins/contract-erc20-plugin). Deploy and import: [Contract plugin](/hedera/open-source-solutions/hiero-cli/plugins/contract-plugin).

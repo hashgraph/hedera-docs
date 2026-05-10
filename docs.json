@@ -9,6 +9,10 @@
   },
   "redirects": [
     {
+      "source": "/hedera/core-concepts/smart-contracts/verifying-smart-contracts-beta",
+      "destination": "/hedera/core-concepts/smart-contracts/verifying-smart-contracts"
+    },
+    {
       "source": "/hedera/getting-started",
       "destination": "/#getting-started"
     },
@@ -387,7 +391,7 @@
                   "hedera/core-concepts/smart-contracts/json-rpc-relay",
                   "hedera/core-concepts/smart-contracts/deploying-smart-contracts",
                   "hedera/core-concepts/smart-contracts/smart-contract-addresses",
-                  "hedera/core-concepts/smart-contracts/verifying-smart-contracts-beta",
+                  "hedera/core-concepts/smart-contracts/verifying-smart-contracts",
                   "hedera/core-concepts/smart-contracts/smart-contract-traceability",
                   {
                     "group": "Tokens Managed by Smart Contracts",

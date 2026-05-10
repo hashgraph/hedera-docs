@@ -74,7 +74,7 @@ You have options for generating the metadata file. The recommended skill levels 
 To create a metadata file in Remix, compile your smart contract and the compiled artifacts will be saved in the `artifacts/` directory and the `<dynamic_hash>.json` metadata file will be under `artifacts/build-info` and used for verification. Alternatively, you can copy and paste it from the Solidity compiler tab. Please see the image below.
 
 <Frame>
-![](/images/core-concepts/smart-contracts/verifying-smart-contracts-beta/verifying-smart-contracts-beta-2.png)
+![](/images/core-concepts/smart-contracts/verifying-smart-contracts/verifying-smart-contracts-beta-2.png)
 </Frame>
 
 See the Remix IDE docs for more detailed documentation [here](https://remix-ide.readthedocs.io/en/latest/contract_metadata.html).
@@ -86,7 +86,7 @@ See the Remix IDE docs for more detailed documentation [here](https://remix-ide.
 To create the `.json` metadata file with Hardhat, compile the contract using the `npx hardhat compile` command. The compiled artifacts will be saved in the `artifacts/` directory and the `<dynamic_hash>.json` metadata file will be under `artifacts/build-info` and used for verification. See Sourcify Hardhat metadata documentation [here](https://docs.sourcify.dev/docs/metadata/#hardhat).
 
 <Frame>
-  <img src="/images/core-concepts/smart-contracts/verifying-smart-contracts-beta/verifying-smart-contracts-beta-1.png" />
+  <img src="/images/core-concepts/smart-contracts/verifying-smart-contracts/verifying-smart-contracts-beta-1.png" />
 </Frame>
 
 **Note**: The requirement for verification with a contract compiled with Hardhat is only the `build-info` JSON file.
@@ -96,7 +96,7 @@ To create the `.json` metadata file with Hardhat, compile the contract using the
 To create the metadata file with Foundry, compile the contract using the `forge build` command. The compilation outputs to `out/CONTRACT_NAME` folder. The `.json` file contains the metadata of the contract under `"rawMetadata"` and `"metadata"` fields. However, you don't need to extract the metadata manually for verification. See Sourcify Foundry metadata documentation [here](https://docs.sourcify.dev/docs/metadata/#foundry).
 
 <Frame>
-![](/images/core-concepts/smart-contracts/verifying-smart-contracts-beta/verifying-smart-contracts-beta-3.png)
+![](/images/core-concepts/smart-contracts/verifying-smart-contracts/verifying-smart-contracts-beta-3.png)
 </Frame>
 
 **Note**: The requirements for verification with a contract compiled with Foundry are both the `.json` metadata and the Solidity source file.

@@ -9,14 +9,17 @@ import LocalNodeDeprecation from '/snippets/local-node-deprecation.mdx';
 
 ## Introduction
 
-The Hedera Localnet provides developers with a comprehensive framework for locally testing and refining Hedera-based applications. By operating outside the public networks, Localnet is crucial in the software development lifecycle, eliminating network I/O bottlenecks, minimizing shared resource conflicts, and offering complete control over network configurations. This local network comprises of two primary product offerings, [Local Node](https://github.com/hashgraph/hedera-local-node) and [Solo](https://github.com/hashgraph/solo), each serving distinct purposes in the development and testing process. For developers just getting started with Local Node, here is the recommended path for testing:
+The Hedera Localnet provides developers with a comprehensive framework for locally testing and refining Hedera-based applications. 
+By operating outside the public networks, Localnet is crucial in the software development lifecycle, eliminating network I/O bottlenecks, minimizing shared resource conflicts, and offering complete control over network configurations. 
+This local network comprises of two primary product offerings, [Local Node](https://github.com/hashgraph/hedera-local-node) and [Solo](https://github.com/hashgraph/solo), each serving distinct purposes in the development and testing process. 
+For developers just getting started with Local Node, here is the recommended path for testing:
 
 <Frame>
   <img src="/images/networks/localnet/localnet-1.png" />
 </Frame>
 
 1. **Local Node (single & multinode mode)**: Begin by testing your initial prototype on a local node. This step allows for quick iterations and debugging in a controlled environment. If your app needs to handle more complex scenarios, run the *Multinode configuration*.
-2. **Solo**: Then move to *Solo* for advanced testing under realistic network conditions.
+2. **Solo:** Use Solo for a Kubernetes-first strategy to create a network that fully mimics a production environment.
 3. **Previewnet**: Then test on Hedera Previewnet for latest/bleeding edge/upcoming code verification.
 4. **Testnet**: Lastly, testing on the test network for stable code verification before deploying it on Hedera Mainnet.
 
@@ -66,9 +69,12 @@ With these two options, users can tailor the local node's operation to suit thei
 
 ## Solo
 
-Solo offers an advanced private network testing solution and adopts a Kubernetes-first strategy to create a network that fully mimics a production environment. Explore the Solo repository [here](https://github.com/hashgraph/solo).
+Solo is the CLI tool for deploying and managing Hedera networks locally. It adopts a Kubernetes-first strategy to provide a testing solution that mirrors production-grade environments more accurately than legacy tools.
 
-***More info coming soon...***
+> **Note:** For the most up-to-date installation guides, hardware requirements, and command references, refer to the official Solo documentation.
+
+* **[Solo Official Documentation](https://github.com/hiero-ledger/solo)**
+* **[Solo GitHub Repository](https://github.com/hiero-ledger/solo)**
 
 ***
 

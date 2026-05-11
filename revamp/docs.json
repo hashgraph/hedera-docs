@@ -238,7 +238,8 @@
                   "learn/core-concepts/accounts/account-creation",
                   "learn/core-concepts/accounts/auto-account-creation",
                   "learn/core-concepts/accounts/account-properties",
-                  "learn/core-concepts/accounts/network-accounts"
+                  "learn/core-concepts/accounts/network-accounts",
+                  "learn/core-concepts/accounts/hiero-hooks"
                 ]
               },
               {
@@ -464,7 +465,8 @@
                   "evm/tools/foundry/index",
                   "evm/tools/foundry/setup",
                   "evm/tools/foundry/testing",
-                  "evm/tools/foundry/forking"
+                  "evm/tools/foundry/forking",
+                  "evm/tools/foundry/forking-advanced-hts"
                 ]
               },
               {
@@ -907,12 +909,15 @@
                 "pages": [
                   "solutions/ai/agent-kit/index",
                   "solutions/ai/agent-kit/plugins",
+                  "solutions/ai/agent-kit/hooks-and-policies",
                   {
                     "group": "JavaScript",
                     "pages": [
                       "solutions/ai/agent-kit/js/quickstart",
                       "solutions/ai/agent-kit/js/plugins",
-                      "solutions/ai/agent-kit/js/create-plugins"
+                      "solutions/ai/agent-kit/js/create-plugins",
+                      "solutions/ai/agent-kit/js/create-hooks-and-policies",
+                      "solutions/ai/agent-kit/js/migration-guide"
                     ]
                   },
                   {
@@ -920,7 +925,8 @@
                     "pages": [
                       "solutions/ai/agent-kit/python/quickstart",
                       "solutions/ai/agent-kit/python/plugins",
-                      "solutions/ai/agent-kit/python/create-plugins"
+                      "solutions/ai/agent-kit/python/create-plugins",
+                      "solutions/ai/agent-kit/python/create-hooks-and-policies"
                     ]
                   }
                 ]
@@ -980,16 +986,23 @@
                     "group": "Plugins",
                     "pages": [
                       "solutions/tools/hiero-cli/plugins/account-plugin",
+                      "solutions/tools/hiero-cli/plugins/batch-plugin",
                       "solutions/tools/hiero-cli/plugins/config-plugin",
+                      "solutions/tools/hiero-cli/plugins/contract-plugin",
+                      "solutions/tools/hiero-cli/plugins/contract-erc20-plugin",
+                      "solutions/tools/hiero-cli/plugins/contract-erc721-plugin",
                       "solutions/tools/hiero-cli/plugins/credentials-plugin",
                       "solutions/tools/hiero-cli/plugins/hbar-plugin",
                       "solutions/tools/hiero-cli/plugins/network-plugin",
                       "solutions/tools/hiero-cli/plugins/plugin-management-plugin",
+                      "solutions/tools/hiero-cli/plugins/schedule-plugin",
+                      "solutions/tools/hiero-cli/plugins/swap-plugin",
                       "solutions/tools/hiero-cli/plugins/token-plugin",
                       "solutions/tools/hiero-cli/plugins/topic-plugin"
                     ]
                   },
-                  "solutions/tools/hiero-cli/scripting/quickstart"
+                  "solutions/tools/hiero-cli/scripting/quickstart",
+                  "solutions/tools/hiero-cli/feature-coverage-gap-report"
                 ]
               }
             ]

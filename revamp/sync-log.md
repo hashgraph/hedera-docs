@@ -8,6 +8,12 @@ Use this to track how current `dev` is relative to `main` at any time.
 
 ---
 
+## 2026-05-11 17:11 UTC
+
+- **main HEAD**: `e53ff7e` — chore: update node tables (#487)
+- **dev HEAD**: `f024bce` — chore: merge origin/main into dev
+- **Stats**: 13 new · 38 updated · 493 unchanged · 1 protected skipped · 5 fixups applied
+
 ## 2026-03-30 17:32 UTC
 
 - **main HEAD**: `4c6691a` — docs: added v72 consensus node and mirror node release notes (#489)

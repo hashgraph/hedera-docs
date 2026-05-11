@@ -4,16 +4,17 @@ title: "Token Plugin"
 
 ## Most Used Commands
 
-**Create a new token with treasy and admin key set to alias Alice**
+**Create a new fungible token with treasury and admin key set to alias Alice**
 
 ```sh
-hcli token create \
+hcli token create-ft \
   --token-name "My Token" \
   --symbol "MTK" \
   --treasury alice \
   --decimals 2 \
   --initial-supply 1000 \
   --supply-type FINITE \
+  --max-supply 10000 \
   --admin-key alice \
   --name mytoken-alias
 ```
@@ -26,47 +27,143 @@ hcli token associate \
   --account bob
 ```
 
+**Transfer fungible tokens**
+
+```sh
+hcli token transfer-ft \
+  --token mytoken-alias \
+  --to bob \
+  --amount 10
+```
+
+**Create an NFT collection, mint one serial, transfer it**
+
+```sh
+hcli token create-nft \
+  --token-name "My Collection" \
+  --symbol "MCOL" \
+  --treasury alice \
+  --admin-key alice \
+  --supply-key alice \
+  --name my-nft-alias
+
+hcli token mint-nft \
+  --token my-nft-alias \
+  --metadata "ipfs://bafyExample/metadata-1.json"
+
+hcli token transfer-nft \
+  --token my-nft-alias \
+  --to bob \
+  --serials 1
+```
+
 ## Full Command Reference
 
-If you want to create a complex token with many keys, custom fees, and other options, take a look at the [below guide](#guide:-token-create-from-file-specification) for creating tokens from a specification file using the `token create-from-file` command.
+The token plugin includes many subcommands (NFTs, airdrops, mint, burn, freeze, and more). The sections below cover common **FT** and **NFT** flows. For the full command list and flags, run `hcli token --help`, then `hcli token` with your subcommand and `--help`.
 
-<Accordion title="Token Create">
+For repeatable creation from JSON, use **`token create-ft-from-file`** or **`token create-nft-from-file`** and the [guide below](#guide-token-create-from-file-specification).
+
+<Accordion title="Token Create-FT">
     Create a new fungible token with specified properties.
 
-    <ResponseField name="-N, --token-name" type="string" required>
-        Token name.
+    <ResponseField name="-T, --token-name" type="string" required>
+        Fungible token name.
     </ResponseField>
 
-    <ResponseField name="-s, --symbol" type="string" required>
-        Token symbol.
+    <ResponseField name="-Y, --symbol" type="string" required>
+        Fungible token symbol.
     </ResponseField>
 
-    <ResponseField name="-t, --treasury" type="string" required>
-        Treasury account: either an alias or `treasury-id:treasury-key` pair.
+    <ResponseField name="-t, --treasury" type="string">
+        Treasury account: `{accountId}:{privateKey}` pair, key reference, or account alias. Defaults to the operator.
     </ResponseField>
 
     <ResponseField name="-d, --decimals" type="int" default="0">
-        Decimals for the token. Default: 0.
+        Decimals for the fungible token. Default: 0.
     </ResponseField>
 
-    <ResponseField name="-i, --initial-supply" type="int">
-        Initial supply amount. Default: display units (with decimals applied). Append "t" for raw base units (e.g., "1000t").
+    <ResponseField name="-i, --initial-supply" type="string">
+        Initial supply amount. Default: `1000000` in display units (with decimals applied). Append `t` for raw base units (e.g., `1000t`).
     </ResponseField>
 
-    <ResponseField name="-S, --supply-type" type="int" default="INFINITE">
-        Set supply type: `INFINITE` (default) or `FINITE`.
+    <ResponseField name="-S, --supply-type" type="string" default="INFINITE">
+        Supply type: `INFINITE` (default) or `FINITE`.
     </ResponseField>
 
-    <ResponseField name="-m, --max-supply" type="int">
-        Maximum supply of the token to bet set upon creation. **This option is required if you set supply type to `FINITE`.**
+    <ResponseField name="-m, --max-supply" type="string">
+        Maximum supply at creation (display units, or append `t` for raw base units). Use with `FINITE` supply type.
     </ResponseField>
 
-    <ResponseField name="-a, --admin-key" type="string">
-        Admin key to be set for the token upon creation. If option not set then the operator key is passed as admin key.
+    <ResponseField name="-a, --admin-key" type="string (repeatable)">
+        Optional admin key. Can be `{accountId}:{privateKey}` pair, private key in `{ed25519|ecdsa}:private:{private-key}` format, key reference, or account alias. Omit for a token without an admin key.
+    </ResponseField>
+
+    <ResponseField name="-A, --admin-key-threshold" type="int">
+        M-of-N: number of admin keys required to sign (only when multiple `--admin-key` values are set).
+    </ResponseField>
+
+    <ResponseField name="-s, --supply-key" type="string (repeatable)">
+        Supply key(s). Same key formats as other repeatable token keys.
+    </ResponseField>
+
+    <ResponseField name="-L, --supply-key-threshold" type="int">
+        M-of-N for supply keys (only when multiple `--supply-key` values are set).
+    </ResponseField>
+
+    <ResponseField name="-f, --freeze-key" type="string (repeatable)">
+        Optional freeze key(s).
+    </ResponseField>
+
+    <ResponseField name="-Z, --freeze-key-threshold" type="int">
+        M-of-N for freeze keys (only when multiple `--freeze-key` values are set).
+    </ResponseField>
+
+    <ResponseField name="-F, --freeze-default" type="boolean" default="false">
+        When true and a freeze key is set, new token associations are frozen by default. Ignored without a freeze key (a warning is logged).
+    </ResponseField>
+
+    <ResponseField name="-w, --wipe-key" type="string (repeatable)">
+        Optional wipe key(s).
+    </ResponseField>
+
+    <ResponseField name="-W, --wipe-key-threshold" type="int">
+        M-of-N for wipe keys (only when multiple `--wipe-key` values are set).
+    </ResponseField>
+
+    <ResponseField name="-y, --kyc-key" type="string (repeatable)">
+        Optional KYC key(s).
+    </ResponseField>
+
+    <ResponseField name="-H, --kyc-key-threshold" type="int">
+        M-of-N for KYC keys (only when multiple `--kyc-key` values are set).
+    </ResponseField>
+
+    <ResponseField name="-p, --pause-key" type="string (repeatable)">
+        Optional pause key(s).
+    </ResponseField>
+
+    <ResponseField name="-U, --pause-key-threshold" type="int">
+        M-of-N for pause keys (only when multiple `--pause-key` values are set).
+    </ResponseField>
+
+    <ResponseField name="-e, --fee-schedule-key" type="string (repeatable)">
+        Optional fee schedule key(s).
+    </ResponseField>
+
+    <ResponseField name="-E, --fee-schedule-key-threshold" type="int">
+        M-of-N for fee schedule keys (only when multiple `--fee-schedule-key` values are set).
+    </ResponseField>
+
+    <ResponseField name="-D, --metadata-key" type="string (repeatable)">
+        Optional metadata key(s).
+    </ResponseField>
+
+    <ResponseField name="-O, --metadata-key-threshold" type="int">
+        M-of-N for metadata keys (only when multiple `--metadata-key` values are set).
     </ResponseField>
 
     <ResponseField name="-n, --name" type="string">
-        Optional name to register for the token.
+        Optional name to register for the fungible token (local alias).
     </ResponseField>
 
     <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
@@ -74,21 +171,121 @@ If you want to create a complex token with many keys, custom fees, and other opt
     </ResponseField>
 
     <ResponseField name="-M, --memo" type="string">
-        Optional memo for the token (max 100 characters).
+        Optional memo for the fungible token (max 100 characters).
     </ResponseField>
+
+    <ResponseField name="-R, --auto-renew-period" type="string">
+        Auto-renew period: seconds as integer, or with suffix s/m/h/d (e.g. 500, 500s, 50m, 2h, 1d). Requires `--auto-renew-account`.
+    </ResponseField>
+
+    <ResponseField name="-r, --auto-renew-account" type="string">
+        Account that pays auto-renewal (account id, alias, or key reference). Required when `--auto-renew-period` is set.
+    </ResponseField>
+
+    <ResponseField name="-x, --expiration-time" type="string">
+        Absolute token expiration as ISO 8601 datetime. Ignored when `--auto-renew-period` and `--auto-renew-account` are set.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli token create-ft \
+      --token-name "My Token" \
+      --symbol "MTK" \
+      --treasury alice \
+      --decimals 2 \
+      --initial-supply 1000 \
+      --name my-ft-alias
+    ```
 </Accordion>
 
-<Accordion title="Token Create-From-File">
-    Create a new token from a JSON file definition with advanced features. See the full guide below.<br/>
-    Example: `hcli token create-from-file --file ~/projects/token.json`
-   
-    <ResponseField name="-f, --file" type="string" required>
-        Token definition file path (absolute or relative) to a JSON file.
+<Accordion title="Token Create-NFT">
+    Create a new non-fungible token (NFT collection). Use **`token mint-nft`** after creation to mint serials. See `hcli token create-nft --help` for all key types and thresholds.
+
+    <ResponseField name="-T, --token-name" type="string" required>
+        Token name.
+    </ResponseField>
+
+    <ResponseField name="-Y, --symbol" type="string" required>
+        Token symbol.
+    </ResponseField>
+
+    <ResponseField name="-t, --treasury" type="string">
+        Treasury account. Defaults to the operator.
+    </ResponseField>
+
+    <ResponseField name="-S, --supply-type" type="string" default="INFINITE">
+        `INFINITE` or `FINITE`. With `FINITE`, set `--max-supply`.
+    </ResponseField>
+
+    <ResponseField name="-m, --max-supply" type="string">
+        Max supply (display units, or append `t` for base units). Required when supply type is `FINITE`.
+    </ResponseField>
+
+    <ResponseField name="-a, --admin-key" type="string (repeatable)">
+        Admin key(s). Defaults to operator key when omitted (see CLI help).
+    </ResponseField>
+
+    <ResponseField name="-s, --supply-key" type="string (repeatable)">
+        Supply key(s) for minting NFT serials.
+    </ResponseField>
+
+    <ResponseField name="-n, --name" type="string">
+        Optional local alias for the token.
     </ResponseField>
 
     <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
         Key manager to use: local or local_encrypted (defaults to config setting).
     </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli token create-nft \
+      --token-name "Collectible" \
+      --symbol "COLL" \
+      --treasury alice \
+      --admin-key alice \
+      --supply-key alice \
+      --name coll-alias
+    ```
+</Accordion>
+
+<Accordion title="Token Create-FT-From-File">
+    Create a new fungible token from a JSON file definition with advanced features. See the full guide below.<br/>
+    Example: `hcli token create-ft-from-file --file ~/projects/token.json`
+   
+    <ResponseField name="-f, --file" type="string" required>
+        Fungible token definition file path (absolute or relative) to a JSON file.
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager to use: local or local_encrypted (defaults to config setting).
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli token create-ft-from-file --file ./token-ft.json
+    ```
+</Accordion>
+
+<Accordion title="Token Create-NFT-From-File">
+    Create a new NFT collection from a JSON definition. Schema matches the NFT file format in the [guide](#nft-definition-file-quickstart).
+
+    <ResponseField name="-f, --file" type="string" required>
+        NFT token definition file path (absolute or relative) to a JSON file.
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager to use: local or local_encrypted (defaults to config setting).
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli token create-nft-from-file --file ./token-nft.json
+    ```
 </Accordion>
 
 <Accordion title="Token Associate">
@@ -99,48 +296,132 @@ If you want to create a complex token with many keys, custom fees, and other opt
     </ResponseField>
 
     <ResponseField name="-a, --account" type="string" required>
-        Account: either an alias or `account-id:account-key` pair to associate with the token.
+        Account to associate: `{accountId}:{privateKey}` pair, key reference, or account alias.
     </ResponseField>
 
    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
         Key manager to use: local or local_encrypted (defaults to config setting).
     </ResponseField>
+
+    **Examples**
+
+    Fungible or NFT token alias:
+
+    ```sh
+    hcli token associate --token my-ft-alias --account bob
+    ```
+
+    ```sh
+    hcli token associate --token coll-alias --account bob
+    ```
 </Accordion>
 
-<Accordion title="Token Transfer">
-    Transfer a fungible token from one account to another.
+<Accordion title="Token Mint-NFT">
+    Mint a new NFT serial on an existing collection. Metadata must be at most 100 bytes.
 
     <ResponseField name="-T, --token" type="string" required>
-        Token: either a token alias or token-id.
+        NFT token: alias or token ID.
     </ResponseField>
 
-    <ResponseField name="-t, --to" type="string" required>
-        Destination account: either an alias or account-id.
+    <ResponseField name="-m, --metadata" type="string" required>
+        NFT metadata string (max 100 bytes), often a URI or short label.
     </ResponseField>
 
-    <ResponseField name="-f, --from" type="string" required>
-        Source account: either a stored alias or `account-id:private-key` or `account-id:key-type:private-key pair`.
-    </ResponseField>
-
-    <ResponseField name="-a, --amount" type="int" required>
-        Amount to transfer. Default: display units (with decimals applied). Append "t" for raw base units (e.g., "100t").
+    <ResponseField name="-s, --supply-key" type="string (repeatable)">
+        Supply key credential(s). Omit when the CLI can resolve signing keys from the key manager.
     </ResponseField>
 
     <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
         Key manager to use: local or local_encrypted (defaults to config setting).
     </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli token mint-nft \
+      --token coll-alias \
+      --metadata "ipfs://bafyExample/1.json"
+    ```
+</Accordion>
+
+<Accordion title="Token Transfer-FT">
+    Transfer a fungible token from one account to another.
+
+    <ResponseField name="-T, --token" type="string" required>
+        Fungible token: either a token alias or token-id.
+    </ResponseField>
+
+    <ResponseField name="-t, --to" type="string" required>
+        Destination account: account ID or alias.
+    </ResponseField>
+
+    <ResponseField name="-f, --from" type="string">
+        Account to transfer from: `{accountId}:{privateKey}` pair, key reference, or account alias. Defaults to the operator.
+    </ResponseField>
+
+    <ResponseField name="-a, --amount" type="string" required>
+        Amount to transfer. Default: display units (with decimals applied). Append `t` for raw base units (e.g., `100t`).
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager to use: local or local_encrypted (defaults to config setting).
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli token transfer-ft \
+      --token my-ft-alias \
+      --to bob \
+      --amount 25
+    ```
+</Accordion>
+
+<Accordion title="Token Transfer-NFT">
+    Transfer one or more NFT serials to another account.
+
+    <ResponseField name="-T, --token" type="string" required>
+        NFT token: alias or token ID.
+    </ResponseField>
+
+    <ResponseField name="-t, --to" type="string" required>
+        Destination account ID or alias.
+    </ResponseField>
+
+    <ResponseField name="-f, --from" type="string">
+        Source account. Defaults to the operator.
+    </ResponseField>
+
+    <ResponseField name="-s, --serials" type="string" required>
+        Comma-separated serial numbers (e.g. `1,2,3`).
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager to use: local or local_encrypted (defaults to config setting).
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli token transfer-nft \
+      --token coll-alias \
+      --to bob \
+      --serials 1
+    ```
 </Accordion>
 
 <Accordion title="Token List">
-    List all tokens stored in state for the current network or a specified network.
+    List all tokens (FT and NFT) stored in state for all networks.
 
-    <ResponseField name="-k, --keys">
+    <ResponseField name="-k, --keys" type="boolean">
         Show token key information (admin, supply, wipe, etc.).
     </ResponseField>
 
-    <ResponseField name="-N, --network" type="string">
-        Filter tokens by network (defaults to current active network).
-    </ResponseField>
+    **Example**
+
+    ```sh
+    hcli token list --keys
+    ```
 </Accordion>
 
 ## Guide: Token Create From File (Specification)
@@ -149,7 +430,10 @@ Create a token by defining its configuration in a JSON file. This is the recomme
 
 ### What it does
 
-`token create-from-file` reads a JSON file that matches a supported schema and creates a token on the selected network.
+- **`token create-ft-from-file`** reads a JSON file that matches the **fungible** schema and creates an FT on the selected network.
+- **`token create-nft-from-file`** reads a JSON file that matches the **NFT** schema and creates an NFT collection on the selected network.
+
+### Fungible token (FT) file
 
 You can define:
 - token metadata (name, symbol, decimals, memo)
@@ -158,7 +442,7 @@ You can define:
 - optional token associations
 - optional custom fees
 
-### Quickstart
+#### Quickstart (FT)
 
 Create a `token.json` file and add a JSON specification. Here's a basic example that both uses the full key format for the `treasuryKey` and the alias format for the `adminKey`.
 
@@ -174,9 +458,9 @@ Create a `token.json` file and add a JSON specification. Here's a basic example 
 }
 ```
 
-You can create a toke from this specification by running the following command: `hcli token create-from-file --file ./token.json`
+You can create a token from this specification by running the following command: `hcli token create-ft-from-file --file ./token.json`
 
-### Full breakdown
+#### Full breakdown (FT)
 
 Here's a full breakdown of all the options you can use:
 
@@ -209,3 +493,29 @@ Here's a full breakdown of all the options you can use:
   ]
 }
 ```
+
+### NFT definition file quickstart
+
+NFT JSON files use a different schema than FT files. There is no `decimals` or `initialSupply`. You must provide at least one **`adminKey`** and one **`supplyKey`** (each can be a single string or an array of key strings). For **`supplyType`** `finite`, set **`maxSupply`**. For **`infinite`**, do not include `maxSupply`.
+
+Example `token-nft.json`:
+
+```json
+{
+  "name": "nft-keys-example",
+  "symbol": "NKE",
+  "supplyType": "infinite",
+  "treasuryKey": "alice-account",
+  "adminKey": "alice-account",
+  "supplyKey": "alice-account",
+  "memo": "Example NFT collection from file"
+}
+```
+
+Create the collection on the selected network:
+
+```sh
+hcli token create-nft-from-file --file ./token-nft.json
+```
+
+Optional fields include the same families of keys and thresholds as in code (`wipeKey`, `freezeKey`, `pauseKey`, `feeScheduleKey`, `associations`, and their threshold fields). For exact validation rules, rely on the CLI error output or the schema in the Hiero CLI repository (`NonFungibleTokenFileSchema`).

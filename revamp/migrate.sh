@@ -367,6 +367,7 @@ get_explicit_mapping() {
     "hedera/core-concepts/accounts/auto-account-creation.mdx") echo "learn/core-concepts/accounts/auto-account-creation.mdx" ;;
     "hedera/core-concepts/accounts/account-properties.mdx") echo "learn/core-concepts/accounts/account-properties.mdx" ;;
     "hedera/core-concepts/accounts/network-accounts.mdx") echo "learn/core-concepts/accounts/network-accounts.mdx" ;;
+    "hedera/core-concepts/accounts/hiero-hooks.mdx") echo "learn/core-concepts/accounts/hiero-hooks.mdx" ;;
     "hedera/core-concepts/hashgraph-consensus-algorithms.mdx") echo "learn/core-concepts/hashgraph/index.mdx" ;;
     "hedera/core-concepts/hashgraph-consensus-algorithms/gossip-about-gossip.mdx") echo "learn/core-concepts/hashgraph/gossip-about-gossip.mdx" ;;
     "hedera/core-concepts/hashgraph-consensus-algorithms/virtual-voting.mdx") echo "learn/core-concepts/hashgraph/virtual-voting.mdx" ;;
@@ -474,6 +475,7 @@ get_explicit_mapping() {
     "hedera/tutorials/smart-contracts/foundry.mdx") echo "evm/tools/foundry/index.mdx" ;;
     "hedera/tutorials/smart-contracts/foundry/configuring-foundry-with-hedera-localnet-testnet-a-step-by-step-guide.mdx") echo "evm/tools/foundry/setup.mdx" ;;
     "hedera/tutorials/smart-contracts/foundry/how-to-fork-the-hedera-network-with-foundry-basic-erc20.mdx") echo "evm/tools/foundry/forking.mdx" ;;
+    "hedera/tutorials/smart-contracts/foundry/how-to-fork-the-hedera-network-with-foundry-advanced-hts.mdx") echo "evm/tools/foundry/forking-advanced-hts.mdx" ;;
     "hedera/tutorials/smart-contracts/deploy-smart-contracts-on-hedera-using-truffle.mdx") echo "evm/tools/other/truffle.mdx" ;;
     "hedera/tutorials/smart-contracts/deploy-a-subgraph-using-the-graph-and-json-rpc.mdx") echo "evm/tools/other/the-graph.mdx" ;;
 
@@ -710,6 +712,10 @@ get_explicit_mapping() {
     "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/create-py-plugins.mdx") echo "solutions/ai/agent-kit/python/create-plugins.mdx" ;;
     "hedera/open-source-solutions/ai-studio-on-hedera/agent-lab.mdx") echo "solutions/ai/agent-lab.mdx" ;;
     "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/elizaos-plugin.mdx") echo "solutions/ai/elizaos.mdx" ;;
+    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hooks-and-polices.mdx") echo "solutions/ai/agent-kit/hooks-and-policies.mdx" ;;
+    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/create-js-hooks-and-policies.mdx") echo "solutions/ai/agent-kit/js/create-hooks-and-policies.mdx" ;;
+    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/migration-guide.mdx") echo "solutions/ai/agent-kit/js/migration-guide.mdx" ;;
+    "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/create-py-hooks-and-policies.mdx") echo "solutions/ai/agent-kit/python/create-hooks-and-policies.mdx" ;;
     "hedera/open-source-solutions/ai-tools-for-developers.mdx") echo "solutions/ai/tools/index.mdx" ;;
     "hedera/open-source-solutions/ai-tools-for-developers/hedera-hivemind.mdx") echo "solutions/ai/tools/hivemind.mdx" ;;
     "hedera/open-source-solutions/ai-tools-for-developers/kapa-ai.mdx") echo "solutions/ai/tools/kapa.mdx" ;;

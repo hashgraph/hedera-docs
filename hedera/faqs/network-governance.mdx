@@ -232,7 +232,7 @@ title: "Network Governance"
   </Accordion>
 
 <Accordion title="Do transaction fees account for 'rent'?">
-    **No**. Hedera smart contracts are not currently subject to recurring rent charges. While the network architecture includes provisions for auto-renewal and storage fees, **the enforcement mechanisms for recurring rent and automatic entity deletion are presently disabled for smart contracts**.
+    **No**. Hiero Contracts are not currently subject to recurring rent charges. While the network architecture includes provisions for auto-renewal and storage fees, **the enforcement mechanisms for recurring rent and automatic entity deletion are presently disabled for smart contracts**.
     
     **Current behavior**:
     The transaction fee paid during contract creation includes storage costs for an initial period, determined by the `auto_renew_period` (typically 30–90 days). Although contracts are assigned an `expirationTime`, the system does not currently charge renewal fees or remove contracts upon expiration. Consequently, deployed smart contracts remain on the ledger indefinitely without additional charges or risk of deletion due to non-payment.

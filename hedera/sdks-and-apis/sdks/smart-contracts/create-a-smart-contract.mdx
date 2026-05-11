@@ -40,19 +40,20 @@ With [HIP-904](https://hips.hedera.com/hip/hip-904), contracts now support Admin
 
 **Smart Contract Properties**
 
-| Field                            | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Admin Key**                    | Sets the state of the instance and its fields can be modified arbitrarily if this key signs a transaction to modify it. If this is null, then such modifications are not possible, and there is no administrator that can override the normal operation of this smart contract instance. Note that if it is created with no admin keys, then there is no administrator to authorize changing the admin keys, so there can never be any admin keys for that instance. |
-| **Gas**                          | The gas to run the constructor.                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| **Initial Balance**              | The initial number of hbars to put into the cryptocurrency account associated with and owned by the smart contract.                                                                                                                                                                                                                                                                                                                                                  |
-| **Byte Code File**               | The file containing the hex encoded smart contract byte code.                                                                                                                                                                                                                                                                                                                                                                                                        |
-| **Staked ID**                    | <p>The node account or node ID to which this contract account is staking to. See <a href="https://hips.hedera.com/hip/hip-406">HIP-406.</a><br/><br/><strong>Note:</strong> Accounts cannot stake to contract accounts. This will fixed in a future release.</p>                                                                                                                                                                                                       |
-| **Decline Rewards**              | Some contracts may choose to stake their hbars and decline receiving rewards. If set to true, the contract account will not earn rewards when staked. The default value is false. See [HIP-406.](https://hips.hedera.com/hip/hip-406)                                                                                                                                                                                                                                |
-| **Auto Renew Account ID**        | An account to charge for auto-renewal of this contract. If not set, or set to an account with zero hbar balance, the contract's own hbar balance will be used to cover auto-renewal fees.                                                                                                                                                                                                                                                                            |
-| **Auto Renew Period**            | The period that the instance will charge its account every this many seconds to renew.                                                                                                                                                                                                                                                                                                                                                                               |
-| **Automatic Token Associations** | The maximum number of tokens that this contract can be automatically associated with (i.e., receive air-drops from).                                                                                                                                                                                                                                                                                                                                                 |
-| **Constructor Parameters**       | The constructor parameters to pass.                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| **Memo**                         | The memo to be associated with this contract. (max 100 bytes)                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Field | Description |
+| --- | --- |
+| **Admin Key** | Sets the state of the instance and its fields can be modified arbitrarily if this key signs a transaction to modify it. If this is null, then such modifications are not possible, and there is no administrator that can override the normal operation of this smart contract instance. Note that if it is created with no admin keys, then there is no administrator to authorize changing the admin keys, so there can never be any admin keys for that instance. |
+| **Gas** | The gas to run the constructor. |
+| **Initial Balance** | The initial number of hbars to put into the cryptocurrency account associated with and owned by the smart contract. |
+| **Byte Code File** | The file containing the hex encoded smart contract byte code. |
+| **Staked ID** | The node account or node ID to which this contract account is staking to. See [HIP-406.](https://hips.hedera.com/hip/hip-406) **Note:** Accounts cannot stake to contract accounts. This will be fixed in a future release. |
+| **Decline Rewards** | Some contracts may choose to stake their hbars and decline receiving rewards. If set to true, the contract account will not earn rewards when staked. The default value is false. See [HIP-406.](https://hips.hedera.com/hip/hip-406) |
+| **Auto Renew Account ID** | An account to charge for auto-renewal of this contract. If not set, or set to an account with zero hbar balance, the contract's own hbar balance will be used to cover auto-renewal fees. |
+| **Auto Renew Period** | The period that the instance will charge its account every this many seconds to renew. |
+| **Automatic Token Associations** | The maximum number of tokens that this contract can be automatically associated with (i.e., receive air-drops from). |
+| **Constructor Parameters** | The constructor parameters to pass. |
+| **Memo** | The memo to be associated with this contract. (max 100 bytes) |
+| **Hooks** | Details of [Hiero Hooks](/hedera/core-concepts/accounts/hiero-hooks) to attach immediately after creating this contract. See [Create and Manage Hooks](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks). |
 
 ## `ContractCreateFlow()`
 
@@ -68,12 +69,12 @@ The response will return the contract create transaction information like the ne
 **Note:** Please refer to [ContractCreateTransaction()](#contractcreatetransaction) for a complete list of applicable methods.
 </Info>
 
-| Method                     | Type       |
-| -------------------------- | ---------- |
-| `setBytecode(<bytecode>)`  | byte       |
-| `setBytecode(<bytecode>)`  | String     |
-| `setBytecode(<bytecode>)`  | ByteString |
-| `setMaxChunks(<maxChunks)` | int        |
+| Method | Type |
+| --- | --- |
+| `setBytecode(<bytecode>)` | byte |
+| `setBytecode(<bytecode>)` | String |
+| `setBytecode(<bytecode>)` | ByteString |
+| `setMaxChunks(<maxChunks)` | int |
 
 <CodeGroup>
 
@@ -117,7 +118,7 @@ console.log("The new contract ID is " +newContractId);
 ```
 
 
-```java Go
+```go Go
 //Create the transaction
 contractCreate := hedera.NewContractCreateFlow().
 		SetGas(100000).
@@ -138,7 +139,7 @@ if err != nil {
 //Get the topic ID
 newContractId := *receipt.ContractID
 
-fmt.Printf("The new topic ID is %v\n", newContractId)
+fmt.Printf("The new contract ID is %v\n", newContractId)
 //SDK Version: 2.11.0-beta.1
 ```
 
@@ -176,27 +177,29 @@ println!("The new contract ID is {:?}", new_contract_id);
 
 Creates a smart contract instance using the file ID of the contract bytecode.
 
-| Constructor                       | Description                                        |
-| --------------------------------- | -------------------------------------------------- |
+| Constructor | Description |
+| --- | --- |
 | `new ContractCreateTransaction()` | Initializes the ContractCreateTransaction() object |
 
 ### Methods
 
-| Method                                              | Type                                                                            | Requirement |
-| --------------------------------------------------- | ------------------------------------------------------------------------------- | ----------- |
-| `setGas(<gas>)`                                     | long                                                                            | Required    |
-| `setBytecodeFileId(<fileId>)`                       | [FileId](/hedera/sdks-and-apis/sdks/specialized-types#fileid) | Required    |
-| `setInitialBalance(<initialBalance>)`               | Hbar                                                                            | Optional    |
-| `setAdminKey(<keys>)`                               | Key                                                                             | Optional    |
-| `setConstructorParameters(<constructorParameters>)` | byte \[ ]                                                                       | Optional    |
-| `setConstructorParameters(<constructorParameters>)` | ContractFunctionParameters                                                      | Optional    |
-| `setContractMemo(<memo>)`                           | String                                                                          | Optional    |
-| `setStakedNodeId(<stakedNodeId>)`                   | long                                                                            | Optional    |
-| `setStakedAccountId(<stakedAccountId>)`             | AccountId                                                                       | Optional    |
-| `setDeclineStakingReward(<declineStakingReward>)`   | boolean                                                                         | Optional    |
-| `setAutoRenewAccountId(<accountId)`                 | AccountId                                                                       | Optional    |
-| `setAutoRenewPeriod(<autoRenewPeriod>)`             | Duration                                                                        | Optional    |
-| `setMaxAutomaticTokenAssociations()`                | int                                                                             | Optional    |
+| Method | Type | Requirement |
+| --- | --- | --- |
+| `setGas(<gas>)` | long | Required |
+| `setBytecodeFileId(<fileId>)` | [FileId](/hedera/sdks-and-apis/sdks/specialized-types#fileid) | Required |
+| `setInitialBalance(<initialBalance>)` | Hbar | Optional |
+| `setAdminKey(<keys>)` | Key | Optional |
+| `setConstructorParameters(<constructorParameters>)` | byte \[ ] | Optional |
+| `setConstructorParameters(<constructorParameters>)` | ContractFunctionParameters | Optional |
+| `setContractMemo(<memo>)` | String | Optional |
+| `setStakedNodeId(<stakedNodeId>)` | long | Optional |
+| `setStakedAccountId(<stakedAccountId>)` | AccountId | Optional |
+| `setDeclineStakingReward(<declineStakingReward>)` | boolean | Optional |
+| `setAutoRenewAccountId(<accountId)` | AccountId | Optional |
+| `setAutoRenewPeriod(<autoRenewPeriod>)` | Duration | Optional |
+| `setMaxAutomaticTokenAssociations()` | int | Optional |
+| `addHook(<hook>)` | [HookCreationDetails](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks) | Optional |
+| `setHooks(<hooks>)` | list\<[HookCreationDetails](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks)> | Optional |
 
 <CodeGroup>
 
@@ -245,7 +248,7 @@ console.log("The new contract ID is " +newContractId);
 ```
 
 
-```java Go
+```go Go
 //Create the transaction
 transaction := hedera.NewContractCreateTransaction().
 		SetGas(100000).
@@ -263,31 +266,119 @@ if err != nil {
 		panic(err)
 }
 
-//Get the topic ID
+//Get the contract ID
 newContractId := *receipt.ContractID
 
-fmt.Printf("The new topic ID is %v\n", newContractId)
+fmt.Printf("The new contract ID is %v\n", newContractId)
 //v2.0.0
+```
+
+</CodeGroup>
+
+#### Create a contract with a hook
+
+This example creates a smart contract with an [account allowance hook](/hedera/core-concepts/accounts/hiero-hooks) attached. The hook's implementing contract must be deployed separately first.
+
+<CodeGroup>
+
+```java Java
+// The hook's implementing contract (deployed separately)
+ContractId hookContractId = /* ... */;
+
+// Create hook details
+HookCreationDetails hookDetails = new HookCreationDetails()
+    .setExtensionPoint(HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK)
+    .setHookId(1L)
+    .setEvmHook(new EvmHook().setContractId(hookContractId))
+    .setAdminKey(adminKey.getPublicKey());
+
+// Create the contract with a hook attached
+TransactionResponse txResponse = new ContractCreateTransaction()
+    .setGas(100_000)
+    .setBytecodeFileId(bytecodeFileId)
+    .addHook(hookDetails)
+    .setMaxTransactionFee(new Hbar(16))
+    .execute(client);
+
+ContractId newContractId = txResponse.getReceipt(client).contractId;
+System.out.println("Contract created with hook: " + newContractId);
+```
+
+```javascript JavaScript
+import {
+    ContractCreateTransaction,
+    HookCreationDetails,
+    EvmHook,
+    HookExtensionPoint,
+    Long,
+    Hbar,
+} from "@hashgraph/sdk";
+
+// The hook's implementing contract (deployed separately)
+const hookContractId = /* ... */;
+
+// Create hook details
+const hookDetails = new HookCreationDetails({
+    extensionPoint: HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
+    hookId: Long.fromInt(1),
+    evmHook: new EvmHook({ contractId: hookContractId }),
+    adminKey: adminKey.publicKey,
+});
+
+// Create the contract with a hook attached
+const txResponse = await new ContractCreateTransaction()
+    .setGas(100_000)
+    .setBytecodeFileId(bytecodeFileId)
+    .addHook(hookDetails)
+    .setMaxTransactionFee(new Hbar(16))
+    .execute(client);
+
+const newContractId = (await txResponse.getReceipt(client)).contractId;
+console.log("Contract created with hook: " + newContractId);
+```
+
+```go Go
+// The hook's implementing contract (deployed separately)
+// hookContractId := ...
+
+// Create hook details
+hookDetails := hook.NewHookCreationDetails().
+    SetExtensionPoint(hook.AccountAllowanceHook).
+    SetHookID(1).
+    SetEvmHook(hook.NewEvmHook().SetContractID(hookContractId)).
+    SetAdminKey(adminKey.PublicKey())
+
+// Create the contract with a hook attached
+txResponse, err := hedera.NewContractCreateTransaction().
+    SetGas(100000).
+    SetBytecodeFileID(bytecodeFileID).
+    AddHook(hookDetails).
+    SetMaxTransactionFee(hedera.NewHbar(16)).
+    Execute(client)
+
+receipt, err := txResponse.GetReceipt(client)
+fmt.Printf("Contract created with hook: %v\n", receipt.ContractID)
 ```
 
 </CodeGroup>
 
 ## Get transaction values
 
-| Method                                              | Type       | Requirement |
-| --------------------------------------------------- | ---------- | ----------- |
-| `getAdminKey(<keys>)`                               | Key        | Optional    |
-| `getGas(<gas>)`                                     | long       | Optional    |
-| `getInitialBalance(<initialBalance>)`               | Hbar       | Optional    |
-| `getBytecodeFileId(<fileId>)`                       | FileId     | Optional    |
-| `getProxyAccountId(<accountId>`)                    | AccountId  | Optional    |
-| `getConstructorParameters(<constructorParameters>)` | ByteString | Optional    |
-| `getContractMemo(<memo>)`                           | String     | Optional    |
-| `getDeclineStakingReward()`                         | boolean    | Optional    |
-| `getStakedNodeId()`                                 | long       | Optional    |
-| `getStakedAccountId()`                              | AccountId  | Optional    |
-| `getAutoRenewAccountId()`                           | AccountId  | Required    |
-| `getAutoRenewPeriod()`                              | Duration   | Required    |
+| Method | Type | Requirement |
+| --- | --- | --- |
+| `getAdminKey(<keys>)` | Key | Optional |
+| `getGas(<gas>)` | long | Optional |
+| `getInitialBalance(<initialBalance>)` | Hbar | Optional |
+| `getBytecodeFileId(<fileId>)` | FileId | Optional |
+| `getProxyAccountId(<accountId>`) | AccountId | Optional |
+| `getConstructorParameters(<constructorParameters>)` | ByteString | Optional |
+| `getContractMemo(<memo>)` | String | Optional |
+| `getDeclineStakingReward()` | boolean | Optional |
+| `getStakedNodeId()` | long | Optional |
+| `getStakedAccountId()` | AccountId | Optional |
+| `getAutoRenewAccountId()` | AccountId | Required |
+| `getAutoRenewPeriod()` | Duration | Required |
+| `getHooks()` | list\<HookCreationDetails> | Optional |
 
 <CodeGroup>
 
@@ -319,7 +410,7 @@ transaction.getAdminKey()
 ```
 
 
-```java Go
+```go Go
 //Create the transaction
 transaction := hedera.NewContractCreateTransaction().
 		SetGas(500).

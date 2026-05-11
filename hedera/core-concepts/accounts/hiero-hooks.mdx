@@ -1,0 +1,56 @@
+---
+title: "Hiero Hooks"
+---
+
+Hiero Hooks provide programmable extension points to inject Solidity-based logic directly into the network's transaction pipeline. Hooks attach to accounts to enforce custom rules on actions like token transfers, but they do not run automatically—a hook is triggered only when explicitly referenced in a `TransferTransaction` (e.g., `CryptoTransfer`).
+
+Unlike regular smart contracts, hooks execute in a special EVM context where `address(this)` is always the reserved system address `0x16d`, enabling them to act with the privileges of the account they're attached to. This model combines smart contract flexibility with native HAPI transaction efficiency, allowing custom validation without deploying full-scale contracts.
+
+## Core Concepts
+
+Hooks are a mechanism for [**Account Abstraction**](/hedera/support-and-community/glossary#account-abstraction) on Hedera, enabling custom validation and logic without migrating entire applications to the EVM. A hook is a small piece of Solidity logic that is **triggered only when referenced/specified in a `TransferTransaction`**—not automatically.
+
+Think of it like a webhook for the ledger itself. Instead of waiting for an off-chain call, the hook runs inside the network when a transaction explicitly references it. Hooks can check conditions before execution, update state, log data, or stop a transfer if validation fails.
+
+### Why Hooks?
+
+Before Hooks, developers faced two major limitations:
+
+1. **Protocol dependency**: New functionality required network-wide upgrades through HIPs (slow and heavyweight)
+2. **EVM migration**: Moving applications to smart contracts sacrificed the performance and cost-efficiency of native HAPI transactions
+
+Hooks solve this by allowing developers to inject custom logic directly into native flows, offering better performance and lower cost than general-purpose `ContractCall` operations.
+
+### Key Characteristics
+
+| Concept | Description |
+|:--------|:------------|
+| **Trigger Model** | **Triggered only when referenced/specified** in a `TransferTransaction`—not automatic event listeners. |
+| **Implementation** | EVM Hooks: Solidity contracts executed by the network's EVM. |
+| **Extension Point** | Account Allowance Hooks validate transfers during a `CryptoTransfer`. |
+| **Key Advantage** | Custom logic on native assets (HBAR and HTS tokens) without `ContractCall` overhead. |
+| **Use Cases** | Compliance rules, transfer constraints, one-time passcodes, receiver signature waivers. |
+
+---
+
+## Extension Points
+
+Hooks attach to specific extension points in a transaction's lifecycle. An extension point defines the type of hook allowed for a transaction but doesn't specify when or why a hook is activated.
+
+Currently, the first supported extension point is the Account Allowance Hook (`ACCOUNT_ALLOWANCE_HOOK`). This hook runs when a `TransferTransaction` references the hook on a transfer entry, acting as a programmable replacement for traditional ERC-style allowances.
+
+Future extension points may include other native transaction types or entity lifecycle events, enabling hooks to validate or augment a wide range of on-chain operations.
+
+---
+
+## Propose a New Hook
+
+Hooks are designed to be extended by the community. If you have a use case that would benefit from a new extension point — such as hooks for topic submissions, token minting, or scheduled transactions — you can propose it through the [Hiero Improvement Proposal (HIP) process](https://hips.hedera.com/).
+
+To get started:
+
+1. Review the [HIP-1195 specification](https://hips.hedera.com/hip/hip-1195) to understand the existing hooks architecture and extension point model
+2. Draft a new HIP that defines your proposed extension point, its trigger conditions, and the Solidity interface hooks would implement
+3. Submit your proposal to the [Hiero HIP repository](https://github.com/hiero-ledger/hiero-improvement-proposal) for community review and discussion
+
+The hooks framework is built to support new extension points without protocol-level changes to the core hook infrastructure.

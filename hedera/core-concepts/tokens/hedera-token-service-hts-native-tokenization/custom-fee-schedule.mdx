@@ -78,7 +78,7 @@ Royalty fees function as a convenience feature, but the network cannot enforce r
 Understanding the difference between custom fees and standard transaction fees in HBAR is crucial for token issuers and developers working with Hedera.
 
 * **Custom fees** are designed to enforce complex fee structures, such as royalties and fractional ownership. These fees can be fixed, fractional, or royalty-based and are usually paid in the token being transferred, although other Hedera tokens or HBAR can also be used. You can configure up to 10 custom fees to be automatically disbursed to designated fee collector accounts.
-* **Transaction fees** in HBAR serve a different purpose: they compensate the network for processing transactions. These fees follow a [base fee + extras model](/hedera/core-concepts/transactions-and-queries/simple-fees) defined in the network's fee schedule (system file `0.0.113`). While the fee structure varies by transaction type (each has its own base fee and applicable extras), the fee schedule is set by the network's governing authority, not by individual users. Transaction fees are paid exclusively in HBAR.
+* **Transaction fees** in HBAR serve a different purpose: they compensate the network for processing transactions. These fees follow a [base fee + extras model](/hedera/core-concepts/fee-model) defined in the network's fee schedule (system file `0.0.113`). While the fee structure varies by transaction type (each has its own base fee and applicable extras), the fee schedule is set by the network's governing authority, not by individual users. Transaction fees are paid exclusively in HBAR.
 
 ### **Key Differences**
 

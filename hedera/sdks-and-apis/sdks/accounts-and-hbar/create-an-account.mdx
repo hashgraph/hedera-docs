@@ -34,6 +34,11 @@ For a complete list of account properties, see the [accounts overview](/hedera/s
 Accounts have a property, `maxAutoAssociations`, and the property's value determines the maximum number of automatic token associations allowed.
 
 | Property Value | Description |
+| :---: | --- |
+| `0` | Automatic **token** associations or **token airdrops** are not allowed, and the account must be manually associated with a token. This also applies if the value is less than or equal to `usedAutoAssociations`. |
+| `-1` | Unlimited automatic token associations are allowed, and this is the default for accounts created via [auto account creation](../../../core-concepts/accounts/auto-account-creation) and for accounts that began as hollow accounts and are now complete. Accounts with `-1` can receive new tokens without manually associating them. The sender still pays the `maxAutoAssociations` fee and initial rent for each association. |
+| `> 0` | If the value is a positive number (number greater than 0), the number of automatic token associations an account can have is limited to that number. |
+| Property Value | Description |
 |---|---|
 | `0` | Automatic token associations or **token airdrops** are not allowed, and the account must be manually associated with a token. This also applies if the value is less than or equal to `usedAutoAssociations`. |
 | `-1` | Unlimited automatic token associations are allowed, and this is the default for accounts created via [auto account creation](/sdks-and-apis/sdks/accounts-and-hbar/create-an-account) and for accounts that began as hollow accounts and are now complete. Accounts with `-1` can receive new tokens without manually associating them. The sender still pays the `maxAutoAssociations` fee and initial rent for each association. |
@@ -45,6 +50,26 @@ The sender pays the `maxAutoAssociations` fee and the rent for the first auto-re
 
 **Reference**: [HIP-904](https://hips.hedera.com/hip/hip-904)
 
+#### Methods
+
+| Method | Type | Requirement |
+| --- | --- | --- |
+| `setKey(<key>)` | Key | Required |
+| `setAlias(<alias>)` | EvmAddress | Optional |
+| `setInitialBalance(<initialBalance>)` | HBar | Optional |
+| `setReceiverSignatureRequired(<booleanValue>)` | boolean | Optional |
+| `setMaxAutomaticTokenAssociations(<amount>)` | int | Optional |
+| `setStakedAccountId(<stakedAccountId>)` | AccountId | Optional |
+| `setStakedNodeId(<stakedNodeId>)` | long | Optional |
+| `setDeclineStakingReward(<declineStakingReward>)` | boolean | Optional |
+| `setAccountMemo(<memo>)` | String | Optional |
+| `setAutoRenewPeriod(<autoRenewPeriod>)` | Duration | Disabled |
+
+<Warning>
+**Account Alias**
+
+If an alias is set during account creation, it becomes [immutable](/hedera/support-and-community/glossary#immutability), meaning it cannot be changed. If you plan to update or rotate keys in the future, do not set the alias at the time of initial account creation. The alias can be set after finalizing all key updates.
+</Warning>
 ---
 
 ## Constructor
@@ -184,6 +209,15 @@ println!("The new account ID is {}", new_account_id);
 
 ## Get Transaction Values
 
+| Method | Type | Description |
+| --- | --- | --- |
+| `getKey()` | Key | Returns the public key on the account |
+| `getInitialBalance()` | Hbar | Returns the initial balance of the account |
+| `getAutoRenewPeriod()` | Duration | Returns the auto renew period on the account |
+| `getDeclineStakingReward()` | boolean | Returns whether or not the account declined rewards |
+| `getStakedNodeId()` | long | Returns the node ID |
+| `getStakedAccountId()` | AccountId | Returns the node account ID |
+| `getReceiverSignatureRequired()` | boolean | Returns whether the receiver signature is required or not |
 | **Method** | **Type** | Description |
 |---|---|---|
 | `getKey()` | Key | Returns the public key on the account |

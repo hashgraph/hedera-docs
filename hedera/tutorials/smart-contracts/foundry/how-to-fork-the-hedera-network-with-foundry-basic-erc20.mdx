@@ -1,5 +1,5 @@
 ---
-title: "How to Fork the Hedera Network with Foundry - Basic ERC-20 Contract "
+title: "How to Fork the Hedera Network with Foundry - Basic ERC-20 Contract (Part 1)"
 ---
 
 In this tutorial, you'll fork Hedera testnet using Foundry and interact with a basic ERC-20 token on the forked network. This is an introductory guide to local fork testing with Foundry.
@@ -258,8 +258,8 @@ Now we'll write tests that interact with the already deployed contract on the fo
 Create a new file `test/ERC20Token.t.sol`:
 
 <Info>
-  Make sure to update the `DEPLOYED_CONTRACT` constant below with the
-  contract address from your deployment.
+  Make sure to update the `DEPLOYED_CONTRACT` constant below with the contract
+  address from your deployment.
 </Info>
 
 ```solidity test/ERC20Token.t.sol
@@ -272,7 +272,7 @@ import {ERC20Token} from "../src/ERC20Token.sol";
 contract ERC20TokenForkTest is Test {
     // Your deployed testnet contract:
     address constant DEPLOYED_CONTRACT =
-        "YOUR_CONTRACT_ADDRESS"; // <-- Update this!
+        YOUR_CONTRACT_ADDRESS; // <-- Update this!
 
     ERC20Token public token;
     address public owner;
@@ -590,13 +590,15 @@ vm.deal(accountAddress, 100 ether);
 
 ## Further Learning & Next Steps
 
-1. [**Forking Hedera Network for Local Testing**](/hedera/core-concepts/smart-contracts/forking-hedera-network-for-local-testing)\
+1. [**How to Fork Hedera with Foundry - Advanced HTS (Part 2)**](/hedera/tutorials/smart-contracts/foundry/how-to-fork-the-hedera-network-with-foundry-advanced-hts)\
+   Continue with HTS System Contracts and the hedera-forking emulation layer
+2. [**Forking Hedera Network for Local Testing**](/hedera/core-concepts/smart-contracts/forking-hedera-network-for-local-testing)\
    Deep dive into how Hedera forking works under the hood
-2. [**How to Fork Hedera with Hardhat (Part 1)**](/hedera/tutorials/smart-contracts/how-to-fork-the-hedera-network-with-hardhat-basic-erc20)\
+3. [**How to Fork Hedera with Hardhat (Part 1)**](/hedera/tutorials/smart-contracts/how-to-fork-the-hedera-network-with-hardhat-basic-erc20)\
    Learn fork testing with Hardhat framework
-3. [**How to Fork Hedera with Hardhat (Part 2)**](/hedera/tutorials/smart-contracts/how-to-fork-the-hedera-network-with-hardhat-advanced-hts)\
-   Learn to work with HTS System Contracts and understand emulation limitations
-4. [**hedera-forking Repository**](https://github.com/hashgraph/hedera-forking)\
+4. [**How to Fork Hedera with Hardhat - Advanced HTS**](/hedera/tutorials/smart-contracts/how-to-fork-the-hedera-network-with-hardhat-advanced-hts)\
+   Compare the Hardhat approach to HTS fork testing
+5. [**hedera-forking Repository**](https://github.com/hashgraph/hedera-forking)\
    Explore examples and documentation
 
 <Columns cols={2}>

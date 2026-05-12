@@ -1,0 +1,187 @@
+---
+title: "Contract Plugin"
+---
+
+## Most Used Commands
+
+**Deploy from a Solidity file**
+
+```sh
+hcli contract create \
+  --name my-contract \
+  --file ./MyContract.sol \
+  --admin-key alice
+```
+
+**Import an existing on-chain contract into local state**
+
+```sh
+hcli contract import --contract 0.0.123456 --name my-alias
+```
+
+**List saved contracts**
+
+```sh
+hcli contract list
+```
+
+**Delete on Hedera (beneficiary required) or drop local state only**
+
+```sh
+hcli contract delete --contract my-alias --transfer-id 0.0.7890
+hcli contract delete --contract 0.0.123456 --state-only
+```
+
+<Note>
+#### **Create: `--file` vs `--default`**
+
+You must supply **`--file`** (path to a `.sol` file) **or** **`--default`** (`erc20` or `erc721` built-in template). They are mutually exclusive.
+</Note>
+
+## Full Command Reference
+
+<Accordion title="Contract Create">
+    Compile a Solidity source (or use a built-in template), deploy the contract to the current network, and run verification where the CLI supports it.
+
+    <ResponseField name="-n, --name" type="string" required>
+        Smart contract name or alias stored in CLI state.
+    </ResponseField>
+
+    <ResponseField name="-f, --file" type="string">
+        Path to a Solidity file (absolute or relative). Use with **`--base-path`** when imports need a root directory.
+    </ResponseField>
+
+    <ResponseField name="-d, --default" type="string(erc20|erc721)">
+        Use a built-in template instead of **`--file`**. Mutually exclusive with **`--file`**.
+    </ResponseField>
+
+    <ResponseField name="-b, --base-path" type="string">
+        Base directory for resolving the Solidity file. Defaults to the current directory when using **`--file`** (see CLI README for **`--default`** behavior).
+    </ResponseField>
+
+    <ResponseField name="-g, --gas" type="number" default="2000000">
+        Gas limit for contract creation.
+    </ResponseField>
+
+    <ResponseField name="-a, --admin-key" type="string (repeatable)">
+        Admin key credential(s) for the new contract. Pass multiple times for **KeyList** / **ThresholdKey** style setups. See **`hcli contract create --help`** for accepted formats.
+    </ResponseField>
+
+    <ResponseField name="-A, --admin-key-threshold" type="int">
+        M-of-N: how many of the **`--admin-key`** values must sign the create flow. Only applies when multiple **`--admin-key`** entries are provided.
+    </ResponseField>
+
+    <ResponseField name="-m, --memo" type="string">
+        Contract memo.
+    </ResponseField>
+
+    <ResponseField name="-v, --solidity-version" type="string">
+        Solidity compiler version to use for compilation.
+    </ResponseField>
+
+    <ResponseField name="-c, --constructor-parameter" type="string (repeatable)">
+        Constructor argument values, in order. Repeat the flag once per argument.
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager to use: `local` or `local_encrypted` (defaults to config setting).
+    </ResponseField>
+
+    <ResponseField name="-i, --initial-balance" type="string">
+        Initial HBAR balance for the contract. Examples: `100` (HBAR) or `100t` (tinybars).
+    </ResponseField>
+
+    <ResponseField name="-r, --auto-renew-period" type="string">
+        Auto-renew period: seconds as an integer, or with suffix `s`, `m`, `h`, or `d` (e.g. `500`, `500s`, `50m`, `2h`, `30d`).
+    </ResponseField>
+
+    <ResponseField name="-R, --auto-renew-account-id" type="string">
+        Account ID (`0.0.xxx`) that pays for contract auto-renewal.
+    </ResponseField>
+
+    <ResponseField name="-t, --max-automatic-token-associations" type="int">
+        Maximum automatic token associations (`-1` for unlimited, `0` to disable).
+    </ResponseField>
+
+    <ResponseField name="-s, --staked-account-id" type="string">
+        Account ID (`0.0.xxx`) to stake the contract to. Mutually exclusive with **`--staked-node-id`**.
+    </ResponseField>
+
+    <ResponseField name="-o, --staked-node-id" type="number">
+        Node ID to stake the contract to. Mutually exclusive with **`--staked-account-id`**.
+    </ResponseField>
+
+    <ResponseField name="-D, --decline-staking-reward" type="boolean">
+        Whether to decline staking rewards for this contract.
+    </ResponseField>
+
+    **Examples**
+
+    ```sh
+    hcli contract create --name my-token --default erc20
+    hcli contract create --name app --file ./App.sol --admin-key alice --gas 3000000
+    ```
+</Accordion>
+
+<Accordion title="Contract List">
+    List smart contracts stored in CLI state (including metadata such as network and verification flags where available).
+
+    **Example**
+
+    ```sh
+    hcli contract list
+    ```
+</Accordion>
+
+<Accordion title="Contract Import">
+    Import an existing contract from Hedera by **`0.0.xxx`** ID or **`0x…`** EVM address. The CLI reads contract info from the mirror node and stores admin key metadata in local state for later operations.
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Contract ID (`0.0.xxx`) or EVM address (`0x…`).
+    </ResponseField>
+
+    <ResponseField name="-n, --name" type="string">
+        Optional local alias for the imported contract.
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Contract Delete">
+    By default, submits a **`ContractDeleteTransaction`** on Hedera and then removes the contract from local state. With **`--state-only`**, only local state is cleared (no network transaction).
+
+    <ResponseField name="-c, --contract" type="string" required>
+        Contract ID (`0.0.xxx`) or local alias.
+    </ResponseField>
+
+    <ResponseField name="-s, --state-only">
+        Remove from local CLI state only. No network delete.
+    </ResponseField>
+
+    <ResponseField name="-t, --transfer-id" type="string">
+        Account (ID or alias) that receives remaining HBAR after an on-chain delete. For a network delete, supply exactly one of **`--transfer-id`** or **`--transfer-contract-id`**. Do not combine with **`--state-only`**.
+    </ResponseField>
+
+    <ResponseField name="-r, --transfer-contract-id" type="string">
+        Contract (ID or alias) that receives remaining HBAR. For a network delete, supply exactly one of **`--transfer-id`** or **`--transfer-contract-id`** (never both).
+    </ResponseField>
+
+    <ResponseField name="-a, --admin-key" type="string (repeatable)">
+        Optional signing credential(s) for the network delete. Not allowed with **`--state-only`**. If omitted on a network delete, the CLI derives required admin keys from the mirror node and matches KMS keys (including M-of-N). Pass multiple times when several keys must sign.
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager used when resolving **`--admin-key`** (defaults to config).
+    </ResponseField>
+
+    **Examples**
+
+    ```sh
+    hcli contract delete --contract my-alias --transfer-id 0.0.5678
+    hcli contract delete --contract 0.0.123456 --state-only
+    ```
+
+    This command uses **`requireConfirmation`**. In non-interactive environments, use the root **`--confirm`** flag (see [Overview](/hedera/open-source-solutions/hiero-cli/overview) → Global Flags) so the CLI does not block on the prompt.
+</Accordion>
+
+## Related plugins
+
+ERC-20 and ERC-721 helper plugins focus on **calling** deployed contracts. This page covers **compile**, **deploy**, **import**, **list**, and **delete** for Solidity sources and built-in **`erc20`** / **`erc721`** templates.

@@ -115,7 +115,7 @@ console.log("The transaction consensus status is " +transactionStatus.toString()
 ```
 
 
-```java Go
+```go Go
 // Create a transaction to transfer 1 HBAR
 transaction := hedera.NewTransferTransaction().
 		AddHbarTransfer(client.GetOperatorAccountID(), hedera.NewHbar(-1)).
@@ -184,7 +184,7 @@ println!("The transaction consensus status is {:?}", status);
 ```java Java
 // Create a transaction 
 CryptoTransferTransaction transaction = new CryptoTransferTransaction()
-    .addSender(OPERATOR_ID, new Hbar(1)
+    .addSender(OPERATOR_ID, new Hbar(1))
     .addRecipient(newAccountId, new Hbar(1));
 
 //Get transfers

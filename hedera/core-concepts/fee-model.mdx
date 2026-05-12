@@ -1,5 +1,5 @@
 ---
-title: "Simple Fees"
+title: "Fee Model"
 description: "Understand the simplified base-fee-plus-extras model for Hedera transaction and query fees introduced by HIP-1261."
 ---
 
@@ -33,7 +33,7 @@ Every transaction fee is split into three components:
 
 | Component | What It Covers | How It's Calculated |
 |-----------|---------------|---------------------|
-| **Node** | Compensates the submitting node for pre-checking and forwarding the transaction | `baseFee` + extras (bytes, signatures). Identical formula for **all** transaction types. |
+| **Node** | Compensates the submitting node for pre-checking and forwarding the transaction | `baseFee` + extras (processing bytes, signatures). Identical formula for **all** transaction types. |
 | **Network** | Covers gossip, consensus, signature verification, and blockchain storage | A configurable multiplier of the node fee (default: 9×). |
 | **Service** | Covers execution costs, state changes, and blockstream output | `baseFee` + transaction-specific extras (keys, token types, gas, etc.). Varies by transaction type. |
 
@@ -52,28 +52,34 @@ The following extras are defined in the fee schedule:
 | Extra | Counted By |
 |-------|-----------|
 | `Signatures` | Number of signature verifications on the transaction |
-| `Bytes` | Size of the transaction in protobuf bytes |
 | `Keys` | Number of keys defined (nested key structures count all keys) |
-| `TokenTypes` | Number of token types referenced |
 | `NftSerials` | Number of distinct NFT serials |
 | `Accounts` | Number of accounts loaded during handling |
-| `StandardFungibleTokens` | Number of fungible tokens without custom fees |
-| `StandardNonFungibleTokens` | Number of NFTs without custom fees |
-| `CustomFeeFungibleTokens` | Number of fungible tokens with custom fees |
-| `CustomFeeNonFungibleTokens` | Number of NFTs with custom fees |
-| `CreatedAutoAssociations` | Number of auto-associations created |
-| `CreatedAccounts` | Number of hollow accounts created (e.g., transfers to aliases) |
-| `CustomFee` | Whether custom fees are defined for the created entity |
+| `TokenTypes` | Number of token types referenced by the transaction |
 | `Gas` | Gas cost (includes execution of hook programs) |
 | `Allowances` | Number of allowances |
 | `Airdrops` | Number of airdrops executed |
-| `HooksCreated` | Number of hooks created on an account or contract |
-| `HooksDeleted` | Number of hooks deleted from an account or contract |
-| `HooksModified` | Number of hooks modified on an account or contract (e.g., updated admin key, storage) |
-| `HookInvocations` | Number of hook programs invoked during transaction execution (e.g., pre-/post-transaction hook calls) |
+| `HookUpdates` | Number of hook create/delete operations |
+| `HookSlotUpdate` | Number of hook slot modifications |
+| `HookExecution` | Number of hook programs invoked during execution |
+| `TokenTransferBase` | Base cost for token transfers |
+| `TokenTransferBaseCustomFees` | Base cost for token transfers with custom fees |
+| `TokenCreateWithCustomFee` | Token creation with a custom fee schedule defined |
+| `TokenMintNft` | Number of NFT serials minted |
+| `TokenMintNftBase` | Base cost for minting non-fungible tokens |
+| `NftUpdate` | Number of NFT updates |
+| `TokenAssociate` | Number of token associations |
+| `ConsensusCreateTopicWithCustomFee` | Topic creation with a custom fee schedule defined |
+| `ConsensusSubmitMessageWithCustomFee` | Message submission to a topic with custom fees |
+| `ConsensusSubmitMessageWithCustomFeeBytes` | Byte count of a message submitted to a topic with custom fees |
+| `ConsensusSubmitMessageWithoutCustomFeeBytes` | Byte count of a message submitted to a topic without custom fees |
+| `ScheduleCreateContractCallBase` | Base cost for scheduling a contract call |
+| `Records` | Number of transaction records produced |
+| `StateBytes` | Bytes written to persistent state (e.g., file uploads) |
+| `ProcessingBytes` | Bytes processed by the node and network (transaction size on the wire) |
 
 <Tip>
-The **included count** means you don't pay extra for typical usage. For example, the node fee includes 1,024 bytes and 1 signature by default — a 500-byte, single-signature transaction pays zero byte and signature extras on the node component.
+The **included count** means you don't pay extra for typical usage. For example, the node fee includes a default allotment of processing bytes and one signature — a small, single-signature transaction pays zero byte and signature extras on the node component.
 </Tip>
 
 ## Fee Calculation Example
@@ -87,11 +93,11 @@ Consider a basic `CryptoCreate` transaction with a single key and 150 bytes:
 The node fee applies the same formula to all transactions:
 
 ```text wrap
-Node baseFee:       100,000 tinycents
-Bytes extra:        150 bytes used, 1,024 included → 0 charged → 0
-Signatures extra:   1 signature, 1 included → 0 charged → 0
+Node baseFee:           100,000 tinycents
+ProcessingBytes extra:  150 bytes used, 1,024 included → 0 charged → 0
+Signatures extra:       1 signature, 1 included → 0 charged → 0
 ───────────────────────────────────────────────
-Node fee total:     100,000 tinycents
+Node fee total:         100,000 tinycents
 ```
 
 </Step>
@@ -172,13 +178,13 @@ The fee schedule is a JSON document stored in system file **`0.0.113`**. It defi
   "version": 0,
   "extras": [
     { "name": "Signatures", "fee": 100000 },
-    { "name": "Bytes", "fee": 10000 },
+    { "name": "ProcessingBytes", "fee": 10000 },
     { "name": "Keys", "fee": 10000000 }
   ],
   "node": {
     "baseFee": 100000,
     "extras": [
-      { "name": "Bytes", "includedCount": 1024 },
+      { "name": "ProcessingBytes", "includedCount": 1024 },
       { "name": "Signatures", "includedCount": 1 }
     ]
   },
@@ -230,7 +236,7 @@ See [Mirror Node REST API Network](/hedera/sdks-and-apis/rest-api/network) for t
 
 ## Queries
 
-Queries follow the same base-fee-plus-extras structure as transactions. Some queries are marked as `free` in the fee schedule (e.g., `FileGetInfo`, `TransactionGetReceipt`). For non-free queries, the SDK creates a `CryptoTransfer` payment transaction to pay the node, network, and service fees.
+Queries follow the same base-fee-plus-extras structure as transactions. Some queries are marked as `free` in the fee schedule (e.g., `CryptoGetAccountBalance`, `TransactionGetReceipt`). For non-free queries, the SDK creates a `CryptoTransfer` payment transaction to pay the node, network, and service fees.
 
 ## Fee Schedule Schema (Protobuf)
 

@@ -18,4 +18,13 @@ If you're looking to test your application (or just experiment), please visit [T
 
 ## Main Network Throttles
 
-<table><thead><tr><th>Network Request Types</th><th>Throttle (tps)</th></tr></thead><tbody><tr><td><strong>Cryptocurrency Transactions</strong></td><td><p><code>AccountCreateTransaction</code>: 2 tps</p><p><code>TransferTransaction</code> (inc. tokens): 10,000 tps<br/><code>Other</code>: 10,000 tps</p></td></tr><tr><td><strong>Consensus Transactions</strong></td><td><p><code>TopicCreateTransaction</code>: 5 tps</p><p><code>Other</code>: 10,000 tps</p></td></tr><tr><td><strong>Token Transactions</strong></td><td><p><code>TokenMintTransaction</code>:</p><ul><li>125 TPS for fungible mint</li><li>50 TPS for NFT mint</li></ul><p><code>TokenAssociateTransaction</code>: 100 tps<br/><code>TransferTransaction</code> (inc. tokens): 10,000 tps</p><p><code>Other</code>: 3,000 tps</p></td></tr><tr><td><strong>Schedule Transactions</strong></td><td><code>ScheduleSignTransaction</code>: 100 tps<br/><code>ScheduleCreateTransaction</code>: 100 tps</td></tr><tr><td><strong>File Transactions</strong></td><td>10 tps</td></tr><tr><td><strong>Smart Contract Transactions</strong></td><td><code>ContractExecuteTransaction</code>: 15 million gas per second<br/><code>ContractCreateTransaction</code>: 15 million gas per second</td></tr><tr><td><strong>Queries (per node)</strong></td><td><p><code>AccountBalanceQuery</code>: 1000 tps</p><p></p><p><code>ContractGetInfo</code>: 700 tps<br/><code>ContractGetBytecode</code>: 700 tps<br/><code>ContractCallLocal</code>: 700 tps<br/><br/><code>FileGetInfo</code>: 700 tps<br/><code>FileGetContents</code>: 700 tps<br/><br/><code>Other</code>: 10,000 tps</p></td></tr><tr><td><strong>Receipts</strong></td><td>unlimited (no throttle)</td></tr></tbody></table>
+| Network Request Types | Throttle (TPS) |
+| --- | --- |
+| **Cryptocurrency Transactions** | `AccountCreateTransaction`: 2 tps<br/>`TransferTransaction` (inc. tokens): 10,000 tps<br/>`Other`: 10,000 tps |
+| **Consensus Transactions** | `TopicCreateTransaction`: 5 tps<br/>`Other`: 10,000 tps |
+| **Token Transactions** | `TokenMintTransaction`: 125 tps (fungible mint), 50 tps (NFT mint)<br/>`TokenAssociateTransaction`: 100 tps<br/>`TransferTransaction` (inc. tokens): 10,000 tps<br/>`Other`: 3,000 tps |
+| **Schedule Transactions** | `ScheduleSignTransaction`: 100 tps<br/>`ScheduleCreateTransaction`: 100 tps |
+| **File Transactions** | 10 tps |
+| **Smart Contract Transactions** | `ContractExecuteTransaction`: 15 million gas per second<br/>`ContractCreateTransaction`: 15 million gas per second |
+| **Queries (per node)** | `AccountBalanceQuery`: 1000 tps<br/>`ContractGetInfo`: 700 tps<br/>`ContractGetBytecode`: 700 tps<br/>`ContractCallLocal`: 700 tps<br/>`FileGetInfo`: 700 tps<br/>`FileGetContents`: 700 tps<br/>`Other`: 10,000 tps |
+| **Receipts** | unlimited (no throttle) |

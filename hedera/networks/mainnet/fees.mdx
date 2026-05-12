@@ -6,7 +6,9 @@ sidebarTitle: Overview
 
 The Hedera testnet fees tables found below offer a low-end estimate of transaction and query fees for all network services. The tables below contain USD, HBAR, and Tinybar (tℏ) values per each API call. All operation fees on the Hedera testnet are paid in test HBAR, which is freely available and only useful for development purposes.
 
-Fee estimates are based on assumptions about the details of a specific API call. For instance, the fee for an HBAR cryptocurrency transfer (CryptoTransfer) assumes a single signature on the transaction and the fee for storing a file assumes a 1,000-byte sized file stored for 90 days. Transactions exceeding these base assumptions will be more expensive; we recommend increasing your maximum allowable fee to accommodate additional complexity.
+Fee estimates are based on assumptions about the details of a specific API call. For instance, the fee for an HBAR cryptocurrency transfer (`CryptoTransfer`) assumes a single signature on the transaction and the fee for storing a file assumes a 1,000-byte sized file stored for 90 days. Transactions exceeding these base assumptions will be more expensive; we recommend increasing your maximum allowable fee to accommodate additional complexity.
+
+Hedera transaction and query fees follow a **base fee + extras** model defined by [**HIP-1261 (Simple Fees)**](https://hips.hedera.com/hip/hip-1261). The base fees in the tables below are the starting cost — extras add to that cost based on what the transaction does. See [**Fee Model**](/hedera/core-concepts/fee-model) for the full explanation, the complete extras list, and worked examples.
 
 ### Mainnet Fees
 
@@ -36,9 +38,6 @@ All fees are subject to change. The fees below reflect a base price for the tran
 | CryptoAccountAutoRenew       | $0.00022 |
 | CryptoDeleteAllowance        | $0.05    |
 | CryptoApproveAllowance       | $0.05    |
-| CryptoAddLiveHash            | $0.10    |
-| CryptoDeleteLiveHash         | $0.005   |
-| CryptoGetLiveHash            | $0.0001  |
 | CryptoUpdate                 | $0.00022 |
 | CryptoTransfer               | $0.0001  |
 | CryptoTransfer (custom fees) | $0.002   |
@@ -46,7 +45,6 @@ All fees are subject to change. The fees below reflect a base price for the tran
 | CryptoGetAccountRecords      | $0.0001  |
 | CryptoGetAccountBalance      | $0.00    |
 | CryptoGetInfo                | $0.0001  |
-| CryptoGetStakers             | $0.0001  |
 
 ### Consensus Service
 
@@ -82,7 +80,6 @@ All fees are subject to change. The fees below reflect a base price for the tran
 | TokenGrantKyc                                           | $0.001        |
 | TokenMint (fungible)                                    | $0.001        |
 | TokenMint (non-fungible)                                | $0.02         |
-| TokenMint (bulk mint 10k NFTs)                          | $200.00       |
 | TokenPause                                              | $0.001        |
 | TokenReject                                             | $0.001        |
 | TokenRevokeKyc                                          | $0.001        |
@@ -125,7 +122,6 @@ All fees are subject to change. The fees below reflect a base price for the tran
 | ContractCallLocal                                      | $0.001                                                             |
 | ContractGetByteCode                                    | $0.05                                                              |
 | ContractGetInfo                                        | $0.0001                                                            |
-| ContractGetRecords                                     | $0.0001                                                            |
 | ContractAutoRenew                                      | $0.026                                                             |
 | EthereumTransaction (successful transactions)          | $0.00                                                              |
 | EthereumTransaction (failed transactions)              | $0.0001                                                            |
@@ -153,7 +149,7 @@ All fees are subject to change. The fees below reflect a base price for the tran
 
 ### Extras
 
-Under the [Simple Fees model (HIP-1261)](/hedera/core-concepts/transactions-and-queries/fee-model), every transaction is calculated as a **base fee plus extras**. The base fees in the tables above are the starting cost — extras add to that cost based on what the transaction does (number of signatures, keys, NFT serials, gas used, etc.). Each extra has an included count that covers typical usage; you only pay for units above that count. See [Fee Model](/hedera/core-concepts/transactions-and-queries/fee-model) for the full explanation and worked examples.
+Under the [**Simple Fees model (HIP-1261)**](https://hips.hedera.com/hip/hip-1261), every transaction is calculated as a **base fee plus extras**. The base fees in the tables above are the starting cost — extras add to that cost based on what the transaction does (number of signatures, keys, NFT serials, gas used, etc.). Each extra has an included count that covers typical usage; you only pay for units above that count. See [**Fee Model**](/hedera/core-concepts/transactions-and-queries/fee-model) for the full explanation and worked examples.
 
 <Note>
 This table reflects the extras currently defined in the live fee schedule (system file `0.0.113`). The published [HIP-1261](https://hips.hedera.com/hip/hip-1261) lists an earlier version of this set; consult the live schedule as the source of truth.

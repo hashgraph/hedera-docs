@@ -44,7 +44,16 @@ The debiting account is the owner's account when using this feature.
 
 ### Methods
 
-<table><thead><tr><th>Method</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>addHbarTransfer(&#x3C;accountId>, &#x3C;evmAddress>, &#x3C;value>)</code></td><td><a href="/hedera/sdks-and-apis/sdks/specialized-types#accountid">AccountId</a>, string, HBAR</td><td>The account involved in the transfer and the number of HBAR.<br/><br/>The sender and recipient values must net zero.</td></tr><tr><td><code>addTokenTransfer(&#x3C;tokenId>, &#x3C;accountId>, &#x3C;evmAddress>, &#x3C;value>)</code></td><td><a href="../token-service/token-id">TokenId</a>, <a href="/hedera/sdks-and-apis/sdks/specialized-types#accountid">AccountId</a>, string, long</td><td>The ID of the token, the account ID involved in the transfer, and the number of tokens to transfer.<br/><br/>The sender and recipient values must net zero.</td></tr><tr><td><code>addNftTransfer(&#x3C;nftId>, &#x3C;sender>, &#x3C;receiver>)</code></td><td><a href="../token-service/nft-id">NftId</a>, <a href="../specialized-types">AcountId</a>, <a href="/hedera/sdks-and-apis/sdks/specialized-types#accountid">AccountId</a></td><td>The NFT ID (token + serial number), the sending account, and receiving account.</td></tr><tr><td><code>addTokenTransferWithDecimals(&#x3C;tokenId>, &#x3C;accountId>, &#x3C;value>, &#x3C;int>)</code></td><td><a href="../token-service/token-id">TokenId</a>, AccountId, long, decimals</td><td>The ID of the token, the account ID involved in the transfer, the number of tokens to transfer, the decimals of the token.<br/><br/>The sender and recipient values must net zero.</td></tr><tr><td><code>addApprovedHbarTransfer(&#x3C;ownerAccountId>,&#x3C;amount>)</code></td><td><a href="/hedera/sdks-and-apis/sdks/specialized-types#accountid">AccountId</a>, Hbar</td><td>The owner account ID the spender is authorized to transfer from and the amount.<br/>Applicable to allowance transfers only.</td></tr><tr><td><code>addApprovedTokenTransfer(&#x3C;tokenId>, &#x3C;accountId>, &#x3C;value>)</code></td><td><a href="../token-service/token-id">TokenId</a>, <a href="/hedera/sdks-and-apis/sdks/specialized-types#accountid">AccountId</a>, long</td><td>The owner account ID and token the spender is authorized to transfer from. The debiting account is the owner account.<br/>Applicable to allowance transfers only.<br/></td></tr><tr><td><code>addApprovedTokenTransferWithDecimals(&#x3C;tokenId>, &#x3C;accountId>, &#x3C;value>, &#x3C;decimals>)</code></td><td><a href="../token-service/token-id">TokenId</a>, <a href="/hedera/sdks-and-apis/sdks/specialized-types#accountid">AccountId</a>, long, int</td><td>The owner account ID and token ID (with decimals) the spender is authorized to transfer from. The debit account is the account ID of the sender.<br/>Applicable to allowance transfers only.<br/></td></tr><tr><td><code>addApprovedNftTransfer(&#x3C;nftId>,&#x3C;sender>, &#x3C;receiver>)</code></td><td><a href="../token-service/nft-id">NftId</a>, <a href="../specialized-types">AcountId</a>, <a href="/hedera/sdks-and-apis/sdks/specialized-types#accountid">AccountId</a></td><td>The NFT ID the spender is authorized to transfer. The sender is the owner account and receiver is the receiving account.<br/>Applicable to allowance transfers only.</td></tr></tbody></table>
+| Method | Type | Description |
+| --- | --- | --- |
+| `addHbarTransfer(<accountId>, <evmAddress>, <value>)` | [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid), string, HBAR | The account involved in the transfer and the number of HBAR. The sender and recipient values must net zero. |
+| `addTokenTransfer(<tokenId>, <accountId>, <evmAddress>, <value>)` | [TokenId](../token-service/token-id), [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid), string, long | The ID of the token, the account ID involved in the transfer, and the number of tokens to transfer. The sender and recipient values must net zero. |
+| `addNftTransfer(<nftId>, <sender>, <receiver>)` | [NftId](../token-service/nft-id), [AccountId](../specialized-types), [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid) | The NFT ID (token + serial number), the sending account, and receiving account. |
+| `addTokenTransferWithDecimals(<tokenId>, <accountId>, <value>, <int>)` | [TokenId](../token-service/token-id), AccountId, long, decimals | The ID of the token, the account ID involved in the transfer, the number of tokens to transfer, the decimals of the token. The sender and recipient values must net zero. |
+| `addApprovedHbarTransfer(<ownerAccountId>, <amount>)` | [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid), Hbar | The owner account ID the spender is authorized to transfer from and the amount. Applicable to allowance transfers only. |
+| `addApprovedTokenTransfer(<tokenId>, <accountId>, <value>)` | [TokenId](../token-service/token-id), [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid), long | The owner account ID and token the spender is authorized to transfer from. The debiting account is the owner account. Applicable to allowance transfers only. |
+| `addApprovedTokenTransferWithDecimals(<tokenId>, <accountId>, <value>, <decimals>)` | [TokenId](../token-service/token-id), [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid), long, int | The owner account ID and token ID (with decimals) the spender is authorized to transfer from. The debit account is the account ID of the sender. Applicable to allowance transfers only. |
+| `addApprovedNftTransfer(<nftId>, <sender>, <receiver>)` | [NftId](../token-service/nft-id), [AccountId](../specialized-types), [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid) | The NFT ID the spender is authorized to transfer. The sender is the owner account and receiver is the receiving account. Applicable to allowance transfers only. |
 
 <CodeGroup>
 
@@ -90,7 +99,7 @@ console.log("The transaction consensus status is " +transactionStatus.toString()
 ```
 
 
-```java Go
+```go Go
 // Create a transaction to transfer 1 HBAR
 transaction := hedera.NewTransferTransaction().
 		AddHbarTransfer(client.GetOperatorAccountID(), hedera.NewHbar(-1)).
@@ -146,10 +155,10 @@ println!("The transaction consensus status is {:?}", status);
 
 ## Get transaction values
 
-| Method                | Type                                 | Description                                              |
-| --------------------- | ------------------------------------ | -------------------------------------------------------- |
-| `getHbarTransfers()`  | Map\<AccountId, Hbar>                | Returns a list of the hbar transfers in this transaction |
-| `getTokenTransfers()` | Map\<TokenId, Map\<AccountId, long>> | Returns the list of token transfers in the transaction   |
+| Method | Type | Description |
+| --- | --- | --- |
+| `getHbarTransfers()` | Map\<AccountId, Hbar> | Returns a list of the hbar transfers in this transaction |
+| `getTokenTransfers()` | Map\<TokenId, Map\<AccountId, long>> | Returns the list of token transfers in the transaction |
 
 <CodeGroup>
 

@@ -2,6 +2,77 @@
 title: "Generate a new key pair"
 ---
 
+## ECDSA (secp256k1\_)
+
+Create a new ***ECDSA*** (secp256k1) key pair used to sign transactions and queries on a Hedera network. The private key is kept confidential and is used to sign transactions that modify the state of an account, topic, token, smart contract, or file entity on the network. The public key can be shared with other users on the network.
+
+| **Method**                                                             | **Type**   | **Description**                                          |
+| ---------------------------------------------------------------------- | ---------- | -------------------------------------------------------- |
+| `PrivateKey.generateECDSA()`                                           | PrivateKey | Generates an ECSDA private key                           |
+| `PrivateKey.generateECDSA().getPublicKey()`                            | PublicKey  | Derive a public key from this ECDSA private key          |
+| `PrivateKey.generateECDSA().publicKey()`                               | PublicKey  | Derive a public key from this ECDSA private key          |
+| `PrivateKey.generateECDSA().publicKey().toAccountId(<shard>, <realm>)` | long, long | Contructs an account ID from an account alias public key |
+
+<CodeGroup>
+
+```java Java
+PrivateKey privateKey = PrivateKey.generateECDSA();
+PublicKey publicKey = privateKey.getPublicKey();
+
+System.out.println("private key = " + privateKey);
+System.out.println("public key = " + publicKey);
+```
+
+
+```javascript JavaScript
+const privateKey = await PrivateKey.generateECDSAAsync();
+const publicKey = privateKey.publicKey;
+
+console.log("private key = " + privateKey);
+console.log("public key = " + publicKey);
+```
+
+
+```go Go
+privateKey, err := hedera.GenerateEcdsaPrivateKey()
+if err != nil {
+    panic(err)
+}
+
+publicKey := privateKey.PublicKey()
+
+fmt.Printf("private key = %v\n", privateKey)
+fmt.Printf("public key = %v\n", publicKey)
+```
+
+
+```rust Rust
+// Generate ED25519 key pair
+let private_key = PrivateKey::generate_ed25519()?;
+let public_key = private_key.public_key();
+
+println!("private key = {:?}", private_key);
+println!("public key = {:?}", public_key);
+
+// Generate ECDSA key pair
+let private_key = PrivateKey::generate_ecdsa()?;
+let public_key = private_key.public_key();
+
+println!("private key = {:?}", private_key);
+println!("public key = {:?}", public_key);
+
+// v0.34.0
+```
+
+</CodeGroup>
+
+**Sample Output:**
+
+```bash
+private key = 3030020100300706052b8104000a042204205edee337f333dbf6ae3e0b1e1298cbe1fe37faf47b9faed326a3917b0e828891
+public key = 302d300706052b8104000a03220002e1f3b3bad1e0d97ed129725efaa4fc0289735a9f355438d2619676f1ff3f30dd
+```
+
 
 ## ED25519
 
@@ -70,76 +141,7 @@ println!("public key = {:?}", public_key);
 
 **Sample Output:**
 
-```bash
+```
 private key = 302e020100300506032b657004220420b9c3ebac81a72aafa5490cc78111643d016d311e60869436fbb91c73307ed35a
 public key = 302a300506032b65700321001a5a62bb9f35990d3fea1a5bb7ef6f1df0a297697adef1e04510c9d4ecc5db3f
-```
-
-## ECDSA (secp256k1\_)
-
-Create a new ***ECDSA*** (secp256k1) key pair used to sign transactions and queries on a Hedera network. The private key is kept confidential and is used to sign transactions that modify the state of an account, topic, token, smart contract, or file entity on the network. The public key can be shared with other users on the network.
-
-| **Method**                                                             | **Type**   | **Description**                                          |
-| ---------------------------------------------------------------------- | ---------- | -------------------------------------------------------- |
-| `PrivateKey.generateECDSA()`                                           | PrivateKey | Generates an ECSDA private key                           |
-| `PrivateKey.generateECDSA().getPublicKey()`                            | PublicKey  | Derive a public key from this ECDSA private key          |
-| `PrivateKey.generateECDSA().publicKey()`                               | PublicKey  | Derive a public key from this ECDSA private key          |
-| `PrivateKey.generateECDSA().publicKey().toAccountId(<shard>, <realm>)` | long, long | Contructs an account ID from an account alias public key |
-
-<CodeGroup>
-
-```java Java
-PrivateKey privateKey = PrivateKey.generateECDSA();
-PublicKey publicKey = privateKey.getPublicKey();
-
-System.out.println("private key = " + privateKey);
-System.out.println("public key = " + publicKey);
-```
-
-
-```javascript JavaScript
-const privateKey = PrivateKey.generateECDSA();
-const publicKey = privateKey.publicKey;
-
-console.log("private key = " + privateKey);
-console.log("public key = " + publicKey);
-```
-
-
-```go Go
-privateKey, err := hedera.GenerateEcdsaPrivateKey()
-if err != nil {
-    panic(err)
-}
-
-publicKey := privateKey.PublicKey()
-
-fmt.Printf("private key = %v\n", privateKey)
-fmt.Printf("public key = %v\n", publicKey)
-```
-
-
-```rust Rust
-// Generate ED25519 key pair
-let private_key = PrivateKey::generate_ed25519()?;
-let public_key = private_key.public_key();
-
-println!("private key = {:?}", private_key);
-println!("public key = {:?}", public_key);
-
-// Generate ECDSA key pair
-let private_key = PrivateKey::generate_ecdsa()?;
-let public_key = private_key.public_key();
-
-println!("private key = {:?}", private_key);
-println!("public key = {:?}", public_key);
-
-// v0.34.0
-```
-
-</CodeGroup>
-
-**Sample Output:**
-
-```
 ```

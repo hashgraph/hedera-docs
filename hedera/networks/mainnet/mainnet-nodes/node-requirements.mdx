@@ -56,12 +56,13 @@ It is recommended to configure a **240 GB SSD in RAID 1** for the root volume (`
   * Data: 2 × NVMe drives (7.5TB RAID 0) or 4× in RAID 10 array
 
 **Performance:**\
-If mounted to root volume, the root volume must meet these requirements. If provisioned via RAID, the RAID array should meet these requirements:
+If mounted to root volume, the root volume must meet these requirements. If provisioned via RAID, the RAID array should meet these requirements. Lower values are minimum, higher values are recommended:
 
 - Sequential Write: 2,000–3,000 MB/s
 - Sequential Read: 3,000–6,200 MB/s
 - Random Read (sync): 250k–1M IOPS
 - Random Write (sync): 100k–170k IOPS
+- Random Read AIO (async): 500k-1M IOPS
 - Avg. Latency: ≤ 200µs
 
 > 📁 **Note**: Nodes must pass the Hedera performance test suite at installation time.
@@ -81,7 +82,7 @@ If mounted to root volume, the root volume must meet these requirements. If prov
 #### Supported OS
 
 - Supported Linux Distributions (64-bit, LTS only):
-  - Ubuntu 22.04 LTS
+  - Ubuntu 22.04 LTS and 24.04 LTS
   - Red Hat Enterprise Linux (RHEL) 8 and 9
   - Oracle Linux 8 and 9
 - Supported kernel versions:
@@ -330,8 +331,8 @@ The following ports must be configured for **public internet access** unless oth
 | Port    | Protocol | Direction      | Description                           |
 | ------- | -------- | -------------- | ------------------------------------- |
 | `50111` | TCP      | Ingress/Egress | Gossip protocol                       |
-| `50211` | TCP      | Ingress        | gRPC (public) API access (HAPI)       |
-| `50212` | TCP      | Ingress        | TLS-encrypted gRPC                    |
+| `50211` | TCP      | Ingress/Egress | gRPC (public) API access (HAPI)       |
+| `50212` | TCP      | Ingress/Egress | TLS-encrypted gRPC                    |
 | `80`    | TCP      | Egress only    | OS package repository connectivity    |
 | `443`   | TCP      | Egress only    | Secure package & system update access |
 | `123`   | UDP      | Ingress/Egress | Time sync via NTP pool                |

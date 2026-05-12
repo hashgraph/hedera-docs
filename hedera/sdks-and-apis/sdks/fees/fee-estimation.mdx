@@ -27,8 +27,8 @@ FeeEstimateResponse response = new FeeEstimateQuery()
     .setMode(FeeEstimateMode.INTRINSIC)   // optional — INTRINSIC is the default
     .execute(client);
  
-// Option 2: Convenience method
-FeeEstimateResponse response = transaction.estimateFee().execute(client);
+// or option 2: Convenience method
+// FeeEstimateResponse response = transaction.estimateFee().execute(client);
 ```
  
 ```javascript JavaScript
@@ -112,6 +112,7 @@ A common pattern: estimate the fee, check against a budget, then execute only if
 var transaction = new AccountCreateTransaction()
     .setKeyWithoutAlias(newKey)
     .setInitialBalance(new Hbar(1))
+    .setMaxTransactionFee(new Hbar(10))   // set before freezing
     .freezeWith(client);
  
 FeeEstimateResponse estimate = transaction.estimateFee().execute(client);
@@ -122,7 +123,6 @@ if (estimate.getTotal() > 15_000_000_000L) {
 }
  
 var record = transaction
-    .setMaxTransactionFee(new Hbar(10))
     .execute(client)
     .getRecord(client);
 ```
@@ -131,6 +131,7 @@ var record = transaction
 const transaction = await new AccountCreateTransaction()
     .setKeyWithoutAlias(newKey)
     .setInitialBalance(new Hbar(1))
+    .setMaxTransactionFee(new Hbar(10))   // set before freezing
     .freezeWith(client);
  
 const estimate = await transaction.estimateFee().execute(client);
@@ -139,16 +140,14 @@ if (estimate.total.toBigInt() > 15_000_000_000n) {
     throw new Error(`Fee estimate exceeds budget: ${estimate.total}`);
 }
  
-const record = await (await transaction
-    .setMaxTransactionFee(new Hbar(10))
-    .execute(client))
-    .getRecord(client);
+const record = await (await transaction.execute(client)).getRecord(client);
 ```
  
 ```go Go
 tx, _ := hiero.NewAccountCreateTransaction().
     SetKeyWithoutAlias(newKey.PublicKey()).
     SetInitialBalance(hiero.NewHbar(1)).
+    SetMaxTransactionFee(hiero.NewHbar(10)).   // set before freezing
     FreezeWith(client)
  
 estimate, _ := tx.EstimateFee().Execute(client)
@@ -157,7 +156,7 @@ if estimate.Total > 15_000_000_000 {
     panic(fmt.Sprintf("fee estimate exceeds budget: %d", estimate.Total))
 }
  
-resp, _ := tx.SetMaxTransactionFee(hiero.NewHbar(10)).Execute(client)
+resp, _ := tx.Execute(client)
 record, _ := resp.GetRecord(client)
 ```
 </CodeGroup>
@@ -187,7 +186,7 @@ System.out.printf("Multiplier at 50%% load: %dx%n", hvResponse.getHighVolumeMult
 ```javascript JavaScript
 const hvResponse = await new FeeEstimateQuery()
     .setTransaction(
-        await new AccountCreateTransaction()
+        new AccountCreateTransaction()
             .setKeyWithoutAlias(newKey)
             .setHighVolume(true)
             .freezeWith(client)

@@ -485,6 +485,7 @@
                       "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit",
                       "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/plugins",
                       "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hooks-and-polices",
+                      "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hosted-mcp-server",
                       {
                         "group": "JavaScript SDK",
                         "pages": [

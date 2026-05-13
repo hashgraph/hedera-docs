@@ -240,17 +240,28 @@ tools = hedera_toolkit.get_tools()
 --
 ## Publish and Register Your Plugin
 
-To create a plugin to be use with the Hedera Agent Kit, you will need to create a plugin in your own repository, publish an npm package, and provide a description of the functionality included in that plugin, as well as the required and optional parameters.
+To create a plugin to be used with the Hedera Agent Kit, you will need to create a plugin in your own repository, publish a PyPI package, and provide a description of the functionality included in that plugin, as well as the required and optional parameters.
 
-Once you have a repository, published npm package, and a README with a description of the functionality included in that plugin in your plugin's repo, as well, add it to the Hedera Agent Kit by forking and opening a Pull Request that includes:
+Once you have a repository, published PyPI package, and a README with a description of the functionality included in that plugin in your plugin's repo, as well as the required and optional parameters, you can add it to the Hedera Agent Kit by forking and opening a Pull Request to:
 
-1. Include the plugin as a bullet point under the **Third Party Plugin** section in the [README.md in the hedera-agent-kit-py](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/README.md). 
-    * Include the name, a brief description, and a link to the repository with the README, as well the URL linked to the published npm package.
+1. Include the plugin as a bullet point under the **Available Third Party Plugin** section under the **Third Party Plugin** section in the [README.md in the hedera-agent-kit-py](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/README.md). Include the name, a brief description, and a link to the repository with the README, as well as the URL linked to the published PyPI package.
+
 2. If you would like to include your plugin functionality in the Hedera plugin built for ElizaOS simply make a PR to [add your plugin name to the `plugins` array in the Hedera ElizaOS plugin](https://github.com/elizaos-plugins/plugin-hedera/blob/1.x/src/adapter-plugin/plugin.ts#L72) where the configuration is initiated. The hedera-agent-kit adaptor architecture means your plugin functionality will be usable with no additional configuration needed.
 
-Please also reach out in the Hedera Discord in the **Support > developer-help-desk** channel or create an Issue in this repository for help building, publishing, and promoting your plugin.
+3. All commits for your plugin **must be [DCO signed](https://wiki.linuxfoundation.org/dco)**, have the names of the tools & core actions exposed by the plugin, and **point to the exact version of the Python package**. To avoid having pull requests blocked in the future, always include a sign-off:
 
+```text
+Bonzo Plugin is a unified SDK to the Bonzo protocol, exposing the core actions (deposit, withdraw, repay, borrow) for decentralised lending and borrowing on Hedera:
 
+PyPI: https://pypi.org/project/hak-bonzo-plugin/
+Github repository: https://github.com/Bonzo-Labs/bonzoPlugin
+Version: hak-bonzo-plugin==1.0.1
+Status: Not validated by HAK team, v3-compatible release
+```
+
+Feel free to also [reach out to the Hedera Agent Kit maintainers on Discord](https://hedera.com/discord) or another channel so we can test out your plugin, include it in our docs, and let our community know thorough marketing and community channels.
+
+Please also reach out in the Hedera Discord in the Support > developer-help-desk channel create an Issue in this repository for help building, publishing, and promoting your plugin
 
 ### Plugin README Template
 
@@ -261,27 +272,26 @@ This plugin was built by <?> for the <project, platform, etc>. It was built to e
 _Feel free to include a description of your project and how it can be used with the Hedera Agent Kit. 
 
 ### Installation
+# pip install <plugin-name>
 
-```bash
-npm install <plugin-name>
-```
+# Usage
+from hedera_agent_kit.langchain.toolkit import HederaLangchainToolkit
+from hedera_agent_kit.shared.configuration import Configuration, Context, AgentMode
+from <plugin_name> import my_plugin
 
-### Usage
+hedera_toolkit = HederaLangchainToolkit(
+    client=client,
+    configuration=Configuration(
+        context=Context(
+            mode=AgentMode.AUTONOMOUS,
+        ),
+        plugins=[
+            my_plugin,
+        ],
+    ),
+)
 
-```javascript
-import { myPlugin } from '<plugin-name>';
-```
-
-```javascript
- const hederaAgentToolkit = new HederaLangchainToolkit({
-    client,
-    configuration: {
-      context: {
-        mode: AgentMode.AUTONOMOUS,
-      },
-      plugins: [coreTokenPlugin, coreAccountPlugin, coreConsensusPlugin, coreAccountQueryPlugin, coreConsensusQueryPlugin, coreTokenQueryPlugin, myPlugin],
-    },
-  });
+tools = hedera_toolkit.get_tools()
 ```
 
 ### Functionality
@@ -302,10 +312,8 @@ _High level description of the plugin_
 - **GitHub**: https://github.com/hashgraph/hedera-agent-kit-py
 - **Discord**: https://hedera.com/discord
 
-**Examples**
-
 ### Examples and References
 - See existing core plugins in the [hedera agent kit examples](https://github.com/hashgraph/hedera-agent-kit-py/tree/main/python/examples)
-- Follow the patterns established the [example BaseTool implementation]](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/python/hedera_agent_kit/langchain/tool.py)
+- Follow the patterns established the [example BaseTool implementation](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/python/hedera_agent_kit/langchain/tool.py)
 - See [typescript/examples/langchain/tool-calling-agent.ts](https://github.com/hashgraph/hedera-agent-kit-py/blob/main/python/examples/langchain/plugin_tool_calling_agent.py) for usage examples
 

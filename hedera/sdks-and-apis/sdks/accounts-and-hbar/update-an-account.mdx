@@ -26,12 +26,6 @@ A transaction that updates the properties of an existing account. The network wi
   * If either is a threshold key, the threshold value is required to sign.
 * If you do not have the required signatures, the network will throw an `INVALID_SIGNATURE` error.
 
-<Info>
-**Account Hooks ([HIP-1195](https://hips.hedera.com/hip/hip-1195))**
-
-You can add or remove [Hiero Hooks](/hedera/core-concepts/accounts/hiero-hooks) on an existing account using `addHookToCreate()` and `addHookToDelete()`. Deletions are processed before creations, enabling atomic hook replacement within a single transaction. A hook can only be deleted when it has zero storage slots. See [Create and Manage Hooks](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks) for full details.
-</Info>
-
 #### Maximum Auto-Associations and Fees
 
 Accounts have a property, `maxAutoAssociations`, and the property's value determines the maximum number of automatic token associations allowed.
@@ -62,10 +56,6 @@ Reference: [HIP-904](https://hips.hedera.com/hip/hip-904)
 | `setStakedNodeId(<stakedNodeId>)` | long | Optional |
 | `setDeclineStakingReward(<declineStakingReward>)` | boolean | Optional |
 | `setExpirationTime(<expirationTime>)` | Instant | Disabled |
-| `addHookToCreate(<hook>)` | [HookCreationDetails](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks) | Optional |
-| `setHooksToCreate(<hooks>)` | list\<[HookCreationDetails](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks)> | Optional |
-| `addHookToDelete(<hookId>)` | long | Optional |
-| `setHooksToDelete(<hookIds>)` | list\<long> | Optional |
 
 <CodeGroup>
 
@@ -75,7 +65,7 @@ AccountUpdateTransaction transaction = new AccountUpdateTransaction()
     .setAccountId(accountId)
     .setKey(updateKey);
 
-//Sign the transaction with the old key and new key, submit to a Hedera network   
+//Sign the transaction with the old key and new key, submit to a Hedera network
 TransactionResponse txResponse = transaction.freezeWith(client).sign(oldKey).sign(newKey).execute(client);
 
 //Request the receipt of the transaction
@@ -126,7 +116,7 @@ if err != nil {
     panic(err)
 }
 
-//Sign the transaction with the old key and new key, submit to a Hedera network   
+//Sign the transaction with the old key and new key, submit to a Hedera network
 txResponse, err := transaction.Sign(newKey).Sign(updateKey).Execute(client)
 
 //Request the receipt of the transaction
@@ -170,167 +160,6 @@ println!("The transaction consensus status is {:?}", status);
 
 </CodeGroup>
 
-#### Add hooks to an existing account
-
-This example adds two [account allowance hooks](/hedera/core-concepts/accounts/hiero-hooks) to an existing account. The hook contract must be deployed first via `ContractCreateTransaction`.
-
-<CodeGroup>
-
-```java Java
-// Create hook details
-HookCreationDetails hook1 = new HookCreationDetails(
-    HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
-    1L,
-    new EvmHook(contractId),
-    adminKey.getPublicKey()
-);
-
-HookCreationDetails hook2 = new HookCreationDetails(
-    HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
-    2L,
-    new EvmHook(contractId),
-    adminKey.getPublicKey()
-);
-
-// Add hooks to the account
-TransactionResponse txResponse = new AccountUpdateTransaction()
-    .setAccountId(accountId)
-    .addHookToCreate(hook1)
-    .addHookToCreate(hook2)
-    .setMaxTransactionFee(new Hbar(10))
-    .freezeWith(client)
-    .sign(accountKey)
-    .execute(client);
-
-TransactionReceipt receipt = txResponse.getReceipt(client);
-System.out.println("Hooks added: " + receipt.status);
-```
-
-```javascript JavaScript
-import {
-    AccountUpdateTransaction,
-    HookCreationDetails,
-    EvmHook,
-    HookExtensionPoint,
-    Long,
-    Hbar,
-} from "@hiero-ledger/sdk";
-
-// Create hook details
-const hook1 = new HookCreationDetails({
-    extensionPoint: HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
-    hookId: Long.fromInt(1),
-    evmHook: new EvmHook({ contractId }),
-    adminKey: adminKey.publicKey,
-});
-
-const hook2 = new HookCreationDetails({
-    extensionPoint: HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
-    hookId: Long.fromInt(2),
-    evmHook: new EvmHook({ contractId }),
-    adminKey: adminKey.publicKey,
-});
-
-// Add hooks to the account
-const txResponse = await (
-    await (
-        await new AccountUpdateTransaction()
-            .setAccountId(accountId)
-            .addHookToCreate(hook1)
-            .addHookToCreate(hook2)
-            .setMaxTransactionFee(new Hbar(10))
-            .freezeWith(client)
-            .sign(accountKey)
-    ).execute(client)
-).getReceipt(client);
-
-console.log("Hooks added: " + txResponse.status);
-```
-
-```go Go
-// Create hook details
-hook1 := hedera.NewHookCreationDetails().
-    SetExtensionPoint(hedera.ACCOUNT_ALLOWANCE_HOOK).
-    SetHookId(1).
-    SetEvmHook(*hedera.NewEvmHook().SetContractId(&contractId)).
-    SetAdminKey(adminKey.PublicKey())
-
-hook2 := hedera.NewHookCreationDetails().
-    SetExtensionPoint(hedera.ACCOUNT_ALLOWANCE_HOOK).
-    SetHookId(2).
-    SetEvmHook(*hedera.NewEvmHook().SetContractId(&contractId)).
-    SetAdminKey(adminKey.PublicKey())
-
-// Add hooks to the account
-txResponse, err := hedera.NewAccountUpdateTransaction().
-    SetAccountID(accountID).
-    AddHookToCreate(hook1).
-    AddHookToCreate(hook2).
-    SetMaxTransactionFee(hedera.NewHbar(10)).
-    FreezeWith(client).
-    Sign(accountKey).
-    Execute(client)
-
-receipt, err := txResponse.GetReceipt(client)
-fmt.Printf("Hooks added: %v\n", receipt.Status)
-```
-
-</CodeGroup>
-
-#### Delete hooks from an existing account
-
-This example removes hooks by their IDs. A hook must have zero storage slots before it can be deleted — clear storage first using [`HookStoreTransaction`](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-a-hookstore-transaction).
-
-<CodeGroup>
-
-```java Java
-TransactionResponse txResponse = new AccountUpdateTransaction()
-    .setAccountId(accountId)
-    .addHookToDelete(1L)
-    .addHookToDelete(2L)
-    .setMaxTransactionFee(new Hbar(10))
-    .freezeWith(client)
-    .sign(accountKey)
-    .execute(client);
-
-TransactionReceipt receipt = txResponse.getReceipt(client);
-System.out.println("Hooks deleted: " + receipt.status);
-```
-
-```javascript JavaScript
-import { AccountUpdateTransaction, Long, Hbar } from "@hiero-ledger/sdk";
-
-const txResponse = await (
-    await (
-        await new AccountUpdateTransaction()
-            .setAccountId(accountId)
-            .addHookToDelete(Long.fromNumber(1))
-            .addHookToDelete(Long.fromNumber(2))
-            .setMaxTransactionFee(new Hbar(10))
-            .freezeWith(client)
-            .sign(accountKey)
-    ).execute(client)
-).getReceipt(client);
-
-console.log("Hooks deleted: " + txResponse.status);
-```
-
-```go Go
-txResponse, err := hedera.NewAccountUpdateTransaction().
-    SetAccountID(accountID).
-    AddHookToDelete(1).
-    AddHookToDelete(2).
-    SetMaxTransactionFee(hedera.NewHbar(10)).
-    FreezeWith(client).
-    Sign(accountKey).
-    Execute(client)
-
-receipt, err := txResponse.GetReceipt(client)
-fmt.Printf("Hooks deleted: %v\n", receipt.Status)
-```
-
-</CodeGroup>
-
 ## Get transaction values
 
 Return the properties of an account create transaction.
@@ -346,8 +175,6 @@ Return the properties of an account create transaction.
 | `getStakedNodeId()` | long | Returns the node ID the account is staked to |
 | `getStakedAccountId()` | AccountId | Returns the account ID the node is staked to |
 | `getAutoRenewPeriod()` | Duration | Returns the auto renew period on the account |
-| `getHooksToCreate()` | list\<HookCreationDetails> | Returns the hooks to be created on the account |
-| `getHooksToDelete()` | list\<long> | Returns the hook IDs to be deleted from the account |
 
 <CodeGroup>
 

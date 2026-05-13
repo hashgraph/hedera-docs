@@ -9,9 +9,9 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 <Info>
   **MAINNET UPDATE: MAY 13, 2026**
 </Info>
-<Info>
+<Check>
   **TESTNET UPDATED: APRIL 29, 2026**
-</Info>
+</Check>
 
 ### [**Build 0.73.0**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.73.0)
 
@@ -614,7 +614,7 @@ HIP-1081: Block Node — Updates to Block Node communications including new supp
   - Populate state proofs with real Merkle paths [#22253](https://github.com/hiero-ledger/hiero-consensus-node/pull/22253) by @mhess-swl
   - Simple fees for File/Schedule service queries [#22537](https://github.com/hiero-ledger/hiero-consensus-node/pull/22537) by @ibankov
   - Add connection/client for BN service API [#22483](https://github.com/hiero-ledger/hiero-consensus-node/pull/22483) by @timfn-hg
-  
+
   **Full Changelog**: [v0.69.1...v0.70.0](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.69.1...v0.70.0)
 </Accordion>
 
@@ -692,7 +692,7 @@ See more in the communication [here](https://hedera.com/blog/price-update-to-con
   - fix: 22603: (0.69) Reconnect teacher may experience high virtual pipeline backpressure by @artemananiev in #22664
   - chore: Cherry Pick #22662 and #22710 into release/0.69 by @rbarker-dev in #22718
 
-  
+
   **Full Changelog**: [v0.69.0...v0.69.1](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.69.0...v0.69.1)
 </Accordion>
 
@@ -701,7 +701,7 @@ See more in the communication [here](https://hedera.com/blog/price-update-to-con
 <Accordion title="What's Changed">
   - fix: (0.68) Use service component for handler-assessed fees by @tinker-michaelj in #22393
   - chore: (0.68) Refine HIP-991 sig requirement checks by @tinker-michaelj in #22474
-  
+
   **Full Changelog**: [v0.68.3...v0.68.4](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.68.3...v0.68.4)
 </Accordion>
 
@@ -726,12 +726,12 @@ See more in the communication [here](https://hedera.com/blog/price-update-to-con
 Release v0.68 introduces [Dynamic Address Book (DAB)](https://hips.hedera.com/hip/hip-1299) support, including updatable node account IDs, and enables generalized scheduled contract calls on the Hiero Consensus Node. These changes are now live on Hedera testnet (Nov 13, 2025) and are scheduled for mainnet on Dec 18, 2025.
 
 <Accordion title="What's new in Release v0.68?">
-  
+
 **Dynamic Address Book node account ID updates (HIP-1299)**
 Release v0.68 introduces the consensus-node changes needed for **HIP-1299 Dynamic Address Book node account ID updates**.
 Updatable node account IDs: Node operators will be able to change their node’s nodeAccountId without redeploying the network or creating a brand-new node entry, aligning on-chain identity with operational realities (e.g., custody changes, account migration).
 
-**Developer impact:** 
+**Developer impact:**
 For dApps, existing HAPI flows remain unchanged; however, infrastructure and tooling should avoid hard-coding node account ID's, or at a minimum take extra consideration when hard-coding node account IDs as immutable they can now be changed and hard coding them into applications will introduce a failure mode. On testnet, mainnet, and previewnet you may observe some nodes’ nodeAccountId values changing over time as operators and the Council exercise the new capabilities.
 
 **Generalized Scheduled Contract Calls (HIP-1215)**
@@ -754,7 +754,7 @@ For developers and operators, the main impact from release v0.68 is more reliabl
 <Accordion title="What's Changed">
   - fix: (0.68) Use service component for handler-assessed fees by @tinker-michaelj in #22393
   - chore: (0.68) Refine HIP-991 sig requirement checks by @tinker-michaelj in #22474
-  
+
   **Full Changelog**: [v0.68.3...v0.68.6](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.68.3...v0.68.6)
 </Accordion>
 
@@ -763,7 +763,7 @@ For developers and operators, the main impact from release v0.68 is more reliabl
 <Accordion title="What's Changed">
   - fix: (0.68) Use service component for handler-assessed fees by @tinker-michaelj in #22393
   - chore: (0.68) Refine HIP-991 sig requirement checks by @tinker-michaelj in #22474
-  
+
   **Full Changelog**: [v0.68.3...v0.68.4](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.68.3...v0.68.4)
 </Accordion>
 
@@ -772,7 +772,7 @@ For developers and operators, the main impact from release v0.68 is more reliabl
 <Accordion title="What's Changed">
   - fix: (0.68) Use service component for handler-assessed fees by @tinker-michaelj in #22393
   - chore: (0.68) Refine HIP-991 sig requirement checks by @tinker-michaelj in #22474
-  
+
   **Full Changelog**: [v0.68.3...v0.68.4](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.68.3...v0.68.4)
 </Accordion>
 
@@ -783,7 +783,7 @@ For developers and operators, the main impact from release v0.68 is more reliabl
   - chore: cherry-pick: Additional throttle accumulator tests by @derektriley in #22314
   - chore: Align gas throttle w/ throughput throttle leaking by @tinker-michaelj in #22343
   - chore(cherry-pick): switch hashgraph to hiero-ledger packages by @andrewb1269 in #22333
-  
+
   **Full Changelog**: [v0.68.2...v0.68.3](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.68.2...v0.68.3)
 </Accordion>
 
@@ -808,7 +808,7 @@ For developers and operators, the main impact from release v0.68 is more reliabl
   - ci(bug-fix): Get the tag for the release labeled latest (#22157) by @rbarker-dev in #22163
   - fix: cherry-pick Block merkle tree optimizations by @derektriley in #22162
   - fix: Re-enable gas throttle; disable ops duration throttle by @lukelee-sl in #22164
-  
+
   **Full Changelog**: [v0.68.0...v0.68.1](https://github.com/hiero-ledger/hiero-consensus-node/compare/v0.68.0...v0.68.1)
 </Accordion>
 
@@ -863,7 +863,7 @@ Release v0.67 enhances the stability and performance of the Hiero Consensus Node
   For developers, no breaking changes or immediate actions required. Existing contracts and integrations remain fully compatible.
 </Accordion>
 
-### **Build 0.67.6** 
+### **Build 0.67.6**
 
 <Accordion title="What's Changed">
   - feat: Block Node communication cherry-picks by @derektriley in #21742

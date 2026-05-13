@@ -6,8 +6,8 @@ description: "Understand how high-volume throttles work, how variable-rate prici
 
 Hedera's standard throttle system limits entity creation transactions (like `CryptoCreate`,
 `TokenCreate`, and `TokenMint`) to relatively modest per-second rates. This protects the
-network but can be a bottleneck for applications that need to create entities at scale —
-for example, bulk user onboarding, large NFT drops, or automated token deployments.
+network but can be a bottleneck for applications that need to create entities at scale.
+For example, bulk user onboarding, large NFT drops, or automated token deployments.
 
 [HIP-1313](https://hips.hedera.com/hip/hip-1313) introduces a **high-volume throttle system**
 that runs in parallel alongside the standard system. By setting `high_volume = true` on a
@@ -16,7 +16,7 @@ tradeoff: **fees are variable and increase with utilization.**
 
 <Info>
   The standard throttle system is completely unaffected. Existing applications that do not
-  set the `high_volume` flag will work exactly as before — same capacity, same pricing.
+  set the `high_volume` flag will work exactly as before - same capacity, same pricing.
 </Info>
 
 ---
@@ -83,7 +83,7 @@ there is no congestion. Always check the current multiplier before committing to
 
 ### Pricing Curve
 
-The base curve below is set by Hedera governance and defines how the fee
+The base curve below is set by Hedera Council and defines how the fee
 multiplier scales with throughput in the high-volume lane. The multiplier is
 expressed relative to the standard base fee, and the throughput rate is
 expressed as a multiplier of the base entity creation rate.
@@ -203,6 +203,12 @@ Look for the `high_volume_multiplier` field in the response. This value is divid
 The fee totals in the response are **not** pre-multiplied — multiply the fee total by
 `high_volume_multiplier / 1000` to calculate the high-volume price.
 
+<Note>
+  Mirror node data is near real-time but brief lag is possible between consensus and
+  ingestion. Use this value to gauge current pricing. The multiplier applied when your
+  transaction is processed may differ; expect the actual fee to vary.
+</Note>
+
 ### Step 2: Set the Flag and a Fee Cap
 
 <CodeGroup>
@@ -277,6 +283,7 @@ println!("Account created: {:?}", new_account_id);
 ```
 
 </CodeGroup>
+
 
 
 ### Step 3: Handle Fee Failures Gracefully

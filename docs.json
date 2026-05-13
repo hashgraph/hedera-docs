@@ -444,6 +444,7 @@
                   "hedera/core-concepts/hashgraph-consensus-algorithms/virtual-voting"
                 ]
               },
+              "hedera/core-concepts/fee-model",
               "hedera/core-concepts/high-volume-entity-creation",
               {
                 "group": "Transactions and Queries",
@@ -889,7 +890,8 @@
                       "openapi.yaml GET /api/v1/network/fees",
                       "openapi.yaml GET /api/v1/network/exchangerate",
                       "openapi.yaml GET /api/v1/network/nodes",
-                      "openapi.yaml GET /api/v1/network/stake"
+                      "openapi.yaml GET /api/v1/network/stake",
+                      "openapi.yaml POST /api/v1/network/fees"
                     ]
                   }
                 ]

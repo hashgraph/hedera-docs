@@ -43,7 +43,12 @@ https://sourcify.dev/server
 
 #### Verify Contracts
 
-<table><thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead><tbody><tr><td>POST</td><td><code>/v2/verify/&#123;chainId&#125;/&#123;address&#125;</code></td><td>verify a contract using Solidity Standard JSON input</td></tr><tr><td>POST</td><td><code>/v2/verify/metadata/&#123;chainId&#125;/&#123;address&#125;</code></td><td>verify a contract using a Solidity <code>metadata.json</code> file</td></tr><tr><td>POST</td><td><code>/v2/verify/etherscan/&#123;chainId&#125;/&#123;address&#125;</code></td><td>import and verify a contract that's already verified on Etherscan</td></tr><tr><td>POST</td><td><code>/v2/verify/similarity/&#123;chainId&#125;/&#123;address&#125;</code></td><td>verify a contract via similarity search against existing verified contracts</td></tr></tbody></table>
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/v2/verify/{chainId}/{address}` | verify a contract using Solidity Standard JSON input |
+| POST | `/v2/verify/metadata/{chainId}/{address}` | verify a contract using a Solidity `metadata.json` file |
+| POST | `/v2/verify/etherscan/{chainId}/{address}` | import and verify a contract that's already verified on Etherscan |
+| POST | `/v2/verify/similarity/{chainId}/{address}` | verify a contract via similarity search against existing verified contracts |
 
 #### Verification Jobs
 
@@ -53,7 +58,11 @@ https://sourcify.dev/server
 
 #### Contract Lookup
 
-<table><thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead><tbody><tr><td>GET</td><td><code>/v2/contract/&#123;chainId&#125;/&#123;address&#125;</code></td><td>fetch verification status and source files for a contract on a specific chain</td></tr><tr><td>GET</td><td><code>/v2/contract/all-chains/&#123;address&#125;</code></td><td>look up a single address across every chain Sourcify supports</td></tr><tr><td>GET</td><td><code>/v2/contracts/&#123;chainId&#125;</code></td><td>paginated list of verified contracts on a given chain</td></tr></tbody></table>
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/v2/contract/{chainId}/{address}` | fetch verification status and source files for a contract on a specific chain |
+| GET | `/v2/contract/all-chains/{address}` | look up a single address across every chain Sourcify supports |
+| GET | `/v2/contracts/{chainId}` | paginated list of verified contracts on a given chain |
 
 #### System
 
@@ -91,5 +100,10 @@ Most developers verify contracts through their build tooling rather than calling
   <Card title="Writer: Luke, DevRel Engineer">
     [GitHub](https://github.com/LukeForrest-Hashgraph) |
     [X](https://x.com/_LukeForrest)
+  </Card>
+  <Card title="Editor: Krystal, Senior DX Engineer">
+    [GitHub](https://github.com/theekrystallee) |
+    [X](https://x.com/theekrystallee) |
+    [LinkedIn](https://www.linkedin.com/in/theekrystallee/)
   </Card>
 </Columns>

@@ -1110,7 +1110,18 @@
               {
                 "group": "Smart Contract Verification API",
                 "pages": [
-                  "hedera/sdks-and-apis/smart-contract-verification-api"
+                  "hedera/sdks-and-apis/smart-contract-verification-api",
+                  "smart-contract-verification-api.yaml POST /v2/verify/{chainId}/{address}",
+                  "smart-contract-verification-api.yaml POST /v2/verify/metadata/{chainId}/{address}",
+                  "smart-contract-verification-api.yaml POST /v2/verify/etherscan/{chainId}/{address}",
+                  "smart-contract-verification-api.yaml POST /v2/verify/similarity/{chainId}/{address}",
+                  "smart-contract-verification-api.yaml GET /v2/verify/{verificationId}",
+                  "smart-contract-verification-api.yaml GET /v2/contract/{chainId}/{address}",
+                  "smart-contract-verification-api.yaml GET /v2/contract/all-chains/{address}",
+                  "smart-contract-verification-api.yaml GET /v2/contracts/{chainId}",
+                  "smart-contract-verification-api.yaml GET /health",
+                  "smart-contract-verification-api.yaml GET /version",
+                  "smart-contract-verification-api.yaml GET /chains"
                 ]
               }
             ]

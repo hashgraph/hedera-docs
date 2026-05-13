@@ -1,0 +1,103 @@
+---
+title: "Hosted MCP Server"
+description: "Use the Hashgraph Hosted Model Context Protocol (MCP) server to integrate Hedera Agent Kit tools into your MCP-compatible clients"
+sidebarTitle: "Hosted MCP Server"
+---
+
+## Overview
+
+The **Hedera Hosted MCP Server** provides a managed, remote instance of the Hedera Agent Kit exposing its tools via the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/). Any MCP-compatible client — such as Cursor, Claude Desktop, or a custom AI application — can integrate Hedera network capabilities without deploying or maintaining local agent infrastructure.
+
+<Note>
+**RETURN_BYTES Mode:** The Hosted MCP Server operates exclusively in `RETURN_BYTES` mode. The server will *not* sign or execute transactions on-chain. Every transaction-building tool returns the constructed transaction as hex-encoded bytes, and your client application is responsible for signing and submitting them to the network.
+</Note>
+
+<Note>
+**Network:** The hosted server is connected to **Hedera Testnet only**. For Mainnet integrations, run the [self-hosted MCP server](https://github.com/hashgraph/hedera-agent-kit-js/tree/main/examples/modelcontextprotocol).
+</Note>
+
+## Connection Details
+
+The server uses the MCP Streamable HTTP transport.
+
+- **Endpoint:** `https://agentic-testnet-mcp.hedera.com/mcp`
+- **Transport:** Streamable HTTP
+- **Network:** Hedera Testnet
+
+## Context Initialization
+
+When connecting to the server, provide your Hedera Account ID via an HTTP header. This initializes the session context so every tool call knows which account to build transactions for.
+
+- **Header Name:** `x-hedera-account-id`
+- **Value:** Your Hedera Testnet Account ID (e.g., `0.0.12345`)
+
+On the initialize request, the server queries the Hedera Mirror Node to fetch the associated public key and configures the agent's scope for your account. If the account cannot be found on the Mirror Node, the initialize request returns `400` with an explanatory error.
+
+<Note>
+Never send private keys to the hosted server. Only your account ID is required — the server constructs unsigned transactions, and signing happens entirely on your side.
+</Note>
+
+<Note>
+**Session Management:** There is no need to manually generate, configure, or export a Session ID (SID) when connecting to the Hosted MCP Server. Standard MCP-compatible clients (like Claude and Cursor) utilize the official Model Context Protocol SDK under the hood, which automatically captures the dynamically generated `mcp-session-id` header from the server's initialization response. The client's transport layer then silently attaches this session header to all subsequent requests in the background, ensuring seamless state persistence without manual intervention.
+</Note>
+
+## Client Configuration
+
+Most MCP-compatible clients accept a JSON configuration block. Register the hosted server as follows:
+
+```json
+{
+  "mcpServers": {
+    "hedera": {
+      "url": "https://agentic-testnet-mcp.hedera.com/mcp",
+      "headers": {
+        "x-hedera-account-id": "0.0.YOUR_ACCOUNT_ID"
+      }
+    }
+  }
+}
+```
+
+Replace `0.0.YOUR_ACCOUNT_ID` with your Hedera Testnet account ID. After updating the configuration, restart your client — the Hedera tools should appear in its tool list.
+
+> [!WARNING]
+> **Read-Only / Query Only for Standard IDEs & GUI Clients:** General-purpose AI clients like **Cursor** and **Claude Desktop** have no built-in capability to sign or submit raw transaction bytes returned by the Hosted MCP Server.
+> - **Queries:** These clients can seamlessly perform all read-only queries (e.g., checking account balances, querying token details).
+> - **Transactions:** If you ask the client to perform a state-changing transaction (like transferring HBAR or minting tokens), it will return the unsigned, hex-encoded transaction bytes. You will need to manually copy these bytes and sign/submit them using a local script or Hedera SDK.
+
+### Where to put the config
+
+- **Cursor:** `~/.cursor/mcp.json` for a global config, or `.cursor/mcp.json` inside a project for per-project tools.
+- **Claude Desktop:** `claude_desktop_config.json` — the path depends on your OS; see Anthropic's MCP setup guide.
+- **Custom MCP clients:** consult your client's documentation for how to register MCP servers and pass HTTP headers.
+
+## Working with RETURN_BYTES
+
+Because the hosted server never signs transactions, every state-changing tool returns a response containing the unsigned, hex-encoded transaction bytes. To complete an operation, your client must:
+
+1. Receive the hex bytes from the tool response.
+2. Decode and sign them using a Hedera SDK with the account's private key.
+3. Submit the signed transaction to the Hedera network.
+
+Read-only queries — balances, token info, transaction records, exchange rates, and similar — return their results directly. No signing is required for those.
+
+See the [Hedera Agent Kit examples](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/examples/langchain-v1/return-bytes-tool-calling-agent.ts) for examples of signing and submitting transaction bytes.
+
+
+## Available Tools
+
+The hosted server comes pre-configured with all core Hedera plugins. Exposed tool categories include:
+
+- **Accounts:** create accounts, update keys, transfer HBAR, manage allowances, query balances.
+- **Tokens (HTS):** create, mint, transfer, associate, and query fungible and non-fungible tokens.
+- **Smart Contracts (EVM):** deploy, call, and query ERC-20 and ERC-721 contracts.
+- **Consensus (HCS):** create topics, submit messages, and query topic info.
+- **Transactions & Misc:** query transaction records, exchange rates, and node fees.
+
+See the [Plugins](/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/plugins) page for the complete list of tools and their parameters.
+
+## Limitations
+
+- **Testnet only.** The hosted instance does not connect to Mainnet. Run the self-hosted server for Mainnet usage.
+- **No transaction execution.** All state-changing operations require the client to sign and submit.
+- **In-memory sessions.** Sessions are not persisted; if the server restarts, active clients need to re-initialize.

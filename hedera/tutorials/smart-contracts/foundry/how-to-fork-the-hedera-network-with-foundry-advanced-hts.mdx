@@ -14,7 +14,7 @@ This guide shows how to:
 References:
 
 - Repo: [hashgraph/hedera-forking](https://github.com/hashgraph/hedera-forking)
-- HTS System Contracts: [hedera-smart-contracts](https://github.com/hashgraph/hedera-smart-contracts)
+- HTS System Contracts: [hiero-contracts](https://github.com/hiero-ledger/hiero-contracts)
 - Supported methods: [README - Supported Methods](https://github.com/hashgraph/hedera-forking#hedera-token-service-supported-methods)
 
 <Info>
@@ -35,7 +35,7 @@ References:
 - Completed [Part 1](/hedera/tutorials/smart-contracts/foundry/how-to-fork-the-hedera-network-with-foundry-basic-erc20) of this tutorial series
 - [Foundry](https://book.getfoundry.sh/getting-started/installation) installed
 - ECDSA account from the [Hedera Portal](https://portal.hedera.com/) with at least **20 HBAR** (15 HBAR for HTS token creation fee + gas)
-- Familiarity with Hedera System Contracts - more specifically [HTS System Contracts precompiles](https://github.com/hashgraph/hedera-smart-contracts/tree/main/contracts/system-contracts/hedera-token-service)
+- Familiarity with Hedera System Contracts - more specifically [HTS System Contracts precompiles](https://github.com/hiero-ledger/hiero-contracts/tree/main/contracts/token-service)
 - A Hedera JSON-RPC endpoint:
   - mainnet: `https://mainnet.hashio.io/api`
   - testnet: `https://testnet.hashio.io/api`
@@ -889,7 +889,7 @@ Every HTS token address on Hedera contains identical proxy bytecode (defined by 
 4. [**hedera-forking Repository**](https://github.com/hashgraph/hedera-forking)\
    Explore examples and documentation
 
-5. [**Hedera Smart Contracts Repository**](https://github.com/hashgraph/hedera-smart-contracts)\
+5. [**Hiero Contracts Repository**](https://github.com/hiero-ledger/hiero-contracts)\
    Explore HTS System Contracts interfaces
 
 <Columns cols={2}>

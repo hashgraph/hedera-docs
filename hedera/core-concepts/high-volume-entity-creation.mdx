@@ -1,6 +1,5 @@
 ---
 title: "High-Volume Entity Creation"
-sidebarTitle: "High-Volume Entity Creation"
 description: "Understand how high-volume throttles work, how variable-rate pricing affects your transaction fees, and how to use the high_volume flag effectively."
 ---
 
@@ -188,20 +187,71 @@ willing to pay the variable-rate fees.
 
 ## How to Use High-Volume Mode
 
-### Step 1: Check Current Pricing
+<Steps>
+  <Step title="Step 1: Check Current Pricing">
+    Before submitting high-volume transactions, price the **exact** transaction you intend
+to submit against the Mirror Node fee estimation endpoint. The `GET /api/v1/network/fees`
+endpoint returns generic per-type averages and does **not** include a
+`high_volume_multiplier`. To get an accurate high-volume estimate, build and freeze your
+transaction, then POST the serialized protobuf bytes to `/api/v1/network/fees`.
 
-Before submitting high-volume transactions, query the Mirror Node fee estimation endpoint
-to see the current `high_volume_multiplier`. The HIP specifies that this field will be
-added to the existing fee estimation response:
+The SDK's `toBytes()` returns a `TransactionList` wrapper; the mirror node fee endpoint
+expects a single `Transaction` protobuf, so unwrap the list before sending (shown as
+`extractFirstTransaction` below).
 
-```bash wrap
-curl "https://mainnet.mirrornode.hedera.com/api/v1/network/fees"
+<CodeGroup>
+
+```javascript Account creation wrap
+const tx = await new AccountCreateTransaction()
+    .setKey(publicKey)
+    .setInitialBalance(Hbar.from(10))
+    .setHighVolume(true)
+    .setMaxTransactionFee(new Hbar(100))
+    .freezeWith(client);
+
+const txBytes = extractFirstTransaction(tx.toBytes());
+
+const response = await fetch(`${MIRROR_NODE_URL}/api/v1/network/fees`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-protobuf" },
+    body: txBytes,
+});
+
+const estimate = await response.json();
+const multiplier = estimate.high_volume_multiplier / 1000;
+const highVolumeTotal = estimate.total * multiplier;
 ```
 
-Look for the `high_volume_multiplier` field in the response. This value is divided by
-1000 to produce the actual multiplier (e.g., a value of `1000` = 1.0×, `2000` = 2.0×).
-The fee totals in the response are **not** pre-multiplied — multiply the fee total by
-`high_volume_multiplier / 1000` to calculate the high-volume price.
+```javascript Token creation wrap
+const tx = await new TokenCreateTransaction()
+    .setTokenName("Fee Check Token")
+    .setTokenSymbol("FEE")
+    .setTokenType(TokenType.FungibleCommon)
+    .setTreasuryAccountId(treasuryAccountId)
+    .setInitialSupply(0)
+    .setHighVolume(true)
+    .setMaxTransactionFee(new Hbar(100))
+    .freezeWith(client);
+
+const txBytes = extractFirstTransaction(tx.toBytes());
+
+const response = await fetch(`${MIRROR_NODE_URL}/api/v1/network/fees`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-protobuf" },
+    body: txBytes,
+});
+
+const estimate = await response.json();
+const multiplier = estimate.high_volume_multiplier / 1000;
+const highVolumeTotal = estimate.total * multiplier;
+```
+
+</CodeGroup>
+
+The response includes a `high_volume_multiplier` field scaled by 1000
+(e.g., `1000` = 1.0×, `2000` = 2.0×). The `total` field is **not** pre-multiplied —
+multiply `total` by `high_volume_multiplier / 1000` to get the high-volume price in
+tinycents.
 
 <Note>
   Mirror node data is near real-time but brief lag is possible between consensus and
@@ -209,92 +259,57 @@ The fee totals in the response are **not** pre-multiplied — multiply the fee t
   transaction is processed may differ; expect the actual fee to vary.
 </Note>
 
-### Step 2: Set the Flag and a Fee Cap
+</Step>
 
-<CodeGroup>
+  <Step title="Step 2: Set the Flag and a Fee Cap">
+    
+    <CodeGroup>
 
-```java Java wrap
-// Create an account using high-volume throttles
-AccountCreateTransaction tx = new AccountCreateTransaction()
-    .setKey(publicKey)
-    .setInitialBalance(Hbar.from(10))
-    .setHighVolume(true) // Opt into high-volume throttles
-    .setMaxTransactionFee(Hbar.from(5)); // ALWAYS set a fee cap
+    ```javascript Account creation wrap
+    const tx = new AccountCreateTransaction()
+        .setKey(publicKey)
+        .setInitialBalance(Hbar.from(10))
+        .setHighVolume(true)
+        .setMaxTransactionFee(new Hbar(5));
 
-TransactionResponse response = tx.execute(client);
-TransactionReceipt receipt = response.getReceipt(client);
-AccountId newAccountId = receipt.accountId;
+    const response = await tx.execute(client);
+    const receipt = await response.getReceipt(client);
+    const newAccountId = receipt.accountId;
 
-System.out.println("Account created: " + newAccountId);
-```
+    console.log("Account created: " + newAccountId);
+    ```
 
+    ```javascript Token creation wrap
+    const tx = new TokenCreateTransaction()
+        .setTokenName("My Token")
+        .setTokenSymbol("MTK")
+        .setTokenType(TokenType.FungibleCommon)
+        .setTreasuryAccountId(treasuryAccountId)
+        .setInitialSupply(0)
+        .setHighVolume(true)
+        .setMaxTransactionFee(new Hbar(5));
 
-```javascript JavaScript wrap
-// Create an account using high-volume throttles
-const tx = new AccountCreateTransaction()
-    .setKey(publicKey)
-    .setInitialBalance(Hbar.from(10))
-    .setHighVolume(true)
-    .setMaxTransactionFee(Hbar.from(5));
+    const response = await tx.execute(client);
+    const receipt = await response.getReceipt(client);
+    const newTokenId = receipt.tokenId;
 
-const response = await tx.execute(client);
-const receipt = await response.getReceipt(client);
-const newAccountId = receipt.accountId;
+    console.log("Token created: " + newTokenId);
+    ```
 
-console.log("Account created: " + newAccountId);
-```
+    </CodeGroup>
+  </Step>
 
-```go Go wrap
-// Create an account using high-volume throttles
-tx := hedera.NewAccountCreateTransaction().
-    SetKey(publicKey).
-    SetInitialBalance(hedera.HbarFrom(10, hedera.HbarUnits.Hbar)).
-    SetHighVolume(true).
-    SetMaxTransactionFee(hedera.HbarFrom(5, hedera.HbarUnits.Hbar))
-
-response, err := tx.Execute(client)
-if err != nil {
-    panic(err)
-}
-
-receipt, err := response.GetReceipt(client)
-if err != nil {
-    panic(err)
-}
-
-fmt.Printf("Account created: %v\n", receipt.AccountID)
-```
-
-```rust Rust wrap
-// Create an account using high-volume throttle
-let tx = AccountCreateTransaction::new()
-    .key(public_key)
-    .initial_balance(Hbar::new(10))
-    .high_volume(true)            // Opt into high-volume throttles
-    .max_transaction_fee(Hbar::new(5))     // ALWAYS set a fee cap
-    .freeze_with(&client)?;
-
-let response = tx.execute(&client).await?;
-let receipt = response.get_receipt(&client).await?;
-let new_account_id = receipt.account_id.unwrap();
-
-println!("Account created: {:?}", new_account_id);
-
-```
-
-</CodeGroup>
-
-
-
-### Step 3: Handle Fee Failures Gracefully
-
-If the current multiplier pushes the fee above your `maxTransactionFee`, the transaction
-will fail with `INSUFFICIENT_TX_FEE`. Your application should:
-
-1. Catch the error
-2. Re-query the current multiplier
-3. Decide whether to retry with a higher cap, wait for utilization to drop, or fall
+  <Step title="Step 3: Handle Fee Failures Gracefully">
+    If the current multiplier pushes the fee above your `maxTransactionFee`, the transaction
+    will fail with `INSUFFICIENT_TX_FEE`. Your application should:
+    
+    1. Catch the error
+    2. Re-query the current multiplier
+    3. Decide whether to retry with a higher cap, wait for utilization to drop, or fall
    back to the standard throttle system
+  </Step>
+  
+</Steps>
 
 ---
 
@@ -376,12 +391,20 @@ are completely unaffected — same throttle limits, same fixed-fee pricing.
   Standard fee schedule for all transaction types
 </Card>
 
+<Card title="Fee Model" icon="coin" href="/hedera/core-concepts/fee-model">
+  Simplified `base-fee-plus-extras` pricing model
+</Card>
+
 <Card title="Mainnet Throttles" icon="gauge-high" href="/hedera/networks/mainnet">
   Current standard and high-volume throttle limits
 </Card>
 
 <Card title="Modify Transaction Fields" icon="code" href="/hedera/sdks-and-apis/sdks/transactions/modify-transaction-fields">
-  SDK reference for setHighVolume() and other TransactionBody fields
+  SDK reference for `setHighVolume()` and other TransactionBody fields
+</Card>
+
+<Card title="Estimate a Fee" icon="calculator" href="/hedera/sdks-and-apis/sdks/fees/fee-estimation">
+  SDK reference for FeeEstimateQuery and fee estimation workflows
 </Card>
 
 </CardGroup>

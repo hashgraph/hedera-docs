@@ -16,7 +16,7 @@ The following endpoints are available for the Network object:
 | --- | --- |
 | `GET /api/v1/network/supply` | Retrieves the current total supply of HBAR. |
 | `GET /api/v1/network/fees` | Fetches the latest transaction fee schedules. |
-| `POST /api/v1/network/fees` | Estimates fees for a specific protobuf-encoded transaction before submission, including the [HIP-1313](https://hips.hedera.com/hip/hip-1313) `high_volume_multiplier`. ([HIP-1261](https://hips.hedera.com/hip/hip-1261)) |
+| `POST /api/v1/network/fees` | Estimates node, network, and service fees for a protobuf-encoded transaction, including the [HIP-1313](https://hips.hedera.com/hip/hip-1313) `high_volume_multiplier`. |
 | `GET /api/v1/network/exchangerate` | Retrieves exchange rates to estimate transaction costs. |
 | `GET /api/v1/network/nodes` | Lists the network address book nodes. |
 | `GET /api/v1/network/stake` | Fetches staking-related information. |

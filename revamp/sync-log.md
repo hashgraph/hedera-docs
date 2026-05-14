@@ -8,6 +8,12 @@ Use this to track how current `dev` is relative to `main` at any time.
 
 ---
 
+## 2026-05-14 23:05 UTC
+
+- **main HEAD**: `07d6cea` — fix: errors from last deployment  (#533)
+- **dev HEAD**: `2b6cb2a` — chore: merge origin/main into dev
+- **Stats**: 3 new · 24 updated · 520 unchanged · 1 protected skipped · 1 fixups applied
+
 ## 2026-05-14 16:10 UTC
 
 - **main HEAD**: `69d2d3c` — fix: hedera doc points to the old `hedera-smart-contracts` repo (#527)

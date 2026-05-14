@@ -8,6 +8,12 @@ Use this to track how current `dev` is relative to `main` at any time.
 
 ---
 
+## 2026-05-14 16:10 UTC
+
+- **main HEAD**: `69d2d3c` — fix: hedera doc points to the old `hedera-smart-contracts` repo (#527)
+- **dev HEAD**: `58095c3` — chore: update gap analysis and registry after main sync
+- **Stats**: 0 new · 0 updated · 544 unchanged · 1 protected skipped · 0 fixups applied
+
 ## 2026-05-11 17:11 UTC
 
 - **main HEAD**: `e53ff7e` — chore: update node tables (#487)

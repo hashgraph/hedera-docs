@@ -12,10 +12,33 @@ Any Hedera account can query data associated with Hedera's services and stored o
 If you're looking to test your application (or just experiment), please visit [Testnet Access](/hedera/networks/testnet/testnet-access). The Hedera testnet enables developers to prototype and test applications in a simulated mainnet environment that uses test *HBAR* for paying transaction fees.
 
 <Warning>
-**Transaction Throttles**\
+**Transaction Throttles**
 Transactions on the Hedera Mainnet are currently throttled. You will receive a `"BUSY"` response if the number of transactions submitted to the network exceeds the threshold value.
 </Warning>
 
 ## Main Network Throttles
 
 <table><thead><tr><th>Network Request Types</th><th>Throttle (tps)</th></tr></thead><tbody><tr><td><strong>Cryptocurrency Transactions</strong></td><td><p><code>AccountCreateTransaction</code>: 2 tps</p><p><code>TransferTransaction</code> (inc. tokens): 10,000 tps<br/><code>Other</code>: 10,000 tps</p></td></tr><tr><td><strong>Consensus Transactions</strong></td><td><p><code>TopicCreateTransaction</code>: 5 tps</p><p><code>Other</code>: 10,000 tps</p></td></tr><tr><td><strong>Token Transactions</strong></td><td><p><code>TokenMintTransaction</code>:</p><ul><li>125 TPS for fungible mint</li><li>50 TPS for NFT mint</li></ul><p><code>TokenAssociateTransaction</code>: 100 tps<br/><code>TransferTransaction</code> (inc. tokens): 10,000 tps</p><p><code>Other</code>: 3,000 tps</p></td></tr><tr><td><strong>Schedule Transactions</strong></td><td><code>ScheduleSignTransaction</code>: 100 tps<br/><code>ScheduleCreateTransaction</code>: 100 tps</td></tr><tr><td><strong>File Transactions</strong></td><td>10 tps</td></tr><tr><td><strong>Smart Contract Transactions</strong></td><td><code>ContractExecuteTransaction</code>: 15 million gas per second<br/><code>ContractCreateTransaction</code>: 15 million gas per second</td></tr><tr><td><strong>Queries (per node)</strong></td><td><p><code>AccountBalanceQuery</code>: 1000 tps</p><p></p><p><code>ContractGetInfo</code>: 700 tps<br/><code>ContractGetBytecode</code>: 700 tps<br/><code>ContractCallLocal</code>: 700 tps<br/><br/><code>FileGetInfo</code>: 700 tps<br/><code>FileGetContents</code>: 700 tps<br/><br/><code>Other</code>: 10,000 tps</p></td></tr><tr><td><strong>Receipts</strong></td><td>unlimited (no throttle)</td></tr></tbody></table>
+
+### High-Volume Throttles
+
+In addition to the standard throttles above, the network provides dedicated
+**high-volume throttle capacity** for entity creation transactions that set
+`high_volume = true`. These throttles run in parallel — they do not consume
+capacity from the standard system, and the standard system does not consume
+capacity from them.
+
+| **Throttle Bucket** | **Transaction Types** | **Capacity** |
+|---|---|---|
+| HighVolumeCryptoThrottles | `CryptoCreate`, `ScheduleCreate` | *Set by governance* |
+| HighVolumeTotalThrottles | All 14 [supported types](/hedera/core-concepts/high-volume-entity-creation#supported-transaction-types) combined | *Set by governance* |
+
+A high-volume transaction must pass **both** its per-type bucket and the total
+bucket to be accepted. If either is exhausted, the transaction receives a `BUSY`
+response — the same behavior as the standard throttle system.
+
+<Note>
+    High-volume transactions use **variable-rate pricing** that scales with utilization.
+    See the [High-Volume Entity Creation](/hedera/core-concepts/high-volume-entity-creation)
+    guide to understand how this affects your transaction fees before opting in.
+</Note>

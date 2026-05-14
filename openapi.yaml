@@ -941,8 +941,6 @@ paths:
             schema:
               format: binary
               type: string
-        description: A protobuf encoded HAPI Transaction
-        required: true
       responses:
         200:
           description: OK

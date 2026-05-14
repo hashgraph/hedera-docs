@@ -41,6 +41,15 @@ The receiving node validates (for instance, confirms the paying account has suff
 
 Every transaction on the Hedera network has an associated fee to compensate the network for processing and state storage. With the implementation of **[HIP-1259](https://hips.hedera.com/hip/hip-1259)**, the mechanism for handling these fees has been significantly streamlined to improve network efficiency and simplify transaction records for users.
 
+<Note>
+  **Variable-rate pricing for high-volume transactions.** Entity creation transactions
+  (such as `CryptoCreate`, `TokenCreate`, and `TokenMint`) that set the `high_volume`
+  flag use a separate throttle pool with **variable-rate pricing** — fees scale with
+  current utilization of the high-volume capacity. See the
+  [High-Volume Entity Creation](/hedera/core-concepts/high-volume-entity-creation)
+  guide for details on how this affects your costs.
+</Note>
+
 ### Fee Collection and Distribution ([HIP-1259](https://hips.hedera.com/hip/hip-1259))
 
 Previously, transaction fees were immediately split and distributed to multiple accounts with every transaction. This immediate distribution created challenges. For a simple crypto transfer between two accounts, the system must read and update up to six accounts: the sender, receiver, submitting node, `0.0.98`, `0.0.800`, and `0.0.801`. This increases processing overhead and slows performance. In the [block stream](/hedera/support-and-community/glossary#block-stream), every transaction must record balance changes for all these accounts, inflating data size and storage costs. Users viewing transactions on explorers like HashScan see a complex web of transfers, which can be confusing even with visualizations.

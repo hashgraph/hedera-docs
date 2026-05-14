@@ -14,7 +14,7 @@ A transaction that appends new file content to the end of an existing file. The 
 * Please see the transaction and query [fees](/hedera/networks/mainnet/fees#transaction-and-query-fees) table for base transaction fee
 * Please use the [Hedera fee estimator](https://hedera.com/fees) to estimate your transaction fee cost
 
-| Constructor               | Description                                  |
+| **Constructor**               | **Description**                                  |
 | ------------------------- | -------------------------------------------- |
 | `FileAppendTransaction()` | Initializes the FileAppendTransaction object |
 
@@ -28,13 +28,14 @@ The default max transaction fee (1 hbar) is not enough to create a file. Use `se
 
 ### Methods
 
-| Method                         | Type      | Description                  | Requirement |
+| **Method**                         | **Type**      | **Description**                  | **Requirement** |
 | ------------------------------ | --------- | ---------------------------- | ----------- |
 | `setFileId(<fileId>)`          | FileId    | The ID of the file to append | Required    |
 | `setContents(<text>)`          | String    | The content in String format | Optional    |
 | `setContents(<content>)`       | byte \[ ] | The content in byte format   | Optional    |
 | `setChunkSize(<chunkSize>)`    | int       | The chunk size               | Optional    |
 | `setMaxChunkSize(<maxChunks>)` | int       | The max chunk size           | Optional    |
+| `setHighVolume(<highVolume>)`  | boolean   | The high-volume flag         | Optional    |
 
 <CodeGroup>
 
@@ -152,7 +153,7 @@ println!("The transaction consensus status is {:?}", status);
 
 ## Get transaction values
 
-| Method          | Type   | Description                    | Requirement |
+| **Method**          | **Type**   | **Description**                    | **Requirement** |
 | --------------- | ------ | ------------------------------ | ----------- |
 | `getFileId()`   | FileId | The file ID in the transaction | Optional    |
 | `getContents()` | String | The content in the transaction | Optional    |
@@ -194,5 +195,12 @@ getContents2 := transaction2.GetContents()
 
 //v2.0.0
 ```
-
 </CodeGroup>
+
+
+<Note>
+    This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation)
+    (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated
+    high-volume throttle capacity with variable-rate pricing. Always pair this with
+    `setMaxTransactionFee()` to cap your costs.
+</Note>

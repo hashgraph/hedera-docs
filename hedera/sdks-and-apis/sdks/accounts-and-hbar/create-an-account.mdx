@@ -185,7 +185,7 @@ let ecdsa_public_key = PrivateKey::generate_ecdsa().public_key();
 // Create the transaction
 let transaction = AccountCreateTransaction::new()
     .key_with_alias(ecdsa_public_key)
-    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .key_without_alias instead 
+    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .key_without_alias instead
     // .key_without_alias(ecdsa_public_key)
     .initial_balance(Hbar::from(1));
 

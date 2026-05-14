@@ -65,7 +65,7 @@ AccountUpdateTransaction transaction = new AccountUpdateTransaction()
     .setAccountId(accountId)
     .setKey(updateKey);
 
-//Sign the transaction with the old key and new key, submit to a Hedera network   
+//Sign the transaction with the old key and new key, submit to a Hedera network
 TransactionResponse txResponse = transaction.freezeWith(client).sign(oldKey).sign(newKey).execute(client);
 
 //Request the receipt of the transaction
@@ -116,7 +116,7 @@ if err != nil {
     panic(err)
 }
 
-//Sign the transaction with the old key and new key, submit to a Hedera network   
+//Sign the transaction with the old key and new key, submit to a Hedera network
 txResponse, err := transaction.Sign(newKey).Sign(updateKey).Execute(client)
 
 //Request the receipt of the transaction

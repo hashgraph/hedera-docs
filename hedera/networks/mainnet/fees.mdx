@@ -149,38 +149,37 @@ All fees are subject to change. The fees below reflect a base price for the tran
 
 ### Extras
 
-Under the [**Simple Fees model (HIP-1261)**](https://hips.hedera.com/hip/hip-1261), every transaction is calculated as a **base fee plus extras**. The base fees in the tables above are the starting cost — extras add to that cost based on what the transaction does (number of signatures, keys, NFT serials, gas used, etc.). Each extra has an included count that covers typical usage; you only pay for units above that count. See [**Fee Model**](/hedera/core-concepts/transactions-and-queries/fee-model) for the full explanation and worked examples.
+Under the [**Simple Fees model (HIP-1261)**](https://hips.hedera.com/hip/hip-1261), every transaction is calculated as a **base fee plus extras**. The base fees in the tables above are the starting cost — extras add to that cost based on what the transaction does (number of signatures, keys, NFT serials, gas used, etc.). Each extra has an included count that covers typical usage; you only pay for units above that count. See [**Fee Model**](/hedera/core-concepts/fee-model) for the full explanation and worked examples.
 
 <Note>
-This table reflects the extras currently defined in the live fee schedule (system file `0.0.113`). The published [HIP-1261](https://hips.hedera.com/hip/hip-1261) lists an earlier version of this set; consult the live schedule as the source of truth.
+    This table reflects the extras currently defined in the live fee schedule (system file `0.0.113`). The published [HIP-1261](https://hips.hedera.com/hip/hip-1261) lists an earlier version of this set; consult the live schedule as the source of truth.
 </Note>
 
-| Extra | USD | Counted By |
-|-------|-----|------------|
-| `Signatures` | $0.00001 | Number of signature verifications on the transaction |
-| `Keys` | $0.01 | Number of keys defined (nested key structures count all keys) |
-| `Accounts` | $0.0001 | Number of accounts loaded during handling |
-| `TokenTypes` | $0.0001 | Number of token types referenced by the transaction |
-| `Gas` | $0.0000000852 | Gas cost (includes execution of hook programs) |
-| `Allowances` | $0.05 | Number of allowances |
-| `Airdrops` | $0.05 | Number of airdrops executed |
-| `HookUpdates` | $1.00 | Number of hook create/delete operations |
-| `HookSlotUpdate` | $0.005 | Number of hook slot modifications |
-| `HookExecution` | $0.005 | Number of hook programs invoked during execution |
-| `TokenTransferBase` | $0.0009 | Base cost for token transfers |
-| `TokenTransferBaseCustomFees` | $0.0019 | Base cost for token transfers with custom fees |
-| `TokenCreateWithCustomFee` | $1.00 | Token creation with a custom fee schedule defined |
-| `TokenMintNft` | $0.02 | Number of NFT serials minted |
-| `TokenMintNftBase` | $0.019 | Base cost for minting non-fungible tokens |
-| `NftUpdate` | $0.001 | Number of NFT updates |
-| `TokenAssociate` | $0.05 | Number of token associations |
-| `ConsensusCreateTopicWithCustomFee` | $1.99 | Topic creation with a custom fee schedule defined |
-| `ConsensusSubmitMessageWithCustomFee` | $0.04983 | Message submission to a topic with custom fees |
-| `ConsensusSubmitMessageWithCustomFeeBytes` | $0.0001 | Byte count of a message submitted to a topic with custom fees |
-| `ConsensusSubmitMessageWithoutCustomFeeBytes` | $0.00000068 | Byte count of a message submitted to a topic without custom fees |
-| `ScheduleCreateContractCallBase` | $0.09 | Base cost for scheduling a contract call |
-| `Records` | $0.0001 | Number of transaction records produced |
-| `StateBytes` | $0.0001 | Bytes written to persistent state (e.g., file uploads) |
-| `ProcessingBytes` | $0.000001 | Bytes processed by the node and network (transaction size on the wire) |
+| Extra                                       | USD ($)       |
+| ------------------------------------------- | ------------- |
+| Signatures                                  | $0.00001      |
+| Keys                                        | $0.01         |
+| Accounts                                    | $0.0001       |
+| TokenTypes                                  | $0.0001       |
+| Gas                                         | $0.0000000852 |
+| Allowances                                  | $0.05         |
+| Airdrops                                    | $0.05         |
+| TokenTransferBase                           | $0.0009       |
+| TokenTransferBaseCustomFees                 | $0.0019       |
+| TokenCreateWithCustomFee                    | $1.00         |
+| TokenMintNft                                | $0.02         |
+| TokenMintNftBase                            | $0.019        |
+| NftUpdate                                   | $0.001        |
+| TokenAssociate                              | $0.05         |
+| ConsensusCreateTopicWithCustomFee           | $1.99         |
+| ConsensusSubmitMessageWithCustomFee         | $0.04983      |
+| ConsensusSubmitMessageWithCustomFeeBytes    | $0.0001       |
+| ConsensusSubmitMessageWithoutCustomFeeBytes | $0.00000068   |
+| ScheduleCreateContractCallBase              | $0.09         |
+| Records                                     | $0.0001       |
+| StateBytes                                  | $0.0001       |
+| ProcessingBytes                             | $0.000001     |
+| EvmDispatchSurcharge                        | +20%          |
+
 
 Prices come from the configured fee schedule stored in system file `0.0.113` and may change. Fees are charged in HBAR, converted from USD at the live exchange rate.

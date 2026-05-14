@@ -941,6 +941,8 @@ paths:
             schema:
               format: binary
               type: string
+        description: A protobuf encoded HAPI Transaction
+        required: true
       responses:
         200:
           description: OK
@@ -3509,6 +3511,12 @@ components:
           allOf:
             - $ref: "#/components/schemas/FeeEstimate"
             - description: The node fee component which is to be paid to the node that submitted the transaction to the network. This fee exists to compensate the node for the work it performed to pre-check the transaction before submitting it, and incentivizes the node to accept new transactions from users.
+        notes:
+          description: An array of strings for any caveats.
+          example: ["Fallback to worst-case due to missing state"]
+          items:
+            type: string
+          type: array
         service:
           allOf:
             - $ref: "#/components/schemas/FeeEstimate"

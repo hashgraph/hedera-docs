@@ -1,0 +1,248 @@
+---
+title: "Estimating Fees with the SDK"
+description: "Use FeeEstimateQuery to estimate transaction fees before submission, gate spending, and simulate high-volume pricing."
+sidebarTitle: "Estimate a fee"
+---
+
+`FeeEstimateQuery` lets you estimate the cost of a transaction before submitting it. Use it to gate spending against a budget, surface fee previews to users, or simulate execution under high-volume congestion.
+ 
+The query returns a structured breakdown of node, network, and service fees in tinycents (USD × 10⁻¹⁰). The same calculation runs on the consensus node at execution time, so the estimate reflects what you'll be charged — modulo the live HBAR exchange rate at consensus.
+ 
+## Basic Usage
+ 
+Freeze the transaction first, then pass it to `FeeEstimateQuery`. Either call the query directly or use the `estimateFee()` convenience method on the transaction.
+ 
+<CodeGroup>
+
+```java Java
+// Freeze the transaction first — the body must be finalized before estimating
+var transaction = new AccountCreateTransaction()
+    .setKeyWithoutAlias(newKey)
+    .setInitialBalance(new Hbar(1))
+    .freezeWith(client);
+ 
+// Option 1: FeeEstimateQuery
+FeeEstimateResponse response = new FeeEstimateQuery()
+    .setTransaction(transaction)
+    .setMode(FeeEstimateMode.INTRINSIC)   // optional — INTRINSIC is the default
+    .execute(client);
+ 
+// or option 2: Convenience method
+// FeeEstimateResponse response = transaction.estimateFee().execute(client);
+```
+ 
+```javascript JavaScript
+const transaction = await new AccountCreateTransaction()
+    .setKeyWithoutAlias(newKey)
+    .setInitialBalance(new Hbar(1))
+    .freezeWith(client);
+ 
+const response = await new FeeEstimateQuery()
+    .setTransaction(transaction)
+    .setMode(FeeEstimateMode.INTRINSIC)
+    .execute(client);
+ 
+// or: const response = await transaction.estimateFee().execute(client);
+```
+ 
+```go Go
+tx, _ := hiero.NewAccountCreateTransaction().
+    SetKeyWithoutAlias(newKey.PublicKey()).
+    SetInitialBalance(hiero.NewHbar(1)).
+    FreezeWith(client)
+ 
+response, err := hiero.NewFeeEstimateQuery().
+    SetTransaction(tx).
+    SetMode(hiero.FeeEstimateModeIntrinsic).
+    Execute(client)
+ 
+// or: response, err := tx.EstimateFee().Execute(client)
+```
+  
+</CodeGroup>
+
+## Estimation Modes
+ 
+| Mode | Behavior |
+|------|----------|
+| `INTRINSIC` (default) | Estimates based on the transaction's inherent properties (size, signatures, keys). Fast and stateless. |
+| `STATE` | Estimates using the mirror node's latest known state (e.g., checks if accounts exist, includes state-dependent extras). Required for high-volume pricing simulation. |
+ 
+## Response Structure
+ 
+The response contains a structured breakdown of the fee components.
+ 
+```json
+{
+  "high_volume_multiplier": 1,
+  "network": { "multiplier": 3, "subtotal": <node_subtotal × multiplier> },
+  "node": {
+    "base": <tinycents>,
+    "extras": [
+      {
+        "name": "Signatures",
+        "included": 1,
+        "count": 2,
+        "charged": 1,
+        "fee_per_unit": <tinycents>,
+        "subtotal": <tinycents>
+      }
+    ]
+  },
+  "service": { "base": <tinycents>, "extras": [] },
+  "total": <tinycents>
+}
+```
+ 
+The components total according to:
+ 
+```text
+node.subtotal    = node.base + sum(node.extras[].subtotal)
+network.subtotal = node.subtotal × network.multiplier
+total            = node.subtotal + network.subtotal + service.subtotal
+```
+  
+## End-to-End: Estimate, Gate, Execute
+ 
+A common pattern: estimate the fee, check against a budget, then execute only if the estimate is acceptable.
+ 
+<CodeGroup>
+
+```java Java
+var transaction = new AccountCreateTransaction()
+    .setKeyWithoutAlias(newKey)
+    .setInitialBalance(new Hbar(1))
+    .setMaxTransactionFee(new Hbar(10))   // set before freezing
+    .freezeWith(client);
+ 
+FeeEstimateResponse estimate = transaction.estimateFee().execute(client);
+ 
+// Gate on budget — $1.50 = 15,000,000,000 tinycents
+if (estimate.getTotal() > 15_000_000_000L) {
+    throw new RuntimeException("Fee estimate exceeds budget: " + estimate.getTotal());
+}
+ 
+var record = transaction
+    .execute(client)
+    .getRecord(client);
+```
+ 
+```javascript JavaScript
+const transaction = await new AccountCreateTransaction()
+    .setKeyWithoutAlias(newKey)
+    .setInitialBalance(new Hbar(1))
+    .setMaxTransactionFee(new Hbar(10))   // set before freezing
+    .freezeWith(client);
+ 
+const estimate = await transaction.estimateFee().execute(client);
+ 
+if (estimate.total.toBigInt() > 15_000_000_000n) {
+    throw new Error(`Fee estimate exceeds budget: ${estimate.total}`);
+}
+ 
+const record = await (await transaction.execute(client)).getRecord(client);
+```
+ 
+```go Go
+tx, _ := hiero.NewAccountCreateTransaction().
+    SetKeyWithoutAlias(newKey.PublicKey()).
+    SetInitialBalance(hiero.NewHbar(1)).
+    SetMaxTransactionFee(hiero.NewHbar(10)).   // set before freezing
+    FreezeWith(client)
+ 
+estimate, _ := tx.EstimateFee().Execute(client)
+ 
+if estimate.Total > 15_000_000_000 {
+    panic(fmt.Sprintf("fee estimate exceeds budget: %d", estimate.Total))
+}
+ 
+resp, _ := tx.Execute(client)
+record, _ := resp.GetRecord(client)
+```
+</CodeGroup>
+  
+## High-Volume Pricing Simulation
+ 
+For entity-creation transactions opted into the high-volume lane via `setHighVolume(true)`, the network may apply a fee multiplier under congestion. To simulate this before submitting, use `setHighVolumeThrottle()` on `FeeEstimateQuery` with `STATE` mode.
+ 
+<CodeGroup>
+
+```java Java
+FeeEstimateResponse hvResponse = new FeeEstimateQuery()
+    .setTransaction(
+        new AccountCreateTransaction()
+            .setKeyWithoutAlias(newKey)
+            .setHighVolume(true)
+            .freezeWith(client)
+    )
+    .setMode(FeeEstimateMode.STATE)
+    .setHighVolumeThrottle(5000)   // simulate 50% utilization
+    .execute(client);
+ 
+// high_volume_multiplier uses 1-based scale: 1 = 1×, 4 = 4×
+System.out.printf("Multiplier at 50%% load: %dx%n", hvResponse.getHighVolumeMultiplier());
+```
+ 
+```javascript JavaScript
+const hvResponse = await new FeeEstimateQuery()
+    .setTransaction(
+        new AccountCreateTransaction()
+            .setKeyWithoutAlias(newKey)
+            .setHighVolume(true)
+            .freezeWith(client)
+    )
+    .setMode(FeeEstimateMode.STATE)
+    .setHighVolumeThrottle(5000)
+    .execute(client);
+ 
+console.log(`Multiplier at 50% load: ${hvResponse.highVolumeMultiplier}x`);
+```
+ 
+```go Go
+tx, _ := hiero.NewAccountCreateTransaction().
+    SetKeyWithoutAlias(newKey.PublicKey()).
+    SetHighVolume(true).
+    FreezeWith(client)
+ 
+hvResponse, _ := hiero.NewFeeEstimateQuery().
+    SetTransaction(tx).
+    SetMode(hiero.FeeEstimateModeState).
+    SetHighVolumeThrottle(5000).
+    Execute(client)
+ 
+fmt.Printf("Multiplier at 50%% load: %dx\n", hvResponse.HighVolumeMultiplier)
+```
+ </CodeGroup>
+
+## Developer Notes
+ 
+- **Freeze before estimating.** Call `freezeWith(client)` before `FeeEstimateQuery` — the transaction body must be finalized for the estimate to reflect your actual transaction.
+- **Estimates are in tinycents; execution fees are in tinybars.** The response uses tinycents (USD × 10⁻¹⁰). The fee charged on execution is in tinybars (HBAR × 10⁻⁸), converted at the live exchange rate at consensus time.
+- **Set `maxTransactionFee` with headroom.** Add 10–20% above the estimate — exchange rates shift between estimation and execution.
+- **`high_volume_multiplier` scale differs from `TransactionRecord`.** The estimate response uses a 1-based scale (1 = 1×, 4 = 4×). `TransactionRecord.highVolumePricingMultiplier` after execution uses a 1000-based scale (1000 = 1×, 4000 = 4×). Both represent the same multiplier.
+ 
+## SDK Versions
+ 
+`FeeEstimateQuery` is available in:
+ 
+- **Java**: v2.71.0+
+- **Go**: v2.79.0+
+- **JavaScript** (`@hiero-ledger/sdk`): v2.83.0+
+ 
+## Related
+ 
+<CardGroup cols={2}>
+<Card title="Fee Model" icon="dollar-sign" href="/hedera/core-concepts/fee-model">
+  The base-fee-plus-extras model that fee estimation calculates against.
+</Card>
+<Card title="Mirror Node REST API: Network" icon="code" href="/hedera/sdks-and-apis/rest-api/network">
+  The underlying REST endpoint backing `FeeEstimateQuery`.
+</Card>
+<Card title="HIP-1261: Simple Fees" icon="file-lines" href="https://hips.hedera.com/hip/hip-1261">
+  The HIP defining the fee model.
+</Card>
+<Card title="HIP-1313: High-Volume Pricing" icon="gauge-high" href="https://hips.hedera.com/hip/hip-1313">
+  The HIP defining the high-volume lane and congestion multiplier.
+</Card>
+</CardGroup>
+ 

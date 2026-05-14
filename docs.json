@@ -344,6 +344,7 @@
               },
               "hedera/core-concepts/keys-and-signatures",
               "hedera/core-concepts/scheduled-transaction",
+              "hedera/core-concepts/fee-model",
               {
                 "group": "Smart Contracts",
                 "pages": [
@@ -640,6 +641,12 @@
                   "hedera/sdks-and-apis/sdks/client",
                   "hedera/sdks-and-apis/sdks/set-up-your-local-network",
                   "hedera/sdks-and-apis/sdks/address-book",
+                   {
+                    "group": "Fees",
+                    "pages": [
+                      "hedera/sdks-and-apis/sdks/fees/fee-estimation"
+                    ]
+                  },
                   {
                     "group": "Keys",
                     "pages": [
@@ -684,6 +691,7 @@
                   },
                   "hedera/sdks-and-apis/sdks/queries",
                   "hedera/sdks-and-apis/sdks/general-errors",
+        
                   {
                     "group": "Accounts and HBAR",
                     "pages": [

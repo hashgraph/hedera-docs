@@ -44,8 +44,8 @@ be17e5aca2bce8d9aeae0e77a8926491b43d5f36|hedera/core-concepts/smart-contracts/un
 47b3191ba93ac793dd071056a0f361a5709bc796|hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility/for-hedera-native-developers-adding-smart-contract-functionality.mdx|evm/migration/native-devs/index.mdx|For Native Devs
 
 # EVM — Token Standards & System Contracts
-4c559863ad1ea7eda1b7db3e70ee25750d691815|hedera/core-concepts/smart-contracts/tokens-managed-by-smart-contracts.mdx|evm/tokens/index.mdx|ERC Tokens
-d94cf81cf1a7f95793d8047a2d325df390b0bbe7|hedera/core-concepts/smart-contracts/system-smart-contracts.mdx|evm/hedera-services/system-contracts/index.mdx|System Contracts
+62ce196636e369fabbc7ed59f49df3f4be9e4bac|hedera/core-concepts/smart-contracts/tokens-managed-by-smart-contracts.mdx|evm/tokens/index.mdx|ERC Tokens
+ed0414297e5da0b5116363523b9731d173db85ca|hedera/core-concepts/smart-contracts/system-smart-contracts.mdx|evm/hedera-services/system-contracts/index.mdx|System Contracts
 
 # EVM — Tutorials & Integrations
 f2b31fc167ec6c9d474b94b9d5d02e27c2be6fd4|hedera/tutorials/smart-contracts.mdx|evm/tutorials/index.mdx|EVM Tutorials
@@ -65,7 +65,7 @@ a96fd722ecbbff88385797b1f5808d430556a6a0|hedera/open-source-solutions/ai-studio-
 # Solutions & Operators
 3bc46fc0e29ad87503d6d914be16fc45b8debd10|hedera/open-source-solutions/hedera-custodians-library.mdx|solutions/tools/custodians-library.mdx|Custodians Library
 aa789ff9420a5bbe3ca8b11cc46fd8f6eac90943|hedera/core-concepts/mirror-nodes/run-your-own-beta-mirror-node.mdx|operators/mirror-node/run-your-own/index.mdx|Run Your Own
-7963ebb4ecdc1bb2382db413bd6bde406b070aef|hedera/networks/mainnet/mainnet-nodes/node-requirements.mdx|operators/consensus-node/requirements/index.mdx|Requirements
+9d7316b66353a628f0db9a4fe73afab3925d9c42|hedera/networks/mainnet/mainnet-nodes/node-requirements.mdx|operators/consensus-node/requirements/index.mdx|Requirements
 
 # Reference — REST API (long title → short label)
 885b38d3fbaa44eec4c9c42fa44e5c5740db0668|hedera/sdks-and-apis/rest-api.mdx|reference/rest-api/index.mdx|REST API

@@ -479,13 +479,13 @@
                   "hedera/open-source-solutions/ai-studio-on-hedera",
                   "hedera/open-source-solutions/ai-studio-on-hedera/agent-lab",
                   "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/elizaos-plugin",
+                  "hedera/open-source-solutions/ai-studio-on-hedera/hosted-mcp-server",
                   {
                     "group": "Hedera AI Agent Kit",
                     "pages": [
                       "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit",
                       "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/plugins",
                       "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hooks-and-polices",
-                      "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hosted-mcp-server",
                       {
                         "group": "JavaScript SDK",
                         "pages": [

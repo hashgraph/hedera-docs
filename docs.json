@@ -868,14 +868,9 @@
         "icon": "lightbulb",
         "groups": [
           {
-            "group": " ",
-            "pages": [
-              "solutions/index"
-            ]
-          },
-          {
             "group": "Tokenization",
             "pages": [
+              "solutions/index",
               "solutions/tokenization/index",
               {
                 "group": "Asset Tokenization Studio",
@@ -1026,7 +1021,6 @@
               "solutions/examples/building-on-hedera"
             ]
           }
-          
         ]
       },
       {
@@ -1359,7 +1353,6 @@
               }
             ]
           },
-    
           {
             "group": "Glossary",
             "pages": [
@@ -1388,7 +1381,6 @@
           }
         ]
       }
-
     ]
   }
 }

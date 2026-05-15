@@ -3,9 +3,9 @@
   "theme": "mint",
   "name": "Hedera",
   "colors": {
-    "primary": "#614ff4",
-    "light": "#614ff4",
-    "dark": "#614ff4"
+    "primary": "#8259EF",
+    "light": "#8259EF",
+    "dark": "#8259EF"
   },
   "style": {
     "path": "style.css"
@@ -206,12 +206,8 @@
         {"anchor": "Playground", "href": "https://portal.hedera.com/playground", "icon": "code"},
         {"anchor": "Blog", "href": "https://hedera.com/blog", "icon": "newspaper"}
       ]
+      
     },
-    "pages": [
-      "index"
-    ],
-    "tabs": [
-      {
         "tab": "Learn",
         "icon": "graduation-cap",
         "groups": [
@@ -1024,6 +1020,7 @@
               "solutions/examples/building-on-hedera"
             ]
           }
+          
         ]
       },
       {
@@ -1356,6 +1353,7 @@
               }
             ]
           },
+    
           {
             "group": "Glossary",
             "pages": [
@@ -1384,6 +1382,7 @@
           }
         ]
       }
+
     ]
   }
 }

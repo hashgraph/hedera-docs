@@ -1,175 +1,1092 @@
 ---
-title: "Welcome to Hedera — let’s build the future"
-mode: "wide"
+title: "Hedera Developer Docs"
+description: "Explore our SDKs, APIs, tutorials, and guides for building on the Hedera network."
+mode: custom
 ---
 
-<div className="not-prose pt-4 pb-10 mb-10 border-b border-gray-200 dark:border-gray-800">
-  <h1 className="text-4xl md:text-5xl font-medium tracking-tight mb-4 text-gray-1000 dark:text-white">
-    Learn Hedera
+{/* ═══════════════════════════════════════════════════════════════════════════
+    HEDERA DOCS LANDING PAGE
+    ═══════════════════════════════════════════════════════════════════════════ */}
+<div className="not-prose" style={{
+  maxWidth: '1200px',
+  margin: '0 auto',
+  padding: '0 24px'
+}}>
+{/* ── HERO ──────────────────────────────────────────────── */}
+<div style={{
+  padding: '48px 0 56px',
+  borderBottom: '1px solid var(--landing-border)'
+}}>
+  <h1 style={{
+    fontSize: 'clamp(2rem, 4vw, 2.75rem)',
+    fontWeight: 500,
+    lineHeight: 1.2,
+    margin: '0 0 14px',
+    letterSpacing: '-0.025em',
+    color: 'var(--landing-fg-primary)'
+  }}>
+    Hedera Developer Docs
   </h1>
-  <p className="text-lg text-gray-600 dark:text-gray-400 mb-7 max-w-2xl">
-    Master the fundamentals of the Hedera public network — from the hashgraph algorithm and core services to running your first transaction.
+  <p style={{
+    fontSize: '1.0625rem',
+    color: 'var(--landing-fg-secondary)',
+    margin: '0 0 28px',
+    maxWidth: '540px',
+    lineHeight: 1.55
+  }}>
+    Explore our SDK &amp; API references, tutorials, and guides for building on the Hedera network.
   </p>
-  <a
-    href="/learn/getting-started/what-is-hedera"
-    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#614ff4] hover:bg-[#503fd9] text-white text-sm font-medium no-underline transition-colors"
-  >
-    Get started <span aria-hidden="true">→</span>
+  <a href="/learn" style={{
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    padding: '9px 18px',
+    borderRadius: '999px',
+    backgroundColor: '#8259EF',
+    color: '#fff',
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    textDecoration: 'none'
+  }}>
+    Get started →
   </a>
 </div>
 
-## Popular quickstarts
+{/* ── EXPLORE THE DOCS ─────────────────────────────────────────────────── */}
+<div style={{
+  padding: '48px 0',
+  borderBottom: '1px solid var(--landing-border)'
+}}>
+  <h2 style={{
+    fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
+    fontWeight: 500,
+    margin: '0 0 6px',
+    letterSpacing: '-0.015em',
+    color: 'var(--landing-fg-primary)'
+  }}>
+    Explore the docs
+  </h2>
+  <p style={{
+    fontSize: '0.9375rem',
+    color: 'var(--landing-fg-tertiary)',
+    margin: '0 0 28px',
+    maxWidth: '540px',
+    lineHeight: 1.55
+  }}>
+    The Hedera documentation is organized into seven sections. Pick the one that fits what you're building.
+  </p>
 
-<Tabs>
-  <Tab title="Start here">
-    <CardGroup cols={2}>
-      <Card title="What is Hedera?" icon="book" href="/learn/getting-started/what-is-hedera">
-        A plain-English introduction to the Hedera public network.
-      </Card>
-      <Card title="Why Hedera?" icon="circle-question" href="/learn/getting-started/why-hedera">
-        Low fixed fees, 10k+ TPS, finality in seconds — and aBFT security.
-      </Card>
-      <Card title="Choose your path" icon="signs-post" href="/learn/getting-started/choose-your-path">
-        Native SDKs or EVM tooling — pick the workflow that fits your stack.
-      </Card>
-      <Card title="Testnet faucet" icon="faucet" href="/learn/getting-started/testnet-faucet">
-        Fund a testnet account in under a minute.
-      </Card>
-    </CardGroup>
-  </Tab>
-  <Tab title="Explore the network">
-    <CardGroup cols={2}>
-      <Card title="Mainnet" icon="globe" href="/learn/networks/mainnet/index">
-        Production network — access, fees, and transaction records.
-      </Card>
-      <Card title="Testnet" icon="flask" href="/learn/networks/testnet/index">
-        Free sandbox network for end-to-end development.
-      </Card>
-      <Card title="Localnet" icon="laptop-code" href="/learn/networks/localnet/index">
-        Run single-node or multi-node Hedera networks on your machine.
-      </Card>
-      <Card title="Mirror nodes" icon="database" href="/learn/networks/community-mirror-nodes">
-        Community-operated indexers for historical data and queries.
-      </Card>
-    </CardGroup>
-  </Tab>
-  <Tab title="Build">
-    <CardGroup cols={2}>
-      <Card title="Native SDKs" icon="code" href="/native">
-        JavaScript, Java, and Go SDKs for direct Hedera API access.
-      </Card>
-      <Card title="EVM developers" icon="ethereum" href="/evm">
-        Solidity, Hardhat, Foundry, MetaMask — your existing workflow.
-      </Card>
-      <Card title="Tutorials" icon="graduation-cap" href="/native/tutorials/index">
-        Step-by-step guides for tokens, consensus, and smart contracts.
-      </Card>
-      <Card title="Playground" icon="play" href="https://portal.hedera.com/playground">
-        Interactive sandbox to experiment with Hedera SDKs in the browser.
-      </Card>
-    </CardGroup>
-  </Tab>
-</Tabs>
+  <div style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(4, 1fr)',
+    gap: '12px'
+  }}>
 
-## Browse by section
+    {/* Learn */}
+    <a href="/learn" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>
+          Learn
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
+          Fundamentals — accounts, keys, transactions, tokens, hashgraph, and networks.
+        </div>
+      </div>
+    </a>
 
-<p className="text-gray-600 dark:text-gray-400 mt-1 mb-6">
-  Every topic in the Learn tab, organized by section.
-</p>
+    {/* EVM Developers */}
+    <a href="/evm" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L4 13l8 4 8-4-8-11z M4 15l8 7 8-7-8 4-8-4z"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>
+          EVM Developers
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
+          Deploy Solidity contracts with MetaMask, Hardhat, Foundry, and JSON-RPC relay.
+        </div>
+      </div>
+    </a>
 
-<CardGroup cols={2}>
-  <Card title="Getting Started" icon="rocket" href="/learn/getting-started/index">
-    What is Hedera, why use it, choose your path, and grab testnet HBAR.
-  </Card>
-  <Card title="Core Concepts" icon="book-open" href="/learn/core-concepts/index">
-    Accounts, keys, transactions, tokens, smart contracts, staking, and hashgraph.
-  </Card>
-  <Card title="Networks" icon="globe" href="/learn/networks/index">
-    Mainnet, Testnet, Localnet, and community mirror nodes.
-  </Card>
-  <Card title="Release Notes" icon="newspaper" href="/learn/release-notes/index">
-    Latest releases from Hedera services and mirror nodes.
-  </Card>
-</CardGroup>
+    {/* Native SDKs */}
+    <a href="/native" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 18l6-6-6-6 M8 6l-6 6 6 6"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>
+          Native SDKs
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
+          JavaScript, Java, and Go SDKs for direct access to Hedera services.
+        </div>
+      </div>
+    </a>
 
-## Core concepts
+    {/* Solutions */}
+    <a href="/solutions" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 4 12.7c-.6.5-1 1.2-1 2v.3H9v-.3c0-.8-.4-1.5-1-2A7 7 0 0 1 12 2z"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>
+          Solutions
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
+          Tokenization, AI agents, governance, sustainability, and developer tools.
+        </div>
+      </div>
+    </a>
 
-<p className="text-gray-600 dark:text-gray-400 mt-1 mb-6">
-  The building blocks of every application on Hedera — accounts, keys, transactions, and the services that run on top of them.
-</p>
+    {/* Operators */}
+    <a href="/operators" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="6" rx="1"/><rect x="2" y="15" width="20" height="6" rx="1"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>
+          Operators
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
+          Run your own mirror node, JSON-RPC relay, or consensus node.
+        </div>
+      </div>
+    </a>
 
-<CardGroup cols={3}>
-  <Card title="Accounts" icon="user" href="/learn/core-concepts/accounts/index">
-    Account creation, auto-account creation, properties, and network accounts.
-  </Card>
-  <Card title="Keys & signatures" icon="key" href="/learn/core-concepts/keys/index">
-    Key types, threshold keys, and how signatures work on Hedera.
-  </Card>
-  <Card title="Transactions" icon="arrow-right-arrow-left" href="/learn/core-concepts/transactions/index">
-    Transaction properties, lifecycle, and scheduling.
-  </Card>
-  <Card title="Tokens" icon="coins" href="/learn/core-concepts/tokens/index">
-    HTS, fungible tokens, NFTs, custom fees, and airdrops.
-  </Card>
-  <Card title="Smart contracts" icon="file-code" href="/learn/core-concepts/services/smart-contracts">
-    EVM-compatible smart contracts on the Hedera network.
-  </Card>
-  <Card title="Staking" icon="chart-line" href="/learn/core-concepts/staking/index">
-    Stake HBAR and earn rewards by securing the network.
-  </Card>
-  <Card title="Hashgraph" icon="diagram-project" href="/learn/core-concepts/hashgraph/index">
-    Gossip-about-gossip, virtual voting, and aBFT consensus.
-  </Card>
-  <Card title="Mirror nodes" icon="database" href="/learn/core-concepts/mirror-nodes">
-    The indexing and query layer for historical network data.
-  </Card>
-  <Card title="State & history" icon="clock-rotate-left" href="/learn/core-concepts/state-and-history">
-    How Hedera persists state, blocks, and historical records.
-  </Card>
-</CardGroup>
+    {/* Reference */}
+    <a href="/reference" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>
+          Reference
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
+          REST API, Protobuf, HCS gRPC, Status, and Contract Verification APIs.
+        </div>
+      </div>
+    </a>
 
-## Networks
+    {/* Support */}
+    <a href="/support" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 14v-2a9 9 0 0 1 18 0v2 M3 14a2 2 0 0 1 2-2h2v6H5a2 2 0 0 1-2-2z M21 14a2 2 0 0 0-2-2h-2v6h2a2 2 0 0 0 2-2z M17 18v2a2 2 0 0 1-2 2h-3"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>
+          Support
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
+          FAQs, contributing, style guide, glossary, and community resources.
+        </div>
+      </div>
+    </a>
 
-<p className="text-gray-600 dark:text-gray-400 mt-1 mb-6">
-  Pick the right environment for the stage you're at.
-</p>
+  </div>
+</div>
 
-<CardGroup cols={2}>
-  <Card title="Mainnet" icon="globe" href="/learn/networks/mainnet/index">
-    Production network. Real value, real users — access, fees, and transaction records.
-  </Card>
-  <Card title="Testnet" icon="flask" href="/learn/networks/testnet/index">
-    Free, sandboxed network for end-to-end testing of your application.
-  </Card>
-  <Card title="Localnet" icon="laptop-code" href="/learn/networks/localnet/index">
-    Spin up a single-node or multi-node Hedera network locally with Docker.
-  </Card>
-  <Card title="Community mirror nodes" icon="database" href="/learn/networks/community-mirror-nodes">
-    Public mirror-node operators and endpoints for historical queries.
-  </Card>
-</CardGroup>
+{/* ── POPULAR QUICKSTARTS ──────────────────────────────────────────────── */}
+<div style={{
+  padding: '48px 0',
+  borderBottom: '1px solid var(--landing-border)'
+}}>
+  <h2 style={{
+    fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
+    fontWeight: 500,
+    margin: '0 0 24px',
+    letterSpacing: '-0.015em',
+    color: 'var(--landing-fg-primary)'
+  }}>
+    Popular quickstarts
+  </h2>
 
-## Release notes
+  <div style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '12px'
+  }}>
 
-<CardGroup cols={2}>
-  <Card title="Services releases" icon="rocket" href="/learn/release-notes/services">
-    Latest releases from Hedera consensus nodes and network services.
-  </Card>
-  <Card title="Mirror node releases" icon="database" href="/learn/release-notes/mirror-node">
-    Version history and changelog for Hedera mirror nodes.
-  </Card>
-</CardGroup>
+    <a href="/native/quickstart/javascript" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17l9.2-9.2 M17 17V7H7"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>
+          JavaScript SDK Quickstart
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
+          Set up the Hedera JS SDK and submit your first transaction in minutes.
+        </div>
+      </div>
+    </a>
 
-## Stay connected
+    <a href="/evm/quickstart/deploy-with-hardhat" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>
+          Deploy with Hardhat
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
+          Deploy a Solidity smart contract to Hedera using Hardhat and the JSON-RPC Relay.
+        </div>
+      </div>
+    </a>
 
-<CardGroup cols={3}>
-  <Card title="Discord" icon="discord" href="https://hedera.com/discord">
-    Chat with Hedera developers and the core team.
-  </Card>
-  <Card title="GitHub" icon="github" href="https://github.com/hashgraph">
-    Browse the Hedera open-source codebase.
-  </Card>
-  <Card title="Roadmap" icon="road" href="https://hedera.com/roadmap">
-    See what's shipping next on the Hedera network.
-  </Card>
-</CardGroup>
+    <a href="/native/tutorials/tokens/create-transfer-fungible" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v10 M9.5 15h5a2 2 0 1 0 0-4h-5a2 2 0 1 1 0-4h5"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>
+          Create a Fungible Token
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
+          Mint and transfer your first fungible token using the Hedera Token Service.
+        </div>
+      </div>
+    </a>
+
+    <a href="/native/tutorials/tokens/create-transfer-nft" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>
+          Create an NFT
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
+          Mint and transfer your first NFT using the Hedera Token Service.
+        </div>
+      </div>
+    </a>
+
+    <a href="/evm/quickstart/setup-metamask" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        <svg width="22" height="22" viewBox="0 0 24 24">
+          <path d="M4 2 L1.5 8.5 L5 9 L1 14 L3 18 L7 17.5 L8.5 21.5 L15.5 21.5 L17 17.5 L21 18 L23 14 L19 9 L22.5 8.5 L20 2 L16 8 L12 9.5 L8 8 Z" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round"/>
+          <path d="M7 12 L10 12 L8.5 14 Z" fill="#fff"/>
+          <path d="M14 12 L17 12 L15.5 14 Z" fill="#fff"/>
+          <path d="M11 16 L13 16 L12 17.5 Z" fill="#fff"/>
+          <path d="M11.3 18.5 L12.7 18.5 L12.7 19.5 L11.3 19.5 Z" fill="#fff"/>
+        </svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>
+          Set Up MetaMask
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
+          Add the Hedera network to MetaMask and start interacting with dApps.
+        </div>
+      </div>
+    </a>
+
+    <a href="/native/tutorials/consensus/submit-first-message" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 2L11 13 M22 2l-7 20-4-9-9-4z"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>
+          Submit a Consensus Message
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
+          Write verifiable, timestamped data to Hedera using the Consensus Service.
+        </div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── BUILD ON HEDERA ──────────────────────────────────────────────────── */}
+<div style={{
+  padding: '48px 0',
+  borderBottom: '1px solid var(--landing-border)'
+}}>
+  <h2 style={{
+    fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
+    fontWeight: 500,
+    margin: '0 0 6px',
+    letterSpacing: '-0.015em',
+    color: 'var(--landing-fg-primary)'
+  }}>
+    Build on Hedera
+  </h2>
+  <p style={{
+    fontSize: '0.9375rem',
+    color: 'var(--landing-fg-tertiary)',
+    margin: '0 0 28px',
+    maxWidth: '540px',
+    lineHeight: 1.55
+  }}>
+    Use Hedera's network services and developer tools to build fast, fair, and secure decentralized applications.
+  </p>
+
+  <div style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '12px'
+  }}>
+
+    {/* Smart Contracts */}
+    <a href="/learn/core-concepts/services/smart-contracts" style={{
+      padding: '20px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        marginBottom: '14px'
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M16 13H8 M16 17H8 M10 9H8"/></svg>
+      </div>
+      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>
+        Smart Contracts
+      </div>
+      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>
+        Build and deploy EVM-compatible Solidity contracts with access to native Hedera services via system contracts.
+      </div>
+      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Solidity</span>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>EVM</span>
+      </div>
+    </a>
+
+    {/* Token Service */}
+    <a href="/learn/core-concepts/tokens/index" style={{
+      padding: '20px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        marginBottom: '14px'
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v12"/><path d="M15.5 9.5H10a2.5 2.5 0 0 0 0 5h4a2.5 2.5 0 0 1 0 5H8.5"/></svg>
+      </div>
+      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>
+        Token Service
+      </div>
+      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>
+        Configure, mint, and manage native fungible and non-fungible tokens with built-in compliance features.
+      </div>
+      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>HTS</span>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>ERC-20</span>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>ERC-721</span>
+      </div>
+    </a>
+
+    {/* Consensus Service */}
+    <a href="/native/consensus/index" style={{
+      padding: '20px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        marginBottom: '14px'
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98 M15.41 6.51l-6.82 3.98"/></svg>
+      </div>
+      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>
+        Consensus Service
+      </div>
+      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>
+        Scalable, real-time audit logs with consensus timestamps. 10k+ TPS at $0.0001 per message.
+      </div>
+      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>HCS</span>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Messaging</span>
+      </div>
+    </a>
+
+    {/* AI Agent Kit */}
+    <a href="/solutions/ai/agent-kit/index" style={{
+      padding: '20px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        marginBottom: '14px'
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>
+        AI Agent Kit
+      </div>
+      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>
+        A toolkit enabling AI agents to interact with the Hedera network autonomously.
+      </div>
+      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>AI</span>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Agents</span>
+      </div>
+    </a>
+
+    {/* JSON-RPC Relay */}
+    <a href="/evm/development/json-rpc/index" style={{
+      padding: '20px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        marginBottom: '14px'
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      </div>
+      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>
+        JSON-RPC Relay
+      </div>
+      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>
+        Use existing EVM tools like Ethers.js, Hardhat, and Foundry seamlessly on Hedera.
+      </div>
+      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Ethereum</span>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Tooling</span>
+      </div>
+    </a>
+
+    {/* File Service */}
+    <a href="/native/files/index" style={{
+      padding: '20px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        marginBottom: '14px'
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>
+        File Service
+      </div>
+      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>
+        Decentralized file storage for securely storing and accessing files on the Hedera network.
+      </div>
+      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>HFS</span>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Storage</span>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── ACCESS HEDERA SDKs & APIs ────────────────────────────────────────── */}
+<div style={{
+  padding: '48px 0',
+  borderBottom: '1px solid var(--landing-border)'
+}}>
+  <h2 style={{
+    fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
+    fontWeight: 500,
+    margin: '0 0 24px',
+    letterSpacing: '-0.015em',
+    color: 'var(--landing-fg-primary)'
+  }}>
+    Access Hedera SDKs &amp; APIs
+  </h2>
+
+  <div style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '12px'
+  }}>
+
+    <a href="/native" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 18l6-6-6-6 M8 6l-6 6 6 6"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>
+          Hedera Native SDKs
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
+          JavaScript, Java, Go, and Rust SDKs for full access to Hedera services.
+        </div>
+      </div>
+    </a>
+
+    <a href="/evm" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L4 13l8 4 8-4-8-11z M4 15l8 7 8-7-8 4-8-4z"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>
+          EVM / Solidity Development
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
+          Deploy Solidity contracts using Hardhat, Foundry, Remix, and other EVM tools.
+        </div>
+      </div>
+    </a>
+
+    <a href="/reference/rest-api/index" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>
+          Mirror Node REST API
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
+          Query accounts, tokens, transactions, contracts, and network data.
+        </div>
+      </div>
+    </a>
+
+    <a href="/reference/protobuf/index" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>
+          Protobuf API Reference
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
+          Full protobuf definitions for all Hedera services and transaction types.
+        </div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── BUILD AN APP WITHIN MINUTES ──────────────────────────────────────── */}
+<div style={{
+  padding: '48px 0',
+  borderBottom: '1px solid var(--landing-border)'
+}}>
+  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '6px' }}>
+    <h2 style={{
+      fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
+      fontWeight: 500,
+      margin: 0,
+      letterSpacing: '-0.015em',
+      color: 'var(--landing-fg-primary)'
+    }}>
+      Build an app within minutes
+    </h2>
+    <a href="/solutions/examples/demos" style={{
+      fontSize: '0.8125rem',
+      color: '#8259EF',
+      textDecoration: 'none',
+      fontWeight: 500,
+      whiteSpace: 'nowrap'
+    }}>
+      See all →
+    </a>
+  </div>
+  <p style={{
+    fontSize: '0.9375rem',
+    color: 'var(--landing-fg-tertiary)',
+    margin: '0 0 28px',
+    lineHeight: 1.55
+  }}>
+    Explore our tutorials and demo apps to jumpstart your project.
+  </p>
+
+  <div style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '16px'
+  }}>
+
+    {/* Demo 1 */}
+    <a href="/evm/development/deploying" style={{
+      borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      overflow: 'hidden',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        height: '120px',
+        background: 'linear-gradient(135deg, rgba(130,89,239,0.55) 0%, rgba(0,49,255,0.5) 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0 M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+      </div>
+      <div style={{ padding: '16px' }}>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>
+          Deploy a Smart Contract
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>
+          Create and deploy a Solidity contract that interacts with the Hedera Token Service.
+        </div>
+        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Smart Contracts</span>
+          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>HTS</span>
+        </div>
+      </div>
+    </a>
+
+    {/* Demo 2 */}
+    <a href="/native/tutorials/tokens/create-transfer-fungible" style={{
+      borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      overflow: 'hidden',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        height: '120px',
+        background: 'linear-gradient(135deg, rgba(130,89,239,0.55) 0%, rgba(0,49,255,0.5) 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v12"/><path d="M15.5 9.5H10a2.5 2.5 0 0 0 0 5h4a2.5 2.5 0 0 1 0 5H8.5"/></svg>
+      </div>
+      <div style={{ padding: '16px' }}>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>
+          Create Fungible Tokens
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>
+          Mint and transfer tokens that map to ERC-20 standards and scale to 10,000+ TPS.
+        </div>
+        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Tokens</span>
+          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>ERC-20</span>
+        </div>
+      </div>
+    </a>
+
+    {/* Demo 3 */}
+    <a href="/native/tutorials/consensus/submit-first-message" style={{
+      borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      overflow: 'hidden',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        height: '120px',
+        background: 'linear-gradient(135deg, rgba(130,89,239,0.55) 0%, rgba(0,49,255,0.5) 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 2L11 13 M22 2l-7 20-4-9-9-4z"/></svg>
+      </div>
+      <div style={{ padding: '16px' }}>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>
+          Write Verifiable Data
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>
+          Use HCS as a decentralized message bus for immutable, timestamped data.
+        </div>
+        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Consensus</span>
+          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Messaging</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── DEVELOPER TOOLS ──────────────────────────────────────────────────── */}
+<div style={{
+  padding: '48px 0',
+  borderBottom: '1px solid var(--landing-border)'
+}}>
+  <h2 style={{
+    fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
+    fontWeight: 500,
+    margin: '0 0 24px',
+    letterSpacing: '-0.015em',
+    color: 'var(--landing-fg-primary)'
+  }}>
+    Developer tools &amp; resources
+  </h2>
+
+  <div style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '12px'
+  }}>
+
+    <a href="https://portal.hedera.com/playground" target="_blank" rel="noopener noreferrer" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 3l14 9-14 9z"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>
+          Developer Playground
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
+          Interactive coding environment to experiment with Hedera SDKs.
+        </div>
+      </div>
+    </a>
+
+    <a href="https://portal.hedera.com/contract-builder" target="_blank" rel="noopener noreferrer" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>
+          Contract Builder
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
+          Guided smart contract development with interactive examples.
+        </div>
+      </div>
+    </a>
+
+    <a href="/learn/networks/community-mirror-nodes" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M5 4 L5 20 M19 4 L19 20 M5 12 L19 12"/>
+        </svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>
+          Network Explorers
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
+          Visualize accounts, tokens, transactions, and contracts on Hedera.
+        </div>
+      </div>
+    </a>
+
+    <a href="https://solo.hiero.org/docs/" target="_blank" rel="noopener noreferrer" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px',
+        background: 'var(--landing-card-icon-bg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        <svg width="16" height="16" viewBox="0 0 68 67" fill="#fff"><path d="M4.2504954,65.9949012 C1.84804148,65.8818413 0,63.8124256 0,61.4071801 L0,4.46656551 C0,1.99990471 1.99962555,0 4.46656551,0 L63.109779,0 C65.5764398,0 67.5763446,1.99990471 67.5763446,4.46656551 L67.5763446,59.9569421 C67.5763446,62.4238821 65.5764398,64.4235076 63.109779,64.4235076 L33.9456187,64.4235076 C31.4789579,64.4235076 29.4790532,62.4238821 29.4790532,59.9569421 L29.4790532,23.3523211 C29.4790532,20.9473548 31.3273738,18.8779391 33.7298278,18.7646 C36.294753,18.6440028 38.4121842,20.6877356 38.4121842,23.2261406 L38.4121842,52.4070506 C38.4121842,54.1099287 39.7926321,55.4903766 41.4955102,55.4903766 L55.5598875,55.4903766 C57.2627656,55.4903766 58.6432135,54.1099287 58.6432135,52.4070506 L58.6432135,12.016457 C58.6432135,10.3135789 57.2627656,8.93313102 55.5598875,8.93313102 L12.016457,8.93313102 C10.3135789,8.93313102 8.93313102,10.3135789 8.93313102,12.016457 L8.93313102,61.5333606 C8.93313102,64.0717656 6.81542065,66.1157776 4.2504954,65.9949012"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>
+          Solo
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
+          Deploy and operate a Hiero/Hedera network locally with Kubernetes — perfect for development and testing.
+        </div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── FOOTER ───────────────────────────────────────────────────────────── */}
+<div style={{ padding: '40px 0 24px' }}>
+  <h2 style={{
+    fontSize: 'clamp(1.125rem, 2vw, 1.375rem)',
+    fontWeight: 500,
+    margin: '0 0 12px',
+    letterSpacing: '-0.01em',
+    color: 'var(--landing-fg-primary)'
+  }}>
+    Contributing
+  </h2>
+  <p style={{
+    fontSize: '0.875rem',
+    color: 'var(--landing-fg-tertiary)',
+    margin: '0 0 20px',
+    lineHeight: 1.55,
+    maxWidth: '540px'
+  }}>
+    Whether you're fixing bugs, enhancing features, or improving documentation, your contributions are important. Read our{' '}
+    <a href="https://github.com/hashgraph/.github/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer" style={{ color: '#8259EF', textDecoration: 'none' }}>contributing guide</a>{' '}
+    to get involved.
+  </p>
+  <div style={{
+    display: 'flex',
+    gap: '10px',
+    flexWrap: 'wrap'
+  }}>
+    <a href="https://github.com/hashgraph/.github/blob/main/CODE_OF_CONDUCT.md" target="_blank" rel="noopener noreferrer" style={{
+      fontSize: '0.75rem',
+      color: 'var(--landing-fg-tertiary)',
+      textDecoration: 'none',
+      padding: '5px 12px',
+      borderRadius: '999px',
+      border: '1px solid var(--landing-border)'
+    }}>
+      Code of Conduct
+    </a>
+    <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noopener noreferrer" style={{
+      fontSize: '0.75rem',
+      color: 'var(--landing-fg-tertiary)',
+      textDecoration: 'none',
+      padding: '5px 12px',
+      borderRadius: '999px',
+      border: '1px solid var(--landing-border)'
+    }}>
+      Apache License 2.0
+    </a>
+    <a href="https://hedera.com/roadmap" target="_blank" rel="noopener noreferrer" style={{
+      fontSize: '0.75rem',
+      color: 'var(--landing-fg-tertiary)',
+      textDecoration: 'none',
+      padding: '5px 12px',
+      borderRadius: '999px',
+      border: '1px solid var(--landing-border)'
+    }}>
+      Hedera Roadmap
+    </a>
+  </div>
+</div>
+
+</div>

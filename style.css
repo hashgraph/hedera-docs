@@ -41,6 +41,53 @@ strong, b,
 :root {
   --font-body: "Styrene Light Web";
   --font-heading: "Styrene A Medium";
+
+  /* Landing page — light mode */
+  --landing-fg-primary: #11151D;
+  --landing-fg-secondary: rgba(17, 21, 29, 0.7);
+  --landing-fg-tertiary: rgba(17, 21, 29, 0.55);
+  --landing-border: rgba(17, 21, 29, 0.1);
+  --landing-card-bg: rgba(17, 21, 29, 0.02);
+  --landing-demo-icon: rgba(17, 21, 29, 0.45);
+  --landing-card-icon-bg: linear-gradient(135deg, #A893F4 0%, #5C7BFF 100%);
+}
+
+.dark, [data-theme='dark'] {
+  /* Landing page — dark mode */
+  --landing-fg-primary: #ffffff;
+  --landing-fg-secondary: rgba(255, 255, 255, 0.55);
+  --landing-fg-tertiary: rgba(255, 255, 255, 0.45);
+  --landing-border: rgba(255, 255, 255, 0.06);
+  --landing-card-bg: rgba(255, 255, 255, 0.02);
+  --landing-demo-icon: rgba(255, 255, 255, 0.5);
+  --landing-card-icon-bg: linear-gradient(135deg, #8259EF 0%, #0031FF 100%);
+}
+
+/* =========================
+   Site-wide gradient background — light mode
+   Uses pale tints of the Hedera brand gradient
+   (Ultraviolet #8259EF → Azure #0031FF)
+   ========================= */
+html, body {
+  background: linear-gradient(135deg, #F4F1FE 0%, #EAEEFF 100%) !important;
+  background-attachment: fixed !important;
+  min-height: 100vh;
+}
+
+/* Make Mintlify's wrapper containers transparent in light mode
+   so the body gradient shows through */
+html:not(.dark):not([data-theme='dark']) main,
+html:not(.dark):not([data-theme='dark']) #__next,
+html:not(.dark):not([data-theme='dark']) #__next > div,
+html:not(.dark):not([data-theme='dark']) [class*="bg-background"],
+html:not(.dark):not([data-theme='dark']) [class*="bg-white"] {
+  background-color: transparent !important;
+}
+
+/* Dark mode — keep Mintlify default dark background */
+.dark, .dark body,
+[data-theme='dark'], [data-theme='dark'] body {
+  background: initial !important;
 }
 
 html, body {
@@ -117,19 +164,32 @@ nav.text-sm a[href*="portal"] {
 }
 
 
-/* hackathon — transparent */
+/* hackathon — solid inverted (light mode = muted black bg, white text) */
 nav.text-sm a[href*="hackathon"],
 nav.text-sm li a[href*="hackathon"],
 nav.text-sm ul li a[href*="hackathon"] {
-  background-color: transparent !important;
-  color: #000000 !important;
-  border: 1px solid rgba(0, 0, 0, 0.3) !important; /* darker gray border */
+  background-color: #1f1f1f !important;
+  color: #ffffff !important;
+  border: 1px solid #1f1f1f !important;
+}
+
+/* Dev Portal — solid Ultraviolet (matches hedera.com brand button) */
+nav.text-sm a[href*="portal.hedera.com"],
+nav.text-sm li a[href*="portal.hedera.com"],
+nav.text-sm ul li a[href*="portal.hedera.com"] {
+  background-color: #8259EF !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+nav.text-sm a[href*="portal.hedera.com"]:hover {
+  background-color: #7048E8 !important;
 }
 nav.text-sm a[href*="hackathon"]:hover,
 nav.text-sm li a[href*="hackathon"]:hover,
 nav.text-sm ul li a[href*="hackathon"]:hover {
-  background-color: rgba(0, 0, 0, 0.08) !important;
-  border: 1px solid rgba(0, 0, 0, 0.5) !important; /* darker hover border */
+  background-color: #2d2d2d !important;
+  border: 1px solid #2d2d2d !important;
 }
 
 
@@ -137,18 +197,18 @@ nav.text-sm ul li a[href*="hackathon"]:hover {
    DARK MODE — transparent buttons
    =============================== */
 
-/* hackathon */
+/* hackathon (dark mode) — solid inverted: muted white bg, black text */
 .dark nav.text-sm a[href*="hackathon"],
 [data-theme='dark'] nav.text-sm a[href*="hackathon"] {
-  background-color: transparent !important;
-  color: #f3f4f6 !important; /* gray-100 */
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  background-color: #e8e8e8 !important;
+  color: #000000 !important;
+  border: 1px solid #e8e8e8 !important;
 }
 .dark nav.text-sm a[href*="hackathon"]:hover,
 [data-theme='dark'] nav.text-sm a[href*="hackathon"]:hover {
-  background-color: rgba(255, 255, 255, 0.08) !important; /* subtle glow */
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  color: #ffffff !important;
+  background-color: #d4d4d4 !important;
+  border: 1px solid #d4d4d4 !important;
+  color: #000000 !important;
 }
 
 /* icon fix — ensure visibility in dark mode */
@@ -158,12 +218,17 @@ nav.text-sm ul li a[href*="hackathon"]:hover {
   opacity: 1 !important;
 }
 
-/* make hackathon icon white only in dark mode */
+/* hackathon icon — white in light mode (on black button), black in dark mode (on white button) */
+nav.text-sm a[href*="hackathon"] img,
+nav.text-sm a[href*="hackathon"] svg {
+  filter: brightness(0) invert(1) !important; /* white icon on black button */
+  opacity: 1 !important;
+}
 .dark nav.text-sm a[href*="hackathon"] img,
 .dark nav.text-sm a[href*="hackathon"] svg,
 [data-theme='dark'] nav.text-sm a[href*="hackathon"] img,
 [data-theme='dark'] nav.text-sm a[href*="hackathon"] svg {
-  filter: brightness(0) invert(1) !important; /* turns dark icons white */
+  filter: brightness(0) !important; /* black icon on white button */
   opacity: 1 !important;
 }
 

@@ -51,7 +51,7 @@
   "logo": {
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg",
-    "href": "https://docs.hedera.com/"
+    "href": "/"
   },
   "navbar": {
     "links": [

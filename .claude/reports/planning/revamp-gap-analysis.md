@@ -1,8 +1,8 @@
 # Revamp Gap Analysis — Plan vs. Implemented
 
 **Date:** 2026-03-19
-**Last updated:** 2026-05-11
-**Status:** 610 total files in new structure, 599 in nav, 12 placeholders not yet in nav
+**Last updated:** 2026-05-14
+**Status:** 613 total files in new structure, 602 in nav, 12 placeholders not yet in nav
 
 ---
 
@@ -32,6 +32,7 @@
 - [x] **Agent Lab page** — `hedera/open-source-solutions/ai-studio-on-hedera/agent-lab.mdx` added to explicit mapping, `revamp/docs.json` nav (Native SDKs → AI Studio), and sidebar-fixups (31 entries total)
 - [x] **AI Studio consolidated under Solutions** — all AI Studio (`ai-studio-on-hedera/`) and AI Tools (`ai-tools-for-developers/`) content moved from `native/integrations/ai/` to `solutions/ai/`; full tree (agent-kit with JS/Python, agent-lab, elizaos, tools) now under Solutions > AI & Agents; sidebar-fixups updated to 30 entries; `get_additional_destinations()` AI entries removed (no more split copies)
 - [x] **main sync 2026-05-11** — merged origin/main (e53ff7e); 13 new pages migrated, 38 updated; new pages: `learn/core-concepts/accounts/hiero-hooks`, `solutions/ai/agent-kit/hooks-and-policies`, `solutions/ai/agent-kit/js/create-hooks-and-policies`, `solutions/ai/agent-kit/js/migration-guide`, `solutions/ai/agent-kit/python/create-hooks-and-policies`, `solutions/tools/hiero-cli/feature-coverage-gap-report`, 6 new hiero-cli plugins (batch, contract, contract-erc20, contract-erc721, schedule, swap), `evm/tools/foundry/forking-advanced-hts`
+- [x] **main sync 2026-05-14** — merged origin/main (07d6cea); 3 new pages migrated, 24 updated; new pages: `learn/core-concepts/fee-model`, `learn/core-concepts/high-volume-entity-creation`, `native/fees/fee-estimation` (new Fees group added to Native tab)
 
 ---
 

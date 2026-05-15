@@ -256,8 +256,8 @@
               {
                 "group": "Tokens",
                 "pages": [
-                  "learn/core-concepts/services/tokens",
                   "learn/core-concepts/tokens/index",
+                  "learn/core-concepts/services/tokens",
                   "learn/core-concepts/tokens/hts-overview",
                   "learn/core-concepts/tokens/types-and-ids",
                   "learn/core-concepts/tokens/properties",

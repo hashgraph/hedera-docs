@@ -206,8 +206,9 @@
         {"anchor": "Playground", "href": "https://portal.hedera.com/playground", "icon": "code"},
         {"anchor": "Blog", "href": "https://hedera.com/blog", "icon": "newspaper"}
       ]
-      
     },
+    "tabs": [
+      {
         "tab": "Learn",
         "icon": "graduation-cap",
         "groups": [
@@ -330,6 +331,7 @@
           }
         ]
       },
+      {
         "tab": "EVM Developers",
         "icon": "ethereum",
         "groups": [

@@ -389,6 +389,8 @@ get_explicit_mapping() {
     "hedera/core-concepts/staking/stake-hbar.mdx") echo "learn/core-concepts/staking/stake-hbar.mdx" ;;
     "hedera/core-concepts/mirror-nodes.mdx") echo "learn/core-concepts/mirror-nodes.mdx" ;;
     "hedera/core-concepts/state-and-history.mdx") echo "learn/core-concepts/state-and-history.mdx" ;;
+    "hedera/core-concepts/fee-model.mdx") echo "learn/core-concepts/fee-model.mdx" ;;
+    "hedera/core-concepts/high-volume-entity-creation.mdx") echo "learn/core-concepts/high-volume-entity-creation.mdx" ;;
 
     # Networks
     "hedera/networks.mdx") echo "learn/networks/index.mdx" ;;
@@ -555,6 +557,9 @@ get_explicit_mapping() {
     # Queries & PRNG
     "hedera/sdks-and-apis/sdks/queries.mdx") echo "native/queries.mdx" ;;
     "hedera/sdks-and-apis/sdks/pseudorandom-number-generator.mdx") echo "native/prng.mdx" ;;
+
+    # Fees (SDK)
+    "hedera/sdks-and-apis/sdks/fees/fee-estimation.mdx") echo "native/fees/fee-estimation.mdx" ;;
 
     # Accounts (SDK)
     "hedera/sdks-and-apis/sdks/accounts-and-hbar.mdx") echo "native/accounts/index.mdx" ;;

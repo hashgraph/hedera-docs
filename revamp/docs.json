@@ -287,7 +287,9 @@
                 ]
               },
               "learn/core-concepts/mirror-nodes",
-              "learn/core-concepts/state-and-history"
+              "learn/core-concepts/state-and-history",
+              "learn/core-concepts/fee-model",
+              "learn/core-concepts/high-volume-entity-creation"
             ]
           },
           {
@@ -643,6 +645,12 @@
             "pages": [
               "native/queries",
               "native/prng"
+            ]
+          },
+          {
+            "group": "Fees",
+            "pages": [
+              "native/fees/fee-estimation"
             ]
           },
           {

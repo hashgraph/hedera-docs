@@ -36,7 +36,7 @@
 # Learn — Core Concepts
 f51244cd25c6bb7e563cc37a8ce1f3dcc0362e19|hedera/core-concepts/hashgraph-consensus-algorithms.mdx|learn/core-concepts/hashgraph/index.mdx|Hashgraph
 c2125a77e12a7f2da56c1251ae265ee3593f1b95|hedera/core-concepts/tokens/hedera-token-service-hts-native-tokenization.mdx|learn/core-concepts/tokens/hts-overview.mdx|HTS Overview
-3141dbabf185c68c4e7882f9158de3835936d762|hedera/core-concepts/transactions-and-queries.mdx|learn/core-concepts/transactions/index.mdx|Transactions
+d67d5b0f9a2d695c9903b18c2765f3260bbd7287|hedera/core-concepts/transactions-and-queries.mdx|learn/core-concepts/transactions/index.mdx|Transactions
 
 # EVM — Migration / Differences
 abd21401ba5805fda1ca36746d5e599e639eda83|hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility.mdx|evm/migration/index.mdx|EVM Differences

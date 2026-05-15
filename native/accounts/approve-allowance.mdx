@@ -32,14 +32,38 @@ Only when a spender is set on an explicit NFT ID of a token, do we return the sp
 
 **Reference:** [HIP-336](https://github.com/hashgraph/hedera-improvement-proposal/blob/master/HIP/hip-336.md)
 
-### Methods
+## Constructor
 
-| **Type**                                                                                                                                                                                                                                      | **Description**                                                                                                                                                                               | **Method**                                                                           |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid), [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid), [Hbar](/hedera/sdks-and-apis/sdks/hbars) | The owner account ID that is authorizing the allowance, the spender account ID to authorize, the amount of hbar the owner account is authorizing the spender account to use.                  | `approveHbarAllowance(<ownerAccountId>,<spenderAccountId>, <amount>)`                |
-| <p><a href="../token-service/token-id">TokenId</a>,<br/><a href="/hedera/sdks-and-apis/sdks/specialized-types#accountid">AccountId</a>,</p><p><a href="/hedera/sdks-and-apis/sdks/specialized-types#accountid">AccountId</a>, long</p>                                                   | The token ID of the token being granted an allowance by the spender account, the account ID of the owner account, the account ID of the spender account.                                      | `approveTokenAllowance(<tokenId>,<ownerAccountId>,<spenderAccountId>, <amount>)`     |
-| <p><a href="../token-service/nft-id">nftId</a>, <a href="/hedera/sdks-and-apis/sdks/specialized-types#accountid">AccountId</a>,<br/><a href="/hedera/sdks-and-apis/sdks/specialized-types#accountid">AccountId</a></p>                                                                   | The NFT ID of the NFT being granted an allowance by the owner account, the account ID of the owner account, the account ID of the spender account.                                            | `approveTokenNftAllowance(<nftId>,<ownerAccountId>, <spenderAccountId>)`             |
-| <p><a href="../token-service/token-id">TokenId</a>,<br/><a href="/hedera/sdks-and-apis/sdks/specialized-types#accountid">AccountId</a>,<br/><a href="/hedera/sdks-and-apis/sdks/specialized-types#accountid">AccountId</a>,</p>                                                           | Grant a spender account access to all NFTs in a given token class/collection. The token ID of the NFT collection, the account ID of the owner account, the account ID of the spender account. | `approveTokenNftAllowanceAllSerials(<tokenId>,<ownerAccountId>, <spenderAccountId>)` |
+| Constructor | **Description** |
+|-------------|-------------|
+| `new AccountAllowanceApproveTransaction()` | Initializes the AccountAllowanceApproveTransaction object |
+
+## Transaction Properties
+
+| **Method** | **Type** | Requirement |
+|--------|------|-------------|
+| `approveHbarAllowance(<ownerAccountId, spenderAccountId, amount>)` | AccountId, AccountId, Hbar | Optional |
+| `approveTokenAllowance(<tokenId, ownerAccountId, spenderAccountId, amount>)` | TokenId, AccountId, AccountId, long | Optional |
+| `approveTokenNftAllowance(<nftId, ownerAccountId, spenderAccountId>)` | NftId, AccountId, AccountId | Optional |
+| `approveTokenNftAllowanceAllSerials(<tokenId, ownerAccountId, spenderAccountId>)` | TokenId, AccountId, AccountId | Optional |
+| `setHighVolume(<highVolume>)` | boolean | Optional |
+
+## Get Transaction Values
+
+| **Method** | **Type** | **Description** |
+|--------|------|-------------|
+| `getHbarApprovals()` | List&lt;HbarAllowance&gt; | Returns the HBAR allowances |
+| `getTokenApprovals()` | List&lt;TokenAllowance&gt; | Returns the fungible token allowances |
+| `getTokenNftApprovals()` | List&lt;TokenNftAllowance&gt; | Returns the NFT allowances |
+| `getHighVolume()` | boolean | Returns whether this transaction uses [high-volume throttles](/hedera/core-concepts/high-volume-entity-creation) |
+
+
+<Note>
+    This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation)
+    (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated
+    high-volume throttle capacity with variable-rate pricing. Always pair this with
+    `setMaxTransactionFee()` to cap your costs.
+</Note>
 
 <CodeGroup>
 
@@ -137,3 +161,4 @@ println!("The transaction consensus status is {:?}", status);
 ```
 
 </CodeGroup>
+

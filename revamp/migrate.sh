@@ -413,7 +413,7 @@ get_explicit_mapping() {
     # EVM SECTION
     # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-    # Overview & Quick Start
+    # Overview & Quickstart
     "hedera/getting-started-evm-developers.mdx") echo "evm/index.mdx" ;;
     "hedera/getting-started-evm-developers/add-hedera-to-metamask.mdx") echo "evm/quickstart/setup-metamask.mdx" ;;
     "hedera/getting-started-evm-developers/hedera-testnet-faucet.mdx") echo "evm/quickstart/get-test-hbar.mdx" ;;
@@ -520,7 +520,7 @@ get_explicit_mapping() {
     # NATIVE SDK SECTION
     # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-    # Overview & Quick Start
+    # Overview & Quickstart
     "hedera/getting-started-hedera-native-developers.mdx") echo "native/index.mdx" ;;
     "hedera/getting-started-hedera-native-developers/quickstart.mdx") echo "native/quickstart/javascript.mdx" ;;
 

@@ -51,7 +51,7 @@
   "logo": {
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg",
-    "href": "https://hedera.com/"
+    "href": "https://docs.hedera.com/"
   },
   "navbar": {
     "links": [
@@ -330,12 +330,11 @@
           }
         ]
       },
-      {
         "tab": "EVM Developers",
         "icon": "ethereum",
         "groups": [
           {
-            "group": "Quick Start",
+            "group": "Quickstart",
             "pages": [
               "evm/index",
               "evm/quickstart/index",
@@ -587,7 +586,7 @@
         "icon": "code",
         "groups": [
           {
-            "group": "Quick Start",
+            "group": "Quickstart",
             "pages": [
               "native/index",
               "native/quickstart/index",

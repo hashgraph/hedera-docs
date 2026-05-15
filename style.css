@@ -50,6 +50,11 @@ strong, b,
   --landing-card-bg: rgba(17, 21, 29, 0.02);
   --landing-demo-icon: rgba(17, 21, 29, 0.45);
   --landing-card-icon-bg: linear-gradient(135deg, #A893F4 0%, #5C7BFF 100%);
+
+  /* Footer pill buttons — match Join Hackathon button */
+  --landing-pill-bg: #1f1f1f;
+  --landing-pill-fg: #ffffff;
+  --landing-pill-border: #1f1f1f;
 }
 
 .dark, [data-theme='dark'] {
@@ -61,6 +66,38 @@ strong, b,
   --landing-card-bg: rgba(255, 255, 255, 0.02);
   --landing-demo-icon: rgba(255, 255, 255, 0.5);
   --landing-card-icon-bg: linear-gradient(135deg, #8259EF 0%, #0031FF 100%);
+
+  /* Footer pill buttons — match Join Hackathon button (dark mode) */
+  --landing-pill-bg: #e8e8e8;
+  --landing-pill-fg: #000000;
+  --landing-pill-border: #e8e8e8;
+}
+
+/* Footer pill buttons — shape and behavior matches navbar (Join Hackathon / Dev Portal) buttons */
+.landing-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 34px !important;
+  padding: 6px 16px !important;
+  border-radius: 12px !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  font-weight: 400 !important;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
+}
+
+.landing-pill:hover {
+  background: #8259EF !important;
+  border-color: #8259EF !important;
+  color: #ffffff !important;
+}
+
+.dark .landing-pill:hover,
+[data-theme='dark'] .landing-pill:hover {
+  background: #8259EF !important;
+  border-color: #8259EF !important;
+  color: #ffffff !important;
 }
 
 /* =========================
@@ -183,13 +220,16 @@ nav.text-sm ul li a[href*="portal.hedera.com"] {
   border: none !important;
 }
 nav.text-sm a[href*="portal.hedera.com"]:hover {
-  background-color: #7048E8 !important;
+  background-color: #0031FF !important;
+  border-color: #0031FF !important;
+  color: #ffffff !important;
 }
 nav.text-sm a[href*="hackathon"]:hover,
 nav.text-sm li a[href*="hackathon"]:hover,
 nav.text-sm ul li a[href*="hackathon"]:hover {
-  background-color: #2d2d2d !important;
-  border: 1px solid #2d2d2d !important;
+  background-color: #8259EF !important;
+  border: 1px solid #8259EF !important;
+  color: #ffffff !important;
 }
 
 
@@ -206,9 +246,9 @@ nav.text-sm ul li a[href*="hackathon"]:hover {
 }
 .dark nav.text-sm a[href*="hackathon"]:hover,
 [data-theme='dark'] nav.text-sm a[href*="hackathon"]:hover {
-  background-color: #d4d4d4 !important;
-  border: 1px solid #d4d4d4 !important;
-  color: #000000 !important;
+  background-color: #8259EF !important;
+  border: 1px solid #8259EF !important;
+  color: #ffffff !important;
 }
 
 /* icon fix — ensure visibility in dark mode */
@@ -230,6 +270,14 @@ nav.text-sm a[href*="hackathon"] svg {
 [data-theme='dark'] nav.text-sm a[href*="hackathon"] svg {
   filter: brightness(0) !important; /* black icon on white button */
   opacity: 1 !important;
+}
+
+/* Flip the dark-mode icon back to white when the button turns purple on hover */
+.dark nav.text-sm a[href*="hackathon"]:hover img,
+.dark nav.text-sm a[href*="hackathon"]:hover svg,
+[data-theme='dark'] nav.text-sm a[href*="hackathon"]:hover img,
+[data-theme='dark'] nav.text-sm a[href*="hackathon"]:hover svg {
+  filter: brightness(0) invert(1) !important;
 }
 
 /* Hiero CLI feature coverage heatmap (feature-coverage-gap-report.mdx) */

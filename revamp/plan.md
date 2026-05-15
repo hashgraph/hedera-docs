@@ -77,7 +77,7 @@
 │   LEARN             │  EVM DEVELOPERS      │  NATIVE SDKs       │  OPERATORS        │  REFERENCE     │
 ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │                     │                      │                    │                   │                │
-│  Getting Started    │  Quick Start         │  Quick Start       │  Mirror Nodes     │  REST API      │
+│  Getting Started    │  Quickstart         │  Quickstart       │  Mirror Nodes     │  REST API      │
 │  • What is Hedera   │  • MetaMask Setup    │  • JS Quickstart   │  • Public         │  • Accounts    │
 │  • Why Hedera       │  • Deploy Remix      │  • Java Quickstart │  • Run Your Own   │  • Tokens      │
 │  • Choose Your Path │  • Deploy Hardhat    │  • Go Quickstart   │  • One-Click      │  • Contracts   │
@@ -181,13 +181,13 @@ Learn → Getting Started → What is Hedera
          ↓                                         ↓
     EVM Developers Tab                    Native SDKs Tab
          ↓                                         ↓
-    Quick Start → Deploy with Hardhat     Quick Start → JS Quickstart
+    Quickstart → Deploy with Hardhat     Quickstart → JS Quickstart
 ```
 
 ### EVM Developer Journey
 
 ```
-EVM Developers → Quick Start → Add to MetaMask → Deploy with Hardhat
+EVM Developers → Quickstart → Add to MetaMask → Deploy with Hardhat
                                                         ↓
                                         EVM Differences (IMPORTANT)
                                         • Decimals, HBAR transfers, etc.
@@ -204,7 +204,7 @@ EVM Developers → Quick Start → Add to MetaMask → Deploy with Hardhat
 ### Native SDK Developer Journey
 
 ```
-Native SDKs → Quick Start → JavaScript Quickstart
+Native SDKs → Quickstart → JavaScript Quickstart
                                    ↓
                     Choose what to build:
         ┌──────────┬──────────┬──────────┬──────────┐

@@ -3,9 +3,9 @@
   "theme": "mint",
   "name": "Hedera",
   "colors": {
-    "primary": "#614ff4",
-    "light": "#614ff4",
-    "dark": "#614ff4"
+    "primary": "#8259EF",
+    "light": "#8259EF",
+    "dark": "#8259EF"
   },
   "style": {
     "path": "style.css"
@@ -51,7 +51,7 @@
   "logo": {
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg",
-    "href": "https://hedera.com/"
+    "href": "/"
   },
   "navbar": {
     "links": [
@@ -207,9 +207,6 @@
         {"anchor": "Blog", "href": "https://hedera.com/blog", "icon": "newspaper"}
       ]
     },
-    "pages": [
-      "index"
-    ],
     "tabs": [
       {
         "tab": "Learn",
@@ -259,8 +256,8 @@
               {
                 "group": "Tokens",
                 "pages": [
-                  "learn/core-concepts/services/tokens",
                   "learn/core-concepts/tokens/index",
+                  "learn/core-concepts/services/tokens",
                   "learn/core-concepts/tokens/hts-overview",
                   "learn/core-concepts/tokens/types-and-ids",
                   "learn/core-concepts/tokens/properties",
@@ -339,7 +336,7 @@
         "icon": "ethereum",
         "groups": [
           {
-            "group": "Quick Start",
+            "group": "Quickstart",
             "pages": [
               "evm/index",
               "evm/quickstart/index",
@@ -591,7 +588,7 @@
         "icon": "code",
         "groups": [
           {
-            "group": "Quick Start",
+            "group": "Quickstart",
             "pages": [
               "native/index",
               "native/quickstart/index",

@@ -1,69 +1,665 @@
 ---
-title: EVM Developers
+title: "EVM Developers"
+description: "Deploy Solidity smart contracts on Hedera using MetaMask, Hardhat, Foundry, and the JSON-RPC relay, your existing EVM workflow."
+mode: wide
 ---
 
-If you've deployed a Solidity smart contract on Ethereum or other EVM-compatible networks, you can continue using the same developer tools, libraries, frameworks, and workflows, such as MetaMask, a faucet, Remix, Hardhat, Foundry, and JSON-RPC relay, to deploy and interact with smart contracts on Hedera.
+<div className="not-prose" style={{
+  maxWidth: '1200px',
+  margin: '0 auto',
+  padding: '0 24px'
+}}>
 
-<Columns cols={3}>
-  <Card
-    title="Add Hedera to MetaMask"
-    href="/hedera/getting-started-evm-developers/add-hedera-to-metamask"
-    arrow
-  ></Card>
-  <Card
-    title="Hedera Testnet Faucet"
-    href="/hedera/getting-started-evm-developers/hedera-testnet-faucet"
-    arrow
-  ></Card>
-  <Card
-    title="Deploy w/ Contract Builder"
-    href="/hedera/getting-started-evm-developers/deploy-your-first-contract-with-hedera-contract-builder"
-    arrow
-  ></Card>
-  <Card
-    title="Deploy w/ Remix"
-    href="/hedera/getting-started-evm-developers/deploy-a-smart-contract-using-remix"
-    arrow
-  ></Card>
-  <Card
-    title="Deploy w/ Hardhat"
-    href="/hedera/getting-started-evm-developers/deploy-a-smart-contract-with-hardhat"
-    arrow
-  ></Card>
-  <Card
-    title="Deploy w/ Foundry"
-    href="/hedera/getting-started-evm-developers/deploy-a-smart-contract-with-foundry"
-    arrow
-  ></Card>
-</Columns>
+{/* ── BROWSE BY SECTION ─────────────────────────────────────────────────── */}
+<div style={{
+  padding: '48px 0',
+  borderBottom: '1px solid var(--landing-border)'
+}}>
+  <h2 style={{
+    fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
+    fontWeight: 500,
+    margin: '0 0 6px',
+    letterSpacing: '-0.015em',
+    color: 'var(--landing-fg-primary)'
+  }}>
+    Browse by section
+  </h2>
+  <p style={{
+    fontSize: '0.9375rem',
+    color: 'var(--landing-fg-tertiary)',
+    margin: '0 0 28px',
+    maxWidth: '540px',
+    lineHeight: 1.55
+  }}>
+    Every topic in the EVM Developers tab, organized by area.
+  </p>
 
-## Hedera Contract Builder
+  <div style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '12px'
+  }}>
 
-**_ℹ️ Try the_** [**_Hedera Contract Builder_**](https://portal.hedera.com/contract-builder) **_to bring your smart contract ideas to life. Start building and. testing on the Hedera testnet with the Contract Builder now!_**
+    <a href="/evm/quickstart/index" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0 M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Quickstart</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Set up MetaMask, deploy with Remix, Hardhat, Foundry, or Contract Builder.</div>
+      </div>
+    </a>
 
-<div className="flex flex-col justify-center items-center w-full mt-4 mb-8 not-prose">
-  <a
-    href="https://portal.hedera.com/contract-builder"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="no-underline text-center cursor-pointer group"
-  >
-    <img
-      src="/images/getting-started-evm-developers/contract-builder-screenshot.png"
-      alt="Hedera Contract Builder"
-      className="mx-auto rounded-lg shadow-sm max-w-[1000px] w-full h-auto mb-[5px]"
-      noZoom
-    />
-    <p className="text-gray-1000 dark:text-gray-500 text-sm font-semibold mt-[6px] mb-0 text-center underline decoration-[#8853FF] decoration-1 underline-offset-[6px] transition-colors duration-200 group-hover:text-[#8853FF]">
-      Hedera Contract Builder
-    </p>
-  </a>
+    <a href="/evm/development/index" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 18l6-6-6-6 M8 6l-6 6 6 6"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Development</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Creating, compiling, deploying, verifying — gas, rent, traceability, and JSON-RPC.</div>
+      </div>
+    </a>
+
+    <a href="/evm/migration/index" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 1l4 4-4 4 M3 11V9a4 4 0 0 1 4-4h14 M7 23l-4-4 4-4 M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>EVM Differences</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Key Hedera-vs-Ethereum differences — accounts, decimals, transfers, tooling.</div>
+      </div>
+    </a>
+
+    <a href="/evm/tokens/index" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v10 M9.5 15h5a2 2 0 1 0 0-4h-5a2 2 0 1 1 0-4h5"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>ERC Token Standards</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>ERC-20, ERC-721, ERC-1363, ERC-3643, and WHBAR support.</div>
+      </div>
+    </a>
+
+    <a href="/evm/hedera-services/index" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L4 13l8 4 8-4-8-11z M4 15l8 7 8-7-8 4-8-4z"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Hedera-Native Features</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>System contracts, HTS from Solidity, hybrid tokenization, native HCS/HSS.</div>
+      </div>
+    </a>
+
+    <a href="/evm/tools/index" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Tools</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Hardhat, Foundry, Remix, Contract Builder, Truffle, The Graph.</div>
+      </div>
+    </a>
+
+    <a href="/evm/tutorials/index" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z M6 12v5c3 3 9 3 12 0v-5"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Tutorials</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Beginner to advanced — ERC-721 with Hardhat or Foundry, HTS + EVM, HSS + EVM.</div>
+      </div>
+    </a>
+
+    <a href="/evm/integrations/index" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71 M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Integrations</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Oracles (Chainlink, Pyth, Supra), cross-chain (LayerZero, CCIP), wallets.</div>
+      </div>
+    </a>
+
+    <a href="/evm/troubleshooting/index" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4 M12 16h.01"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Troubleshooting</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Common errors, gas estimation, and transaction failure debugging.</div>
+      </div>
+    </a>
+
+  </div>
 </div>
 
-<Info>
-  **Have questions?** Join the [Hedera Discord](https://hedera.com/discord) and
-  post them in the
-  [`developer-general`](https://discord.com/channels/373889138199494658/373889138199494660)
-  channel or ask on [Stack
-  Overflow](https://stackoverflow.com/questions/tagged/hedera-hashgraph).
-</Info>
+{/* ── POPULAR QUICKSTARTS ──────────────────────────────────────────────── */}
+<div style={{
+  padding: '48px 0',
+  borderBottom: '1px solid var(--landing-border)'
+}}>
+  <h2 style={{
+    fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
+    fontWeight: 500,
+    margin: '0 0 24px',
+    letterSpacing: '-0.015em',
+    color: 'var(--landing-fg-primary)'
+  }}>
+    Popular quickstarts
+  </h2>
+
+  <div style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '12px'
+  }}>
+
+    <a href="/evm/quickstart/setup-metamask" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="22" height="22" viewBox="0 0 24 24">
+          <path d="M4 2 L1.5 8.5 L5 9 L1 14 L3 18 L7 17.5 L8.5 21.5 L15.5 21.5 L17 17.5 L21 18 L23 14 L19 9 L22.5 8.5 L20 2 L16 8 L12 9.5 L8 8 Z" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round"/>
+          <path d="M7 12 L10 12 L8.5 14 Z" fill="#fff"/>
+          <path d="M14 12 L17 12 L15.5 14 Z" fill="#fff"/>
+          <path d="M11 16 L13 16 L12 17.5 Z" fill="#fff"/>
+          <path d="M11.3 18.5 L12.7 18.5 L12.7 19.5 L11.3 19.5 Z" fill="#fff"/>
+        </svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Set Up MetaMask</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Add Hedera Testnet to MetaMask and fund your wallet.</div>
+      </div>
+    </a>
+
+    <a href="/evm/quickstart/get-test-hbar" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 22h18 M5 22V10 M19 22V10 M12 22V10 M12 6V2 M9 2h6 M5 10c0-3 7-3 7 0 M19 10c0-3-7-3-7 0"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Get Test HBAR</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Fund a testnet account from the faucet in under a minute.</div>
+      </div>
+    </a>
+
+    <a href="/evm/quickstart/deploy-with-hardhat" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Deploy with Hardhat</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Deploy a Solidity contract to Hedera via Hardhat + JSON-RPC relay.</div>
+      </div>
+    </a>
+
+    <a href="/evm/quickstart/deploy-with-foundry" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 22 L11 13 L13 15 L22 6 M14 6h8v8"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Deploy with Foundry</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Forge, anvil, and cast — use Foundry's full toolchain on Hedera.</div>
+      </div>
+    </a>
+
+    <a href="/evm/quickstart/deploy-with-remix" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 3l14 9-14 9z"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Deploy with Remix</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Browser-based Solidity IDE — deploy directly from Remix to Hedera.</div>
+      </div>
+    </a>
+
+    <a href="/evm/quickstart/evm-compatibility-overview" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 11l3 3L22 4 M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>EVM Compatibility</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Which EVM features are supported, partially supported, or differ on Hedera.</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── HEDERA-NATIVE FEATURES ──────────────────────────────────────────── */}
+<div style={{
+  padding: '48px 0',
+  borderBottom: '1px solid var(--landing-border)'
+}}>
+  <h2 style={{
+    fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
+    fontWeight: 500,
+    margin: '0 0 6px',
+    letterSpacing: '-0.015em',
+    color: 'var(--landing-fg-primary)'
+  }}>
+    Hedera-native features from Solidity
+  </h2>
+  <p style={{
+    fontSize: '0.9375rem',
+    color: 'var(--landing-fg-tertiary)',
+    margin: '0 0 28px',
+    maxWidth: '600px',
+    lineHeight: 1.55
+  }}>
+    Call Hedera's native token, schedule, and account services directly from your Solidity contracts via system contracts.
+  </p>
+
+  <div style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '12px'
+  }}>
+
+    <a href="/evm/hedera-services/system-contracts/hts" style={{
+      padding: '20px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v10 M9.5 15h5a2 2 0 1 0 0-4h-5a2 2 0 1 1 0-4h5"/></svg>
+      </div>
+      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>HTS System Contract</div>
+      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Create, mint, transfer, and manage HTS tokens from Solidity with native compliance features.</div>
+      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>HTS</span>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Solidity</span>
+      </div>
+    </a>
+
+    <a href="/evm/hedera-services/system-contracts/schedule-service" style={{
+      padding: '20px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><path d="M16 2v4 M8 2v4 M3 10h18"/></svg>
+      </div>
+      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Schedule Service</div>
+      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Schedule multi-party transactions that execute when all signers approve.</div>
+      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>HSS</span>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Multisig</span>
+      </div>
+    </a>
+
+    <a href="/evm/hedera-services/system-contracts/exchange-rate" style={{
+      padding: '20px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 1l4 4-4 4 M3 11V9a4 4 0 0 1 4-4h14 M7 23l-4-4 4-4 M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+      </div>
+      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Exchange Rate</div>
+      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>On-chain HBAR/USD exchange rate from the network's own oracle.</div>
+      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Oracle</span>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Rates</span>
+      </div>
+    </a>
+
+    <a href="/evm/hedera-services/hts-solidity/create-tokens" style={{
+      padding: '20px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14 M5 12h14"/></svg>
+      </div>
+      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>HTS Tokens from Solidity</div>
+      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Create, mint, transfer, and burn HTS tokens directly from your contract code.</div>
+      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Tokens</span>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>HTS</span>
+      </div>
+    </a>
+
+    <a href="/evm/hedera-services/hybrid/index" style={{
+      padding: '20px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="6" cy="12" r="4"/><circle cx="18" cy="12" r="4"/></svg>
+      </div>
+      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Hybrid Tokenization</div>
+      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Combine ERC standards with HTS to get the best of both worlds — compliance + compatibility.</div>
+      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Hybrid</span>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>ERC</span>
+      </div>
+    </a>
+
+    <a href="/evm/development/json-rpc/index" style={{
+      padding: '20px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71 M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      </div>
+      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>JSON-RPC Relay</div>
+      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Use Ethers.js, Hardhat, Foundry, and other EVM tools transparently on Hedera.</div>
+      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Ethereum</span>
+        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Tooling</span>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── TUTORIALS ──────────────────────────────────────── */}
+<div style={{
+  padding: '48px 0',
+  borderBottom: '1px solid var(--landing-border)'
+}}>
+  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '6px' }}>
+    <h2 style={{
+      fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
+      fontWeight: 500,
+      margin: 0,
+      letterSpacing: '-0.015em',
+      color: 'var(--landing-fg-primary)'
+    }}>
+      Step-by-step tutorials
+    </h2>
+    <a href="/evm/tutorials/index" style={{
+      fontSize: '0.8125rem',
+      color: '#8259EF',
+      textDecoration: 'none',
+      fontWeight: 500,
+      whiteSpace: 'nowrap'
+    }}>
+      See all →
+    </a>
+  </div>
+  <p style={{
+    fontSize: '0.9375rem',
+    color: 'var(--landing-fg-tertiary)',
+    margin: '0 0 28px',
+    lineHeight: 1.55
+  }}>
+    Beginner to advanced — build production-ready contracts on Hedera.
+  </p>
+
+  <div style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '16px'
+  }}>
+
+    <a href="/evm/tutorials/beginner/your-first-token" style={{
+      borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      overflow: 'hidden',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ height: '120px', background: 'linear-gradient(135deg, rgba(130,89,239,0.55) 0%, rgba(0,49,255,0.5) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v10 M9.5 15h5a2 2 0 1 0 0-4h-5a2 2 0 1 1 0-4h5"/></svg>
+      </div>
+      <div style={{ padding: '16px' }}>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Your First Token</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Create and deploy an ERC-20 token in 15 minutes.</div>
+        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Beginner</span>
+          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>ERC-20</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="/evm/tutorials/advanced/erc721-hardhat/part1-mint-burn" style={{
+      borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      overflow: 'hidden',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ height: '120px', background: 'linear-gradient(135deg, rgba(130,89,239,0.55) 0%, rgba(0,49,255,0.5) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      </div>
+      <div style={{ padding: '16px' }}>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>ERC-721 with Hardhat</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Full 3-part series — mint, burn, access control, upgradeable patterns.</div>
+        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Advanced</span>
+          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>NFT</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="/evm/tutorials/hedera/hts-evm/part1-mint-nfts" style={{
+      borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      overflow: 'hidden',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ height: '120px', background: 'linear-gradient(135deg, rgba(130,89,239,0.55) 0%, rgba(0,49,255,0.5) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L4 13l8 4 8-4-8-11z M4 15l8 7 8-7-8 4-8-4z"/></svg>
+      </div>
+      <div style={{ padding: '16px' }}>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>HTS + EVM Tutorial</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Mint NFTs with HTS from Solidity, then add KYC, pause, freeze, and wipe.</div>
+        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>HTS</span>
+          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>NFT</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── DEVELOPER TOOLS ──────────────────────────────────────── */}
+<div style={{
+  padding: '48px 0',
+  borderBottom: '1px solid var(--landing-border)'
+}}>
+  <h2 style={{
+    fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
+    fontWeight: 500,
+    margin: '0 0 24px',
+    letterSpacing: '-0.015em',
+    color: 'var(--landing-fg-primary)'
+  }}>
+    Tools &amp; integrations
+  </h2>
+
+  <div style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '12px'
+  }}>
+
+    <a href="/evm/tools/hardhat/index" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Hardhat</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Setup, testing, mainnet/testnet forking — basic and advanced.</div>
+      </div>
+    </a>
+
+    <a href="/evm/tools/foundry/index" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 22 L11 13 L13 15 L22 6 M14 6h8v8"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Foundry</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Forge, anvil, cast — testing and HTS-aware forking.</div>
+      </div>
+    </a>
+
+    <a href="/evm/tools/remix" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 3l14 9-14 9z"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Remix</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Browser-based Solidity IDE — write and deploy without local setup.</div>
+      </div>
+    </a>
+
+    <a href="/evm/tools/contract-builder" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '14px',
+      padding: '18px', borderRadius: '10px',
+      border: '1px solid var(--landing-border)',
+      textDecoration: 'none',
+      backgroundColor: 'var(--landing-card-bg)'
+    }}>
+      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01 M17 12h.01 M7 12h.01"/></svg>
+      </div>
+      <div>
+        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Contract Builder</div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Hedera's guided contract scaffolding — generate Solidity in the browser.</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── FOOTER ───────────────────────────────────────────────────────────── */}
+<div style={{ padding: '40px 0 24px' }}>
+  <h2 style={{
+    fontSize: 'clamp(1.125rem, 2vw, 1.375rem)',
+    fontWeight: 500,
+    margin: '0 0 12px',
+    letterSpacing: '-0.01em',
+    color: 'var(--landing-fg-primary)'
+  }}>
+    Stay connected
+  </h2>
+  <div style={{
+    display: 'flex',
+    gap: '10px',
+    flexWrap: 'wrap'
+  }}>
+    <a className="landing-pill" href="https://hedera.com/discord" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--landing-pill-fg)', textDecoration: 'none', padding: '5px 12px', borderRadius: '999px', background: 'var(--landing-pill-bg)', border: '1px solid var(--landing-pill-border)' }}>Discord</a>
+    <a className="landing-pill" href="https://github.com/hashgraph/hedera-docs" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--landing-pill-fg)', textDecoration: 'none', padding: '5px 12px', borderRadius: '999px', background: 'var(--landing-pill-bg)', border: '1px solid var(--landing-pill-border)' }}>GitHub</a>
+    <a className="landing-pill" href="https://portal.hedera.com/playground" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--landing-pill-fg)', textDecoration: 'none', padding: '5px 12px', borderRadius: '999px', background: 'var(--landing-pill-bg)', border: '1px solid var(--landing-pill-border)' }}>Playground</a>
+    <a className="landing-pill" href="https://stackoverflow.com/questions/tagged/hedera-hashgraph" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--landing-pill-fg)', textDecoration: 'none', padding: '5px 12px', borderRadius: '999px', background: 'var(--landing-pill-bg)', border: '1px solid var(--landing-pill-border)' }}>Stack Overflow</a>
+  </div>
+</div>
+
+</div>

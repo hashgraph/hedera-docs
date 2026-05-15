@@ -155,9 +155,9 @@ placeholder "evm/overview/choose-your-path.mdx" \
     "Find the right starting point based on your EVM development experience." \
     "signs-post"
 
-# Quick Start
+# Quickstart
 placeholder "evm/quickstart/index.mdx" \
-    "Quick Start" \
+    "Quickstart" \
     "Get up and running with smart contracts on Hedera in minutes." \
     "rocket"
 
@@ -346,17 +346,17 @@ placeholder "native/overview/sdk-comparison.mdx" \
     "scale-balanced"
 
 placeholder "native/quickstart/index.mdx" \
-    "Quick Start" \
+    "Quickstart" \
     "Get started with the Hedera SDK in your preferred language." \
     "rocket"
 
 placeholder "native/quickstart/java.mdx" \
-    "Java Quick Start" \
+    "Java Quickstart" \
     "Set up and use the Hedera Java SDK." \
     "java"
 
 placeholder "native/quickstart/go.mdx" \
-    "Go Quick Start" \
+    "Go Quickstart" \
     "Set up and use the Hedera Go SDK." \
     "golang"
 
@@ -434,7 +434,7 @@ placeholder "solutions/tokenization/index.mdx" \
     "coins"
 
 placeholder "solutions/tokenization/ats/quickstart.mdx" \
-    "ATS Quick Start" \
+    "ATS Quickstart" \
     "Get started with Asset Tokenization Studio in minutes." \
     "rocket"
 

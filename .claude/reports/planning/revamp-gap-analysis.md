@@ -25,7 +25,7 @@
 - [x] **Sync log** — `revamp/sync-log.md` records every `migrate.sh` run with main HEAD commit + stats
 - [x] **sidebar-fixups applied to UNCHANGED files** — fixup titles and Overview-stripping now run even when source == dest, so adding new fixup entries takes effect immediately on next migration run
 - [x] **Global nav anchors** — Status, Discord, Playground, Blog added to `docs.json` (matching docs.hedera.com)
-- [x] **Sidebar naming** — "Getting Started" renamed to "Start Here" to avoid group/page name clash; "Create an Account" moved to Native SDK Quick Start
+- [x] **Sidebar naming** — "Getting Started" renamed to "Start Here" to avoid group/page name clash; "Create an Account" moved to Native SDK Quickstart
 - [x] **`merge-main.sh`** — smart merge helper replaces `git merge main`; auto-resolves docs.json conflict, detects new pages before merge, reports action checklist
 - [x] **Fallback mapping tracking** — `migrate.sh` now counts and logs files that used directory fallback rules (not explicit mappings); warns in summary
 - [x] **Check 11: Nav parity** — `verify.sh` now detects production hedera/ pages that have no revamp equivalent on disk

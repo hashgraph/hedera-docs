@@ -38,11 +38,6 @@ Accounts have a property, `maxAutoAssociations`, and the property's value determ
 | `0` | Automatic **token** associations or **token airdrops** are not allowed, and the account must be manually associated with a token. This also applies if the value is less than or equal to `usedAutoAssociations`. |
 | `-1` | Unlimited automatic token associations are allowed, and this is the default for accounts created via [auto account creation](../../../core-concepts/accounts/auto-account-creation) and for accounts that began as hollow accounts and are now complete. Accounts with `-1` can receive new tokens without manually associating them. The sender still pays the `maxAutoAssociations` fee and initial rent for each association. |
 | `> 0` | If the value is a positive number (number greater than 0), the number of automatic token associations an account can have is limited to that number. |
-| Property Value | Description |
-|---|---|
-| `0` | Automatic token associations or **token airdrops** are not allowed, and the account must be manually associated with a token. This also applies if the value is less than or equal to `usedAutoAssociations`. |
-| `-1` | Unlimited automatic token associations are allowed, and this is the default for accounts created via [auto account creation](/hedera/core-concepts/accounts/auto-account-creation) and for accounts that began as hollow accounts and are now complete. Accounts with `-1` can receive new tokens without manually associating them. The sender still pays the `maxAutoAssociations` fee and initial rent for each association. |
-| `> 0` | If the value is a positive number (number greater than 0), the number of automatic token associations an account can have is limited to that number. |
 
 <Info>
 The sender pays the `maxAutoAssociations` fee and the rent for the first auto-renewal period for the association. This is in addition to the typical transfer fees. This ensures the receiver can receive tokens without association and makes it a smoother transfer process.

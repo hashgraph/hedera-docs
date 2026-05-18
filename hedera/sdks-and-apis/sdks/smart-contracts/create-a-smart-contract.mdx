@@ -53,7 +53,8 @@ With [HIP-904](https://hips.hedera.com/hip/hip-904), contracts now support Admin
 | **Automatic Token Associations** | The maximum number of tokens that this contract can be automatically associated with (i.e., receive air-drops from). |
 | **Constructor Parameters** | The constructor parameters to pass. |
 | **Memo** | The memo to be associated with this contract. (max 100 bytes) |
-| **Hooks** | Details of [Hiero Hooks](/hedera/core-concepts/accounts/hiero-hooks) to attach immediately after creating this contract. See [Create and Manage Hooks](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks). |
+{/* TODO: Restore link to "Create and Manage Hooks" SDK page once that page is published — see https://hips.hedera.com/hip/hip-1195 */}
+| **Hooks** | Details of [Hiero Hooks](/hedera/core-concepts/accounts/hiero-hooks) to attach immediately after creating this contract. |
 
 ## `ContractCreateFlow()`
 
@@ -198,8 +199,9 @@ Creates a smart contract instance using the file ID of the contract bytecode.
 | `setAutoRenewAccountId(<accountId)` | AccountId | Optional |
 | `setAutoRenewPeriod(<autoRenewPeriod>)` | Duration | Optional |
 | `setMaxAutomaticTokenAssociations()` | int | Optional |
-| `addHook(<hook>)` | [HookCreationDetails](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks) | Optional |
-| `setHooks(<hooks>)` | list\<[HookCreationDetails](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks)> | Optional |
+{/* TODO: Restore links to "Create and Manage Hooks" SDK page (HookCreationDetails) once that page is published. */}
+| `addHook(<hook>)` | HookCreationDetails | Optional |
+| `setHooks(<hooks>)` | list\<HookCreationDetails> | Optional |
 
 <CodeGroup>
 

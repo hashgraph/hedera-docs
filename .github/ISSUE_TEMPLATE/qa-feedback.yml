@@ -1,0 +1,60 @@
+name: QA Feedback (Docs Revamp)
+description: Report a problem found during the May 14–20 docs revamp QA testing window
+title: "[QA] "
+labels:
+  - "qa/may-2026"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping QA the docs revamp! One issue per problem, please — easier to track and close out.
+
+  - type: dropdown
+    id: tab
+    attributes:
+      label: Which tab?
+      description: The tab where you found the issue. This determines who triages it.
+      options:
+        - Learn
+        - EVM Developers
+        - Native SDKs
+        - Operators
+        - Reference
+        - Solutions
+        - Support
+    validations:
+      required: true
+
+  - type: input
+    id: page-url
+    attributes:
+      label: Page URL or path
+      description: The dev-branch URL or file path (e.g. `evm/quickstart/deploy-with-hardhat.mdx`)
+      placeholder: "evm/quickstart/deploy-with-hardhat.mdx"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's the problem?
+      description: Short description of what's wrong. Include expected vs actual behavior if relevant (e.g. for code samples that don't run).
+      placeholder: |
+        e.g. The `npm install` command on this page errors out with "package not found" because the package name was renamed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested fix (optional)
+      description: If you know how to fix it, tell us. Otherwise leave blank.
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+
+        **Reminder:** after submitting, add the `tab/<name>` label matching the tab you picked above (e.g. `tab/evm`). If you have permission to add a priority label (`P1`/`P2`/`P3`), do that too.

@@ -28,8 +28,8 @@ A transaction that allows you to modify the smart contract entity state like adm
 | **Auto Renew Account ID** | Indicates the account that will pay the contract's auto-renew fee. If the Auto Renew account id is cleared, then the smart contract's account will be charged the auto-renew fee. |
 | **Automatic Token Associations** | The maximum number of tokens that this contract can be automatically associated with (i.e., receive air-drops from). |
 | **Memo** | The new memo to be associated with this contract. |
-{/* TODO: Restore link to "Create and Manage Hooks" SDK page once that page is published — see https://hips.hedera.com/hip/hip-1195 */}
 | **Hooks** | Add or remove [Hiero Hooks](/hedera/core-concepts/accounts/hiero-hooks) from the contract. Deletions are processed before creations, enabling atomic hook replacement. |
+{/* TODO: Restore link to "Create and Manage Hooks" SDK page once that page is published — see https://hips.hedera.com/hip/hip-1195 */}
 
 ### Methods
 
@@ -46,6 +46,10 @@ A transaction that allows you to modify the smart contract entity state like adm
 | `setAutoRenewPeriod(<autoRenewPeriod>)` | Duration | Optional |
 | `setAutoRenewAccountId(<accountId>)` | [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid) | Optional |
 | `clearAutoRenewAccountId()` | | Optional |
+| `addHookToCreate(<hook>)` | HookCreationDetails | Optional |
+| `setHooksToCreate(<hooks>)` | list\<HookCreationDetails> | Optional |
+| `addHookToDelete(<hookId>)` | long | Optional |
+| `setHooksToDelete(<hookIds>)` | list\<long> | Optional |
 {/* TODO: Restore links to "Create and Manage Hooks" SDK page (HookCreationDetails) once that page is published. */}
 | `addHookToCreate(<hook>)` | HookCreationDetails | Optional |
 | `setHooksToCreate(<hooks>)` | list\<HookCreationDetails> | Optional |

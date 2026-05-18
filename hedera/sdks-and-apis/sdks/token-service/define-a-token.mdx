@@ -101,10 +101,10 @@ For non-fungible tokens, the token ID represents an NFT class. Once the token is
 | `getTokenType()` | TokenType | Returns the token type |
 | `getSupplyType()` | TokenSupplyType | Returns the supply type |
 | `getMaxSupply()` | long | Returns the max supply |
-| `getHighVolume()` | boolean | Returns whether this transaction uses [high-volume throttles](/core-concepts/high-volume-entity-creation) |
+| `getHighVolume()` | boolean | Returns whether this transaction uses [high-volume throttles](/hedera/core-concepts/high-volume-entity-creation) |
 
 <Info>
-This transaction supports [high-volume entity creation](/core-concepts/high-volume-entity-creation)
+This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation)
 (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated
 high-volume throttle capacity with variable-rate pricing. Always pair this with
 `setMaxTransactionFee()` to cap your costs.

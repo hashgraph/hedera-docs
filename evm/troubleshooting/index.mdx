@@ -23,7 +23,7 @@ function deposit() external payable {
 
 ### HBAR transfers don't always trigger `receive()`
 
-On Ethereum, sending HBAR to a contract address triggers `receive()` or `fallback()`. On Hedera, a plain transfer credits the contract's underlying Hedera account directly. No EVM frame opens, so `receive()` doesn't run. If you want contract logic to execute, you have to go through a `payable` call:
+On Ethereum, sending ETH to a contract address triggers `receive()` or `fallback()`. On Hedera, a native HAPI `CryptoTransfer` (from an SDK or wallet operating at the Hedera level rather than the EVM level) credits the contract's underlying Hedera account directly. No EVM frame opens, so `receive()` doesn't run. EVM-native paths still behave normally: `call{value: ...}`, `transfer`, and internal CALL frames all invoke `receive()` / `fallback()` as expected. If you want contract logic to execute on the HAPI path, route the deposit through a `payable` call instead:
 
 ```solidity
 // This runs the contract's payable function and fires events.
@@ -45,7 +45,7 @@ Hedera used to cap gas refunds at 20% of the limit, so setting a generous gas li
 
 ### Historical queries have a retention window
 
-The relay supports `eth_call` and `eth_getStorageAt` at historical blocks, but only as far back as the mirror node behind it has data. Query a block older than that and the relay returns an error. For deep history, retry against a provider with longer retention (Hashio, Arkhia, Validation Cloud).
+The relay supports `eth_call` and `eth_getStorageAt` at historical blocks, but only as far back as the mirror node behind it has data. Query a block older than that and the relay returns an error. For deep history, retry against a provider with longer retention (Arkhia, Validation Cloud, Hgraph, QuickNode, thirdweb).
 
 ## Where to ask for help
 

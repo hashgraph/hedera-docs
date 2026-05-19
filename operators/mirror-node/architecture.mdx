@@ -52,7 +52,7 @@ Default port `5551`. Exposes the standard Hedera mirror node endpoints documente
 
 Default port `5600`. Streams Hedera Consensus Service topic messages as they're imported. Clients subscribe to a topic ID and receive messages in consensus order. SDKs (Java, Go, JavaScript) wrap this through their `TopicMessageQuery` API.
 
-The public Hedera-hosted gRPC mirror endpoints require TLS and throttle at 50 requests per second per IP.
+The public Hedera-hosted gRPC mirror endpoints require TLS and apply per-IP throttling.
 
 ### Web3 API
 

@@ -21,7 +21,7 @@ For Maven, add to `pom.xml`:
     <dependency>
         <groupId>com.hedera.hashgraph</groupId>
         <artifactId>sdk</artifactId>
-        <version>2.61.0</version>
+        <version>2.72.0</version>
     </dependency>
     <dependency>
         <groupId>io.grpc</groupId>
@@ -35,7 +35,7 @@ For Gradle, add to `build.gradle`:
 
 ```groovy
 dependencies {
-    implementation 'com.hedera.hashgraph:sdk:2.61.0'
+    implementation 'com.hedera.hashgraph:sdk:2.72.0'
     implementation 'io.grpc:grpc-netty-shaded:1.73.0'
 }
 ```
@@ -100,8 +100,9 @@ Add a `.env` loader to your dependencies if you don't have one. `io.github.cdima
 ## Step 4: Run it
 
 ```bash
-# Maven
-mvn compile exec:java -Dexec.mainClass=HederaQuickstart
+# Maven (package as a JAR with dependencies, then run it)
+mvn package
+java -cp target/your-artifact-with-dependencies.jar HederaQuickstart
 
 # Gradle
 ./gradlew run
@@ -124,13 +125,13 @@ https://hashscan.io/testnet/transaction/<transactionId>
 ## What's next
 
 <CardGroup cols={2}>
-  <Card title="Create an Account" icon="user-plus" href="/native/quickstart/javascript">
+  <Card title="Create an Account" icon="user-plus" href="/native/accounts/create">
     Generate a new account programmatically and fund it from your operator.
   </Card>
-  <Card title="Create a Token" icon="coins" href="/native/quickstart/javascript">
+  <Card title="Create a Token" icon="coins" href="/native/tokens/define">
     Mint a native HTS token with custom supply and decimals.
   </Card>
-  <Card title="Submit to a Topic" icon="comment" href="/native/quickstart/javascript">
+  <Card title="Submit to a Topic" icon="comment" href="/native/consensus/submit-message">
     Publish a message to HCS for verifiable, ordered audit logs.
   </Card>
   <Card title="SDK Reference" icon="book" href="https://github.com/hiero-ledger/hiero-sdk-java">

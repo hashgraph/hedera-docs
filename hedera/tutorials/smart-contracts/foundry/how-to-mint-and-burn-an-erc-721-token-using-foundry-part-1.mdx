@@ -263,13 +263,13 @@ export MY_ADDRESS=$(cast wallet address $HEDERA_PRIVATE_KEY)
 
 ```
 
-Let's also verify our contract because it is so easy to do so and it is good practice:
+Let's also verify our contract because it is so easy to do so and it is good practice. Verification submits the source code to [Sourcify](https://sourcify.dev), which natively supports Hedera Testnet (chain ID `296`); the verified status will then appear on [HashScan](https://hashscan.io/).
 
 ```bash
 forge verify-contract $CONTRACT_ADDRESS src/MyToken.sol:MyToken \
     --chain-id 296 \
     --verifier sourcify \
-    --verifier-url "https://server-verify.hashscan.io/" \
+    --verifier-url "https://sourcify.dev/server" \
     --constructor-args $(cast abi-encode "constructor(address)" $MY_ADDRESS)
 ```
 
@@ -356,7 +356,7 @@ export CONTRACT_ADDRESS=<your-contract-address>
 forge verify-contract $CONTRACT_ADDRESS src/MyToken.sol:MyToken \
     --chain-id 296 \
     --verifier sourcify \
-    --verifier-url "https://server-verify.hashscan.io/" \
+    --verifier-url "https://sourcify.dev/server" \
     --constructor-args $(cast abi-encode "constructor(address)" $MY_ADDRESS)
 ```
 
@@ -512,6 +512,10 @@ Want to take your local development setup even further? Here are some excellent 
   <Card title="Writer: Kiran, Developer Advocate" arrow>
     [GitHub](https://github.com/kpachhai) |
     [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
+  </Card>
+  <Card title="Editor: Luke, DevRel Engineer" arrow>
+    [GitHub](https://github.com/LukeForrest-Hashgraph) |
+    [X](https://x.com/_LukeForrest)
   </Card>
   <Card title="Editor: Krystal, Senior DX Engineer" arrow>
     [GitHub](https://github.com/theekrystallee) |

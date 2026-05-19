@@ -9,6 +9,10 @@
   },
   "redirects": [
     {
+      "source": "/hedera/core-concepts/smart-contracts/verifying-smart-contracts-beta",
+      "destination": "/hedera/core-concepts/smart-contracts/verifying-smart-contracts"
+    },
+    {
       "source": "/hedera/getting-started",
       "destination": "/#getting-started"
     },
@@ -389,7 +393,7 @@
                   "hedera/core-concepts/smart-contracts/json-rpc-relay",
                   "hedera/core-concepts/smart-contracts/deploying-smart-contracts",
                   "hedera/core-concepts/smart-contracts/smart-contract-addresses",
-                  "hedera/core-concepts/smart-contracts/verifying-smart-contracts-beta",
+                  "hedera/core-concepts/smart-contracts/verifying-smart-contracts",
                   "hedera/core-concepts/smart-contracts/smart-contract-traceability",
                   {
                     "group": "Tokens Managed by Smart Contracts",
@@ -1120,25 +1124,17 @@
                 "group": "Smart Contract Verification API",
                 "pages": [
                   "hedera/sdks-and-apis/smart-contract-verification-api",
-                  "smart-contract-verification-api.yaml POST /verify",
-                  "smart-contract-verification-api.yaml POST /verify/etherscan",
-                  "smart-contract-verification-api.yaml POST /verify/solc-json",
-                  "smart-contract-verification-api.yaml GET /check-all-by-addresses",
-                  "smart-contract-verification-api.yaml GET /check-by-addresses",
-                  "smart-contract-verification-api.yaml GET /files/any/{chain}/{address}",
-                  "smart-contract-verification-api.yaml GET /files/{chain}/{address}",
-                  "smart-contract-verification-api.yaml GET /repository/contracts/{matchType}/{chain}/{address}/{filePath}",
-                  "smart-contract-verification-api.yaml GET /files/contracts/{chain}",
-                  "smart-contract-verification-api.yaml GET /files/tree/any/{chain}/{address}",
-                  "smart-contract-verification-api.yaml GET /files/tree/{chain}/{address}",
-                  "smart-contract-verification-api.yaml GET /session/data",
-                  "smart-contract-verification-api.yaml POST /session/clear",
-                  "smart-contract-verification-api.yaml POST /session/input-files",
-                  "smart-contract-verification-api.yaml POST /session/input-contract",
-                  "smart-contract-verification-api.yaml POST /session/verify-checked",
-                  "smart-contract-verification-api.yaml POST /session/input-solc-json",
-                  "smart-contract-verification-api.yaml POST /session/verify/etherscan",
-                  "smart-contract-verification-api.yaml POST /change-log-level"
+                  "smart-contract-verification-api.yaml POST /v2/verify/{chainId}/{address}",
+                  "smart-contract-verification-api.yaml POST /v2/verify/metadata/{chainId}/{address}",
+                  "smart-contract-verification-api.yaml POST /v2/verify/etherscan/{chainId}/{address}",
+                  "smart-contract-verification-api.yaml POST /v2/verify/similarity/{chainId}/{address}",
+                  "smart-contract-verification-api.yaml GET /v2/verify/{verificationId}",
+                  "smart-contract-verification-api.yaml GET /v2/contract/{chainId}/{address}",
+                  "smart-contract-verification-api.yaml GET /v2/contract/all-chains/{address}",
+                  "smart-contract-verification-api.yaml GET /v2/contracts/{chainId}",
+                  "smart-contract-verification-api.yaml GET /health",
+                  "smart-contract-verification-api.yaml GET /version",
+                  "smart-contract-verification-api.yaml GET /chains"
                 ]
               }
             ]

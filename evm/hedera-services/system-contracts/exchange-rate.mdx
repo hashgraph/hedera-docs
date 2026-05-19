@@ -1,36 +1,103 @@
 ---
 title: "Exchange Rate System Contract"
-description: "Query HBAR to USD exchange rates directly from your smart contracts."
+description: "Query HBAR/USD exchange rates directly from your smart contracts via the 0x168 system contract."
 icon: "dollar-sign"
-hidden: true
 ---
 
-{/* TODO: This page needs content */}
+The exchange rate system contract exposes the network's active HBAR/USD rate to your EVM contracts. If you want to price something in USD but settle in HBAR, this is what you call.
 
-<Info>
-  **Coming Soon** — This page is under construction.
-</Info>
+## At a glance
 
-## Overview
+| Field | Value |
+|---|---|
+| Contract address | `0x168` |
+| Reference HIP | [HIP-475](https://hips.hedera.com/hip/hip-475) |
+| Solidity source | [hiero-contracts/contracts/exchange-rate](https://github.com/hiero-ledger/hiero-contracts/tree/main/contracts/exchange-rate) |
+| Functions | `tinycentsToTinybars(uint256)`, `tinybarsToTinycents(uint256)` |
 
-Query HBAR to USD exchange rates directly from your smart contracts.
+The contract is implemented by consensus nodes, so calls are deterministic and don't depend on an off-chain feed. The rate comes from the network's exchange rate file (`0.0.112`), which is the same source the network uses internally to charge transaction fees.
 
-{/*
-## Content Checklist
-- [ ] Write introduction
-- [ ] Add code examples
-- [ ] Include diagrams if needed
-- [ ] Add related links
-- [ ] Review and polish
-*/}
+## Why it exists
 
-## Need Help?
+Hedera fees are quoted in USD but paid in HBAR at the current network rate. The contract gives Solidity code access to the same conversion. If you want to charge a flat 10 cents, you compute the HBAR amount at call time. No hard-coded prices, no oracle fee.
 
-<CardGroup cols={2}>
-  <Card title="Discord" icon="discord" href="https://hedera.com/discord">
-    Join our developer community
-  </Card>
-  <Card title="GitHub" icon="github" href="https://github.com/hashgraph">
-    Explore our repositories
+Units to keep straight:
+- 1 tinycent = 10⁻⁸ US cents = 10⁻¹⁰ USD
+- 1 tinybar = 10⁻⁸ HBAR
+
+## Solidity interface
+
+```solidity
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity >=0.4.9 <0.9.0;
+
+interface IExchangeRate {
+    // Given a value in tinycents (10^-8 US cents), returns the equivalent
+    // value in tinybars at the current network exchange rate.
+    function tinycentsToTinybars(uint256 tinycents) external returns (uint256);
+
+    // Given a value in tinybars, returns the equivalent value in tinycents
+    // at the current network exchange rate.
+    function tinybarsToTinycents(uint256 tinybars) external returns (uint256);
+}
+```
+
+## Example: charge a flat USD fee
+
+This contract charges $0.10 worth of HBAR per call. The HBAR amount is computed against the live rate, so it doesn't matter if HBAR moves.
+
+```solidity
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.22;
+
+interface IExchangeRate {
+    function tinycentsToTinybars(uint256 tinycents) external returns (uint256);
+}
+
+contract UsdPricedStore {
+    // The Exchange Rate system contract address.
+    address constant EXCHANGE_RATE = address(0x168);
+
+    // 10 cents = 10 * 10^8 tinycents = 1_000_000_000.
+    uint256 constant TEN_CENTS_IN_TINYCENTS = 10 * 10**8;
+
+    event Purchased(address indexed buyer, uint256 paidTinybars);
+
+    function purchase() external payable {
+        // Ask the network how many tinybars are equivalent to $0.10 right now.
+        uint256 requiredTinybars =
+            IExchangeRate(EXCHANGE_RATE).tinycentsToTinybars(TEN_CENTS_IN_TINYCENTS);
+
+        // msg.value is in 18-decimal wei. Convert tinybars (8 decimals) to wei
+        // by multiplying by 10^10 so the units line up.
+        uint256 requiredWei = requiredTinybars * 10**10;
+        require(msg.value >= requiredWei, "insufficient HBAR for $0.10");
+
+        emit Purchased(msg.sender, requiredTinybars);
+    }
+}
+```
+
+<Warning>
+  `tinycentsToTinybars` returns tinybars (8 decimals). `msg.value` is in wei (18 decimals). You have to multiply by `10**10` to compare them. This is the most common bug when wiring up the precompile.
+</Warning>
+
+## When to reach for it
+
+Useful when you need stable USD pricing on-chain: subscription fees, paywalled functions, auction reserve prices, or a guard that rejects transactions above a USD-equivalent cap. Also useful for any contract that wants to mirror Hedera's own fee model (quote in USD, settle in HBAR) instead of building a Chainlink integration.
+
+## Things to know
+
+The interface marks both functions as non-view, so calls cost gas even though they read state. Budget for that when batching conversions.
+
+The rate updates roughly once an hour from the network exchange rate file. It is not a live market feed; for anything that needs second-by-second tracking, layer an oracle on top.
+
+The rate is what the network uses for fee calculation. It tends to track exchange spot prices closely but isn't guaranteed to match.
+
+## See also
+
+<CardGroup cols={1}>
+  <Card title="HTS System Contract" icon="coins" href="/evm/hedera-services/system-contracts/hts">
+    The token-service precompile at `0x167` for creating, minting, and transferring HTS tokens from Solidity.
   </Card>
 </CardGroup>

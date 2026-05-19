@@ -1,36 +1,168 @@
 ---
 title: "Create Tokens"
-description: "Create fungible and non-fungible tokens using the HTS system contract."
+description: "Create fungible and non-fungible HTS tokens directly from Solidity via the 0x167 system contract."
 icon: "circle-plus"
-hidden: true
 ---
 
-{/* TODO: This page needs content */}
+The HTS system contract at `0x167` lets a Solidity contract create native HTS tokens. The resulting token is a real HTS token: same association rules, same mirror node REST responses, same HashScan view as an SDK-created one. You can operate on it through the HTS interface or through ERC-20 / ERC-721 redirects.
 
-<Info>
-  **Coming Soon** — This page is under construction.
-</Info>
+## At a glance
 
-## Overview
+| Field | Value |
+|---|---|
+| Contract address | `0x167` |
+| Reference HIPs | [HIP-358 (token creation)](https://hips.hedera.com/hip/hip-358), [HIP-206 (HTS precompile)](https://hips.hedera.com/hip/hip-206) |
+| Solidity source | [hiero-contracts/contracts/token-service](https://github.com/hiero-ledger/hiero-contracts/tree/main/contracts/token-service) |
+| Key functions | `createFungibleToken`, `createNonFungibleToken`, `createFungibleTokenWithCustomFees`, `createNonFungibleTokenWithCustomFees` |
 
-Create fungible and non-fungible tokens using the HTS system contract.
+## Why use this instead of a plain ERC-20?
 
-{/*
-## Content Checklist
-- [ ] Write introduction
-- [ ] Add code examples
-- [ ] Include diagrams if needed
-- [ ] Add related links
-- [ ] Review and polish
-*/}
+Two practical reasons.
 
-## Need Help?
+The first is compliance features. HTS tokens get native support for KYC keys, freeze, pause, wipe, supply caps, and royalty fees, and the network enforces them. If you build the same controls into an ERC-20 contract, you write them yourself and pay gas every time they fire.
 
-<CardGroup cols={2}>
-  <Card title="Discord" icon="discord" href="https://hedera.com/discord">
-    Join our developer community
-  </Card>
-  <Card title="GitHub" icon="github" href="https://github.com/hashgraph">
-    Explore our repositories
+The second is pricing. HTS operations are priced in USD and paid in HBAR by the network. ERC-20 operations are priced in EVM gas, which scales with whatever you put in your contract.
+
+If you don't need any of that, a plain ERC-20 is simpler and works fine. The choice is per-token; nothing stops you from using both in one app.
+
+## Required imports
+
+The helper library is `HederaTokenService.sol`, in the [hiero-contracts repository](https://github.com/hiero-ledger/hiero-contracts). Copy these files into your `contracts/` directory:
+
+```text
+contracts/
+├── HederaTokenService.sol      # Wrapper that handles call/response codes
+├── IHederaTokenService.sol     # Raw interface (function signatures, structs)
+├── HederaResponseCodes.sol     # Numeric response codes (SUCCESS, INVALID_TOKEN_ID, ...)
+├── ExpiryHelper.sol            # Builds the Expiry struct
+├── FeeHelper.sol               # Builds FixedFee, FractionalFee, RoyaltyFee structs
+└── KeyHelper.sol               # Builds HederaToken.TokenKey entries
+```
+
+## Example: fungible token
+
+```solidity
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.22;
+
+import "./HederaTokenService.sol";
+import "./IHederaTokenService.sol";
+import "./HederaResponseCodes.sol";
+import "./KeyHelper.sol";
+import "./ExpiryHelper.sol";
+
+contract TokenFactory is HederaTokenService, KeyHelper, ExpiryHelper {
+
+    event TokenCreated(address tokenAddress);
+
+    function createFungible(
+        string memory name,
+        string memory symbol,
+        int64 initialSupply,
+        int32 decimals
+    ) external payable returns (address tokenAddress) {
+
+        // Build the supply key. This contract will be authorized to mint more.
+        IHederaTokenService.TokenKey[] memory keys = new IHederaTokenService.TokenKey[](1);
+        keys[0] = getSingleKey(
+            KeyType.SUPPLY,
+            KeyValueType.CONTRACT_ID,
+            address(this)
+        );
+
+        IHederaTokenService.HederaToken memory token;
+        token.name = name;
+        token.symbol = symbol;
+        token.treasury = address(this);
+        token.memo = "created via system contract";
+        token.tokenSupplyType = false;            // false = infinite supply
+        token.maxSupply = 0;
+        token.freezeDefault = false;
+        token.tokenKeys = keys;
+        token.expiry = createAutoRenewExpiry(address(this), defaultAutoRenewPeriod);
+
+        // Token creation costs HBAR (rent); forward msg.value to the precompile.
+        (int responseCode, address created) = HederaTokenService.createFungibleToken(
+            token, initialSupply, decimals
+        );
+
+        require(responseCode == HederaResponseCodes.SUCCESS, "HTS token create failed");
+        emit TokenCreated(created);
+        return created;
+    }
+}
+```
+
+## Example: non-fungible token
+
+```solidity
+function createNft(
+    string memory name,
+    string memory symbol
+) external payable returns (address tokenAddress) {
+    IHederaTokenService.TokenKey[] memory keys = new IHederaTokenService.TokenKey[](1);
+    keys[0] = getSingleKey(KeyType.SUPPLY, KeyValueType.CONTRACT_ID, address(this));
+
+    IHederaTokenService.HederaToken memory token;
+    token.name = name;
+    token.symbol = symbol;
+    token.treasury = address(this);
+    token.tokenSupplyType = true;     // true = finite supply
+    token.maxSupply = 10_000;
+    token.tokenKeys = keys;
+    token.expiry = createAutoRenewExpiry(address(this), defaultAutoRenewPeriod);
+
+    (int responseCode, address created) = HederaTokenService.createNonFungibleToken(token);
+    require(responseCode == HederaResponseCodes.SUCCESS, "HTS NFT create failed");
+    return created;
+}
+```
+
+## Paying for it
+
+Token creation costs HBAR. The caller has to forward enough `msg.value` to cover the `TokenCreate` transaction fee, which buys the token its initial auto-renew period (~92 days). The current base fee is around $1 USD worth of HBAR for both fungible and non-fungible tokens.
+
+Two important things to know about how Hedera handles the money:
+
+- **Gas is charged on consumption.** Per HIP-1249, Hedera refunds 100% of unused gas, and the per-transaction limit is 15M (HIP-185). Set a generous gas limit; you only pay for what you actually use.
+- **Excess `msg.value` is not refunded.** Anything you forward beyond what the precompile consumes for the `TokenCreate` fee stays in the calling contract's balance. There is no automatic refund to the EOA.
+
+The practical pattern: compute the exact tinybars via the [Exchange Rate system contract](/evm/hedera-services/system-contracts/exchange-rate) just before the call, or build a refund step into your contract that returns leftover HBAR to `msg.sender` after the precompile call.
+
+```solidity
+// Compute the exact value just before the call, then forward only that amount.
+// 1.5 USD in tinycents = 1.5 * 10^8 tinycents. Gives a small safety margin
+// over the ~$1 base fee.
+uint256 tinybars = IExchangeRate(0x168).tinycentsToTinybars(15 * 10**7);
+uint256 wei_ = tinybars * 10**10;   // tinybars (8 decimals) -> wei (18 decimals)
+TokenFactory(factory).createFungible{value: wei_}("MyToken", "MTK", 1_000_000, 2);
+```
+
+<Warning>
+  Token creation fails with `INSUFFICIENT_PAYER_BALANCE` if `msg.value` doesn't cover the fee. If you can't compute the exact amount, pass extra and refund the leftover from inside your contract. Don't expect Hedera to do it for you.
+</Warning>
+
+## Token keys
+
+The `HederaToken.tokenKeys` array decides who can do what to the token. Each entry is a `(keyType, keyValue)` pair:
+
+| Key | Authorizes |
+|---|---|
+| `ADMIN` | Updating token properties and rotating other keys |
+| `SUPPLY` | Minting and burning |
+| `FREEZE` | Freezing and unfreezing accounts |
+| `WIPE` | Wiping tokens from accounts |
+| `KYC` | Granting and revoking KYC status |
+| `PAUSE` | Pausing all token operations |
+| `FEE_SCHEDULE` | Updating the custom-fee schedule |
+| `METADATA` | Updating NFT serial-number metadata (HIP-657) |
+
+Build each entry with `KeyHelper.getSingleKey(KeyType.X, KeyValueType.Y, address)`. Common `KeyValueType` values: `CONTRACT_ID` (the contract signs implicitly), `INHERIT_ACCOUNT_KEY` (use the caller's key), `ED25519` / `ECDSA` (provide a raw public key).
+
+## See also
+
+<CardGroup cols={1}>
+  <Card title="HTS System Contract Overview" icon="coins" href="/evm/hedera-services/system-contracts/hts">
+    Full function reference for the HTS precompile, including transfer, mint, burn, freeze, pause, and KYC operations.
   </Card>
 </CardGroup>

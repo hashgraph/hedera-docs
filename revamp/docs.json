@@ -1057,13 +1057,10 @@
             "pages": [
               "operators/consensus-node/index",
               "operators/consensus-node/deployment",
-              "operators/consensus-node/monitoring",
               {
                 "group": "Requirements",
                 "pages": [
                   "operators/consensus-node/requirements/index",
-                  "operators/consensus-node/requirements/hardware",
-                  "operators/consensus-node/requirements/network",
                   "operators/consensus-node/requirements/faq"
                 ]
               }

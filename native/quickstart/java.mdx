@@ -1,36 +1,143 @@
 ---
 title: "Java Quickstart"
-description: "Set up and use the Hedera Java SDK."
+description: "Connect to Hedera testnet from Java, query your balance, and transfer HBAR."
 icon: "java"
-hidden: true
 ---
 
-{/* TODO: This page needs content */}
+This page gets a Java application talking to Hedera testnet: SDK install, operator credentials, balance query, and an HBAR transfer.
 
-<Info>
-  **Coming Soon** — This page is under construction.
-</Info>
+## Prerequisites
 
-## Overview
+- JDK 11 or later
+- Maven 3.8+ or Gradle 8+
+- A Hedera testnet account with ECDSA keys from the [developer portal](https://portal.hedera.com)
 
-Set up and use the Hedera Java SDK.
+## Step 1: Add the SDK dependency
 
-{/*
-## Content Checklist
-- [ ] Write introduction
-- [ ] Add code examples
-- [ ] Include diagrams if needed
-- [ ] Add related links
-- [ ] Review and polish
-*/}
+For Maven, add to `pom.xml`:
 
-## Need Help?
+```xml
+<dependencies>
+    <dependency>
+        <groupId>com.hedera.hashgraph</groupId>
+        <artifactId>sdk</artifactId>
+        <version>2.61.0</version>
+    </dependency>
+    <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-netty-shaded</artifactId>
+        <version>1.73.0</version>
+    </dependency>
+</dependencies>
+```
+
+For Gradle, add to `build.gradle`:
+
+```groovy
+dependencies {
+    implementation 'com.hedera.hashgraph:sdk:2.61.0'
+    implementation 'io.grpc:grpc-netty-shaded:1.73.0'
+}
+```
+
+`grpc-netty-shaded` is the network transport. Without it the SDK compiles, then throws at runtime when you actually try to talk to the network.
+
+## Step 2: Credentials
+
+Create a `.env` file in your project root (and add it to `.gitignore`):
+
+```dotenv
+OPERATOR_ID=0.0.1234
+OPERATOR_KEY=302d300706052b8104000a032200033456...
+```
+
+`OPERATOR_ID` is your Hedera account ID. `OPERATOR_KEY` is the DER-encoded ECDSA private key; use the **HEX Encoded Private Key** value from the developer portal.
+
+## Step 3: Connect, query, transfer
+
+Create `src/main/java/HederaQuickstart.java`:
+
+```java
+import com.hedera.hashgraph.sdk.*;
+import io.github.cdimascio.dotenv.Dotenv;
+
+public class HederaQuickstart {
+
+    public static void main(String[] args) throws Exception {
+        Dotenv env = Dotenv.load();
+        AccountId operatorId = AccountId.fromString(env.get("OPERATOR_ID"));
+        PrivateKey operatorKey = PrivateKey.fromString(env.get("OPERATOR_KEY"));
+
+        // Connect to testnet using the operator account as the default payer.
+        Client client = Client.forTestnet();
+        client.setOperator(operatorId, operatorKey);
+
+        // 1. Query the operator's balance.
+        Hbar balance = new AccountBalanceQuery()
+            .setAccountId(operatorId)
+            .execute(client)
+            .hbars;
+        System.out.println("Operator balance: " + balance);
+
+        // 2. Transfer 1 HBAR to account 0.0.3 (a test recipient).
+        AccountId recipient = AccountId.fromString("0.0.3");
+        TransactionResponse response = new TransferTransaction()
+            .addHbarTransfer(operatorId, Hbar.from(-1))
+            .addHbarTransfer(recipient, Hbar.from(1))
+            .execute(client);
+
+        TransactionReceipt receipt = response.getReceipt(client);
+        System.out.println("Transfer status: " + receipt.status);
+        System.out.println("Transaction ID: " + response.transactionId);
+
+        client.close();
+    }
+}
+```
+
+Add a `.env` loader to your dependencies if you don't have one. `io.github.cdimascio:dotenv-java:3.0.0` is the common pick.
+
+## Step 4: Run it
+
+```bash
+# Maven
+mvn compile exec:java -Dexec.mainClass=HederaQuickstart
+
+# Gradle
+./gradlew run
+```
+
+Expected output:
+
+```text
+Operator balance: 10000 ℏ
+Transfer status: SUCCESS
+Transaction ID: 0.0.1234@1700000000.123456789
+```
+
+Look up the transaction on HashScan:
+
+```text
+https://hashscan.io/testnet/transaction/<transactionId>
+```
+
+## What's next
 
 <CardGroup cols={2}>
-  <Card title="Discord" icon="discord" href="https://hedera.com/discord">
-    Join our developer community
+  <Card title="Create an Account" icon="user-plus" href="/native/quickstart/javascript">
+    Generate a new account programmatically and fund it from your operator.
   </Card>
-  <Card title="GitHub" icon="github" href="https://github.com/hashgraph">
-    Explore our repositories
+  <Card title="Create a Token" icon="coins" href="/native/quickstart/javascript">
+    Mint a native HTS token with custom supply and decimals.
+  </Card>
+  <Card title="Submit to a Topic" icon="comment" href="/native/quickstart/javascript">
+    Publish a message to HCS for verifiable, ordered audit logs.
+  </Card>
+  <Card title="SDK Reference" icon="book" href="https://github.com/hiero-ledger/hiero-sdk-java">
+    Full API reference on GitHub.
   </Card>
 </CardGroup>
+
+<Tip>
+  The four Hiero SDKs (JavaScript, Java, Go, Python) share the same API surface, so code translates almost line-for-line between them. Differences are mostly language-idiomatic.
+</Tip>

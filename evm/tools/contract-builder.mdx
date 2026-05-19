@@ -13,16 +13,9 @@ mode: "custom"
     Hedera Contract Builder
   </h1>
 
-  <p style={{ fontSize: '0.9375rem', lineHeight: 1.6, color: 'var(--landing-fg-secondary)', margin: '0 0 8px', maxWidth: '900px' }}>
-    The <a href="https://portal.hedera.com/contract-builder" style={{ color: '#8259EF', textDecoration: 'none', fontWeight: 600 }}>Hedera Contract Builder</a> is a browser-based tool designed to simplify and accelerate the smart contract development lifecycle on the Hedera network. It allows developers to edit, compile, deploy, verify, and call Solidity smart contracts directly in their browser, eliminating the need for complex local setups or command-line tools.
+  <p style={{ fontSize: '0.9375rem', lineHeight: 1.6, color: 'var(--landing-fg-secondary)', margin: '0 0 24px', maxWidth: '900px' }}>
+    Scaffold, compile, deploy, and verify Solidity contracts on Hedera testnet — all from your browser. No CLI, no local setup. Built in collaboration with <a href="https://www.kabila.app/" style={{ color: '#8259EF', textDecoration: 'none' }}>Kabila</a> and open source.
   </p>
-
-  <div style={{ display: 'inline-flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px 16px', margin: '20px 0', padding: '10px 16px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.02)', fontSize: '0.8125rem' }}>
-    <span style={{ fontWeight: 600, color: 'var(--landing-fg-tertiary, rgba(255,255,255,0.55))', fontSize: '0.6875rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>On this page</span>
-    <a href="#key-features" style={{ color: '#8259EF', textDecoration: 'none' }}>Key Features</a>
-    <a href="#who-is-it-for" style={{ color: '#8259EF', textDecoration: 'none' }}>Who Is It For</a>
-    <a href="#get-started" style={{ color: '#8259EF', textDecoration: 'none' }}>Get Started</a>
-  </div>
 
   <div style={{ width: '100%', margin: '12px 0 40px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)', background: '#0c1226', boxShadow: '0 1px 2px rgba(0,0,0,0.2)' }}>
     <iframe
@@ -36,49 +29,38 @@ mode: "custom"
     ></iframe>
   </div>
 
-  <h2 id="key-features" style={{ fontSize: '1.375rem', fontWeight: 500, letterSpacing: '-0.015em', margin: '40px 0 12px', color: 'var(--landing-fg-primary)' }}>
-    Key Features & Benefits
-  </h2>
-
-  <p style={{ fontSize: '0.9375rem', lineHeight: 1.6, color: 'var(--landing-fg-secondary)', margin: '0 0 16px' }}>
-    The Contract Builder is packed with features to make development smoother and faster for developers by offering:
+  <p style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary, rgba(255,255,255,0.55))', margin: '0 0 40px' }}>
+    Need more room? Open it full-screen at <a href="https://portal.hedera.com/contract-builder" style={{ color: '#8259EF', textDecoration: 'none' }}>portal.hedera.com/contract-builder</a>.
   </p>
 
-  <ul style={{ fontSize: '0.9375rem', lineHeight: 1.6, color: 'var(--landing-fg-secondary)', paddingLeft: '24px', margin: '0 0 24px', listStyle: 'disc' }}>
-    <li style={{ marginBottom: '8px' }}><strong style={{ color: 'var(--landing-fg-primary)' }}>Rapid Development:</strong> Go from idea to deployed contract on the Hedera testnet in seconds. Author, compile, and deploy with just a few clicks.</li>
-    <li style={{ marginBottom: '8px' }}><strong style={{ color: 'var(--landing-fg-primary)' }}>No Setup Required:</strong> Access everything you need directly in your browser. No need to install packages or configure local environments.</li>
-    <li style={{ marginBottom: '8px' }}><strong style={{ color: 'var(--landing-fg-primary)' }}>Built-in Templates & Standards:</strong> Start quickly with pre-built templates and support for common standards like ERC-20, ERC-721, ERC-1155, and Hedera Token Service (HTS) system contracts.</li>
-    <li style={{ marginBottom: '8px' }}><strong style={{ color: 'var(--landing-fg-primary)' }}>Seamless Workflow:</strong> Easily verify your contract code using <a href="https://verify.hashscan.io/" style={{ color: '#8259EF', textDecoration: 'none' }}>Sourcify</a> on <a href="https://hashscan.io/" style={{ color: '#8259EF', textDecoration: 'none' }}>HashScan</a> and execute contract functions to test logic.</li>
-    <li style={{ marginBottom: '8px' }}><strong style={{ color: 'var(--landing-fg-primary)' }}>Collaboration:</strong> Share your contracts with collaborators to streamline teamwork.</li>
-    <li style={{ marginBottom: '8px' }}><strong style={{ color: 'var(--landing-fg-primary)' }}>Open Source:</strong> Built in collaboration with <a href="https://www.kabila.app/" style={{ color: '#8259EF', textDecoration: 'none' }}>Kabila</a>, the Contract Builder is an open-source project, encouraging community contributions and transparency.</li>
+  <h2 style={{ fontSize: '1.375rem', fontWeight: 500, letterSpacing: '-0.015em', margin: '0 0 16px', color: 'var(--landing-fg-primary)' }}>
+    What you can build
+  </h2>
+
+  <ul style={{ fontSize: '0.9375rem', lineHeight: 1.6, color: 'var(--landing-fg-secondary)', paddingLeft: '24px', margin: '0 0 32px', listStyle: 'disc' }}>
+    <li style={{ marginBottom: '8px' }}><strong style={{ color: 'var(--landing-fg-primary)' }}>Token contracts</strong> — ERC-20, ERC-721, and ERC-1155 templates with mintable, burnable, pausable, and permit options.</li>
+    <li style={{ marginBottom: '8px' }}><strong style={{ color: 'var(--landing-fg-primary)' }}>Hedera system contracts</strong> — call HTS, the Account Service, and Schedule Service directly from Solidity.</li>
+    <li style={{ marginBottom: '8px' }}><strong style={{ color: 'var(--landing-fg-primary)' }}>One-click verify</strong> — push the contract to <a href="https://verify.hashscan.io/" style={{ color: '#8259EF', textDecoration: 'none' }}>Sourcify</a> so the source shows up on <a href="https://hashscan.io/" style={{ color: '#8259EF', textDecoration: 'none' }}>HashScan</a>.</li>
+    <li style={{ marginBottom: '8px' }}><strong style={{ color: 'var(--landing-fg-primary)' }}>Call functions in place</strong> — exercise deployed contracts from the same UI to test logic before wiring up a frontend.</li>
   </ul>
 
-  <h2 id="who-is-it-for" style={{ fontSize: '1.375rem', fontWeight: 500, letterSpacing: '-0.015em', margin: '40px 0 12px', color: 'var(--landing-fg-primary)' }}>
-    Who Is It For?
+  <h2 style={{ fontSize: '1.375rem', fontWeight: 500, letterSpacing: '-0.015em', margin: '0 0 16px', color: 'var(--landing-fg-primary)' }}>
+    Next steps
   </h2>
 
-  <p style={{ fontSize: '0.9375rem', lineHeight: 1.6, color: 'var(--landing-fg-secondary)', margin: '0 0 16px' }}>
-    The Hedera Contract Builder is ideal for:
-  </p>
-
-  <ul style={{ fontSize: '0.9375rem', lineHeight: 1.6, color: 'var(--landing-fg-secondary)', paddingLeft: '24px', margin: '0 0 24px', listStyle: 'disc' }}>
-    <li style={{ marginBottom: '8px' }}><strong style={{ color: 'var(--landing-fg-primary)' }}>Web2 Developers:</strong> A perfect entry point into web3 and smart contract development, offering an intuitive interface and interactive templates to learn and experiment with minimal Solidity knowledge.</li>
-    <li style={{ marginBottom: '8px' }}><strong style={{ color: 'var(--landing-fg-primary)' }}>Existing Hedera & Web3 Developers:</strong> A productivity tool for rapid prototyping, testing new contract logic, or exploring Hedera's smart contract capabilities without a full development environment setup.</li>
-  </ul>
-
-  <h2 id="get-started" style={{ fontSize: '1.375rem', fontWeight: 500, letterSpacing: '-0.015em', margin: '40px 0 12px', color: 'var(--landing-fg-primary)' }}>
-    Get Started with the Contract Builder
-  </h2>
-
-  <p style={{ fontSize: '0.9375rem', lineHeight: 1.6, color: 'var(--landing-fg-secondary)', margin: '0 0 16px' }}>
-    Ready to accelerate your smart contract development on Hedera?
-  </p>
-
-  <ol style={{ fontSize: '0.9375rem', lineHeight: 1.6, color: 'var(--landing-fg-secondary)', paddingLeft: '24px', margin: '0 0 24px', listStyle: 'decimal' }}>
-    <li style={{ marginBottom: '8px' }}>Visit the <a href="https://portal.hedera.com/contract-builder" style={{ color: '#8259EF', textDecoration: 'none', fontWeight: 600 }}>Hedera Contract Builder</a>.</li>
-    <li style={{ marginBottom: '8px' }}>Select a contract standard or template.</li>
-    <li style={{ marginBottom: '8px' }}>Log into your <a href="https://portal.hedera.com/register" style={{ color: '#8259EF', textDecoration: 'none', fontWeight: 600 }}>Hedera Portal account</a>.</li>
-    <li style={{ marginBottom: '8px' }}>Compile, deploy, verify, and call your contracts directly from the browser.</li>
-  </ol>
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px', marginBottom: '24px' }}>
+    <a href="/evm/quickstart/setup-metamask" style={{ display: 'block', padding: '18px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.02)', textDecoration: 'none' }}>
+      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Connect MetaMask</div>
+      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary, rgba(255,255,255,0.55))', lineHeight: 1.45 }}>Wire MetaMask to Hedera testnet so the Contract Builder can deploy from your wallet.</div>
+    </a>
+    <a href="/evm/tools/hardhat" style={{ display: 'block', padding: '18px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.02)', textDecoration: 'none' }}>
+      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Move to Hardhat</div>
+      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary, rgba(255,255,255,0.55))', lineHeight: 1.45 }}>When you're ready for tests, CI, and a real codebase — port your contract into a Hardhat project.</div>
+    </a>
+    <a href="/evm/tools/foundry" style={{ display: 'block', padding: '18px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.02)', textDecoration: 'none' }}>
+      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Or try Foundry</div>
+      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary, rgba(255,255,255,0.55))', lineHeight: 1.45 }}>Prefer a Solidity-native, fast test runner? Use Foundry instead — HTS-aware forking included.</div>
+    </a>
+  </div>
 
 </div>

@@ -2,33 +2,34 @@
 title: "Create an account"
 ---
 
+## Create an account using the account create API
 
-### **Create an account using the account create API**
-
-A transaction that creates a Hedera account. A Hedera account is required to interact with any of the Hedera network services as you need an account to pay for all associated transaction/query fees. You can visit the [Hedera Developer Portal](https://portal.hedera.com/register) to create a previewnet or testnet account. You can also use third-party wallets to generate free [mainnet accounts](/hedera/networks/mainnet/mainnet-access). To process an account create transaction, you will need an existing account to pay for the transaction fee. To obtain the new account ID, request the [receipt](/hedera/sdks-and-apis/sdks/transactions/get-a-transaction-receipt) of the transaction.
+A transaction that creates a Hedera account. A Hedera account is required to interact with any of the Hedera network services as you need an account to pay for all associated transaction/query fees. You can visit the [Hedera Developer Portal](https://portal.hedera.com/) to create a previewnet or testnet account. You can also use third-party wallets to generate free [mainnet accounts](/hedera/networks/mainnet/mainnet-access). To process an account create transaction, you will need an existing account to pay for the transaction fee. To obtain the new account ID, request the [receipt](/hedera/sdks-and-apis/sdks/transactions/get-a-transaction-receipt) of the transaction.
 
 <Info>
-When creating a **new account** using the`AccountCreateTransaction()`API you will need an existing account to pay for the associated transaction fee.
+When creating a **new account** using the `AccountCreateTransaction()` API you will need an existing account to pay for the associated transaction fee.
 </Info>
 
-**Account Properties**
+---
 
-<Card
-  title="Account Properties"
-  href="/hedera/core-concepts/accounts/account-properties"
-/>
+## Transaction Fees and Signing
 
-**Transaction Fees**
+- The sender pays for the token association fee and the rent for the first auto-renewal period.
+- See the transaction and query [fees](/hedera/networks/mainnet/fees) table for the base transaction fee.
+- Use the [Hedera fee estimator](https://hedera.com/fees) to estimate your transaction fee cost.
+- The account paying for the transaction fee is required to sign the transaction.
 
-* The sender pays for the token association fee and the rent for the first auto-renewal period.
-* Please see the transaction and query [fees](/hedera/networks/mainnet/fees#transaction-and-query-fees) table for the base transaction fee.
-* Please use the [Hedera fee estimator](https://hedera.com/fees) to estimate your transaction fee cost.
+---
 
-**Transaction Signing Requirements**
+## Account Properties
 
-* The account paying for the transaction fee is required to sign the transaction.
+<Accordion title="Account Properties">
+For a complete list of account properties, see the [accounts overview](/hedera/sdks-and-apis/sdks/accounts-and-hbar).
+</Accordion>
 
-#### Maximum Auto-Associations and Fees
+---
+
+## Maximum Auto-Associations and Fees
 
 Accounts have a property, `maxAutoAssociations`, and the property's value determines the maximum number of automatic token associations allowed.
 
@@ -64,30 +65,37 @@ The sender pays the `maxAutoAssociations` fee and the rent for the first auto-re
 
 If an alias is set during account creation, it becomes [immutable](/hedera/support-and-community/glossary#immutability), meaning it cannot be changed. If you plan to update or rotate keys in the future, do not set the alias at the time of initial account creation. The alias can be set after finalizing all key updates.
 </Warning>
+---
+
+## Constructor
+
+| Constructor | Description |
+|---|---|
+| `new AccountCreateTransaction()` | Initializes the AccountCreateTransaction object |
+
+## Transaction Properties
+
+| **Method** | **Type** | Requirement |
+|---|---|---|
+| `setKey(<key>)` | Key | Required |
+| `setInitialBalance(<initialBalance>)` | Hbar | Optional |
+| `setReceiverSignatureRequired(<booleanValue>)` | boolean | Optional |
+| `setAutoRenewPeriod(<autoRenewPeriod>)` | Duration | Optional |
+| `setAccountMemo(<memo>)` | String | Optional |
+| `setMaxAutomaticTokenAssociations(<amount>)` | int | Optional |
+| `setStakedAccountId(<stakedAccountId>)` | AccountId | Optional |
+| `setStakedNodeId(<stakedNodeId>)` | long | Optional |
+| `setDeclineStakingReward(<declineStakingReward>)` | boolean | Optional |
+| `setHighVolume(<highVolume>)` | boolean | Optional |
+
+<Note>
+    This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation)
+    (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated
+    high-volume throttle capacity with variable-rate pricing. Always pair this with
+    `setMaxTransactionFee()` to cap your costs.
+</Note>
 
 <CodeGroup>
-
-```java Java
-//Create the transaction
-AccountCreateTransaction transaction = new AccountCreateTransaction()
-    .setKeyWithAlias(ecdsaPublicKey)
-    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .setKeyWithoutAlias instead
-    // .setKeyWithoutAlias(ecdsaPublicKey)
-    .setInitialBalance(new Hbar(1));
-
-//Submit the transaction to a Hedera network
-TransactionResponse txResponse = transaction.execute(client);
-
-//Request the receipt of the transaction
-TransactionReceipt receipt = txResponse.getReceipt(client);
-
-//Get the account ID
-AccountId newAccountId = receipt.accountId;
-
-System.out.println("The new account ID is " +newAccountId);
-
-//Version 2.0.0
-```
 
 
 ```javascript JavaScript
@@ -110,38 +118,58 @@ const receipt = await txResponse.getReceipt(client);
 //Get the account ID
 const newAccountId = receipt.accountId;
 
-console.log("The new account ID is " +newAccountId);
+console.log("The new account ID is " + newAccountId);
 
 //v2.0.5
 ```
 
 
-```go Go
+```java Java
+//Create new ECDSA key
+PublicKey ecdsaPublicKey = PrivateKey.generateECDSA().getPublicKey();
+
 //Create the transaction
-transaction := hedera.NewAccountCreateTransaction().
-        SetKeyWithAlias(ecdsaPublicKey).
-        //do not set if you need to rotate keys in the future
-        // SetKeyWithoutAlias(ecdsaPublicKey).
-        SetInitialBalance(hedera.NewHbar(1))
+AccountCreateTransaction transaction = new AccountCreateTransaction()
+    .setKeyWithAlias(ecdsaPublicKey)
+    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .setKeyWithoutAlias instead
+    // .setKeyWithoutAlias(ecdsaPublicKey)
+    .setInitialBalance(new Hbar(1));
 
 //Sign the transaction with the client operator private key and submit to a Hedera network
-txResponse, err := AccountCreateTransaction.Execute(client)
-if err != nil {
-    panic(err)
-}
+TransactionResponse txResponse = transaction.execute(client);
+
+//Request the receipt of the transaction
+TransactionReceipt receipt = txResponse.getReceipt(client);
+
+//Get the account ID
+AccountId newAccountId = receipt.accountId;
+
+System.out.println("The new account ID is " + newAccountId);
+```
+
+
+```go Go
+//Create new ECDSA key
+ecdsaPrivateKey, _ := hedera.PrivateKeyGenerateECDSA()
+ecdsaPublicKey := ecdsaPrivateKey.PublicKey()
+
+//Create the transaction
+transaction := hedera.NewAccountCreateTransaction().
+    SetKeyWithAlias(ecdsaPublicKey).
+    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .SetKeyWithoutAlias instead
+    // SetKeyWithoutAlias(ecdsaPublicKey).
+    SetInitialBalance(hedera.NewHbar(1))
+
+//Sign the transaction with the client operator private key and submit to a Hedera network
+txResponse, err := transaction.Execute(client)
 
 //Request the receipt of the transaction
 receipt, err := txResponse.GetReceipt(client)
-if err != nil {
-    panic(err)
-}
 
 //Get the account ID
 newAccountId := *receipt.AccountID
 
 fmt.Printf("The new account ID is %v\n", newAccountId)
-
-//Version 2.0.0
 ```
 
 
@@ -171,10 +199,10 @@ println!("The new account ID is {}", new_account_id);
 
 // v0.34.0
 ```
-
 </CodeGroup>
 
-#### Get transaction values
+
+## Get Transaction Values
 
 | Method | Type | Description |
 | --- | --- | --- |
@@ -185,25 +213,30 @@ println!("The new account ID is {}", new_account_id);
 | `getStakedNodeId()` | long | Returns the node ID |
 | `getStakedAccountId()` | AccountId | Returns the node account ID |
 | `getReceiverSignatureRequired()` | boolean | Returns whether the receiver signature is required or not |
+| **Method** | **Type** | Description |
+|---|---|---|
+| `getKey()` | Key | Returns the public key on the account |
+| `getInitialBalance()` | Hbar | Returns the initial balance of the account |
+| `getAutoRenewPeriod()` | Duration | Returns the auto renew period on the account |
+| `getDeclineStakingReward()` | boolean | Returns whether or not the account declined rewards |
+| `getStakedNodeId()` | long | Returns the node ID |
+| `getStakedAccountId()` | AccountId | Returns the node account ID |
+| `getReceiverSignatureRequired()` | boolean | Returns whether the receiver signature is required or not |
+| `getHighVolume()` | boolean | Returns whether this transaction uses [high-volume throttles](/hedera/core-concepts/high-volume-entity-creation) |
+
+<Info>
+This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation) (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated high-volume throttle capacity with variable-rate pricing. Always pair this with `setMaxTransactionFee()` to cap your costs.
+</Info>
+
+<Warning>
+#### **Account Alias** 
+If an alias is set during account creation, it becomes [immutable](/hedera/support-and-community/glossary#immutable), meaning it cannot be changed. If you plan to update or rotate keys in the future, do not set the alias at the time of initial account creation. The alias can be set after finalizing all key updates.
+</Warning>
 
 <CodeGroup>
 
-```java Java
-//Create an account with 1 hbar
-AccountCreateTransaction transaction = new AccountCreateTransaction()
-    // The only _required_ property here is `key`
-    .setKeyWithAlias(newPublicKey)
-    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .setKeyWithoutAlias instead 
-    // .setKeyWithoutAlias(newPublicKey)
-    .setInitialBalance(new Hbar(1));
-
-//Return the key on the account
-Key accountKey = transaction.getKey();
-```
-
-
 ```javascript JavaScript
-//Create an account with 1 HBAR 
+//Create an account with 1 HBAR
 const transaction = new AccountCreateTransaction()
     // The only _required_ property here is `key`
     .setKeyWithAlias(newPublicKey)
@@ -216,16 +249,33 @@ const accountKey = transaction.getKey();
 ```
 
 
+```java Java
+//Create an account with 1 hbar
+AccountCreateTransaction transaction = new AccountCreateTransaction()
+    // The only _required_ property here is `key`
+    .setKeyWithAlias(newPublicKey)
+    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .setKeyWithoutAlias instead
+    // .setKeyWithoutAlias(newPublicKey)
+    .setInitialBalance(new Hbar(1));
+
+//Return the key on the account
+Key accountKey = transaction.getKey();
+```
+
 ```go Go
 //Create an account with 1 hbar
 AccountCreateTransaction := hedera.NewAccountCreateTransaction().
     SetKeyWithAlias(newPublicKey).
-    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .SetKeyWithoutAlias instead 
+    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .SetKeyWithoutAlias instead
     // SetKeyWithoutAlias(newPublicKey).
     SetInitialBalance(hedera.NewHbar(1))
 
 //Return the key on the account
 accountKey, err := AccountCreateTransaction.GetKey()
 ```
-
 </CodeGroup>
+
+
+
+
+

@@ -2,21 +2,19 @@
 title: "Create a schedule transaction"
 ---
 
-
 A `ScheduleCreateTransaction` is a consensus node transaction that creates a schedule entity on the Hedera network. The entity ID for a schedule transaction is called a `ScheduleID`. After successfully executing a schedule create transaction, you can retrieve the network assigned `ScheduleID` by requesting the transaction receipt. The receipt also includes the scheduled transaction ID, which can be used to request the record of the scheduled transaction after its successful execution.
 
 When creating a transaction to schedule you do not need to use `.freezeWith(client)` method.
 
 Example:
-
-```java
+```java Java
 TransferTransaction transactionToSchedule = new TransferTransaction()
         .addHbarTransfer(newAccountId, Hbar.fromTinybars(-1))
         .addHbarTransfer(operatorId, Hbar.fromTinybars(1));
 ```
 
 <Info>
-Refer to this [page](/hedera/core-concepts/scheduled-transaction#overview) to view the types of transactions that can be scheduled.
+     Refer to this [page](/hedera/core-concepts/scheduled-transaction#overview) to view the types of transactions that can be scheduled.
 </Info>
 
 ### **Schedule Transaction Duplicate**
@@ -38,7 +36,7 @@ To retain the ability to delete a schedule transaction, you will need to set the
 
 ### **Transaction Properties**
 
-| Field                            | Description                                                                                                                                                                                                                                                                                                                                        |
+| **Field**                            | **Description**                                                                                                                                                                                                                                                                                                                                        |
 | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Schedulable Transaction Body** | The transaction body of the transaction that is being scheduled. Ex. Transfer Transaction                                                                                                                                                                                                                                                          |
 | **Admin Key**                    | A key that can delete the schedule transaction prior to execution or expiration                                                                                                                                                                                                                                                                    |
@@ -49,10 +47,28 @@ To retain the ability to delete a schedule transaction, you will need to set the
 
 ### Methods
 
-<table><thead><tr><th>Method</th><th>Type</th><th>Requirement</th></tr></thead><tbody><tr><td><code>setScheduledTransaction(&#x3C;transaction>)</code></td><td>Transaction&#x3C;?></td><td>Required</td></tr><tr><td><code>setAdminKey(&#x3C;key>)</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>setPayerAccountId(&#x3C;id>)</code></td><td>AccountId</td><td>Optional</td></tr><tr><td><code>setScheduleMemo(&#x3C;memo>)</code></td><td>String</td><td>Optional</td></tr><tr><td><code>setExpirationTime(expirationTime)</code></td><td>Instant</td><td>Optional</td></tr><tr><td><code>setWaitForExpiry()</code></td><td>boolean</td><td>Optional</td></tr><tr><td><code>getAdminKey()</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>getPayerAccountId()</code></td><td>AccountId</td><td>Optional</td></tr><tr><td><code>getScheduleMemo()</code></td><td>String</td><td>Optional</td></tr></tbody></table>
+| **Method** | **Type** | **Requirement** |
+|---|---|---|
+| `setScheduledTransaction(<transaction>)` | Transaction | Required |
+| `setAdminKey(<key>)` | Key | Optional |
+| `setPayerAccountId(<id>)` | AccountId | Optional |
+| `setScheduleMemo(<memo>)` | String | Optional |
+| `setExpirationTime(expirationTime)` | Instant | Optional |
+| `setWaitForExpiry()` | boolean | Optional |
+| `setHighVolume(<highVolume>)` | boolean | Optional |
+| `getAdminKey()` | Key | Optional |
+| `getPayerAccountId()` | AccountId | Optional |
+| `getScheduleMemo()` | String | Optional |
+| `getHighVolume()` | boolean | Optional |
+
+<Note>
+    This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation)
+    (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated
+    high-volume throttle capacity with variable-rate pricing. Always pair this with
+    `setMaxTransactionFee()` to cap your costs.
+</Note>
 
 <CodeGroup>
-
 ```java Java
 //Create a schedule transaction
 ScheduleCreateTransaction transaction = new ScheduleCreateTransaction()
@@ -69,7 +85,6 @@ ScheduleId scheduleId = receipt.scheduleId;
 System.out.println("The schedule ID of the schedule transaction is " +scheduleId);
 ```
 
-
 ```javascript JavaScript
 //Create a schedule transaction
 const transaction = new ScheduleCreateTransaction()
@@ -85,7 +100,6 @@ const receipt = await txResponse.getReceipt(client);
 const scheduleId = receipt.scheduleId;
 console.log("The schedule ID of the schedule transaction is " +scheduleId);
 ```
-
 
 ```go Go
 //Create a schedule transaction
@@ -114,7 +128,6 @@ scheduleId := *receipt.ScheduleID
 fmt.Printf("The new token ID is %v\n", scheduleId)
 ```
 
-
 ```rust Rust
 // Create a schedule transaction
 let transaction = ScheduleCreateTransaction::new()
@@ -132,5 +145,4 @@ println!("The schedule ID of the schedule transaction is {:?}", schedule_id);
 
 // v0.34.0
 ```
-
 </CodeGroup>

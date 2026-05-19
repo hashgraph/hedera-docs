@@ -20,7 +20,7 @@ The maximum file size is 1,024 kB.
 
 #### File Properties
 
-| Field               | Description                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| **Field**           | **Description**                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Key(s)**          | Set the keys which must sign any transactions modifying this file (the owner(s) of the file). All keys must sign to modify the file's contents or keys. No key is required to sign for extending the expiration time (except the one for the operator account paying for the transaction). The network currently requires a file to have at least one key (or key list or threshold key) but this requirement may be lifted in the future. |
 | **Contents**        | The contents of the file. The file contents can be recovered from requesting the FileContentsQuery. Note that the total size for a given transaction is limited to 6KiB (as of March 2020) by the network; if you exceed this you may receive a TRANSACTION\_OVERSIZE error.                                                                                                                                                               |
@@ -29,7 +29,7 @@ The maximum file size is 1,024 kB.
 
 ### Methods
 
-| Constructor                   | Description                                  |
+| **Constructor**               | **Description**                              |
 | ----------------------------- | -------------------------------------------- |
 | `new FileCreateTransaction()` | Initializes the FileCreateTransaction object |
 
@@ -41,13 +41,15 @@ new FileCreateTransaction()
 The default max transaction fee (1 hbar) is not enough to create a a file. Use `setDefaultMaxTransactionFee()`to change the default max transaction fee from 1 hbar to 2 hbars.
 </Info>
 
-| Method                                | Type       | Requirement |
+| **Method**                         | **Type**  | **Requirement** |
 | ------------------------------------- | ---------- | ----------- |
 | `setKeys(<keys>)`                     | Key        | Required    |
 | `setContents(<contents>)`             | String     | Optional    |
 | `setContents(<bytes>)`                | bytes \[ ] | Optional    |
 | `setExpirationTime(<expirationTime>)` | Instant    | Optional    |
 | `setFileMemo(<memo>)`                 | String     | Optional    |
+| `setHighVolume(<highVolume>)`         | boolean    | Optional    |
+
 
 <CodeGroup>
 
@@ -162,7 +164,7 @@ println!("The new file ID is {:?}", file_id);
 
 ## Get transaction values
 
-| Method                | Type       | Requirement |
+| **Method**            | **Type**   | **Requirement** |
 | --------------------- | ---------- | ----------- |
 | `getKeys()`           | Key        | Optional    |
 | `getContents()`       | ByteString | Optional    |
@@ -202,5 +204,11 @@ transaction := hedera.NewFileCreateTransaction().
 //Get the file contents
 getContents := transaction.GetContents()
 ```
-
 </CodeGroup>
+
+<Note>
+    This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation)
+    (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated
+    high-volume throttle capacity with variable-rate pricing. Always pair this with
+    `setMaxTransactionFee()` to cap your costs.
+</Note>

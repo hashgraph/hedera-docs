@@ -334,6 +334,7 @@
             "group": "Core Concepts",
             "pages": [
               "hedera/core-concepts",
+            
               {
                 "group": "Accounts",
                 "pages": [
@@ -347,6 +348,7 @@
               },
               "hedera/core-concepts/keys-and-signatures",
               "hedera/core-concepts/scheduled-transaction",
+              "hedera/core-concepts/fee-model",
               {
                 "group": "Smart Contracts",
                 "pages": [
@@ -447,6 +449,7 @@
                   "hedera/core-concepts/hashgraph-consensus-algorithms/virtual-voting"
                 ]
               },
+              "hedera/core-concepts/high-volume-entity-creation",
               {
                 "group": "Transactions and Queries",
                 "pages": [
@@ -642,6 +645,12 @@
                   "hedera/sdks-and-apis/sdks/client",
                   "hedera/sdks-and-apis/sdks/set-up-your-local-network",
                   "hedera/sdks-and-apis/sdks/address-book",
+                   {
+                    "group": "Fees",
+                    "pages": [
+                      "hedera/sdks-and-apis/sdks/fees/fee-estimation"
+                    ]
+                  },
                   {
                     "group": "Keys",
                     "pages": [
@@ -686,6 +695,7 @@
                   },
                   "hedera/sdks-and-apis/sdks/queries",
                   "hedera/sdks-and-apis/sdks/general-errors",
+        
                   {
                     "group": "Accounts and HBAR",
                     "pages": [
@@ -870,6 +880,7 @@
                     "group": "Topics",
                     "pages": [
                       "hedera/sdks-and-apis/rest-api/topics",
+                      "openapi.yaml GET /api/v1/topics/{topicId}",
                       "openapi.yaml GET /api/v1/topics/{topicId}/messages",
                       "openapi.yaml GET /api/v1/topics/{topicId}/messages/{sequenceNumber}",
                       "openapi.yaml GET /api/v1/topics/messages/{timestamp}"
@@ -887,11 +898,13 @@
                     "group": "Network",
                     "pages": [
                       "hedera/sdks-and-apis/rest-api/network",
-                      "openapi.yaml GET /api/v1/network/supply",
-                      "openapi.yaml GET /api/v1/network/fees",
                       "openapi.yaml GET /api/v1/network/exchangerate",
+                      "openapi.yaml GET /api/v1/network/fees",
+                      "openapi.yaml POST /api/v1/network/fees",
                       "openapi.yaml GET /api/v1/network/nodes",
-                      "openapi.yaml GET /api/v1/network/stake"
+                      "openapi.yaml GET /api/v1/network/registered-nodes",
+                      "openapi.yaml GET /api/v1/network/stake",
+                      "openapi.yaml GET /api/v1/network/supply"
                     ]
                   }
                 ]
@@ -1126,6 +1139,7 @@
               }
             ]
           },
+        
           {
             "group": "Support & Community",
             "pages": [
@@ -1182,6 +1196,7 @@
               "hedera/faqs/community"
             ]
           }
+     
         ]
       }
     ]

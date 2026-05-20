@@ -6,12 +6,55 @@ description: "Consensus Node release information"
 Visit the [Hedera status page](https://status.hedera.com/) for the latest versions supported on each network.
 
 ## Release v0.73
-<Info>
+<Check>
   **MAINNET UPDATE: MAY 20, 2026**
-</Info>
+</Check>
 <Check>
   **TESTNET UPDATED: APRIL 29, 2026**
 </Check>
+
+### Release highlights
+
+Release v0.73 enables [HIP-1261 Simple Fees](https://hips.hedera.com/hip/hip-1261) and [HIP-1313 High-Volume Entity Creation](https://hips.hedera.com/hip/hip-1313) on mainnet, and completes [HIP-1357 Block Node Rewards](https://hips.hedera.com/hip/hip-1357) and [HIP-1137 Block Node discoverability](https://hips.hedera.com/hip/hip-1137). Together, these changes make fees easier to predict, add optional burst capacity for entity creation, and establish on-chain Block Node discovery and operator rewards.
+
+<Accordion title="What's new in Release v0.73?">
+  **Simple Fees (HIP-1261)**
+
+  Enables a **base + extras** fee model in USD (system file `0.0.113`), with node, network, and service components. Fees are deterministic across nodes so SDKs and mirror nodes can match consensus-node calculations.
+
+  **Benefits**
+
+  * Simplifies fee estimation compared with the legacy resource-based schedule
+  * Expands Simple Fees coverage across additional transaction types and queries
+
+  **High-Volume Entity Creation (HIP-1313)**
+
+  Adds optional `high_volume` entity-creation capacity using separate throttle buckets and utilization-based pricing (`highVolumeRates`) in the Simple Fees schedule. Requires HIP-1261; standard throttles and pricing are unchanged unless the flag is set.
+
+  **Benefits**
+
+  * Supports higher burst entity-creation rates without consuming standard throttle capacity
+  * Records `high_volume_pricing_multiplier` in transaction records for transparent auditing
+
+  **Tier 1 Block Node Operation Rewards (HIP-1357)**
+
+  Distributes additional daily rewards from account `0.0.801` to consensus node accounts that operate an eligible Tier 1 Block Node (PUBLISH API) listed in `associated_registered_node`, based on `targetYearlyBlockNodeRewardsUsd`.
+
+  **Benefits**
+
+  * Compensates block-stream operators who meet both consensus and block node obligations
+  * Adds per-node reward distribution and eligibility metrics for monitoring
+
+  **Block Node Discoverability (HIP-1137)**
+
+  Completes the on-chain registered-node registry so operators can publish Block Node endpoints (including multiple APIs per endpoint) via `AddressBookService` transactions. Clients can discover nodes from network state instead of static configuration.
+
+  **Benefits**
+
+  * Provides a trustworthy, operator-managed source for finding Block Nodes
+  * Links consensus node accounts to registered nodes for rewards and operations
+</Accordion>
+
 
 ### [**Build 0.73.0**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.73.0)
 
@@ -228,6 +271,11 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
   **Full Release Notes**: [**v0.73.0**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.73.0)
 
 </Accordion>
+
+## Performance Results
+<Frame>
+  ![](/images/networks/release-notes/services/0.73_performance_measurement_results.png)
+</Frame>
 
 ## Release v0.72
 <Check>

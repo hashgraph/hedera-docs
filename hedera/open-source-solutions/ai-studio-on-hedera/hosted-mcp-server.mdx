@@ -29,7 +29,7 @@ The server uses the MCP Streamable HTTP transport.
 When connecting to the server, provide your Hedera Account ID via an HTTP header. This initializes the session context so every tool call knows which account to build transactions for.
 
 - **Header Name:** `x-hedera-account-id`
-- **Value:** Your Hedera Testnet Account ID (e.g., `0.0.12345`)
+- **Value:** Your [Hedera Testnet Account ID](https://portal.hedera.com/dashboard) (e.g., `0.0.12345`)
 
 On the initialize request, the server queries the Hedera Mirror Node to fetch the associated public key and configures the agent's scope for your account. If the account cannot be found on the Mirror Node, the initialize request returns `400` with an explanatory error.
 
@@ -58,7 +58,7 @@ Most MCP-compatible clients accept a JSON configuration block. Register the host
 }
 ```
 
-Replace `0.0.YOUR_ACCOUNT_ID` with your Hedera Testnet account ID. After updating the configuration, restart your client — the Hedera tools should appear in its tool list.
+Replace `0.0.YOUR_ACCOUNT_ID` with your [Hedera Testnet account ID](https://portal.hedera.com/dashboard). After updating the configuration, restart your client — the Hedera tools should appear in its tool list.
 
 > [!WARNING]
 > **Read-Only / Query Only for Standard IDEs & GUI Clients:** General-purpose AI clients like **Cursor** and **Claude Desktop** have no built-in capability to sign or submit raw transaction bytes returned by the Hosted MCP Server.
@@ -73,13 +73,16 @@ Replace `0.0.YOUR_ACCOUNT_ID` with your Hedera Testnet account ID. After updatin
 
 ## Working with RETURN_BYTES
 
-Because the hosted server never signs transactions, every state-changing tool returns a response containing the unsigned, hex-encoded transaction bytes. To complete an operation, your client must:
+Because this server never handles your private keys or signs transactions on your behalf, any action that changes data on the blockchain will come back to you as transaction data (bytes) to be signed and submitted on-chain. 
+
+
+To use this MCP server, you must build or use a client application for this MCP that can:
 
 1. Receive the hex bytes from the tool response.
 2. Decode and sign them using a Hedera SDK with the account's private key.
 3. Submit the signed transaction to the Hedera network.
 
-Read-only queries — balances, token info, transaction records, exchange rates, and similar — return their results directly. No signing is required for those.
+Read-only queries such as balances, token info, transaction records, exchange rates, and similar can return their results directly through your AI application, since no transaciton signature is required
 
 See the [Hedera Agent Kit examples](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/examples/langchain-v1/return-bytes-tool-calling-agent.ts) for examples of signing and submitting transaction bytes.
 

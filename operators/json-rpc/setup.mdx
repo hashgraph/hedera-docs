@@ -10,14 +10,14 @@ This page walks through getting the [Hiero JSON-RPC Relay](https://github.com/hi
 
 - Docker 20.10+ and Docker Compose
 - A Hedera account on the network you're targeting (mainnet, testnet, or previewnet) with HBAR to pay for the relay's internal transactions
-- The account's ECDSA or ED25519 private key, DER-encoded
+- The account's ECDSA or ED25519 private key in a format the relay supports (`DER`, `HEX_ECDSA`, or `HEX_ED25519` set via `OPERATOR_KEY_FORMAT`)
 
 You also need access to a mirror node REST endpoint for the same network. The public Hedera-hosted mirror nodes work fine for getting started:
 
-| Network | Mirror node base URL |
-|---|---|
-| Mainnet | `https://mainnet.mirrornode.hedera.com` |
-| Testnet | `https://testnet.mirrornode.hedera.com` |
+| Network    | Mirror node base URL                       |
+|------------|--------------------------------------------|
+| Mainnet    | `https://mainnet.mirrornode.hedera.com`    |
+| Testnet    | `https://testnet.mirrornode.hedera.com`    |
 | Previewnet | `https://previewnet.mirrornode.hedera.com` |
 
 ## Run with Docker Compose
@@ -34,7 +34,7 @@ The repo ships two env templates: `.env.http.example` for the JSON-RPC HTTP serv
 
 Edit `.env` and set the minimum required values:
 
-```dotenv
+```dotenv wrap
 HEDERA_NETWORK=testnet
 CHAIN_ID=0x128                                      # 296 in hex (testnet)
 MIRROR_NODE_URL=https://testnet.mirrornode.hedera.com

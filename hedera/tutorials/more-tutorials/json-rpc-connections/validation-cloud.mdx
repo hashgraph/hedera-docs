@@ -17,7 +17,22 @@ To connect to Hedera networks via Validation Cloud, simply use this URL when ini
 provider instance:
 
 <CodeGroup>
+  ```text Mainnet
+  https://mainnet.hedera.validationcloud.io/v1/<YOUR_API_KEY>
+  ```
+
+  ```text Testnet
+  https://testnet.hedera.validationcloud.io/v1/<YOUR_API_KEY>
+  ```
 </CodeGroup>
+
+The corresponding chain IDs are:
+
+| Network        | Chain ID (decimal) | Chain ID (hex) |
+| -------------- | :----------------: | :------------: |
+| **Mainnet**    | `295`              | `0x127`        |
+| **Testnet**    | `296`              | `0x128`        |
+
 
 <Info>
   **Note:** Validation Cloud provides RPC endpoints for Hedera Mainnet and Hedera Testnet but not for Hedera Previewnet.
@@ -48,6 +63,20 @@ with a Validation Cloud API Endpoint Key, and that requires the following prereq
 
 Now you're ready to connect to an RPC endpoint or query a Mirror Node via Validation Cloud!
 
-You can also watch this short video showing the process end-to-end, with examples of making Hedera JSON-RPC and Mirror Node requests with Validation Cloud:
+## Additional resources
 
-<iframe width="768" height="432" src="https://www.loom.com/share/22cb87ee589248e58c95bbba6edc1667?sid=a93b0c6d-58a9-40de-a230-509b4d2198a3" title="Hedera Ecosystem - get up and running with Validation Cloud" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+* [Validation Cloud documentation](https://docs.validationcloud.io/v1)
+* [Hedera JSON-RPC Relay API reference](https://docs.validationcloud.io/v1/hedera/json-rpc-relay-api)
+* [Hedera REST Mirror Node API reference](https://docs.validationcloud.io/v1/hedera/rest-mirror-node-api)
+* [Validation Cloud Node API dashboard](https://app.validationcloud.io/)
+
+---
+
+<Columns cols={2}>
+  <Card title="Editor: Krystal, Senior DX Engineer">
+    [GitHub](https://github.com/theekrystallee) | [X](https://X.com/theekrystallee) | [LinkedIn](https://linkedin.com/in/theekrystallee)
+  </Card>
+  <Card title="Editor: Logan, Software Engineer II" arrow>
+    [GitHub](https://github.com/quiet-node) | [LinkedIn](https://www.linkedin.com/in/logann131/)
+  </Card>
+</Columns>

@@ -1,0 +1,156 @@
+---
+title: "Schedule Plugin"
+---
+
+## Most Used Commands
+
+**Register a schedule, submit a transfer as `ScheduleCreate`, then sign and verify**
+
+```sh
+hcli schedule create --name team-payout --admin-key alice --expiration "2026-12-31T23:59:59.000Z"
+
+hcli token transfer-ft \
+  --token MYTOKEN \
+  --from alice \
+  --to bob \
+  --amount 10 \
+  --scheduled team-payout
+
+hcli schedule sign --schedule team-payout --key bob
+
+hcli schedule verify --name team-payout
+```
+
+<Note>
+#### **Batch vs schedule**
+
+The **Batch** plugin queues signed inner transactions for a later atomic **`batch execute`**. The **Schedule** plugin submits a **Hedera schedule** so execution depends on signatures and mirror-visible schedule state. See the [Batch plugin](/hedera/open-source-solutions/hiero-cli/plugins/batch-plugin) page for **`--batch` / `-B`**. Avoid combining flags in ways your command’s help does not describe.
+</Note>
+
+## Full Command Reference
+
+<Accordion title="Schedule Create">
+    Register a **named** schedule in local CLI state (per network). That name is what you pass to **`--scheduled` / `-X`** on supported commands so the inner transaction is wrapped in a Hedera **`ScheduleCreateTransaction`** instead of executing immediately.
+
+    <ResponseField name="-n, --name" type="string" required>
+        Local name of the schedule record.
+    </ResponseField>
+
+    <ResponseField name="-a, --admin-key" type="string">
+        Admin key for managing the schedule on chain (resolved to a key the CLI can use).
+    </ResponseField>
+
+    <ResponseField name="-p, --payer-account" type="string">
+        Payer for the scheduled transaction. Must resolve to an account ID with a private key. Defaults to the operator.
+    </ResponseField>
+
+    <ResponseField name="-m, --memo" type="string">
+        Public schedule memo (max 100 bytes).
+    </ResponseField>
+
+    <ResponseField name="-e, --expiration" type="string">
+        Expiration time in ISO 8601. Must be at most 62 days from now.
+    </ResponseField>
+
+    <ResponseField name="-w, --wait-for-expiry" type="boolean">
+        When set, the schedule runs at expiration time instead of as soon as required signatures are collected.
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager to use: `local` or `local_encrypted` (defaults to config setting).
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli schedule create --name my-schedule --admin-key alice --memo "Q1 payout"
+    ```
+</Accordion>
+
+<Accordion title="Schedule Sign">
+    Submit a **`ScheduleSignTransaction`** to add a signature to an existing schedule. **`--schedule`** accepts either a **`0.0.x`** schedule entity ID or the local name from **`schedule create`**.
+
+    <ResponseField name="-s, --schedule" type="string" required>
+        Schedule ID (`0.0.x`) or local schedule name.
+    </ResponseField>
+
+    <ResponseField name="-k, --key" type="string" required>
+        Key material whose signature is added. Must resolve to a private key the CLI can sign with.
+    </ResponseField>
+
+    <ResponseField name="-K, --key-manager" type="string(local|local_encrypted)">
+        Key manager to use: `local` or `local_encrypted` (defaults to config setting).
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli schedule sign --schedule my-schedule --key carol
+    ```
+</Accordion>
+
+<Accordion title="Schedule Delete">
+    Remove the schedule on chain when applicable and align local state. An admin key is required on chain. If **`--admin-key`** is omitted, the CLI uses the admin key stored on the local schedule record when available.
+
+    <ResponseField name="-s, --schedule" type="string" required>
+        Schedule ID (`0.0.x`) or local schedule name.
+    </ResponseField>
+
+    <ResponseField name="-a, --admin-key" type="string">
+        Admin key used to sign the delete. Optional if the stored record supplies one.
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager to use: `local` or `local_encrypted` (defaults to config setting).
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli schedule delete --schedule my-schedule --admin-key alice
+    ```
+</Accordion>
+
+<Accordion title="Schedule Verify">
+    Query the Mirror Node to see whether a schedule has executed and refresh local flags. Provide **either** a local **`--name`** **or** a **`--schedule-id`** (validation requires at least one).
+
+    <ResponseField name="-n, --name" type="string">
+        Local name of the schedule record.
+    </ResponseField>
+
+    <ResponseField name="-s, --schedule-id" type="string">
+        Schedule entity ID (`0.0.x`).
+    </ResponseField>
+
+    <ResponseField name="-k, --key-manager" type="string(local|local_encrypted)">
+        Key manager to use: `local` or `local_encrypted` (defaults to config setting).
+    </ResponseField>
+
+    **Examples**
+
+    ```sh
+    hcli schedule verify --name my-schedule
+    hcli schedule verify --schedule-id 0.0.1234567
+    ```
+</Accordion>
+
+## Scheduling inner transactions (`-X` / `--scheduled`)
+
+The Schedule plugin registers the **`scheduled`** hook. Commands that opt into this hook accept **`-X <name>`** or **`--scheduled <name>`**, where `<name>` matches a record from **`schedule create`**. When set, the hook builds and submits a **`ScheduleCreateTransaction`** around the inner transaction, stores the returned schedule ID on the record, and stops the normal “execute immediately” path for that invocation.
+
+If **`--scheduled`** is omitted, the hook does nothing and the command behaves as usual.
+
+As of the current Hiero CLI manifests, the hook is registered on:
+
+- **Account:** `create`, `update`
+- **HBAR:** `transfer`
+- **Topic:** `create`, `submit-message`
+- **Token:** `burn-ft`, `burn-nft`, `mint-ft`, `mint-nft`, `transfer-ft`, `transfer-nft`, `cancel-airdrop`, `create-ft`, `create-nft`, `associate`, `create-ft-from-file`, `create-nft-from-file`, `freeze`, `unfreeze`
+
+Use **`hcli <plugin> <subcommand> --help`** to confirm that **`--scheduled` / `-X`** appears for the command you are running.
+
+<Note>
+#### **Reuse and state**
+
+The hook rejects scheduling when the local record is already marked as having an on-chain schedule for that flow (`Transaction is already scheduled`). Plan names and cleanup (`schedule delete`, `schedule verify`) accordingly.
+</Note>

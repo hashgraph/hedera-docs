@@ -166,3 +166,109 @@ nav.text-sm ul li a[href*="hackathon"]:hover {
   filter: brightness(0) invert(1) !important; /* turns dark icons white */
   opacity: 1 !important;
 }
+
+/* Hiero CLI feature coverage heatmap (feature-coverage-gap-report.mdx) */
+.hiero-cli-coverage-heatmap-wrap {
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid rgb(229 231 235);
+  background: rgb(249 250 251);
+}
+
+.dark .hiero-cli-coverage-heatmap-wrap,
+[data-theme='dark'] .hiero-cli-coverage-heatmap-wrap {
+  border-color: rgb(55 65 81);
+  background: rgb(17 24 39 / 0.35);
+}
+
+.hiero-cli-coverage-heatmap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  min-width: min(100%, 720px);
+}
+
+.hiero-cli-coverage-heatmap-row {
+  display: grid;
+  grid-template-columns: minmax(160px, 220px) 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+@media (max-width: 640px) {
+  .hiero-cli-coverage-heatmap-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hiero-cli-coverage-heatmap-area {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.hiero-cli-coverage-heatmap-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.hiero-cli-coverage-dot {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  display: inline-block;
+  box-sizing: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.hiero-cli-coverage-dot--yes {
+  background: #16a34a;
+}
+
+.hiero-cli-coverage-dot--partial {
+  background: #d97706;
+}
+
+.hiero-cli-coverage-dot--no {
+  background: #dc2626;
+}
+
+.dark .hiero-cli-coverage-dot,
+[data-theme='dark'] .hiero-cli-coverage-dot {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.dark .hiero-cli-coverage-dot--yes,
+[data-theme='dark'] .hiero-cli-coverage-dot--yes {
+  background: #22c55e;
+}
+
+.dark .hiero-cli-coverage-dot--partial,
+[data-theme='dark'] .hiero-cli-coverage-dot--partial {
+  background: #f59e0b;
+}
+
+.dark .hiero-cli-coverage-dot--no,
+[data-theme='dark'] .hiero-cli-coverage-dot--no {
+  background: #f87171;
+}
+
+.hiero-cli-coverage-heatmap-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  align-items: center;
+  margin: 0.75rem 0 0;
+  font-size: 0.875rem;
+}
+
+.hiero-cli-coverage-heatmap-legend > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}

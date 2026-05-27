@@ -41,7 +41,7 @@ You can use a [Hedera SDK](/hedera/sdks-and-apis/sdks) to deploy your smart cont
 
 **Hardhat**
 
-Hardhat can be used to deploy your smart contract by pointing to a community-hosted [JSON-RPC Relay](/hedera/core-concepts/smart-contracts/json-rpc-relay). However, EVM tools do not support features that are native to Hedera smart contracts like:
+Hardhat can be used to deploy your smart contract by pointing to a community-hosted [JSON-RPC Relay](/hedera/core-concepts/smart-contracts/json-rpc-relay). However, EVM tools do not support features that are native to Hiero Contracts like:
 
 * Admin Key
 * Contract Memo
@@ -124,7 +124,7 @@ Reference: [HIP-866](https://hips.hedera.com/hip/hip-866), [HIP-868](https://hip
 
 ***
 
-### Limitation on `fallback()` / `receive()` Functions in Hedera Smart Contracts <a href="#limitation-on-fallback-receive-functions-in-hedera-smart-contracts" id="limitation-on-fallback-receive-functions-in-hedera-smart-contracts"></a>
+### Limitation on `fallback()` / `receive()` Functions in Hiero Contracts <a href="#limitation-on-fallback-receive-functions-in-hedera-smart-contracts" id="limitation-on-fallback-receive-functions-in-hedera-smart-contracts"></a>
 
 When developing smart contracts on Hedera, it's important to understand that the `fallback()` and `receive()` functions **do not** get triggered when a contract receives HBAR via a crypto transfer.
 

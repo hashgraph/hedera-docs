@@ -311,9 +311,11 @@ forge test
 
 ## Step 8: Verifying the Contract on Hashscan
 
-Verifying your smart contract makes its source code publicly available on Hashscan.
+Verifying your smart contract publishes its source code to [Sourcify](https://sourcify.dev), and HashScan picks up the verified status automatically.
 
-**\*Note**: Please note that verification of the contract can not be done on Localnet and this process is relevant only for Hedera Testnet/Mainnet. Also, make sure to replace `<your-contract-address>` with your own contract address you got after the deployment above.\*
+<Info>
+  Sourcify only verifies contracts on registered networks. Hedera Mainnet (chain ID `295`) and Testnet (chain ID `296`) are supported, but **Hedera Localnet is not**. Skip this step when working against Localnet and rerun verification once your contract is deployed on Testnet or Mainnet. Make sure to replace `<your-contract-address>` with the address you got after the deployment above.
+</Info>
 
 Run the following command, using the variables you set earlier.
 
@@ -321,7 +323,7 @@ Run the following command, using the variables you set earlier.
 forge verify-contract <your-contract-address> src/Counter.sol:Counter \
     --chain-id 296 \
     --verifier sourcify \
-    --verifier-url "https://server-verify.hashscan.io/"
+    --verifier-url "https://sourcify.dev/server"
 ```
 
 After running the command, you should see a success message.
@@ -387,6 +389,10 @@ Want to take your local development setup even further? Here are some excellent 
   <Card title="Writer: Kiran, Developer Advocate" arrow>
     [GitHub](https://github.com/kpachhai) |
     [LinkedIn](https://www.linkedin.com/in/kiranpachhai/)
+  </Card>
+  <Card title="Editor: Luke, DevRel Engineer" arrow>
+    [GitHub](https://github.com/LukeForrest-Hashgraph) |
+    [X](https://x.com/_LukeForrest)
   </Card>
   <Card title="Editor: Krystal, Senior DX Engineer" arrow>
     [GitHub](https://github.com/theekrystallee) |

@@ -20,8 +20,10 @@ The `TokenClaimAirdropTransaction` allows an intended airdrop recipient to claim
 * Please see the transaction and query [fees](/hedera/networks/mainnet/fees#transaction-and-query-fees) table for the base transaction fee.
 * Please use the [Hedera fee estimator](https://hedera.com/fees) to estimate the cost of your transaction fee.
 
-<table><thead><tr><th>Method</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>addPendingAirdropId(&#x3C;pendingAirdropId)</code></td><td>List&#x3C;PendingAirdropId></td><td>Adds the ID of a pending airdrop to the transaction, indicating which specific airdrop the receiver wants to claim. This method is used to reference and claim one or more pending airdrops by their unique identifiers. The transaction can have up to 10 entries and must no have any duplicates.</td></tr></tbody></table>
-
+| **Method** | **Type** | **Description** |
+|---|---|---|
+| `addPendingAirdropId(<pendingAirdropId>)` | List\<PendingAirdropId> | Adds the ID of a pending airdrop to the transaction, indicating which specific airdrop the receiver wants to claim. This method is used to reference and claim one or more pending airdrops by their unique identifiers. The transaction can have up to 10 entries and must not have any duplicates. |
+| `setHighVolume(<highVolume>)` | boolean | Opt into [high-volume throttles](/hedera/core-concepts/high-volume-entity-creation) with variable-rate pricing. |
 <CodeGroup>
 
 ```java Java wrap
@@ -121,3 +123,10 @@ println!("The transaction consensus status: {:?}", transaction_status);
 </CodeGroup>
 
 **Reference:** [**Token Airdrop Example**](https://github.com/hashgraph/hedera-sdk-js/blob/main/examples/token-airdrop-example.js)
+
+<Note>
+    This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation)
+    (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated
+    high-volume throttle capacity with variable-rate pricing. Always pair this with
+    `setMaxTransactionFee()` to cap your costs.
+</Note>

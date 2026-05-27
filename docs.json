@@ -263,6 +263,14 @@
                       "hedera/tutorials/more-tutorials/HSM-signing/azure-key-vault",
                       "hedera/tutorials/more-tutorials/HSM-signing/gcp-kms"
                     ]
+                  },
+                   {
+                    "group": "JSON RPC Connections",
+                    "pages": [
+                      "hedera/tutorials/more-tutorials/json-rpc-connections",
+                      "hedera/tutorials/more-tutorials/json-rpc-connections/hashio",
+                      "hedera/tutorials/more-tutorials/json-rpc-connections/validation-cloud"
+                    ]
                   }
                 ]
               },
@@ -485,6 +493,7 @@
                 "pages": [
                   "hedera/open-source-solutions/ai-studio-on-hedera",
                   "hedera/open-source-solutions/ai-studio-on-hedera/agent-lab",
+                  "hedera/open-source-solutions/ai-studio-on-hedera/x402",
                   "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/elizaos-plugin",
                   "hedera/open-source-solutions/ai-studio-on-hedera/hosted-mcp-server",
                   {

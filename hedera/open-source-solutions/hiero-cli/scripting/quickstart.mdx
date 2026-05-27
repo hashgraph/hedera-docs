@@ -6,20 +6,20 @@ title: "Quickstart"
 
 Hiero CLI scripts let you run repeatable, end-to-end workflows for Hedera: creating accounts, transferring HBAR, creating tokens, submitting topic messages, and more. These scripts are designed to be non-interactive (safe for CI).
 
-Example scripts live in:
-- [examples/scripts/*.sh](https://github.com/hiero-ledger/hiero-cli/tree/main/examples/scripts)
-- shared helpers: [examples/scripts/common/*](https://github.com/hiero-ledger/hiero-cli/tree/main/examples/scripts/common)
+Example scripts live in the [Hiero CLI repository](https://github.com/hiero-ledger/hiero-cli/tree/main/examples/scripts):
+
+- [`create-account-demo.sh`](https://github.com/hiero-ledger/hiero-cli/blob/main/examples/scripts/create-account-demo.sh) — operator setup, create account, view account
+- [`transfer-hbar-demo.sh`](https://github.com/hiero-ledger/hiero-cli/blob/main/examples/scripts/transfer-hbar-demo.sh) — two accounts and an HBAR transfer
+- [`token-topic-operations-demo.sh`](https://github.com/hiero-ledger/hiero-cli/blob/main/examples/scripts/token-topic-operations-demo.sh) — token and topic operations
+
+Shared helpers: [`examples/scripts/common/`](https://github.com/hiero-ledger/hiero-cli/tree/main/examples/scripts/common) (`helpers.sh`, `setup.sh`). See the folder’s [README](https://github.com/hiero-ledger/hiero-cli/blob/main/examples/scripts/README.md) for how to run the demos.
 
 ## Prerequisites
 
-- Node.js 18+
-- Build the CLI or have a globally installed version of the CLI 
-- Provide your Hedera operator credentials. Export these environment variables:
-
-```sh
-export HEDERA_OPERATOR_ACCOUNT_ID=0.0.xxxxxx
-export HEDERA_OPERATOR_KEY=302e020100300506032b657004220420...
-```
+- Node.js installation: 18.0.0 or higher
+- Local mode (default): clone [hiero-cli](https://github.com/hiero-ledger/hiero-cli), then in the project root run `npm install` and `npm run build` so `dist/hiero-cli.js` exists
+- Global mode (optional): install the CLI with `npm install -g @hiero-ledger/hiero-cli` and set `HIERO_SCRIPT_CLI_MODE=global` when running a script (see below)
+- Operator credentials: `HEDERA_OPERATOR_ACCOUNT_ID` and `HEDERA_OPERATOR_KEY`. Copy [`examples/scripts/.env.sample`](https://github.com/hiero-ledger/hiero-cli/blob/main/examples/scripts/.env.sample) to `examples/scripts/.env` and fill in your values, or export both variables in your shell
 
 <Tip>
   These are required for scripts that submit transactions to Hedera (e.g., create account, transfer, token operations).
@@ -40,85 +40,94 @@ set -euo pipefail
 - `-u` error on undefined variables
 - `-o` pipefail fail if any command in a pipe fails
 
-### Step 2: Load helpers & Setup
+### Step 2: Paths, helpers, and setup
 
-Scripts load shared utilities from examples/scripts/common/.
+Resolve the script directory and repository root, then source `common/helpers.sh` and `common/setup.sh`:
 
-Typical helpers include:
-- **structured log output** (print_step, print_info, print_error)
-- **random alias generator** (pick_random_name)
-- **sleep utilities** (sleep_loop) to wait for mirror-node consistency
+- **`helpers.sh`** — defines `run_hcli` (local vs global CLI), `print_step`, `print_info`, `print_warn`, `sleep_loop`, and `pick_random_name`
+- **`setup.sh`** — loads optional `examples/scripts/.env`, runs dependency/build checks in local mode, and validates required operator env vars
 
-### Step 3: `hcli()` wrapper (where automation begins)
+### Step 3: `run_hcli` (where automation begins)
 
-From this point, scripts start executing real CLI commands.
+From `helpers.sh`, commands go through `run_hcli` instead of calling `hcli` or `node dist/hiero-cli.js` directly:
 
 ```sh
-hcli() {
-  cd "${PROJECT_DIR}" && node dist/hiero-cli.js --format json "$@"
+export HIERO_SCRIPT_CLI_MODE="${HIERO_SCRIPT_CLI_MODE:-local}"
+
+run_hcli() {
+  if [[ "${HIERO_SCRIPT_CLI_MODE}" == "global" ]]; then
+    hcli --format json "$@"
+  else
+    (cd "${PROJECT_DIR}" && node dist/hiero-cli.js --format json "$@")
+  fi
 }
 ```
 
-Why this wrapper matters:
-- ensures commands run from the project root
-- uses the built CLI entrypoint
-- forces `--format json` so scripts don’t depend on human formatting
-- prevents interactive prompts (better for CI / automation)
+Why this matters:
 
-## Quickstart script: create an account and view it
+- Ensures every invocation uses `--format json` so scripts parse output reliably
+- Local: runs the built CLI from `PROJECT_DIR`
+- Global: runs the `hcli` on your `PATH` (after `npm install -g @hiero-ledger/hiero-cli`)
 
-This is the smallest “real” end-to-end example:
-- configure network + operator
-- create one account with 1 HBAR
-- view account details
+Set `HIERO_SCRIPT_CLI_MODE=global` when invoking a script if you do not want to build from source. The default is `local`.
 
-First, create a file called `create-account-quickstart.sh` with the below script contents:
+## Quickstart: create an account and view it
+
+The canonical example is `create-account-demo.sh`. From the `hiero-cli` repository root (with `HEDERA_OPERATOR_*` set or `.env` configured):
+
+```sh
+./examples/scripts/create-account-demo.sh
+```
+
+With a globally installed CLI:
+
+```sh
+HIERO_SCRIPT_CLI_MODE=global ./examples/scripts/create-account-demo.sh
+```
+
+The script configures testnet, sets the operator, creates one account with `1.0` HBAR, waits briefly for mirror indexing, then runs `account view`.
+
+<Note>
+#### `network use` in the example scripts
+
+When `HIERO_SCRIPT_CLI_MODE=global`, the demos call `network use --network testnet`. When using the default local build, they call `network use --global testnet`. Keep the same branch as the script you are running. If a command fails or the help text differs, use `hcli network use --help` for the CLI you actually execute.
+</Note>
+
+Below is the same sequence as in `create-account-demo.sh` (paths, `run_hcli`, operator setup, create + view). For a maintained, executable copy, use that file in the repo; this block is for reading the pattern:
 
 ```sh
 #!/usr/bin/env bash
 set -euo pipefail
 
-# --- Paths ---
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
-# --- Helpers ---
-HELPERS="$SCRIPT_DIR/common/helpers.sh"
-SETUP="$SCRIPT_DIR/common/setup.sh"
-
-source "$HELPERS"
-source "$SETUP"
-
-# --- hcli wrapper (JSON output for scripting) ---
-hcli() {
-  cd "${PROJECT_DIR}" && node dist/hiero-cli.js --format json "$@"
-}
+source "$SCRIPT_DIR/common/helpers.sh"
+source "$SCRIPT_DIR/common/setup.sh"
 
 print_step "Selecting Hedera testnet as the active network"
-hcli network use --global testnet
+if [[ "${HIERO_SCRIPT_CLI_MODE}" == "global" ]]; then
+  run_hcli network use --network testnet
+else
+  run_hcli network use --global testnet
+fi
 
 print_step "Configuring CLI operator for testnet"
-hcli network set-operator \
+run_hcli network set-operator \
   --operator "${HEDERA_OPERATOR_ACCOUNT_ID}:${HEDERA_OPERATOR_KEY}" \
   --network testnet
 
 ACCOUNT_NAME="$(pick_random_name)"
 print_step "Creating demo account: ${ACCOUNT_NAME} (1 HBAR)"
-hcli account create --name "${ACCOUNT_NAME}" --balance 1.0
+run_hcli account create --name "${ACCOUNT_NAME}" --balance 1.0
 
-print_info "Waiting briefly for mirror node indexing..."
+print_info "Waiting for mirror node (sleep_loop 5)..."
 sleep_loop 5
 
 print_step "Viewing account ${ACCOUNT_NAME}"
-hcli account view --account "${ACCOUNT_NAME}"
+run_hcli account view --account "${ACCOUNT_NAME}"
 
 print_step "Done."
 ```
 
-Next, run it from the project root:
-
-```sh
-./examples/scripts/create-account-quickstart.sh
-```
-
-Start building your own scripts or explore other examples in the [Hiero CLI repository](https://github.com/hiero-ledger/hiero-cli/tree/main/examples/scripts).
+Explore the other demos and `examples/scripts/README.md` in the [Hiero CLI repository](https://github.com/hiero-ledger/hiero-cli/tree/main/examples/scripts).

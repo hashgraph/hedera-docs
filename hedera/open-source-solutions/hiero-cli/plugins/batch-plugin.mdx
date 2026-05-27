@@ -1,0 +1,134 @@
+---
+title: "Batch Plugin"
+---
+
+## Most Used Commands
+
+**Create a batch, queue two token creates, then execute**
+
+```sh
+hcli batch create --name my-batch --key alice
+
+hcli token create-ft \
+  --token-name "Token A" --symbol "TA" \
+  --treasury alice --decimals 8 \
+  --initial-supply 1000 --supply-type FINITE --max-supply 10000 \
+  --admin-key alice --supply-key alice --name token-a \
+  --batch my-batch
+
+hcli token create-ft \
+  --token-name "Token B" --symbol "TB" \
+  --treasury alice --decimals 8 \
+  --initial-supply 500 --supply-type INFINITE \
+  --admin-key alice --supply-key alice --name token-b \
+  --batch my-batch
+
+hcli batch execute --name my-batch
+```
+
+**List batches**
+
+```sh
+hcli batch list
+```
+
+**Remove one queued transaction or drop the whole batch**
+
+```sh
+hcli batch delete --name my-batch --order 2
+hcli batch delete --name my-batch
+```
+
+## Full Command Reference
+
+<Accordion title="Batch Create">
+    Create a named batch and choose which key will sign the batch transaction when you run **`batch execute`**.
+
+    <ResponseField name="-n, --name" type="string" required>
+        Name or alias for the batch.
+    </ResponseField>
+
+    <ResponseField name="-k, --key" type="string">
+        Key used to sign batched transactions. Defaults to the operator when omitted. Accepts `{accountId}:{privateKey}`, `{ed25519|ecdsa}:private:{private-key}`, key reference, or account alias.
+    </ResponseField>
+
+    <ResponseField name="-m, --key-manager" type="string(local|local_encrypted)">
+        Key manager to use: `local` or `local_encrypted` (defaults to config setting).
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli batch create --name my-batch --key alice
+    ```
+</Accordion>
+
+<Accordion title="Batch Execute">
+    Sign and submit all transactions in the batch as one atomic batch transaction. The batch must already exist and contain at least one queued transaction. After a successful run, related plugins update local state (for example token or account hooks registered on this command).
+
+    <ResponseField name="-n, --name" type="string" required>
+        Name of the batch to execute.
+    </ResponseField>
+
+    **Example**
+
+    ```sh
+    hcli batch execute --name my-batch
+    ```
+</Accordion>
+
+<Accordion title="Batch List">
+    List all batches stored in CLI state (name, size, execution status).
+
+    **Example**
+
+    ```sh
+    hcli batch list
+    ```
+</Accordion>
+
+<Accordion title="Batch Delete">
+    Delete an entire batch, or remove a single queued transaction by its order index.
+
+    <ResponseField name="-n, --name" type="string" required>
+        Name of the batch.
+    </ResponseField>
+
+    <ResponseField name="-o, --order" type="int">
+        1-based order of the transaction to remove. If omitted, the whole batch is deleted.
+    </ResponseField>
+
+    **Examples**
+
+    ```sh
+    hcli batch delete --name my-batch --order 3
+    hcli batch delete --name my-batch
+    ```
+</Accordion>
+
+## Adding transactions to a batch (`-B` / `--batch`)
+
+The Batch plugin registers hooks that other commands use. When a command supports batching and you pass **`-B <name>`** or **`--batch <name>`** (same option), the CLI **does not** submit that transaction immediately. It serializes the signed inner transaction and appends it to the batch named `<name>`. Run **`hcli <plugin> <subcommand> --help`** on the command you care about. If batching is wired for that command, the help text includes **`-B` / `--batch`**.
+
+As of the current Hiero CLI manifests, batch hooks are registered on:
+
+- **Account:** `create`, `update`, `delete`
+- **HBAR:** `transfer`
+- **Topic:** `create`, `submit-message`, `update`, `delete`
+- **Token:** many HTS transaction subcommands under `token` (see `src/plugins/token/manifest.ts` for the full list). Examples include `create-ft`, `create-ft-from-file`, `create-nft`, `create-nft-from-file`, `associate`, `transfer-ft`, `transfer-nft`, and other operations that declare `batchify-set-batch-key` / `batchify-add-transaction`.
+
+**Rules and limits**
+
+- Create the batch with **`batch create`** before adding transactions.
+- A batch can hold at most **50** inner transactions (enforced in the batch hook implementation). Limits and atomic batch semantics on the network come from **[HIP-551: Batch transactions](https://github.com/hiero-ledger/hiero-improvement-proposals/blob/main/HIP/hip-551.md)** in the Hiero Improvement Proposals repository.
+- **`batch execute`** refuses to run if that batch name was already executed on the current network. Use **`batch list`** to inspect status and **`batch delete`** to remove a batch you no longer need (including freeing a name for reuse).
+
+<Note>
+#### **Operator key on `batch create`:**
+
+The **`--key` / `-k`** flag on **`batch create`** is **optional** in the CLI manifest. If you omit it, signing falls back to the **operator** key. Some older README text may say the key is required. Trust **`hcli batch create --help`** and this page.
+</Note>
+
+## Related
+
+For **Hedera scheduled transactions** (`--scheduled` / `-X`) instead of queued batch execution, see the [Schedule plugin](/hedera/open-source-solutions/hiero-cli/plugins/schedule-plugin).

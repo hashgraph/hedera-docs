@@ -9,6 +9,10 @@
   },
   "redirects": [
     {
+      "source": "/hedera/core-concepts/smart-contracts/verifying-smart-contracts-beta",
+      "destination": "/hedera/core-concepts/smart-contracts/verifying-smart-contracts"
+    },
+    {
       "source": "/hedera/getting-started",
       "destination": "/#getting-started"
     },
@@ -330,6 +334,7 @@
             "group": "Core Concepts",
             "pages": [
               "hedera/core-concepts",
+            
               {
                 "group": "Accounts",
                 "pages": [
@@ -343,6 +348,7 @@
               },
               "hedera/core-concepts/keys-and-signatures",
               "hedera/core-concepts/scheduled-transaction",
+              "hedera/core-concepts/fee-model",
               {
                 "group": "Smart Contracts",
                 "pages": [
@@ -387,7 +393,7 @@
                   "hedera/core-concepts/smart-contracts/json-rpc-relay",
                   "hedera/core-concepts/smart-contracts/deploying-smart-contracts",
                   "hedera/core-concepts/smart-contracts/smart-contract-addresses",
-                  "hedera/core-concepts/smart-contracts/verifying-smart-contracts-beta",
+                  "hedera/core-concepts/smart-contracts/verifying-smart-contracts",
                   "hedera/core-concepts/smart-contracts/smart-contract-traceability",
                   {
                     "group": "Tokens Managed by Smart Contracts",
@@ -443,6 +449,7 @@
                   "hedera/core-concepts/hashgraph-consensus-algorithms/virtual-voting"
                 ]
               },
+              "hedera/core-concepts/high-volume-entity-creation",
               {
                 "group": "Transactions and Queries",
                 "pages": [
@@ -511,17 +518,24 @@
                 "group": "Hiero CLI",
                 "pages": [
                   "hedera/open-source-solutions/hiero-cli/overview",
+                  "hedera/open-source-solutions/hiero-cli/feature-coverage-gap-report",
                   {
                     "group": "Plugins",
                     "pages": [
-                      "/hedera/open-source-solutions/hiero-cli/plugins/credentials-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/network-plugin",
-                      "/hedera/open-source-solutions/hiero-cli/plugins/hbar-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/credentials-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/account-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/hbar-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/token-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/swap-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/topic-plugin",
                       "/hedera/open-source-solutions/hiero-cli/plugins/config-plugin",
-                      "/hedera/open-source-solutions/hiero-cli/plugins/plugin-management-plugin"
+                      "/hedera/open-source-solutions/hiero-cli/plugins/plugin-management-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/batch-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/schedule-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/contract-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/contract-erc20-plugin",
+                      "/hedera/open-source-solutions/hiero-cli/plugins/contract-erc721-plugin"
                     ]
                   },
                   {
@@ -632,6 +646,12 @@
                   "hedera/sdks-and-apis/sdks/client",
                   "hedera/sdks-and-apis/sdks/set-up-your-local-network",
                   "hedera/sdks-and-apis/sdks/address-book",
+                   {
+                    "group": "Fees",
+                    "pages": [
+                      "hedera/sdks-and-apis/sdks/fees/fee-estimation"
+                    ]
+                  },
                   {
                     "group": "Keys",
                     "pages": [
@@ -652,7 +672,6 @@
                     "pages": [
                       "hedera/sdks-and-apis/sdks/transactions",
                       "hedera/sdks-and-apis/sdks/transactions/create-a-batch-transaction",
-                      "hedera/sdks-and-apis/sdks/transactions/create-a-hookstore-transaction",
                       "hedera/sdks-and-apis/sdks/transactions/transaction-id",
                       "hedera/sdks-and-apis/sdks/transactions/modify-transaction-fields",
                       "hedera/sdks-and-apis/sdks/transactions/create-an-unsigned-transaction",
@@ -677,6 +696,7 @@
                   },
                   "hedera/sdks-and-apis/sdks/queries",
                   "hedera/sdks-and-apis/sdks/general-errors",
+        
                   {
                     "group": "Accounts and HBAR",
                     "pages": [
@@ -685,8 +705,6 @@
                       "hedera/sdks-and-apis/sdks/accounts-and-hbar/update-an-account",
                       "hedera/sdks-and-apis/sdks/accounts-and-hbar/transfer-cryptocurrency",
                       "hedera/sdks-and-apis/sdks/accounts-and-hbar/approve-an-allowance",
-                      "hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks",
-                      "hedera/sdks-and-apis/sdks/accounts-and-hbar/create-a-hookstore-transaction",
                       "hedera/sdks-and-apis/sdks/accounts-and-hbar/adjust-an-allowance",
                       "hedera/sdks-and-apis/sdks/accounts-and-hbar/delete-an-account",
                       "hedera/sdks-and-apis/sdks/accounts-and-hbar/get-account-balance",
@@ -863,6 +881,7 @@
                     "group": "Topics",
                     "pages": [
                       "hedera/sdks-and-apis/rest-api/topics",
+                      "openapi.yaml GET /api/v1/topics/{topicId}",
                       "openapi.yaml GET /api/v1/topics/{topicId}/messages",
                       "openapi.yaml GET /api/v1/topics/{topicId}/messages/{sequenceNumber}",
                       "openapi.yaml GET /api/v1/topics/messages/{timestamp}"
@@ -880,11 +899,13 @@
                     "group": "Network",
                     "pages": [
                       "hedera/sdks-and-apis/rest-api/network",
-                      "openapi.yaml GET /api/v1/network/supply",
-                      "openapi.yaml GET /api/v1/network/fees",
                       "openapi.yaml GET /api/v1/network/exchangerate",
+                      "openapi.yaml GET /api/v1/network/fees",
+                      "openapi.yaml POST /api/v1/network/fees",
                       "openapi.yaml GET /api/v1/network/nodes",
-                      "openapi.yaml GET /api/v1/network/stake"
+                      "openapi.yaml GET /api/v1/network/registered-nodes",
+                      "openapi.yaml GET /api/v1/network/stake",
+                      "openapi.yaml GET /api/v1/network/supply"
                     ]
                   }
                 ]
@@ -1104,29 +1125,22 @@
                 "group": "Smart Contract Verification API",
                 "pages": [
                   "hedera/sdks-and-apis/smart-contract-verification-api",
-                  "smart-contract-verification-api.yaml POST /verify",
-                  "smart-contract-verification-api.yaml POST /verify/etherscan",
-                  "smart-contract-verification-api.yaml POST /verify/solc-json",
-                  "smart-contract-verification-api.yaml GET /check-all-by-addresses",
-                  "smart-contract-verification-api.yaml GET /check-by-addresses",
-                  "smart-contract-verification-api.yaml GET /files/any/{chain}/{address}",
-                  "smart-contract-verification-api.yaml GET /files/{chain}/{address}",
-                  "smart-contract-verification-api.yaml GET /repository/contracts/{matchType}/{chain}/{address}/{filePath}",
-                  "smart-contract-verification-api.yaml GET /files/contracts/{chain}",
-                  "smart-contract-verification-api.yaml GET /files/tree/any/{chain}/{address}",
-                  "smart-contract-verification-api.yaml GET /files/tree/{chain}/{address}",
-                  "smart-contract-verification-api.yaml GET /session/data",
-                  "smart-contract-verification-api.yaml POST /session/clear",
-                  "smart-contract-verification-api.yaml POST /session/input-files",
-                  "smart-contract-verification-api.yaml POST /session/input-contract",
-                  "smart-contract-verification-api.yaml POST /session/verify-checked",
-                  "smart-contract-verification-api.yaml POST /session/input-solc-json",
-                  "smart-contract-verification-api.yaml POST /session/verify/etherscan",
-                  "smart-contract-verification-api.yaml POST /change-log-level"
+                  "smart-contract-verification-api.yaml POST /v2/verify/{chainId}/{address}",
+                  "smart-contract-verification-api.yaml POST /v2/verify/metadata/{chainId}/{address}",
+                  "smart-contract-verification-api.yaml POST /v2/verify/etherscan/{chainId}/{address}",
+                  "smart-contract-verification-api.yaml POST /v2/verify/similarity/{chainId}/{address}",
+                  "smart-contract-verification-api.yaml GET /v2/verify/{verificationId}",
+                  "smart-contract-verification-api.yaml GET /v2/contract/{chainId}/{address}",
+                  "smart-contract-verification-api.yaml GET /v2/contract/all-chains/{address}",
+                  "smart-contract-verification-api.yaml GET /v2/contracts/{chainId}",
+                  "smart-contract-verification-api.yaml GET /health",
+                  "smart-contract-verification-api.yaml GET /version",
+                  "smart-contract-verification-api.yaml GET /chains"
                 ]
               }
             ]
           },
+        
           {
             "group": "Support & Community",
             "pages": [
@@ -1183,6 +1197,7 @@
               "hedera/faqs/community"
             ]
           }
+     
         ]
       }
     ]

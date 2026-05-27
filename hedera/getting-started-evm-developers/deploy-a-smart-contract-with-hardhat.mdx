@@ -33,7 +33,7 @@ Before you begin, you should have **completed** the following tutorial:
 2. [Step 2: Creating the ERC-721 Contract](#step-2%3A-creating-the-erc-721-contract)
 3. [Step 3: Deploy Your ERC-721 Smart Contract](#step-3%3A-deploy-your-erc-721-smart-contract)
 4. [Step 4: Minting an ERC-721 Token](#step-4%3A-minting-an-erc-721-token)
-5. [Step 5: Verify Your Smart Contract on HashScan](#step-5%3A-verify-your-smart-contract-on-hashscan)
+5. [Step 5: Verify Your Smart Contract with Hardhat](#step-5%3A-verify-your-smart-contract-with-hardhat)
 
 ---
 
@@ -241,7 +241,7 @@ npx hardhat run scripts/deploy.ts --network testnet
 ```
 
 <Check>
-  Copy the deployed address—you'll need this in subsequent steps.
+  Copy the deployed address. You'll need this in subsequent steps.
 </Check>
 
 The output looks like this:
@@ -351,33 +351,35 @@ Balance: 1 NFTs
 ```
 ---
 
-## Step 5: Verify Your Smart Contract on HashScan
+## Step 5: Verify Your Smart Contract with Hardhat
 
-After deploying your smart contract, you should verify the source code on HashScan. Programmatic verification is the most reliable and efficient method, especially for complex or upgradeable contracts.
+After deploying your smart contract, you can verify the source code programmatically from Hardhat. Programmatic verification is the most reliable and efficient method, especially for complex or upgradeable contracts, because Hardhat already knows your exact compilation settings, dependency graph, and deployment artifacts.
+
+Hardhat submits the verification request to [Sourcify](https://sourcify.dev), which natively supports Hedera Mainnet (chain ID `295`) and Testnet (chain ID `296`). Once Sourcify accepts the match, the verified status surfaces automatically on [HashScan](https://hashscan.io/) and any other explorer that reads from Sourcify.
 
 ### Install the Verification Plugin
 
-Hardhat uses the dedicated [`hashscan-verify`](https://www.npmjs.com/package/hashscan-verify) plugin to interface with the HashScan Smart Contract Verifier API (which is based on the Sourcify standard).
+Hardhat's official [`@nomicfoundation/hardhat-verify`](https://hardhat.org/hardhat-runner/plugins/nomicfoundation-hardhat-verify) plugin supports Sourcify out of the box.
 
 Install the plugin in your project:
 
 ```bash
-npm i -D hashscan-verify
+npm i -D @nomicfoundation/hardhat-verify
 ```
 
 ### Configure Hardhat for Verification
 
-Import the plugin in your `hardhat.config.ts` file:
+Import the plugin in your `hardhat.config.ts` file and enable Sourcify verification. Because Hedera is supported on the default Sourcify server (`https://sourcify.dev/server`), no custom `apiUrl` is needed.
 
 ```typescript
-import hashscanVerify from "hashscan-verify"; // <--- ADD THIS LINE
+import hardhatVerify from "@nomicfoundation/hardhat-verify"; // <--- ADD THIS LINE
 
 import type { HardhatUserConfig } from "hardhat/config";
 import hardhatToolboxMochaEthersPlugin from "@nomicfoundation/hardhat-toolbox-mocha-ethers";
 import { configVariable } from "hardhat/config";
 
 const config: HardhatUserConfig = {
-  plugins: [hardhatToolboxMochaEthersPlugin, hashscanVerify], // ADD TO PLUGIN LIST
+  plugins: [hardhatToolboxMochaEthersPlugin, hardhatVerify], // ADD TO PLUGIN LIST
   solidity: {
     profiles: {
       default: {
@@ -398,8 +400,12 @@ const config: HardhatUserConfig = {
     testnet: {
       type: "http",
       url: configVariable("HEDERA_RPC_URL"),
-      accounts: [configVariable("HEDERA_PRIVATE_KEY")]
+      accounts: [configVariable("HEDERA_PRIVATE_KEY")],
+      chainId: 296
     }
+  },
+  sourcify: {
+    enabled: true
   }
 };
 
@@ -408,35 +414,32 @@ export default config;
 
 ### Run the Verification Command
 
-The plugin adds the `hashscan-verify` task to Hardhat. The basic command structure is:
+The plugin adds the `verify` task to Hardhat. The basic command structure is:
 
 ```bash
-npx hardhat hashscan-verify <CONTRACT_ADDRESS> \
-  --contract "<PATH_TO_CONTRACT>:<CONTRACT_NAME>" \
-  --network <NETWORK_NAME>
+npx hardhat verify --network <NETWORK_NAME> <CONTRACT_ADDRESS> [constructor_args...]
 ```
 
 ### Example: Verifying Your MyToken Contract
 
-Using the contract address from your deployment:
+Using the contract address from your deployment, pass the deployer address (the `initialOwner` constructor argument) at the end of the command:
 
 ```bash
 # Replace with your actual deployed contract address
 CONTRACT_ADDRESS="0x6035bA3BCa9595637B463Aa514c3a1cE3f67f3de"
+DEPLOYER_ADDRESS="0xA98556A4deeB07f21f8a66093989078eF86faa30"
 
-npx hardhat hashscan-verify "$CONTRACT_ADDRESS" \
-  --contract "contracts/MyToken.sol:MyToken" \
-  --network testnet
+npx hardhat verify --network testnet "$CONTRACT_ADDRESS" "$DEPLOYER_ADDRESS"
 ```
 
-The plugin will handle uploading the source code and metadata to the HashScan verifier. You should receive a **Full Match** verification status.
+The plugin uploads the source code and metadata to Sourcify and you should receive a **Full Match** verification status. The verified contract will then appear on HashScan automatically.
 
 **Troubleshooting Verification**
 
 | **Issue**                        | **Solution**                                                                                                                                                                                     |
 | :------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Verification Fails/Mismatch      | Ensure your local compilation settings (Solidity version, optimizer runs, viaIR) exactly match the settings used for deployment. Run `npx hardhat clean && npx hardhat compile` before retrying. |
-| Constructor Arguments Error      | If your contract has constructor arguments, pass them as positional arguments after the contract name in the verification command.                                                               |
+| Verification Fails/Mismatch      | Ensure your local compilation settings (Solidity version, optimizer runs, viaIR) exactly match the settings used for deployment. Run `npx hardhat clean && npx hardhat build` before retrying.   |
+| Constructor Arguments Error      | If your contract has constructor arguments, pass them as positional arguments after the contract address in the verification command.                                                            |
 | Hardhat Keystore Password Prompt | The task may prompt for your Hardhat keystore password if it needs to sign a transaction to read deployment details. Enter it when prompted.                                                     |
 
 **Congratulations! 🎉 You have successfully learned how to deploy and verify an ERC-721 smart contract using Hardhat, OpenZeppelin, and Ethers. Feel free to reach out in** [**Discord**](https://hedera.com/discord)**!**
@@ -452,6 +455,9 @@ The plugin will handle uploading the source code and metadata to the HashScan ve
 <Columns cols={2}>
   <Card title="Writer: Kiran, Developer Advocate">
     [Github](https://github.com/kpachhai) | [Linkedin](https://www.linkedin.com/in/kiranpachhai/)
+  </Card>
+  <Card title="Editor: Luke, DevRel Engineer">
+    [GitHub](https://github.com/LukeForrest-Hashgraph) | [X](https://x.com/_LukeForrest)
   </Card>
   <Card title="Editor: Krystal, Senior DX Engineer">
     [Github](https://github.com/theekrystallee) | [X](https://x.com/theekrystallee)

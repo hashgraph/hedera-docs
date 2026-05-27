@@ -493,6 +493,7 @@
                 "pages": [
                   "hedera/open-source-solutions/ai-studio-on-hedera",
                   "hedera/open-source-solutions/ai-studio-on-hedera/agent-lab",
+                  "hedera/open-source-solutions/ai-studio-on-hedera/x402",
                   "hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/elizaos-plugin",
                   {
                     "group": "Hedera AI Agent Kit",

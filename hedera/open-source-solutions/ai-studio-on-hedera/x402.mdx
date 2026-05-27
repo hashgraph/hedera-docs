@@ -1,0 +1,293 @@
+---
+title: "x402 Payment Standard on Hedera"
+sidebarTitle: "x402 Payments"
+description: "Programmable, HTTP-native payments for apps and AI agents using Hedera's official x402 payment scheme."
+---
+
+[x402](https://www.x402.org/) is an open payment standard that reuses the existing HTTP `402 Payment Required` status code to let a server ask for payment, and let a client pay, inside an ordinary HTTP request/response cycle. It turns a payment into something a client can satisfy as easily as it follows a redirect — no checkout page, account signup, or API-key dance required.
+
+Hedera contributes its own **`exact` payment scheme and a reference implementation** to the official [x402 repository](https://github.com/x402-foundation/x402), so applications and AI agents can settle payments in HBAR or HTS tokens over x402 with the speed and low, predictable fees of the Hedera network.
+
+<Info>
+For the background story and Hedera's perspective on why this matters, read the announcement: [**Hedera and the x402 Payment Standard**](https://hedera.com/blog/hedera-and-the-x402-payment-standard/).
+</Info>
+
+## What x402 actually is (and what it is not)
+
+x402 is best understood as **the missing payment layer of the web**: HTTP can move information instantly, but it has never had a native, standardized way to move money. x402 fills exactly that gap — and nothing more.
+
+It is easy to over-read x402 as a magic switch that suddenly lets "agents use crypto" for anything. The real scope is much narrower then that and spans multiple use-cases.
+
+<Columns cols={2}>
+  <Card title="What x402 IS" icon="circle-check">
+    - An **HTTP-native standard** for a single, discrete request → pay → response handshake
+    - **Stateless and per-request** — each payment is self-verifying, with no billing session or subscription
+    - **Settlement-agnostic** — works across chains and assets; on Hedera it settles in HBAR or HTS tokens
+    - A **shared rulebook** so any wallet or service can negotiate value the same way it negotiates data
+  </Card>
+  <Card title="What x402 is NOT" icon="circle-xmark">
+    - **Not a blockchain or a new payment network** — it lives on top of existing rails
+    - **Not a custodial processor** — facilitators verify and submit, but can never move funds without a signed authorization
+    - **Not for streaming or multi-hop routing** — it is optimized for discrete request/response cycles, not continuous value flows
+    - **Not a general "agentic wallet"** — it is one well-scoped primitive, not an autonomy framework
+  </Card>
+</Columns>
+
+## Who uses it and what it is useful for
+
+x402 shines whenever value needs to change hands **per request, at machine speed, without a human in the loop**:
+
+- **AI agents** paying for API calls, context, datasets, inference, or tool use on demand
+- **Paid APIs and per-request metering** — bill for exactly what is consumed instead of selling subscriptions or API keys
+- **Pay-per-view digital content** — articles, reports, research papers, sensor feeds, OCR, translations
+- **Micropayments at internet scale** — amounts too small to justify a checkout flow or a card fee
+
+Because the payment is just an HTTP exchange, it composes cleanly with the web technologies you are already familiar with — reverse proxies, CDNs, TLS, and REST or GraphQL APIs.
+
+## How it works
+
+x402 adds a short negotiation loop on top of a normal HTTP request. On Hedera, the distinguishing detail is the **fee-payer model**: the client signs a transfer of value, and the *facilitator* adds its signature, pays the network fee, and submits the transaction. The merchant never has to run blockchain infrastructure or hold gas.
+
+<Steps>
+<Step title="Client requests a protected resource">
+The client makes an ordinary request to a resource server (for example, `GET /weather`).
+</Step>
+<Step title="Server responds with 402 Payment Required">
+The server replies with HTTP `402` and a set of `PaymentRequirements` describing how much to pay, in which asset, to which account, and which `feePayer` (the facilitator) will sponsor fees.
+</Step>
+<Step title="Client builds and partially signs a transfer">
+The client constructs a Hedera `TransferTransaction` that moves the requested asset to the `payTo` account, sets the transaction's payer account to the `feePayer`, signs it, and Base64-encodes it into a `PaymentPayload`.
+</Step>
+<Step title="Server forwards to the facilitator's /verify">
+The resource server passes the payload to a facilitator, which validates the transaction structure, asset, amount, and destination before anything is submitted on-chain.
+</Step>
+<Step title="Facilitator settles via /settle">
+Once verified, the facilitator adds its signature as fee payer, **pays the gas**, and submits the transaction to Hedera, then returns a settlement result.
+</Step>
+<Step title="Server grants access">
+On confirmed settlement, the resource server returns the protected response to the client.
+</Step>
+</Steps>
+
+## Hedera's `exact` scheme
+
+Hedera's contribution to x402 is the **`exact` scheme**, which pays a precise amount of HBAR or an HTS fungible token. It is defined in the official spec and ships with a reference TypeScript implementation.
+
+<CardGroup cols={2}>
+  <Card title="Scheme specification" icon="file-lines" href="https://github.com/x402-foundation/x402/blob/main/specs/schemes/exact/scheme_exact_hedera.md">
+    `scheme_exact_hedera.md` in the x402 specs — the authoritative definition of the Hedera scheme.
+  </Card>
+  <Card title="Reference implementation" icon="github" href="https://github.com/x402-foundation/x402/tree/main/typescript/packages/mechanisms/hedera">
+    The `@x402/hedera` package in the official x402 monorepo.
+  </Card>
+</CardGroup>
+
+**Key properties of the scheme:**
+
+| Property | Detail |
+| --- | --- |
+| Protocol version | `x402Version: 2` |
+| Networks | `hedera:mainnet`, `hedera:testnet` (CAIP-2 identifiers) |
+| Assets | Native **HBAR** (entity ID `0.0.0`) or any **HTS fungible token** (by entity ID) |
+| Amounts | HBAR in **tinybars** (1 HBAR = 10⁸ tinybars); HTS tokens in their smallest unit per decimals |
+| Fee model | A **facilitator acts as `feePayer`**, paying network fees and submitting the transaction |
+| Transaction | A direct, partially-signed `TransferTransaction` (no `ScheduleCreate` wrapping) |
+
+### The payment messages
+
+The server advertises `PaymentRequirements`, including the facilitator's `feePayer` in `extra`:
+
+```json PaymentRequirements
+{
+  "scheme": "exact",
+  "network": "hedera:mainnet",
+  "amount": "1000",
+  "asset": "0.0.0",
+  "payTo": "0.0.1234",
+  "maxTimeoutSeconds": 180,
+  "extra": {
+    "feePayer": "0.0.1235"
+  }
+}
+```
+
+The client returns a `PaymentPayload` carrying the Base64-encoded, partially-signed transaction:
+
+```json PaymentPayload
+{
+  "x402Version": 2,
+  "resource": {
+    "url": "https://example.com/weather",
+    "description": "Access to protected content",
+    "mimeType": "application/json"
+  },
+  "accepted": {
+    "scheme": "exact",
+    "network": "hedera:mainnet",
+    "amount": "1000",
+    "asset": "0.0.0",
+    "payTo": "0.0.1234",
+    "maxTimeoutSeconds": 180,
+    "extra": { "feePayer": "0.0.1235" }
+  },
+  "payload": {
+    "transaction": "AAAAAAAAAAAAA...AAAAAAAAAAAAA="
+  }
+}
+```
+
+After submission, the facilitator returns a settlement response:
+
+```json SettlementResponse
+{
+  "success": true,
+  "transactionId": "0.0.1235@1700000000.000000000",
+  "network": "hedera:mainnet",
+  "payer": "0.0.1235"
+}
+```
+
+<Note>
+Because the facilitator pays the fee, the spec requires it to verify that the `feePayer` is never a *net sender* of value, that net HBAR/token transfers balance to zero, that the amount credited to `payTo` matches exactly, and that the transaction has not been submitted before (replay protection). These checks protect the facilitator from being drained while sponsoring fees.
+</Note>
+
+## Implementing it
+
+The `@x402/hedera` package implements the scheme for both client and resource server.
+
+<Warning>
+`@x402/hedera` is **not yet published to npm**. For now, use it from source in the official [x402 monorepo](https://github.com/x402-foundation/x402/tree/main/typescript/packages/mechanisms/hedera) (clone and build the workspace, or reference it locally). The core `@x402/core` package *is* published. The examples below show how the Hedera scheme is wired once the package is available to your project.
+</Warning>
+
+**Client** — register the Hedera scheme with a signer for your account:
+
+```typescript client.ts
+import { x402Client } from "@x402/core/client";
+import { createClientHederaSigner } from "@x402/hedera";
+import { ExactHederaScheme } from "@x402/hedera/exact/client";
+import { PrivateKey } from "@hiero-ledger/sdk";
+
+const signer = createClientHederaSigner(
+  "0.0.1111",
+  PrivateKey.fromString(process.env.HEDERA_PRIVATE_KEY!),
+  { network: "hedera:testnet" }
+);
+
+// Register the scheme for any Hedera network and let the client
+// auto-handle 402 responses by signing and retrying.
+const client = new x402Client().register(
+  "hedera:*",
+  new ExactHederaScheme(signer)
+);
+```
+
+**Resource server** — register the scheme and declare the asset you accept:
+
+```typescript server.ts
+import { x402ResourceServer } from "@x402/core/server";
+import { ExactHederaScheme } from "@x402/hedera/exact/server";
+
+const server = new x402ResourceServer(facilitatorClient);
+
+server.register(
+  "hedera:*",
+  new ExactHederaScheme({
+    defaultAssets: {
+      "hedera:testnet": { asset: "0.0.6001", decimals: 6 },
+      "hedera:mainnet": { asset: "0.0.9001", decimals: 6 },
+    },
+  })
+);
+```
+
+The `facilitatorClient` points at a facilitator that supports Hedera (see below). The resource server uses it to `/verify` and `/settle` payments without holding funds or running its own node.
+
+## Requirements and limitations
+
+<Warning>
+x402 is a focused primitive, not a turnkey payments product. Be sure to plan around these constraints according to your use-case(s).
+</Warning>
+
+- **A facilitator that supports Hedera is required** to verify and submit transactions. You can use a hosted one or [run your own](#run-your-own-hedera-facilitator).
+- **The client account must be funded** with the asset being paid (HBAR or the relevant HTS token), and for HTS tokens it must be **associated** with that token.
+- **Settlement is per-request and discrete.** x402 is not built for streaming payments or multi-hop routing across ledgers.
+- **No native privacy** — amounts, accounts, and transfers are visible on the public Hedera ledger.
+- **Facilitator concentration is a real risk.** If most traffic flows through a few facilitators, the network starts to look like traditional payment infrastructure — a reason to encourage many independent Hedera facilitators.
+- **Alias / auto-account-creation policy:** when `payTo` is an alias (EVM address or public key), a transfer can trigger auto-account creation that the facilitator funds. Each facilitator sets and documents its own policy (`allow` or `reject`; the reference implementation defaults to `reject`).
+
+## Hedera facilitators
+
+### Blocky402
+
+[**Blocky402**](https://blocky402.com/) is an open x402 facilitator that supports Hedera, so you can wire up x402 payments on Hedera without standing up your own infrastructure first. Its testnet facilitator is live with **open access (no API key required)**.
+
+| | Value |
+| --- | --- |
+| Facilitator base URL (testnet) | `https://api.testnet.blocky402.com` |
+| Capability discovery | `GET /supported` |
+| Verify endpoint | `POST /verify` |
+| Settle endpoint | `POST /settle` |
+| Hedera network | `hedera:testnet` |
+| Advertised fee payer | `0.0.7162784` |
+| Documentation | [blocky402.com/docs](https://blocky402.com/docs/) ([quickstart](https://blocky402.com/docs/quickstart/), [API reference](https://blocky402.com/docs/api-reference/), [networks](https://blocky402.com/docs/networks/)) |
+
+You can confirm Hedera support live by querying the facilitator's capabilities:
+
+```bash
+curl https://api.testnet.blocky402.com/supported
+```
+
+The response lists `hedera:testnet` among the supported `kinds`, along with the fee-payer account the facilitator will sponsor. Mainnet support is rolling out and will require an API key.
+
+<Tip>
+Point the `facilitatorClient` in your resource server at `https://api.testnet.blocky402.com` to verify and settle Hedera testnet payments through Blocky402.
+</Tip>
+
+### Run your own Hedera facilitator
+
+x402 is permissionless: any team can operate a facilitator, and the more independent Hedera facilitators there are, the healthier the network. Below are the steps to follow to stand one up for yourself:
+
+<Steps>
+<Step title="Implement the exact Hedera scheme">
+Use the [`@x402/hedera` reference implementation](https://github.com/x402-foundation/x402/tree/main/typescript/packages/mechanisms/hedera) and the [scheme spec](https://github.com/x402-foundation/x402/blob/main/specs/schemes/exact/scheme_exact_hedera.md) to handle verification and settlement.
+</Step>
+<Step title="Fund and configure a fee-payer account">
+Provision a Hedera account that will act as the `feePayer`, sponsoring network fees and submitting transactions on behalf of clients.
+</Step>
+<Step title="Expose the standard endpoints">
+Serve `GET /supported`, `POST /verify`, and `POST /settle`. Advertise `hedera:mainnet` and/or `hedera:testnet` (and your fee-payer account) from `/supported` so clients can discover you.
+</Step>
+<Step title="Enforce the safety checks">
+Validate transaction layout, asset and amount exactness, fee-payer safety, and replay protection exactly as the spec requires, and publish your alias-handling policy.
+</Step>
+</Steps>
+
+#### Get listed as a Hedera facilitator
+
+Once your facilitator is live and supports Hedera:
+
+- **Be discoverable across the ecosystem** by listing in the broader x402 directories such as the [x402 ecosystem directory](https://www.x402.org/ecosystem?filter=facilitators) and [x402scan facilitators](https://www.x402scan.com/facilitators).
+- **Be listed here as a Hedera facilitator** by opening a pull request against the [Hedera docs repository](https://github.com/hashgraph/hedera-docs) that adds your facilitator (base URL, supported Hedera networks, fee-payer account, and documentation link) to this page.
+
+## Resources
+
+<CardGroup cols={2}>
+  <Card title="Hedera and the x402 Payment Standard" icon="newspaper" href="https://hedera.com/blog/hedera-and-the-x402-payment-standard/">
+    Hedera's announcement blog covering the what and why.
+  </Card>
+  <Card title="Hedera exact scheme spec" icon="file-lines" href="https://github.com/x402-foundation/x402/blob/main/specs/schemes/exact/scheme_exact_hedera.md">
+    The authoritative definition of the Hedera scheme.
+  </Card>
+  <Card title="@x402/hedera reference implementation" icon="github" href="https://github.com/x402-foundation/x402/tree/main/typescript/packages/mechanisms/hedera">
+    The official TypeScript package for client and server.
+  </Card>
+  <Card title="x402 whitepaper" icon="file" href="https://www.x402.org/x402-whitepaper.pdf">
+    The protocol's design and rationale.
+  </Card>
+  <Card title="x402: The Missing Payment Layer of the Web" icon="magnifying-glass" href="https://blockyresearch.com/en/reports/x402-the-missing-payment-layer-of-the-web">
+    Blocky Research's deep-dive report on x402's scope, users, and limits.
+  </Card>
+  <Card title="Blocky402 facilitator" icon="server" href="https://blocky402.com/">
+    An open x402 facilitator with Hedera support.
+  </Card>
+</CardGroup>

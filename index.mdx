@@ -61,14 +61,14 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
   padding: '48px 0',
   borderBottom: '1px solid var(--landing-border)'
 }}>
-  <h2 style={{
+  <h2 id="explore-the-docs" style={{
     fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
     fontWeight: 500,
     margin: '0 0 6px',
     letterSpacing: '-0.015em',
     color: 'var(--landing-fg-primary)'
   }}>
-    Explore the docs
+    <a href="#explore-the-docs" style={{ color: 'inherit', textDecoration: 'none' }}>Explore the docs</a>
   </h2>
   <p style={{
     fontSize: '0.9375rem',
@@ -106,7 +106,7 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
           Learn
         </div>
         <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
-          Fundamentals — accounts, keys, transactions, tokens, hashgraph, and networks.
+          Fundamentals: accounts, keys, transactions, tokens, hashgraph, and networks.
         </div>
       </div>
     </a>
@@ -295,14 +295,14 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
   borderBottom: '1px solid var(--landing-border)'
 }}>
   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', margin: '0 0 24px' }}>
-    <h2 style={{
+    <h2 id="popular-quickstarts" style={{
       fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
       fontWeight: 500,
       margin: 0,
       letterSpacing: '-0.015em',
       color: 'var(--landing-fg-primary)'
     }}>
-      Popular quickstarts
+      <a href="#popular-quickstarts" style={{ color: 'inherit', textDecoration: 'none' }}>Popular quickstarts</a>
     </h2>
     <a href="/learn/getting-started/index" style={{
       fontSize: '0.8125rem',
@@ -324,14 +324,14 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
   borderBottom: '1px solid var(--landing-border)'
 }}>
   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '6px' }}>
-    <h2 style={{
+    <h2 id="build-on-hedera" style={{
       fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
       fontWeight: 500,
       margin: 0,
       letterSpacing: '-0.015em',
       color: 'var(--landing-fg-primary)'
     }}>
-      Build on Hedera
+      <a href="#build-on-hedera" style={{ color: 'inherit', textDecoration: 'none' }}>Build on Hedera</a>
     </h2>
     <a href="/learn/core-concepts/index" style={{
       fontSize: '0.8125rem',
@@ -350,7 +350,7 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
     maxWidth: '540px',
     lineHeight: 1.55
   }}>
-    Pick the Hedera service that powers your app — accounts, smart contracts, native tokens, or consensus — then try it in your browser with no setup.
+    Pick the Hedera service that powers your app: accounts, smart contracts, native tokens, or consensus — then try it in your browser with no setup.
   </p>
 
   {/* Services grid — 4 core Hedera services */}
@@ -453,14 +453,14 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
   </div>
 
   {/* Subhead before interactive showcase */}
-  <h3 style={{
+  <h3 id="try-it-live" style={{
     fontSize: '1rem',
     fontWeight: 500,
     margin: '0 0 6px',
     letterSpacing: '-0.01em',
     color: 'var(--landing-fg-primary)'
   }}>
-    Try it live
+    <a href="#try-it-live" style={{ color: 'inherit', textDecoration: 'none' }}>Try it live</a>
   </h3>
   <p style={{
     fontSize: '0.875rem',
@@ -469,7 +469,7 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
     maxWidth: '620px',
     lineHeight: 1.55
   }}>
-    Run code in the Playground, scaffold a contract, demo an agent, or preview a token mint — no setup.
+    Run code in the Playground, scaffold a contract, demo an agent, or preview a token mint, no setup.
   </p>
 
   <PlaygroundShowcase />
@@ -481,14 +481,14 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
   borderBottom: '1px solid var(--landing-border)'
 }}>
   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', margin: '0 0 24px' }}>
-    <h2 style={{
+    <h2 id="developer-tools" style={{
       fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
       fontWeight: 500,
       margin: 0,
       letterSpacing: '-0.015em',
       color: 'var(--landing-fg-primary)'
     }}>
-      Developer tools &amp; resources
+      <a href="#developer-tools" style={{ color: 'inherit', textDecoration: 'none' }}>Developer tools &amp; resources</a>
     </h2>
     <a href="/solutions/tools/playground" style={{
       fontSize: '0.8125rem',
@@ -556,7 +556,7 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
           Solo
         </div>
         <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
-          Deploy and operate a Hiero/Hedera network locally with Kubernetes — perfect for development and testing.
+          Deploy and operate a Hiero/Hedera network locally with Kubernetes, perfect for development and testing.
         </div>
       </div>
     </a>
@@ -606,7 +606,7 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
           JSON-RPC Relay
         </div>
         <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
-          Ethereum-compatible JSON-RPC endpoint — connect MetaMask, Hardhat, Foundry, and ethers.js to Hedera.
+          EVM-compatible JSON-RPC endpoint: connect MetaMask, Hardhat, Foundry, and ethers.js to Hedera.
         </div>
       </div>
     </a>
@@ -631,7 +631,7 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
           Wallet Integration
         </div>
         <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
-          Connect Hedera-native and EVM wallets — HashPack, Blade, Kabila, MetaMask, and more.
+          Connect Hedera-native and EVM wallets: HashPack, Blade, Kabila, MetaMask, and more.
         </div>
       </div>
     </a>
@@ -656,7 +656,7 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
           Oracle Networks
         </div>
         <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>
-          Pull external data into Hedera smart contracts — Chainlink, Pyth, Supra, and other oracle providers.
+          Pull external data into Hedera smart contracts: Chainlink, Pyth, Supra, and other oracle providers.
         </div>
       </div>
     </a>
@@ -666,14 +666,14 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
 
 {/* ── FOOTER ───────────────────────────────────────────────────────────── */}
 <div style={{ padding: '40px 0 24px' }}>
-  <h2 style={{
+  <h2 id="contributing" style={{
     fontSize: 'clamp(1.125rem, 2vw, 1.375rem)',
     fontWeight: 500,
     margin: '0 0 12px',
     letterSpacing: '-0.01em',
     color: 'var(--landing-fg-primary)'
   }}>
-    Contributing
+    <a href="#contributing" style={{ color: 'inherit', textDecoration: 'none' }}>Contributing</a>
   </h2>
   <p style={{
     fontSize: '0.875rem',

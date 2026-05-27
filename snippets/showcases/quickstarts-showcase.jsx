@@ -23,7 +23,7 @@ export const QuickstartsShowcase = () => {
       items: [
         { icon: ICON.play, title: 'Getting started', desc: 'Set up an account, get testnet HBAR, and run your first transaction.', href: '/learn/getting-started/index' },
         { icon: ICON.coin, title: 'Testnet faucet', desc: 'Fund your testnet account with free HBAR to start building.', href: '/learn/getting-started/testnet-faucet' },
-        { icon: ICON.wrench, title: 'Choose your path', desc: 'EVM vs native SDK — pick the right starting point for what you’re building.', href: '/learn/getting-started/choose-your-path' },
+        { icon: ICON.wrench, title: 'Choose your path', desc: 'EVM vs native SDK: pick the right starting point for what you’re building.', href: '/learn/getting-started/choose-your-path' },
         { icon: ICON.coin, title: 'Quickstart', desc: 'Install the JavaScript SDK and submit your first transaction.', href: '/native/quickstart/javascript' },
         { icon: ICON.fox, title: 'MetaMask setup', desc: 'Connect MetaMask to the Hedera EVM JSON-RPC relay.', href: '/evm/quickstart/setup-metamask' }
       ]

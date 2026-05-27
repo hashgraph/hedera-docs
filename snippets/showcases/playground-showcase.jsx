@@ -26,7 +26,7 @@ export const PlaygroundShowcase = () => {
       items: [
         {
           icon: 'play', title: 'Developer Playground',
-          desc: 'Run real Hedera transactions in your browser — no setup.',
+          desc: 'Run real Hedera transactions in your browser, no setup.',
           href: 'https://portal.hedera.com/playground',
           preview: { kind: 'embed', url: 'https://portal.hedera.com/playground', label: 'portal.hedera.com/playground' }
         },

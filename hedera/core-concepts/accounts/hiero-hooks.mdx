@@ -1,5 +1,6 @@
 ---
 title: "Hiero Hooks"
+description: "Hiero Hooks provide programmable extension points to inject Solidity-based logic directly into the network's transaction pipeline."
 ---
 
 Hiero Hooks provide programmable extension points to inject Solidity-based logic directly into the network's transaction pipeline. Hooks attach to accounts to enforce custom rules on actions like token transfers, but they do not run automatically—a hook is triggered only when explicitly referenced in a `TransferTransaction` (e.g., `CryptoTransfer`).

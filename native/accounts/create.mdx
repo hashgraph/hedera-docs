@@ -59,6 +59,11 @@ For a complete list of account properties, see the [accounts overview](/hedera/s
     **Recovery model:** If keys are compromised or must be replaced, create a new account with a new ECDSA key, then migrate assets and state. Do not rely on key rotation to preserve the same EVM identity.
 
 </Note>
+<Info>
+    #### High-volume entity creation
+
+    This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation) (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated high-volume throttle capacity with variable-rate pricing. Always pair this with `setMaxTransactionFee()` to cap your costs.
+</Info>
 
 ### Maximum auto-associations
 
@@ -71,12 +76,6 @@ The `maxAutoAssociations` property determines how many automatic token associati
 | `> 0` | Automatic token associations are limited to the specified number. |
 
 Reference: [HIP-904](https://hips.hedera.com/hip/hip-904).
-
----
-
-### High-volume entity creation
-
-This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation) (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated high-volume throttle capacity with variable-rate pricing. Always pair this with `setMaxTransactionFee()` to cap your costs.
 
 ---
 

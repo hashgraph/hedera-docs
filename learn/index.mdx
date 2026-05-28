@@ -5,223 +5,73 @@ mode: wide
 icon: "book-arrow-right"
 ---
 
-<div className="not-prose" style={{
-  maxWidth: '1200px',
-  margin: '0 auto',
-  padding: '0 24px'
-}}>
-
-{/* ── BROWSE BY SECTION ─────────────────────────────────────────────────── */}
-<div style={{
-  padding: '48px 0',
-  borderBottom: '1px solid var(--landing-border)'
-}}>
-  <h2 id="browse-by-section" style={{
-    fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
-    fontWeight: 500,
-    margin: '0 0 6px',
-    letterSpacing: '-0.015em',
-    color: 'var(--landing-fg-primary)'
-  }}>
-    <a href="#browse-by-section" style={{ color: 'inherit', textDecoration: 'none' }}>Browse by section</a>
-  </h2>
-  <p style={{
-    fontSize: '0.9375rem',
-    color: 'var(--landing-fg-tertiary)',
-    margin: '0 0 28px',
-    maxWidth: '540px',
-    lineHeight: 1.55
-  }}>
-    Every topic in the Learn tab, organized by area.
-  </p>
-
-  <div style={{
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
-    gap: '12px'
-  }}>
-
-    <a href="/learn/getting-started/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0 M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Getting Started</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>What Hedera is, why it's different, your developer path, and how to get test HBAR.</div>
-      </div>
-    </a>
-
-    <a href="/learn/core-concepts/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.663 17h4.673 M12 3v1 M18.364 5.636l-.707.707 M21 12h-1 M5.636 18.364l.707-.707 M3 12h1 M5.636 5.636l.707.707 M12 3a6 6 0 0 1 4 10.472V17H8v-3.528A6 6 0 0 1 12 3z"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Core Concepts</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Accounts, keys, transactions, tokens, smart contracts, staking, hashgraph, mirror nodes, fees.</div>
-      </div>
-    </a>
-
-    <a href="/learn/networks/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20 M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 M12 2a15.3 15.3 0 0 0-4 10 15.3 15.3 0 0 0 4 10"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Networks</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Access, fees, nodes, and community mirror nodes across mainnet, testnet, previewnet, and localnet.</div>
-      </div>
-    </a>
-
-    <a href="/learn/release-notes/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M16 13H8 M16 17H8 M10 9H8"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Release Notes</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Latest changes to Hedera Services and the mirror node REST API.</div>
-      </div>
-    </a>
-
-  </div>
-</div>
+<div className="not-prose landing-container">
 
 {/* ── START HERE ──────────────────────────────────────────────── */}
-<div style={{
-  padding: '48px 0',
-  borderBottom: '1px solid var(--landing-border)'
-}}>
-  <h2 id="start-here" style={{
-    fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
-    fontWeight: 500,
-    margin: '0 0 24px',
-    letterSpacing: '-0.015em',
-    color: 'var(--landing-fg-primary)'
-  }}>
-    <a href="#start-here" style={{ color: 'inherit', textDecoration: 'none' }}>Start here</a>
+<div className="landing-section">
+  <h2 id="start-here" className="landing-section-heading">
+    <a href="#start-here">Start here</a>
   </h2>
 
-  <div style={{
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '12px'
-  }}>
+  <div className="landing-grid">
 
-    <a href="/learn/getting-started/what-is-hedera" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+    <a href="/learn/getting-started/what-is-hedera" className="landing-card">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3 M12 17h.01"/></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>What is Hedera?</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>The 2-minute introduction to the network and what makes it different.</div>
+        <div className="landing-card-title">What is Hedera?</div>
+        <div className="landing-card-desc">The 2-minute introduction to the network and what makes it different.</div>
       </div>
     </a>
 
-    <a href="/learn/getting-started/why-hedera" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+    <a href="/learn/getting-started/why-hedera" className="landing-card">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 L9 17 L4 12"/></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Why Hedera?</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Predictable fees, fast finality, native services, and enterprise governance.</div>
+        <div className="landing-card-title">Why Hedera?</div>
+        <div className="landing-card-desc">Predictable fees, fast finality, native services, and enterprise governance.</div>
       </div>
     </a>
 
-    <a href="/learn/getting-started/choose-your-path" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+    <a href="/learn/getting-started/choose-your-path" className="landing-card">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Choose Your Path</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>EVM developer or native SDK developer: pick the right starting point.</div>
+        <div className="landing-card-title">Choose Your Path</div>
+        <div className="landing-card-desc">EVM developer or native SDK developer: pick the right starting point.</div>
       </div>
     </a>
 
-    <a href="/learn/getting-started/testnet-faucet" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+    <a href="/learn/getting-started/testnet-faucet" className="landing-card">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 22h18 M5 22V10 M19 22V10 M12 22V10 M12 6V2 M9 2h6 M5 10c0-3 7-3 7 0 M19 10c0-3-7-3-7 0"/></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Testnet Faucet</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Fund a testnet account in seconds: no real HBAR required.</div>
+        <div className="landing-card-title">Testnet Faucet</div>
+        <div className="landing-card-desc">Fund a testnet account in seconds: no real HBAR required.</div>
       </div>
     </a>
 
-    <a href="/learn/getting-started/portal-playground" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+    <a href="/learn/getting-started/portal-playground" className="landing-card">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 3l14 9-14 9z"/></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Portal Playground</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Try Hedera transactions in your browser: no setup required.</div>
+        <div className="landing-card-title">Portal Playground</div>
+        <div className="landing-card-desc">Try Hedera transactions in your browser: no setup required.</div>
       </div>
     </a>
 
-    <a href="/learn/core-concepts/fee-model" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+    <a href="/learn/core-concepts/fee-model" className="landing-card">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v10 M9.5 15h5a2 2 0 1 0 0-4h-5a2 2 0 1 1 0-4h5"/></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Fee Model</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>How Hedera fees are calculated: fixed USD pricing, no gas auctions.</div>
+        <div className="landing-card-title">Fee Model</div>
+        <div className="landing-card-desc">How Hedera fees are calculated: fixed USD pricing, no gas auctions.</div>
       </div>
     </a>
 
@@ -229,144 +79,88 @@ icon: "book-arrow-right"
 </div>
 
 {/* ── CORE CONCEPTS ──────────────────────────────────────── */}
-<div style={{
-  padding: '48px 0',
-  borderBottom: '1px solid var(--landing-border)'
-}}>
-  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '6px' }}>
-    <h2 id="core-concepts" style={{
-      fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
-      fontWeight: 500,
-      margin: 0,
-      letterSpacing: '-0.015em',
-      color: 'var(--landing-fg-primary)'
-    }}>
-      <a href="#core-concepts" style={{ color: 'inherit', textDecoration: 'none' }}>Core concepts</a>
+<div className="landing-section">
+  <div className="landing-section-heading-row">
+    <h2 id="core-concepts" className="landing-section-heading">
+      <a href="#core-concepts">Core concepts</a>
     </h2>
-    <a href="/learn/core-concepts/index" style={{
-      fontSize: '0.8125rem',
-      color: '#8259EF',
-      textDecoration: 'none',
-      fontWeight: 500,
-      whiteSpace: 'nowrap'
-    }}>
-      See all →
-    </a>
+    <a href="/learn/core-concepts/index" className="landing-see-all">See all →</a>
   </div>
-  <p style={{
-    fontSize: '0.9375rem',
-    color: 'var(--landing-fg-tertiary)',
-    margin: '0 0 28px',
-    lineHeight: 1.55
-  }}>
+  <p className="landing-section-description">
     The building blocks behind every Hedera transaction.
   </p>
 
-  <div style={{
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '12px'
-  }}>
+  <div className="landing-grid">
 
-    <a href="/learn/core-concepts/accounts/index" style={{
-      padding: '20px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+    <a href="/learn/core-concepts/accounts/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </div>
-      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Accounts</div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Creation, auto-creation, properties, network accounts, and hooks.</div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Accounts</span>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Identity</span>
+      <div className="landing-card-title">Accounts</div>
+      <div className="landing-card-desc">Creation, auto-creation, properties, network accounts, and hooks.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Accounts</span>
+        <span className="landing-tag">Identity</span>
       </div>
     </a>
 
-    <a href="/learn/core-concepts/keys/index" style={{
-      padding: '20px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+    <a href="/learn/core-concepts/keys/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
       </div>
-      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Keys &amp; Signatures</div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>ED25519, ECDSA, key lists, and threshold keys for multi-sig flows.</div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Keys</span>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Crypto</span>
+      <div className="landing-card-title">Keys &amp; Signatures</div>
+      <div className="landing-card-desc">ED25519, ECDSA, key lists, and threshold keys for multi-sig flows.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Keys</span>
+        <span className="landing-tag">Crypto</span>
       </div>
     </a>
 
-    <a href="/learn/core-concepts/tokens/index" style={{
-      padding: '20px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+    <a href="/learn/core-concepts/tokens/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v10 M9.5 15h5a2 2 0 1 0 0-4h-5a2 2 0 1 1 0-4h5"/></svg>
       </div>
-      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Tokens</div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>HTS overview, types, properties, custom fees, and airdrops.</div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>HTS</span>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>NFTs</span>
+      <div className="landing-card-title">Tokens</div>
+      <div className="landing-card-desc">HTS overview, types, properties, custom fees, and airdrops.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">HTS</span>
+        <span className="landing-tag">NFTs</span>
       </div>
     </a>
 
-    <a href="/learn/core-concepts/transactions/index" style={{
-      padding: '20px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+    <a href="/learn/core-concepts/transactions/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 1l4 4-4 4 M3 11V9a4 4 0 0 1 4-4h14 M7 23l-4-4 4-4 M21 13v2a4 4 0 0 1-4 4H3"/></svg>
       </div>
-      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Transactions</div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>How transactions are formed, signed, scheduled, and submitted.</div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Transactions</span>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Signing</span>
+      <div className="landing-card-title">Transactions</div>
+      <div className="landing-card-desc">How transactions are formed, signed, scheduled, and submitted.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Transactions</span>
+        <span className="landing-tag">Signing</span>
       </div>
     </a>
 
-    <a href="/learn/core-concepts/hashgraph/index" style={{
-      padding: '20px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+    <a href="/learn/core-concepts/hashgraph/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><circle cx="12" cy="12" r="2"/><path d="M8 6h8 M6 8v8 M8 18h8 M18 8v8"/></svg>
       </div>
-      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Hashgraph Consensus</div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Gossip about gossip and virtual voting: how Hedera reaches consensus.</div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Consensus</span>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>aBFT</span>
+      <div className="landing-card-title">Hashgraph Consensus</div>
+      <div className="landing-card-desc">Gossip about gossip and virtual voting: how Hedera reaches consensus.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Consensus</span>
+        <span className="landing-tag">aBFT</span>
       </div>
     </a>
 
-    <a href="/learn/core-concepts/staking/index" style={{
-      padding: '20px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+    <a href="/learn/core-concepts/staking/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1v22 M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
       </div>
-      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Staking</div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Earn rewards by staking HBAR to a network node.</div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Staking</span>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Rewards</span>
+      <div className="landing-card-title">Staking</div>
+      <div className="landing-card-desc">Earn rewards by staking HBAR to a network node.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Staking</span>
+        <span className="landing-tag">Rewards</span>
       </div>
     </a>
 
@@ -374,79 +168,48 @@ icon: "book-arrow-right"
 </div>
 
 {/* ── NETWORKS ──────────────────────────────────────── */}
-<div style={{
-  padding: '48px 0',
-  borderBottom: '1px solid var(--landing-border)'
-}}>
-  <h2 id="pick-a-network" style={{
-    fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
-    fontWeight: 500,
-    margin: '0 0 24px',
-    letterSpacing: '-0.015em',
-    color: 'var(--landing-fg-primary)'
-  }}>
-    <a href="#pick-a-network" style={{ color: 'inherit', textDecoration: 'none' }}>Pick a network</a>
+<div className="landing-section">
+  <h2 id="pick-a-network" className="landing-section-heading" style={{ marginBottom: '24px' }}>
+    <a href="#pick-a-network">Pick a network</a>
   </h2>
 
-  <div style={{
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '16px'
-  }}>
+  <div className="landing-grid landing-grid--loose">
 
-    <a href="/learn/networks/mainnet/index" style={{
-      borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      overflow: 'hidden',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ height: '120px', background: 'linear-gradient(135deg, rgba(130,89,239,0.55) 0%, rgba(0,49,255,0.5) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <a href="/learn/networks/mainnet/index" className="landing-media-card">
+      <div className="landing-media-card-hero">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20 M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 M12 2a15.3 15.3 0 0 0-4 10 15.3 15.3 0 0 0 4 10"/></svg>
       </div>
-      <div style={{ padding: '16px' }}>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Mainnet</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Production network: real HBAR, real fees, real users.</div>
-        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Production</span>
+      <div className="landing-media-card-body">
+        <div className="landing-card-title">Mainnet</div>
+        <div className="landing-card-desc">Production network: real HBAR, real fees, real users.</div>
+        <div className="landing-tag-group">
+          <span className="landing-tag">Production</span>
         </div>
       </div>
     </a>
 
-    <a href="/learn/networks/testnet/index" style={{
-      borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      overflow: 'hidden',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ height: '120px', background: 'linear-gradient(135deg, rgba(130,89,239,0.55) 0%, rgba(0,49,255,0.5) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <a href="/learn/networks/testnet/index" className="landing-media-card">
+      <div className="landing-media-card-hero">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 11l3 3L22 4 M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
       </div>
-      <div style={{ padding: '16px' }}>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Testnet</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Free test HBAR for development: production-equivalent environment.</div>
-        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Testing</span>
+      <div className="landing-media-card-body">
+        <div className="landing-card-title">Testnet</div>
+        <div className="landing-card-desc">Free test HBAR for development: production-equivalent environment.</div>
+        <div className="landing-tag-group">
+          <span className="landing-tag">Testing</span>
         </div>
       </div>
     </a>
 
-    <a href="/learn/networks/localnet/index" style={{
-      borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      overflow: 'hidden',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ height: '120px', background: 'linear-gradient(135deg, rgba(130,89,239,0.55) 0%, rgba(0,49,255,0.5) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <a href="/learn/networks/localnet/index" className="landing-media-card">
+      <div className="landing-media-card-hero">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><path d="M8 21h8 M12 17v4"/></svg>
       </div>
-      <div style={{ padding: '16px' }}>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Localnet</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Run Hedera on your laptop: single-node or multi-node.</div>
-        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Local</span>
+      <div className="landing-media-card-body">
+        <div className="landing-card-title">Localnet</div>
+        <div className="landing-card-desc">Run Hedera on your laptop: single-node or multi-node.</div>
+        <div className="landing-tag-group">
+          <span className="landing-tag">Local</span>
         </div>
       </div>
     </a>
@@ -455,25 +218,15 @@ icon: "book-arrow-right"
 </div>
 
 {/* ── FOOTER ───────────────────────────────────────────────────────────── */}
-<div style={{ padding: '40px 0 24px' }}>
-  <h2 id="stay-connected" style={{
-    fontSize: 'clamp(1.125rem, 2vw, 1.375rem)',
-    fontWeight: 500,
-    margin: '0 0 12px',
-    letterSpacing: '-0.01em',
-    color: 'var(--landing-fg-primary)'
-  }}>
-    <a href="#stay-connected" style={{ color: 'inherit', textDecoration: 'none' }}>Stay connected</a>
+<div className="landing-footer">
+  <h2 id="stay-connected" className="landing-footer-heading">
+    <a href="#stay-connected">Stay connected</a>
   </h2>
-  <div style={{
-    display: 'flex',
-    gap: '10px',
-    flexWrap: 'wrap'
-  }}>
-    <a className="landing-pill" href="https://hedera.com/discord" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--landing-pill-fg)', textDecoration: 'none', padding: '5px 12px', borderRadius: '999px', background: 'var(--landing-pill-bg)', border: '1px solid var(--landing-pill-border)' }}>Discord</a>
-    <a className="landing-pill" href="https://github.com/hashgraph" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--landing-pill-fg)', textDecoration: 'none', padding: '5px 12px', borderRadius: '999px', background: 'var(--landing-pill-bg)', border: '1px solid var(--landing-pill-border)' }}>GitHub</a>
-    <a className="landing-pill" href="https://portal.hedera.com/playground" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--landing-pill-fg)', textDecoration: 'none', padding: '5px 12px', borderRadius: '999px', background: 'var(--landing-pill-bg)', border: '1px solid var(--landing-pill-border)' }}>Playground</a>
-    <a className="landing-pill" href="https://stackoverflow.com/questions/tagged/hedera-hashgraph" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--landing-pill-fg)', textDecoration: 'none', padding: '5px 12px', borderRadius: '999px', background: 'var(--landing-pill-bg)', border: '1px solid var(--landing-pill-border)' }}>Stack Overflow</a>
+  <div className="landing-pill-group">
+    <a className="landing-pill" href="https://hedera.com/discord" target="_blank" rel="noopener noreferrer">Discord</a>
+    <a className="landing-pill" href="https://github.com/hashgraph" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a className="landing-pill" href="https://portal.hedera.com/playground" target="_blank" rel="noopener noreferrer">Playground</a>
+    <a className="landing-pill" href="https://stackoverflow.com/questions/tagged/hedera-hashgraph" target="_blank" rel="noopener noreferrer">Stack Overflow</a>
   </div>
 </div>
 

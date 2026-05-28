@@ -4,170 +4,51 @@ description: "Run and operate Hedera infrastructure: mirror nodes, JSON-RPC rela
 mode: wide
 ---
 
-<div className="not-prose" style={{
-  maxWidth: '1200px',
-  margin: '0 auto',
-  padding: '0 24px'
-}}>
-
-{/* ── BROWSE BY SECTION ─────────────────────────────────────────────────── */}
-<div style={{
-  padding: '48px 0',
-  borderBottom: '1px solid var(--landing-border)'
-}}>
-  <h2 id="browse-by-section" style={{
-    fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
-    fontWeight: 500,
-    margin: '0 0 6px',
-    letterSpacing: '-0.015em',
-    color: 'var(--landing-fg-primary)'
-  }}>
-    <a href="#browse-by-section" style={{ color: 'inherit', textDecoration: 'none' }}>Browse by section</a>
-  </h2>
-  <p style={{
-    fontSize: '0.9375rem',
-    color: 'var(--landing-fg-tertiary)',
-    margin: '0 0 28px',
-    maxWidth: '540px',
-    lineHeight: 1.55
-  }}>
-    Every topic in the Operators tab, organized by infrastructure type.
-  </p>
-
-  <div style={{
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '12px'
-  }}>
-
-    <a href="/operators/mirror-node/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5 M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Mirror Node</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Architecture, one-click deploy, and self-hosting with GCS or S3.</div>
-      </div>
-    </a>
-
-    <a href="/operators/json-rpc/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71 M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>JSON-RPC Relay</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Setup and configuration to bridge EVM tooling to the Hedera network.</div>
-      </div>
-    </a>
-
-    <a href="/operators/consensus-node/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01 M6 18h.01"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Consensus Nodes</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Deployment, hardware, and network requirements.</div>
-      </div>
-    </a>
-
-  </div>
-</div>
+<div className="not-prose landing-container">
 
 {/* ── MIRROR NODE ──────────────────────────────────────── */}
-<div style={{
-  padding: '48px 0',
-  borderBottom: '1px solid var(--landing-border)'
-}}>
-  <h2 id="mirror-node-operators" style={{
-    fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
-    fontWeight: 500,
-    margin: '0 0 6px',
-    letterSpacing: '-0.015em',
-    color: 'var(--landing-fg-primary)'
-  }}>
-    <a href="#mirror-node-operators" style={{ color: 'inherit', textDecoration: 'none' }}>Mirror node operators</a>
+<div className="landing-section">
+  <h2 id="mirror-node-operators" className="landing-section-heading">
+    <a href="#mirror-node-operators">Mirror node operators</a>
   </h2>
-  <p style={{
-    fontSize: '0.9375rem',
-    color: 'var(--landing-fg-tertiary)',
-    margin: '0 0 28px',
-    maxWidth: '600px',
-    lineHeight: 1.55
-  }}>
+  <p className="landing-section-description">
     Mirror nodes stream consensus events from the network and serve them via REST, gRPC, and Web3 APIs.
   </p>
 
-  <div style={{
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '12px'
-  }}>
+  <div className="landing-grid">
 
-    <a href="/operators/mirror-node/architecture" style={{
-      padding: '20px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+    <a href="/operators/mirror-node/architecture" className="landing-card-stacked">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       </div>
-      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Architecture</div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Importer, REST API, gRPC, Web3: how the mirror node components fit together.</div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Overview</span>
+      <div className="landing-card-title">Architecture</div>
+      <div className="landing-card-desc">Importer, REST API, gRPC, Web3: how the mirror node components fit together.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Overview</span>
       </div>
     </a>
 
-    <a href="/operators/mirror-node/one-click-deploy" style={{
-      padding: '20px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+    <a href="/operators/mirror-node/one-click-deploy" className="landing-card-stacked">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
       </div>
-      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>One-Click Deploy</div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Spin up a mirror node in minutes using the official Helm chart.</div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Helm</span>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>K8s</span>
+      <div className="landing-card-title">One-Click Deploy</div>
+      <div className="landing-card-desc">Spin up a mirror node in minutes using the official Helm chart.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Helm</span>
+        <span className="landing-tag">K8s</span>
       </div>
     </a>
 
-    <a href="/operators/mirror-node/run-your-own/index" style={{
-      padding: '20px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+    <a href="/operators/mirror-node/run-your-own/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </div>
-      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Run Your Own</div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Self-host a mirror node backed by Google Cloud Storage or AWS S3.</div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>GCS</span>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>S3</span>
+      <div className="landing-card-title">Run Your Own</div>
+      <div className="landing-card-desc">Self-host a mirror node backed by Google Cloud Storage or AWS S3.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">GCS</span>
+        <span className="landing-tag">S3</span>
       </div>
     </a>
 
@@ -175,64 +56,33 @@ mode: wide
 </div>
 
 {/* ── JSON-RPC RELAY ──────────────────────────────────────── */}
-<div style={{
-  padding: '48px 0',
-  borderBottom: '1px solid var(--landing-border)'
-}}>
-  <h2 id="json-rpc-relay-operators" style={{
-    fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
-    fontWeight: 500,
-    margin: '0 0 6px',
-    letterSpacing: '-0.015em',
-    color: 'var(--landing-fg-primary)'
-  }}>
-    <a href="#json-rpc-relay-operators" style={{ color: 'inherit', textDecoration: 'none' }}>JSON-RPC relay operators</a>
+<div className="landing-section">
+  <h2 id="json-rpc-relay-operators" className="landing-section-heading">
+    <a href="#json-rpc-relay-operators">JSON-RPC relay operators</a>
   </h2>
-  <p style={{
-    fontSize: '0.9375rem',
-    color: 'var(--landing-fg-tertiary)',
-    margin: '0 0 28px',
-    maxWidth: '600px',
-    lineHeight: 1.55
-  }}>
+  <p className="landing-section-description">
     The relay translates Ethereum JSON-RPC requests into Hedera transactions and queries.
   </p>
 
-  <div style={{
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
-    gap: '12px'
-  }}>
+  <div className="landing-grid landing-grid--wide">
 
-    <a href="/operators/json-rpc/setup" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+    <a href="/operators/json-rpc/setup" className="landing-card">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Setup</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Install and run the relay: local, Docker, or container orchestrator.</div>
+        <div className="landing-card-title">Setup</div>
+        <div className="landing-card-desc">Install and run the relay: local, Docker, or container orchestrator.</div>
       </div>
     </a>
 
-    <a href="/operators/json-rpc/configuration" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+    <a href="/operators/json-rpc/configuration" className="landing-card">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Configuration</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Tune chain ID, mirror node URL, networks, rate limits, and caching.</div>
+        <div className="landing-card-title">Configuration</div>
+        <div className="landing-card-desc">Tune chain ID, mirror node URL, networks, rate limits, and caching.</div>
       </div>
     </a>
 
@@ -240,70 +90,39 @@ mode: wide
 </div>
 
 {/* ── CONSENSUS NODES ──────────────────────────────────────── */}
-<div style={{
-  padding: '48px 0',
-  borderBottom: '1px solid var(--landing-border)'
-}}>
-  <h2 id="consensus-node-operators" style={{
-    fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
-    fontWeight: 500,
-    margin: '0 0 6px',
-    letterSpacing: '-0.015em',
-    color: 'var(--landing-fg-primary)'
-  }}>
-    <a href="#consensus-node-operators" style={{ color: 'inherit', textDecoration: 'none' }}>Consensus node operators</a>
+<div className="landing-section">
+  <h2 id="consensus-node-operators" className="landing-section-heading">
+    <a href="#consensus-node-operators">Consensus node operators</a>
   </h2>
-  <p style={{
-    fontSize: '0.9375rem',
-    color: 'var(--landing-fg-tertiary)',
-    margin: '0 0 28px',
-    maxWidth: '600px',
-    lineHeight: 1.55
-  }}>
+  <p className="landing-section-description">
     Run a network node: gossip, virtual voting, and the live state of every Hedera service.
   </p>
 
-  <div style={{
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '16px'
-  }}>
+  <div className="landing-grid landing-grid--loose">
 
-    <a href="/operators/consensus-node/deployment" style={{
-      borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      overflow: 'hidden',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ height: '120px', background: 'linear-gradient(135deg, rgba(130,89,239,0.55) 0%, rgba(0,49,255,0.5) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <a href="/operators/consensus-node/deployment" className="landing-media-card">
+      <div className="landing-media-card-hero">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
       </div>
-      <div style={{ padding: '16px' }}>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Deployment</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Step-by-step procedure for bringing a consensus node online.</div>
-        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Deploy</span>
+      <div className="landing-media-card-body">
+        <div className="landing-card-title">Deployment</div>
+        <div className="landing-card-desc">Step-by-step procedure for bringing a consensus node online.</div>
+        <div className="landing-tag-group">
+          <span className="landing-tag">Deploy</span>
         </div>
       </div>
     </a>
 
-    <a href="/operators/consensus-node/requirements/index" style={{
-      borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      overflow: 'hidden',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ height: '120px', background: 'linear-gradient(135deg, rgba(130,89,239,0.55) 0%, rgba(0,49,255,0.5) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <a href="/operators/consensus-node/requirements/index" className="landing-media-card">
+      <div className="landing-media-card-hero">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01 M6 18h.01"/></svg>
       </div>
-      <div style={{ padding: '16px' }}>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Requirements</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Hardware, network, and operational requirements for running a node.</div>
-        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Hardware</span>
-          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Network</span>
+      <div className="landing-media-card-body">
+        <div className="landing-card-title">Requirements</div>
+        <div className="landing-card-desc">Hardware, network, and operational requirements for running a node.</div>
+        <div className="landing-tag-group">
+          <span className="landing-tag">Hardware</span>
+          <span className="landing-tag">Network</span>
         </div>
       </div>
     </a>
@@ -312,25 +131,15 @@ mode: wide
 </div>
 
 {/* ── FOOTER ───────────────────────────────────────────────────────────── */}
-<div style={{ padding: '40px 0 24px' }}>
-  <h2 id="stay-connected" style={{
-    fontSize: 'clamp(1.125rem, 2vw, 1.375rem)',
-    fontWeight: 500,
-    margin: '0 0 12px',
-    letterSpacing: '-0.01em',
-    color: 'var(--landing-fg-primary)'
-  }}>
-    <a href="#stay-connected" style={{ color: 'inherit', textDecoration: 'none' }}>Stay connected</a>
+<div className="landing-footer">
+  <h2 id="stay-connected" className="landing-footer-heading">
+    <a href="#stay-connected">Stay connected</a>
   </h2>
-  <div style={{
-    display: 'flex',
-    gap: '10px',
-    flexWrap: 'wrap'
-  }}>
-    <a className="landing-pill" href="https://hedera.com/discord" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--landing-pill-fg)', textDecoration: 'none', padding: '5px 12px', borderRadius: '999px', background: 'var(--landing-pill-bg)', border: '1px solid var(--landing-pill-border)' }}>Discord</a>
-    <a className="landing-pill" href="https://github.com/hashgraph" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--landing-pill-fg)', textDecoration: 'none', padding: '5px 12px', borderRadius: '999px', background: 'var(--landing-pill-bg)', border: '1px solid var(--landing-pill-border)' }}>GitHub</a>
-    <a className="landing-pill" href="https://status.hedera.com" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--landing-pill-fg)', textDecoration: 'none', padding: '5px 12px', borderRadius: '999px', background: 'var(--landing-pill-bg)', border: '1px solid var(--landing-pill-border)' }}>Status</a>
-    <a className="landing-pill" href="https://stackoverflow.com/questions/tagged/hedera-hashgraph" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--landing-pill-fg)', textDecoration: 'none', padding: '5px 12px', borderRadius: '999px', background: 'var(--landing-pill-bg)', border: '1px solid var(--landing-pill-border)' }}>Stack Overflow</a>
+  <div className="landing-pill-group">
+    <a className="landing-pill" href="https://hedera.com/discord" target="_blank" rel="noopener noreferrer">Discord</a>
+    <a className="landing-pill" href="https://github.com/hashgraph" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a className="landing-pill" href="https://status.hedera.com" target="_blank" rel="noopener noreferrer">Status</a>
+    <a className="landing-pill" href="https://stackoverflow.com/questions/tagged/hedera-hashgraph" target="_blank" rel="noopener noreferrer">Stack Overflow</a>
   </div>
 </div>
 

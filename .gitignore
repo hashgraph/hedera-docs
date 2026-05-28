@@ -12,6 +12,7 @@ dist
 .DS_Store
 
 .claude/settings.local.json
+revamp/audit/
 
 # Migration backups (created by revamp/migrate.sh)
 hedera.backup.*

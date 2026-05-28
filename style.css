@@ -111,13 +111,10 @@ html, body {
   min-height: 100vh;
 }
 
-/* Make Mintlify's wrapper containers transparent in light mode
-   so the body gradient shows through */
-html:not(.dark):not([data-theme='dark']) main,
-html:not(.dark):not([data-theme='dark']) #__next,
-html:not(.dark):not([data-theme='dark']) #__next > div,
-html:not(.dark):not([data-theme='dark']) [class*="bg-background"],
-html:not(.dark):not([data-theme='dark']) [class*="bg-white"] {
+/* Make Mintlify's fixed full-page background layer transparent in light mode
+   so the body gradient shows through. Scoped to the -z-10 layer only so the
+   mobile drawer, navbar, search box, and other UI keep their solid backgrounds. */
+html:not(.dark):not([data-theme='dark']) [class*="-z-10"][class*="bg-background"] {
   background-color: transparent !important;
 }
 
@@ -278,6 +275,20 @@ nav.text-sm a[href*="hackathon"] svg {
 [data-theme='dark'] nav.text-sm a[href*="hackathon"]:hover img,
 [data-theme='dark'] nav.text-sm a[href*="hackathon"]:hover svg {
   filter: brightness(0) invert(1) !important;
+}
+
+/* Playground showcase — single column on mobile, list + preview side-by-side at ≥768px */
+.playground-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+@media (min-width: 768px) {
+  .playground-grid {
+    grid-template-columns: minmax(280px, 380px) minmax(0, 1fr);
+  }
 }
 
 /* Hiero CLI feature coverage heatmap (feature-coverage-gap-report.mdx) */

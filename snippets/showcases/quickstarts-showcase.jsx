@@ -66,7 +66,7 @@ export const QuickstartsShowcase = () => {
       {/* Cards grid — fixed 2 columns */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
         gap: '12px'
       }}>
         {TABS[tabIdx].items.map((it) => (

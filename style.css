@@ -111,13 +111,10 @@ html, body {
   min-height: 100vh;
 }
 
-/* Make Mintlify's wrapper containers transparent in light mode
-   so the body gradient shows through */
-html:not(.dark):not([data-theme='dark']) main,
-html:not(.dark):not([data-theme='dark']) #__next,
-html:not(.dark):not([data-theme='dark']) #__next > div,
-html:not(.dark):not([data-theme='dark']) [class*="bg-background"],
-html:not(.dark):not([data-theme='dark']) [class*="bg-white"] {
+/* Make Mintlify's fixed full-page background layer transparent in light mode
+   so the body gradient shows through. Scoped to the -z-10 layer only so the
+   mobile drawer, navbar, search box, and other UI keep their solid backgrounds. */
+html:not(.dark):not([data-theme='dark']) [class*="-z-10"][class*="bg-background"] {
   background-color: transparent !important;
 }
 

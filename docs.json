@@ -1823,10 +1823,10 @@
         "tab": "Reference",
         "icon": "book",
         "groups": [
-          "reference/index",
           {
             "group": "REST API",
             "pages": [
+              "reference/index",
               "reference/rest-api/index",
               "reference/rest-api/accounts/index",
               "reference/rest-api/balances/index",

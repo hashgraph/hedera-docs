@@ -71,9 +71,8 @@
   "footer": {
     "socials": {
       "discord": "https://hedera.com/discord",
-      "facebook": "https://www.facebook.com/hederanetwork",
-      "linkedin": "https://www.linkedin.com/company/hashgraph",
-      "medium": "https://medium.com/hashgraph",
+      "linkedin": "https://www.linkedin.com/company/hedera-network",
+      "medium": "https://medium.com/hedera",
       "reddit": "https://www.reddit.com/r/Hedera/",
       "telegram": "https://t.me/hederahashgraph",
       "x": "https://X.com/hedera",
@@ -81,6 +80,738 @@
     }
   },
   "redirects": [
+    {
+      "source": "/hedera/sdks-and-apis/sdks/tokens",
+      "destination": "/native/tokens"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/tokens/associate-tokens-to-an-account",
+      "destination": "/native/tokens/associate"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/tokens/burn-a-token",
+      "destination": "/native/tokens/burn"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/tokens/custom-token-fees",
+      "destination": "/native/tokens/custom-fees"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/tokens/define-a-token",
+      "destination": "/native/tokens/define"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/tokens/delete-a-token",
+      "destination": "/native/tokens/delete"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/tokens/freeze-an-account",
+      "destination": "/native/tokens/freeze"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/tokens/get-account-token-balance",
+      "destination": "/native/tokens/get-balance"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/tokens/mint-a-token",
+      "destination": "/native/tokens/mint"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/tokens/pause-a-token",
+      "destination": "/native/tokens/pause"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/tokens/transfer-tokens",
+      "destination": "/native/tokens/transfer"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/tokens/unfreeze-an-account",
+      "destination": "/native/tokens/unfreeze"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/tokens/unpause-a-token",
+      "destination": "/native/tokens/unpause"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/tokens/wipe-a-token",
+      "destination": "/native/tokens/wipe"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/cryptocurrency/adjust-an-allowance",
+      "destination": "/native/accounts/adjust-allowance"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/cryptocurrency/approve-an-allowance",
+      "destination": "/native/accounts/approve-allowance"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/cryptocurrency/create-an-account",
+      "destination": "/native/accounts/create"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/cryptocurrency/get-account-balance",
+      "destination": "/native/accounts/get-balance"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/cryptocurrency/get-account-info",
+      "destination": "/native/accounts/get-info"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/cryptocurrency/transfer-cryptocurrency",
+      "destination": "/native/accounts/transfer"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/cryptocurrency/update-an-account",
+      "destination": "/native/accounts/update"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/file-storage/append-to-a-file",
+      "destination": "/native/files/append"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/file-storage/create-a-file",
+      "destination": "/native/files/create"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/smart-contracts/call-a-smart-contract-function-1",
+      "destination": "/native/smart-contracts/call"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/hedera-api/basic-types/tokensupplytype",
+      "destination": "/reference/protobuf/basic-types"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/hedera-api/consensus/consensus-service",
+      "destination": "/reference/protobuf/consensus"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/hedera-api/miscellaneous/transactionreceipt",
+      "destination": "/reference/protobuf/miscellaneous"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/hedera-api/miscellaneous/transactionresponse",
+      "destination": "/reference/protobuf/miscellaneous"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/hedera-api/schedule-service/schedulecreate",
+      "destination": "/reference/protobuf/schedule"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/hedera-api/token-service/customfees/fixedfee",
+      "destination": "/reference/protobuf/token"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/hedera-api/token-service/customfees/royaltyfee",
+      "destination": "/reference/protobuf/token"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/hedera-api/token-service/tokenfeescheduleupdate",
+      "destination": "/reference/protobuf/token"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/hedera-api/token-service/tokenfreezeaccount",
+      "destination": "/reference/protobuf/token"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/hedera-api/token-service/tokenpause",
+      "destination": "/reference/protobuf/token"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/hedera-api/token-service/tokenwipeaccount",
+      "destination": "/reference/protobuf/token"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/hedera-consensus-service-api-1",
+      "destination": "/reference/protobuf/consensus"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/rest-api/balance",
+      "destination": "/reference/rest-api/balances"
+    },
+    {
+      "source": "/hedera/core-concepts/smart-contracts/hedera-services-integration-with-smart-contracts",
+      "destination": "/evm/hedera-services"
+    },
+    {
+      "source": "/hedera/core-concepts/smart-contracts/hethers",
+      "destination": "/evm"
+    },
+    {
+      "source": "/hedera/core-concepts/smart-contracts/hyperledger-besu-evm",
+      "destination": "/evm"
+    },
+    {
+      "source": "/hedera/core-concepts/smart-contracts/solidity-variables-and-opcodes",
+      "destination": "/evm"
+    },
+    {
+      "source": "/hedera/core-concepts/smart-contracts/verifying-smart-contracts",
+      "destination": "/evm/development/verifying"
+    },
+    {
+      "source": "/hedera/tutorials/smart-contracts/deploy-a-smart-contract-using-hardhat",
+      "destination": "/evm/tools/hardhat/setup"
+    },
+    {
+      "source": "/hedera/tutorials/smart-contracts/deploy-a-smart-contract-using-hardhat-hedera-json-rpc-relay",
+      "destination": "/evm/tools/hardhat/setup"
+    },
+    {
+      "source": "/hedera/tutorials/smart-contracts/deploy-a-smart-contract-using-remix",
+      "destination": "/evm/tools/remix"
+    },
+    {
+      "source": "/hedera/tutorials/smart-contracts/deploy-a-subgraph-using-the-graph-and-json-rpc-relay",
+      "destination": "/evm/integrations/indexing/the-graph"
+    },
+    {
+      "source": "/hedera/tutorials/smart-contracts/hscs-workshop/hardhat",
+      "destination": "/evm/tools/hardhat/setup"
+    },
+    {
+      "source": "/hedera/tutorials/smart-contracts-service/deploy-a-contract-using-the-hedera-token-service",
+      "destination": "/evm/hedera-services"
+    },
+    {
+      "source": "/hedera/tutorials/smart-contracts-service/deploy-your-first-smart-contract",
+      "destination": "/evm/quickstart"
+    },
+    {
+      "source": "/hedera/tutorials/more-tutorials/getting-started-with-the-hedera-consensus-service-fabric-plugin",
+      "destination": "/native/tutorials/advanced/hcs-fabric-plugin"
+    },
+    {
+      "source": "/hedera/tutorials/more-tutorials/json-rpc-connection",
+      "destination": "/evm/tutorials/intermediate/json-rpc-connections"
+    },
+    {
+      "source": "/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hooks-and-policies",
+      "destination": "/solutions/ai/agent-kit/hooks-and-policies"
+    },
+    {
+      "source": "/hedera/open-source-solutions/hiero-cli/overview",
+      "destination": "/solutions/tools/hiero-cli/overview"
+    },
+    {
+      "source": "/hedera/open-source-solutions/supra-oracle",
+      "destination": "/evm/integrations/oracles/supra"
+    },
+    {
+      "source": "/docs/hedera-sdks",
+      "destination": "/native"
+    },
+    {
+      "source": "/docs/join-hedera-testnet",
+      "destination": "/learn/networks/testnet"
+    },
+    {
+      "source": "/docs/:slug*",
+      "destination": "/"
+    },
+    {
+      "source": "/guides/getting-started/environment-set-up",
+      "destination": "/learn/getting-started"
+    },
+    {
+      "source": "/guides/resources/tutorials",
+      "destination": "/native/tutorials"
+    },
+    {
+      "source": "/hethers/:slug*",
+      "destination": "/evm"
+    },
+    {
+      "source": "/hethers",
+      "destination": "/evm"
+    },
+    {
+      "source": "/page/:slug*",
+      "destination": "/"
+    },
+    {
+      "source": "/reference",
+      "destination": "/reference/index"
+    },
+    {
+      "source": "/hedera/core-concepts/hashgraph-consensus-algorithms",
+      "destination": "/learn/core-concepts/hashgraph"
+    },
+    {
+      "source": "/hedera/core-concepts/hashgraph-consensus-algorithms/virtual-voting",
+      "destination": "/learn/core-concepts/hashgraph/virtual-voting"
+    },
+    {
+      "source": "/hedera/core-concepts/keys-and-signatures",
+      "destination": "/learn/core-concepts/keys"
+    },
+    {
+      "source": "/hedera/core-concepts/mirror-nodes/hedera-mirror-node",
+      "destination": "/operators/mirror-node"
+    },
+    {
+      "source": "/hedera/core-concepts/mirror-nodes/one-click-mirror-node-deployment",
+      "destination": "/operators/mirror-node/one-click-deploy"
+    },
+    {
+      "source": "/hedera/core-concepts/mirror-nodes/run-your-own-beta-mirror-node",
+      "destination": "/operators/mirror-node/run-your-own"
+    },
+    {
+      "source": "/hedera/core-concepts/mirror-nodes/run-your-own-beta-mirror-node/run-your-own-mirror-node-gcs",
+      "destination": "/operators/mirror-node/run-your-own/gcs"
+    },
+    {
+      "source": "/hedera/core-concepts/scheduled-transaction",
+      "destination": "/learn/core-concepts/transactions/scheduled"
+    },
+    {
+      "source": "/hedera/core-concepts/smart-contracts",
+      "destination": "/learn/core-concepts/services/smart-contracts"
+    },
+    {
+      "source": "/hedera/core-concepts/smart-contracts/deploying-smart-contracts",
+      "destination": "/evm/development/deploying"
+    },
+    {
+      "source": "/hedera/core-concepts/smart-contracts/gas-and-fees",
+      "destination": "/evm/development/gas-fees"
+    },
+    {
+      "source": "/hedera/core-concepts/smart-contracts/json-rpc-relay",
+      "destination": "/evm/development/json-rpc"
+    },
+    {
+      "source": "/hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility",
+      "destination": "/evm/migration"
+    },
+    {
+      "source": "/hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility/for-evm-developers-migrating-to-hedera",
+      "destination": "/evm/migration/key-differences-overview"
+    },
+    {
+      "source": "/hedera/core-concepts/tokens/erc-evm-compatible-tokenization",
+      "destination": "/evm/hedera-services/hybrid/erc-compatibility"
+    },
+    {
+      "source": "/hedera/core-concepts/tokens/hedera-token-service-hts-native-tokenization",
+      "destination": "/learn/core-concepts/tokens/hts-overview"
+    },
+    {
+      "source": "/hedera/core-concepts/tokens/hybrid-hts-+-evm-tokenization",
+      "destination": "/evm/hedera-services/hybrid"
+    },
+    {
+      "source": "/hedera/core-concepts/tokens/tokenization-on-hedera",
+      "destination": "/learn/core-concepts/tokens"
+    },
+    {
+      "source": "/hedera/core-concepts/transactions-and-queries",
+      "destination": "/learn/core-concepts/transactions"
+    },
+    {
+      "source": "/hedera/getting-started-evm-developers/add-hedera-to-metamask",
+      "destination": "/evm/quickstart/setup-metamask"
+    },
+    {
+      "source": "/hedera/getting-started-evm-developers/deploy-a-smart-contract-using-remix",
+      "destination": "/evm/quickstart/deploy-with-remix"
+    },
+    {
+      "source": "/hedera/getting-started-evm-developers/deploy-a-smart-contract-with-foundry",
+      "destination": "/evm/quickstart/deploy-with-foundry"
+    },
+    {
+      "source": "/hedera/getting-started-evm-developers/deploy-a-smart-contract-with-hardhat",
+      "destination": "/evm/quickstart/deploy-with-hardhat"
+    },
+    {
+      "source": "/hedera/getting-started-evm-developers/deploy-your-first-contract-with-hedera-contract-builder",
+      "destination": "/evm/quickstart/deploy-with-contract-builder"
+    },
+    {
+      "source": "/hedera/getting-started-hedera-native-developers/create-a-token",
+      "destination": "/native/tutorials/tokens/create-first-token"
+    },
+    {
+      "source": "/hedera/getting-started-hedera-native-developers/create-a-topic",
+      "destination": "/native/tutorials/consensus/create-first-topic"
+    },
+    {
+      "source": "/hedera/getting-started-hedera-native-developers/create-an-account",
+      "destination": "/learn/getting-started/create-portal-account"
+    },
+    {
+      "source": "/hedera/getting-started-hedera-native-developers/quickstart",
+      "destination": "/native/quickstart/javascript"
+    },
+    {
+      "source": "/hedera/networks/mainnet/fees/transaction-records",
+      "destination": "/learn/networks/mainnet/transaction-records"
+    },
+    {
+      "source": "/hedera/networks/mainnet/mainnet-nodes",
+      "destination": "/operators/consensus-node"
+    },
+    {
+      "source": "/hedera/networks/mainnet/mainnet-nodes/node-requirements",
+      "destination": "/operators/consensus-node/requirements"
+    },
+    {
+      "source": "/hedera/networks/release-notes",
+      "destination": "/learn/release-notes"
+    },
+    {
+      "source": "/hedera/networks/release-notes/services",
+      "destination": "/learn/release-notes/services"
+    },
+    {
+      "source": "/hedera/networks/testnet/testnet-access",
+      "destination": "/learn/networks/testnet/access"
+    },
+    {
+      "source": "/hedera/networks/testnet/testnet-nodes",
+      "destination": "/learn/networks/testnet/nodes"
+    },
+    {
+      "source": "/hedera/open-source-solutions/ai-studio-on-hedera",
+      "destination": "/solutions/ai"
+    },
+    {
+      "source": "/hedera/open-source-solutions/ai-studio-on-hedera/agent-lab",
+      "destination": "/solutions/ai/agent-lab"
+    },
+    {
+      "source": "/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit",
+      "destination": "/solutions/ai/agent-kit"
+    },
+    {
+      "source": "/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/create-js-hooks-and-policies",
+      "destination": "/solutions/ai/agent-kit/js/create-hooks-and-policies"
+    },
+    {
+      "source": "/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/create-js-plugins",
+      "destination": "/solutions/ai/agent-kit/js/create-plugins"
+    },
+    {
+      "source": "/hedera/open-source-solutions/asset-tokenization-studio-ats",
+      "destination": "/solutions/tokenization/ats"
+    },
+    {
+      "source": "/hedera/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui",
+      "destination": "/solutions/tokenization/ats/web-ui"
+    },
+    {
+      "source": "/hedera/open-source-solutions/interoperability-and-bridging",
+      "destination": "/evm/integrations/cross-chain"
+    },
+    {
+      "source": "/hedera/open-source-solutions/oracle-networks",
+      "destination": "/evm/integrations/oracles"
+    },
+    {
+      "source": "/hedera/open-source-solutions/oracle-networks/chainlink-oracles",
+      "destination": "/evm/integrations/oracles/chainlink"
+    },
+    {
+      "source": "/hedera/open-source-solutions/stablecoin-studio",
+      "destination": "/solutions/tokenization/stablecoin"
+    },
+    {
+      "source": "/hedera/open-source-solutions/stablecoin-studio/cli-management",
+      "destination": "/solutions/tokenization/stablecoin/cli"
+    },
+    {
+      "source": "/hedera/open-source-solutions/stablecoin-studio/web-ui-application",
+      "destination": "/solutions/tokenization/stablecoin/web-ui"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/hedera-api/consensus",
+      "destination": "/reference/protobuf/consensus"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/hedera-api/file-service",
+      "destination": "/reference/protobuf/file"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/hedera-api/token-service",
+      "destination": "/reference/protobuf/token"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/hedera-status-api",
+      "destination": "/reference/status-api"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/rest-api/smart-contracts",
+      "destination": "/reference/rest-api/contracts"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks",
+      "destination": "/native/fundamentals"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/address-book",
+      "destination": "/native/fundamentals/address-book"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/keys/create-a-threshold-key",
+      "destination": "/native/keys/threshold-key"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/keys/generate-a-new-key-pair",
+      "destination": "/native/keys/generate-key-pair"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/pseudorandom-number-generator",
+      "destination": "/native/prng"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/schedule-transaction/create-a-schedule-transaction",
+      "destination": "/native/scheduled/create"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/schedule-transaction/get-schedule-info",
+      "destination": "/native/scheduled/get-info"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/schedule-transaction/sign-a-schedule-transaction",
+      "destination": "/native/scheduled/sign"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/set-up-your-local-network",
+      "destination": "/native/fundamentals/local-network"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/accounts-and-hbar",
+      "destination": "/native/accounts"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/accounts-and-hbar/adjust-an-allowance",
+      "destination": "/native/accounts/adjust-allowance"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/accounts-and-hbar/approve-an-allowance",
+      "destination": "/native/accounts/approve-allowance"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-an-account",
+      "destination": "/native/accounts/create"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/accounts-and-hbar/delete-an-account",
+      "destination": "/native/accounts/delete"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/accounts-and-hbar/errors",
+      "destination": "/native/accounts/errors"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/accounts-and-hbar/get-account-balance",
+      "destination": "/native/accounts/get-balance"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/accounts-and-hbar/get-account-info",
+      "destination": "/native/accounts/get-info"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/accounts-and-hbar/transfer-cryptocurrency",
+      "destination": "/native/accounts/transfer"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/accounts-and-hbar/update-an-account",
+      "destination": "/native/accounts/update"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/file-service",
+      "destination": "/native/files"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/file-service/append-to-a-file",
+      "destination": "/native/files/append"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/file-service/create-a-file",
+      "destination": "/native/files/create"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/file-service/delete-a-file",
+      "destination": "/native/files/delete"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/file-service/errors",
+      "destination": "/native/files/errors"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/file-service/get-file-contents",
+      "destination": "/native/files/get-contents"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/file-service/get-file-info",
+      "destination": "/native/files/get-info"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/file-service/update-a-file",
+      "destination": "/native/files/update"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/consensus-service",
+      "destination": "/native/consensus"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/consensus-service/create-a-topic",
+      "destination": "/native/consensus/create-topic"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/consensus-service/delete-a-topic",
+      "destination": "/native/consensus/delete-topic"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/consensus-service/errors",
+      "destination": "/native/consensus/errors"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/consensus-service/get-topic-info",
+      "destination": "/native/consensus/get-info"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/consensus-service/get-topic-message",
+      "destination": "/native/consensus/get-message"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/consensus-service/submit-a-message",
+      "destination": "/native/consensus/submit-message"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/consensus-service/update-a-topic",
+      "destination": "/native/consensus/update-topic"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/smart-contracts",
+      "destination": "/native/smart-contracts"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/smart-contracts/call-a-smart-contract-function",
+      "destination": "/native/smart-contracts/call"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/smart-contracts/create-a-smart-contract",
+      "destination": "/native/smart-contracts/create"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/smart-contracts/ethereum-transaction",
+      "destination": "/native/smart-contracts/ethereum-transaction"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/smart-contracts/get-smart-contract-info",
+      "destination": "/native/smart-contracts/get-info"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/smart-contracts/hedera-service-solidity-libraries",
+      "destination": "/native/smart-contracts/solidity-libraries"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/smart-contracts/update-a-smart-contract",
+      "destination": "/native/smart-contracts/update"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/token-service",
+      "destination": "/native/tokens"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/token-service/airdrop-a-token",
+      "destination": "/native/tokens/airdrop"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/token-service/cancel-a-token",
+      "destination": "/native/tokens/cancel"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/token-service/claim-a-token",
+      "destination": "/native/tokens/claim"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/token-service/reject-an-airdrop",
+      "destination": "/native/tokens/reject-airdrop"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/token-service/update-nft-metadata",
+      "destination": "/native/tokens/update-nft-metadata"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/transactions",
+      "destination": "/native/transactions"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/transactions/create-a-batch-transaction",
+      "destination": "/native/transactions/batch"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/transactions/get-a-transaction-receipt",
+      "destination": "/native/transactions/receipt"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/transactions/get-a-transaction-record",
+      "destination": "/native/transactions/record"
+    },
+    {
+      "source": "/hedera/tutorials/consensus/submit-your-first-message",
+      "destination": "/native/tutorials/consensus/submit-first-message"
+    },
+    {
+      "source": "/hedera/tutorials/demo-applications",
+      "destination": "/solutions/examples/demos"
+    },
+    {
+      "source": "/hedera/tutorials/local-node/how-to-set-up-a-hedera-local-node",
+      "destination": "/native/local-dev/setup-local-node"
+    },
+    {
+      "source": "/hedera/tutorials/more-tutorials",
+      "destination": "/native/tutorials/more"
+    },
+    {
+      "source": "/hedera/tutorials/more-tutorials/get-started-with-the-hedera-consensus-service-fabric-plugin",
+      "destination": "/native/tutorials/advanced/hcs-fabric-plugin"
+    },
+    {
+      "source": "/hedera/tutorials/more-tutorials/how-to-create-a-personal-access-token-api-key-on-the-hedera-portal",
+      "destination": "/native/tutorials/getting-started/create-api-key"
+    },
+    {
+      "source": "/hedera/tutorials/more-tutorials/schedule-your-first-transaction",
+      "destination": "/native/tutorials/scheduled/schedule-first"
+    },
+    {
+      "source": "/hedera/tutorials/smart-contracts",
+      "destination": "/evm/tutorials"
+    },
+    {
+      "source": "/hedera/tutorials/smart-contracts/how-to-mint-and-burn-an-erc-721-token-using-hardhat-and-ethers-part-1",
+      "destination": "/evm/tutorials/advanced/erc721-hardhat/part1-mint-burn"
+    },
+    {
+      "source": "/hedera/tutorials/smart-contracts/how-to-verify-a-smart-contract-on-hashscan",
+      "destination": "/evm/tutorials/intermediate/verify-hashscan"
+    },
+    {
+      "source": "/hedera/tutorials/smart-contracts/hts-x-evm-part-1-how-to-mint-nfts",
+      "destination": "/evm/tutorials/hedera/hts-evm/part1-mint-nfts"
+    },
+    {
+      "source": "/hedera/tutorials/starter-projects",
+      "destination": "/solutions/examples/starters"
+    },
+    {
+      "source": "/hedera/tutorials/token",
+      "destination": "/native/tutorials/tokens"
+    },
+    {
+      "source": "/hedera/tutorials/token/create-and-transfer-your-first-nft",
+      "destination": "/native/tutorials/tokens/create-transfer-nft"
+    },
+    {
+      "source": "/hedera/tutorials/token/structure-your-token-metadata-using-json-schema-v2",
+      "destination": "/native/tutorials/tokens/metadata-schema"
+    },
     {
       "source": "/hedera/getting-started",
       "destination": "/learn/getting-started/what-is-hedera"
@@ -112,6 +843,14 @@
     {
       "source": "/hedera/core-concepts/:slug*",
       "destination": "/learn/core-concepts/:slug*"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/sdks/:slug*",
+      "destination": "/native/:slug*"
+    },
+    {
+      "source": "/hedera/sdks-and-apis/hedera-api/:slug*",
+      "destination": "/reference/protobuf/:slug*"
     },
     {
       "source": "/hedera/sdks-and-apis",
@@ -201,10 +940,26 @@
   "navigation": {
     "global": {
       "anchors": [
-        {"anchor": "Status", "href": "http://status.hedera.com/", "icon": "signal"},
-        {"anchor": "Discord", "href": "https://hedera.com/discord", "icon": "discord"},
-        {"anchor": "Playground", "href": "https://portal.hedera.com/playground", "icon": "code"},
-        {"anchor": "Blog", "href": "https://hedera.com/blog", "icon": "newspaper"}
+        {
+          "anchor": "Status",
+          "href": "http://status.hedera.com/",
+          "icon": "signal"
+        },
+        {
+          "anchor": "Discord",
+          "href": "https://hedera.com/discord",
+          "icon": "discord"
+        },
+        {
+          "anchor": "Playground",
+          "href": "https://portal.hedera.com/playground",
+          "icon": "code"
+        },
+        {
+          "anchor": "Blog",
+          "href": "https://hedera.com/blog",
+          "icon": "newspaper"
+        }
       ]
     },
     "tabs": [

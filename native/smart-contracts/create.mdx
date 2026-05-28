@@ -53,7 +53,6 @@ With [HIP-904](https://hips.hedera.com/hip/hip-904), contracts now support Admin
 | **Automatic Token Associations** | The maximum number of tokens that this contract can be automatically associated with (i.e., receive air-drops from). |
 | **Constructor Parameters** | The constructor parameters to pass. |
 | **Memo** | The memo to be associated with this contract. (max 100 bytes) |
-| **Hooks** | Details of [Hiero Hooks](/hedera/core-concepts/accounts/hiero-hooks) to attach immediately after creating this contract. See [Create and Manage Hooks](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks). |
 
 ## `ContractCreateFlow()`
 
@@ -198,8 +197,6 @@ Creates a smart contract instance using the file ID of the contract bytecode.
 | `setAutoRenewAccountId(<accountId)` | AccountId | Optional |
 | `setAutoRenewPeriod(<autoRenewPeriod>)` | Duration | Optional |
 | `setMaxAutomaticTokenAssociations()` | int | Optional |
-| `addHook(<hook>)` | [HookCreationDetails](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks) | Optional |
-| `setHooks(<hooks>)` | list\<[HookCreationDetails](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks)> | Optional |
 
 <CodeGroup>
 
@@ -275,93 +272,6 @@ fmt.Printf("The new contract ID is %v\n", newContractId)
 
 </CodeGroup>
 
-#### Create a contract with a hook
-
-This example creates a smart contract with an [account allowance hook](/hedera/core-concepts/accounts/hiero-hooks) attached. The hook's implementing contract must be deployed separately first.
-
-<CodeGroup>
-
-```java Java
-// The hook's implementing contract (deployed separately)
-ContractId hookContractId = /* ... */;
-
-// Create hook details
-HookCreationDetails hookDetails = new HookCreationDetails()
-    .setExtensionPoint(HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK)
-    .setHookId(1L)
-    .setEvmHook(new EvmHook().setContractId(hookContractId))
-    .setAdminKey(adminKey.getPublicKey());
-
-// Create the contract with a hook attached
-TransactionResponse txResponse = new ContractCreateTransaction()
-    .setGas(100_000)
-    .setBytecodeFileId(bytecodeFileId)
-    .addHook(hookDetails)
-    .setMaxTransactionFee(new Hbar(16))
-    .execute(client);
-
-ContractId newContractId = txResponse.getReceipt(client).contractId;
-System.out.println("Contract created with hook: " + newContractId);
-```
-
-```javascript JavaScript
-import {
-    ContractCreateTransaction,
-    HookCreationDetails,
-    EvmHook,
-    HookExtensionPoint,
-    Long,
-    Hbar,
-} from "@hashgraph/sdk";
-
-// The hook's implementing contract (deployed separately)
-const hookContractId = /* ... */;
-
-// Create hook details
-const hookDetails = new HookCreationDetails({
-    extensionPoint: HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
-    hookId: Long.fromInt(1),
-    evmHook: new EvmHook({ contractId: hookContractId }),
-    adminKey: adminKey.publicKey,
-});
-
-// Create the contract with a hook attached
-const txResponse = await new ContractCreateTransaction()
-    .setGas(100_000)
-    .setBytecodeFileId(bytecodeFileId)
-    .addHook(hookDetails)
-    .setMaxTransactionFee(new Hbar(16))
-    .execute(client);
-
-const newContractId = (await txResponse.getReceipt(client)).contractId;
-console.log("Contract created with hook: " + newContractId);
-```
-
-```go Go
-// The hook's implementing contract (deployed separately)
-// hookContractId := ...
-
-// Create hook details
-hookDetails := hook.NewHookCreationDetails().
-    SetExtensionPoint(hook.AccountAllowanceHook).
-    SetHookID(1).
-    SetEvmHook(hook.NewEvmHook().SetContractID(hookContractId)).
-    SetAdminKey(adminKey.PublicKey())
-
-// Create the contract with a hook attached
-txResponse, err := hedera.NewContractCreateTransaction().
-    SetGas(100000).
-    SetBytecodeFileID(bytecodeFileID).
-    AddHook(hookDetails).
-    SetMaxTransactionFee(hedera.NewHbar(16)).
-    Execute(client)
-
-receipt, err := txResponse.GetReceipt(client)
-fmt.Printf("Contract created with hook: %v\n", receipt.ContractID)
-```
-
-</CodeGroup>
-
 ## Get transaction values
 
 | Method | Type | Requirement |
@@ -378,7 +288,6 @@ fmt.Printf("Contract created with hook: %v\n", receipt.ContractID)
 | `getStakedAccountId()` | AccountId | Optional |
 | `getAutoRenewAccountId()` | AccountId | Required |
 | `getAutoRenewPeriod()` | Duration | Required |
-| `getHooks()` | list\<HookCreationDetails> | Optional |
 
 <CodeGroup>
 

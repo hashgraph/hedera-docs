@@ -40,7 +40,7 @@ Hedera supports both ECDSA (secp256k1) and ED25519. The EVM toolchain only handl
 
 ### Gas refund behavior
 
-Hedera used to cap gas refunds at 20% of the limit, so setting a generous gas limit could quietly cost you. Per [HIP-1249](https://hips.hedera.com/#hip-1249) (mirror node [v0.140.0 release notes](/learn/release-notes/mirror-node#v0-140-0)), unused gas is now refunded in full, and only the gas you actually consumed is charged. The per-transaction limit remains 15M ([HIP-185](https://hips.hedera.com/#hip-185)). If you find guidance referencing the 20% cap, it's pre-HIP-1249 and no longer applies. See [Gas and Fees](/evm/development/gas-fees) for the full pricing model, intrinsic gas costs, and how to estimate fees.
+Per [HIP-1249](https://hips.hedera.com/#hip-1249) (mirror node [v0.140.0 release notes](/learn/release-notes/mirror-node#v0-140-0)), unused gas is refunded in full, and only the gas you actually consumed is charged. The per-transaction limit remains 15M ([HIP-185](https://hips.hedera.com/#hip-185)). Hedera previously capped gas refunds at 20% of the limit, so setting a generous gas limit could quietly cost you. If you find guidance referencing the 20% cap, it's pre-HIP-1249 and no longer applies. See [Gas and Fees](/evm/development/gas-fees) for the full pricing model, intrinsic gas costs, and how to estimate fees.
 
 ### Historical queries have a retention window
 

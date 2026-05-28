@@ -28,7 +28,6 @@ A transaction that allows you to modify the smart contract entity state like adm
 | **Auto Renew Account ID** | Indicates the account that will pay the contract's auto-renew fee. If the Auto Renew account id is cleared, then the smart contract's account will be charged the auto-renew fee. |
 | **Automatic Token Associations** | The maximum number of tokens that this contract can be automatically associated with (i.e., receive air-drops from). |
 | **Memo** | The new memo to be associated with this contract. |
-| **Hooks** | Add or remove [Hiero Hooks](/hedera/core-concepts/accounts/hiero-hooks) from the contract. Deletions are processed before creations, enabling atomic hook replacement. See [Create and Manage Hooks](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks). |
 
 ### Methods
 
@@ -45,10 +44,6 @@ A transaction that allows you to modify the smart contract entity state like adm
 | `setAutoRenewPeriod(<autoRenewPeriod>)` | Duration | Optional |
 | `setAutoRenewAccountId(<accountId>)` | [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid) | Optional |
 | `clearAutoRenewAccountId()` | | Optional |
-| `addHookToCreate(<hook>)` | [HookCreationDetails](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks) | Optional |
-| `setHooksToCreate(<hooks>)` | list\<[HookCreationDetails](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-and-manage-hooks)> | Optional |
-| `addHookToDelete(<hookId>)` | long | Optional |
-| `setHooksToDelete(<hookIds>)` | list\<long> | Optional |
 
 <Info>
 ***Note:** The new expiration time must be an instance of type **`Timestamp`**, thus, the **`Timestamp`** object has to be imported from the SDK package. The new expiration time has to be initialized as a new instance of that type.*
@@ -141,138 +136,6 @@ fmt.Printf("The transaction consensus status %v\n", transactionStatus)
 
 </CodeGroup>
 
-#### Add hooks to an existing contract
-
-This example adds an [account allowance hook](/hedera/core-concepts/accounts/hiero-hooks) to an existing smart contract. The hook's implementing contract must be deployed separately first.
-
-<CodeGroup>
-
-```java Java
-// Create hook details
-HookCreationDetails hookDetails = new HookCreationDetails()
-    .setExtensionPoint(HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK)
-    .setHookId(1L)
-    .setEvmHook(new EvmHook().setContractId(hookContractId))
-    .setAdminKey(adminKey.getPublicKey());
-
-// Add the hook to the contract
-TransactionResponse txResponse = new ContractUpdateTransaction()
-    .setContractId(contractId)
-    .addHookToCreate(hookDetails)
-    .setMaxTransactionFee(new Hbar(20))
-    .freezeWith(client)
-    .sign(adminKey)
-    .execute(client);
-
-TransactionReceipt receipt = txResponse.getReceipt(client);
-System.out.println("Hook added to contract: " + receipt.status);
-```
-
-```javascript JavaScript
-import {
-    ContractUpdateTransaction,
-    HookCreationDetails,
-    EvmHook,
-    HookExtensionPoint,
-    Long,
-    Hbar,
-} from "@hashgraph/sdk";
-
-// Create hook details
-const hookDetails = new HookCreationDetails({
-    extensionPoint: HookExtensionPoint.ACCOUNT_ALLOWANCE_HOOK,
-    hookId: Long.fromInt(1),
-    evmHook: new EvmHook({ contractId: hookContractId }),
-    adminKey: adminKey.publicKey,
-});
-
-// Add the hook to the contract
-const txResponse = await (
-    await new ContractUpdateTransaction()
-        .setContractId(contractId)
-        .addHookToCreate(hookDetails)
-        .setMaxTransactionFee(new Hbar(20))
-        .freezeWith(client)
-        .sign(adminKey)
-).execute(client);
-
-const receipt = await txResponse.getReceipt(client);
-console.log("Hook added to contract: " + receipt.status);
-```
-
-```go Go
-// Create hook details
-hookDetails := hook.NewHookCreationDetails().
-    SetExtensionPoint(hook.AccountAllowanceHook).
-    SetHookID(1).
-    SetEvmHook(hook.NewEvmHook().SetContractID(hookContractID)).
-    SetAdminKey(adminKey.PublicKey())
-
-// Add the hook to the contract
-txResponse, err := hedera.NewContractUpdateTransaction().
-    SetContractID(contractID).
-    AddHookToCreate(hookDetails).
-    SetMaxTransactionFee(hedera.NewHbar(20)).
-    FreezeWith(client).
-    Sign(adminKey).
-    Execute(client)
-
-receipt, err := txResponse.GetReceipt(client)
-fmt.Printf("Hook added to contract: %v\n", receipt.Status)
-```
-
-</CodeGroup>
-
-#### Delete hooks from an existing contract
-
-This example removes a hook by its ID. A hook must have zero storage slots before it can be deleted — clear storage first using [`HookStoreTransaction`](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-a-hookstore-transaction).
-
-<CodeGroup>
-
-```java Java
-TransactionResponse txResponse = new ContractUpdateTransaction()
-    .setContractId(contractId)
-    .addHookToDelete(1L)
-    .setMaxTransactionFee(new Hbar(20))
-    .freezeWith(client)
-    .sign(adminKey)
-    .execute(client);
-
-TransactionReceipt receipt = txResponse.getReceipt(client);
-System.out.println("Hook deleted from contract: " + receipt.status);
-```
-
-```javascript JavaScript
-import { ContractUpdateTransaction, Long, Hbar } from "@hashgraph/sdk";
-
-const txResponse = await (
-    await new ContractUpdateTransaction()
-        .setContractId(contractId)
-        .addHookToDelete(Long.fromNumber(1))
-        .setMaxTransactionFee(new Hbar(20))
-        .freezeWith(client)
-        .sign(adminKey)
-).execute(client);
-
-const receipt = await txResponse.getReceipt(client);
-console.log("Hook deleted from contract: " + receipt.status);
-```
-
-```go Go
-txResponse, err := hedera.NewContractUpdateTransaction().
-    SetContractID(contractID).
-    AddHookToDelete(1).
-    SetMaxTransactionFee(hedera.NewHbar(20)).
-    FreezeWith(client).
-    Sign(adminKey).
-    Execute(client)
-
-receipt, err := txResponse.GetReceipt(client)
-fmt.Printf("Hook deleted from contract: %v\n", receipt.Status)
-```
-
-</CodeGroup>
-
 ## Get transaction values
 
 | Method | Type | Requirement |
@@ -287,8 +150,6 @@ fmt.Printf("Hook deleted from contract: %v\n", receipt.Status)
 | `getDeclineStakingReward()` | boolean | Optional |
 | `getAutoRenewAccountId()` | [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid) | Required |
 | `getAutoRenewPeriod()` | Duration | Required |
-| `getHooksToCreate()` | list\<HookCreationDetails> | Optional |
-| `getHooksToDelete()` | list\<long> | Optional |
 
 <CodeGroup>
 

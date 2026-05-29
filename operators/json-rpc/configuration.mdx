@@ -1,35 +1,88 @@
 ---
 title: "JSON-RPC Configuration"
-description: "Configure your JSON-RPC relay for optimal performance."
-icon: "sliders"
+description: "Environment variables and runtime tuning for the Hiero JSON-RPC Relay."
 ---
 
-{/* TODO: This page needs content */}
+The relay is configured through environment variables, typically supplied via a `.env` file at the project root or set directly in the container runtime. The variables below cover the ones you're most likely to need. The relay supports well over a hundred variables in total; for the complete list with defaults, see [`docs/configuration.md`](https://github.com/hiero-ledger/hiero-json-rpc-relay/blob/main/docs/configuration.md) in the repo.
 
-<Info>
-  **Coming Soon** — This page is under construction.
-</Info>
+## Network selection
 
-## Overview
+| Variable | Required | Description |
+|---|:---:|---|
+| `HEDERA_NETWORK` | yes | `mainnet`, `testnet`, `previewnet`, or an IP map for a custom network. |
+| `CHAIN_ID` | yes | Hex-encoded chain ID. `0x127` (mainnet, 295), `0x128` (testnet, 296), `0x129` (previewnet, 297), `0x12a` (local node, 298). |
+| `MIRROR_NODE_URL` | yes | Base URL of the mirror node REST API the relay reads from. Defaults to `""` (must be set). |
 
-Configure your JSON-RPC relay for optimal performance.
+## Operator account
 
-{/*
-## Content Checklist
-- [ ] Write introduction
-- [ ] Add code examples
-- [ ] Include diagrams if needed
-- [ ] Add related links
-- [ ] Review and polish
-*/}
+| Variable | Required | Description |
+|---|:---:|---|
+| `OPERATOR_ID_MAIN` | yes | Hedera account ID that pays for relay-issued transactions (e.g. `0.0.1234`). |
+| `OPERATOR_KEY_MAIN` | yes | Operator private key in the format specified by `OPERATOR_KEY_FORMAT`. Keep secret. |
+| `OPERATOR_KEY_FORMAT` | no | One of `DER`, `HEX_ECDSA`, `HEX_ED25519`. Defaults to `DER`. |
 
-## Need Help?
+The operator account pays for the relay's submitted transactions. It does not need a large balance unless you're serving high write volume.
 
-<CardGroup cols={2}>
-  <Card title="Discord" icon="discord" href="https://hedera.com/discord">
-    Join our developer community
-  </Card>
-  <Card title="GitHub" icon="github" href="https://github.com/hashgraph">
-    Explore our repositories
+## Listening interface
+
+| Variable | Default | Description |
+|---|:---:|---|
+| `SERVER_PORT` | `7546` | TCP port the HTTP JSON-RPC server listens on. |
+
+For the WebSocket server, use the `.env.ws.example` template; it ships with its own port and host settings on port `8546` by default.
+
+## Rate limiting
+
+IP-based rate limiting is **disabled by default**. Set `RATE_LIMIT_DISABLED=false` to turn it on; the relay then applies three tiers, each covering a different cost class of method.
+
+| Variable | Default | Description |
+|-------|:---:|---|
+| `RATE_LIMIT_DISABLED` | `true` | When `true`, IP-based rate limiting is off. Set to `false` to enforce the tier limits below. |
+| `TIER_1_RATE_LIMIT` | `100` | Max request count per `LIMIT_DURATION` for the most expensive endpoints. |
+| `TIER_2_RATE_LIMIT` | `800` | Max request count per `LIMIT_DURATION` for moderate-cost endpoints. |
+| `TIER_3_RATE_LIMIT` | `1600` | Max request count per `LIMIT_DURATION` for cheap static-return endpoints. |
+| `LIMIT_DURATION` | `60000` | Window length in milliseconds. |
+| `DEFAULT_RATE_LIMIT` | `200` | Fallback request limit for methods not assigned a specific tier. |
+
+Tune these based on traffic and how much operator HBAR you're willing to spend on writes.
+
+## Caching
+
+The relay caches mirror node responses to absorb burst read traffic.
+
+| Variable | Default | Description |
+|---|:---:|---|
+| `CACHE_MAX` | `1000` | Maximum number of items the in-memory cache will hold before evicting. |
+| `CACHE_TTL` | `3600000` | Default cache TTL in milliseconds (1 hour). |
+| `MIRROR_NODE_LIMIT_PARAM` | `100` | Max page size when paginating mirror node lists. |
+
+For Redis-backed caching across multiple relay instances, see the `REDIS_*` variables in the repo's reference table.
+
+## Sanity-check a configuration
+
+After editing variables, restart the relay and confirm chain ID and a simple read both work:
+
+```bash wrap
+docker compose restart
+sleep 5
+
+# 1. Chain ID matches your CHAIN_ID setting
+curl -s -X POST http://localhost:7546 \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"eth_chainId","params":[]}'
+
+# 2. A balance read against a known account (replace EVM address)
+curl -s -X POST http://localhost:7546 \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":2,"method":"eth_getBalance","params":["0x0000000000000000000000000000000000000002","latest"]}'
+```
+
+If both return non-error JSON, the relay is reading from the mirror node correctly.
+
+## See also
+
+<CardGroup cols={1}>
+  <Card title="Setup" icon="wrench" href="/operators/json-rpc/setup">
+    Initial install and Docker Compose bring-up.
   </Card>
 </CardGroup>

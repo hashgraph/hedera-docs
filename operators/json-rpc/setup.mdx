@@ -1,35 +1,86 @@
 ---
 title: "JSON-RPC Setup"
-description: "Step-by-step guide to setting up a JSON-RPC relay."
-icon: "wrench"
+description: "Install and run the Hiero JSON-RPC Relay locally or in a container orchestrator."
 ---
 
-{/* TODO: This page needs content */}
+This page walks through getting the [Hiero JSON-RPC Relay](https://github.com/hiero-ledger/hiero-json-rpc-relay) running. For an overview of what the relay is and when you'd want to self-host, see the [JSON-RPC Relay overview](/operators/json-rpc/index).
 
-<Info>
-  **Coming Soon** — This page is under construction.
-</Info>
+## Prerequisites
 
-## Overview
+- Docker 20.10+ and Docker Compose
+- A Hedera account on the network you're targeting (mainnet, testnet, or previewnet) with HBAR to pay for the relay's internal transactions
+- The account's ECDSA or ED25519 private key in a format the relay supports (`DER`, `HEX_ECDSA`, or `HEX_ED25519` set via `OPERATOR_KEY_FORMAT`)
 
-Step-by-step guide to setting up a JSON-RPC relay.
+You also need access to a mirror node REST endpoint for the same network. The public Hedera-hosted mirror nodes work fine for getting started:
 
-{/*
-## Content Checklist
-- [ ] Write introduction
-- [ ] Add code examples
-- [ ] Include diagrams if needed
-- [ ] Add related links
-- [ ] Review and polish
-*/}
+| Network    | Mirror node base URL                       |
+|------------|--------------------------------------------|
+| Mainnet    | `https://mainnet.mirrornode.hedera.com`    |
+| Testnet    | `https://testnet.mirrornode.hedera.com`    |
+| Previewnet | `https://previewnet.mirrornode.hedera.com` |
 
-## Need Help?
+## Run with Docker Compose
 
-<CardGroup cols={2}>
-  <Card title="Discord" icon="discord" href="https://hedera.com/discord">
-    Join our developer community
-  </Card>
-  <Card title="GitHub" icon="github" href="https://github.com/hashgraph">
-    Explore our repositories
+Clone the repo and copy the HTTP example env file:
+
+```bash
+git clone https://github.com/hiero-ledger/hiero-json-rpc-relay.git
+cd hiero-json-rpc-relay
+cp .env.http.example .env
+```
+
+The repo ships two env templates: `.env.http.example` for the JSON-RPC HTTP server (what you usually want) and `.env.ws.example` for the WebSocket server. Pick the one that matches the workload, or run both.
+
+Edit `.env` and set the minimum required values:
+
+```dotenv wrap
+HEDERA_NETWORK=testnet
+CHAIN_ID=0x128                                      # 296 in hex (testnet)
+MIRROR_NODE_URL=https://testnet.mirrornode.hedera.com
+OPERATOR_ID_MAIN=0.0.1234
+OPERATOR_KEY_MAIN=302d300706052b8104000a0322000334...
+OPERATOR_KEY_FORMAT=DER
+```
+
+Then bring it up:
+
+```bash
+docker compose up -d
+```
+
+By default the relay listens on port `7546` for HTTP and `8546` for WebSocket. Verify HTTP with a chain-ID call:
+
+```bash
+curl -X POST http://localhost:7546 \
+  -H 'Content-Type: application/json' \
+  -d '{"jsonrpc":"2.0","id":"1","method":"eth_chainId","params":[null]}'
+```
+
+Expected response:
+
+```json
+{"jsonrpc":"2.0","id":"1","result":"0x128"}
+```
+
+`0x128` is `296` in hex, which is Hedera testnet. If you see that, the relay is up and pointed at the right network.
+
+## Connect MetaMask or Hardhat
+
+Point your tooling at the relay's URL and the matching chain ID. For a self-hosted relay against testnet:
+
+| Field | Value |
+|---|---|
+| RPC URL | `http://<your-host>:7546` |
+| Chain ID | `296` |
+| Currency symbol | `HBAR` |
+| Block explorer | `https://hashscan.io/testnet` |
+
+For the full per-EVM-tool wiring, see the [setup guides under EVM Developers](/evm/quickstart/setup-metamask).
+
+## Next
+
+<CardGroup cols={1}>
+  <Card title="Configuration" icon="sliders" href="/operators/json-rpc/configuration">
+    Tune chain ID, mirror node URL, rate limits, caching, and logging.
   </Card>
 </CardGroup>

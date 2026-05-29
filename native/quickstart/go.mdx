@@ -1,35 +1,136 @@
 ---
 title: "Go Quickstart"
-description: "Set up and use the Hedera Go SDK."
-icon: "golang"
+description: "Connect to Hedera testnet from Go, query your balance, and transfer HBAR."
 ---
 
-{/* TODO: This page needs content */}
+This page gets a Go program talking to Hedera testnet: SDK install, operator credentials, balance query, and an HBAR transfer.
 
-<Info>
-  **Coming Soon** — This page is under construction.
-</Info>
+## Prerequisites
 
-## Overview
+- Go 1.21 or later
+- A Hedera testnet account with ECDSA keys from the [developer portal](https://portal.hedera.com)
 
-Set up and use the Hedera Go SDK.
+## Step 1: Initialize the module and install the SDK
 
-{/*
-## Content Checklist
-- [ ] Write introduction
-- [ ] Add code examples
-- [ ] Include diagrams if needed
-- [ ] Add related links
-- [ ] Review and polish
-*/}
+```bash
+mkdir hedera-quickstart && cd hedera-quickstart
+go mod init hedera-quickstart
+go get github.com/hiero-ledger/hiero-sdk-go/v2@latest
+go get github.com/joho/godotenv
+```
 
-## Need Help?
+## Step 2: Credentials
+
+Create a `.env` file (and add it to `.gitignore`):
+
+```dotenv
+OPERATOR_ID=0.0.1234
+OPERATOR_KEY=302d300706052b8104000a032200033456...
+```
+
+`OPERATOR_ID` is your Hedera account ID. `OPERATOR_KEY` is the DER-encoded ECDSA private key; use the **HEX Encoded Private Key** value from the developer portal.
+
+## Step 3: Connect, query, transfer
+
+Create `main.go`:
+
+```go
+package main
+
+import (
+    "fmt"
+    "log"
+    "os"
+
+    hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
+    "github.com/joho/godotenv"
+)
+
+func main() {
+    if err := godotenv.Load(); err != nil {
+        log.Fatalf("failed to load .env: %v", err)
+    }
+
+    operatorID, err := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
+    if err != nil {
+        log.Fatalf("bad OPERATOR_ID: %v", err)
+    }
+
+    operatorKey, err := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
+    if err != nil {
+        log.Fatalf("bad OPERATOR_KEY: %v", err)
+    }
+
+    // Connect to testnet with the operator as the default payer.
+    client := hedera.ClientForTestnet()
+    client.SetOperator(operatorID, operatorKey)
+
+    // 1. Query the operator's balance.
+    balance, err := hedera.NewAccountBalanceQuery().
+        SetAccountID(operatorID).
+        Execute(client)
+    if err != nil {
+        log.Fatalf("balance query failed: %v", err)
+    }
+    fmt.Printf("Operator balance: %v\n", balance.Hbars)
+
+    // 2. Transfer 1 HBAR to account 0.0.3.
+    recipient, _ := hedera.AccountIDFromString("0.0.3")
+    response, err := hedera.NewTransferTransaction().
+        AddHbarTransfer(operatorID, hedera.HbarFrom(-1, hedera.HbarUnits.Hbar)).
+        AddHbarTransfer(recipient, hedera.HbarFrom(1, hedera.HbarUnits.Hbar)).
+        Execute(client)
+    if err != nil {
+        log.Fatalf("transfer failed: %v", err)
+    }
+
+    receipt, err := response.GetReceipt(client)
+    if err != nil {
+        log.Fatalf("receipt failed: %v", err)
+    }
+
+    fmt.Printf("Transfer status: %s\n", receipt.Status)
+    fmt.Printf("Transaction ID: %s\n", response.TransactionID)
+}
+```
+
+## Step 4: Run it
+
+```bash
+go run main.go
+```
+
+Expected output:
+
+```text
+Operator balance: 10000 ℏ
+Transfer status: SUCCESS
+Transaction ID: 0.0.1234@1700000000.123456789
+```
+
+Look up the transaction on HashScan:
+
+```text
+https://hashscan.io/testnet/transaction/<transactionId>
+```
+
+## What's next
 
 <CardGroup cols={2}>
-  <Card title="Discord" icon="discord" href="https://hedera.com/discord">
-    Join our developer community
+  <Card title="Create an Account" icon="user-plus" href="/native/accounts/create">
+    Generate a new account programmatically and fund it from your operator.
   </Card>
-  <Card title="GitHub" icon="github" href="https://github.com/hashgraph">
-    Explore our repositories
+  <Card title="Create a Token" icon="coins" href="/native/tokens/define">
+    Mint a native HTS token with custom supply and decimals.
+  </Card>
+  <Card title="Submit to a Topic" icon="comment" href="/native/consensus/submit-message">
+    Publish a message to HCS for verifiable, ordered audit logs.
+  </Card>
+  <Card title="SDK Reference" icon="book" href="https://github.com/hiero-ledger/hiero-sdk-go">
+    Full API reference on GitHub.
   </Card>
 </CardGroup>
+
+<Tip>
+  The four Hiero SDKs (JavaScript, Java, Go, Python) share the same API surface, so code translates almost line-for-line between them. Differences are mostly language-idiomatic.
+</Tip>

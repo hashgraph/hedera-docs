@@ -1,4 +1,67 @@
 ---
 title: "Developer Playground"
-url: "https://portal.hedera.com/playground"
+mode: "custom"
+icon: "code"
 ---
+
+<div style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px 24px 56px', color: 'var(--landing-fg-primary)' }}>
+
+  <a href="/learn/getting-started" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.8125rem', color: '#8259EF', textDecoration: 'none', marginBottom: '20px' }}>
+    ← Getting Started
+  </a>
+
+  <h1 style={{ fontSize: 'clamp(1.75rem, 3vw, 2.25rem)', fontWeight: 500, letterSpacing: '-0.02em', margin: '0 0 16px', color: 'var(--landing-fg-primary)' }}>
+    Developer Playground
+  </h1>
+
+  <p style={{ fontSize: '0.9375rem', lineHeight: 1.6, color: 'var(--landing-fg-secondary)', margin: '0 0 24px', maxWidth: '900px' }}>
+    Try Hedera transactions directly in your browser with this interactive playground. Create accounts, transfer HBAR, mint tokens, and exercise core services on testnet with no SDK install or keys to manage. Built in collaboration with <a href="https://www.kabila.app/" style={{ color: '#8259EF', textDecoration: 'none' }}>Kabila</a> and open source.
+  </p>
+
+  <div style={{ width: '100%', margin: '12px 0 40px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)', background: '#0c1226', boxShadow: '0 1px 2px rgba(0,0,0,0.2)' }}>
+    <iframe
+      src="https://portal.hedera.com/playground?minimal=1"
+      title="Hedera Developer Playground"
+      width="100%"
+      height="820"
+      style={{ border: 0, display: 'block', background: 'transparent' }}
+      loading="lazy"
+      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
+    ></iframe>
+  </div>
+
+  <p style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary, rgba(255,255,255,0.55))', margin: '0 0 40px' }}>
+    Need more room? Open it full-screen at <a href="https://portal.hedera.com/playground" style={{ color: '#8259EF', textDecoration: 'none' }}>portal.hedera.com/playground</a>.
+  </p>
+
+  <h2 style={{ fontSize: '1.375rem', fontWeight: 500, letterSpacing: '-0.015em', margin: '0 0 16px', color: 'var(--landing-fg-primary)' }}>
+    What you can try
+  </h2>
+
+  <ul style={{ fontSize: '0.9375rem', lineHeight: 1.6, color: 'var(--landing-fg-secondary)', paddingLeft: '24px', margin: '0 0 32px', listStyle: 'disc' }}>
+    <li style={{ marginBottom: '8px' }}><strong style={{ color: 'var(--landing-fg-primary)' }}>Account operations</strong>: create testnet accounts, check balances, and transfer HBAR between accounts.</li>
+    <li style={{ marginBottom: '8px' }}><strong style={{ color: 'var(--landing-fg-primary)' }}>Token Service</strong>: create fungible and non-fungible tokens, associate, mint, and transfer them.</li>
+    <li style={{ marginBottom: '8px' }}><strong style={{ color: 'var(--landing-fg-primary)' }}>Consensus Service</strong>: create topics and submit messages to test ordered, timestamped event flows.</li>
+    <li style={{ marginBottom: '8px' }}><strong style={{ color: 'var(--landing-fg-primary)' }}>Inspect on HashScan</strong>: every transaction links straight to <a href="https://hashscan.io/testnet" style={{ color: '#8259EF', textDecoration: 'none' }}>HashScan</a> so you can see the receipt and record.</li>
+  </ul>
+
+  <h2 style={{ fontSize: '1.375rem', fontWeight: 500, letterSpacing: '-0.015em', margin: '0 0 16px', color: 'var(--landing-fg-primary)' }}>
+    Next steps
+  </h2>
+
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px', marginBottom: '24px' }}>
+    <a href="/learn/getting-started/create-portal-account" style={{ display: 'block', padding: '18px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.02)', textDecoration: 'none' }}>
+      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Create a portal account</div>
+      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary, rgba(255,255,255,0.55))', lineHeight: 1.45 }}>Sign up for the Hedera portal to manage testnet accounts, keys, and faucet funding.</div>
+    </a>
+    <a href="/learn/getting-started/choose-your-path" style={{ display: 'block', padding: '18px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.02)', textDecoration: 'none' }}>
+      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Choose your path</div>
+      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary, rgba(255,255,255,0.55))', lineHeight: 1.45 }}>Decide between EVM/Solidity or a native SDK (JS, Java, Go) for your first project.</div>
+    </a>
+    <a href="/evm/tools/contract-builder" style={{ display: 'block', padding: '18px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.02)', textDecoration: 'none' }}>
+      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Try the Contract Builder</div>
+      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary, rgba(255,255,255,0.55))', lineHeight: 1.45 }}>Scaffold, compile, deploy, and verify Solidity contracts on testnet, also in your browser.</div>
+    </a>
+  </div>
+
+</div>

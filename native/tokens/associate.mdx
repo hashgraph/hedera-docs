@@ -47,11 +47,11 @@ There is currently no limit on the number of token IDs that can be associated wi
 |--------|------|-------------|
 | `getAccountId()` | AccountId | Returns the account to be associated |
 | `getTokenIds()` | List&lt;TokenId&gt; | Returns the list of tokens to be associated |
-| `getHighVolume()` | boolean | Returns whether this transaction uses [high-volume throttles](/core-concepts/high-volume-entity-creation) |
+| `getHighVolume()` | boolean | Returns whether this transaction uses [high-volume throttles](/learn/core-concepts/high-volume-entity-creation#high-volume-throttle-capacity) |
 
 
 <Note>
-     This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation)
+     This transaction supports [high-volume entity creation](/learn/core-concepts/high-volume-entity-creation)
      (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated
      high-volume throttle capacity with variable-rate pricing for both fungible and NFT mints.
      Always pair this with `setMaxTransactionFee()` to cap your costs.

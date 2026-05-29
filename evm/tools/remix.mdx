@@ -1,35 +1,107 @@
 ---
 title: "Remix IDE"
-description: "Use Remix IDE to quickly prototype and deploy contracts on Hedera."
-icon: "browser"
+description: "Write, compile, and deploy Solidity contracts to Hedera testnet from your browser."
 ---
 
-{/* TODO: This page needs content */}
+Remix is an open-source Solidity IDE that runs in the browser. It compiles, debugs, and deploys without anything installed locally. Because Hedera is EVM-compatible, the same Remix workflow you'd use against Ethereum works against Hedera once MetaMask is pointed at the JSON-RPC relay.
 
-<Info>
-  **Coming Soon** — This page is under construction.
-</Info>
+The rest of this page walks through that workflow end-to-end.
 
-## Overview
-
-Use Remix IDE to quickly prototype and deploy contracts on Hedera.
-
-{/*
-## Content Checklist
-- [ ] Write introduction
-- [ ] Add code examples
-- [ ] Include diagrams if needed
-- [ ] Add related links
-- [ ] Review and polish
-*/}
-
-## Need Help?
+## Prerequisites
 
 <CardGroup cols={2}>
-  <Card title="Discord" icon="discord" href="https://hedera.com/discord">
-    Join our developer community
+  <Card title="MetaMask configured for Hedera Testnet" icon="wallet" href="/evm/quickstart/setup-metamask">
+    Network `Hedera Testnet`, RPC `https://testnet.hashio.io/api`, Chain ID `296`.
   </Card>
-  <Card title="GitHub" icon="github" href="https://github.com/hashgraph">
-    Explore our repositories
+  <Card title="Testnet HBAR" icon="faucet" href="/evm/quickstart/get-test-hbar">
+    A small amount of testnet HBAR to pay for deployment.
+  </Card>
+</CardGroup>
+
+## Step 1: Open Remix
+
+Go to [remix.ethereum.org](https://remix.ethereum.org). Accept the default workspace if it asks. The left sidebar gives you a File Explorer, the Solidity Compiler, and the Deploy & Run Transactions panel.
+
+## Step 2: Write a contract
+
+In File Explorer, create `contracts/HelloHedera.sol` and paste:
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.22;
+
+contract HelloHedera {
+    string public message = "Hello, Hedera!";
+
+    event MessageUpdated(address indexed by, string newMessage);
+
+    function updateMessage(string memory newMessage) public {
+        message = newMessage;
+        emit MessageUpdated(msg.sender, newMessage);
+    }
+}
+```
+
+## Step 3: Compile
+
+1. Open the **Solidity Compiler** tab.
+2. Set the compiler version to `0.8.22` (or anything that satisfies the `pragma`).
+3. Click **Compile HelloHedera.sol**. Green checkmark means success.
+
+<Tip>
+  Turn on **Auto compile** in the compiler settings so Remix recompiles every save. Saves a click on every edit.
+</Tip>
+
+## Step 4: Connect MetaMask
+
+1. Switch to the **Deploy & Run Transactions** tab.
+2. In the **Environment** dropdown, pick **Injected Provider - MetaMask**.
+3. MetaMask asks to connect. Approve.
+4. The **Network** field should read `Custom (296) network`. That's Hedera testnet.
+
+If it shows a different network, switch MetaMask to **Hedera Testnet** from its own network dropdown.
+
+## Step 5: Deploy
+
+1. Confirm the **CONTRACT** dropdown shows `HelloHedera`.
+2. Click the orange **Deploy** button.
+3. MetaMask prompts to confirm the transaction. Review the HBAR gas fee and click **Confirm**.
+4. The contract appears under **Deployed Contracts** at the bottom of the panel after a few seconds.
+
+## Step 6: Interact with the contract
+
+Expand the deployed contract under **Deployed Contracts**. You get a blue read-only **message** button that returns the current value at no gas cost, and an orange **updateMessage** field that writes a new value (this one costs gas).
+
+Click **message** to see the initial value. Type something into **updateMessage** and call it. Confirm the MetaMask popup. Click **message** again to see the new value.
+
+## Step 7: View on HashScan
+
+Copy the contract address from the **Deployed Contracts** panel and open:
+
+```text
+https://hashscan.io/testnet/contract/<your-address>
+```
+
+HashScan shows the deploy transaction, the bytecode, and any subsequent calls. If you want the source code readable on HashScan, [verify the contract](/evm/development/verifying) with the same Solidity file you used in Remix.
+
+## When to reach for Remix
+
+| Use case | Tool |
+|---|---|
+| Quick prototyping, single contract | Remix |
+| Reproducible deploys, tests, scripts | [Hardhat](/evm/tools/hardhat/index) or [Foundry](/evm/tools/foundry/index) |
+| Guided UI for ERC-20 / ERC-721 templates | [Contract Builder](/evm/tools/contract-builder) |
+| Cross-chain libraries (LayerZero, CCIP) | Hardhat. Remix's import resolution gets shaky |
+
+Remix is the right tool when you're learning, poking at one contract, or doing throwaway experiments. Once you want version control, a test suite, or repeatable CI deploys, move to Hardhat or Foundry.
+
+## See also
+
+<CardGroup cols={2}>
+  <Card title="Contract Builder" icon="hammer" href="/evm/tools/contract-builder">
+    Browser-based deploys without writing any Solidity yourself.
+  </Card>
+  <Card title="Hardhat" icon="hard-hat" href="/evm/tools/hardhat/index">
+    Move your Remix contract into a Hardhat project for tests and CI.
   </Card>
 </CardGroup>

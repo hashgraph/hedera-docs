@@ -396,21 +396,6 @@ placeholder "operators/json-rpc/configuration.mdx" \
     "Configure your JSON-RPC relay for optimal performance." \
     "sliders"
 
-placeholder "operators/consensus-node/requirements/hardware.mdx" \
-    "Hardware Requirements" \
-    "Hardware specifications for running a Hedera consensus node." \
-    "microchip"
-
-placeholder "operators/consensus-node/requirements/network.mdx" \
-    "Network Requirements" \
-    "Network and connectivity requirements for consensus nodes." \
-    "network-wired"
-
-placeholder "operators/consensus-node/monitoring.mdx" \
-    "Node Monitoring" \
-    "Monitor the health and performance of your Hedera nodes." \
-    "chart-line"
-
 # ============================================================================
 # REFERENCE SECTION — New Pages
 # ============================================================================

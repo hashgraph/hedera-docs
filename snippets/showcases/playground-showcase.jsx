@@ -26,7 +26,7 @@ export const PlaygroundShowcase = () => {
       items: [
         {
           icon: 'play', title: 'Developer Playground',
-          desc: 'Run real Hedera transactions in your browser — no setup.',
+          desc: 'Run real Hedera transactions in your browser, no setup.',
           href: 'https://portal.hedera.com/playground',
           preview: { kind: 'embed', url: 'https://portal.hedera.com/playground', label: 'portal.hedera.com/playground' }
         },
@@ -222,13 +222,9 @@ export const PlaygroundShowcase = () => {
         </div>
       )}
 
-      {/* Two-column body — left list fixed-ish, right preview takes the rest */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'minmax(280px, 380px) minmax(0, 1fr)',
-        gap: '16px',
-        alignItems: 'start'
-      }}>
+      {/* Two-column body — left list fixed-ish, right preview takes the rest.
+          Responsive: single column on mobile, side-by-side at ≥768px (see style.css). */}
+      <div className="playground-grid">
         {/* Left: item list */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {tab.items.map((it, i) => {

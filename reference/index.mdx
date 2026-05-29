@@ -1,309 +1,112 @@
 ---
 title: "Reference"
-description: "Complete API and protocol reference — REST, gRPC, Protobuf, and status APIs for every Hedera service."
+description: "Complete API and protocol reference: REST, gRPC, Protobuf, and status APIs for every Hedera service."
 mode: wide
 ---
 
-<div className="not-prose" style={{
-  maxWidth: '1200px',
-  margin: '0 auto',
-  padding: '0 24px'
-}}>
-
-{/* ── BROWSE BY API ─────────────────────────────────────────────────── */}
-<div style={{
-  padding: '48px 0',
-  borderBottom: '1px solid var(--landing-border)'
-}}>
-  <h2 style={{
-    fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
-    fontWeight: 500,
-    margin: '0 0 6px',
-    letterSpacing: '-0.015em',
-    color: 'var(--landing-fg-primary)'
-  }}>
-    Browse by API
-  </h2>
-  <p style={{
-    fontSize: '0.9375rem',
-    color: 'var(--landing-fg-tertiary)',
-    margin: '0 0 28px',
-    maxWidth: '540px',
-    lineHeight: 1.55
-  }}>
-    Every public Hedera API surface, grouped by protocol.
-  </p>
-
-  <div style={{
-    display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
-    gap: '12px'
-  }}>
-
-    <a href="/reference/rest-api/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20 M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 M12 2a15.3 15.3 0 0 0-4 10 15.3 15.3 0 0 0 4 10"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Mirror Node REST API</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Query accounts, balances, blocks, contracts, tokens, transactions, and topics.</div>
-      </div>
-    </a>
-
-    <a href="/reference/protobuf/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 18l6-6-6-6 M8 6l-6 6 6 6"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Protobuf API</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Wire-level protocol definitions for every transaction and query type.</div>
-      </div>
-    </a>
-
-    <a href="/reference/hcs-api" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>HCS gRPC API</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Streaming subscriptions to consensus topic messages.</div>
-      </div>
-    </a>
-
-    <a href="/reference/status-api" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Status API</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Real-time network health, incidents, and uptime feeds.</div>
-      </div>
-    </a>
-
-    <a href="/reference/verification-api" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 11l3 3L22 4 M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Contract Verification API</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Verify deployed Solidity source code against on-chain bytecode.</div>
-      </div>
-    </a>
-
-  </div>
-</div>
+<div className="not-prose landing-container">
 
 {/* ── REST API ENDPOINTS ──────────────────────────────────────── */}
-<div style={{
-  padding: '48px 0',
-  borderBottom: '1px solid var(--landing-border)'
-}}>
-  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '6px' }}>
-    <h2 style={{
-      fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
-      fontWeight: 500,
-      margin: 0,
-      letterSpacing: '-0.015em',
-      color: 'var(--landing-fg-primary)'
-    }}>
-      Mirror node REST endpoints
+<div className="landing-section">
+  <div className="landing-section-heading-row">
+    <h2 id="mirror-node-rest" className="landing-section-heading">
+      <a href="#mirror-node-rest">Mirror node REST endpoints</a>
     </h2>
-    <a href="/reference/rest-api/index" style={{
-      fontSize: '0.8125rem',
-      color: '#8259EF',
-      textDecoration: 'none',
-      fontWeight: 500,
-      whiteSpace: 'nowrap'
-    }}>
-      See all →
-    </a>
+    <a href="/reference/rest-api/index" className="landing-see-all">See all →</a>
   </div>
-  <p style={{
-    fontSize: '0.9375rem',
-    color: 'var(--landing-fg-tertiary)',
-    margin: '0 0 28px',
-    lineHeight: 1.55
-  }}>
+  <p className="landing-section-description">
     Query historical and live state of every Hedera entity over plain HTTP.
   </p>
 
-  <div style={{
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: '12px'
-  }}>
+  <div className="landing-grid">
 
-    <a href="/reference/rest-api/accounts/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+    <a href="/reference/rest-api/accounts/index" className="landing-card">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Accounts</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>List, query, NFTs, allowances, staking, rewards.</div>
+        <div className="landing-card-title">Accounts</div>
+        <div className="landing-card-desc">List, query, NFTs, allowances, staking, rewards.</div>
       </div>
     </a>
 
-    <a href="/reference/rest-api/balances/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+    <a href="/reference/rest-api/balances/index" className="landing-card">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20 M5 8l7-5 7 5 M5 8v8l7 5 7-5V8"/></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Balances</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>HBAR and token balances at any historical timestamp.</div>
+        <div className="landing-card-title">Balances</div>
+        <div className="landing-card-desc">HBAR and token balances at any historical timestamp.</div>
       </div>
     </a>
 
-    <a href="/reference/rest-api/blocks/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+    <a href="/reference/rest-api/blocks/index" className="landing-card">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z M3.27 6.96L12 12.01l8.73-5.05 M12 22.08V12"/></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Blocks</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Block-level views over consensus events for EVM compatibility.</div>
+        <div className="landing-card-title">Blocks</div>
+        <div className="landing-card-desc">Block-level views over consensus events for EVM compatibility.</div>
       </div>
     </a>
 
-    <a href="/reference/rest-api/tokens/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+    <a href="/reference/rest-api/tokens/index" className="landing-card">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v10 M9.5 15h5a2 2 0 1 0 0-4h-5a2 2 0 1 1 0-4h5"/></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Tokens</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>HTS token metadata, balances, NFTs, and supply snapshots.</div>
+        <div className="landing-card-title">Tokens</div>
+        <div className="landing-card-desc">HTS token metadata, balances, NFTs, and supply snapshots.</div>
       </div>
     </a>
 
-    <a href="/reference/rest-api/topics/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+    <a href="/reference/rest-api/topics/index" className="landing-card">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Topics</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>HCS topic info and historical message retrieval.</div>
+        <div className="landing-card-title">Topics</div>
+        <div className="landing-card-desc">HCS topic info and historical message retrieval.</div>
       </div>
     </a>
 
-    <a href="/reference/rest-api/transactions/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+    <a href="/reference/rest-api/transactions/index" className="landing-card">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 1l4 4-4 4 M3 11V9a4 4 0 0 1 4-4h14 M7 23l-4-4 4-4 M21 13v2a4 4 0 0 1-4 4H3"/></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Transactions</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Transaction history, fees, records, and receipts.</div>
+        <div className="landing-card-title">Transactions</div>
+        <div className="landing-card-desc">Transaction history, fees, records, and receipts.</div>
       </div>
     </a>
 
-    <a href="/reference/rest-api/contracts/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+    <a href="/reference/rest-api/contracts/index" className="landing-card">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M9 13l2 2 4-4"/></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Contracts</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Bytecode, state, logs, and call results for deployed contracts.</div>
+        <div className="landing-card-title">Contracts</div>
+        <div className="landing-card-desc">Bytecode, state, logs, and call results for deployed contracts.</div>
       </div>
     </a>
 
-    <a href="/reference/rest-api/schedules/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+    <a href="/reference/rest-api/schedules/index" className="landing-card">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4 M8 2v4 M3 10h18"/></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Schedules</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Pending and executed scheduled transactions.</div>
+        <div className="landing-card-title">Schedules</div>
+        <div className="landing-card-desc">Pending and executed scheduled transactions.</div>
       </div>
     </a>
 
-    <a href="/reference/rest-api/network/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+    <a href="/reference/rest-api/network/index" className="landing-card">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20 M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 M12 2a15.3 15.3 0 0 0-4 10 15.3 15.3 0 0 0 4 10"/></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Network</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Nodes, exchange rates, fees, supply, and stake distribution.</div>
+        <div className="landing-card-title">Network</div>
+        <div className="landing-card-desc">Nodes, exchange rates, fees, supply, and stake distribution.</div>
       </div>
     </a>
 
@@ -311,138 +114,82 @@ mode: wide
 </div>
 
 {/* ── PROTOBUF SERVICES ──────────────────────────────────────── */}
-<div style={{
-  padding: '48px 0',
-  borderBottom: '1px solid var(--landing-border)'
-}}>
-  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '6px' }}>
-    <h2 style={{
-      fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
-      fontWeight: 500,
-      margin: 0,
-      letterSpacing: '-0.015em',
-      color: 'var(--landing-fg-primary)'
-    }}>
-      Protobuf services
+<div className="landing-section">
+  <div className="landing-section-heading-row">
+    <h2 id="protobuf-services" className="landing-section-heading">
+      <a href="#protobuf-services">Protobuf services</a>
     </h2>
-    <a href="/reference/protobuf/index" style={{
-      fontSize: '0.8125rem',
-      color: '#8259EF',
-      textDecoration: 'none',
-      fontWeight: 500,
-      whiteSpace: 'nowrap'
-    }}>
-      See all →
-    </a>
+    <a href="/reference/protobuf/index" className="landing-see-all">See all →</a>
   </div>
-  <p style={{
-    fontSize: '0.9375rem',
-    color: 'var(--landing-fg-tertiary)',
-    margin: '0 0 28px',
-    lineHeight: 1.55
-  }}>
-    Wire-level definitions every SDK uses under the hood — submit raw transactions yourself.
+  <p className="landing-section-description">
+    Wire-level definitions every SDK uses under the hood: submit raw transactions yourself.
   </p>
 
-  <div style={{
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: '12px'
-  }}>
+  <div className="landing-grid">
 
-    <a href="/reference/protobuf/crypto/index" style={{
-      padding: '20px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+    <a href="/reference/protobuf/crypto/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </div>
-      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Crypto Service</div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Account create, transfer, allowance, delete — and balance/info queries.</div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Accounts</span>
+      <div className="landing-card-title">Crypto Service</div>
+      <div className="landing-card-desc">Account create, transfer, allowance, delete, plus balance/info queries.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Accounts</span>
       </div>
     </a>
 
-    <a href="/reference/protobuf/token/index" style={{
-      padding: '20px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+    <a href="/reference/protobuf/token/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v10 M9.5 15h5a2 2 0 1 0 0-4h-5a2 2 0 1 1 0-4h5"/></svg>
       </div>
-      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Token Service</div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>HTS create, mint, burn, freeze, KYC, custom fees — full token lifecycle.</div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>HTS</span>
+      <div className="landing-card-title">Token Service</div>
+      <div className="landing-card-desc">HTS create, mint, burn, freeze, KYC, custom fees: full token lifecycle.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">HTS</span>
       </div>
     </a>
 
-    <a href="/reference/protobuf/consensus/index" style={{
-      padding: '20px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+    <a href="/reference/protobuf/consensus/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </div>
-      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Consensus Service</div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>HCS topic create/update/delete and submit-message protobufs.</div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>HCS</span>
+      <div className="landing-card-title">Consensus Service</div>
+      <div className="landing-card-desc">HCS topic create/update/delete and submit-message protobufs.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">HCS</span>
       </div>
     </a>
 
-    <a href="/reference/protobuf/smart-contracts/index" style={{
-      padding: '20px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+    <a href="/reference/protobuf/smart-contracts/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6"/></svg>
       </div>
-      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Smart Contract Service</div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>EVM contract create, call, update, get-info, get-bytecode.</div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>EVM</span>
+      <div className="landing-card-title">Smart Contract Service</div>
+      <div className="landing-card-desc">EVM contract create, call, update, get-info, get-bytecode.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">EVM</span>
       </div>
     </a>
 
-    <a href="/reference/protobuf/schedule/index" style={{
-      padding: '20px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+    <a href="/reference/protobuf/schedule/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4 M8 2v4 M3 10h18"/></svg>
       </div>
-      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Schedule Service</div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Multi-party scheduled transactions — create, sign, delete, query.</div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>HSS</span>
+      <div className="landing-card-title">Schedule Service</div>
+      <div className="landing-card-desc">Multi-party scheduled transactions: create, sign, delete, query.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">HSS</span>
       </div>
     </a>
 
-    <a href="/reference/protobuf/file/index" style={{
-      padding: '20px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+    <a href="/reference/protobuf/file/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6"/></svg>
       </div>
-      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>File Service</div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>File create, append, update, delete and content/info queries.</div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Storage</span>
+      <div className="landing-card-title">File Service</div>
+      <div className="landing-card-desc">File create, append, update, delete and content/info queries.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Storage</span>
       </div>
     </a>
 
@@ -450,25 +197,15 @@ mode: wide
 </div>
 
 {/* ── FOOTER ───────────────────────────────────────────────────────────── */}
-<div style={{ padding: '40px 0 24px' }}>
-  <h2 style={{
-    fontSize: 'clamp(1.125rem, 2vw, 1.375rem)',
-    fontWeight: 500,
-    margin: '0 0 12px',
-    letterSpacing: '-0.01em',
-    color: 'var(--landing-fg-primary)'
-  }}>
-    Stay connected
+<div className="landing-footer">
+  <h2 id="stay-connected" className="landing-footer-heading">
+    <a href="#stay-connected">Stay connected</a>
   </h2>
-  <div style={{
-    display: 'flex',
-    gap: '10px',
-    flexWrap: 'wrap'
-  }}>
-    <a className="landing-pill" href="https://hedera.com/discord" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--landing-pill-fg)', textDecoration: 'none', padding: '5px 12px', borderRadius: '999px', background: 'var(--landing-pill-bg)', border: '1px solid var(--landing-pill-border)' }}>Discord</a>
-    <a className="landing-pill" href="https://github.com/hashgraph" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--landing-pill-fg)', textDecoration: 'none', padding: '5px 12px', borderRadius: '999px', background: 'var(--landing-pill-bg)', border: '1px solid var(--landing-pill-border)' }}>GitHub</a>
-    <a className="landing-pill" href="https://status.hedera.com" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--landing-pill-fg)', textDecoration: 'none', padding: '5px 12px', borderRadius: '999px', background: 'var(--landing-pill-bg)', border: '1px solid var(--landing-pill-border)' }}>Status</a>
-    <a className="landing-pill" href="https://stackoverflow.com/questions/tagged/hedera-hashgraph" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--landing-pill-fg)', textDecoration: 'none', padding: '5px 12px', borderRadius: '999px', background: 'var(--landing-pill-bg)', border: '1px solid var(--landing-pill-border)' }}>Stack Overflow</a>
+  <div className="landing-pill-group">
+    <a className="landing-pill" href="https://hedera.com/discord" target="_blank" rel="noopener noreferrer">Discord</a>
+    <a className="landing-pill" href="https://github.com/hashgraph" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a className="landing-pill" href="https://status.hedera.com" target="_blank" rel="noopener noreferrer">Status</a>
+    <a className="landing-pill" href="https://stackoverflow.com/questions/tagged/hedera-hashgraph" target="_blank" rel="noopener noreferrer">Stack Overflow</a>
   </div>
 </div>
 

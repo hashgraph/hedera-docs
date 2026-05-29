@@ -1,35 +1,53 @@
 ---
 title: "JSON-RPC Relay"
-description: "Run your own JSON-RPC relay for EVM compatibility."
-icon: "network-wired"
+description: "What the Hiero JSON-RPC Relay is, who runs it, and when to host your own."
 ---
 
-{/* TODO: This page needs content */}
+The Hiero JSON-RPC Relay is an open-source service that speaks the Ethereum JSON-RPC protocol on top of the Hedera network. EVM tools (Hardhat, Foundry, Ethers.js, Viem, MetaMask) speak JSON-RPC; Hedera consensus nodes speak gRPC. The relay translates between the two, plus pulls historical state from a mirror node.
 
-<Info>
-  **Coming Soon** — This page is under construction.
-</Info>
+Repository: [`hiero-ledger/hiero-json-rpc-relay`](https://github.com/hiero-ledger/hiero-json-rpc-relay). License: Apache-2.0.
 
-## Overview
+## Three ways to get an RPC endpoint
 
-Run your own JSON-RPC relay for EVM compatibility.
+For most teams, "running the relay" means picking one of three options based on the use case.
 
-{/*
-## Content Checklist
-- [ ] Write introduction
-- [ ] Add code examples
-- [ ] Include diagrams if needed
-- [ ] Add related links
-- [ ] Review and polish
-*/}
+| Option | When it fits | Cost |
+|---|---|---|
+| [Hashio](https://github.com/hiero-ledger/hiero-json-rpc-relay) (free public relay, development use only) | Development, hobby projects, low-volume reads | Free, throttled |
+| [Third-party managed provider](/evm/development/json-rpc#community-hosted-json-rpc-relays) (Arkhia, Validation Cloud, Hgraph, QuickNode, thirdweb) | Production traffic with SLAs | Paid, varies by provider |
+| Self-hosted | Production workloads where you control config, retention, and rate limits | Infra cost only |
 
-## Need Help?
+Hashio is the easiest path for "I just need a testnet endpoint right now." It's _not_ intended for production traffic.
+
+## Public endpoints
+
+| Network | Chain ID | Hashio endpoint |
+|---|:---:|---|
+| Mainnet | `295` | `https://mainnet.hashio.io/api` |
+| Testnet | `296` | `https://testnet.hashio.io/api` |
+| Previewnet | `297` | `https://previewnet.hashio.io/api` |
+
+Drop one of these into MetaMask, Hardhat, or Foundry as your RPC URL with the matching chain ID. You're done. For production, replace Hashio with your own relay or a commercial provider.
+
+## When to run your own
+
+Self-hosting makes sense when you need any of:
+
+- Higher throughput than community endpoints throttle to
+- Custom rate-limiting rules per consumer
+- Tighter control over which mirror node the relay reads from
+- An RPC endpoint inside a private VPC, not on the public internet
+- Specific log retention, metrics, or audit requirements
+
+If none of these apply, a managed provider is almost always less operational work.
+
+## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Discord" icon="discord" href="https://hedera.com/discord">
-    Join our developer community
+  <Card title="Setup" icon="wrench" href="/operators/json-rpc/setup">
+    Install and run the relay locally or in a container orchestrator.
   </Card>
-  <Card title="GitHub" icon="github" href="https://github.com/hashgraph">
-    Explore our repositories
+  <Card title="Configuration" icon="sliders" href="/operators/json-rpc/configuration">
+    Environment variables, chain ID, mirror node URL, caching, rate limits.
   </Card>
 </CardGroup>

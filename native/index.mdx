@@ -1,315 +1,79 @@
 ---
 title: "Native SDKs"
-description: "Build on Hedera using the JavaScript, Java, Go, Swift, and Rust SDKs — full access to HTS, HCS, scheduled transactions, smart contracts, and the file service."
+description: "Build on Hedera using the JavaScript, Java, Go, Swift, and Rust SDKs: full access to HTS, HCS, scheduled transactions, smart contracts, and the file service."
 mode: wide
 ---
 
-<div className="not-prose" style={{
-  maxWidth: '1200px',
-  margin: '0 auto',
-  padding: '0 24px'
-}}>
-
-{/* ── BROWSE BY SECTION ─────────────────────────────────────────────────── */}
-<div style={{
-  padding: '48px 0',
-  borderBottom: '1px solid var(--landing-border)'
-}}>
-  <h2 style={{
-    fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
-    fontWeight: 500,
-    margin: '0 0 6px',
-    letterSpacing: '-0.015em',
-    color: 'var(--landing-fg-primary)'
-  }}>
-    Browse by section
-  </h2>
-  <p style={{
-    fontSize: '0.9375rem',
-    color: 'var(--landing-fg-tertiary)',
-    margin: '0 0 28px',
-    maxWidth: '540px',
-    lineHeight: 1.55
-  }}>
-    Every topic in the Native SDKs tab, organized by area.
-  </p>
-
-  <div style={{
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: '12px'
-  }}>
-
-    <a href="/native/quickstart/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0 M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Quickstart</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Install the SDK in JavaScript, Java, or Go and send your first transaction.</div>
-      </div>
-    </a>
-
-    <a href="/native/fundamentals/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18 M3 9h18"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>SDK Fundamentals</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Client, address book, HBAR types, specialized types, and error handling.</div>
-      </div>
-    </a>
-
-    <a href="/native/keys/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Keys</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Generate, import, list, threshold, and mnemonic-recover keys.</div>
-      </div>
-    </a>
-
-    <a href="/native/transactions/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 1l4 4-4 4 M3 11V9a4 4 0 0 1 4-4h14 M7 23l-4-4 4-4 M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Transactions</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Form, sign, submit, batch — plus receipts, records, and multisig.</div>
-      </div>
-    </a>
-
-    <a href="/native/accounts/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Accounts</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Create, update, transfer, allowance, balance, and info queries.</div>
-      </div>
-    </a>
-
-    <a href="/native/tokens/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v10 M9.5 15h5a2 2 0 1 0 0-4h-5a2 2 0 1 1 0-4h5"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Token Service</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Define, mint, burn, transfer, airdrop, freeze, pause, wipe — full HTS.</div>
-      </div>
-    </a>
-
-    <a href="/native/consensus/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M6 8v4l6 4 6-4V8"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Consensus Service</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>HCS topics — create, update, submit messages, subscribe to mirror nodes.</div>
-      </div>
-    </a>
-
-    <a href="/native/scheduled/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4 M8 2v4 M3 10h18"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Scheduled Transactions</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Multi-party signing — create, sign, get info, and execute on threshold.</div>
-      </div>
-    </a>
-
-    <a href="/native/smart-contracts/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M9 13l2 2 4-4"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Smart Contracts</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Deploy, call, update — call Solidity contracts from native SDKs.</div>
-      </div>
-    </a>
-
-    <a href="/native/files/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>File Service</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>On-network file storage — create, append, update, delete, get contents.</div>
-      </div>
-    </a>
-
-    <a href="/native/tutorials/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z M6 12v5c3 3 9 3 12 0v-5"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Tutorials</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Step-by-step guides — tokens, consensus, scheduled, advanced HSM, MCP.</div>
-      </div>
-    </a>
-
-    <a href="/native/local-dev/index" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><path d="M8 21h8 M12 17v4"/></svg>
-      </div>
-      <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Local Development</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Local node, CLI tools, Gitpod, and Codespaces cloud environments.</div>
-      </div>
-    </a>
-
-  </div>
-</div>
+<div className="not-prose landing-container">
 
 {/* ── QUICKSTARTS BY LANGUAGE ──────────────────────────────────────────── */}
-<div style={{
-  padding: '48px 0',
-  borderBottom: '1px solid var(--landing-border)'
-}}>
-  <h2 style={{
-    fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
-    fontWeight: 500,
-    margin: '0 0 6px',
-    letterSpacing: '-0.015em',
-    color: 'var(--landing-fg-primary)'
-  }}>
-    Pick your language
+<div className="landing-section">
+  <h2 id="pick-your-language" className="landing-section-heading">
+    <a href="#pick-your-language">Pick your language</a>
   </h2>
-  <p style={{
-    fontSize: '0.9375rem',
-    color: 'var(--landing-fg-tertiary)',
-    margin: '0 0 28px',
-    maxWidth: '540px',
-    lineHeight: 1.55
-  }}>
-    All Hedera SDKs share the same API surface — pick the language that fits your stack.
+  <p className="landing-section-description">
+    All Hedera SDKs share the same API surface. Pick the language that fits your stack.
   </p>
 
-  <div style={{
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: '12px'
-  }}>
+  <div className="landing-grid">
 
-    <a href="/native/quickstart/javascript" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M3 3h18v18H3z" fill="none" stroke="#fff" strokeWidth="1.5"/><text x="6" y="17" fontSize="9" fontWeight="700" fill="#fff" fontFamily="monospace">JS</text></svg>
+    <a href="/native/quickstart/javascript" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><text x="12" y="16" textAnchor="middle" fontSize="9" fontWeight="700" fill="#fff" stroke="none" fontFamily="monospace">JS</text></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>JavaScript / TypeScript</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Node.js or browser — npm install @hashgraph/sdk.</div>
+        <div className="landing-card-title">JavaScript</div>
+        <div className="landing-card-desc">Node.js and browser. `npm install @hashgraph/sdk`.</div>
       </div>
     </a>
 
-    <a href="/native/quickstart/java" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 21h8 M8 18c0-2 8-2 8 0 M9 14c-2-1-3 1 0 2 3 1 9 1 9-2 M9 9c-2-2-2 4 3 4 0 2 0 4-2 5 M14 4c2 2 1 5-1 7 1 1 4 1 4-2"/></svg>
+    <a href="/native/quickstart/java" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><text x="12" y="16" textAnchor="middle" fontSize="7" fontWeight="700" fill="#fff" stroke="none" fontFamily="monospace">Java</text></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Java</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>JDK 11+ — Maven or Gradle integration for enterprise apps.</div>
+        <div className="landing-card-title">Java</div>
+        <div className="landing-card-desc">JDK 11+. Maven and Gradle artifacts for enterprise apps.</div>
       </div>
     </a>
 
-    <a href="/native/quickstart/go" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12h4 M5 8h4 M2 16h6 M14 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z M14 12h6"/></svg>
+    <a href="/native/quickstart/go" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><text x="12" y="16" textAnchor="middle" fontSize="9" fontWeight="700" fill="#fff" stroke="none" fontFamily="monospace">Go</text></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Go</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>go get github.com/hashgraph/hedera-sdk-go.</div>
+        <div className="landing-card-title">Go</div>
+        <div className="landing-card-desc">`go get github.com/hashgraph/hedera-sdk-go/v2`.</div>
+      </div>
+    </a>
+
+    <a href="https://github.com/hashgraph/hedera-sdk-swift" target="_blank" rel="noopener noreferrer" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><text x="12" y="16" textAnchor="middle" fontSize="6" fontWeight="700" fill="#fff" stroke="none" fontFamily="monospace">Swift</text></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Swift</div>
+        <div className="landing-card-desc">iOS and macOS via Swift Package Manager.</div>
+      </div>
+    </a>
+
+    <a href="https://github.com/hiero-ledger/hiero-sdk-rust" target="_blank" rel="noopener noreferrer" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><text x="12" y="16" textAnchor="middle" fontSize="7" fontWeight="700" fill="#fff" stroke="none" fontFamily="monospace">Rust</text></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Rust</div>
+        <div className="landing-card-desc">`cargo add hedera`. Async-first with Tokio.</div>
+      </div>
+    </a>
+
+    <a href="https://github.com/hiero-ledger/hiero-sdk-cpp" target="_blank" rel="noopener noreferrer" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><text x="12" y="16" textAnchor="middle" fontSize="8" fontWeight="700" fill="#fff" stroke="none" fontFamily="monospace">C++</text></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">C++</div>
+        <div className="landing-card-desc">C++17 with CMake. Builds on Linux, macOS, and Windows.</div>
       </div>
     </a>
 
@@ -317,134 +81,85 @@ mode: wide
 </div>
 
 {/* ── CORE SERVICES SPOTLIGHT ──────────────────────────────────────────── */}
-<div style={{
-  padding: '48px 0',
-  borderBottom: '1px solid var(--landing-border)'
-}}>
-  <h2 style={{
-    fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
-    fontWeight: 500,
-    margin: '0 0 6px',
-    letterSpacing: '-0.015em',
-    color: 'var(--landing-fg-primary)'
-  }}>
-    Native services from the SDK
+<div className="landing-section">
+  <h2 id="native-services" className="landing-section-heading">
+    <a href="#native-services">Native services from the SDK</a>
   </h2>
-  <p style={{
-    fontSize: '0.9375rem',
-    color: 'var(--landing-fg-tertiary)',
-    margin: '0 0 28px',
-    maxWidth: '600px',
-    lineHeight: 1.55
-  }}>
-    First-class access to every Hedera service — no JSON-RPC layer, no gas auctions, no surprises.
+  <p className="landing-section-description">
+    First-class access to every Hedera service, with no JSON-RPC layer, no gas auctions, and no surprises.
   </p>
 
-  <div style={{
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: '12px'
-  }}>
+  <div className="landing-grid">
 
-    <a href="/native/tokens/define" style={{
-      padding: '20px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+    <a href="/native/tokens/define" className="landing-card-stacked">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v10 M9.5 15h5a2 2 0 1 0 0-4h-5a2 2 0 1 1 0-4h5"/></svg>
       </div>
-      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Create a Token</div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Fungible or NFT — define properties, supply, and admin keys in one transaction.</div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>HTS</span>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Tokens</span>
+      <div className="landing-card-title">Create a Token</div>
+      <div className="landing-card-desc">Fungible or NFT: define properties, supply, and admin keys in one transaction.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">HTS</span>
+        <span className="landing-tag">Tokens</span>
       </div>
     </a>
 
-    <a href="/native/consensus/submit-message" style={{
-      padding: '20px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+    <a href="/native/consensus/submit-message" className="landing-card-stacked">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </div>
-      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Submit a Consensus Message</div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Timestamped, ordered, immutable messages on HCS topics for any payload.</div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>HCS</span>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Messaging</span>
+      <div className="landing-card-title">Submit a Consensus Message</div>
+      <div className="landing-card-desc">Timestamped, ordered, immutable messages on HCS topics for any payload.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">HCS</span>
+        <span className="landing-tag">Messaging</span>
       </div>
     </a>
 
-    <a href="/native/scheduled/create" style={{
-      padding: '20px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+    <a href="/native/scheduled/create" className="landing-card-stacked">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4 M8 2v4 M3 10h18"/></svg>
       </div>
-      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Schedule a Transaction</div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Wait for multi-party signatures before executing — built-in multisig coordination.</div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>HSS</span>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Multisig</span>
+      <div className="landing-card-title">Schedule a Transaction</div>
+      <div className="landing-card-desc">Wait for multi-party signatures before executing: built-in multisig coordination.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">HSS</span>
+        <span className="landing-tag">Multisig</span>
       </div>
     </a>
 
-    <a href="/native/accounts/create" style={{
-      padding: '20px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+    <a href="/native/accounts/create" className="landing-card-stacked">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M22 11h-2 M21 10v2"/></svg>
       </div>
-      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Create an Account</div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Generate a new Hedera account in code — fund, query balance, transfer HBAR.</div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Accounts</span>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>HBAR</span>
+      <div className="landing-card-title">Create an Account</div>
+      <div className="landing-card-desc">Generate a new Hedera account in code: fund, query balance, transfer HBAR.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Accounts</span>
+        <span className="landing-tag">HBAR</span>
       </div>
     </a>
 
-    <a href="/native/transactions/batch" style={{
-      padding: '20px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+    <a href="/native/transactions/batch" className="landing-card-stacked">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01 M6 18h.01"/></svg>
       </div>
-      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Batch Transactions</div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Atomic execution of multiple transactions — all succeed or all fail.</div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Batch</span>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Atomic</span>
+      <div className="landing-card-title">Batch Transactions</div>
+      <div className="landing-card-desc">Atomic execution of multiple transactions all succeed or all fail.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Batch</span>
+        <span className="landing-tag">Atomic</span>
       </div>
     </a>
 
-    <a href="/native/signature-provider/index" style={{
-      padding: '20px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+    <a href="/native/signature-provider/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       </div>
-      <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Signature Provider</div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Provider, Signer, and Wallet APIs — integrate hardware wallets and HSMs.</div>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Wallets</span>
-        <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>HSM</span>
+      <div className="landing-card-title">Signature Provider</div>
+      <div className="landing-card-desc">Provider, Signer, and Wallet APIs: integrate hardware wallets and HSMs.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Wallets</span>
+        <span className="landing-tag">HSM</span>
       </div>
     </a>
 
@@ -452,101 +167,57 @@ mode: wide
 </div>
 
 {/* ── TUTORIALS ──────────────────────────────────────── */}
-<div style={{
-  padding: '48px 0',
-  borderBottom: '1px solid var(--landing-border)'
-}}>
-  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '6px' }}>
-    <h2 style={{
-      fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
-      fontWeight: 500,
-      margin: 0,
-      letterSpacing: '-0.015em',
-      color: 'var(--landing-fg-primary)'
-    }}>
-      Step-by-step tutorials
+<div className="landing-section">
+  <div className="landing-section-heading-row">
+    <h2 id="tutorials" className="landing-section-heading">
+      <a href="#tutorials">Step-by-step tutorials</a>
     </h2>
-    <a href="/native/tutorials/index" style={{
-      fontSize: '0.8125rem',
-      color: '#8259EF',
-      textDecoration: 'none',
-      fontWeight: 500,
-      whiteSpace: 'nowrap'
-    }}>
-      See all →
-    </a>
+    <a href="/native/tutorials/index" className="landing-see-all">See all →</a>
   </div>
-  <p style={{
-    fontSize: '0.9375rem',
-    color: 'var(--landing-fg-tertiary)',
-    margin: '0 0 28px',
-    lineHeight: 1.55
-  }}>
-    Hands-on SDK guides — from your first token to HSM-backed signing.
+  <p className="landing-section-description">
+    Hands-on SDK guides, from your first token to HSM-backed signing.
   </p>
 
-  <div style={{
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: '16px'
-  }}>
+  <div className="landing-grid landing-grid--loose">
 
-    <a href="/native/tutorials/tokens/create-first-token" style={{
-      borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      overflow: 'hidden',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ height: '120px', background: 'linear-gradient(135deg, rgba(130,89,239,0.55) 0%, rgba(0,49,255,0.5) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <a href="/native/tutorials/tokens/create-first-token" className="landing-media-card">
+      <div className="landing-media-card-hero">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v10 M9.5 15h5a2 2 0 1 0 0-4h-5a2 2 0 1 1 0-4h5"/></svg>
       </div>
-      <div style={{ padding: '16px' }}>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Create Your First Token</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Mint a fungible HTS token in JavaScript in under 15 minutes.</div>
-        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Beginner</span>
-          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>HTS</span>
+      <div className="landing-media-card-body">
+        <div className="landing-card-title">Create Your First Token</div>
+        <div className="landing-card-desc">Mint a fungible HTS token in JavaScript in under 15 minutes.</div>
+        <div className="landing-tag-group">
+          <span className="landing-tag">Beginner</span>
+          <span className="landing-tag">HTS</span>
         </div>
       </div>
     </a>
 
-    <a href="/native/tutorials/consensus/create-first-topic" style={{
-      borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      overflow: 'hidden',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ height: '120px', background: 'linear-gradient(135deg, rgba(130,89,239,0.55) 0%, rgba(0,49,255,0.5) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <a href="/native/tutorials/consensus/create-first-topic" className="landing-media-card">
+      <div className="landing-media-card-hero">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </div>
-      <div style={{ padding: '16px' }}>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>Create Your First HCS Topic</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Submit and subscribe to consensus messages on a topic you control.</div>
-        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>HCS</span>
-          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Beginner</span>
+      <div className="landing-media-card-body">
+        <div className="landing-card-title">Create Your First HCS Topic</div>
+        <div className="landing-card-desc">Submit and subscribe to consensus messages on a topic you control.</div>
+        <div className="landing-tag-group">
+          <span className="landing-tag">HCS</span>
+          <span className="landing-tag">Beginner</span>
         </div>
       </div>
     </a>
 
-    <a href="/native/tutorials/advanced/hsm-signing/index" style={{
-      borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      overflow: 'hidden',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ height: '120px', background: 'linear-gradient(135deg, rgba(130,89,239,0.55) 0%, rgba(0,49,255,0.5) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <a href="/native/tutorials/advanced/hsm-signing/index" className="landing-media-card">
+      <div className="landing-media-card-hero">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
       </div>
-      <div style={{ padding: '16px' }}>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '6px' }}>HSM-backed Signing</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45, marginBottom: '14px' }}>Sign transactions with AWS KMS, Azure Key Vault, or GCP KMS.</div>
-        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>Advanced</span>
-          <span style={{ fontSize: '0.6875rem', padding: '2px 8px', borderRadius: '999px', border: '1px solid rgba(130,89,239,0.25)', color: 'rgba(130,89,239,0.85)' }}>HSM</span>
+      <div className="landing-media-card-body">
+        <div className="landing-card-title">HSM-backed Signing</div>
+        <div className="landing-card-desc">Sign transactions with AWS KMS, Azure Key Vault, or GCP KMS.</div>
+        <div className="landing-tag-group">
+          <span className="landing-tag">Advanced</span>
+          <span className="landing-tag">HSM</span>
         </div>
       </div>
     </a>
@@ -555,87 +226,50 @@ mode: wide
 </div>
 
 {/* ── LOCAL DEVELOPMENT ──────────────────────────────────────── */}
-<div style={{
-  padding: '48px 0',
-  borderBottom: '1px solid var(--landing-border)'
-}}>
-  <h2 style={{
-    fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
-    fontWeight: 500,
-    margin: '0 0 24px',
-    letterSpacing: '-0.015em',
-    color: 'var(--landing-fg-primary)'
-  }}>
-    Local development
+<div className="landing-section">
+  <h2 id="local-development" className="landing-section-heading" style={{ marginBottom: '24px' }}>
+    <a href="#local-development">Local development</a>
   </h2>
 
-  <div style={{
-    display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
-    gap: '12px'
-  }}>
+  <div className="landing-grid landing-grid--wide">
 
-    <a href="/native/local-dev/setup-local-node" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+    <a href="/native/local-dev/setup-local-node" className="landing-card">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><path d="M8 21h8 M12 17v4"/></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Local Node</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Run Hedera in Docker — full network on your laptop in minutes.</div>
+        <div className="landing-card-title">Local Node</div>
+        <div className="landing-card-desc">Run Hedera in Docker: full network on your laptop in minutes.</div>
       </div>
     </a>
 
-    <a href="/native/local-dev/setup-cli-npm" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+    <a href="/native/local-dev/setup-cli-npm" className="landing-card">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 17l6-6-6-6 M12 19h8"/></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>CLI Tools</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Hedera CLI via npm — accounts, tokens, topics from your terminal.</div>
+        <div className="landing-card-title">CLI Tools</div>
+        <div className="landing-card-desc">Hedera CLI via npm: accounts, tokens, topics from your terminal.</div>
       </div>
     </a>
 
-    <a href="/native/local-dev/cde/gitpod" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+    <a href="/native/local-dev/cde/gitpod" className="landing-card">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>Gitpod</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>Cloud dev environment — pre-configured with the SDK and local node.</div>
+        <div className="landing-card-title">Gitpod</div>
+        <div className="landing-card-desc">Cloud dev environment pre-configured with the SDK and local node.</div>
       </div>
     </a>
 
-    <a href="/native/local-dev/cde/codespaces" style={{
-      display: 'flex', alignItems: 'flex-start', gap: '14px',
-      padding: '18px', borderRadius: '10px',
-      border: '1px solid var(--landing-border)',
-      textDecoration: 'none',
-      backgroundColor: 'var(--landing-card-bg)'
-    }}>
-      <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--landing-card-icon-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+    <a href="/native/local-dev/cde/codespaces" className="landing-card">
+      <div className="landing-card-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
       </div>
       <div>
-        <div style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--landing-fg-primary)', marginBottom: '4px' }}>GitHub Codespaces</div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.45 }}>One-click cloud dev container — ready for Hedera SDK development.</div>
+        <div className="landing-card-title">GitHub Codespaces</div>
+        <div className="landing-card-desc">One-click cloud dev container: ready for Hedera SDK development.</div>
       </div>
     </a>
 
@@ -643,25 +277,15 @@ mode: wide
 </div>
 
 {/* ── FOOTER ───────────────────────────────────────────────────────────── */}
-<div style={{ padding: '40px 0 24px' }}>
-  <h2 style={{
-    fontSize: 'clamp(1.125rem, 2vw, 1.375rem)',
-    fontWeight: 500,
-    margin: '0 0 12px',
-    letterSpacing: '-0.01em',
-    color: 'var(--landing-fg-primary)'
-  }}>
-    Stay connected
+<div className="landing-footer">
+  <h2 id="stay-connected" className="landing-footer-heading">
+    <a href="#stay-connected">Stay connected</a>
   </h2>
-  <div style={{
-    display: 'flex',
-    gap: '10px',
-    flexWrap: 'wrap'
-  }}>
-    <a className="landing-pill" href="https://hedera.com/discord" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--landing-pill-fg)', textDecoration: 'none', padding: '5px 12px', borderRadius: '999px', background: 'var(--landing-pill-bg)', border: '1px solid var(--landing-pill-border)' }}>Discord</a>
-    <a className="landing-pill" href="https://github.com/hashgraph" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--landing-pill-fg)', textDecoration: 'none', padding: '5px 12px', borderRadius: '999px', background: 'var(--landing-pill-bg)', border: '1px solid var(--landing-pill-border)' }}>GitHub</a>
-    <a className="landing-pill" href="https://portal.hedera.com/playground" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--landing-pill-fg)', textDecoration: 'none', padding: '5px 12px', borderRadius: '999px', background: 'var(--landing-pill-bg)', border: '1px solid var(--landing-pill-border)' }}>Playground</a>
-    <a className="landing-pill" href="https://stackoverflow.com/questions/tagged/hedera-hashgraph" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--landing-pill-fg)', textDecoration: 'none', padding: '5px 12px', borderRadius: '999px', background: 'var(--landing-pill-bg)', border: '1px solid var(--landing-pill-border)' }}>Stack Overflow</a>
+  <div className="landing-pill-group">
+    <a className="landing-pill" href="https://hedera.com/discord" target="_blank" rel="noopener noreferrer">Discord</a>
+    <a className="landing-pill" href="https://github.com/hashgraph" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a className="landing-pill" href="https://portal.hedera.com/playground" target="_blank" rel="noopener noreferrer">Playground</a>
+    <a className="landing-pill" href="https://stackoverflow.com/questions/tagged/hedera-hashgraph" target="_blank" rel="noopener noreferrer">Stack Overflow</a>
   </div>
 </div>
 

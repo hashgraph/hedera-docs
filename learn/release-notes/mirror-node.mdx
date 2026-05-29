@@ -2512,7 +2512,7 @@ The maximum number of rows the REST API can return was changed from 500 to 100. 
 
 ### Smart Contracts
 
-With Hedera's increased focus on [Smart Contracts](https://hedera.com/blog/hedera-evm-smart-contracts-now-bring-highest-speed-programmability-to-tokenization), we took the time to revamp the mirror node's smart contract support and lay the groundwork for future enhancements. As detailed in the [design document](https://github.com/hashgraph/hedera-mirror-node/blob/main/docs/design/smart-contracts.md), plans include new contract-specific REST APIs and Ethereum-compatible APIs in the future.
+With Hedera's increased focus on [Smart Contracts](https://hedera.com/blog/hedera-evm-smart-contracts-now-bring-highest-speed-programmability-to-tokenization), we took the time to revamp the mirror node's smart contract support and lay the groundwork for future enhancements. As detailed in the [design document](https://github.com/hashgraph/hedera-mirror-node/blob/main/docs/design/smart-contracts.md), plans include new contract-specific REST APIs and EVM-compatible APIs in the future.
 
 To prepare for that, the database schema and importer were updated to normalize and store all contract-related information, fixing long-standing bugs like not storing contract bytecode and child contracts. The contract table was split from the generic entity table and work was started on making all the entity tables maintain a history of all changes. The REST API now supports searching for and retrieving specific contracts. Below is an example of retrieving a contract:
 

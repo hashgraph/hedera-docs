@@ -1,19 +1,63 @@
 ---
 title: "How to Connect to Hedera Networks Over RPC"
+description: "Compare the available JSON-RPC providers for Hedera and pick the right endpoint for your project."
+mode: "wide"
 ---
 
-There are four options to establish a connection to Hedera Networks. Validation Cloud, Arkhia, and Hashio are all managed JSON-RPC providers; the Hedera JSON-RPC Relay is for running your own local JSON-RPC instance. Hashio is a Hedera community service offered by [Hashgraph](https://www.hashgraph.com/) that has limited capabilities.
+The [JSON-RPC Relay](https://github.com/hiero-ledger/hiero-json-rpc-relay) is the open-source service that bridges EVM-style JSON-RPC clients (MetaMask, ethers.js, web3.js, Hardhat, Foundry, viem, etc.) to the Hedera network. You have three ways to access it: use the free public instance ([Hashio](/hedera/tutorials/more-tutorials/json-rpc-connections/hashio)), use a managed third-party provider, or run your own instance.
 
-**➡** [**Hashio**](/hedera/tutorials/more-tutorials/json-rpc-connections/hashio)
+## Choose a connection option
 
-**➡** [**Hiero JSON-RPC Relay**](https://github.com/hiero-ledger/hiero-json-rpc-relay)
+<CardGroup cols={2}>
+  <Card title="Hashio" icon="bolt" href="/hedera/tutorials/more-tutorials/json-rpc-connections/hashio">
+    Free public Hiero JSON-RPC Relay instance hosted by Hashgraph. No sign-up required. Best for prototyping and tutorials. Rate-limited.
+  </Card>
 
-**➡** [**Validation Cloud**](/hedera/tutorials/more-tutorials/json-rpc-connections/validation-cloud)
+  <Card title="Validation Cloud" icon="cloud" href="/hedera/tutorials/more-tutorials/json-rpc-connections/validation-cloud">
+    Freemium managed JSON-RPC and Mirror Node service. Requires an account but no credit card. Scales for production workloads.
+  </Card>
 
-**➡** [**QuickNode**](https://www.quicknode.com/docs/hedera) **(docs)**
+  <Card title="QuickNode" icon="rocket" href="https://www.quicknode.com/docs/hedera">
+    Commercial JSON-RPC provider with global edge infrastructure and SLAs. Best for high-throughput production apps.
+  </Card>
+
+  <Card title="Self-host the Relay" icon="server" href="https://github.com/hiero-ledger/hiero-json-rpc-relay">
+    Run your own instance of the open-source Hiero JSON-RPC Relay for full control over rate limits, caching, and infrastructure.
+  </Card>
+</CardGroup>
+
+## Network support
+
+| Option                          | Mainnet | Testnet | Previewnet | Sign-up |
+| ------------------------------- | :-----: | :-----: | :--------: | :-----: |
+| **Hashio** (public Hiero Relay) |    ✅    |    ✅   |    ✅     |   ❌    |
+| **Validation Cloud**            |    ✅    |    ✅   |    ❌     |   ✅    |
+| **QuickNode**                   |    ✅    |    ✅   |    ❌     |   ✅    |
+| **Self-hosted Relay**           |    ✅    |    ✅   |    ✅     |    —    |
+
+## Network reference
+
+| Network        | Chain ID (decimal) | Chain ID (hex) | Hashio endpoint                                                        |
+| -------------- | :----------------: | :------------: | ---------------------------------------------------------------------- |
+| **Mainnet**    | `295`                | `0x127`        | [`https://mainnet.hashio.io/api`](https://mainnet.hashio.io/api)       |
+| **Testnet**    | `296`                | `0x128`        | [`https://testnet.hashio.io/api`](https://testnet.hashio.io/api)       |
+| **Previewnet** | `297`                | `0x129`        | [`https://previewnet.hashio.io/api`](https://previewnet.hashio.io/api) |
+
+<Warning>
+  **Hashio is for development and testing purposes only.** Production use cases are strongly encouraged to use [commercial-grade JSON-RPC relays](/hedera/core-concepts/smart-contracts/json-rpc-relay#community-hosted-json-rpc-relays) or host their own instance of the [Hiero JSON-RPC Relay](https://github.com/hiero-ledger/hiero-json-rpc-relay).
+</Warning>
+
+## Additional resources
+
+* [JSON-RPC Relay overview](/hedera/core-concepts/smart-contracts/json-rpc-relay)
+* [Community-hosted JSON-RPC relays](/hedera/core-concepts/smart-contracts/json-rpc-relay#community-hosted-json-rpc-relays)
+* [Add Hedera to MetaMask](/hedera/getting-started-evm-developers/add-hedera-to-metamask)
+* [How to connect MetaMask to Hedera](/hedera/tutorials/smart-contracts/how-to-connect-metamask-to-hedera)
+* [Hiero JSON-RPC Relay on GitHub](https://github.com/hiero-ledger/hiero-json-rpc-relay)
+
+---
 
 <Columns cols={2}>
-
   <Card title="Writer: Brendan, DevRel Engineer">
     [GitHub](https://github.com/bguiz) | [Blog](https://blog.bguiz.com/)
   </Card>
@@ -21,14 +65,6 @@ There are four options to establish a connection to Hedera Networks. Validation 
     [GitHub](https://github.com/aaron-cottrell-vc)
   </Card>
   <Card title="Editor: Krystal, Senior DX Engineer">
-    [GitHub](https://github.com/theekrystallee) | [X](https://X.com/theekrystallee)
+    [GitHub](https://github.com/theekrystallee) | [X](https://X.com/theekrystallee) | [LinkedIn](https://linkedin.com/in/theekrystallee)
   </Card>
 </Columns>
-
-<Warning>
-  **Please note**: Hashio is For development and testing purposes only.
-  Production use cases are strongly encouraged to use* [*commercial-grade
-  JSON-RPC relays*](hedera/core-concepts/smart-contracts/json-rpc-relay) *or
-  host their own instance of the* [*Hiero JSON-RPC
-  Relay*](https://github.com/hiero-ledger/hiero-json-rpc-relay)*.*
-</Warning>

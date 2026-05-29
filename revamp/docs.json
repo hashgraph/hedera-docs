@@ -1688,6 +1688,8 @@
                 ]
               },
               "solutions/ai/elizaos",
+              "solutions/ai/hosted-mcp-server",
+              "solutions/ai/x402",
               {
                 "group": "AI Tools",
                 "pages": [

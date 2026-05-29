@@ -1,5 +1,5 @@
 name: QA Feedback (Docs Revamp)
-description: Report a problem found during the May 15–20 docs revamp QA testing window
+description: Report a problem found during the May 14–20 docs revamp QA testing window
 title: "[QA] "
 labels:
   - "qa/may-2026"

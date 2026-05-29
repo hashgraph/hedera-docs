@@ -12,7 +12,7 @@ By the end of this tutorial, you will be able to:
 
 - Compile and deploy a smart contract using Foundry
 - Interact with a smart contract using Foundry's `cast` command
-- Verify your smart contract on [Hashscan](https://hashscan.io/)
+- Verify your smart contract programmatically with `forge verify-contract`
 
 ---
 
@@ -39,7 +39,7 @@ This will install `forge`, `cast`, `anvil`, and `chisel`.
 3. [Step 3: Create a Deployment Script](#step-3%3A-create-a-deployment-script)
 4. [Step 4: Deploy your ERC20 Smart Contract](#step-4%3A-deploy-your-erc20-smart-contract)
 5. [Step 5: Interacting with the Contract](#step-5%3A-interacting-with-the-contract)
-6. [Step 6: Verifying the Contract on Hashscan](#step-6%3A-verifying-the-contract-on-hashscan)
+6. [Step 6: Verify Your Smart Contract with Foundry](#step-6%3A-verify-your-smart-contract-with-foundry)
 
 ---
 
@@ -214,7 +214,7 @@ After a few moments, you will see the address of your newly deployed contract:
 ```
 
 <Check>
-  Copy the deployed contract address—you'll need this in subsequent steps.
+  Copy the deployed contract address. You'll need this in subsequent steps.
 </Check>
 
 ---
@@ -301,17 +301,19 @@ The output will show the 100 tokens you sent:
 
 ---
 
-## Step 6: Verifying the Contract on Hashscan
+## Step 6: Verify Your Smart Contract with Foundry
 
-Verifying your smart contract makes its source code publicly available on Hashscan. The constructor for this contract takes one argument (`initialOwner`), which we must provide for successful verification.
+Foundry can verify your contract programmatically straight from the command line via `forge verify-contract`. Programmatic verification is the most reliable and efficient method, especially for complex or upgradeable contracts, because Foundry already knows your exact compilation settings, dependency graph, and deployment artifacts.
 
-Run the following command, using the variables you set earlier.
+`forge verify-contract` submits the verification request to [Sourcify](https://sourcify.dev), which natively supports Hedera Mainnet (chain ID `295`) and Testnet (chain ID `296`). Once Sourcify accepts the match, the verified status surfaces automatically on [HashScan](https://hashscan.io/) and any other explorer that reads from Sourcify.
+
+The constructor for this contract takes one argument (`initialOwner`), which we must provide for successful verification. Run the following command, using the variables you set earlier.
 
 ```bash
 forge verify-contract $CONTRACT_ADDRESS src/HederaToken.sol:HederaToken \
     --chain-id 296 \
     --verifier sourcify \
-    --verifier-url "https://server-verify.hashscan.io/" \
+    --verifier-url "https://sourcify.dev/server" \
     --constructor-args $(cast abi-encode "constructor(address)" $MY_ADDRESS)
 ```
 
@@ -333,12 +335,10 @@ Contract successfully verified
 - Follow more [Foundry guides with Hedera](/hedera/tutorials/smart-contracts/foundry).
 
 <Columns cols={2}>
-  <Card
-    title="Writer: Kiran, Developer Advocate"
-    title="Writer: Kiran, Developer Advocate"
-    arrow
-  >
+  <Card title="Writer: Kiran, Developer Advocate" arrow>
     [Github](https://github.com/kpachhai) | [Linkedin](https://www.linkedin.com/in/kiranpachhai/)
   </Card>
-
+  <Card title="Editor: Luke, DevRel Engineer" arrow>
+    [GitHub](https://github.com/LukeForrest-Hashgraph) | [X](https://x.com/_LukeForrest)
+  </Card>
 </Columns>

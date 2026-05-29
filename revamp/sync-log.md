@@ -8,6 +8,12 @@ Use this to track how current `dev` is relative to `main` at any time.
 
 ---
 
+## 2026-05-29 00:55 UTC
+
+- **main HEAD**: `37948f1` — docs: add documentation for Hosted MCP Server in Hedera AI Agent Kit (#529)
+- **dev HEAD**: `943881e` — chore: hide placeholder pages, add redirects, final stage to merge (#538)
+- **Stats**: 2 new · 21 updated · 497 unchanged · 22 protected skipped · 1 fixups applied
+
 ## 2026-05-14 23:05 UTC
 
 - **main HEAD**: `07d6cea` — fix: errors from last deployment  (#533)

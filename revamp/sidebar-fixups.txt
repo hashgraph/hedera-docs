@@ -59,7 +59,7 @@ af78c6517a642131c4e87a6e6a4af583044bce5b|hedera/tutorials/local-node/how-to-run-
 # Solutions — AI Studio
 a965ccbfe8fe41c2d70757baec21bf1ebd358ed3|hedera/open-source-solutions/ai-studio-on-hedera.mdx|solutions/ai/index.mdx|AI Studio
 a96fd722ecbbff88385797b1f5808d430556a6a0|hedera/open-source-solutions/ai-studio-on-hedera/agent-lab.mdx|solutions/ai/agent-lab.mdx|Agent Lab
-476026cb66ad859392fbecf62bc9ec50e5ae272f|hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit.mdx|solutions/ai/agent-kit/index.mdx|Agent Kit
+de0c779bf95113d306483d24688cb424d8af167c|hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit.mdx|solutions/ai/agent-kit/index.mdx|Agent Kit
 3fdeb69397c87cefeb9d7ad0e51a62ca9e5790bf|hedera/open-source-solutions/ai-tools-for-developers.mdx|solutions/ai/tools/index.mdx|AI Tools
 
 # Solutions & Operators
@@ -72,7 +72,7 @@ aa789ff9420a5bbe3ca8b11cc46fd8f6eac90943|hedera/core-concepts/mirror-nodes/run-y
 1f2d17c9b761260b612ce33ee750f24dd4aa3d6d|hedera/sdks-and-apis/rest-api/schedule-transactions.mdx|reference/rest-api/schedules/index.mdx|Schedules
 
 # Reference — other long titles
-aa7c5657253c08b092d9852edd596916eedac0cd|hedera/sdks-and-apis/smart-contract-verification-api.mdx|reference/verification-api.mdx|Verification API
+df9674c52a242123c532d9e61020307d7c6fefd2|hedera/sdks-and-apis/smart-contract-verification-api.mdx|reference/verification-api.mdx|Verification API
 cb290177ee959fe38a3fe22633a6f1fb4111c612|hedera/sdks-and-apis/hedera-status-api.mdx|reference/status-api.mdx|Status API
 29b2fabf4281f56927f439a81a46b06ada559ca6|hedera/sdks-and-apis/hedera-api/cryptocurrency-accounts.mdx|reference/protobuf/crypto/index.mdx|Crypto Accounts
 

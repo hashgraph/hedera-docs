@@ -40,19 +40,19 @@
 # Added when real content + fixes were written directly into the 7-tab structure.
 # migrate.sh skips these; it warns (PROTECTED-CHANGED) if the hedera/ source later changes.
 ef7e54659c8767385437e690f20ad53bbdf2dd9f|hedera/getting-started-evm-developers.mdx|evm/index.mdx|Edited directly on dev; preserve over hedera/ source
-c8dd09f40c8d2a33f8ece82ae7df239ec109e5e2|hedera/open-source-solutions/hedera-contract-builder.mdx|evm/tools/contract-builder.mdx|Edited directly on dev; preserve over hedera/ source
+f97c22e272edd31cdbb2529a2a473f51f22ed56e|hedera/open-source-solutions/hedera-contract-builder.mdx|evm/tools/contract-builder.mdx|Edited directly on dev; preserve over hedera/ source
 84cd00ce37f6599ff532d4c414027b40427a6bcd|hedera/core-concepts/accounts/account-properties.mdx|learn/core-concepts/accounts/account-properties.mdx|Edited directly on dev; preserve over hedera/ source
 bb87f662971e3525264236528e92ac36369ddad1|hedera/getting-started-hedera-native-developers/portal-hedera-com-playground.mdx|learn/getting-started/portal-playground.mdx|Edited directly on dev; preserve over hedera/ source
-017b2b4dfca46e61e76d781763c5ddb6ff48abbc|hedera/sdks-and-apis/sdks/accounts-and-hbar/create-an-account.mdx|native/accounts/create.mdx|Edited directly on dev; preserve over hedera/ source
+8aa1a3561206d096b14cfd8602cdaca3f116946d|hedera/sdks-and-apis/sdks/accounts-and-hbar/create-an-account.mdx|native/accounts/create.mdx|Edited directly on dev; preserve over hedera/ source
 3f72bf3db6c2021aad07e02ee0adf5975c8156ed|hedera/sdks-and-apis/sdks.mdx|native/fundamentals/index.mdx|Edited directly on dev; preserve over hedera/ source
 37af2ad049890eb07f791227816b73922b4e36ca|hedera/getting-started-hedera-native-developers.mdx|native/index.mdx|Edited directly on dev; preserve over hedera/ source
-44929d9c0f04b939b44c93a83476b3f41eedad75|hedera/sdks-and-apis/sdks/smart-contracts/create-a-smart-contract.mdx|native/smart-contracts/create.mdx|Edited directly on dev; preserve over hedera/ source
-8a9c5b7a2cb4620fe469bab7980b90b697eb9e6f|hedera/sdks-and-apis/sdks/smart-contracts/update-a-smart-contract.mdx|native/smart-contracts/update.mdx|Edited directly on dev; preserve over hedera/ source
-43fc1718ada7947fcbfe63b4aef45e67e50909a3|hedera/sdks-and-apis/sdks/token-service/associate-tokens-to-an-account.mdx|native/tokens/associate.mdx|Edited directly on dev; preserve over hedera/ source
-5ebfcbcc0698e9150380fa385784347ce24e68dd|hedera/sdks-and-apis/sdks/token-service/define-a-token.mdx|native/tokens/define.mdx|Edited directly on dev; preserve over hedera/ source
+d9e6e9461d24c581b3a920cf887d9f18eaeb49d7|hedera/sdks-and-apis/sdks/smart-contracts/create-a-smart-contract.mdx|native/smart-contracts/create.mdx|Edited directly on dev; preserve over hedera/ source
+8c1d506e31e2ab93504b30edf205ff119b538355|hedera/sdks-and-apis/sdks/smart-contracts/update-a-smart-contract.mdx|native/smart-contracts/update.mdx|Edited directly on dev; preserve over hedera/ source
+2e9cedd72a2cb147187d8ef013bdf6c4d0c49ca5|hedera/sdks-and-apis/sdks/token-service/associate-tokens-to-an-account.mdx|native/tokens/associate.mdx|Edited directly on dev; preserve over hedera/ source
+dcba9553935e041974b139dbbfc28e29b19260c9|hedera/sdks-and-apis/sdks/token-service/define-a-token.mdx|native/tokens/define.mdx|Edited directly on dev; preserve over hedera/ source
 d857287a4cf8414d7663e17a484edda43d72ffdd|hedera/tutorials/more-tutorials/get-started-with-the-hedera-consensus-service-fabric-plugin/virtual-environment-set-up.mdx|native/tutorials/advanced/hcs-fabric-plugin/virtual-environment.mdx|Edited directly on dev; preserve over hedera/ source
 dd3f94ff167617bdcd90af7998f2531e5d5314f4|hedera/sdks-and-apis.mdx|reference/index.mdx|Edited directly on dev; preserve over hedera/ source
-476026cb66ad859392fbecf62bc9ec50e5ae272f|hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit.mdx|solutions/ai/agent-kit/index.mdx|Edited directly on dev; preserve over hedera/ source
+de0c779bf95113d306483d24688cb424d8af167c|hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit.mdx|solutions/ai/agent-kit/index.mdx|Edited directly on dev; preserve over hedera/ source
 4330efde1a1c84ea958415ff744a69211631e769|hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-py/quickstart.mdx|solutions/ai/agent-kit/python/quickstart.mdx|Edited directly on dev; preserve over hedera/ source
 c129d68fc56212110a70cdf2bdba99061380f604|hedera/open-source-solutions/hashiodao/governance-token-dao.mdx|solutions/governance/hashiodao/governance-token-dao.mdx|Edited directly on dev; preserve over hedera/ source
 7eae7158568176f721cfae1894b74db47aeb3775|hedera/open-source-solutions/hashiodao/multisig-dao.mdx|solutions/governance/hashiodao/multisig-dao.mdx|Edited directly on dev; preserve over hedera/ source

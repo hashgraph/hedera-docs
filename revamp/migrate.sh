@@ -428,7 +428,7 @@ get_explicit_mapping() {
     "hedera/core-concepts/smart-contracts/creating-smart-contracts.mdx") echo "evm/development/creating.mdx" ;;
     "hedera/core-concepts/smart-contracts/compiling-smart-contracts.mdx") echo "evm/development/compiling.mdx" ;;
     "hedera/core-concepts/smart-contracts/deploying-smart-contracts.mdx") echo "evm/development/deploying.mdx" ;;
-    "hedera/core-concepts/smart-contracts/verifying-smart-contracts-beta.mdx") echo "evm/development/verifying.mdx" ;;
+    "hedera/core-concepts/smart-contracts/verifying-smart-contracts.mdx") echo "evm/development/verifying.mdx" ;;
     "hedera/core-concepts/smart-contracts/gas-and-fees.mdx") echo "evm/development/gas-fees.mdx" ;;
     "hedera/core-concepts/smart-contracts/smart-contract-rent.mdx") echo "evm/development/rent.mdx" ;;
     "hedera/core-concepts/smart-contracts/smart-contract-traceability.mdx") echo "evm/development/traceability.mdx" ;;

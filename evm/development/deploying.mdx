@@ -84,7 +84,7 @@ If your contract bytecode is 10KB, with 20% (2KB) as zero bytes and 80% (8KB) as
 
 Ensure you adjust `gasLimit` (RLP) and `maxGasAllowance` (wrapper) to cover this total gas.
 
-📣 Learn more on the [Gas and Fees page,](/evm/development/gas-fees) [EthereumTransaction SDK page](/native/smart-contracts/ethereum-transaction), and the [Understanding Hedera's EVM Differences and Compatibility page](/evm/migration).
+📣 Learn more on the [Gas and Fees page,](/evm/development/gas-fees) [EthereumTransaction SDK page](/native/smart-contracts/ethereum-transaction), and the [Understanding Hedera's EVM Differences and Compatibility page](/evm/differences).
 
 ***
 
@@ -151,7 +151,7 @@ Yes, you can use Solidity functions directly with the Hedera EVM. However, refer
 </Accordion>
 
 <Accordion title="Can i deploy large contracts with big bytecode?">
-Yes, hedera supports jumbo ethereum transactions (HIP-1086), allowing up to **24kb for contract creation** and **128kb for contract calls**. this eliminates the need for uploading bytecode to the file service in most cases. [Learn more](/evm/migration#jumbo-ethereum-transactions).
+Yes, hedera supports jumbo ethereum transactions (HIP-1086), allowing up to **24kb for contract creation** and **128kb for contract calls**. this eliminates the need for uploading bytecode to the file service in most cases. [Learn more](/evm/differences#jumbo-ethereum-transactions).
 </Accordion>
 
 <Accordion title="Do jumbo transactions work with batch transactions?">

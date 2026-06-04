@@ -1,95 +1,97 @@
 ---
-title: Smart Contracts
-sidebarTitle: EVM Tutorials
+title: EVM Tutorials
+description: "Step-by-step guides for building on Hedera with Solidity, Hardhat, Foundry, and EVM-compatible tools."
+mode: wide
 ---
 
-<Columns cols={2}>
-  <Card
-    title="Configuring Hardhat with Hedera Localnet/Testnet: A Step-by-Step Guide"
-    href="/evm/tools/hardhat"
-  />
-  <Card
-    title="How to Mint & Burn an ERC-721 Token Using Hardhat and Ethers (Part 1)"
-    href="/evm/tutorials/advanced/erc721-hardhat/part1-mint-burn"
-  />
-  <Card
-    title="How to Set Access Control, a Token URI, Pause, and Transfer an ERC-721 Token Using Hardhat (Part 2)"
-    href="/evm/tutorials/advanced/erc721-hardhat/part2-access-control"
-  />
-  <Card
-    title="How to Upgrade an ERC-721 Token with OpenZeppelin UUPS Proxies and Hardhat (Part 3)"
-    href="/evm/tutorials/advanced/erc721-hardhat/part3-upgradeable"
-  />
-  <Card
-    title="HTS x EVM - How to Mint NFTs (Part 1)"
-    href="/evm/tutorials/hedera/hts-evm/part1-mint-nfts"
-  />
-  <Card
-    title="HTS x EVM - KYC & Update (Part 2)"
-    href="/evm/tutorials/hedera/hts-evm/part2-kyc-update"
-  />
-  <Card
-    title="HTS x EVM - How to Pause, Freeze, Wipe, and Delete NFTs (Part 3)"
-    href="/evm/tutorials/hedera/hts-evm/part3-pause-freeze-wipe"
-  />
-  <Card
-    title="HSS x EVM - Schedule Smart Contract Calls (Part 1)"
-    href="/evm/tutorials/hedera/hss-evm/part1-schedule-calls"
-  />
-  <Card
-    title="HSS x EVM - Dynamic Rebalancing Through Scheduled Execution (Part 2)"
-    href="/evm/tutorials/hedera/hss-evm/part2-rebalancing"
-  />
-  <Card
-    title="Verify a Smart Contract on HashScan"
-    href="/evm/tutorials/intermediate/verify-hashscan"
-  />
-  <Card
-    title="Send and Receive HBAR Using Solidity Smart Contracts"
-    href="/evm/tutorials/intermediate/send-receive-hbar"
-  />
-  <Card
-    title="Deploy a Subgraph Using The Graph and Hedera JSON-RPC Relay"
-    href="/evm/tools/other/the-graph"
-  />
-  <Card
-    title="Deploy Smart Contracts on Hedera Using Truffle"
-    href="/evm/tools/other/truffle"
-  />
-  <Card
-    title="How to Fork the Hedera Network with Hardhat - Basic ERC-20 Tutorial"
-    href="/evm/tools/hardhat/forking-basic"
-  />
-  <Card
-    title="How to Fork the Hedera Network with Hardhat - Advanced HTS Tutorial"
-    href="/evm/tools/hardhat/forking-advanced"
-  />
-  <Card
-    title="Foundry on Hedera"
-    href="/evm/tools/foundry"
-  />
-  <Card
-    title="Configuring Foundry with Hedera Localnet/Testnet: A Step-by-Step Guide"
-    href="/evm/tools/foundry/setup"
-  />
-  <Card
-    title="How to Mint & Burn an ERC-721 Token using Foundry(Part 1)"
-    href="/evm/tutorials/advanced/erc721-foundry/part1-mint-burn"
-  />
-  <Card
-    title="How to Write Tests in Solidity(Part 2)"
-    href="/evm/tutorials/advanced/erc721-foundry/part2-testing"
-  />
-  <Card
-    title="How to Fork the Hedera Network with Foundry - Basic ERC-20 Tutorial"
-    href="/evm/tools/foundry/forking"
-  />
-  <Card
-    title="How to Fork the Hedera Network with Foundry - Advanced HTS Tutorial"
-    href="/evm/tools/foundry/forking-advanced-hts"
-  />
-  <Card
-    title="How to Connect MetaMask to Hedera"
-    href="/evm/tutorials/beginner/connect-metamask"
-  />
-</Columns>
+Hands-on tutorials for every stage of EVM development on Hedera, from deploying your first token to building upgradeable contracts and Hedera-native integrations.
+
+## Beginner
+
+<CardGroup cols={2}>
+  <Card title="Connect MetaMask to Hedera" href="/evm/tutorials/beginner/connect-metamask">
+    Configure Hedera Mainnet and Testnet in MetaMask using network settings or one-click configuration.
+  </Card>
+  <Card title="Deploy Your First ERC-20 Token" href="/evm/tutorials/beginner/your-first-token">
+    Deploy and mint an ERC-20 token on Hedera Testnet using Hardhat and OpenZeppelin's audited contracts. The workflow is identical to any other EVM chain.
+  </Card>
+</CardGroup>
+
+## Intermediate
+
+<CardGroup cols={2}>
+  <Card title="Send and Receive HBAR Using Solidity" href="/evm/tutorials/intermediate/send-receive-hbar">
+    Write Solidity contracts that hold and transfer HBAR — the foundation for DeFi, NFT marketplaces, and DAO contracts on Hedera.
+  </Card>
+  <Card title="Verify a Smart Contract on HashScan" href="/evm/tutorials/intermediate/verify-hashscan">
+    Verify deployed bytecode against source files using Sourcify. Once verified, HashScan displays the full source code automatically.
+  </Card>
+  <Card title="JSON-RPC Connections" href="/evm/tutorials/intermediate/json-rpc-connections">
+    Connect Hardhat, Foundry, or ethers.js to Hedera via HashIO or Validation Cloud JSON-RPC endpoints.
+  </Card>
+</CardGroup>
+
+## Advanced: ERC-721 with Hardhat
+
+Three-part series building a production-grade NFT contract from scratch to upgradeable.
+
+<CardGroup cols={3}>
+  <Card title="Part 1 — Mint and Burn" href="/evm/tutorials/advanced/erc721-hardhat/part1-mint-burn">
+    Deploy an ERC-721 contract with OpenZeppelin, mint an NFT to your account, and burn it — the complete token lifecycle.
+  </Card>
+  <Card title="Part 2 — Access Control" href="/evm/tutorials/advanced/erc721-hardhat/part2-access-control">
+    Add role-based access control, URI storage, and Pausable functionality to your ERC-721 contract.
+  </Card>
+  <Card title="Part 3 — Upgradeable Contracts" href="/evm/tutorials/advanced/erc721-hardhat/part3-upgradeable">
+    Upgrade an ERC-721 contract in place using the OpenZeppelin UUPS upgradeable proxy pattern.
+  </Card>
+</CardGroup>
+
+## Advanced: ERC-721 with Foundry
+
+<CardGroup cols={2}>
+  <Card title="Part 1 — Mint and Burn" href="/evm/tutorials/advanced/erc721-foundry/part1-mint-burn">
+    Deploy, mint, and burn an ERC-721 token on Hedera Testnet using Foundry scripts and OpenZeppelin.
+  </Card>
+  <Card title="Part 2 — Writing Tests in Solidity" href="/evm/tutorials/advanced/erc721-foundry/part2-testing">
+    Write and run Solidity unit tests for an ERC-721 mint-and-burn contract using Foundry's test framework.
+  </Card>
+</CardGroup>
+
+## HTS + EVM
+
+Three-part series using Hedera Token Service system contracts from Solidity — native token management without custom bytecode.
+
+<CardGroup cols={3}>
+  <Card title="Part 1 — Mint NFTs" href="/evm/tutorials/hedera/hts-evm/part1-mint-nfts">
+    Mint, transfer, and burn NFTs using HTS system contracts from Solidity. No separate token contract required.
+  </Card>
+  <Card title="Part 2 — KYC and Update" href="/evm/tutorials/hedera/hts-evm/part2-kyc-update">
+    Grant and revoke KYC, update token metadata, and manage compliance permissions on native HTS tokens via a smart contract.
+  </Card>
+  <Card title="Part 3 — Pause, Freeze, Wipe, Delete" href="/evm/tutorials/hedera/hts-evm/part3-pause-freeze-wipe">
+    Pause transfers, freeze accounts, wipe balances, and delete HTS tokens from Solidity.
+  </Card>
+</CardGroup>
+
+## HSS + EVM
+
+<CardGroup cols={2}>
+  <Card title="Part 1 — Schedule Smart Contract Calls" href="/evm/tutorials/hedera/hss-evm/part1-schedule-calls">
+    Schedule future smart contract calls using Hedera's native Schedule Service — no off-chain bots or keeper networks required.
+  </Card>
+  <Card title="Part 2 — Dynamic Rebalancing" href="/evm/tutorials/hedera/hss-evm/part2-rebalancing">
+    Build a capacity-aware DeFi rebalancer that adjusts its scheduling strategy dynamically based on network conditions.
+  </Card>
+</CardGroup>
+
+## Hedera Native
+
+<CardGroup cols={2}>
+  <Card title="Create and Transfer an NFT Using Solidity" href="/evm/tutorials/hedera/nft-solidity">
+    Create and transfer a Hedera-native NFT through a Solidity contract using the HTS system contract interface.
+  </Card>
+  <Card title="Hybrid HTS + EVM Tokenization" href="/evm/tutorials/hedera/hybrid-hts-evm">
+    Combine HTS native tokenization with EVM smart contracts for compliance features and Solidity composability in the same token.
+  </Card>
+</CardGroup>

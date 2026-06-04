@@ -1,0 +1,127 @@
+---
+title: "Hiero JSON-RPC Relay"
+description: "Hiero JSON-RPC Relay release notes"
+---
+
+# Hiero JSON-RPC Relay
+
+Visit the [Hedera status page](https://status.hedera.com/) for the latest versions supported on each network.
+
+The [Hiero JSON-RPC Relay](https://github.com/hiero-ledger/hiero-json-rpc-relay) is an open-source implementation of Ethereum JSON-RPC APIs for Hedera. It allows developers to interact with Hedera nodes using familiar EVM-compatible tools such as Hardhat, MetaMask, and ethers.js.
+
+## Latest Releases
+
+## [v0.77.0](https://hedera.com/blog/upcoming-change-hiero-json-rpc-relay-default-configuration-updates-v0-77-0-20th-april-2026/)
+
+Release v0.77.0 updates several default configuration values to better align the Relay's behavior with what developers expect from standard Ethereum JSON-RPC implementations. Operators running their own relay instances should review these changes carefully before upgrading.
+
+### Breaking Changes
+
+The following default configuration values have changed:
+
+| Configuration | Old Default | New Default |
+|---|---|---|
+| `ENABLE_TX_POOL` | `false` | `true` |
+| `REDIS_ENABLED` | `true` | `false` |
+| `USE_ASYNC_TX_PROCESSING` | `true` | `false` |
+| `RATE_LIMIT_DISABLED` | `false` | `true` |
+| `SUBSCRIPTIONS_ENABLED` | `false` | `true` |
+| `HBAR_RATE_LIMIT_TINYBAR` | `25000000000` | `0` |
+
+Key impacts for relay operators include: the transaction pool is now enabled by default increasing in-memory tracking of pending transactions; WebSocket subscriptions are enabled by default allowing more long-lived connections; Redis is disabled by default so Redis-backed behavior is not used unless explicitly configured; async transaction processing is disabled so transactions run synchronously; and rate limiting is disabled by default so it must be handled outside the Relay unless explicitly configured.
+
+## [v0.76.2](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.76.2)
+
+Patch release with bug fixes and stability improvements.
+
+**Full GitHub Release Notes**: [v0.76.2](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.76.2)
+
+## [v0.76.1](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.76.1)
+
+Patch release with bug fixes and stability improvements.
+
+**Full GitHub Release Notes**: [v0.76.1](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.76.1)
+
+## [v0.76.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.76.0)
+
+See the full release notes on GitHub for a complete list of changes in this release.
+
+**Full GitHub Release Notes**: [v0.76.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.76.0)
+
+## [v0.75.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.75.0)
+
+See the full release notes on GitHub for a complete list of changes in this release.
+
+**Full GitHub Release Notes**: [v0.75.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.75.0)
+
+## [v0.74.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.74.0)
+
+Release v0.74.0 introduces a significant experimental feature for **Nonce Ordering with Locks** ([#4635](https://github.com/hiero-ledger/hiero-json-rpc-relay/pull/4635)), designed to drastically reduce `WRONG_NONCE` errors by ensuring transactions are processed in the correct sequence even during asynchronous operations. This release also continues the extensive enhancement of the **Transaction Pool** service, adding RLP hex transaction storage ([#4521](https://github.com/hiero-ledger/hiero-json-rpc-relay/pull/4521)), encapsulating the `ENABLE_TX_POOL` flag for better configuration management ([#4581](https://github.com/hiero-ledger/hiero-json-rpc-relay/pull/4581)), and introducing new `txpool_*` related RPC methods ([#4544](https://github.com/hiero-ledger/hiero-json-rpc-relay/pull/4544)) to expand relay capabilities.
+
+Operational observability and debugging have been improved with updates to the `/liveness` and `/readiness` endpoints ([#4622](https://github.com/hiero-ledger/hiero-json-rpc-relay/pull/4622)) and a review of `200`/`400` HTTP response codes ([#4650](https://github.com/hiero-ledger/hiero-json-rpc-relay/pull/4650)). To improve accuracy, the relay now removes the fallback predefined gas value for `eth_estimateGas` when the Mirror Node fails to retrieve an estimate ([#4678](https://github.com/hiero-ledger/hiero-json-rpc-relay/pull/4678)). Additionally, developers can now leverage synthetic HTS transaction support in `debug_traceTransaction` and `debug_traceBlockByNumber` ([#4694](https://github.com/hiero-ledger/hiero-json-rpc-relay/pull/4694)) for deeper insights into token operations, while internal error handling has been tightened to stop silently swallowing errors ([#4758](https://github.com/hiero-ledger/hiero-json-rpc-relay/pull/4758)/[#4775](https://github.com/hiero-ledger/hiero-json-rpc-relay/pull/4775)).
+
+Other notable changes include CORS configuration aligned with other JSON-RPC providers ([#4710](https://github.com/hiero-ledger/hiero-json-rpc-relay/pull/4710)), IPRateLimiter rework with Redis integration ([#4662](https://github.com/hiero-ledger/hiero-json-rpc-relay/pull/4662)), a configurable `SDK_LOG_LEVEL` for enhanced SDK logging ([#4578](https://github.com/hiero-ledger/hiero-json-rpc-relay/pull/4578)), the addition of JSON logging via environment variable ([#4474](https://github.com/hiero-ledger/hiero-json-rpc-relay/pull/4474)), and migration of API testing from Postman to Hoppscotch ([#4687](https://github.com/hiero-ledger/hiero-json-rpc-relay/pull/4687)). Dependency updates include pino 9.7.0 to 10.1.0, pino-pretty 7.6.1 to 13.1.2, `@hashgraph/sdk` 2.75.0 to 2.78.0, and Koa v2 to v3 migration.
+
+**Full GitHub Release Notes**: [v0.74.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.74.0)
+
+## [v0.73.1](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.73.1)
+
+Patch release with bug fixes and stability improvements.
+
+**Full GitHub Release Notes**: [v0.73.1](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.73.1)
+
+## [v0.73.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.73.0)
+
+See the full release notes on GitHub for a complete list of changes in this release.
+
+**Full GitHub Release Notes**: [v0.73.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.73.0)
+
+## [v0.72.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.72.0)
+
+See the full release notes on GitHub for a complete list of changes in this release.
+
+**Full GitHub Release Notes**: [v0.72.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.72.0)
+
+## [v0.71.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.71.0)
+
+See the full release notes on GitHub for a complete list of changes in this release.
+
+**Full GitHub Release Notes**: [v0.71.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.71.0)
+
+## [v0.70.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.70.0)
+
+See the full release notes on GitHub for a complete list of changes in this release.
+
+**Full GitHub Release Notes**: [v0.70.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.70.0)
+
+## [v0.69.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.69.0)
+
+See the full release notes on GitHub for a complete list of changes in this release.
+
+**Full GitHub Release Notes**: [v0.69.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.69.0)
+
+## [v0.68.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.68.0)
+
+See the full release notes on GitHub for a complete list of changes in this release.
+
+**Full GitHub Release Notes**: [v0.68.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.68.0)
+
+## [v0.67.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.67.0)
+
+See the full release notes on GitHub for a complete list of changes in this release.
+
+**Full GitHub Release Notes**: [v0.67.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.67.0)
+
+## [v0.66.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.66.0)
+
+See the full release notes on GitHub for a complete list of changes in this release.
+
+**Full GitHub Release Notes**: [v0.66.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.66.0)
+
+## [v0.65.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.65.0)
+
+Release v0.65.0 introduces critical improvements to transaction handling and log retrieval. A key fix resolves an issue where `eth_getBlockByNumber` failed when encountering transactions with `CONTRACT_NEGATIVE_VALUE` ([#3387](https://github.com/hiero-ledger/hiero-json-rpc-relay/pull/3387)). With this update, blocks containing transactions that failed due to negative values are now correctly processed and returned, ensuring better reliability and consistency in block retrieval. Additionally, `eth_getLogs` has been enhanced with timestamp range validation and improved error handling ([#3431](https://github.com/hiero-ledger/hiero-json-rpc-relay/pull/3431)), providing more accurate and reliable log retrieval while reducing potential inconsistencies in event filtering.
+
+Other improvements include enhanced logging upon receiving responses from the Mirror Node server ([#3422](https://github.com/hiero-ledger/hiero-json-rpc-relay/pull/3422)), a new Blockscout example project ([#3386](https://github.com/hiero-ledger/hiero-json-rpc-relay/pull/3386)), and the addition of a `DEPENDENT_SERVICE_IMMATURE_RECORDS` predefined error. Dependency updates include `@hashgraph/sdk` 2.53.0 to 2.56.0.
+
+**Full GitHub Release Notes**: [v0.65.0](https://github.com/hiero-ledger/hiero-json-rpc-relay/releases/tag/v0.65.0)

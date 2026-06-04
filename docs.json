@@ -81,6 +81,10 @@
   },
   "redirects": [
     {
+      "source": "/support/stackoverflow-com-questions-tagged-hedera-hashgraph",
+      "destination": "/support"
+    },
+    {
       "source": "/hedera/sdks-and-apis/sdks/tokens",
       "destination": "/native/tokens"
     },
@@ -964,9 +968,14 @@
         "icon": "graduation-cap",
         "groups": [
           {
+            "group": "Overview",
+            "pages": [
+              "learn/index"
+            ]
+          },
+          {
             "group": "Getting Started",
             "pages": [
-              "learn/index",
               "learn/getting-started/index",
               "learn/getting-started/what-is-hedera",
               "learn/getting-started/why-hedera",
@@ -978,7 +987,6 @@
           {
             "group": "Core Concepts",
             "pages": [
-              "learn/core-concepts/index",
               {
                 "group": "Accounts",
                 "pages": [
@@ -1043,7 +1051,6 @@
           {
             "group": "Networks",
             "pages": [
-              "learn/networks/index",
               {
                 "group": "Mainnet",
                 "pages": [
@@ -1075,7 +1082,6 @@
           {
             "group": "Release Notes",
             "pages": [
-              "learn/release-notes/index",
               "learn/release-notes/services",
               "learn/release-notes/mirror-node"
             ]
@@ -1087,9 +1093,14 @@
         "icon": "ethereum",
         "groups": [
           {
+            "group": "Overview",
+            "pages": [
+              "evm/index"
+            ]
+          },
+          {
             "group": "Quickstart",
             "pages": [
-              "evm/index",
               "evm/quickstart/index",
               "evm/quickstart/setup-metamask",
               "evm/quickstart/get-test-hbar",
@@ -1231,7 +1242,6 @@
           {
             "group": "Tutorials",
             "pages": [
-              "evm/tutorials/index",
               {
                 "group": "Beginner",
                 "pages": [
@@ -1339,9 +1349,14 @@
         "icon": "code",
         "groups": [
           {
+            "group": "Overview",
+            "pages": [
+              "native/index"
+            ]
+          },
+          {
             "group": "Quickstart",
             "pages": [
-              "native/index",
               "native/quickstart/index",
               "learn/getting-started/create-portal-account",
               "native/quickstart/javascript",
@@ -1404,7 +1419,6 @@
           {
             "group": "Accounts",
             "pages": [
-              "native/accounts/index",
               "native/accounts/create",
               "native/accounts/update",
               "native/accounts/transfer",
@@ -1419,7 +1433,6 @@
           {
             "group": "Token Service",
             "pages": [
-              "native/tokens/index",
               "native/tokens/token-id",
               "native/tokens/nft-id",
               "native/tokens/token-types",
@@ -1455,7 +1468,6 @@
           {
             "group": "Consensus Service",
             "pages": [
-              "native/consensus/index",
               "native/consensus/create-topic",
               "native/consensus/update-topic",
               "native/consensus/submit-message",
@@ -1468,7 +1480,6 @@
           {
             "group": "File Service",
             "pages": [
-              "native/files/index",
               "native/files/create",
               "native/files/append",
               "native/files/update",
@@ -1481,7 +1492,6 @@
           {
             "group": "Scheduled Transactions",
             "pages": [
-              "native/scheduled/index",
               "native/scheduled/schedule-id",
               "native/scheduled/create",
               "native/scheduled/sign",
@@ -1493,7 +1503,6 @@
           {
             "group": "Smart Contracts",
             "pages": [
-              "native/smart-contracts/index",
               "native/smart-contracts/delegate-contract-id",
               "native/smart-contracts/create",
               "native/smart-contracts/update",
@@ -1510,7 +1519,6 @@
           {
             "group": "Signature Provider",
             "pages": [
-              "native/signature-provider/index",
               "native/signature-provider/provider",
               "native/signature-provider/signer",
               "native/signature-provider/wallet",
@@ -1520,7 +1528,6 @@
           {
             "group": "Tutorials",
             "pages": [
-              "native/tutorials/index",
               {
                 "group": "Getting Started",
                 "pages": [
@@ -1619,9 +1626,14 @@
         "icon": "lightbulb",
         "groups": [
           {
+            "group": "Overview",
+            "pages": [
+              "solutions/index"
+            ]
+          },
+          {
             "group": "Tokenization",
             "pages": [
-              "solutions/index",
               "solutions/tokenization/index",
               {
                 "group": "Asset Tokenization Studio",
@@ -1781,9 +1793,14 @@
         "icon": "server",
         "groups": [
           {
+            "group": "Overview",
+            "pages": [
+              "operators/index"
+            ]
+          },
+          {
             "group": "Mirror Node",
             "pages": [
-              "operators/index",
               "operators/mirror-node/index",
               "operators/mirror-node/architecture",
               "operators/mirror-node/one-click-deploy",
@@ -1826,9 +1843,14 @@
         "icon": "book",
         "groups": [
           {
+            "group": "Overview",
+            "pages": [
+              "reference/index"
+            ]
+          },
+          {
             "group": "REST API",
             "pages": [
-              "reference/index",
               "reference/rest-api/index",
               "reference/rest-api/accounts/index",
               "reference/rest-api/balances/index",
@@ -2063,9 +2085,14 @@
         "icon": "circle-question",
         "groups": [
           {
+            "group": "Overview",
+            "pages": [
+              "support/index"
+            ]
+          },
+          {
             "group": "FAQs",
             "pages": [
-              "support/index",
               "support/faq/index",
               "support/faq/getting-started",
               "support/faq/governance",
@@ -2120,7 +2147,6 @@
             "pages": [
               "support/hedera-com-discord",
               "support/github-com-hashgraph",
-              "support/stackoverflow-com-questions-tagged-hedera-hashgraph",
               "support/help-hedera-com-hc-en-us",
               "support/hedera-com-blog-tagged-technical",
               "support/hedera-com-bounty",

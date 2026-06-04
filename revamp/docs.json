@@ -81,8 +81,36 @@
   },
   "redirects": [
     {
+      "source": "/native/tutorials/index",
+      "destination": "/native/tutorials/getting-started/create-fund-account"
+    },
+    {
+      "source": "/reference/protobuf/index",
+      "destination": "/reference/protobuf/basic-types/index"
+    },
+    {
       "source": "/support/stackoverflow-com-questions-tagged-hedera-hashgraph",
       "destination": "/support"
+    },
+    {
+      "source": "/learn/core-concepts/services/tokens",
+      "destination": "/learn/core-concepts/tokens"
+    },
+    {
+      "source": "/native/tutorials/consensus",
+      "destination": "/native/tutorials/consensus/create-first-topic"
+    },
+    {
+      "source": "/native/tutorials/tokens",
+      "destination": "/native/tutorials/tokens/create-first-token"
+    },
+    {
+      "source": "/native/keys",
+      "destination": "/native/keys/generate-key-pair"
+    },
+    {
+      "source": "/native/local-dev",
+      "destination": "/native/local-dev/setup-local-node"
     },
     {
       "source": "/hedera/sdks-and-apis/sdks/tokens",
@@ -183,6 +211,10 @@
     {
       "source": "/hedera/sdks-and-apis/hedera-api/basic-types/tokensupplytype",
       "destination": "/reference/protobuf/basic-types"
+    },
+    {
+      "source": "/reference/protobuf",
+      "destination": "/reference/protobuf/basic-types/index"
     },
     {
       "source": "/hedera/sdks-and-apis/hedera-api/consensus/consensus-service",
@@ -318,7 +350,7 @@
     },
     {
       "source": "/guides/resources/tutorials",
-      "destination": "/native/tutorials"
+      "destination": "/native/tutorials/getting-started/create-fund-account"
     },
     {
       "source": "/hethers/:slug*",
@@ -382,11 +414,23 @@
     },
     {
       "source": "/hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility",
-      "destination": "/evm/migration"
+      "destination": "/evm/differences"
     },
     {
       "source": "/hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility/for-evm-developers-migrating-to-hedera",
-      "destination": "/evm/migration/key-differences-overview"
+      "destination": "/evm/differences"
+    },
+    {
+      "source": "/evm/migration/key-differences-overview",
+      "destination": "/evm/differences"
+    },
+    {
+      "source": "/evm/migration",
+      "destination": "/evm/differences"
+    },
+    {
+      "source": "/evm/migration/:slug*",
+      "destination": "/evm/differences/:slug*"
     },
     {
       "source": "/hedera/core-concepts/tokens/erc-evm-compatible-tokenization",
@@ -551,6 +595,10 @@
     {
       "source": "/hedera/sdks-and-apis/sdks/address-book",
       "destination": "/native/fundamentals/address-book"
+    },
+    {
+      "source": "/native/fundamentals/errors",
+      "destination": "/reference/network-responses"
     },
     {
       "source": "/hedera/sdks-and-apis/sdks/keys/create-a-threshold-key",
@@ -862,7 +910,11 @@
     },
     {
       "source": "/hedera/tutorials",
-      "destination": "/native/tutorials"
+      "destination": "/native/tutorials/getting-started/create-fund-account"
+    },
+    {
+      "source": "/native/tutorials",
+      "destination": "/native/tutorials/getting-started/create-fund-account"
     },
     {
       "source": "/hedera/tutorials/:slug*",
@@ -1001,7 +1053,7 @@
               {
                 "group": "Keys & Signatures",
                 "pages": [
-                  "learn/core-concepts/keys/index"
+                  "learn/core-concepts/keys"
                 ]
               },
               {
@@ -1016,7 +1068,6 @@
                 "group": "Tokens",
                 "pages": [
                   "learn/core-concepts/tokens/index",
-                  "learn/core-concepts/services/tokens",
                   "learn/core-concepts/tokens/hts-overview",
                   "learn/core-concepts/tokens/types-and-ids",
                   "learn/core-concepts/tokens/properties",
@@ -1127,32 +1178,26 @@
               "evm/development/addresses",
               "evm/development/security",
               "evm/development/forking",
-              {
-                "group": "JSON-RPC",
-                "pages": [
-                  "evm/development/json-rpc/index"
-                ]
-              }
+              "evm/development/json-rpc/index"
             ]
           },
           {
             "group": "EVM Differences",
             "pages": [
-              "evm/migration/index",
-              "evm/migration/key-differences-overview",
-              "evm/migration/accounts-and-keys",
-              "evm/migration/hbar-decimals",
-              "evm/migration/native-token-transfers",
-              "evm/migration/json-rpc-differences",
-              "evm/migration/tooling-compatibility",
-              "evm/migration/checklist",
+              "evm/differences/index",
+              "evm/differences/accounts-and-keys",
+              "evm/differences/hbar-decimals",
+              "evm/differences/native-token-transfers",
+              "evm/differences/json-rpc-differences",
+              "evm/differences/tooling-compatibility",
+              "evm/differences/checklist",
               {
                 "group": "For Native Developers",
                 "pages": [
-                  "evm/migration/native-devs/index",
-                  "evm/migration/native-devs/extending-token-management",
-                  "evm/migration/native-devs/ed25519-integration",
-                  "evm/migration/native-devs/json-rpc-state-queries"
+                  "evm/differences/native-devs/index",
+                  "evm/differences/native-devs/extending-token-management",
+                  "evm/differences/native-devs/ed25519-integration",
+                  "evm/differences/native-devs/json-rpc-state-queries"
                 ]
               }
             ]
@@ -1242,6 +1287,7 @@
           {
             "group": "Tutorials",
             "pages": [
+              "evm/tutorials/index",
               {
                 "group": "Beginner",
                 "pages": [
@@ -1372,14 +1418,12 @@
               "native/fundamentals/local-network",
               "native/fundamentals/address-book",
               "native/fundamentals/hbars",
-              "native/fundamentals/specialized-types",
-              "native/fundamentals/errors"
+              "native/fundamentals/specialized-types"
             ]
           },
           {
             "group": "Keys",
             "pages": [
-              "native/keys/index",
               "native/keys/generate-key-pair",
               "native/keys/import-key",
               "native/keys/key-list",
@@ -1539,7 +1583,6 @@
               {
                 "group": "Tokens",
                 "pages": [
-                  "native/tutorials/tokens/index",
                   "native/tutorials/tokens/create-first-token",
                   "native/tutorials/tokens/create-transfer-nft",
                   "native/tutorials/tokens/create-transfer-fungible",
@@ -1553,7 +1596,6 @@
               {
                 "group": "Consensus",
                 "pages": [
-                  "native/tutorials/consensus/index",
                   "native/tutorials/consensus/create-first-topic",
                   "native/tutorials/consensus/submit-first-message",
                   "native/tutorials/consensus/private-topic",
@@ -1600,7 +1642,6 @@
           {
             "group": "Local Development",
             "pages": [
-              "native/local-dev/index",
               "native/local-dev/setup-local-node",
               "native/local-dev/setup-cli-npm",
               {
@@ -1701,15 +1742,7 @@
               },
               "solutions/ai/elizaos",
               "solutions/ai/hosted-mcp-server",
-              "solutions/ai/x402",
-              {
-                "group": "AI Tools",
-                "pages": [
-                  "solutions/ai/tools/index",
-                  "solutions/ai/tools/hivemind",
-                  "solutions/ai/tools/kapa"
-                ]
-              }
+              "solutions/ai/x402"
             ]
           },
           {
@@ -1849,24 +1882,114 @@
             ]
           },
           {
-            "group": "REST API",
+            "group": "Mirror Node REST API",
             "pages": [
               "reference/rest-api/index",
-              "reference/rest-api/accounts/index",
-              "reference/rest-api/balances/index",
-              "reference/rest-api/blocks/index",
-              "reference/rest-api/contracts/index",
-              "reference/rest-api/tokens/index",
-              "reference/rest-api/topics/index",
-              "reference/rest-api/transactions/index",
-              "reference/rest-api/schedules/index",
-              "reference/rest-api/network/index"
+              {
+                "group": "Accounts",
+                "pages": [
+                  "reference/rest-api/accounts/index",
+                  "openapi.yaml GET /api/v1/accounts",
+                  "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}",
+                  "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/crypto",
+                  "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/rewards",
+                  "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/tokens",
+                  "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/airdrops/outstanding",
+                  "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/airdrops/pending",
+                  "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/tokens",
+                  "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/nfts",
+                  "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/nfts"
+                ]
+              },
+              {
+                "group": "Balances",
+                "pages": [
+                  "reference/rest-api/balances/index",
+                  "openapi.yaml GET /api/v1/balances"
+                ]
+              },
+              {
+                "group": "Blocks",
+                "pages": [
+                  "reference/rest-api/blocks/index",
+                  "openapi.yaml GET /api/v1/blocks",
+                  "openapi.yaml GET /api/v1/blocks/{hashOrNumber}"
+                ]
+              },
+              {
+                "group": "Contracts",
+                "pages": [
+                  "reference/rest-api/contracts/index",
+                  "openapi.yaml GET /api/v1/contracts",
+                  "openapi.yaml GET /api/v1/contracts/{contractIdOrAddress}",
+                  "openapi.yaml GET /api/v1/contracts/results",
+                  "openapi.yaml GET /api/v1/contracts/results/{transactionIdOrHash}",
+                  "openapi.yaml GET /api/v1/contracts/{contractIdOrAddress}/results",
+                  "openapi.yaml GET /api/v1/contracts/{contractIdOrAddress}/state",
+                  "openapi.yaml GET /api/v1/contracts/results/{transactionIdOrHash}/actions",
+                  "openapi.yaml GET /api/v1/contracts/{contractIdOrAddress}/results/{timestamp}",
+                  "openapi.yaml GET /api/v1/contracts/{contractIdOrAddress}/results/logs",
+                  "openapi.yaml GET /api/v1/contracts/results/logs",
+                  "openapi.yaml GET /api/v1/contracts/results/{transactionIdOrHash}/opcodes",
+                  "openapi.yaml POST /api/v1/contracts/call"
+                ]
+              },
+              {
+                "group": "Tokens",
+                "pages": [
+                  "reference/rest-api/tokens/index",
+                  "openapi.yaml GET /api/v1/tokens",
+                  "openapi.yaml GET /api/v1/tokens/{tokenId}",
+                  "openapi.yaml GET /api/v1/tokens/{tokenId}/balances",
+                  "openapi.yaml GET /api/v1/tokens/{tokenId}/nfts",
+                  "openapi.yaml GET /api/v1/tokens/{tokenId}/nfts/{serialNumber}",
+                  "openapi.yaml GET /api/v1/tokens/{tokenId}/nfts/{serialNumber}/transactions"
+                ]
+              },
+              {
+                "group": "Topics",
+                "pages": [
+                  "reference/rest-api/topics/index",
+                  "openapi.yaml GET /api/v1/topics/{topicId}",
+                  "openapi.yaml GET /api/v1/topics/{topicId}/messages",
+                  "openapi.yaml GET /api/v1/topics/{topicId}/messages/{sequenceNumber}",
+                  "openapi.yaml GET /api/v1/topics/messages/{timestamp}"
+                ]
+              },
+              {
+                "group": "Transactions",
+                "pages": [
+                  "reference/rest-api/transactions/index",
+                  "openapi.yaml GET /api/v1/transactions",
+                  "openapi.yaml GET /api/v1/transactions/{transactionId}"
+                ]
+              },
+              {
+                "group": "Schedules",
+                "pages": [
+                  "reference/rest-api/schedules/index",
+                  "openapi.yaml GET /api/v1/schedules",
+                  "openapi.yaml GET /api/v1/schedules/{scheduleId}"
+                ]
+              },
+              {
+                "group": "Network",
+                "pages": [
+                  "reference/rest-api/network/index",
+                  "openapi.yaml GET /api/v1/network/exchangerate",
+                  "openapi.yaml GET /api/v1/network/fees",
+                  "openapi.yaml POST /api/v1/network/fees",
+                  "openapi.yaml GET /api/v1/network/nodes",
+                  "openapi.yaml GET /api/v1/network/registered-nodes",
+                  "openapi.yaml GET /api/v1/network/stake",
+                  "openapi.yaml GET /api/v1/network/supply"
+                ]
+              }
             ]
           },
           {
             "group": "Protobuf API",
             "pages": [
-              "reference/protobuf/index",
               {
                 "group": "Basic Types",
                 "pages": [
@@ -2067,15 +2190,45 @@
             ]
           },
           {
-            "group": "Status API",
+            "group": "Additional APIs",
             "pages": [
-              "reference/status-api"
+              {
+                "group": "Status API",
+                "pages": [
+                  "reference/status-api",
+                  "hedera-status-api.yaml GET /summary.json",
+                  "hedera-status-api.yaml GET /status.json",
+                  "hedera-status-api.yaml GET /components.json",
+                  "hedera-status-api.yaml GET /incidents.json",
+                  "hedera-status-api.yaml GET /incidents/unresolved.json",
+                  "hedera-status-api.yaml GET /scheduled-maintenances.json",
+                  "hedera-status-api.yaml GET /scheduled-maintenances/upcoming.json",
+                  "hedera-status-api.yaml GET /scheduled-maintenances/active.json"
+                ]
+              },
+              {
+                "group": "Contract Verification API",
+                "pages": [
+                  "reference/verification-api",
+                  "smart-contract-verification-api.yaml POST /v2/verify/{chainId}/{address}",
+                  "smart-contract-verification-api.yaml POST /v2/verify/metadata/{chainId}/{address}",
+                  "smart-contract-verification-api.yaml POST /v2/verify/etherscan/{chainId}/{address}",
+                  "smart-contract-verification-api.yaml POST /v2/verify/similarity/{chainId}/{address}",
+                  "smart-contract-verification-api.yaml GET /v2/verify/{verificationId}",
+                  "smart-contract-verification-api.yaml GET /v2/contract/{chainId}/{address}",
+                  "smart-contract-verification-api.yaml GET /v2/contract/all-chains/{address}",
+                  "smart-contract-verification-api.yaml GET /v2/contracts/{chainId}",
+                  "smart-contract-verification-api.yaml GET /health",
+                  "smart-contract-verification-api.yaml GET /version",
+                  "smart-contract-verification-api.yaml GET /chains"
+                ]
+              }
             ]
           },
-          {
-            "group": "Contract Verification API",
+               {
+            "group": "Network Response Codes",
             "pages": [
-              "reference/verification-api"
+              "reference/network-responses"
             ]
           }
         ]

@@ -81,6 +81,10 @@
   },
   "redirects": [
     {
+      "source": "/support/stackoverflow-com-questions-tagged-hedera-hashgraph",
+      "destination": "/support"
+    },
+    {
       "source": "/hedera/sdks-and-apis/sdks/tokens",
       "destination": "/native/tokens"
     },
@@ -983,7 +987,6 @@
           {
             "group": "Core Concepts",
             "pages": [
-              "learn/core-concepts/index",
               {
                 "group": "Accounts",
                 "pages": [
@@ -1048,7 +1051,6 @@
           {
             "group": "Networks",
             "pages": [
-              "learn/networks/index",
               {
                 "group": "Mainnet",
                 "pages": [
@@ -1080,7 +1082,6 @@
           {
             "group": "Release Notes",
             "pages": [
-              "learn/release-notes/index",
               "learn/release-notes/services",
               "learn/release-notes/mirror-node"
             ]
@@ -1241,7 +1242,6 @@
           {
             "group": "Tutorials",
             "pages": [
-              "evm/tutorials/index",
               {
                 "group": "Beginner",
                 "pages": [
@@ -1419,7 +1419,6 @@
           {
             "group": "Accounts",
             "pages": [
-              "native/accounts/index",
               "native/accounts/create",
               "native/accounts/update",
               "native/accounts/transfer",
@@ -1434,7 +1433,6 @@
           {
             "group": "Token Service",
             "pages": [
-              "native/tokens/index",
               "native/tokens/token-id",
               "native/tokens/nft-id",
               "native/tokens/token-types",
@@ -1470,7 +1468,6 @@
           {
             "group": "Consensus Service",
             "pages": [
-              "native/consensus/index",
               "native/consensus/create-topic",
               "native/consensus/update-topic",
               "native/consensus/submit-message",
@@ -1483,7 +1480,6 @@
           {
             "group": "File Service",
             "pages": [
-              "native/files/index",
               "native/files/create",
               "native/files/append",
               "native/files/update",
@@ -1496,7 +1492,6 @@
           {
             "group": "Scheduled Transactions",
             "pages": [
-              "native/scheduled/index",
               "native/scheduled/schedule-id",
               "native/scheduled/create",
               "native/scheduled/sign",
@@ -1508,7 +1503,6 @@
           {
             "group": "Smart Contracts",
             "pages": [
-              "native/smart-contracts/index",
               "native/smart-contracts/delegate-contract-id",
               "native/smart-contracts/create",
               "native/smart-contracts/update",
@@ -1525,7 +1519,6 @@
           {
             "group": "Signature Provider",
             "pages": [
-              "native/signature-provider/index",
               "native/signature-provider/provider",
               "native/signature-provider/signer",
               "native/signature-provider/wallet",
@@ -1535,7 +1528,6 @@
           {
             "group": "Tutorials",
             "pages": [
-              "native/tutorials/index",
               {
                 "group": "Getting Started",
                 "pages": [

@@ -3,7 +3,7 @@ title: "Hedera Token Service - Part 3: How to Pause, Freeze, Wipe, and Delete NF
 sidebarTitle: "HTS Part 3: Admin Keys"
 ---
 
-In [Part 1](/hedera/tutorials/token/hedera-token-service-part-1-how-to-mint-nfts) of the series, you saw how to mint and transfer an NFT using the Hedera Token Service (HTS). In [Part 2](/hedera/tutorials/token/hedera-token-service-part-2-kyc-update-and-scheduled-transactions), you saw how to enable and disable token [Know Your Customer (KYC)](/hedera/support-and-community/glossary#know-your-customer-kyc), update token properties (if a token is mutable), and schedule transactions. In Part 3, you will learn how to use HTS capabilities that help you manage your tokens. Specifically, you will learn how to:
+In [Part 1](/native/tutorials/tokens/hts-part1-mint) of the series, you saw how to mint and transfer an NFT using the Hedera Token Service (HTS). In [Part 2](/native/tutorials/tokens/hts-part2-kyc), you saw how to enable and disable token [Know Your Customer (KYC)](/support/glossary#know-your-customer-kyc), update token properties (if a token is mutable), and schedule transactions. In Part 3, you will learn how to use HTS capabilities that help you manage your tokens. Specifically, you will learn how to:
 
 - Pause a token (stops all operations for a token ID)
 - Freeze an account (stops all token operations only for a specific account)
@@ -25,18 +25,18 @@ In [Part 1](/hedera/tutorials/token/hedera-token-service-part-1-how-to-mint-nfts
 
 We recommend you complete the following introduction to get a basic understanding of Hedera transactions. This example does not build upon the previous examples.
 
-- Get a [Hedera testnet account](/hedera/tutorials/more-tutorials/create-and-fund-your-hedera-testnet-account).
-- Set up your environment [here](/hedera/getting-started-hedera-native-developers/quickstart).
+- Get a [Hedera testnet account](/native/tutorials/getting-started/create-fund-account).
+- Set up your environment [here](/native/quickstart/javascript).
 
 ✅ _If you want the entire code used for this tutorial, skip to the_ [_Code Check_](#code-check) _section below._
 
 ## Pause a Token
 
-The [pause transaction](/hedera/sdks-and-apis/sdks/token-service/pause-a-token) prevents a token from being involved in any kind of operation across all accounts. Specifying a **_\<pauseKey>_** during the creation of a token is a requirement to be able to pause token operations. The code below shows you that this key must sign the pause transaction. Note that you can’t pause a token if it doesn’t have a pause key. Also keep in mind that if this key was not set during token creation, then a token update to add this key is not possible.
+The [pause transaction](/native/tokens/pause) prevents a token from being involved in any kind of operation across all accounts. Specifying a **_\<pauseKey>_** during the creation of a token is a requirement to be able to pause token operations. The code below shows you that this key must sign the pause transaction. Note that you can’t pause a token if it doesn’t have a pause key. Also keep in mind that if this key was not set during token creation, then a token update to add this key is not possible.
 
 Pausing a token may be useful in cases where a third party requests that you, as the administrator of a token, stop all operations for that token while something like an audit is conducted. The pause transaction provides you with a way to comply with requests of that nature.
 
-In our example below, we pause the token, test that by trying a token transfer and checking the token **_pauseStatus_**, and then we [unpause the token](/hedera/sdks-and-apis/sdks/token-service/unpause-a-token) to enable operations again.
+In our example below, we pause the token, test that by trying a token transfer and checking the token **_pauseStatus_**, and then we [unpause the token](/native/tokens/unpause) to enable operations again.
 
 ```javascript nft-part3.js
 // PAUSE ALL TOKEN OEPRATIONS
@@ -111,9 +111,9 @@ async function tQueryFcn() {
 
 ## Freeze a Token
 
-[Freezing a token](/hedera/sdks-and-apis/sdks/token-service/freeze-an-account) stops "freezes" transfers of that token for a specific account ID. Note that this transaction must be signed by the **_\<freezeKey>_** of the token. Once a freeze executes, the specified account is marked as “Frozen” and will not be able to receive or send tokens unless unfrozen.
+[Freezing a token](/native/tokens/freeze) stops "freezes" transfers of that token for a specific account ID. Note that this transaction must be signed by the **_\<freezeKey>_** of the token. Once a freeze executes, the specified account is marked as “Frozen” and will not be able to receive or send tokens unless unfrozen.
 
-In our example below, we first freeze Alice’s account for the token ID we’re working with, test the freeze by trying a token transfer, and then [unfreeze](/hedera/sdks-and-apis/sdks/token-service/unfreeze-an-account) Alice’s account so she can transact the token again.
+In our example below, we first freeze Alice’s account for the token ID we’re working with, test the freeze by trying a token transfer, and then [unfreeze](/native/tokens/unfreeze) Alice’s account so she can transact the token again.
 
 ```javascript nft-part3.js
 // FREEZE ALICE'S ACCOUNT FOR THIS TOKEN
@@ -185,7 +185,7 @@ console.log(
 
 ## Wipe a Token
 
-[This operation](/hedera/sdks-and-apis/sdks/token-service/wipe-a-token) wipes the provided amount of fungible or non-fungible tokens from the specified account. You see from the code below that this transaction must be signed by the token's **_\<wipeKey>_**.
+[This operation](/native/tokens/wipe) wipes the provided amount of fungible or non-fungible tokens from the specified account. You see from the code below that this transaction must be signed by the token's **_\<wipeKey>_**.
 
 <Info>
   **Note**: Wiping an account's tokens burns the tokens and decreases the total
@@ -193,7 +193,7 @@ console.log(
   must use the Token Burn operation to delete tokens from the treasury.
 </Info>
 
-In this case, we wipe the NFT that Alice currently holds. We then check Alice’s balance and the NFT supply to see how these change with the wipe operation (these two values before the wipe are provided for comparison – see [Part 2](/hedera/tutorials/token/hedera-token-service-part-2-kyc-update-and-scheduled-transactions) for the details).
+In this case, we wipe the NFT that Alice currently holds. We then check Alice’s balance and the NFT supply to see how these change with the wipe operation (these two values before the wipe are provided for comparison – see [Part 2](/native/tutorials/tokens/hts-part2-kyc) for the details).
 
 ```javascript nft-part3.js
 // WIPE THE TOKEN FROM ALICE'S ACCOUNT
@@ -229,9 +229,9 @@ console.log(`- Current NFT supply: ${tokenInfo.totalSupply}`);
 
 ## Delete a Token
 
-After you [delete a token](/hedera/sdks-and-apis/sdks/token-service/delete-a-token), it’s no longer possible to perform any operations for that token, and transactions resolve to the error `TOKEN_WAS_DELETED`. Note that the token remains in the ledger, and you can still retrieve some information about it.
+After you [delete a token](/native/tokens/delete), it’s no longer possible to perform any operations for that token, and transactions resolve to the error `TOKEN_WAS_DELETED`. Note that the token remains in the ledger, and you can still retrieve some information about it.
 
-The delete operation must be signed by the token **_\<adminKey>_**. Remember from [Part 1](/hedera/tutorials/token/hedera-token-service-part-1-how-to-mint-nfts) that if this key is not set during token creation, then the token is immutable and deletion is not possible.
+The delete operation must be signed by the token **_\<adminKey>_**. Remember from [Part 1](/native/tutorials/tokens/hts-part1-mint) that if this key is not set during token creation, then the token is immutable and deletion is not possible.
 
 In our example, we delete the token and perform a query to double-check that the deletion was successful. Note that for NFTs, you can’t delete a specific serial ID. Instead, you delete the entire class of the NFT specified by the token ID.
 
@@ -264,7 +264,7 @@ console.log(`- Token ${tokenId} is deleted: ${tokenInfo.isDeleted}`);
 
 ## Conclusion
 
-In this article, you saw key capabilities to help you manage your HTS tokens, including how to: pause, freeze, wipe, and delete tokens. If you haven’t already, check out [Part 1](/hedera/tutorials/token/hedera-token-service-part-1-how-to-mint-nfts) and [Part 2](/hedera/tutorials/token/hedera-token-service-part-2-kyc-update-and-scheduled-transactions) of this tutorial series to see examples of how to do even more with HTS – you will see how to mint NFTs, transfer NFTs, perform token KYC, schedule transactions, and more.
+In this article, you saw key capabilities to help you manage your HTS tokens, including how to: pause, freeze, wipe, and delete tokens. If you haven’t already, check out [Part 1](/native/tutorials/tokens/hts-part1-mint) and [Part 2](/native/tutorials/tokens/hts-part2-kyc) of this tutorial series to see examples of how to do even more with HTS – you will see how to mint NFTs, transfer NFTs, perform token KYC, schedule transactions, and more.
 
 Continue learning more in our [learning center](https://hedera.com/learning/what-is-hedera-hashgraph)!
 

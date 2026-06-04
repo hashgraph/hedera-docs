@@ -9,8 +9,8 @@ Get the bytecode for a smart contract instance
 
 | Field        | Type                                                                                             | Description                                                                                                                                         |
 | ------------ | ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `header`     | [QueryHeader](/hedera/sdks-and-apis/hedera-api/miscellaneous/queryheader) | standard info sent from client to node, including the signed payment, and what kind of response is requested (cost, state proof, both, or neither). |
-| `contractID` | [ContractID](/hedera/sdks-and-apis/hedera-api/basic-types/contractid)     | the contract for which information is requested                                                                                                     |
+| `header`     | [QueryHeader](/reference/protobuf/miscellaneous/queryheader) | standard info sent from client to node, including the signed payment, and what kind of response is requested (cost, state proof, both, or neither). |
+| `contractID` | [ContractID](/reference/protobuf/basic-types/contractid)     | the contract for which information is requested                                                                                                     |
 
 ## ContractGetBytecodeResponse
 
@@ -18,5 +18,5 @@ Response when the client sends the node ContractGetBytecodeQuery
 
 | Field      | Type                                                                                                   | Description                                                                                                      |
 | ---------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| `header`   | [ResponseHeader](/hedera/sdks-and-apis/hedera-api/miscellaneous/responseheader) | standard response from node to client, including the requested fields: cost, or state proof, or both, or neither |
+| `header`   | [ResponseHeader](/reference/protobuf/miscellaneous/responseheader) | standard response from node to client, including the requested fields: cost, or state proof, or both, or neither |
 | `bytecode` | bytes                                                                                                  | the bytecode                                                                                                     |

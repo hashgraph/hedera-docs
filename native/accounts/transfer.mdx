@@ -18,12 +18,12 @@ For a CryptoTransferTransactionBody:
 
 **Transaction Fees**
 
-* Please see the transaction and query [fees](/hedera/networks/mainnet/fees#transaction-and-query-fees) table for the base transaction fee
+* Please see the transaction and query [fees](/learn/networks/mainnet/fees#transaction-and-query-fees) table for the base transaction fee
 * Please use the [Hedera fee estimator](https://hedera.com/fees) to estimate your transaction fee cost
 
 **Spender Account Allowances**
 
-An account can have [another account](/hedera/sdks-and-apis/sdks/accounts-and-hbar/approve-an-allowance) spend tokens on its behalf. If the delegated spender account is transacting tokens from the owner account that authorized the allowance, the owner account needs to be specified in the transfer transaction by calling one of the following:
+An account can have [another account](/native/accounts/approve-allowance) spend tokens on its behalf. If the delegated spender account is transacting tokens from the owner account that authorized the allowance, the owner account needs to be specified in the transfer transaction by calling one of the following:
 
 * `addApprovedHbarTransfer()`
 * `addApprovedTokenTransfer()`
@@ -64,7 +64,7 @@ The debiting account is the owner's account when using this feature.
 
 
 <Info>
-This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation)
+This transaction supports [high-volume entity creation](/learn/core-concepts/high-volume-entity-creation)
 (HIP-1313) when the transfer **auto-creates new accounts**. Setting `setHighVolume(true)`
 routes the account-creation portion of the transfer through dedicated high-volume throttle
 capacity with variable-rate pricing. The transfer portion itself uses standard throttles
@@ -177,7 +177,7 @@ println!("The transaction consensus status is {:?}", status);
 | `getHbarTransfers()` | Map&lt;AccountId, Hbar&gt; | Returns the HBAR transfers |
 | `getTokenTransfers()` | Map&lt;TokenId, Map&lt;AccountId, long&gt;&gt; | Returns the token transfers |
 | `getTokenNftTransfers()` | Map&lt;TokenId, List&lt;TokenNftTransfer&gt;&gt; | Returns the NFT transfers |
-| `getHighVolume()` | boolean | Returns whether this transaction uses [high-volume throttles](/hedera/core-concepts/high-volume-entity-creation) |
+| `getHighVolume()` | boolean | Returns whether this transaction uses [high-volume throttles](/learn/core-concepts/high-volume-entity-creation) |
 
 <CodeGroup>
 

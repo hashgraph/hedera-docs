@@ -3,7 +3,7 @@ title: "Ethereum transaction"
 ---
 
 
-An `EthereumTransaction` lets you execute a raw, RLP-encoded (type 0, 1, or 2) Ethereum transaction on the Hedera network. This enables developers familiar with EVM tooling to leverage their existing knowledge and infrastructure when interacting with the [Hedera Smart Contract Service (HSCS)](/hedera/tutorials/smart-contracts).
+An `EthereumTransaction` lets you execute a raw, RLP-encoded (type 0, 1, or 2) Ethereum transaction on the Hedera network. This enables developers familiar with EVM tooling to leverage their existing knowledge and infrastructure when interacting with the [Hedera Smart Contract Service (HSCS)](/evm/tutorials).
 
 <Warning>
 #### **Important**
@@ -33,13 +33,13 @@ callData gas = 4 × zero bytes + 16 × non-zero bytes
 
 This is added to base gas and execution gas. Developers must ensure both `gasLimit` (in the RLP-encoded transaction) and `maxGasAllowance` (in the wrapper) are set high enough.
 
-*📣 For detailed gas and fee calculation, refer to the* [*Gas and Fees page*](/hedera/core-concepts/smart-contracts/gas-and-fees#gas-for-jumbo-transactions)*.*
+*📣 For detailed gas and fee calculation, refer to the* [*Gas and Fees page*](/evm/development/gas-fees#gas-for-jumbo-transactions)*.*
 
 #### **Quick reference: Jumbo vs Standard Transactions**
 
 <table><thead><tr><th>Feature</th><th>Jumbo Ethereum Transaction</th><th>Standard Ethereum Transaction</th></tr></thead><tbody><tr><td><strong>callData Size Limit</strong></td><td>24KB (creation) / 128KB (call)</td><td>~6KB total transaction size</td></tr><tr><td><strong>callDataFileId Needed?</strong></td><td>Only if limits exceeded</td><td>Always for large payloads</td></tr><tr><td><strong>Gas Calculation</strong></td><td>Always for large payloads</td><td>Same</td></tr><tr><td><strong>Batch Inclusion</strong></td><td>Not supported</td><td>Supported</td></tr><tr><td><strong>Network Throttling</strong></td><td>Dedicated throttle bucket</td><td>Standard throttling</td></tr></tbody></table>
 
-📣 *See* [*HIP-1086*](https://hips.hedera.com/hip/hip-1086) *and the* [*Gas and Fees page*](/hedera/core-concepts/smart-contracts/gas-and-fees#gas-schedule-and-fee-calculation) *for complete technical details.*
+📣 *See* [*HIP-1086*](https://hips.hedera.com/hip/hip-1086) *and the* [*Gas and Fees page*](/evm/development/gas-fees#gas-schedule-and-fee-calculation) *for complete technical details.*
 
 ***
 
@@ -59,7 +59,7 @@ The total transaction cost includes:
 * Gas for `callData`, (calculated as: `4 × zero bytes + 16 × non-zero bytes`)
 * Execution gas determined by EVM smart contract logic
 
-*📣 See the* [*transaction and query fees table*](/hedera/networks/mainnet/fees#transaction-and-query-fees) *and the smart contracts* [*gas and fees page*](/hedera/core-concepts/smart-contracts/gas-and-fees) *for details.*
+*📣 See the* [*transaction and query fees table*](/learn/networks/mainnet/fees#transaction-and-query-fees) *and the smart contracts* [*gas and fees page*](/evm/development/gas-fees) *for details.*
 
 | Method                                          | Type     |
 | ----------------------------------------------- | -------- |

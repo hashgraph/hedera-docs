@@ -5,9 +5,9 @@ title: "Core Concepts"
 
 ## Introduction
 
-As the adoption of [cryptocurrencies](/hedera/support-and-community/glossary#cryptocurrency) grows, a common obstacle deterring new adoption by users is price volatility, particularly when considering these assets for everyday transactions. Stablecoins offer a solution to this volatility by maintaining a consistent value, pegged to traditional assets like the US Dollar. Prominent examples include Tether (USDT), USD Coin (USDC), and Binance USD (BUSD). The stablecoin landscape also features asset-backed options such as MakerDAO's DAI, which is crypto-secured, and Paxos Gold (PAXG), backed by physical gold. These stable assets have not only transformed crypto trading by offering a secure place to store value temporarily but also have the potential to revolutionize e-commerce by providing a stable medium for online transactions.
+As the adoption of [cryptocurrencies](/support/glossary#cryptocurrency) grows, a common obstacle deterring new adoption by users is price volatility, particularly when considering these assets for everyday transactions. Stablecoins offer a solution to this volatility by maintaining a consistent value, pegged to traditional assets like the US Dollar. Prominent examples include Tether (USDT), USD Coin (USDC), and Binance USD (BUSD). The stablecoin landscape also features asset-backed options such as MakerDAO's DAI, which is crypto-secured, and Paxos Gold (PAXG), backed by physical gold. These stable assets have not only transformed crypto trading by offering a secure place to store value temporarily but also have the potential to revolutionize e-commerce by providing a stable medium for online transactions.
 
-> ***A*** [***stablecoin***](/hedera/support-and-community/glossary#stablecoin) ***is a specialized form of cryptocurrency engineered to maintain a stable value by pegging it to an external asset, such as a fiat currency like the US Dollar or a commodity like gold. By doing so, stablecoins seek to combine the programmability and ease of transfer inherent in cryptocurrencies with the price stability typically associated with traditional currencies. This low-volatility characteristic makes stablecoins particularly useful for transactions, cross-border payments, and as a stable asset within decentralized finance ecosystems.***
+> ***A*** [***stablecoin***](/support/glossary#stablecoin) ***is a specialized form of cryptocurrency engineered to maintain a stable value by pegging it to an external asset, such as a fiat currency like the US Dollar or a commodity like gold. By doing so, stablecoins seek to combine the programmability and ease of transfer inherent in cryptocurrencies with the price stability typically associated with traditional currencies. This low-volatility characteristic makes stablecoins particularly useful for transactions, cross-border payments, and as a stable asset within decentralized finance ecosystems.***
 
 Despite its many advantages, Hedera currently lacks a ready-to-use stablecoin framework. Stablecoin Studio aims to fill that void by offering a comprehensive stablecoin solution tailored to Hedera’s architecture. Developers will be equipped with a suite of resources, including essential tools, documentation, and sample code, allowing them to create applications that make use of stablecoins, such as digital wallets. The ultimate goal is to facilitate the seamless integration of stablecoins into a variety of platforms and applications, thereby boosting Hedera’s utility and adoption.
 
@@ -15,11 +15,11 @@ Despite its many advantages, Hedera currently lacks a ready-to-use stablecoin fr
 
 ## Stablecoin Studio
 
-Stablecoin Studio is an open-source solution that simplifies and enhances the granularity of access control and permission management when issuing [stablecoins](/hedera/support-and-community/glossary#stablecoin) using Hedera network services. Utilizing a hybrid solution, the platform leverages both [Hedera Token Service (HTS)](/hedera/support-and-community/glossary#hedera-token-service-hts) and [Hedera Smart Contract Service (HSCS)](/hedera/support-and-community/glossary#hedera-smart-contract-service-hscs), offering [interoperability](/hedera/support-and-community/glossary#interoperable) with [Solidity](/hedera/support-and-community/glossary#solidity) Smart Contracts. This adds an extra layer of flexibility and capability for stablecoin issuers. As an all-in-one toolkit, this project enables stablecoin issuers to easily deploy applications and oversee operations via a comprehensive management toolkit, streamlining digital asset operations.
+Stablecoin Studio is an open-source solution that simplifies and enhances the granularity of access control and permission management when issuing [stablecoins](/support/glossary#stablecoin) using Hedera network services. Utilizing a hybrid solution, the platform leverages both [Hedera Token Service (HTS)](/support/glossary#hedera-token-service-hts) and [Hedera Smart Contract Service (HSCS)](/support/glossary#hedera-smart-contract-service-hscs), offering [interoperability](/support/glossary#interoperable) with [Solidity](/support/glossary#solidity) Smart Contracts. This adds an extra layer of flexibility and capability for stablecoin issuers. As an all-in-one toolkit, this project enables stablecoin issuers to easily deploy applications and oversee operations via a comprehensive management toolkit, streamlining digital asset operations.
 
-The toolkit offers [proof-of-reserve (PoR)](/hedera/support-and-community/glossary#proof-of-reserves-por) functionality that utilizes existing systems or on-chain oracles to bolster the ability to provide transparency in disclosure while seamless custody provider integrations ease development and reduce time-to-market.
+The toolkit offers [proof-of-reserve (PoR)](/support/glossary#proof-of-reserves-por) functionality that utilizes existing systems or on-chain oracles to bolster the ability to provide transparency in disclosure while seamless custody provider integrations ease development and reduce time-to-market.
 
-Complemented by advanced Hedera-native [Know Your Customer (KYC)](/hedera/support-and-community/glossary#know-your-customer-kyc) / [Anti-Money Laundering (AML)](/hedera/support-and-community/glossary#anti-money-laundering-aml) account flags and integrated service provider hooks, Stablecoin Studio gives issuers new ways to manage compliance and security.
+Complemented by advanced Hedera-native [Know Your Customer (KYC)](/support/glossary#know-your-customer-kyc) / [Anti-Money Laundering (AML)](/support/glossary#anti-money-laundering-aml) account flags and integrated service provider hooks, Stablecoin Studio gives issuers new ways to manage compliance and security.
 
 ***
 
@@ -39,7 +39,7 @@ The SDK implements the features for creating, managing, and operating stablecoin
   </Card>
   <Card
     title="Web UI Application"
-    href="/hedera/open-source-solutions/stablecoin-studio/web-ui-application"
+    href="/solutions/tokenization/stablecoin/web-ui"
     arrow
     img="/images/open-source-solutions/stablecoin-studio/core-concepts/core-concepts-4.png"
   >
@@ -48,7 +48,7 @@ A visually rich platform that adds a layer of user-friendly interaction for crea
   </Card>
   <Card
     title="Command Line Interface (CLI)"
-    href="/hedera/open-source-solutions/stablecoin-studio/cli-management"
+    href="/solutions/tokenization/stablecoin/cli"
     arrow
     img="/images/open-source-solutions/stablecoin-studio/core-concepts/core-concepts-5.png"
   >
@@ -158,9 +158,9 @@ Merkle Science provides transaction monitoring and intelligence solutions for cr
 
 ## Proof-of-Reserve (PoR) for Treasury Management
 
-To ensure the security and transparency of your stablecoin, Stablecoin Studio offers a proof-of-reserve (PoR) feature. This feature serves two key objectives: preventing under-collateralization and providing transparent asset backing for your stablecoin. The PoR system employs automated verification, where [off-chain ](/hedera/support-and-community/glossary#off-chain)assets are continually monitored through [oracles](/hedera/support-and-community/glossary#oracles) or similar mechanisms. These monitoring systems subsequently update a dedicated reserve contract to reflect changes in the asset value accurately.
+To ensure the security and transparency of your stablecoin, Stablecoin Studio offers a proof-of-reserve (PoR) feature. This feature serves two key objectives: preventing under-collateralization and providing transparent asset backing for your stablecoin. The PoR system employs automated verification, where [off-chain ](/support/glossary#off-chain)assets are continually monitored through [oracles](/support/glossary#oracles) or similar mechanisms. These monitoring systems subsequently update a dedicated reserve contract to reflect changes in the asset value accurately.
 
-Before you mint new tokens, a [smart contract](/hedera/support-and-community/glossary#smart-contract) automatically checks this reserve contract. Minting is authorized only when sufficient reserve assets are available to back the new tokens. For instance, let's say you have enabled PoR with a reserve of 1,000 units. You can comfortably mint up to 900 tokens. However, if you attempt to mint an additional 100 tokens, the smart contract will halt the process due to insufficient reserves. You also have the flexibility to update these reserves either manually or programmatically as per your operational requirements.
+Before you mint new tokens, a [smart contract](/support/glossary#smart-contract) automatically checks this reserve contract. Minting is authorized only when sufficient reserve assets are available to back the new tokens. For instance, let's say you have enabled PoR with a reserve of 1,000 units. You can comfortably mint up to 900 tokens. However, if you attempt to mint an additional 100 tokens, the smart contract will halt the process due to insufficient reserves. You also have the flexibility to update these reserves either manually or programmatically as per your operational requirements.
 
 Lastly, when using Stablecoin Studio, you can link an existing Oracle-fed reserve contract or let the platform automatically deploy a new one. Both options aim to guarantee the stability of your stablecoin and foster user trust.
 

@@ -18,7 +18,7 @@ title: "Network Governance"
   <Accordion title="Is the mainnet throttled?">
     To ensure the availability of Hedera's services to all participants, API calls for all previewnet, testnet, and mainnet network services are throttled.
 
-    You can find the latest information about network throttles for the mainnet and testnets in the documentation: [mainnet throttled](/hedera/networks/mainnet#main-network-throttles), [testnet throttle](/hedera/networks/testnet#test-network-throttles).
+    You can find the latest information about network throttles for the mainnet and testnets in the documentation: [mainnet throttled](/learn/networks/mainnet#main-network-throttles), [testnet throttle](/learn/networks/testnet#test-network-throttles).
   </Accordion>
 
   <Accordion title="Who can run a Hedera mainnet node?">
@@ -32,7 +32,7 @@ title: "Network Governance"
   </Accordion>
 
   <Accordion title="How does someone stand up a mirror node?">
-    The Hedera mirror node source code can be found [here](https://github.com/hiero-ledger/hiero-mirror-node) and documentation can be found [here](/hedera/core-concepts/mirror-nodes).
+    The Hedera mirror node source code can be found [here](https://github.com/hiero-ledger/hiero-mirror-node) and documentation can be found [here](/learn/core-concepts/mirror-nodes).
   </Accordion>
 
   <Accordion title="How can I contribute to the OSS Hedera network services?">
@@ -152,7 +152,7 @@ title: "Network Governance"
   <Accordion title="Which programming languages are available for developers to build on the Hedera network?">
     Hedera supports smart contracts written in the Solidity™ language. Existing EVM-compatible smart contracts can be deployed and run on Hedera without modification. Hedera continues to focus on EVM compatibility rather than introducing alternative smart contract languages.
 
-    In addition to smart contracts, developers can build applications that run on servers, desktops, or mobile devices and interact with Hedera network services through the Hedera APIs. These applications use the [Consensus Node Code SDKs](/hedera/sdks-and-apis/sdks#consensus-node-code-sdks), which are officially supported in multiple languages, including JavaScript, Java, Go, Swift, Python, Rust, and C++.
+    In addition to smart contracts, developers can build applications that run on servers, desktops, or mobile devices and interact with Hedera network services through the Hedera APIs. These applications use the [Consensus Node Code SDKs](/native/fundamentals#consensus-node-code-sdks), which are officially supported in multiple languages, including JavaScript, Java, Go, Swift, Python, Rust, and C++.
   </Accordion>
 
   <Accordion title="Is the Hedera network and cryptocurrency able to fork?">
@@ -200,7 +200,7 @@ title: "Network Governance"
   </Accordion>
 
   <Accordion title="How is Solidity gas accounted for in determining the fee for a smart contract operation?">
-    Solidity gas is converted to Hedera transaction fees based on the current fee schedule. The gas consumed by smart contract execution is calculated and then converted to HBAR using the network's fee structure. Refer to the Smart Contracts [Gas and Fees documentation](/hedera/core-concepts/smart-contracts/gas-and-fees) for more details. 
+    Solidity gas is converted to Hedera transaction fees based on the current fee schedule. The gas consumed by smart contract execution is calculated and then converted to HBAR using the network's fee structure. Refer to the Smart Contracts [Gas and Fees documentation](/evm/development/gas-fees) for more details. 
   </Accordion>
 
   <Accordion title="Deprecated - Who pays for threshold records?">
@@ -238,7 +238,7 @@ title: "Network Governance"
     The transaction fee paid during contract creation includes storage costs for an initial period, determined by the `auto_renew_period` (typically 30–90 days). Although contracts are assigned an `expirationTime`, the system does not currently charge renewal fees or remove contracts upon expiration. Consequently, deployed smart contracts remain on the ledger indefinitely without additional charges or risk of deletion due to non-payment.
     This behavior may evolve as Hedera implements its long-term strategy for sustainable storage management.
 
-    [Learn more about smart contract rent →](/hedera/core-concepts/smart-contracts/smart-contract-rent)
+    [Learn more about smart contract rent →](/evm/development/rent)
   </Accordion>
 
   <Accordion title="What happens if the account paying for the storage of some object in state runs out of HBAR?">
@@ -264,7 +264,7 @@ title: "Network Governance"
 
     The network is designed so that, if account rent enforcement is enabled in the future, renewal fees would be charged to the account’s balance or to a designated auto-renew account, and accounts without sufficient balance could eventually expire and be deleted. 
     
-    [Learn more about auto-renewal →](/hedera/core-concepts/smart-contracts/smart-contract-rent#contract-auto-renewal).
+    [Learn more about auto-renewal →](/evm/development/rent#contract-auto-renewal).
   </Accordion>
 
   <Accordion title="If a client provides more HBAR in a transaction fee than required, do they get a 'refund'?">
@@ -276,7 +276,7 @@ title: "Network Governance"
   </Accordion>
 
   <Accordion title="Does Hedera have variable-rate transaction pricing?">
-    In some cases. [High-volume entity creation](/hedera/core-concepts/high-volume-entity-creation) transactions
+    In some cases. [High-volume entity creation](/learn/core-concepts/high-volume-entity-creation) transactions
     (introduced in [HIP-1313](https://hips.hedera.com/hip/hip-1313)) use a variable-rate
     pricing model where fees change dynamically based on utilization of the dedicated
     high-volume throttle capacity. The pricing curve parameters — including the breakpoints

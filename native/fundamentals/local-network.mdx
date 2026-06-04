@@ -55,7 +55,7 @@ client.SetMirrorNetwork(mirrorNode)
 
 ### 3. Set your local node transaction fee paying account
 
-You will need an account ID and key to pay for the [fees](/hedera/networks/mainnet/fees) associated with each transaction and query that is submitted to your local network. You will use the account ID and key provided by the local node on startup to set up your operator account ID and key. The operator is the default account that pays for transaction and query fees.
+You will need an account ID and key to pay for the [fees](/learn/networks/mainnet/fees) associated with each transaction and query that is submitted to your local network. You will use the account ID and key provided by the local node on startup to set up your operator account ID and key. The operator is the default account that pays for transaction and query fees.
 
 | **Account ID**  | `0.0.2`                                                                                            |
 | --------------- | -------------------------------------------------------------------------------------------------- |
@@ -89,7 +89,7 @@ client.SetOperator(accountId, privateKey)
 
 ### 4. Submit your transaction
 
-Submit a transaction that will create a new account in your local network. The console should print out the new account ID. In this example, we are using the same key as the transaction fee paying account as the key for the new account. You can also create a [new key](/hedera/sdks-and-apis/sdks/keys/generate-a-new-key-pair) if you wish.
+Submit a transaction that will create a new account in your local network. The console should print out the new account ID. In this example, we are using the same key as the transaction fee paying account as the key for the new account. You can also create a [new key](/native/keys/generate-key-pair) if you wish.
 
 <CodeGroup>
 
@@ -159,18 +159,18 @@ You can view the transactions that were submitted to your local node by submitti
 http://localhost:5551/api/v1/transactions
 ```
 
-The list of supported mirror node REST APIs can be found [here](/hedera/sdks-and-apis/rest-api). You have now set-up your local environment. Check out the following links for more examples.
+The list of supported mirror node REST APIs can be found [here](/reference/rest-api). You have now set-up your local environment. Check out the following links for more examples.
 
 <Columns cols={2}>
 <Card
   title="Tutorials"
   arrow
-  href="/hedera/tutorials"
+  href="/native/tutorials"
 />
 <Card
   title="SDKs"
   arrow
-  href="/hedera/sdks-and-apis/sdks"
+  href="/native/fundamentals"
 />
 </Columns>
 

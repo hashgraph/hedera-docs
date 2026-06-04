@@ -15,9 +15,9 @@ HTS supports three types of custom fees, allowing token issuers to design flexib
 
 **Fixed Fee:** Paid by the *sender* of the fungible or non-fungible tokens. A fixed fee transfers a set amount to a fee collector account each time a token is transferred, independent of the transfer size. This fee can be collected in HBAR or another Hedera token but not in NFTs.
 
-**Fractional Fee:** Take a specific portion of the transferred fungible tokens, with optional minimum and maximum limits. The token *receiver* (fee collector account) pays these fees by default. However, if [`net_of_transfers`](/hedera/sdks-and-apis/hedera-api/token-service/customfees/fractionalfee) is set to true, the sender pays the fees and the receiver collects the full token transfer amount. If this field is set to false, the receiver pays for the token custom fees and gets the remaining token balance.
+**Fractional Fee:** Take a specific portion of the transferred fungible tokens, with optional minimum and maximum limits. The token *receiver* (fee collector account) pays these fees by default. However, if [`net_of_transfers`](/reference/protobuf/token/customfees/fractionalfee) is set to true, the sender pays the fees and the receiver collects the full token transfer amount. If this field is set to false, the receiver pays for the token custom fees and gets the remaining token balance.
 
-**Royalty Fee:** Paid by the *receiver* account that is exchanging the fungible value for the NFT. When the NFT sender does not receive any fungible value, the [fallback fee](/hedera/support-and-community/glossary#fallback-fee) is charged to the NFT receiver.
+**Royalty Fee:** Paid by the *receiver* account that is exchanging the fungible value for the NFT. When the NFT sender does not receive any fungible value, the [fallback fee](/support/glossary#fallback-fee) is charged to the NFT receiver.
 
 📝 **Example Breakdown:**
 
@@ -26,7 +26,7 @@ HTS supports three types of custom fees, allowing token issuers to design flexib
 <Info>
 #### **Note**
 
-In addition to the custom token fee payment, the sender account must pay for the token transfer transaction fee in HBAR. The "[*Payment of Custom Fees & Transaction Fees in HBAR*](/hedera/sdks-and-apis/sdks/token-service/custom-token-fees#payment-of-custom-fees-vs.-transaction-fees-in-hbar)*"* section below covers the distinction between custom fees and transaction fees.
+In addition to the custom token fee payment, the sender account must pay for the token transfer transaction fee in HBAR. The "[*Payment of Custom Fees & Transaction Fees in HBAR*](/native/tokens/custom-fees#payment-of-custom-fees-vs.-transaction-fees-in-hbar)*"* section below covers the distinction between custom fees and transaction fees.
 </Info>
 
 ### How They Work
@@ -51,7 +51,7 @@ In essence, a fractional fee deducts a percentage of the transferred amount, wit
 
 ### 3️⃣ Royalty Fee (NFTs)
 
-A royalty fee applies when an NFT is transferred in exchange for fungible tokens (e.g. when an NFT is sold). The receiver pays the royalty fee, which is deducted as a percentage of the fungible amount exchanged. If no fungible tokens are involved in the transfer (i.e., the NFT is gifted or moved without payment), a fixed [fallback fee](/hedera/support-and-community/glossary#fallback-fee) is instead charged to the NFT recipient.
+A royalty fee applies when an NFT is transferred in exchange for fungible tokens (e.g. when an NFT is sold). The receiver pays the royalty fee, which is deducted as a percentage of the fungible amount exchanged. If no fungible tokens are involved in the transfer (i.e., the NFT is gifted or moved without payment), a fixed [fallback fee](/support/glossary#fallback-fee) is instead charged to the NFT recipient.
 
 Key Points:
 
@@ -78,7 +78,7 @@ Royalty fees function as a convenience feature, but the network cannot enforce r
 Understanding the difference between custom fees and standard transaction fees in HBAR is crucial for token issuers and developers working with Hedera.
 
 * **Custom fees** are designed to enforce complex fee structures, such as royalties and fractional ownership. These fees can be fixed, fractional, or royalty-based and are usually paid in the token being transferred, although other Hedera tokens or HBAR can also be used. You can configure up to 10 custom fees to be automatically disbursed to designated fee collector accounts.
-* **Transaction fees** in HBAR serve a different purpose: they compensate the network for processing transactions. These fees follow a [base fee + extras model](/hedera/core-concepts/fee-model) defined in the network's fee schedule (system file `0.0.113`). While the fee structure varies by transaction type (each has its own base fee and applicable extras), the fee schedule is set by the network's governing authority, not by individual users. Transaction fees are paid exclusively in HBAR.
+* **Transaction fees** in HBAR serve a different purpose: they compensate the network for processing transactions. These fees follow a [base fee + extras model](/learn/core-concepts/fee-model) defined in the network's fee schedule (system file `0.0.113`). While the fee structure varies by transaction type (each has its own base fee and applicable extras), the fee schedule is set by the network's governing authority, not by individual users. Transaction fees are paid exclusively in HBAR.
 
 ### **Key Differences**
 

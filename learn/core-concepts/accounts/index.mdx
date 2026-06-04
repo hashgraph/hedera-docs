@@ -6,22 +6,22 @@ Accounts are the central starting point when interacting with the Hedera network
 
 The Hedera native token HBAR (ℏ) is a utility token primarily used to pay for transactions and query fees when interacting with the network. The HBAR symbol is represented as "ℏ." Applications may reference HBAR as the token denomination; however, the network returns information in tinybars (tℏ), a denomination of HBAR. 100,000,000 tℏ are equivalent to 1 ℏ. This includes things like transaction fees or accounts HBAR balances.
 
-You interact with the network by submitting transactions that modify the ledger's state or submitting query requests that read data from the ledger. Most transactions and queries have a [transaction fee](/hedera/networks/mainnet/fees) that is charged in HBAR. Unlike custom tokens users create on the Hedera network, no token ID represents the native HBAR token.
+You interact with the network by submitting transactions that modify the ledger's state or submitting query requests that read data from the ledger. Most transactions and queries have a [transaction fee](/learn/networks/mainnet/fees) that is charged in HBAR. Unlike custom tokens users create on the Hedera network, no token ID represents the native HBAR token.
 
 <Columns cols={2}>
   <Card
     title="Account Creation"
-    href="/hedera/core-concepts/accounts/account-creation"
+    href="/learn/core-concepts/accounts/account-creation"
     arrow
   ></Card>
   <Card
     title="Auto Account Creation"
-    href="/hedera/core-concepts/accounts/auto-account-creation"
+    href="/learn/core-concepts/accounts/auto-account-creation"
     arrow
   ></Card>
   <Card
     title="Account Properties"
-    href="/hedera/core-concepts/accounts/account-properties"
+    href="/learn/core-concepts/accounts/account-properties"
     arrow
   ></Card>
 </Columns>
@@ -30,7 +30,7 @@ You interact with the network by submitting transactions that modify the ledger'
 
 <AccordionGroup>
 <Accordion title="What is a Hedera account?">
-A Hedera account is a unique entity in the Hedera Network that can hold tokens. These can be Hedera's native fungible token (HBAR), custom fungible, or [non-fungible tokens (NFTs)](/hedera/support-and-community/glossary#non-fungible-token-nft).
+A Hedera account is a unique entity in the Hedera Network that can hold tokens. These can be Hedera's native fungible token (HBAR), custom fungible, or [non-fungible tokens (NFTs)](/support/glossary#non-fungible-token-nft).
 </Accordion>
 
 <Accordion title="How are new accounts created on Hedera?">
@@ -43,13 +43,13 @@ A Hedera account is a unique entity in the Hedera Network that can hold tokens. 
 </Accordion>
 
 <Accordion title="What is the 'Auto Account Creation' feature?">
-  [Auto Account Creation](/hedera/core-concepts/accounts/auto-account-creation)
+  [Auto Account Creation](/learn/core-concepts/accounts/auto-account-creation)
   allows applications to generate free user accounts instantly, even without an
   internet connection, by creating an account alias.
 </Accordion>
 
 <Accordion title="What is a 'hollow' account?">
-If an account is created with an [EVM address](/hedera/core-concepts/accounts/auto-account-creation#evm-address) via [Auto Account Creation](/hedera/core-concepts/accounts/auto-account-creation), it results in a "hollow" account. This account has an account number and alias but no account key. It can accept token transfers but cannot transfer tokens or modify account properties until the account key has been added, completing the account.
+If an account is created with an [EVM address](/learn/core-concepts/accounts/auto-account-creation#evm-address) via [Auto Account Creation](/learn/core-concepts/accounts/auto-account-creation), it results in a "hollow" account. This account has an account number and alias but no account key. It can accept token transfers but cannot transfer tokens or modify account properties until the account key has been added, completing the account.
 </Accordion>
 </AccordionGroup>
 

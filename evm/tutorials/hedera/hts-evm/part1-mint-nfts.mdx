@@ -2,9 +2,9 @@
 title: "HTS x EVM - How to Mint NFTs (Part 1)"
 ---
 
-On Hedera, we can create, mint, burn and transfer non-fungible tokens(NFTs) without deploying or dealing with any smart contracts. We can do this using only the Hedera Token Service(HTS) and official SDKs available in varrious languages such as Javascript, Rust, Go, Python, Java, etc. If you want to learn how to perform these operations using the SDK, refer to [this documentation](/hedera/tutorials/token/hedera-token-service-part-1-how-to-mint-nfts).
+On Hedera, we can create, mint, burn and transfer non-fungible tokens(NFTs) without deploying or dealing with any smart contracts. We can do this using only the Hedera Token Service(HTS) and official SDKs available in varrious languages such as Javascript, Rust, Go, Python, Java, etc. If you want to learn how to perform these operations using the SDK, refer to [this documentation](/native/tutorials/tokens/hts-part1-mint).
 
-However, it is also possible to create a token on Hedera using a **smart contract** and still benefit from the native Hedera Token Service. However, the contract needs to interact with the [HTS System Contract](/hedera/core-concepts/smart-contracts/system-smart-contracts), which provides Hedera-specific token operations. By combining **HTS** and **Solidity**, you:
+However, it is also possible to create a token on Hedera using a **smart contract** and still benefit from the native Hedera Token Service. However, the contract needs to interact with the [HTS System Contract](/evm/hedera-services/system-contracts), which provides Hedera-specific token operations. By combining **HTS** and **Solidity**, you:
 
 - Get all the performance, cost-efficiency, and security of native HTS tokens.
 - Can embed custom, decentralized logic in your contract for advanced use cases.
@@ -415,7 +415,7 @@ Let's build this contract by running:
 npx hardhat build
 ```
 
-This command will generate the smart contract artifacts, including the [ABI](/hedera/core-concepts/smart-contracts/compiling-smart-contracts). We are now ready to deploy the smart contract.
+This command will generate the smart contract artifacts, including the [ABI](/evm/development/compiling). We are now ready to deploy the smart contract.
 
 ---
 
@@ -471,7 +471,7 @@ In this script, we first retrieve your account (the deployer) using Ethers.js. T
 <Info>
 **Note**
 
-For most HTS [System Smart Contract](/hedera/core-concepts/smart-contracts/system-smart-contracts) calls, an HBAR value **is not** required to be sent in the contract call; the gas fee will cover it. However, for expensive transactions, like [Create HTS NFT Collection](#step-3%3A-deploy-your-hts-nft-smart-contract), the gas fee is reduced, and the transaction cost is covered by the payable amount. This is to reduce the gas consumed by the contract call.
+For most HTS [System Smart Contract](/evm/hedera-services/system-contracts) calls, an HBAR value **is not** required to be sent in the contract call; the gas fee will cover it. However, for expensive transactions, like [Create HTS NFT Collection](#step-3%3A-deploy-your-hts-nft-smart-contract), the gas fee is reduced, and the transaction cost is covered by the payable amount. This is to reduce the gas consumed by the contract call.
 
 </Info>
 
@@ -761,11 +761,11 @@ Using Solidity on Hedera, you can **create**, **mint and** **burn** native NFTs 
 - **Mint** new tokens (`mintNFT`).
 - **Burn** tokens when they are no longer needed (`burnNFT`).
 
-Continue exploring our [Part 2: KYC & Update](/hedera/tutorials/smart-contracts/hts-x-evm-part-2-kyc-and-update) to see how advanced compliance flags (e.g., KYC) or updating tokens can be handled natively.
+Continue exploring our [Part 2: KYC & Update](/evm/tutorials/hedera/hts-evm/part2-kyc-update) to see how advanced compliance flags (e.g., KYC) or updating tokens can be handled natively.
 
 <Card
   title="Hts X Evm Part 2 Kyc And Update"
-  href="/hedera/tutorials/smart-contracts/hts-x-evm-part-2-kyc-and-update"
+  href="/evm/tutorials/hedera/hts-evm/part2-kyc-update"
 />
 
 ---

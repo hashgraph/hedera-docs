@@ -110,7 +110,7 @@ Open your newly created react app project with visual studio code. You should se
 
 ### 2. Fetching Token Data: Writing Mirror Node API Queries
 
-[Mirror nodes](/hedera/core-concepts/mirror-nodes) offer access to historical data from the Hedera network while optimizing the use of network resources. You can easily retrieve information like transactions, records, events, and balances. Visit the [mirror node API docs](https://testnet.mirrornode.hedera.com/api/v1/docs/#/accounts/getAccountByIdOrAliasOrEvmAddress) to learn more.
+[Mirror nodes](/learn/core-concepts/mirror-nodes) offer access to historical data from the Hedera network while optimizing the use of network resources. You can easily retrieve information like transactions, records, events, and balances. Visit the [mirror node API docs](https://testnet.mirrornode.hedera.com/api/v1/docs/#/accounts/getAccountByIdOrAliasOrEvmAddress) to learn more.
 
 In vscode open the file located at `src/services/wallets/mirrorNodeClient.ts`.
 
@@ -810,7 +810,7 @@ Keep this terminal open for the remainder of the tutorial, as you will refer bac
 
   Import the sender and receiver accounts that were just outputted into your preferred wallet application. ([MetaMask](https://metamask.io/download/), [HashPack](https://www.hashpack.app/get-started), or [Kabila](https://www.kabila.app/wallet))
 
-For assistance on how to import a Hedera account into MetaMask refer to our documentation [here](/hedera/tutorials/smart-contracts#import-heder#import-hedera-account-into-metamask).
+For assistance on how to import a Hedera account into MetaMask refer to our documentation [here](/evm/tutorials#import-heder#import-hedera-account-into-metamask).
 
 <Danger>
 Rename your imported accounts within your preferred wallet to keep track which is the sender and receiver account.
@@ -897,7 +897,7 @@ MetaMask will prompt you to sign the transaction. If the extension does not auto
 Confirm the transaction
 
 <Warning>
-The react template uses the Hashio JSON RPC Relay URL to work with MetaMask. If you are experiencing degraded performance, follow this [guide](/hedera/tutorials/more-tutorials/json-rpc-connections) to switch to Arkhia or set up your own JSON RPC Relay. Edit the `src/config/networks.ts` with the new JSON RPC Relay URL.
+The react template uses the Hashio JSON RPC Relay URL to work with MetaMask. If you are experiencing degraded performance, follow this [guide](/evm/tutorials/intermediate/json-rpc-connections) to switch to Arkhia or set up your own JSON RPC Relay. Edit the `src/config/networks.ts` with the new JSON RPC Relay URL.
 </Warning>
 
 #### 4.6 Transfer NFT to Receiver Account

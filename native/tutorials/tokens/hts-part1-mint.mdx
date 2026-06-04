@@ -31,15 +31,15 @@ We will configure an NFT art collection for autumn images. With HTS, you can als
 
 We recommend you complete the following introduction to get a basic understanding of Hedera transactions. This example does not build upon the previous examples.
 
-- Get a [Hedera testnet account](/hedera/tutorials/more-tutorials/create-and-fund-your-hedera-testnet-account).
-- Set up your environment [here](/hedera/getting-started-hedera-native-developers/quickstart).
+- Get a [Hedera testnet account](/native/tutorials/getting-started/create-fund-account).
+- Set up your environment [here](/native/quickstart/javascript).
 
 ✅ _If you want the entire code used for this tutorial, skip to the_ [_Code Check_](#code-check) _section below._
 
 <Info>
   **Note**: While the following examples are in JavaScript, official SDKs
-  supporting [Go](/hedera/sdks-and-apis/sdks/token-service/define-a-token) and
-  [Java](/hedera/sdks-and-apis/sdks/token-service/define-a-token) are also
+  supporting [Go](/native/tokens/define) and
+  [Java](/native/tokens/define) are also
   available and implemented very similarly alongside community-supported SDKs in
   [.NET](https://hedera.com/blog/creating-tokens-hedera-net-part-1) and various
   other frameworks or languages.
@@ -47,7 +47,7 @@ We recommend you complete the following introduction to get a basic understandin
 
 ## Create New Hedera Accounts and Generate Keys for the NFT
 
-Let's create additional Hedera accounts to represent users for this scenario, such as the Treasury, Alice, and Bob. These accounts are created using your Testnet account credentials from the Hedera portal (see the resources for [getting started](/hedera/tutorials/more-tutorials/create-and-fund-your-hedera-testnet-account)). Account creation starts by generating a private key for the new account and then calling a reusable function (**_accountCreatorFcn_**) that uses the new key, an initial balance, and the Hedera client. You can easily reuse this function if you need to create more accounts in the future.
+Let's create additional Hedera accounts to represent users for this scenario, such as the Treasury, Alice, and Bob. These accounts are created using your Testnet account credentials from the Hedera portal (see the resources for [getting started](/native/tutorials/getting-started/create-fund-account)). Account creation starts by generating a private key for the new account and then calling a reusable function (**_accountCreatorFcn_**) that uses the new key, an initial balance, and the Hedera client. You can easily reuse this function if you need to create more accounts in the future.
 
 Once accounts are created for Treasury, Alice, and Bob, new private keys are generated to manage specific token functionality. Always provide the corresponding public key when specifying the key value for specific functionality.
 
@@ -114,7 +114,7 @@ async function accountCreateFcn(pvKey, iBal, client) {
 
 ## Create a Custom Fee Schedule
 
-Let’s start by defining the custom fees for the NFT. [Custom fees](/hedera/sdks-and-apis/sdks/token-service/custom-token-fees) are distributed to the specified accounts each time the token is transferred. Depending on the token type (fungible or non-fungible), you can specify a custom fee to be fixed, fractional, or a royalty. An NFT can only have fixed or royalty fees, so in this example, we’ll go with a royalty fee. This enables collecting a fraction of the value exchanged for the NFT when ownership is transferred from one person to another.
+Let’s start by defining the custom fees for the NFT. [Custom fees](/native/tokens/custom-fees) are distributed to the specified accounts each time the token is transferred. Depending on the token type (fungible or non-fungible), you can specify a custom fee to be fixed, fractional, or a royalty. An NFT can only have fixed or royalty fees, so in this example, we’ll go with a royalty fee. This enables collecting a fraction of the value exchanged for the NFT when ownership is transferred from one person to another.
 
 ```javascript nft-part1.js
 // DEFINE CUSTOM FEE SCHEDULE
@@ -177,7 +177,7 @@ let CIDs = [
 }
 ```
 
-Now, let’s [create the token](/hedera/sdks-and-apis/sdks/token-service/define-a-token). Use **_TokenCreateTransaction()_** to configure and set the token properties. At a minimum, this constructor requires setting a name, symbol, and treasury account ID. All other fields are optional, so default values are used if they’re not specified. For instance, not specifying an _admin key_, makes a token immutable (can’t change or add properties); not specifying a _supply key_, makes a token supply fixed (can’t mint new or burn existing tokens); not specifying a _token type_, makes a token fungible; for more info on the defaults check out the documentation.
+Now, let’s [create the token](/native/tokens/define). Use **_TokenCreateTransaction()_** to configure and set the token properties. At a minimum, this constructor requires setting a name, symbol, and treasury account ID. All other fields are optional, so default values are used if they’re not specified. For instance, not specifying an _admin key_, makes a token immutable (can’t change or add properties); not specifying a _supply key_, makes a token supply fixed (can’t mint new or burn existing tokens); not specifying a _token type_, makes a token fungible; for more info on the defaults check out the documentation.
 
 After submitting the transaction to the Hedera network, you can obtain the new token ID by requesting the receipt. This token ID represents an NFT class.
 
@@ -229,7 +229,7 @@ console.table(tokenInfo.customFees[0]);
 
 ## Mint and Burn NFTs
 
-In the code above for the NFT creation, the decimals and initial supply must be set to zero. Once the token is created, you will have to mint each NFT using the token mint operation. Specifying a _supply key_ during token creation is a requirement to be able to [mint](/hedera/sdks-and-apis/sdks/token-service/mint-a-token) and [burn](/hedera/sdks-and-apis/sdks/token-service/burn-a-token) tokens.
+In the code above for the NFT creation, the decimals and initial supply must be set to zero. Once the token is created, you will have to mint each NFT using the token mint operation. Specifying a _supply key_ during token creation is a requirement to be able to [mint](/native/tokens/mint) and [burn](/native/tokens/burn) tokens.
 
 In terms of use cases, you may want to mint new NFTs to add items to your NFT class, or you may need to burn NFTs to take a specific item out of circulation. Alternatively, if you’re working with a fungible token (like a stablecoin), you may want to mint new tokens every time there is a new deposit and burn tokens anytime that someone converts their tokens back into fiat.
 
@@ -298,7 +298,7 @@ console.log(`\n- Current NFT supply: ${tokenInfo.totalSupply}`);
 
 Before an account that is not the treasury for a token can receive or send this specific token ID, it must become “associated” with the token. This helps reduce unwanted spam and other concerns from users who don’t want to be associated with any of the variety of tokens created on the Hedera network.
 
-This association between an account and a token ID can be done in two ways, [manually](/hedera/sdks-and-apis/sdks/token-service/associate-tokens-to-an-account) or automatically. Note that **automatic associations** can be done for both [existing](/hedera/sdks-and-apis/sdks/accounts-and-hbar/update-an-account) and [newly created](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-an-account) accounts. For the purposes of our example, we’ll do both.
+This association between an account and a token ID can be done in two ways, [manually](/native/tokens/associate) or automatically. Note that **automatic associations** can be done for both [existing](/native/accounts/update) and [newly created](/native/accounts/create) accounts. For the purposes of our example, we’ll do both.
 
 - Alice’s account will be updated to associate with the token automatically
 - Bob’s account will be manually associated with the token ID
@@ -341,7 +341,7 @@ console.log(
 - See: https://hashscan.io/testnet/transaction/0.0.4649505@1723230942.397064432
 ```
 
-Finally, let’s do two [transfers](/hedera/sdks-and-apis/sdks/token-service/transfer-tokens) of the NFT with serial number **2** and see how the royalty fees are collected. The first transfer will be from the Treasury to Alice, and the second NFT transfer will be from Alice to Bob in exchange for 100 HBAR.
+Finally, let’s do two [transfers](/native/tokens/transfer) of the NFT with serial number **2** and see how the royalty fees are collected. The first transfer will be from the Treasury to Alice, and the second NFT transfer will be from Alice to Bob in exchange for 100 HBAR.
 
 ## NFT Transfer from Treasury to Alice
 
@@ -412,7 +412,7 @@ async function bCheckerFcn(id) {
 - Bob balance: 0 NFTs of ID:0.0.4672119 and 1 ℏ
 ```
 
-As you remember from the [Custom Token Fees documentation](/hedera/sdks-and-apis/sdks/token-service/custom-token-fees), the treasury account and any fee-collecting accounts for a token are exempt from paying custom transaction fees when the token is transferred. Since the treasury account is also the fee collector for the token, that means there are no royalty fees collected in this first transfer.
+As you remember from the [Custom Token Fees documentation](/native/tokens/custom-fees), the treasury account and any fee-collecting accounts for a token are exempt from paying custom transaction fees when the token is transferred. Since the treasury account is also the fee collector for the token, that means there are no royalty fees collected in this first transfer.
 
 ## NFT Transfer from Alice to Bob
 
@@ -453,7 +453,7 @@ Remember from the documentation that royalty fees are paid from the fungible val
 
 ## Conclusion
 
-**You just learned how to create an NFT on the Hedera network at the native layer without the need to code complex smart contracts!** You can create, mint, burn, associate, and transfer NFTs with just a few lines of code in your favorite programming language. Continue to [Part 2](/hedera/tutorials/token/hedera-token-service-part-2-kyc-update-and-scheduled-transactions) to learn how to work with compliance features like [Know your Customer (KYC)](/hedera/support-and-community/glossary#know-your-customer-kyc), update tokens, and schedule transactions. Then in[ Part 3](/hedera/tutorials/token/hedera-token-service-part-3-how-to-pause-freeze-wipe-and-delete-nfts), you will see how to pause, freeze, wipe, and delete tokens.
+**You just learned how to create an NFT on the Hedera network at the native layer without the need to code complex smart contracts!** You can create, mint, burn, associate, and transfer NFTs with just a few lines of code in your favorite programming language. Continue to [Part 2](/native/tutorials/tokens/hts-part2-kyc) to learn how to work with compliance features like [Know your Customer (KYC)](/support/glossary#know-your-customer-kyc), update tokens, and schedule transactions. Then in[ Part 3](/native/tutorials/tokens/hts-part3-admin), you will see how to pause, freeze, wipe, and delete tokens.
 
 <Accordion title="Code Check ✅">
 ```javascript nft-pt1.js

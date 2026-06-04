@@ -4,7 +4,7 @@ title: "Deploy and Verify a Smart Contract with Foundry"
 
 ## Deploying a Contract Using Foundry
 
-This tutorial will walk you through writing and compiling an ERC-20 Solidity smart contract. You'll then deploy and interact with it on the Hedera network using the [Hedera Smart Contract Service (HSCS)](/hedera/support-and-community/glossary#hedera-smart-contract-service-hscs) and [Foundry](https://getfoundry.sh/), connecting via the [JSON-RPC relay](/hedera/core-concepts/smart-contracts/json-rpc-relay).
+This tutorial will walk you through writing and compiling an ERC-20 Solidity smart contract. You'll then deploy and interact with it on the Hedera network using the [Hedera Smart Contract Service (HSCS)](/support/glossary#hedera-smart-contract-service-hscs) and [Foundry](https://getfoundry.sh/), connecting via the [JSON-RPC relay](/evm/development/json-rpc).
 
 #### What you will accomplish
 
@@ -20,7 +20,7 @@ By the end of this tutorial, you will be able to:
 
 Before you begin, you should have **completed** the following tutorial:
 
-- [x] [Create and Fund a Testnet Account via the Hedera Faucet](/hedera/getting-started-evm-developers/hedera-testnet-faucet)
+- [x] [Create and Fund a Testnet Account via the Hedera Faucet](/evm/quickstart/get-test-hbar)
 - [x] [Install Foundry](https://getfoundry.sh/)
 
 ```bash
@@ -154,7 +154,7 @@ Now, compile the contract:
 forge build
 ```
 
-This command compiles your contracts and places the artifacts(including the [ABI](/hedera/core-concepts/smart-contracts/compiling-smart-contracts) and bytecode) into the `out` directory. We are now ready to deploy the smart contract.
+This command compiles your contracts and places the artifacts(including the [ABI](/evm/development/compiling) and bytecode) into the `out` directory. We are now ready to deploy the smart contract.
 
 ---
 
@@ -332,7 +332,7 @@ Contract successfully verified
 
 - Check out [OpenZeppelin ERC-20 Documentation](https://docs.openzeppelin.com/contracts/5.x/erc20)
 - See the full code in the [Hedera-Code-Snippets Repository](https://github.com/hedera-dev/hedera-code-snippets/tree/main/foundry-erc20)
-- Follow more [Foundry guides with Hedera](/hedera/tutorials/smart-contracts/foundry).
+- Follow more [Foundry guides with Hedera](/evm/tools/foundry).
 
 <Columns cols={2}>
   <Card title="Writer: Kiran, Developer Advocate" arrow>

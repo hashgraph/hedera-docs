@@ -10,7 +10,7 @@ The [Hiero CLI](https://github.com/hiero-ledger/hiero-cli) is a command‑line i
 - **Automate** repetitive tasks without writing bulky code.
 - **Simplify** key management, letting you focus on building and scaling your solutions.
 
-For a visual map of which Hedera capabilities the CLI covers today (and known gaps), see [Feature coverage and gaps](/hedera/open-source-solutions/hiero-cli/feature-coverage-gap-report).
+For a visual map of which Hedera capabilities the CLI covers today (and known gaps), see [Feature coverage and gaps](/solutions/tools/hiero-cli/feature-coverage-gap-report).
 
 ---
 
@@ -19,7 +19,7 @@ For a visual map of which Hedera capabilities the CLI covers today (and known ga
 **Prerequisites**:
 
 - Node.js installation: 18.0.0 or higher
-- [Hedera Account](https://portal.hedera.com/) (for mainnet, testnet, or previewnet) or [Hedera Local Node](/hedera/tutorials/local-node/how-to-set-up-a-hedera-local-node) (for localnet)
+- [Hedera Account](https://portal.hedera.com/) (for mainnet, testnet, or previewnet) or [Hedera Local Node](/native/local-dev/setup-local-node) (for localnet)
 
 Install the CLI globally with npm:
 
@@ -61,7 +61,7 @@ When you run any command that requires an operator (like transferring HBAR or cr
     **Prerequisites**
 
     * Node.js installation: 18.0.0 or higher
-    * [Hedera Account](https://portal.hedera.com/) (for mainnet, testnet, or previewnet) or [Hedera Local Node](/hedera/tutorials/local-node/how-to-set-up-a-hedera-local-node) (for localnet)
+    * [Hedera Account](https://portal.hedera.com/) (for mainnet, testnet, or previewnet) or [Hedera Local Node](/native/local-dev/setup-local-node) (for localnet)
     * Git
 
     **Step 1: Clone the repository**
@@ -198,7 +198,7 @@ Each plugin uses its own JSON files there. You normally should not edit them by 
 - **`local`** — keys stored in plain text in the state directory (typical for development)
 - **`local_encrypted`** — keys encrypted with AES-256-GCM before storage (stronger protection)
 
-Set the default storage mode with the [Config plugin](/hedera/open-source-solutions/hiero-cli/plugins/config-plugin):
+Set the default storage mode with the [Config plugin](/solutions/tools/hiero-cli/plugins/config-plugin):
 
 ```sh
 hcli config set -o default_key_manager -v local
@@ -209,7 +209,7 @@ Override per command with `--key-manager` where the command supports it (for exa
 
 ## Local Hedera Network (Localnet)
 
-To use the CLI against a [local Hedera node](/hedera/tutorials/local-node/how-to-set-up-a-hedera-local-node), configure an operator for `localnet` and select that network. Default connection settings shipped with the CLI match the usual local node layout (see `src/core/services/network/network.config.ts` in the [Hiero CLI repository](https://github.com/hiero-ledger/hiero-cli)).
+To use the CLI against a [local Hedera node](/native/local-dev/setup-local-node), configure an operator for `localnet` and select that network. Default connection settings shipped with the CLI match the usual local node layout (see `src/core/services/network/network.config.ts` in the [Hiero CLI repository](https://github.com/hiero-ledger/hiero-cli)).
 
 Example:
 
@@ -227,7 +227,7 @@ The CLI loads a fixed set of default plugins. The pages below document the shipp
 <Card
   title="Network Plugin"
   icon="puzzle-piece-simple"
-  href="/hedera/open-source-solutions/hiero-cli/plugins/network-plugin"
+  href="/solutions/tools/hiero-cli/plugins/network-plugin"
   horizontal
 >
   Switch networks, manage operator credentials, and check network health
@@ -235,7 +235,7 @@ The CLI loads a fixed set of default plugins. The pages below document the shipp
 <Card
   title="Credentials Plugin"
   icon="puzzle-piece-simple"
-  href="/hedera/open-source-solutions/hiero-cli/plugins/credentials-plugin"
+  href="/solutions/tools/hiero-cli/plugins/credentials-plugin"
   horizontal
 >
   Manage operator credentials and keys
@@ -243,7 +243,7 @@ The CLI loads a fixed set of default plugins. The pages below document the shipp
 <Card
   title="Account Plugin"
   icon="puzzle-piece-simple"
-  href="/hedera/open-source-solutions/hiero-cli/plugins/account-plugin"
+  href="/solutions/tools/hiero-cli/plugins/account-plugin"
   horizontal
 >
   Create, import, manage accounts, and view balances
@@ -251,7 +251,7 @@ The CLI loads a fixed set of default plugins. The pages below document the shipp
 <Card
   title="HBAR Plugin"
   icon="puzzle-piece-simple"
-  href="/hedera/open-source-solutions/hiero-cli/plugins/hbar-plugin"
+  href="/solutions/tools/hiero-cli/plugins/hbar-plugin"
   horizontal
 >
   Transfer HBAR between accounts
@@ -259,7 +259,7 @@ The CLI loads a fixed set of default plugins. The pages below document the shipp
 <Card
   title="Token Plugin"
   icon="puzzle-piece-simple"
-  href="/hedera/open-source-solutions/hiero-cli/plugins/token-plugin"
+  href="/solutions/tools/hiero-cli/plugins/token-plugin"
   horizontal
 >
   Create, associate, and transfer tokens
@@ -267,7 +267,7 @@ The CLI loads a fixed set of default plugins. The pages below document the shipp
 <Card
   title="Swap Plugin"
   icon="puzzle-piece-simple"
-  href="/hedera/open-source-solutions/hiero-cli/plugins/swap-plugin"
+  href="/solutions/tools/hiero-cli/plugins/swap-plugin"
   horizontal
 >
   Build atomic HBAR / HTS swaps locally and execute them in one transaction
@@ -275,7 +275,7 @@ The CLI loads a fixed set of default plugins. The pages below document the shipp
 <Card
   title="Topic Plugin"
   icon="puzzle-piece-simple"
-  href="/hedera/open-source-solutions/hiero-cli/plugins/topic-plugin"
+  href="/solutions/tools/hiero-cli/plugins/topic-plugin"
   horizontal
 >
   Create topics and manage topic messages
@@ -283,7 +283,7 @@ The CLI loads a fixed set of default plugins. The pages below document the shipp
 <Card
   title="Config Plugin"
   icon="puzzle-piece-simple"
-  href="/hedera/open-source-solutions/hiero-cli/plugins/config-plugin"
+  href="/solutions/tools/hiero-cli/plugins/config-plugin"
   horizontal
 >
   Inspect and update CLI configuration values
@@ -291,7 +291,7 @@ The CLI loads a fixed set of default plugins. The pages below document the shipp
 <Card
   title="Plugin Management Plugin"
   icon="puzzle-piece-simple"
-  href="/hedera/open-source-solutions/hiero-cli/plugins/plugin-management-plugin"
+  href="/solutions/tools/hiero-cli/plugins/plugin-management-plugin"
   horizontal
 >
   Add, remove, enable/disable, and inspect plugins
@@ -299,7 +299,7 @@ The CLI loads a fixed set of default plugins. The pages below document the shipp
 <Card
   title="Batch Plugin"
   icon="puzzle-piece-simple"
-  href="/hedera/open-source-solutions/hiero-cli/plugins/batch-plugin"
+  href="/solutions/tools/hiero-cli/plugins/batch-plugin"
   horizontal
 >
   Create, execute, list, and delete batches of Hedera transactions
@@ -307,7 +307,7 @@ The CLI loads a fixed set of default plugins. The pages below document the shipp
 <Card
   title="Schedule Plugin"
   icon="puzzle-piece-simple"
-  href="/hedera/open-source-solutions/hiero-cli/plugins/schedule-plugin"
+  href="/solutions/tools/hiero-cli/plugins/schedule-plugin"
   horizontal
 >
   Create, sign, delete, and verify Hedera scheduled transactions
@@ -315,7 +315,7 @@ The CLI loads a fixed set of default plugins. The pages below document the shipp
 <Card
   title="Contract Plugin"
   icon="puzzle-piece-simple"
-  href="/hedera/open-source-solutions/hiero-cli/plugins/contract-plugin"
+  href="/solutions/tools/hiero-cli/plugins/contract-plugin"
   horizontal
 >
   Compile, deploy, import, list, and delete Solidity smart contracts
@@ -323,7 +323,7 @@ The CLI loads a fixed set of default plugins. The pages below document the shipp
 <Card
   title="Contract ERC-20 Plugin"
   icon="puzzle-piece-simple"
-  href="/hedera/open-source-solutions/hiero-cli/plugins/contract-erc20-plugin"
+  href="/solutions/tools/hiero-cli/plugins/contract-erc20-plugin"
   horizontal
 >
   Call ERC-20 view and state-changing functions on deployed contracts
@@ -331,7 +331,7 @@ The CLI loads a fixed set of default plugins. The pages below document the shipp
 <Card
   title="Contract ERC-721 Plugin"
   icon="puzzle-piece-simple"
-  href="/hedera/open-source-solutions/hiero-cli/plugins/contract-erc721-plugin"
+  href="/solutions/tools/hiero-cli/plugins/contract-erc721-plugin"
   horizontal
 >
   Call ERC-721 view and state-changing functions on deployed NFT contracts
@@ -344,7 +344,7 @@ Once you’re familiar with the available CLI commands, you can take the next st
 <Card
   title="Scripting Quickstart"
   icon="scroll"
-  href="/hedera/open-source-solutions/hiero-cli/scripting/quickstart"
+  href="/solutions/tools/hiero-cli/scripting/quickstart"
   horizontal
 >
   Learn how to create your first script using Hiero CLI commands.

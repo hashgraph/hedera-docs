@@ -35,7 +35,7 @@ Hedera consensus nodes push new record files and signature files to the cloud st
 
 ## Understanding Block Streams After [`HIP-1259`](https://hips.hedera.com/hip/hip-1259)
 
-For Mirror Node and [block stream](/hedera/support-and-community/glossary#block-stream) consumers, [HIP-1259](https://hips.hedera.com/hip/hip-1259) significantly simplifies the data related to transaction fees, leading to smaller block stream files and reduced data ingestion costs.
+For Mirror Node and [block stream](/support/glossary#block-stream) consumers, [HIP-1259](https://hips.hedera.com/hip/hip-1259) significantly simplifies the data related to transaction fees, leading to smaller block stream files and reduced data ingestion costs.
 
 ### Simplified Fee Structure
 
@@ -55,7 +55,7 @@ As a block stream consumer, you can identify this transaction by the following c
 - It appears in the block stream like any other transaction.
 
 <Info>
-  This synthetic transaction is the **only** time you will see funds being transferred out of the [Fee Collection Account](/hedera/support-and-community/glossary#fee-collection-account). All other transactions involving [`0.0.802`](https://hashscan.io/mainnet/account/0.0.802) will be credit transfers into the account.
+  This synthetic transaction is the **only** time you will see funds being transferred out of the [Fee Collection Account](/support/glossary#fee-collection-account). All other transactions involving [`0.0.802`](https://hashscan.io/mainnet/account/0.0.802) will be credit transfers into the account.
 </Info>
 
 ### Benefits for Mirror Node Operators
@@ -68,7 +68,7 @@ As a block stream consumer, you can identify this transaction by the following c
 
 ### Smart Contract Synthetic Logs
 
-Starting with [v0.79](/hedera/networks/release-notes/mirror-node#v0.79) of Hedera Mirror Node release, synthetic event logs for Hedera Token Service (HTS) token transactions have been introduced to mimic the behavior of smart contract tokens. Synthetic events are generated for transactions such as:
+Starting with [v0.79](/learn/release-notes/mirror-node#v0.79) of Hedera Mirror Node release, synthetic event logs for Hedera Token Service (HTS) token transactions have been introduced to mimic the behavior of smart contract tokens. Synthetic events are generated for transactions such as:
 
 * `CryptoTransfer`
 * `CryptoApproveAllowance`
@@ -85,7 +85,7 @@ Hedera provides REST APIs to easily query a mirror node that is hosted by Hedera
 
 <Card
   title="Rest API"
-  href="/hedera/sdks-and-apis/rest-api"
+  href="/reference/rest-api"
 />
 
 ### Run a Mirror Node
@@ -94,34 +94,34 @@ Anyone can run a Hedera Mirror Node by downloading and configuring the software 
 
 <Card
   title="Run Your Own Beta Mirror Node"
-  href="/hedera/core-concepts/mirror-nodes/run-your-own-beta-mirror-node"
+  href="/operators/mirror-node/run-your-own"
 />
 
 <Card
   title="One Click Mirror Node Deployment"
-  href="/hedera/core-concepts/mirror-nodes/one-click-mirror-node-deployment"
+  href="/operators/mirror-node/one-click-deploy"
 />
 
 ## FAQ
 
 <Accordion title="How is data stored in a Hedera Mirror Node? Is it a specific type of database, or does it use a unique data structure?">
-Hedera Mirror Nodes use [PostgreSQL](/hedera/support-and-community/glossary#postgresql) databases to store the transaction and event data organized in a structure that mirrors the Hedera Network. Once the mirror node receives record files from Hedera Consensus nodes, the data is validated and loaded into the database.
+Hedera Mirror Nodes use [PostgreSQL](/support/glossary#postgresql) databases to store the transaction and event data organized in a structure that mirrors the Hedera Network. Once the mirror node receives record files from Hedera Consensus nodes, the data is validated and loaded into the database.
 </Accordion>
 
 <Accordion title="How do I run my own Hedera Mirror Node? What are the hardware and software requirements?">
-Setting up a Hedera Mirror Node involves both hardware and software components. The requirements can be found [here](/hedera/core-concepts/mirror-nodes/run-your-own-beta-mirror-node).
+Setting up a Hedera Mirror Node involves both hardware and software components. The requirements can be found [here](/operators/mirror-node/run-your-own).
 
-To run your mirror node, follow the steps in the "[Run Your Own Mirror Node](/hedera/core-concepts/mirror-nodes/run-your-own-beta-mirror-node)" guide.
+To run your mirror node, follow the steps in the "[Run Your Own Mirror Node](/operators/mirror-node/run-your-own)" guide.
 </Accordion>
 
 <Accordion title="Are there costs associated with running a mirror node?">
-No, Hedera does not charge for running a mirror node. However, there are costs associated with purchasing the hardware, internet connection, and potential cloud service fees. The hardware and software requirements can be found [here](/hedera/core-concepts/mirror-nodes/run-your-own-beta-mirror-node).
+No, Hedera does not charge for running a mirror node. However, there are costs associated with purchasing the hardware, internet connection, and potential cloud service fees. The hardware and software requirements can be found [here](/operators/mirror-node/run-your-own).
 </Accordion>
 
 <Accordion title="How do I configure a mirror node and query data?">
-You can configure your own Hedera Mirror Node by following the step-by-step instructions provided in the "[How to Configure a Mirror Node and Query Data](/hedera/tutorials/more-tutorials/how-to-configure-a-mirror-node-and-query-specific-data)" guide. The guide provides instructions on prerequisites, node setup, configuration, and querying the node. Additionally, you can find more details about retention and transaction and entity filtering in the guide.
+You can configure your own Hedera Mirror Node by following the step-by-step instructions provided in the "[How to Configure a Mirror Node and Query Data](/native/tutorials/advanced/configure-mirror-node)" guide. The guide provides instructions on prerequisites, node setup, configuration, and querying the node. Additionally, you can find more details about retention and transaction and entity filtering in the guide.
 </Accordion>
 
 <Accordion title="How can I provide feedback or create an issue to log errors?">
-To provide feedback or log errors, please refer to the [Contributing Guide](/hedera/support-and-community/contributing-guide) and submit an issue in the Hedera Docs [GitHub repository](https://github.com/hashgraph/hedera-json-rpc-relay/issues).
+To provide feedback or log errors, please refer to the [Contributing Guide](/support/contributing) and submit an issue in the Hedera Docs [GitHub repository](https://github.com/hashgraph/hedera-json-rpc-relay/issues).
 </Accordion>

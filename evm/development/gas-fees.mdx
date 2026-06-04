@@ -23,7 +23,7 @@ As noted in [HIP-410](https://hips.hedera.com/hip/hip-410), this maximizes compa
 
 ## Gas Schedule and Fee Calculation
 
-Gas charges apply to `ContractCall`, `ContractCreate`, and `EthereumTransaction`. Other smart contract-related transactions (e.g., `ContractDelete`, `ContractGetInfo`) use the standard [Fee Model](/hedera/core-concepts/fee-model), a base fee plus extras for node, network, and service components, paid in HBAR.
+Gas charges apply to `ContractCall`, `ContractCreate`, and `EthereumTransaction`. Other smart contract-related transactions (e.g., `ContractDelete`, `ContractGetInfo`) use the standard [Fee Model](/learn/core-concepts/fee-model), a base fee plus extras for node, network, and service components, paid in HBAR.
 
 For gas-consuming transactions (`ContractCall`, `ContractCreate`, `EthereumTransaction`), gas is an "extra" in the service fee component. The gas extra covers EVM execution costs. All other fee components (node fee, network fee, and the non-gas portion of the service fee) follow the base-fee-plus-extras model.
 
@@ -39,7 +39,7 @@ Gas fees for EVM transactions consist of:
     the transaction through dedicated high-volume throttle capacity with variable-rate
     pricing. This applies to **HAPI-based contract creation only** — contract deployments
     via EVM `CREATE` / `CREATE2` opcodes are not included. See the
-    [High-Volume Entity Creation](/hedera/core-concepts/high-volume-entity-creation) guide
+    [High-Volume Entity Creation](/learn/core-concepts/high-volume-entity-creation) guide
     for details.
 </Note>
 
@@ -118,7 +118,7 @@ The gas requirements for **HTS view functions** can be calculated in a slightly 
 
 ## Gas for Jumbo Transactions
 
-**Jumbo EthereumTransactions** that include large `callData` under **[HIP-1086](https://hips.hedera.com/hip/hip-1086)** follow the same gas model as standard EVM transactions. This gas pricing applies only to [EthereumTransaction](/hedera/sdks-and-apis/sdks/smart-contracts/ethereum-transaction) type; standard HAPI transactions are unaffected.
+**Jumbo EthereumTransactions** that include large `callData` under **[HIP-1086](https://hips.hedera.com/hip/hip-1086)** follow the same gas model as standard EVM transactions. This gas pricing applies only to [EthereumTransaction](/native/smart-contracts/ethereum-transaction) type; standard HAPI transactions are unaffected.
 
 ### Formula
 
@@ -130,7 +130,7 @@ callData gas = (4 × zero bytes) + (16 × non-zero bytes)
 
 This is added to the base gas and execution gas to calculate the total gas required.
 
-*📣 [Learn more about Ethereum jumbo transactions](/hedera/sdks-and-apis/sdks/smart-contracts/ethereum-transaction#handling-large-calldata-payloads)*
+*📣 [Learn more about Ethereum jumbo transactions](/native/smart-contracts/ethereum-transaction#handling-large-calldata-payloads)*
 
 ### Example Calculation
 
@@ -152,7 +152,7 @@ Ensure both `gasLimit` (RLP) and `maxGasAllowance` (wrapper) are set high enough
 
 The **gas limit** is the maximum amount of gas you are willing to pay for an operation.
 
-The current opcode gas fees are reflective as of the **[0.22 Hedera Service release](https://docs.hedera.com/hedera/networks/release-notes/services#v0.22)**.
+The current opcode gas fees are reflective as of the **[0.22 Hedera Service release](/learn/release-notes/services#v0.22)**.
 
 | Operation                                                                | Cancun Cost (Gas)                           | Current Hedera (Gas)                        |
 | ------------------------------------------------------------------------ | ------------------------------------------- | ------------------------------------------- |
@@ -203,7 +203,7 @@ While most **EVM-compatible networks** use per-block gas limits for resource con
 
 With **operational-based throttling**, transaction processing follows specific patterns based on resource availability:
 
-**Ops Throttle Exhausted**: When the operations-per-second throttle is exhausted either before execution begins or during execution, transactions fail with a `THROTTLED_AT_CONSENSUS` error and are charged only the **[intrinsic gas fee](/hedera/core-concepts/smart-contracts/gas-and-fees#intrinsic-gas)**.
+**Ops Throttle Exhausted**: When the operations-per-second throttle is exhausted either before execution begins or during execution, transactions fail with a `THROTTLED_AT_CONSENSUS` error and are charged only the **[intrinsic gas fee](/evm/development/gas-fees#intrinsic-gas)**.
 
 **Gas Limit Exhausted**: If a transaction's gas limit is exhausted before the ops throttle, it fails with an **out-of-gas error** and users are charged for the full gas used, with ops deducted for work completed.
 
@@ -222,7 +222,7 @@ It is impossible to know the actual evaluated gas pre-consensus because the netw
 
 **Contract query requests** are unique and bypass the consensus stage altogether. These requests are executed solely on the local node that receives them and only influence that specific node's precheck throttle.
 
-To ensure transactions can execute properly, setting a **higher gas reservation** than will be used by execution is common. On **Ethereum mainnet**, the entire reservation is charged to the account before execution, and the unused portion is credited back. However, Ethereum utilizes a **[memory pool (mempool)](/hedera/support-and-community/glossary#mempool)** and does transaction ordering at block production time, allowing the block limit to be based only on used and not reserved gas.
+To ensure transactions can execute properly, setting a **higher gas reservation** than will be used by execution is common. On **Ethereum mainnet**, the entire reservation is charged to the account before execution, and the unused portion is credited back. However, Ethereum utilizes a **[memory pool (mempool)](/support/glossary#mempool)** and does transaction ordering at block production time, allowing the block limit to be based only on used and not reserved gas.
 
 Users are charged only for the **actual gas used** during transaction execution, with **unused gas being fully refunded**. This aligns with Ethereum's billing model and eliminates the previous minimum charge requirements.
 

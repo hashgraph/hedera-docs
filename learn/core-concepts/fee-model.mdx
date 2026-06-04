@@ -45,7 +45,7 @@ The node and network fees are uniform across all transaction types — only the 
 
 ## Extras
 
-Extras are additional cost factors applied on top of a base fee. Each extra has a **name**, a **per-unit fee** (in tinycents), and an optional **included count** — the number of units included for free before additional charges apply. Hedera transaction and query fees follow a `base fee + extras` [fee model](/hedera/core-concepts/fee-model) defined by [HIP-1261 (Simple Fees)](https://hips.hedera.com/hip/hip-1261). For current per-unit fees in USD, see the [mainnet fees page](/hedera/networks/mainnet/fees#extras).
+Extras are additional cost factors applied on top of a base fee. Each extra has a **name**, a **per-unit fee** (in tinycents), and an optional **included count** — the number of units included for free before additional charges apply. Hedera transaction and query fees follow a `base fee + extras` [fee model](/learn/core-concepts/fee-model) defined by [HIP-1261 (Simple Fees)](https://hips.hedera.com/hip/hip-1261). For current per-unit fees in USD, see the [mainnet fees page](/learn/networks/mainnet/fees#extras).
 
 The following extras are defined in the fee schedule:
 
@@ -76,7 +76,7 @@ The following extras are defined in the fee schedule:
 | `EvmDispatchSurcharge`                        | A 20% premium added to the HAPI fee of any operation invoked from a smart contract via Hedera's system contracts (HTS, HAS, HSS). Does not apply to pure-EVM operations. |
 
 <Note>
-  Hedera transaction and query fees follow a `base fee + extras` [fee model](/hedera/core-concepts/fee-model) defined by [HIP-1261 (Simple Fees)](https://hips.hedera.com/hip/hip-1261).
+  Hedera transaction and query fees follow a `base fee + extras` [fee model](/learn/core-concepts/fee-model) defined by [HIP-1261 (Simple Fees)](https://hips.hedera.com/hip/hip-1261).
 </Note>
 
 <Tip>
@@ -162,7 +162,7 @@ Not all transactions succeed. The fee charged depends on how far the transaction
 
 The `high_volume_multiplier` field uses a 1-based scale `(1 = 1×, 4 = 4×)`. `TransactionRecord.highVolumePricingMultiplier` — available after execution — uses a `1000-based scale (1000 = 1×, 4000 = 4×)`. Both represent the same multiplier.
 
-To simulate the fee at a specific congestion level before committing, use `setHighVolumeThrottle()` on `FeeEstimateQuery`. See [Estimating Fees](/hedera/sdks-and-apis/sdks/fees/fee-estimation) with the SDK for code examples.
+To simulate the fee at a specific congestion level before committing, use `setHighVolumeThrottle()` on `FeeEstimateQuery`. See [Estimating Fees](/native/fees/fee-estimation) with the SDK for code examples.
 
 ## Fee Schedule Configuration
 
@@ -237,7 +237,7 @@ The endpoint supports two modes:
 | `intrinsic` (default) | Estimates based on the transaction's inherent properties (size, signatures, keys)     |
 | `state`               | Estimates using the mirror node's latest known state (e.g., checks if accounts exist) |
 
-See [Mirror Node REST API Network](/hedera/sdks-and-apis/rest-api/network) for the full endpoint specification and response format.
+See [Mirror Node REST API Network](/reference/rest-api/network) for the full endpoint specification and response format.
 
 ## Queries
 
@@ -362,11 +362,11 @@ If `free` is `true`, `baseFee` and `extras` are ignored during calculation but m
   The full Hiero Improvement Proposal specification.
 </Card>
 
-<Card title="Transaction and Query Fees" icon="dollar-sign" href="/hedera/networks/mainnet/fees">
+<Card title="Transaction and Query Fees" icon="dollar-sign" href="/learn/networks/mainnet/fees">
   Fee tables for all transaction and query types on mainnet.
 </Card>
 
-<Card title="Gas and Fees" icon="gas-pump" href="/hedera/core-concepts/smart-contracts/gas-and-fees">
+<Card title="Gas and Fees" icon="gas-pump" href="/evm/development/gas-fees">
   Gas schedule and fee calculation for smart contracts.
 </Card>
 

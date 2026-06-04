@@ -8,10 +8,10 @@ In this tutorial, we’ll guide you through Hedera’s **Frictionless Airdrop** 
 
 Before diving into the step-by-step guide, here’s a quick overview of the transaction types you’ll encounter:
 
-- [**TokenAirdropTransaction**](/hedera/sdks-and-apis/sdks/token-service/airdrop-a-token): This transaction allows you to distribute tokens to multiple recipients in a single transaction, even if the receiving accounts haven’t pre-associated with the token. It also supports pending transfers when accounts don’t have the necessary token associations.
-- [**TokenClaimAirdropTransaction**](/hedera/sdks-and-apis/sdks/token-service/claim-a-token): When a **recipient** doesn’t have available token associations, this transaction allows them to claim their tokens from a pending airdrop, ensuring full control over which tokens they want to accept.
-- [**TokenRejectTransaction**](/hedera/sdks-and-apis/sdks/token-service/reject-an-airdrop): If a user **receives** unwanted tokens, they can use this transaction to transfer them back to the token’s treasury without incurring any custom fees or royalties.
-- [**TokenCancelAirdropTransaction**](/hedera/sdks-and-apis/sdks/token-service/cancel-a-token): This transaction allows the **sender** to cancel a pending airdrop if the recipient hasn’t claimed it yet. It gives the sender flexibility to manage unclaimed token transfers.
+- [**TokenAirdropTransaction**](/native/tokens/airdrop): This transaction allows you to distribute tokens to multiple recipients in a single transaction, even if the receiving accounts haven’t pre-associated with the token. It also supports pending transfers when accounts don’t have the necessary token associations.
+- [**TokenClaimAirdropTransaction**](/native/tokens/claim): When a **recipient** doesn’t have available token associations, this transaction allows them to claim their tokens from a pending airdrop, ensuring full control over which tokens they want to accept.
+- [**TokenRejectTransaction**](/native/tokens/reject-airdrop): If a user **receives** unwanted tokens, they can use this transaction to transfer them back to the token’s treasury without incurring any custom fees or royalties.
+- [**TokenCancelAirdropTransaction**](/native/tokens/cancel): This transaction allows the **sender** to cancel a pending airdrop if the recipient hasn’t claimed it yet. It gives the sender flexibility to manage unclaimed token transfers.
 
 Now that we have a basic understanding of the transaction types, let’s move on to the step-by-step implementation of a Frictionless Airdrop on Hedera. The full code solution is provided at the end of the tutorial if you want to see it.
 
@@ -21,8 +21,8 @@ Now that we have a basic understanding of the transaction types, let’s move on
 
 We recommend you complete the following introduction to get a basic understanding of Hedera transactions. This example does not build upon the previous examples.
 
-- Get a [Hedera testnet account](/hedera/tutorials/more-tutorials/create-and-fund-your-hedera-testnet-account).
-- Set up your environment [here](/hedera/getting-started-hedera-native-developers).
+- Get a [Hedera testnet account](/native/tutorials/getting-started/create-fund-account).
+- Set up your environment [here](/native).
 - `.env` file with this additional variable added:
   ```highlight={1}
   HEDERA_NETWORK=testnet
@@ -689,7 +689,7 @@ And that's it. The next section examines the fees for each of the parties involv
 
 ### Concluding Notes on Transaction Costs
 
-When working with Frictionless Airdrops on Hedera, it’s important to consider the [transaction costs ](/hedera/networks/mainnet/fees#token-service)associated with each step. Here are some key points to keep in mind:
+When working with Frictionless Airdrops on Hedera, it’s important to consider the [transaction costs ](/learn/networks/mainnet/fees#token-service)associated with each step. Here are some key points to keep in mind:
 
 1. **TokenAirdropTransaction Costs**: The sender pays all fees for distributing tokens, including fees for token association and the first auto-renewal period for newly created associations. This makes it easier and less costly for recipients, as they don’t need to pre-associate tokens or cover those fees themselves.
 2. **TokenClaimAirdropTransaction Costs**: When a recipient claims tokens from a pending airdrop, they only need to cover the transaction cost for claiming. The sender still covers token association costs, ensuring the user experience remains frictionless.
@@ -1292,5 +1292,5 @@ func createAccount(client *hedera.Client, newAccountPrivateKey hedera.PrivateKey
 
 ## Additional Resources
 
-- [**Airdrop List Verifier (NFT Studio)**](/hedera/open-source-solutions/nft-studio/airdrop-list-verifier)
-- [**Token Holders List Builder (NFT Studio)**](/hedera/open-source-solutions/nft-studio/nft-token-holders-list-builder)
+- [**Airdrop List Verifier (NFT Studio)**](/solutions/tokenization/nft-studio/airdrop-verifier)
+- [**Token Holders List Builder (NFT Studio)**](/solutions/tokenization/nft-studio/token-holders-list)

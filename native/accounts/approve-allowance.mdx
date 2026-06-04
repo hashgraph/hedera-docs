@@ -21,7 +21,7 @@ Only when a spender is set on an explicit NFT ID of a token, do we return the sp
 
 **Transaction Fees**
 
-* Please see the transaction and query [fees](/hedera/networks/mainnet/fees#transaction-and-query-fees) table for the base transaction fee
+* Please see the transaction and query [fees](/learn/networks/mainnet/fees#transaction-and-query-fees) table for the base transaction fee
 * Please use the [Hedera fee estimator](https://hedera.com/fees) to estimate your transaction fee cost
 
 **Transaction Signing Requirements**
@@ -55,11 +55,11 @@ Only when a spender is set on an explicit NFT ID of a token, do we return the sp
 | `getHbarApprovals()` | List&lt;HbarAllowance&gt; | Returns the HBAR allowances |
 | `getTokenApprovals()` | List&lt;TokenAllowance&gt; | Returns the fungible token allowances |
 | `getTokenNftApprovals()` | List&lt;TokenNftAllowance&gt; | Returns the NFT allowances |
-| `getHighVolume()` | boolean | Returns whether this transaction uses [high-volume throttles](/hedera/core-concepts/high-volume-entity-creation) |
+| `getHighVolume()` | boolean | Returns whether this transaction uses [high-volume throttles](/learn/core-concepts/high-volume-entity-creation) |
 
 
 <Note>
-    This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation)
+    This transaction supports [high-volume entity creation](/learn/core-concepts/high-volume-entity-creation)
     (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated
     high-volume throttle capacity with variable-rate pricing. Always pair this with
     `setMaxTransactionFee()` to cap your costs.

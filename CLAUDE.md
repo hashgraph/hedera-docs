@@ -95,6 +95,7 @@ Standard documentation edits — add/edit `.mdx` files under `hedera/`, update `
 - Mintlify components like `<Card>`, `<CardGroup>`, `<Info>`, `<Tabs>` are available in MDX files
 - Snippet imports use absolute paths: `import Foo from '/snippets/foo.mdx'`
 - Never duplicate imports in the same file (causes acorn parse errors)
+- In-body links in the new structure (`learn/`, `evm/`, etc.) point to direct new-structure paths (e.g. `/native/tokens/define`), never to legacy `/hedera/...` paths. The legacy links were repointed in bulk; do not reintroduce `/hedera/...` links — they rely on docs.json redirects (kept for external inbound traffic) and either 301-hop or 404. New links should also avoid fragile `../` relative paths to other tabs; prefer absolute new-structure paths.
 
 ## What NOT to Do
 

@@ -3,9 +3,9 @@ title: "Deploy Smart Contracts on Hedera Using Truffle"
 sidebarTitle: "Truffle"
 ---
 
-The [Hedera JSON RPC Relay](/hedera/core-concepts/smart-contracts/json-rpc-relay) enables developers to use their favorite EVM-compatible tools such as Truffle, Hardhat, Web3JS, EthersJS, to deploy and interact with smart contracts on the Hedera network. As highlighted in a [previous article](https://hedera.com/blog/anything-you-can-do-you-can-do-on-hedera-introducing-the-json-rpc-relay), the relay provides applications and tools seamless access to Hedera while masking implementation complexities and preventing reductions in performance, security, and scalability.
+The [Hedera JSON RPC Relay](/evm/development/json-rpc) enables developers to use their favorite EVM-compatible tools such as Truffle, Hardhat, Web3JS, EthersJS, to deploy and interact with smart contracts on the Hedera network. As highlighted in a [previous article](https://hedera.com/blog/anything-you-can-do-you-can-do-on-hedera-introducing-the-json-rpc-relay), the relay provides applications and tools seamless access to Hedera while masking implementation complexities and preventing reductions in performance, security, and scalability.
 
-This tutorial shows you how to deploy smart contracts on Hedera using Truffle and the [JSON RPC Relay](/hedera/core-concepts/smart-contracts/json-rpc-relay) with the following steps:
+This tutorial shows you how to deploy smart contracts on Hedera using Truffle and the [JSON RPC Relay](/evm/development/json-rpc) with the following steps:
 
 1. Create an account that has ECDSA keys using the Javascript SDK
 2. Compile a contract using Truffle
@@ -41,7 +41,7 @@ You can find more examples using Truffle, Web3JS, and Hardhat in [this GitHub re
 
 Hedera supports two popular types of signature algorithms, ED25519 and ECDSA. Both are used in many blockchain platforms, including Bitcoin and Ethereum. **Currently, the JSON RPC Relay only supports Hedera accounts with an alias set (i.e. public address) based on its ECDSA public key.** To deploy a smart contract using Truffle, we first have to create a new account that meets these criteria. The **_main()_** function in **_create-account.js_** helps us do just that.
 
-In case you’re interested in more details about auto account creation and alias, check out the [documentation](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-an-account#create-an-account-via-an-account-alias#create-an-account-via-an-account-alias) and [HIP-32](https://hips.hedera.com/hip/hip-32).
+In case you’re interested in more details about auto account creation and alias, check out the [documentation](/native/accounts/create#create-an-account-via-an-account-alias#create-an-account-via-an-account-alias) and [HIP-32](https://hips.hedera.com/hip/hip-32).
 
 ```javascript
 async function main() {
@@ -86,7 +86,7 @@ async function main() {
 }
 ```
 
-Executing this code generates a new ECDSA key pair, displays the information about the keys in Hedera and EVM formats, and transfers HBAR to the account alias (**_newAliasAccountId_**) to auto-create a Hedera account that meets the criteria mentioned before. Information about the new account is obtained in two ways, a [transaction record query](/hedera/sdks-and-apis/sdks/transactions/get-a-transaction-record) and a [mirror node query](https://hedera.com/blog/how-to-look-up-transaction-history-on-hedera-using-mirror-nodes-back-to-the-basics).
+Executing this code generates a new ECDSA key pair, displays the information about the keys in Hedera and EVM formats, and transfers HBAR to the account alias (**_newAliasAccountId_**) to auto-create a Hedera account that meets the criteria mentioned before. Information about the new account is obtained in two ways, a [transaction record query](/native/transactions/record) and a [mirror node query](https://hedera.com/blog/how-to-look-up-transaction-history-on-hedera-using-mirror-nodes-back-to-the-basics).
 
 **_Console Output:_**
 
@@ -200,7 +200,7 @@ truffle migrate
   <img src="/images/tutorials/smart-contracts/deploy-smart-contracts-on-hedera-using-truffle/deploy-smart-contracts-on-hedera-using-truffle-3.png" />
 </Frame>
 
-You can obtain more information about the newly deployed contract using the [mirror node REST API](/hedera/sdks-and-apis/rest-api). Additional context for that API is provided in [this blog post](https://hedera.com/blog/how-to-look-up-transaction-history-on-hedera-using-mirror-nodes-back-to-the-basics). Based on the console output of the example above, here are two mirror node queries that provide more information about the new contract and account based on their respective Solidity addresses:
+You can obtain more information about the newly deployed contract using the [mirror node REST API](/reference/rest-api). Additional context for that API is provided in [this blog post](https://hedera.com/blog/how-to-look-up-transaction-history-on-hedera-using-mirror-nodes-back-to-the-basics). Based on the console output of the example above, here are two mirror node queries that provide more information about the new contract and account based on their respective Solidity addresses:
 
 <Accordion title="Mirror node queries">
 https://testnet.mirrornode.hedera.com/api/v1/contracts/0x0000000000000000000000000000000002Da4d4b
@@ -209,7 +209,7 @@ https://testnet.mirrornode.hedera.com/api/v1/accounts/0x000000000000000000000000
 
 </Accordion>
 
-Now you know how to deploy smart contracts on Hedera using Truffle and the JSON RPC Relay. The first part of this example used the Hedera [JavaScript SDK](/hedera/sdks-and-apis/sdks#hedera-services-code-sdks). However, you can try this with the other officially supported SDKs for Java and Go.
+Now you know how to deploy smart contracts on Hedera using Truffle and the JSON RPC Relay. The first part of this example used the Hedera [JavaScript SDK](/native/fundamentals#hedera-services-code-sdks). However, you can try this with the other officially supported SDKs for Java and Go.
 
 ---
 

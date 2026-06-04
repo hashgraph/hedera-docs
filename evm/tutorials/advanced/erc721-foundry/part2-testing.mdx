@@ -9,7 +9,7 @@ In this tutorial, you’ll learn how to write Solidity unit tests with Foundry f
 - Testing ERC‑721 burn behavior (owner/approved)
 - Common gotchas with OpenZeppelin v5 custom errors
 
-This guide stands on its own, but continues from [Part 1](/hedera/tutorials/smart-contracts/foundry/how-to-mint-and-burn-an-erc-721-token-using-foundry-part-1) where we created the ERC‑721 contract and deploy/mint/burn scripts. Here, we focus exclusively on defining and writing tests.
+This guide stands on its own, but continues from [Part 1](/evm/tutorials/advanced/erc721-foundry/part1-mint-burn) where we created the ERC‑721 contract and deploy/mint/burn scripts. Here, we focus exclusively on defining and writing tests.
 
 Note: Foundry tests run locally on an in‑memory EVM; they do not use Hedera RPC. That makes them fast and deterministic. You’ll still deploy to Hedera when you run your scripts from Part 1.
 
@@ -22,7 +22,7 @@ Note: Foundry tests run locally on an in‑memory EVM; they do not use Hedera RP
 
 ## Prerequisites
 
-- ⚠️ **Complete** [**tutorial part 1**](/hedera/tutorials/smart-contracts/foundry/how-to-mint-and-burn-an-erc-721-token-using-foundry-part-1) **as we continue from this example.**
+- ⚠️ **Complete** [**tutorial part 1**](/evm/tutorials/advanced/erc721-foundry/part1-mint-burn) **as we continue from this example.**
 - Foundry installed:
   - `curl -L https://foundry.paradigm.xyz | bash`
   - `foundryup`

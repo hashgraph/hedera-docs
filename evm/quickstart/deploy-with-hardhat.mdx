@@ -4,7 +4,7 @@ title: "Deploy and Verify a Smart Contract with Hardhat"
 
 ## Deploying a Contract Using Hardhat Scripts
 
-This tutorial will walk you through writing and compiling an ERC-721 Solidity smart contract. You'll then deploy and interact with it on the Hedera network using the [Hedera Smart Contract Service (HSCS)](/hedera/support-and-community/glossary#hedera-smart-contract-service-hscs) and familiar EVM tools like Ethers.js, connecting via the [JSON-RPC relay](/hedera/core-concepts/smart-contracts/json-rpc-relay).
+This tutorial will walk you through writing and compiling an ERC-721 Solidity smart contract. You'll then deploy and interact with it on the Hedera network using the [Hedera Smart Contract Service (HSCS)](/support/glossary#hedera-smart-contract-service-hscs) and familiar EVM tools like Ethers.js, connecting via the [JSON-RPC relay](/evm/development/json-rpc).
 
 #### What you will accomplish
 
@@ -23,7 +23,7 @@ By the end of this tutorial, you will be able to:
 
 Before you begin, you should have **completed** the following tutorial:
 
-- [Create and Fund a Testnet Account via the Hedera Faucet](/hedera/getting-started-evm-developers/hedera-testnet-faucet)
+- [Create and Fund a Testnet Account via the Hedera Faucet](/evm/quickstart/get-test-hbar)
 
 ---
 
@@ -199,7 +199,7 @@ Let's compile this contract by running:
 npx hardhat build
 ```
 
-This command will generate the smart contract artifacts, including the [ABI](/hedera/core-concepts/smart-contracts/compiling-smart-contracts). We are now ready to deploy the smart contract.
+This command will generate the smart contract artifacts, including the [ABI](/evm/development/compiling). We are now ready to deploy the smart contract.
 
 ---
 
@@ -448,7 +448,7 @@ The plugin uploads the source code and metadata to Sourcify and you should recei
 
 ## Next Steps
 
-- Learn how to add [Access Control, Pause, and Transfer ERC-721 ](/hedera/tutorials/smart-contracts/how-to-set-access-control-a-token-uri-pause-and-transfer-an-erc-721-token-using-hardhat-part-2)tokens
+- Learn how to add [Access Control, Pause, and Transfer ERC-721 ](/evm/tutorials/advanced/erc721-hardhat/part2-access-control)tokens
 - Check out [OpenZeppelin ERC-721 Documentation](https://docs.openzeppelin.com/contracts/5.x/erc721)
 - See the full code in the [Hedera-Code-Snippets Repository](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hardhat-erc-721-mint-burn)
 

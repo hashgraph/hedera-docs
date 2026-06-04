@@ -9,8 +9,8 @@ Modify the metadata and/or contents of a file. If a field is not set in the tran
 
 | Field            | Type                                                                                         | Description                                                        |
 | ---------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `fileID`         | [FileID](/hedera/sdks-and-apis/hedera-api/basic-types/fileid)         | The ID of the file to update                                       |
-| `expirationTime` | [Timestamp](/hedera/sdks-and-apis/hedera-api/miscellaneous/timestamp) | The new expiry time (ignored if not later than the current expiry) |
-| `keys`           | [KeyList](/hedera/sdks-and-apis/hedera-api/basic-types/keylist)       | The new list of keys that can modify or delete the file            |
+| `fileID`         | [FileID](/reference/protobuf/basic-types/fileid)         | The ID of the file to update                                       |
+| `expirationTime` | [Timestamp](/reference/protobuf/miscellaneous/timestamp) | The new expiry time (ignored if not later than the current expiry) |
+| `keys`           | [KeyList](/reference/protobuf/basic-types/keylist)       | The new list of keys that can modify or delete the file            |
 | `contents`       | bytes                                                                                        | The new contents that should overwrite the file's current contents |
 | `memo`           | string                                                                                       | The memo associated with the file (UTF-8 encoding max 100 bytes)   |

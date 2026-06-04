@@ -42,7 +42,7 @@ See [packages/core/src/shared/tools.ts](https://github.com/hashgraph/hedera-agen
   **This is NOT a breaking change.** `BaseTool` is an abstract class that *implements* the `Tool` interface — plain object tools continue to work exactly as before. However, they do not support the hooks and policies system introduced in v4 (e.g., `HcsAuditTrailHook`, `MaxRecipientsPolicy`, `RejectToolPolicy`). To enable those features, migrate your tool to `BaseTool`.
 </Note>
 
-Extending `BaseTool` splits execution into a 7-stage lifecycle that hooks and policies tap into automatically — you never call them manually. For a detailed step-by-step guide on refactoring your tools, see the [Migration Guide](/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/migration-guide#migrating-custom-tools-to-basetool-recommended-non-breaking).
+Extending `BaseTool` splits execution into a 7-stage lifecycle that hooks and policies tap into automatically — you never call them manually. For a detailed step-by-step guide on refactoring your tools, see the [Migration Guide](/solutions/ai/agent-kit/js/migration-guide#migrating-custom-tools-to-basetool-recommended-non-breaking).
 
 <CodeGroup>
 

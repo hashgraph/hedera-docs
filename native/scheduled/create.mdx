@@ -14,7 +14,7 @@ TransferTransaction transactionToSchedule = new TransferTransaction()
 ```
 
 <Info>
-     Refer to this [page](/hedera/core-concepts/scheduled-transaction#overview) to view the types of transactions that can be scheduled.
+     Refer to this [page](/learn/core-concepts/transactions/scheduled#overview) to view the types of transactions that can be scheduled.
 </Info>
 
 ### **Schedule Transaction Duplicate**
@@ -62,7 +62,7 @@ To retain the ability to delete a schedule transaction, you will need to set the
 | `getHighVolume()` | boolean | Optional |
 
 <Note>
-    This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation)
+    This transaction supports [high-volume entity creation](/learn/core-concepts/high-volume-entity-creation)
     (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated
     high-volume throttle capacity with variable-rate pricing. Always pair this with
     `setMaxTransactionFee()` to cap your costs.

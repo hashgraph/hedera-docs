@@ -2,7 +2,7 @@
 title: "HTS x EVM - How to Pause, Freeze, Wipe, and Delete NFTs (Part 3)"
 ---
 
-In [HTS x EVM - Part 2](/hedera/tutorials/smart-contracts/hts-x-evm-part-2-kyc-and-update), you learned how to grant / revoke KYC and manage a token using the [Hedera Token Service (HTS) System Smart Contract](/hedera/core-concepts/smart-contracts/system-smart-contracts#hedera-token-service). But those aren't all the token operations you can do!
+In [HTS x EVM - Part 2](/evm/tutorials/hedera/hts-evm/part2-kyc-update), you learned how to grant / revoke KYC and manage a token using the [Hedera Token Service (HTS) System Smart Contract](/evm/hedera-services/system-contracts#hedera-token-service). But those aren't all the token operations you can do!
 
 In this guide, you will learn how to:
 
@@ -40,7 +40,7 @@ In this guide, you will learn how to:
 
 ## Step 1. Creating, minting, and burning an NFT
 
-These steps of the flow have been covered in the [Part 1](/hedera/tutorials/smart-contracts/hts-x-evm-part-1-how-to-mint-nfts#id-2.-minting-an-nft) and [Part 2](/hedera/tutorials/smart-contracts/hts-x-evm-part-2-kyc-and-update). The only difference here is that we set a few different keys to handle pausing, freezing, and wiping.
+These steps of the flow have been covered in the [Part 1](/evm/tutorials/hedera/hts-evm/part1-mint-nfts#id-2.-minting-an-nft) and [Part 2](/evm/tutorials/hedera/hts-evm/part2-kyc-update). The only difference here is that we set a few different keys to handle pausing, freezing, and wiping.
 
 The previous tutorials covered creating NFT collection. Everything remains largely the same except for the following changes:
 
@@ -241,7 +241,7 @@ Let's update our contract by:
 
 - Adding a new function `wipeTokenFromAccount` to wipe the NFT from an account. This effectively burns that token (i.e., reduces the total supply) from a non-treasury account.
 
-  For [**fungible tokens**](/hedera/support-and-community/glossary#fungible-token), specify an amount to wipe; for [**non-fungible tokens (NFTs)**](/hedera/support-and-community/glossary#non-fungible-token-nft), we specify the serial numbers to be wiped.
+  For [**fungible tokens**](/support/glossary#fungible-token), specify an amount to wipe; for [**non-fungible tokens (NFTs)**](/support/glossary#non-fungible-token-nft), we specify the serial numbers to be wiped.
 
 - We will also define a new event `TokenWiped`.
 
@@ -667,7 +667,7 @@ In this script, we first retrieve your account (the deployer) using Ethers.js. T
 <Info>
 **Note**
 
-For most HTS [System Smart Contract](/hedera/core-concepts/smart-contracts/system-smart-contracts) calls, an HBAR value **is not** required to be sent in the contract call; the gas fee will cover it. However, for expensive transactions, like [Create HTS NFT Collection](#step-3%3A-deploy-your-hts-nft-smart-contract), the gas fee is reduced, and the transaction cost is covered by the payable amount. This is to reduce the gas consumed by the contract call.
+For most HTS [System Smart Contract](/evm/hedera-services/system-contracts) calls, an HBAR value **is not** required to be sent in the contract call; the gas fee will cover it. However, for expensive transactions, like [Create HTS NFT Collection](#step-3%3A-deploy-your-hts-nft-smart-contract), the gas fee is reduced, and the transaction cost is covered by the payable amount. This is to reduce the gas consumed by the contract call.
 
 </Info>
 

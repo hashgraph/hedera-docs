@@ -7,7 +7,7 @@ Each query from the client to the node will contain the QueryHeader, which gives
 
 | Field          | Type                                                                                             | Description                                                                      |
 | -------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
-| `payment`      | [Transaction](/hedera/sdks-and-apis/hedera-api/miscellaneous/transaction) | A signed CryptoTransferTransaction to pay the node a fee for handling this query |
+| `payment`      | [Transaction](/reference/protobuf/miscellaneous/transaction) | A signed CryptoTransferTransaction to pay the node a fee for handling this query |
 | `responseType` | [ResponseType](#responsetype)                                                                    | The requested response, asking for cost, state proof, both, or neither           |
 
 ## ResponseType

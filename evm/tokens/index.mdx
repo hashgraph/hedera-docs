@@ -2,11 +2,11 @@
 title: Tokens Managed by Smart Contracts
 sidebarTitle: ERC Tokens
 ---
-A [smart contract](/hedera/support-and-community/glossary#smart-contract) is a programmable, self-executing agreement designed to create, manage, or enforce the conditions of digital assets, also known as tokens. Tokens managed by smart contracts serve as digital representations of various asset types, such as artwork, cryptocurrency, and carbon credits on the blockchain. These tokens allow assets to be securely transferred between users or contracts and interact with others, adding functionality and interoperability within the blockchain ecosystem.
+A [smart contract](/support/glossary#smart-contract) is a programmable, self-executing agreement designed to create, manage, or enforce the conditions of digital assets, also known as tokens. Tokens managed by smart contracts serve as digital representations of various asset types, such as artwork, cryptocurrency, and carbon credits on the blockchain. These tokens allow assets to be securely transferred between users or contracts and interact with others, adding functionality and interoperability within the blockchain ecosystem.
 
-The [ERC-20](/hedera/support-and-community/glossary#erc-20) and [ERC-721](/hedera/support-and-community/glossary#erc-721) standards provide common interfaces for token contracts to standardize how tokens function across platforms. These interfaces enable tokens to be easily recognized by wallets, exchanges, and decentralized applications (dApps) in the Ethereum ecosystem. By conforming to these standards, tokens gain a predictable structure, simplifying integration for developers and ensuring users experience consistent functionality across compatible smart contract platforms.
+The [ERC-20](/support/glossary#erc-20) and [ERC-721](/support/glossary#erc-721) standards provide common interfaces for token contracts to standardize how tokens function across platforms. These interfaces enable tokens to be easily recognized by wallets, exchanges, and decentralized applications (dApps) in the Ethereum ecosystem. By conforming to these standards, tokens gain a predictable structure, simplifying integration for developers and ensuring users experience consistent functionality across compatible smart contract platforms.
 
-"ERC" stands for [Ethereum Request for Comments](/hedera/support-and-community/glossary#ethereum-request-for-comments-erc), a protocol developers can follow to propose improvements or introduce new guidelines to the Ethereum blockchain. Hiero Contracts are compatible with several ERC standards, allowing developers to implement these standardized interfaces. This compatibility simplifies the token integration and provides a consistent user experience with token contracts across different platforms.
+"ERC" stands for [Ethereum Request for Comments](/support/glossary#ethereum-request-for-comments-erc), a protocol developers can follow to propose improvements or introduce new guidelines to the Ethereum blockchain. Hiero Contracts are compatible with several ERC standards, allowing developers to implement these standardized interfaces. This compatibility simplifies the token integration and provides a consistent user experience with token contracts across different platforms.
 
 <Info>
 With [HIP-218](https://hips.hedera.com/hip/hip-218) and [HIP-376](https://hips.hedera.com/hip/hip-376), Hedera provides the ability to treat native HTS tokens as if they were ERC-20 (if fungible)  or ERC-721 (if non-fungible) contracts. This ensures that developers have predictable functionality and minimal to not changes when bring their smart contracts to Hedera.
@@ -16,13 +16,13 @@ With [HIP-218](https://hips.hedera.com/hip/hip-218) and [HIP-376](https://hips.h
 
 Explore some of the token standards supported and compatible with Hedera:
 
-**➡** [**ERC-20 (Fungible Tokens)**](/hedera/core-concepts/smart-contracts/tokens-managed-by-smart-contracts/erc-20-fungible-tokens)
+**➡** [**ERC-20 (Fungible Tokens)**](/evm/tokens/erc20)
 
-**➡** [**ERC-721 Non-Fungible Tokens (NFTs)**](/hedera/core-concepts/smart-contracts/tokens-managed-by-smart-contracts/erc-721-non-fungible-tokens-nfts)
+**➡** [**ERC-721 Non-Fungible Tokens (NFTs)**](/evm/tokens/erc721)
 
-**➡** [**ERC-3643 Real World Assets (RWAs)** ](/hedera/core-concepts/smart-contracts/tokens-managed-by-smart-contracts/erc-3643-real-world-assets-rwa)
+**➡** [**ERC-3643 Real World Assets (RWAs)** ](/evm/tokens/erc3643)
 
-**➡** [**ERC-1363 Payable Tokens** ](/hedera/core-concepts/smart-contracts/tokens-managed-by-smart-contracts/erc-1363-payable-tokens)
+**➡** [**ERC-1363 Payable Tokens** ](/evm/tokens/erc1363)
 
 ***
 
@@ -43,7 +43,7 @@ You can associate a smart contract with a token in the following ways:
 
 ## Synthetic Events
 
-Smart contract tokens like ERC-20 and ERC-721 emit events, creating contract logs that developers can query or subscribe to. Hedera Token Service (HTS) tokens are not inherently equipped with such event logs. As a solution to this limitation, Hedera Mirror Nodes now generates synthetic event logs for HTS tokens. Learn more [here](/hedera/core-concepts/mirror-nodes#synthetic-smart-contract-contract-logs).
+Smart contract tokens like ERC-20 and ERC-721 emit events, creating contract logs that developers can query or subscribe to. Hedera Token Service (HTS) tokens are not inherently equipped with such event logs. As a solution to this limitation, Hedera Mirror Nodes now generates synthetic event logs for HTS tokens. Learn more [here](/learn/core-concepts/mirror-nodes#synthetic-smart-contract-contract-logs).
 
 ***
 

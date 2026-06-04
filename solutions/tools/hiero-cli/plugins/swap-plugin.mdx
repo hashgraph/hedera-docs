@@ -41,7 +41,7 @@ On **`swap execute`**, every distinct **source account** (`--from`, operator by 
 
 ### State storage
 
-Draft swaps persist under your CLI state directory (see [Overview](/hedera/open-source-solutions/hiero-cli/overview#configuration-and-state)), typically **`~/.hiero-cli/state/swap-storage.json`**, **per network**.
+Draft swaps persist under your CLI state directory (see [Overview](/solutions/tools/hiero-cli/overview#configuration-and-state)), typically **`~/.hiero-cli/state/swap-storage.json`**, **per network**.
 
 ## Full command reference
 
@@ -214,5 +214,5 @@ Draft swaps persist under your CLI state directory (see [Overview](/hedera/open-
 
 ## Related
 
-- Hedera semantics for moving value between several accounts in one transaction match the topic covered under **[Atomic swaps](/hedera/sdks-and-apis/sdks/token-service/atomic-swaps)** in the SDK documentation.
-- The **[Batch plugin](/hedera/open-source-solutions/hiero-cli/plugins/batch-plugin)** queues **distinct** inner transactions for **HIP-551** atomic batch submission. **`swap`** assembles **one** `CryptoTransfer`. Use whichever matches your operational model.
+- Hedera semantics for moving value between several accounts in one transaction match the topic covered under **[Atomic swaps](/native/tokens/atomic-swaps)** in the SDK documentation.
+- The **[Batch plugin](/solutions/tools/hiero-cli/plugins/batch-plugin)** queues **distinct** inner transactions for **HIP-551** atomic batch submission. **`swap`** assembles **one** `CryptoTransfer`. Use whichever matches your operational model.

@@ -22,7 +22,7 @@ HashioDAO is a decentralized platform that offers a user-friendly interface for 
 The platform offers three flexible governance models, so communities can choose the structure that fits their needs:
 
 * **Governance Token**: This model gives decision-making powers to token holders, making it perfect for DAOs that have large communities. It may be more vulnerable to governance attacks if tokens are owned by a small group.
-* **NFT**: This model gives decision-making powers to the holders of a specific NFT and allows more features than a regular token model like [soulbound tokens](/hedera/support-and-community/glossary#soul-bound-token-sbt) or limiting the number of NFTs an account can own.
+* **NFT**: This model gives decision-making powers to the holders of a specific NFT and allows more features than a regular token model like [soulbound tokens](/support/glossary#soul-bound-token-sbt) or limiting the number of NFTs an account can own.
 * **Multisig**: This model requires two or more members to authorize and sign transactions. This structure helps reduce the risk of governance attacks by sharing authority among select members, making it more of a centralized governance model.
 
 The platform offers multiple proposal templates to get members involved in shaping the DAO's future and making decisions:
@@ -44,7 +44,7 @@ HashioDAO provides a comprehensive architecture that utilize a system of smart c
 
 1. **Factory Contracts**: The platform uses factory smart contracts ([FTDaoFactory](https://github.com/hashgraph/hedera-accelerator-defi-dex/blob/main/contracts/dao/FTDAOFactory.sol), [NFTDaoFactory](https://github.com/hashgraph/hedera-accelerator-defi-dex/blob/main/contracts/dao/NFTDAOFactory.sol), or [MultisigDaoFactory](https://github.com/hashgraph/hedera-accelerator-defi-dex/blob/main/contracts/dao/MultisigDAOFactory.sol)). A Factory smart contract is a design pattern used in decentralized applications (dApps) to allow efficient deployment of multiple smart contracts with similar functionalities. These factory contracts have been [audited by CertiK](https://skynet.certik.com/projects/swirlds-labs-dao-as-a-service).
 2. **Treasury Contract:** When you call the `createDAO()` function, the factory contract creates the new DAO treasury smart contract based on the parameters you set for your token. This treasury contract holds and manages your DAO's funds, including the governance tokens and any other tokens you associate with it. It also ensures all predefined rules set by the governance model are enforced, like quorum requirements and executing proposals.
-3. **Governor Contract:** Along with the treasury contract, the factory contract also creates a separate Governor contract for each DAO. This Governor contract handles everything related to proposals, like creating, voting, and executing them. When a proposal is created, the Governor contract stores all the details, like the description and voting options, on [InterPlanetary File System (IPFS)](/hedera/support-and-community/glossary#interplanetary-file-system-ipfs) to keep things decentralized and secure.
+3. **Governor Contract:** Along with the treasury contract, the factory contract also creates a separate Governor contract for each DAO. This Governor contract handles everything related to proposals, like creating, voting, and executing them. When a proposal is created, the Governor contract stores all the details, like the description and voting options, on [InterPlanetary File System (IPFS)](/support/glossary#interplanetary-file-system-ipfs) to keep things decentralized and secure.
 
 So, once voting on a proposal ends, the Governor contract validates the results. If the proposal passes, the Governor contract tells the Treasury contract to execute the proposed actions, like transferring funds or associating new tokens. By using the factory pattern and IPFS, HashioDAO makes creating and managing DAOs efficient and decentralized.
 
@@ -54,8 +54,8 @@ So, once voting on a proposal ends, the Governor contract validates the results.
 
 To get started with using HashioDAO, complete these prerequisites:
 
-* [Create](/hedera/tutorials/more-tutorials/create-and-fund-your-hedera-testnet-account#hedera-developer-portal-profile) a Hedera account.
-* [Fund](/hedera/tutorials/more-tutorials/create-and-fund-your-hedera-testnet-account#hedera-faucet) the Hedera account.
+* [Create](/native/tutorials/getting-started/create-fund-account#hedera-developer-portal-profile) a Hedera account.
+* [Fund](/native/tutorials/getting-started/create-fund-account#hedera-faucet) the Hedera account.
 * [Download](https://www.hashpack.app/download) the HashPack wallet extension.
 
 <Info>
@@ -67,28 +67,28 @@ Once you have completed the above, choose the governance model and follow the st
 <Columns cols={2}>
   <Card
     title="Governance Token DAO"
-    href="/hedera/open-source-solutions/hashiodao/governance-token-dao"
+    href="/solutions/governance/hashiodao/governance-token-dao"
     arrow
   >
     
   </Card>
   <Card
     title="NFT DAO"
-    href="/hedera/open-source-solutions/hashiodao/nft-dao"
+    href="/solutions/governance/hashiodao/nft-dao"
     arrow
   >
     
   </Card>
   <Card
     title="Multisig DAO"
-    href="/hedera/open-source-solutions/hashiodao/multisig-dao"
+    href="/solutions/governance/hashiodao/multisig-dao"
     arrow
   >
     
   </Card>
   <Card
     title="DAO Proposals"
-    href="/hedera/open-source-solutions/hashiodao/dao-proposals"
+    href="/solutions/governance/hashiodao/dao-proposals"
     arrow
   >
     

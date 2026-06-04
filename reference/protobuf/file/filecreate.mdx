@@ -13,10 +13,10 @@ An entity (account, file, or smart contract instance) must be created in a parti
 
 | Field              | Type                                                                                           | Description                                                                                                     |
 | ------------------ | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `expirationTime`   | ​[Timestamp](/hedera/sdks-and-apis/hedera-api/miscellaneous/timestamp)​ | The time at which this file should expire (unless FileUpdateTransaction is used before then to extend its life) |
-| `keys`             | ​[KeyList](/hedera/sdks-and-apis/hedera-api/basic-types/key)​           | All these keys must sign to create or modify the file. Any one of them can sign to delete the file.             |
+| `expirationTime`   | ​[Timestamp](/reference/protobuf/miscellaneous/timestamp)​ | The time at which this file should expire (unless FileUpdateTransaction is used before then to extend its life) |
+| `keys`             | ​[KeyList](/reference/protobuf/basic-types/key)​           | All these keys must sign to create or modify the file. Any one of them can sign to delete the file.             |
 | `contents`         | ​Content                                                                                       | The bytes that are the contents of the file                                                                     |
-| `shardID`          | ​[ShardID](/hedera/sdks-and-apis/hedera-api/basic-types/shardid)​       | Shard in which this file is created                                                                             |
-| `realmID`          | ​[RealmID](/hedera/sdks-and-apis/hedera-api/basic-types/realmid)​       | The Realm in which to the file is created (leave this null to create a new realm)                               |
-| `newRealmAdminKey` | ​[Key](/hedera/sdks-and-apis/hedera-api/basic-types/key)​               | If realmID is null, then this the admin key for the new realm that will be created                              |
+| `shardID`          | ​[ShardID](/reference/protobuf/basic-types/shardid)​       | Shard in which this file is created                                                                             |
+| `realmID`          | ​[RealmID](/reference/protobuf/basic-types/realmid)​       | The Realm in which to the file is created (leave this null to create a new realm)                               |
+| `newRealmAdminKey` | ​[Key](/reference/protobuf/basic-types/key)​               | If realmID is null, then this the admin key for the new realm that will be created                              |
 | `memo`             | string                                                                                         | The memo associated with the file (UTF-8 encoding max 100 bytes)                                                |

@@ -15,7 +15,7 @@ Hedera’s account model supports both ED25519 and ECDSA keys by identifying acc
 
 ### **Clarifying Account Number Alias vs. EVM Address Alias**
 
-Hedera accounts can have both a native "Hedera account number alias" (e.g., `0.0.xxxx`) and a derived EVM address alias (a 20-byte address similar to Ethereum). The EVM alias makes the account compatible with `ECRECOVER` and other familiar EVM tools. For more details, see the [Smart Contract Addresses](/hedera/core-concepts/smart-contracts/smart-contract-addresses) page.
+Hedera accounts can have both a native "Hedera account number alias" (e.g., `0.0.xxxx`) and a derived EVM address alias (a 20-byte address similar to Ethereum). The EVM alias makes the account compatible with `ECRECOVER` and other familiar EVM tools. For more details, see the [Smart Contract Addresses](/evm/development/addresses) page.
 
 ### **Working With ECDSA Account Aliases in Testing**
 
@@ -63,8 +63,8 @@ function verifyECDSASignature(bytes32 messageHash, uint8 v, bytes32 r, bytes32 s
 
 Hedera’s native key type is ED25519, which is not compatible with `ECRECOVER`. To accommodate ED25519 (Hedera-native) accounts and more complex configurations, HIP-632 introduces Hedera Account Service system contract functions:
 
-* [**isAuthorized**](/hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-account-service#isauthorized-address-message-signatureblob)**:** Validates multiple signatures, supporting threshold or multi-key accounts.
-* [**isAuthorizedRaw**](/hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-account-service#isauthorizedraw-address-messagehash-signatureblob)**:** Validates a single raw ED25519 signature, analogous to `ECRECOVER` but for ED25519 keys.
+* [**isAuthorized**](/evm/hedera-services/system-contracts/account-service#isauthorized-address-message-signatureblob)**:** Validates multiple signatures, supporting threshold or multi-key accounts.
+* [**isAuthorizedRaw**](/evm/hedera-services/system-contracts/account-service#isauthorizedraw-address-messagehash-signatureblob)**:** Validates a single raw ED25519 signature, analogous to `ECRECOVER` but for ED25519 keys.
 
 **Example: Validating ED25519 Signatures**
 
@@ -91,7 +91,7 @@ function verifyED25519Signature(address accountAlias, bytes32 messageHash, bytes
   Use `isAuthorized` for scenarios requiring multiple signatures, ensuring only properly authorized actions occur.
 
 <Info>
-***Note**:* For detailed parameter formats, consult the [HIP-632](https://hips.hedera.com/hip/hip-632) specification and the Hedera Account Service [documentation](/hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-account-service). Ensure that `accountAlias`, `messageHash`, and `signatureBlob` adhere to the required formats outlined there.
+***Note**:* For detailed parameter formats, consult the [HIP-632](https://hips.hedera.com/hip/hip-632) specification and the Hedera Account Service [documentation](/evm/hedera-services/system-contracts/account-service). Ensure that `accountAlias`, `messageHash`, and `signatureBlob` adhere to the required formats outlined there.
 </Info>
 
 ***
@@ -148,7 +148,7 @@ This simple pattern allows you to change the trusted signer as needed, reflectin
 
 ### Additional References and Resources
 
-* [**Hedera SDKs**](/hedera/sdks-and-apis/sdks)
-* [**Hedera Account Service**](/hedera/core-concepts/smart-contracts/system-smart-contracts/hedera-account-service)
+* [**Hedera SDKs**](/native/fundamentals)
+* [**Hedera Account Service**](/evm/hedera-services/system-contracts/account-service)
 * [**HIP-632 Specification**](https://hips.hedera.com/hip/hip-632)
 * [**Hedera Account Service System Contract**](https://github.com/hiero-ledger/hiero-contracts/tree/main/contracts/account-service)

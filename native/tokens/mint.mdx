@@ -21,7 +21,7 @@ Minting fungible token allows you to increase the total supply of the token. Min
 
 **Transaction Fees**
 
-* Please see the transaction and query [fees](/hedera/networks/mainnet/fees#transaction-and-query-fees) table for the base transaction fee.
+* Please see the transaction and query [fees](/learn/networks/mainnet/fees#transaction-and-query-fees) table for the base transaction fee.
 * Please use the [Hedera fee estimator](https://hedera.com/fees) to estimate your transaction fee cost.
 
 ## Constructor
@@ -47,11 +47,11 @@ Minting fungible token allows you to increase the total supply of the token. Min
 | `getTokenId()` | TokenId | Returns the token ID |
 | `getAmount()` | long | Returns the amount to mint (fungible) |
 | `getMetadata()` | List&lt;byte[]&gt; | Returns the metadata list (NFT) |
-| `getHighVolume()` | boolean | Returns whether this transaction uses [high-volume throttles](/hedera/core-concepts/high-volume-entity-creation) |
+| `getHighVolume()` | boolean | Returns whether this transaction uses [high-volume throttles](/learn/core-concepts/high-volume-entity-creation) |
 
 
 <Note>
-     This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation)
+     This transaction supports [high-volume entity creation](/learn/core-concepts/high-volume-entity-creation)
      (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated
      high-volume throttle capacity with variable-rate pricing for both fungible and NFT mints.
      Always pair this with `setMaxTransactionFee()` to cap your costs.

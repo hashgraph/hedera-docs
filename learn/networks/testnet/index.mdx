@@ -8,7 +8,7 @@ Hedera test networks provide developers access to a free testing environment for
 
 Once your application has been built and tested in this test environment, you can expect to migrate your decentralized application (dApp) to mainnet without any changes.
 
-<table><thead><tr><th>Test Networks</th><th>Description</th></tr></thead><tbody><tr><td><strong>Testnet</strong></td><td>Testnet runs the same code as the Hedera Mainnet, designed to provide a pre-production environment for developers about to move to mainnet. You can find compatible SDKs <a href="/hedera/sdks-and-apis/sdks#hedera-supported-sdks">here</a>.</td></tr><tr><td><strong>Previewnet</strong></td><td><p>Code that is under development by the Hedera team and likely to be used in an upcoming release designed to give developers early exposure to features coming down the pipe. Updates to the network are made frequently. There is no guarantee an SDK will readily support the up-and-coming features.</p><p><strong>Note:</strong> Updates to this network are triggered by a new release and are frequent. These updates will not be reflected on the status page.</p></td></tr></tbody></table>
+<table><thead><tr><th>Test Networks</th><th>Description</th></tr></thead><tbody><tr><td><strong>Testnet</strong></td><td>Testnet runs the same code as the Hedera Mainnet, designed to provide a pre-production environment for developers about to move to mainnet. You can find compatible SDKs <a href="/native/fundamentals#hedera-supported-sdks">here</a>.</td></tr><tr><td><strong>Previewnet</strong></td><td><p>Code that is under development by the Hedera team and likely to be used in an upcoming release designed to give developers early exposure to features coming down the pipe. Updates to the network are made frequently. There is no guarantee an SDK will readily support the up-and-coming features.</p><p><strong>Note:</strong> Updates to this network are triggered by a new release and are frequent. These updates will not be reflected on the status page.</p></td></tr></tbody></table>
 
 <table><thead><tr><th>Network Service</th><th>Availability</th></tr></thead><tbody><tr><td><strong>Cryptocurrency</strong></td><td>Limited</td></tr><tr><td><strong>Consensus Service</strong></td><td>Limited</td></tr><tr><td><strong>File Service</strong></td><td>Limited</td></tr><tr><td><strong>Smart Contract Service</strong></td><td>Limited</td></tr><tr><td><strong>Token Service</strong></td><td>Limited</td></tr></tbody></table>
 
@@ -92,7 +92,7 @@ capacity from them.
 | **Throttle Bucket** | **Transaction Types** | **Capacity** |
 |---|---|---|
 | HighVolumeCryptoThrottles | `CryptoCreate`, `ScheduleCreate` | *Set by governance* |
-| HighVolumeTotalThrottles | All 14 [supported types](/hedera/core-concepts/high-volume-entity-creation#supported-transaction-types) combined | *Set by governance* |
+| HighVolumeTotalThrottles | All 14 [supported types](/learn/core-concepts/high-volume-entity-creation#supported-transaction-types) combined | *Set by governance* |
 
 A high-volume transaction must pass **both** its per-type bucket and the total
 bucket to be accepted. If either is exhausted, the transaction receives a `BUSY`
@@ -100,6 +100,6 @@ response.
 
 <Note>
   High-volume transactions use **variable-rate pricing** that scales with utilization.
-  See the [High-Volume Entity Creation](/hedera/core-concepts/high-volume-entity-creation)
+  See the [High-Volume Entity Creation](/learn/core-concepts/high-volume-entity-creation)
   guide to understand how this affects your transaction fees before opting in.
 </Note>

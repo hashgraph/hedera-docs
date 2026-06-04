@@ -533,11 +533,11 @@ This approach is efficient because instead of sending 100 individual transaction
 
 With the Merkle root hash on the public ledger, anyone can verify the batch integrity. Running `scripts/04-verify-batch.js` confirms this by completing the following steps:
   1.  **Recompute Root**: Loads the local dataset and calculates the Merkle root from your local `data/batch-100.json` exactly as before using `computeRoot`.
-  2.  **Fetch Message**: Queries the [Mirror Node REST API](https://docs.hedera.com/hedera/sdks-and-apis/rest-api) for the latest message on the topic using `getLatestTopicMessage`.
+  2.  **Fetch Message**: Queries the [Mirror Node REST API](/reference/rest-api) for the latest message on the topic using `getLatestTopicMessage`.
   3.  **Compare**: Decode the message and verify that the on-chain root matches the locally computed root.
 
 <Info>
-  Hedera operates a free/public mirror node for testing and development. Production applications should use commercial-grade mirror node services provided by [third-party vendors](https://docs.hedera.com/hedera/sdks-and-apis/rest-api#hedera-mirror-node-environments).
+  Hedera operates a free/public mirror node for testing and development. Production applications should use commercial-grade mirror node services provided by [third-party vendors](/reference/rest-api#hedera-mirror-node-environments).
 </Info>
 
 ```bash
@@ -860,7 +860,7 @@ For this tutorial, our anchor message is ~200 bytes, so no chunking was needed.
 ## Next steps
 - **[Hedera Developer Playground](https://portal.hedera.com/playground)**: Try sending messages and creating topics in the browser.
 - **[GitHub Repo](https://github.com/hedera-dev/tutorial-hcs-batching-hashing-verifying-js)**: Explore the full source code and data generation scripts.
-- **Next Tutorial**: [Query Messages with Mirror Node](https://docs.hedera.com/hedera/tutorials/consensus/query-messages-with-mirror-node) - Learn how to filter and retrieve specific messages like an audit log.
+- **Next Tutorial**: [Query Messages with Mirror Node](/native/tutorials/consensus/query-mirror-node) - Learn how to filter and retrieve specific messages like an audit log.
 
 ---
 

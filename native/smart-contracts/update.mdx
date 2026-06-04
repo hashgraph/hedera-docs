@@ -13,7 +13,7 @@ A transaction that allows you to modify the smart contract entity state like adm
 
 **Transaction Fees**
 
-* Please see the transaction and query [fees](/hedera/networks/mainnet/fees#transaction-and-query-fees) table for the base transaction fee
+* Please see the transaction and query [fees](/learn/networks/mainnet/fees#transaction-and-query-fees) table for the base transaction fee
 * Please use the [Hedera fee estimator](https://hedera.com/fees) to estimate your transaction fee cost
 
 **Smart Contract Properties**
@@ -33,16 +33,16 @@ A transaction that allows you to modify the smart contract entity state like adm
 
 | Method | Type | Requirement |
 | --- | --- | --- |
-| `setContractId(<contractId>)` | [ContractId](/hedera/sdks-and-apis/sdks/specialized-types#contractid) | Required |
+| `setContractId(<contractId>)` | [ContractId](/native/fundamentals/specialized-types#contractid) | Required |
 | `setAdminKey(<keys>)` | Key | Optional |
 | `setContractMemo(<memo>)` | String | Optional |
 | `setExpirationTime(<expirationTime>)` | Instant | Optional |
 | `setMaxAutomaticTokenAssociations()` | int | Optional |
-| `setStakedAccountId(<stakedAccountId>)` | [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid) | Optional |
+| `setStakedAccountId(<stakedAccountId>)` | [AccountId](/native/fundamentals/specialized-types#accountid) | Optional |
 | `setStakedNodeId(<stakedNodeId>)` | long | Optional |
 | `setDeclineStakingReward(<declineStakingReward>)` | boolean | Optional |
 | `setAutoRenewPeriod(<autoRenewPeriod>)` | Duration | Optional |
-| `setAutoRenewAccountId(<accountId>)` | [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid) | Optional |
+| `setAutoRenewAccountId(<accountId>)` | [AccountId](/native/fundamentals/specialized-types#accountid) | Optional |
 | `clearAutoRenewAccountId()` | | Optional |
 
 <Info>
@@ -140,15 +140,15 @@ fmt.Printf("The transaction consensus status %v\n", transactionStatus)
 
 | Method | Type | Requirement |
 | --- | --- | --- |
-| `getContractId()` | [ContractId](/hedera/sdks-and-apis/sdks/specialized-types#contractid) | Required |
+| `getContractId()` | [ContractId](/native/fundamentals/specialized-types#contractid) | Required |
 | `getAdminKey()` | Key | Optional |
-| `getBytecodeFileId()` | [FileId](/hedera/sdks-and-apis/sdks/specialized-types#fileid) | Optional |
-| `getProxyAccountId()` | [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid) | Optional |
+| `getBytecodeFileId()` | [FileId](/native/fundamentals/specialized-types#fileid) | Optional |
+| `getProxyAccountId()` | [AccountId](/native/fundamentals/specialized-types#accountid) | Optional |
 | `getContractMemo()` | String | Optional |
-| `getStakedAccountId()` | [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid) | Optional |
+| `getStakedAccountId()` | [AccountId](/native/fundamentals/specialized-types#accountid) | Optional |
 | `getStakedNodeId()` | long | Optional |
 | `getDeclineStakingReward()` | boolean | Optional |
-| `getAutoRenewAccountId()` | [AccountId](/hedera/sdks-and-apis/sdks/specialized-types#accountid) | Required |
+| `getAutoRenewAccountId()` | [AccountId](/native/fundamentals/specialized-types#accountid) | Required |
 | `getAutoRenewPeriod()` | Duration | Required |
 
 <CodeGroup>

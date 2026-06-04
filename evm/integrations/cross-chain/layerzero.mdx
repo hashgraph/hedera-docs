@@ -5,7 +5,7 @@ title: "LayerZero"
 
 ## What is LayerZero?
 
-LayerZero is an omnichannel interoperability protocol designed to facilitate cross-chain communication. By enabling secure and efficient message passing across chains, LayerZero allows developers to build [decentralized applications (dApps)](/hedera/support-and-community/glossary#decentralized-application-dapp) that operate cohesively over multiple blockchains. This capability enhances the functionality and user experience of dApps by leveraging the unique features of various ecosystems.
+LayerZero is an omnichannel interoperability protocol designed to facilitate cross-chain communication. By enabling secure and efficient message passing across chains, LayerZero allows developers to build [decentralized applications (dApps)](/support/glossary#decentralized-application-dapp) that operate cohesively over multiple blockchains. This capability enhances the functionality and user experience of dApps by leveraging the unique features of various ecosystems.
 
 ***
 
@@ -342,7 +342,7 @@ abstract contract HTSConnector is OFTCore, KeyHelper, HederaTokenService {
 
 ## Developer Considerations to Note EVM Differences
 
-Please note the smallest unit of ***HBAR is the tinybar (8 decimal places)***, while the ***JSON-RPC relay operates 18 decimal places*** for compatibility with EVM tools. This means when dealing with `msg.value`, conversions between tinybars and weibars are necessary. Please take these differences into account, especially when calling `quote`. Reference the [Understanding Hedera's EVM Differences and Compatibility: For EVM Developers](/hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility/for-evm-developers-migrating-to-hedera) section for a more comprehensive list of differences.
+Please note the smallest unit of ***HBAR is the tinybar (8 decimal places)***, while the ***JSON-RPC relay operates 18 decimal places*** for compatibility with EVM tools. This means when dealing with `msg.value`, conversions between tinybars and weibars are necessary. Please take these differences into account, especially when calling `quote`. Reference the [Understanding Hedera's EVM Differences and Compatibility: For EVM Developers](/evm/migration/key-differences-overview) section for a more comprehensive list of differences.
 
 ***
 

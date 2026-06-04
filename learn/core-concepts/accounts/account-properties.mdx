@@ -101,7 +101,7 @@ The account alias public key is the public key of an ECDSA secp256k1 or ED25519 
 
 #### **EVM Address Account Alias**
 
-An EVM address account alias is the rightmost 20 bytes of the 32-byte `Keccak-256` hash of the `ECDSA` public key of the account. This calculation is in the manner described by the [Ethereum Yellow Paper](https://ethereum.github.io/yellowpaper/paper.pdf). Note that the recovery id is not formally part of the public key and is not included in the hash. This is calculated on the consensus nodes using the `ECDSA` key provided in the [auto account creation](/hedera/core-concepts/accounts/auto-account-creation) flow.  The EVM address is also commonly known as the public address. The EVM address account ID format is `<shardNum>.<realmNum>.<alias>` where `alias` is the EVM address.
+An EVM address account alias is the rightmost 20 bytes of the 32-byte `Keccak-256` hash of the `ECDSA` public key of the account. This calculation is in the manner described by the [Ethereum Yellow Paper](https://ethereum.github.io/yellowpaper/paper.pdf). Note that the recovery id is not formally part of the public key and is not included in the hash. This is calculated on the consensus nodes using the `ECDSA` key provided in the [auto account creation](/learn/core-concepts/accounts/auto-account-creation) flow.  The EVM address is also commonly known as the public address. The EVM address account ID format is `<shardNum>.<realmNum>.<alias>` where `alias` is the EVM address.
 
 The EVM address account and the [account number alias](#account-number-alias) are 20-byte values. They can be differentiated because the account number alias is always prefixed with 12 bytes. The EVM address account alias is commonly used in wallets and tools to represent account addresses.
 
@@ -190,7 +190,7 @@ Reference Hedera Improvement Proposal: [HIP-23](https://hips.hedera.com/hip/hip-
 
 When a new account is created, you can specify an initial HBAR balance for the account. The initial HBAR balance for the token is deducted from the account that is paying to create the new account. Creating an account with an initial balance is optional.
 
-A Hedera account can hold a balance of HBAR and custom fungible and non-fungible tokens (NFTs). Account balances can be viewed on a [Network Explorer](/hedera/networks/community-mirror-nodes) and queried from mirror node REST APIs or consensus nodes.
+A Hedera account can hold a balance of HBAR and custom fungible and non-fungible tokens (NFTs). Account balances can be viewed on a [Network Explorer](/learn/networks/community-mirror-nodes) and queried from mirror node REST APIs or consensus nodes.
 
 | Token Type                    | Description                                                                               | Token ID Example                                                                                          |
 | ----------------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
@@ -207,7 +207,7 @@ Accounts can optionally have more than one key associated with them. These kinds
 
 <Card
   title="Keys and Signatures"
-  href="/hedera/core-concepts/keys-and-signatures"
+  href="/learn/core-concepts/keys"
 />
 
 <Danger>
@@ -220,7 +220,7 @@ Accounts can optionally require the account to sign any transactions depositing 
 
 ## Staking
 
-Staking in Hedera is taking an account and associating the HBAR balance to a node in the network. Custom fungible or non-fungible token balances an account holds do not contribute to staking on the network. The purpose of staking accounts to a node on the network is to strengthen the security of the network. To contribute to the security of the network, staked accounts can earn rewards in HBAR. Please see this [guide](/hedera/core-concepts/staking) for additional information about the staking rewards program. Contracts can also stake their accounts to earn rewards.
+Staking in Hedera is taking an account and associating the HBAR balance to a node in the network. Custom fungible or non-fungible token balances an account holds do not contribute to staking on the network. The purpose of staking accounts to a node on the network is to strengthen the security of the network. To contribute to the security of the network, staked accounts can earn rewards in HBAR. Please see this [guide](/learn/core-concepts/staking) for additional information about the staking rewards program. Contracts can also stake their accounts to earn rewards.
 
 <Info>
 An account can only stake to one node or one account at any given time.
@@ -234,7 +234,7 @@ The staked account balance is liquid at all times. This means you can transfer H
 
 There is no lock-up period. This means the HBAR tokens in your account are not held for a period of time before you can use them.
 
-The node ID for a node can be found [here](/hedera/networks/mainnet/mainnet-nodes) or can be queried from the [nodes REST API](https://testnet.mirrornode.hedera.com/api/v1/docs/#/network/getNetworkNodes).\
+The node ID for a node can be found [here](/operators/consensus-node) or can be queried from the [nodes REST API](https://testnet.mirrornode.hedera.com/api/v1/docs/#/network/getNetworkNodes).\
 
 Example:
 

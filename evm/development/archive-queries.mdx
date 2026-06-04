@@ -49,7 +49,7 @@ For detailed specifications, refer to the [Swagger documentation](https://testne
 Before proceeding, ensure you have:
 
 * Basic knowledge of EVM smart contracts:
-  * Understanding of [ABI (Application Binary Interface)](/hedera/core-concepts/smart-contracts/compiling-smart-contracts#smart-contract-application-binary-interface-abi) and function encoding.
+  * Understanding of [ABI (Application Binary Interface)](/evm/development/compiling#smart-contract-application-binary-interface-abi) and function encoding.
 * Essential tools installed and configured:
   * cURL for making HTTP requests.
   * Ethers.js (v6 or later or equivalent libraries) for interacting with the EVM-compatible networks.
@@ -217,7 +217,7 @@ The empty result indicates that the simulation ran successfully without errors:
 
 ## Decoding the Results with Ethers.js
 
-To decode the data returned by the Mirror Node, you need the [ABI](/hedera/support-and-community/glossary#application-binary-interface-abi) of the smart contract you are interacting with. The ABI defines the structure of inputs and outputs for the contract's functions.
+To decode the data returned by the Mirror Node, you need the [ABI](/support/glossary#application-binary-interface-abi) of the smart contract you are interacting with. The ABI defines the structure of inputs and outputs for the contract's functions.
 
 ### Step 1: Install Ethers.js
 
@@ -378,6 +378,6 @@ Decoded Amounts: 32525 # value represented in tinybars
 ## Reference
 
 * [HIP-584 Proposal](https://hips.hedera.com/hip/hip-584)
-* [REST API Documentation](/hedera/sdks-and-apis/rest-api)
+* [REST API Documentation](/reference/rest-api)
 * [Swagger Documentation](https://testnet.mirrornode.hedera.com/api/v1/docs/#/contracts/contractCall)
 * [Ethers.js Documentation](https://docs.ethers.org/v5/)

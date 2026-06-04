@@ -5,11 +5,62 @@ title: "Schedule Transaction"
 
 ## Overview
 
-A scheduled transaction is a type of transaction that allows you to publicly collect all the required signatures on the network. For example, Transaction A requires signatures from Alice, Bob, and Carol. Alice can schedule and sign Transaction A using the schedule transaction. Alice also specifies an expiry time for Transaction A during creation. Once the schedule transaction is successfully executed and posted on the network Alice can call Bob and Carol to sign the transaction. Bob and Carol can sign the schedule transaction by submitting a schedule sign transaction.
+### What is the Schedule Service?
 
-Transaction A will automatically execute once it receives the minimum required signatures. However, if the required signatures are not received by the specified expiry time, Transaction A will not execute. Alice can optionally set the transaction to execute automatically at its expiry time. In this case, even if all required signatures are applied to the transaction, the transaction will wait until the expiry time to execute.
+The Schedule Service is Hedera's native solution for coordinating multi-signature transactions and delayed execution. It allows you to create a transaction that collects signatures from multiple parties on-chain before executing, eliminating the need for off-chain signature coordination.
 
-Unlike other Hedera transactions, this one allows you to queue a transaction for future execution (up to two months into the future). This feature is ideal for transactions that require multiple signatures and would benefit from being submitted on-chain.
+When you create a scheduled transaction, you're essentially posting a transaction to the network that waits for all required signatures before executing. This makes it ideal for scenarios where multiple parties need to approve a transaction, or when you need to delay execution until a specific time.
+
+### Why Use Scheduled Transactions?
+
+Scheduled transactions solve several common challenges in distributed systems:
+
+- **Simplified Multi-Signature Coordination**: Instead of collecting signatures off-chain and coordinating with multiple parties, you can post the transaction on-chain and let each party sign it independently.
+- **Transparent Approval Process**: All signatures are publicly visible on the network, providing full transparency into who has approved the transaction.
+- **Automated Execution**: Once all required signatures are collected, the transaction executes automatically—no additional coordination needed.
+- **Time-Based Execution**: You can schedule transactions to execute at a specific time in the future (up to 62 days), enabling automated workflows and delayed operations.
+
+### Common Use Cases
+
+**Multi-Signature Payments**
+A treasury account requires approval from three executives before releasing funds. The CFO creates a scheduled transfer transaction, and the other two executives sign it through the network. Once all three signatures are collected, the payment executes automatically.
+
+**Delayed Token Distributions**
+A project schedules token airdrops to vest over time. By creating scheduled transactions with future expiry times and the `wait_for_expiry` flag enabled, tokens are automatically distributed at predetermined dates without manual intervention.
+
+**Automated Recurring Payments**
+A subscription service creates scheduled transactions for monthly payments. Each transaction is set to execute at a specific future date, automating the payment process and reducing operational overhead.
+
+### How Scheduled Transactions Work
+
+<Frame>
+```mermaid
+graph TD
+    A[Create Schedule Transaction] --> B[Post to Network]
+    B --> C{Collect Signatures}
+    C --> D[Party 1 Signs]
+    C --> E[Party 2 Signs]
+    C --> F[Party N Signs]
+    D --> G{All Signatures Collected?}
+    E --> G
+    F --> G
+    G -->|Yes| H{Wait for Expiry?}
+    G -->|No| I{Expiry Time Reached?}
+    H -->|No| J[Execute Immediately]
+    H -->|Yes| K[Wait Until Expiry]
+    I -->|Yes| L[Transaction Expires]
+    I -->|No| C
+    K --> J
+    J --> M[Transaction Complete]
+    
+    style A fill:#e1f5ff
+    style J fill:#d4edda
+    style L fill:#f8d7da
+    style M fill:#d4edda
+```
+</Frame>
+
+Unlike other Hedera transactions, scheduled transactions allow you to queue a transaction for future execution (up to two months into the future). This feature is ideal for transactions that require multiple signatures and would benefit from being submitted on-chain.
 
 The transaction types that can be scheduled in a schedule transaction as of Consensus Node Release 0.57 are the following:
 

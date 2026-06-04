@@ -25,20 +25,20 @@ The Hedera Localnet provides developers with a comprehensive framework for local
 
 ### Overview
 
-The Local Node replicates a Hedera network comprised of a single node (or few if configured) on a developer's local machine, offering a controlled environment for developing, testing, and experimenting with [decentralized applications (dApps)](/hedera/support-and-community/glossary#decentralized-application-dapp). This local setup utilizes [Docker Compose](https://docs.docker.com/compose/) to create multiple containers, each with a specific role within the network, including but not limited to:
+The Local Node replicates a Hedera network comprised of a single node (or few if configured) on a developer's local machine, offering a controlled environment for developing, testing, and experimenting with [decentralized applications (dApps)](/support/glossary#decentralized-application-dapp). This local setup utilizes [Docker Compose](https://docs.docker.com/compose/) to create multiple containers, each with a specific role within the network, including but not limited to:
 
 * **Consensus Node**: Simulates the behavior of Hedera’s consensus mechanism, processing/ordering transactions and participating in the network’s consensus algorithm.
-* [**Mirror Node**](/hedera/support-and-community/glossary#mirror-nodes)**:** Provides access to the historical data, transaction records, and the current state of the network without participating in consensus. This is useful for querying and analytics.
-* [**JSON-RPC Relay**](/hedera/support-and-community/glossary#json-rpc-relay): Offers a local JSON-RPC implementation of the [Ethereum](/hedera/support-and-community/glossary#ethereum) JSON-RPC APIs for Hedera to enable interactions with smart contracts and accounts. This is particularly useful for developers familiar with Ethereum tooling and ecosystem.
-* [**Mirror Node Explorer**](/hedera/support-and-community/glossary#network-explorer): A web-based interface that allows developers to audit transactions, accounts, and other network activities visually.
+* [**Mirror Node**](/support/glossary#mirror-nodes)**:** Provides access to the historical data, transaction records, and the current state of the network without participating in consensus. This is useful for querying and analytics.
+* [**JSON-RPC Relay**](/support/glossary#json-rpc-relay): Offers a local JSON-RPC implementation of the [Ethereum](/support/glossary#ethereum) JSON-RPC APIs for Hedera to enable interactions with smart contracts and accounts. This is particularly useful for developers familiar with Ethereum tooling and ecosystem.
+* [**Mirror Node Explorer**](/support/glossary#network-explorer): A web-based interface that allows developers to audit transactions, accounts, and other network activities visually.
 
 ### Setup and Configuration
 
 Single-node configuration simulates the network's functions on a smaller scale (on a single node), ideal for debugging, testing, and prototype development. Multi-node configuration distributes multiple instances of the Hedera network nodes across a single machine using Docker containers, intended for advanced testing and network emulation.
 
-➡ [**Single Node Configuration**](/hedera/networks/localnet/single-node-configuration)
+➡ [**Single Node Configuration**](/learn/networks/localnet/single-node)
 
-➡ [**Multinode Configuration**](/hedera/networks/localnet/multinode-configuration)
+➡ [**Multinode Configuration**](/learn/networks/localnet/multinode)
 
 ### Operational Modes
 
@@ -75,5 +75,5 @@ Solo offers an advanced private network testing solution and adopts a Kubernetes
 
 * [**Hedera Local Node Repo**](https://github.com/hashgraph/hedera-local-node)
 * [**Docker Compose Documentation**](https://docs.docker.com/compose/intro/features-uses/)
-* [**Run a Local Node in Gitpod**](/hedera/tutorials/local-node/how-to-run-hedera-local-node-in-a-cloud-development-environment-cde/gitpod) **\[tutorial]**
-* [**Run a Local Node in Codespaces**](/hedera/tutorials/local-node/how-to-run-hedera-local-node-in-a-cloud-development-environment-cde/codespaces) **\[tutorial]**
+* [**Run a Local Node in Gitpod**](/native/local-dev/cde/gitpod) **\[tutorial]**
+* [**Run a Local Node in Codespaces**](/native/local-dev/cde/codespaces) **\[tutorial]**

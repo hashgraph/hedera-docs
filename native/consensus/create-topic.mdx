@@ -8,7 +8,7 @@ A transaction that creates a new topic recognized by the Hedera network. The new
 <Info>
 **Note**
 
-With the Consensus Node Release [v0.60](/hedera/networks/release-notes/services#release-v0.60), you can set an auto renew account ID without the requirement of setting an admin key on the topic.
+With the Consensus Node Release [v0.60](/learn/release-notes/services#release-v0.60), you can set an auto renew account ID without the requirement of setting an admin key on the topic.
 </Info>
 
 #### Private topic
@@ -210,7 +210,7 @@ getFeeScheduleKey := transaction.GetFeeScheduleKey()
 </CodeGroup>
 
 <Note>
-    This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation)
+    This transaction supports [high-volume entity creation](/learn/core-concepts/high-volume-entity-creation)
     (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated
     high-volume throttle capacity with variable-rate pricing. Always pair this with
     `setMaxTransactionFee()` to cap your costs.

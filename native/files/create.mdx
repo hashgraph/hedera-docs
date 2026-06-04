@@ -15,7 +15,7 @@ The maximum file size is 1,024 kB.
 
 **Transaction Fees**
 
-* Please see the transaction and query [fees](/hedera/networks/mainnet/fees#transaction-and-query-fees) table for base transaction fee
+* Please see the transaction and query [fees](/learn/networks/mainnet/fees#transaction-and-query-fees) table for base transaction fee
 * Please use the [Hedera fee estimator](https://hedera.com/fees) to estimate your transaction fee cost
 
 #### File Properties
@@ -207,7 +207,7 @@ getContents := transaction.GetContents()
 </CodeGroup>
 
 <Note>
-    This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation)
+    This transaction supports [high-volume entity creation](/learn/core-concepts/high-volume-entity-creation)
     (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated
     high-volume throttle capacity with variable-rate pricing. Always pair this with
     `setMaxTransactionFee()` to cap your costs.

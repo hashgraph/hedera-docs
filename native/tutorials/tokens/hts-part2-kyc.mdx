@@ -2,7 +2,7 @@
 title: "Hedera Token Service - Part 2: KYC, Update, and Scheduled Transactions"
 ---
 
-In [Part 1](/hedera/tutorials/token/hedera-token-service-part-1-how-to-mint-nfts) of the series, you saw how to mint and transfer an NFT using the Hedera Token Service (HTS). Now, in Part 2, you will see how to take advantage of the flexibility you get when you create and configure your tokens with HTS. More specifically, you will learn how to:
+In [Part 1](/native/tutorials/tokens/hts-part1-mint) of the series, you saw how to mint and transfer an NFT using the Hedera Token Service (HTS). Now, in Part 2, you will see how to take advantage of the flexibility you get when you create and configure your tokens with HTS. More specifically, you will learn how to:
 
 - Enable and disable a KYC flag for a token (**KYC stands for “know your customer”**)
 - Update token properties (only possible if it’s a mutable token. Hint: AdminKey)
@@ -23,8 +23,8 @@ In [Part 1](/hedera/tutorials/token/hedera-token-service-part-1-how-to-mint-nfts
 
 We recommend you complete the following introduction to get a basic understanding of Hedera transactions. This example does not build upon the previous examples.
 
-- Get a [Hedera testnet account](/hedera/tutorials/more-tutorials/create-and-fund-your-hedera-testnet-account).
-- Set up your environment [here](/hedera/getting-started-hedera-native-developers/quickstart).
+- Get a [Hedera testnet account](/native/tutorials/getting-started/create-fund-account).
+- Set up your environment [here](/native/quickstart/javascript).
 
 ✅ _If you want the entire code used for this tutorial, skip to the_ [_Code Check_](#code-check) _section below._
 
@@ -32,13 +32,13 @@ We recommend you complete the following introduction to get a basic understandin
 
 ### KYC Key
 
-When you [create a token](/hedera/sdks-and-apis/sdks/token-service/define-a-token) with HTS, you can optionally use the **_.setKycKey(\<key>)_** method to enable this **_\<key>_** to grant (or revoke) the KYC status of other accounts so they can transact with your token. You would consider using the KYC flag when you need your token to be used only within parties that have been “authorized” to use it. For instance, known registered users or those who have passed identity verification. Think of this as identity and compliance features like anti-money laundering (AML) requirements or any type of off-ledger authentication mechanism, like if a user has signed up for your application.
+When you [create a token](/native/tokens/define) with HTS, you can optionally use the **_.setKycKey(\<key>)_** method to enable this **_\<key>_** to grant (or revoke) the KYC status of other accounts so they can transact with your token. You would consider using the KYC flag when you need your token to be used only within parties that have been “authorized” to use it. For instance, known registered users or those who have passed identity verification. Think of this as identity and compliance features like anti-money laundering (AML) requirements or any type of off-ledger authentication mechanism, like if a user has signed up for your application.
 
-The **_.setKycKey(\<key>)_** method is not required when you create your token, so if you don’t use the method that means anyone who is [associated with your token](/hedera/sdks-and-apis/sdks/token-service/associate-tokens-to-an-account) can transact without having to be “authorized”. No KYC key also means that KYC grant or revoke operations are not possible for the token in the future.
+The **_.setKycKey(\<key>)_** method is not required when you create your token, so if you don’t use the method that means anyone who is [associated with your token](/native/tokens/associate) can transact without having to be “authorized”. No KYC key also means that KYC grant or revoke operations are not possible for the token in the future.
 
 ### Enable Token KYC on an Account
 
-We will continue with the NFT example from [Part 1](/hedera/tutorials/token/hedera-token-service-part-1-how-to-mint-nfts). However, we must create a new token using **_.setKycKey(\<key>)_**. Before users can transfer the newly created token, we must grant KYC to those users, namely Alice and Bob.
+We will continue with the NFT example from [Part 1](/native/tutorials/tokens/hts-part1-mint). However, we must create a new token using **_.setKycKey(\<key>)_**. Before users can transfer the newly created token, we must grant KYC to those users, namely Alice and Bob.
 
 ```javascript nft-part2.js
 // ENABLE TOKEN KYC FOR ALICE AND BOB
@@ -170,7 +170,7 @@ async function tQueryFcn() {
 
 Scheduled transactions enable you to collect the required signatures for a transaction in preparation for its execution. This can be useful if you don’t have all the required signatures for the network to immediately process the transaction. Currently, you can schedule: **_TransferTransaction()_** (for hbar and HTS tokens), **_TokenMintTransaction()_**, **_TokenBurnTransaction()_**, and **_TopicMessageSubmitTransaction()_**. More transactions are supported with new releases.
 
-Now, we will schedule a token transfer from Bob to Alice using [scheduled transactions](/hedera/core-concepts/scheduled-transaction). This token transfer requires signatures from both parties.
+Now, we will schedule a token transfer from Bob to Alice using [scheduled transactions](/learn/core-concepts/transactions/scheduled). This token transfer requires signatures from both parties.
 
 Given that Alice’s and Bob’s signatures are not immediately available (for the purposes of this example), we first create the NFT transfer without signatures. Then, we create the scheduled transaction using the constructor ScheduleCreateTransaction() and specify the NFT transfer as the transaction to schedule using the **_.setScheduledTransaction()_** method.
 
@@ -204,7 +204,7 @@ The token transfer is now scheduled, and it will be executed as soon as all requ
 
 As of the time of this writing, a scheduled transaction has 30 minutes to collect all the required signatures before it can be executed or it expires (deleted from the network). If you set an **_\<AdminKey>_** for the scheduled transaction, then you can delete it before its execution or expiration.
 
-Now, we [submit the required signatures](/hedera/sdks-and-apis/sdks/schedule-transaction/sign-a-schedule-transaction) and [get schedule information](/hedera/sdks-and-apis/sdks/schedule-transaction/get-schedule-info) to check the status of our transfer.
+Now, we [submit the required signatures](/native/scheduled/sign) and [get schedule information](/native/scheduled/get-info) to check the status of our transfer.
 
 ```javascript nft-part2.js
 // SUBMIT ALICE'S SIGNATURE FOR THE TRANSFER TRANSACTION

@@ -3,7 +3,7 @@ title: "Deploying Smart Contracts"
 ---
 
 
-After compiling your smart contract, you can deploy it to the Hedera network. The constructor's "*init code*" includes the contract's entire bytecode. When deploying, the EVM is expected to be supplied with both the smart contract [bytecode](/hedera/support-and-community/glossary#bytecode) and the gas required to execute and deploy the contract. Post-deployment, the constructor is removed, leaving only the `runtime_bytecode` for future contract interactions.
+After compiling your smart contract, you can deploy it to the Hedera network. The constructor's "*init code*" includes the contract's entire bytecode. When deploying, the EVM is expected to be supplied with both the smart contract [bytecode](/support/glossary#bytecode) and the gas required to execute and deploy the contract. Post-deployment, the constructor is removed, leaving only the `runtime_bytecode` for future contract interactions.
 
 **➡** [**Hyperledger Besu EVM**](#hyperledger-besu-evm-on-hedera)
 
@@ -15,11 +15,11 @@ After compiling your smart contract, you can deploy it to the Hedera network. Th
 
 ## Ethereum Virtual Machine (EVM)
 
-The [Ethereum Virtual Machine (EVM)](/hedera/support-and-community/glossary#ethereum-virtual-machine-evm) is a run-time environment for executing smart contracts written in EVM native programming languages, like Solidity. The source code must be compiled into bytecode for the EVM to execute a given smart contract.
+The [Ethereum Virtual Machine (EVM)](/support/glossary#ethereum-virtual-machine-evm) is a run-time environment for executing smart contracts written in EVM native programming languages, like Solidity. The source code must be compiled into bytecode for the EVM to execute a given smart contract.
 
 On Hedera, users can interact with the EVM-compatible environment in several ways. They can submit `ContractCreate`, `EthereumTransaction`, or make `eth_sendRawTransaction` RPC calls with the contract bytecode directly. These various paths allow developers to deploy and manage smart contracts efficiently.
 
-When the EVM receives the bytecode, it will be further broken down into operation codes ([opcodes](/hedera/support-and-community/glossary#opcodes)). The EVM opcodes represent the specific instructions it can perform. Each opcode is one byte and has its own gas cost associated with it. The cost per opcode for the Ethereum Cancun hard fork can be found [here](https://www.evm.codes/?fork=cancun).
+When the EVM receives the bytecode, it will be further broken down into operation codes ([opcodes](/support/glossary#opcodes)). The EVM opcodes represent the specific instructions it can perform. Each opcode is one byte and has its own gas cost associated with it. The cost per opcode for the Ethereum Cancun hard fork can be found [here](https://www.evm.codes/?fork=cancun).
 
 #### Smart Contract Opcode Example
 
@@ -35,13 +35,13 @@ Reference: https://ethervm.io/
 
 **SDK**
 
-You can use a [Hedera SDK](/hedera/sdks-and-apis/sdks) to deploy your smart contract bytecode to the network. This approach does not require using any EVM tools like Hardhat or an instance of the Hedera JSON-RPC Relay.
+You can use a [Hedera SDK](/native/fundamentals) to deploy your smart contract bytecode to the network. This approach does not require using any EVM tools like Hardhat or an instance of the Hedera JSON-RPC Relay.
 
 
 
 **Hardhat**
 
-Hardhat can be used to deploy your smart contract by pointing to a community-hosted [JSON-RPC Relay](/hedera/core-concepts/smart-contracts/json-rpc-relay). However, EVM tools do not support features that are native to Hiero Contracts like:
+Hardhat can be used to deploy your smart contract by pointing to a community-hosted [JSON-RPC Relay](/evm/development/json-rpc). However, EVM tools do not support features that are native to Hiero Contracts like:
 
 * Admin Key
 * Contract Memo
@@ -50,11 +50,11 @@ Hardhat can be used to deploy your smart contract by pointing to a community-hos
 * Staking Node ID or Account ID
 * Decline Staking Rewards
 
-If you need to set any of the above properties for your contract, you will have to call the `ContractCreateTransaction` API using one of the [Hedera SDKs.](/hedera/sdks-and-apis/sdks)
+If you need to set any of the above properties for your contract, you will have to call the `ContractCreateTransaction` API using one of the [Hedera SDKs.](/native/fundamentals)
 
 <Card
   title="Deploy A Smart Contract Using Hardhat Hedera Json Rpc Relay"
-  href="/hedera/core-concepts/smart-contracts/json-rpc-relay"
+  href="/evm/development/json-rpc"
 />
 
 ### Deploying Large Contracts
@@ -84,21 +84,21 @@ If your contract bytecode is 10KB, with 20% (2KB) as zero bytes and 80% (8KB) as
 
 Ensure you adjust `gasLimit` (RLP) and `maxGasAllowance` (wrapper) to cover this total gas.
 
-📣 Learn more on the [Gas and Fees page,](/hedera/core-concepts/smart-contracts/gas-and-fees) [EthereumTransaction SDK page](/hedera/sdks-and-apis/sdks/smart-contracts/ethereum-transaction), and the [Understanding Hedera's EVM Differences and Compatibility page](/hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility).
+📣 Learn more on the [Gas and Fees page,](/evm/development/gas-fees) [EthereumTransaction SDK page](/native/smart-contracts/ethereum-transaction), and the [Understanding Hedera's EVM Differences and Compatibility page](/evm/migration).
 
 ***
 
 ## Hyperledger Besu EVM on Hedera
 
-The Hedera network nodes utilize the [HyperLedger Besu EVM ](/hedera/support-and-community/glossary#hyperledger-besu-evm)Client written in Java as an execution layer for Ethereum-type transactions. The codebase is up to date with the current Ethereum Mainnet hard forks. The Besu EVM client library is used without hooks for Ethereum's consensus, networking, and storage features. Instead, Hedera hooks into its own Hashgraph consensus, Gossip communication, and [Virtual Merkle Trees](/hedera/support-and-community/glossary#virtual-merkle-tree) components for greater fault tolerance, finality, and scalability.
+The Hedera network nodes utilize the [HyperLedger Besu EVM ](/support/glossary#hyperledger-besu-evm)Client written in Java as an execution layer for Ethereum-type transactions. The codebase is up to date with the current Ethereum Mainnet hard forks. The Besu EVM client library is used without hooks for Ethereum's consensus, networking, and storage features. Instead, Hedera hooks into its own Hashgraph consensus, Gossip communication, and [Virtual Merkle Trees](/support/glossary#virtual-merkle-tree) components for greater fault tolerance, finality, and scalability.
 
-As of the Hedera Mainnet release [`0.50.0`](/hedera/networks/release-notes/services#v0.50), the Besu EVM client is configured to support the Cancun hard fork of the Ethereum Mainnet, with some modifications.
+As of the Hedera Mainnet release [`0.50.0`](/learn/release-notes/services#v0.50), the Besu EVM client is configured to support the Cancun hard fork of the Ethereum Mainnet, with some modifications.
 
 ### **Cancun Hard Fork**
 
 The smart contract platform has been upgraded to support the visible EVM changes introduced in the [Cancun](https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/cancun.md) hard fork. This includes adding new opcodes for transient storage and memory copy, semantic updates for opcodes introduced certain operations introduced in the [Shanghai](https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/shanghai.md), [London](https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/london.md), [Istanbul](https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/istanbul.md), and [Berlin](https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/berlin.md) hard forks, except those with changes in block production, data serialization, and the double fee market.
 
-As of the Consensus Node [0.22](/hedera/networks/release-notes/services#v0.22) release, gas and input data costs are charged. The amount of intrinsic gas consumed is a constant charge that occurs before any code executes. The intrinsic gas cost is 21,000. The associated cost of input data is 16 gas for each byte of data that is not zero and 4 gas for each byte of data that is zero. The amount of intrinsic gas consumed is charged in relation to the data supplied when making a contract call to the function parameters of external contracts. The gas schedule and the fees table can be found in the gas section of this documentation page.
+As of the Consensus Node [0.22](/learn/release-notes/services#v0.22) release, gas and input data costs are charged. The amount of intrinsic gas consumed is a constant charge that occurs before any code executes. The intrinsic gas cost is 21,000. The associated cost of input data is 16 gas for each byte of data that is not zero and 4 gas for each byte of data that is zero. The amount of intrinsic gas consumed is charged in relation to the data supplied when making a contract call to the function parameters of external contracts. The gas schedule and the fees table can be found in the gas section of this documentation page.
 
 <Frame>
   <img src="/images/core-concepts/smart-contracts/deploying-smart-contracts/deploying-smart-contracts-1.jpg" />
@@ -151,7 +151,7 @@ Yes, you can use Solidity functions directly with the Hedera EVM. However, refer
 </Accordion>
 
 <Accordion title="Can i deploy large contracts with big bytecode?">
-Yes, hedera supports jumbo ethereum transactions (HIP-1086), allowing up to **24kb for contract creation** and **128kb for contract calls**. this eliminates the need for uploading bytecode to the file service in most cases. [Learn more](/hedera/core-concepts/smart-contracts/understanding-hederas-evm-differences-and-compatibility#jumbo-ethereum-transactions).
+Yes, hedera supports jumbo ethereum transactions (HIP-1086), allowing up to **24kb for contract creation** and **128kb for contract calls**. this eliminates the need for uploading bytecode to the file service in most cases. [Learn more](/evm/migration#jumbo-ethereum-transactions).
 </Accordion>
 
 <Accordion title="Do jumbo transactions work with batch transactions?">
@@ -159,7 +159,7 @@ No, jumbo ethereum transactions cannot be included in a `TransactionList` (batch
 </Accordion>
 
 <Accordion title="How does gas work when deploying a contract?">
-Gas covers intrinsic costs (base + per-byte of `callData`) and execution costs (opcodes run by the EVM). Ensure your `gasLimit` and `maxGasAllowance` cover the total. See the [gas and fees page](/hedera/core-concepts/smart-contracts/gas-and-fees) for details.
+Gas covers intrinsic costs (base + per-byte of `callData`) and execution costs (opcodes run by the EVM). Ensure your `gasLimit` and `maxGasAllowance` cover the total. See the [gas and fees page](/evm/development/gas-fees) for details.
 </Accordion>
 
 <Accordion title="How does hedera handle <code>fallback()</code> and <code>receive()</code> functions?">
@@ -167,7 +167,7 @@ Hedera does not trigger `fallback()` or `receive()` functions on HBAR transfers.
 </Accordion>
 
 <Accordion title="Can i deploy contracts using only hardhat?">
-Yes, but Hardhat cannot set Hedera-native properties like admin key or token associations. For these, use the [Hedera SDK](/hedera/sdks-and-apis/sdks).
+Yes, but Hardhat cannot set Hedera-native properties like admin key or token associations. For these, use the [Hedera SDK](/native/fundamentals).
 </Accordion>
 
 <Accordion title="What should I do if my contract relies on blob-related opcodes?">
@@ -175,5 +175,5 @@ If your contract relies on blob-related opcodes introduced in the Cancun hard fo
 </Accordion>
 
 <Accordion title="Are there any special considerations for using updated EVM opcodes on Hedera?">
-Yes, while the Hedera EVM supports the updated opcodes from the Cancun hard fork, you should know the intrinsic gas costs and input data charges specific to Hedera. Refer to the [gas schedule and fees](/hedera/core-concepts/smart-contracts/gas-and-fees) table for more information.
+Yes, while the Hedera EVM supports the updated opcodes from the Cancun hard fork, you should know the intrinsic gas costs and input data charges specific to Hedera. Refer to the [gas schedule and fees](/evm/development/gas-fees) table for more information.
 </Accordion>

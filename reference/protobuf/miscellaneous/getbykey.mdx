@@ -9,10 +9,10 @@ the ID for a single entity (account, claim, file, or smart contract instance)
 
 | Field        | Type                                                                                         | Description                                    |
 | ------------ | -------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| `accountID`  | [AccountID](/hedera/sdks-and-apis/hedera-api/basic-types/accountid)   | The Account ID for the cryptocurrency account  |
+| `accountID`  | [AccountID](/reference/protobuf/basic-types/accountid)   | The Account ID for the cryptocurrency account  |
 | `liveHash`   | LiveHash                                                                                     | A uniquely identifying livehash of an acount   |
-| `fileID`     | [FileID](/hedera/sdks-and-apis/hedera-api/basic-types/fileid)         | The file ID of the file                        |
-| `contractID` | [ContractID](/hedera/sdks-and-apis/hedera-api/basic-types/contractid) | The smart contract ID that identifies instance |
+| `fileID`     | [FileID](/reference/protobuf/basic-types/fileid)         | The file ID of the file                        |
+| `contractID` | [ContractID](/reference/protobuf/basic-types/contractid) | The smart contract ID that identifies instance |
 
 ## GetByKeyQuery
 
@@ -20,8 +20,8 @@ Get all accounts, claims, files, and smart contract instances whose associated k
 
 | Field    | Type                                                                                             | Description                                                                                                                                         |
 | -------- | ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `header` | [QueryHeader](/hedera/sdks-and-apis/hedera-api/miscellaneous/queryheader) | Standard info sent from client to node, including the signed payment, and what kind of response is requested (cost, state proof, both, or neither). |
-| `key`    | [Key](/hedera/sdks-and-apis/hedera-api/basic-types/key)                   | The key to search for. It must not contain a contractID nor a ThresholdSignature.                                                                   |
+| `header` | [QueryHeader](/reference/protobuf/miscellaneous/queryheader) | Standard info sent from client to node, including the signed payment, and what kind of response is requested (cost, state proof, both, or neither). |
+| `key`    | [Key](/reference/protobuf/basic-types/key)                   | The key to search for. It must not contain a contractID nor a ThresholdSignature.                                                                   |
 
 ## GetByKeyResponse
 
@@ -29,5 +29,5 @@ Response when the client sends the node GetByKeyQuery
 
 | Field      | Type                                                                                                   | Description                                                                                                      |
 | ---------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| `header`   | [ResponseHeader](/hedera/sdks-and-apis/hedera-api/miscellaneous/responseheader) | Standard response from node to client, including the requested fields: cost, or state proof, or both, or neither |
+| `header`   | [ResponseHeader](/reference/protobuf/miscellaneous/responseheader) | Standard response from node to client, including the requested fields: cost, or state proof, or both, or neither |
 | `entities` | EntityID                                                                                               | The list of entities that include this public key in their associated Key list                                   |

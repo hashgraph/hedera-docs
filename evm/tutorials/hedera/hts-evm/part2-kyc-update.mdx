@@ -2,7 +2,7 @@
 title: "HTS x EVM - KYC & Update (Part 2)"
 ---
 
-In [Part 1](/hedera/tutorials/smart-contracts/hts-x-evm-part-1-how-to-mint-nfts) of the series, you saw how to mint, transfer, and burn an NFT using Hedera'a EVM and [Hedera Token Service (HTS) System Smart Contracts](/hedera/core-concepts/smart-contracts/system-smart-contracts). In this guide, you’ll learn the basics of how to configure / permission native Hedera Tokens via a Smart Contract. Specifically, you will learn how to:
+In [Part 1](/evm/tutorials/hedera/hts-evm/part1-mint-nfts) of the series, you saw how to mint, transfer, and burn an NFT using Hedera'a EVM and [Hedera Token Service (HTS) System Smart Contracts](/evm/hedera-services/system-contracts). In this guide, you’ll learn the basics of how to configure / permission native Hedera Tokens via a Smart Contract. Specifically, you will learn how to:
 
 - **Create** and **configure** an NFT.
 - **Grant** and **revoke** a Know Your Customer (KYC) flag.
@@ -41,7 +41,7 @@ In [Part 1](/hedera/tutorials/smart-contracts/hts-x-evm-part-1-how-to-mint-nfts)
 
 ## Step 1. Add KYC key when creating HTS NFT Collection
 
-The [previous tutorial](/hedera/tutorials/smart-contracts/hts-x-evm-part-1-how-to-mint-nfts#id-2.-minting-an-nft) covered creating NFT collection. Everything remains largely the same except for the following changes:
+The [previous tutorial](/evm/tutorials/hedera/hts-evm/part1-mint-nfts#id-2.-minting-an-nft) covered creating NFT collection. Everything remains largely the same except for the following changes:
 
 - We just need to add one additional line for managing the KYC key that is able to grant/remove KYC.
 - We will be using `createNonFungibleToken` instead of `createNonFungibleTokenWithCustomFees` for this exercise.
@@ -122,7 +122,7 @@ We call `createNFTCollection(...)` and expect it to emit an `NFTCollectionCreate
 
 ## Step 2. Minting and Burning an NFT
 
-The [previous tutorial](/hedera/tutorials/smart-contracts/hts-x-evm-part-1-how-to-mint-nfts#id-2.-minting-an-nft) covered minting and burning NFTs. Nothing's changed in the code as it's the same as before.
+The [previous tutorial](/evm/tutorials/hedera/hts-evm/part1-mint-nfts#id-2.-minting-an-nft) covered minting and burning NFTs. Nothing's changed in the code as it's the same as before.
 
 ---
 
@@ -220,7 +220,7 @@ contract MyHTSTokenKYC is HederaTokenService, KeyHelper, Ownable {
 
 After this key rotation, the contract's key is no longer able to perform KYC operations. In the snippet above, we immediately demonstrate that KYC attempts signed by the contract itself will revert.
 
-Account 1 will now be able to grant/revoke KYC [using the SDK](/hedera/sdks-and-apis/sdks/token-service/enable-kyc-account-flag).
+Account 1 will now be able to grant/revoke KYC [using the SDK](/native/tokens/enable-kyc).
 
 Here's the complete contract code for `MyHTSTokenKYC.sol`:
 
@@ -549,7 +549,7 @@ In this script, we first retrieve your account (the deployer) using Ethers.js. T
 <Info>
 **Note**
 
-For most HTS [System Smart Contract](/hedera/core-concepts/smart-contracts/system-smart-contracts) calls, an HBAR value **is not** required to be sent in the contract call; the gas fee will cover it. However, for expensive transactions, like [Create HTS NFT Collection](#step-3%3A-deploy-your-hts-nft-smart-contract), the gas fee is reduced, and the transaction cost is covered by the payable amount. This is to reduce the gas consumed by the contract call.
+For most HTS [System Smart Contract](/evm/hedera-services/system-contracts) calls, an HBAR value **is not** required to be sent in the contract call; the gas fee will cover it. However, for expensive transactions, like [Create HTS NFT Collection](#step-3%3A-deploy-your-hts-nft-smart-contract), the gas fee is reduced, and the transaction cost is covered by the payable amount. This is to reduce the gas consumed by the contract call.
 
 </Info>
 
@@ -875,11 +875,11 @@ Using a Solidity Smart Contract on Hedera, you can replicate many of the native 
 - **You prefer standard Solidity patterns** and tooling for your Web3 workflows.
 - **You plan** to modularize or integrate your token behavior with other smart contracts.
 
-Check out [Part 3: How to Pause, Freeze, Wipe, and Delete NFTs](/hedera/tutorials/smart-contracts/hts-x-evm-part-3-how-to-pause-freeze-wipe-and-delete-nfts) to learn more about configuring Native Tokens with Smart Contracts.
+Check out [Part 3: How to Pause, Freeze, Wipe, and Delete NFTs](/evm/tutorials/hedera/hts-evm/part3-pause-freeze-wipe) to learn more about configuring Native Tokens with Smart Contracts.
 
 <Card
   title="Hts X Evm Part 3 How To Pause Freeze Wipe And Delete Nfts"
-  href="/hedera/tutorials/smart-contracts/hts-x-evm-part-3-how-to-pause-freeze-wipe-and-delete-nfts"
+  href="/evm/tutorials/hedera/hts-evm/part3-pause-freeze-wipe"
 />
 
 ---

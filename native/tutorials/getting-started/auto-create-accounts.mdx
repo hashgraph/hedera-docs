@@ -2,7 +2,7 @@
 title: "How to Auto-Create Hedera Accounts with HBAR and Token Transfers"
 ---
 
-[HIP-32](https://hips.hedera.com/hip/hip-32) introduced the ability to auto-create accounts when sending HBAR to an [alias](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-an-account#create-an-account-via-an-account-alias) that does not exist on the network. When HBAR is sent to an alias that does not exist on the network, the account creation fee is deducted from the HBAR sent and the account is auto-created. The new account's initial balance is (sent HBAR - account creation fee). This new method of account creation allowed wallet providers to create free "accounts" to users. However, if a user sends fungible tokens or NFT's to an alias, it would result in an _INVALID_ACCOUNT_ID_ error because the alias does not exist on the network. The auto-account creation flow could not deduct the account creation fee from an HTS token; the account creation fee must be paid in HBAR.
+[HIP-32](https://hips.hedera.com/hip/hip-32) introduced the ability to auto-create accounts when sending HBAR to an [alias](/native/accounts/create#create-an-account-via-an-account-alias) that does not exist on the network. When HBAR is sent to an alias that does not exist on the network, the account creation fee is deducted from the HBAR sent and the account is auto-created. The new account's initial balance is (sent HBAR - account creation fee). This new method of account creation allowed wallet providers to create free "accounts" to users. However, if a user sends fungible tokens or NFT's to an alias, it would result in an _INVALID_ACCOUNT_ID_ error because the alias does not exist on the network. The auto-account creation flow could not deduct the account creation fee from an HTS token; the account creation fee must be paid in HBAR.
 
 [HIP-542](https://hips.hedera.com/hip/hip-542) provides a solution to allow sending HTS tokens to an alias that does not exist on the network. This is achieved by charging the account creation fee to the transfer transaction payer. In addition, there will be one auto-association slot included in the transaction for the new account to associate with the HTS token. You won't have to first create the account, complete a token association, and then finally do a token transfer.
 
@@ -20,7 +20,7 @@ In this tutorial, a treasury account will be created to transfer HTS tokens to B
 
 ## Prerequisites
 
-- Get a [Hedera Testnet](https://portal.hedera.com/register) account [here](/hedera/tutorials/more-tutorials/create-and-fund-your-hedera-testnet-account).
+- Get a [Hedera Testnet](https://portal.hedera.com/register) account [here](/native/tutorials/getting-started/create-fund-account).
 - Set up your environment and create a client here.
 
 <Accordion title="Get the example code on GitHub:">
@@ -274,7 +274,7 @@ const nftCreateTxnResponse = await createNewNftCollection(
 
 An alias is an initial public key that will convert into a Hedera account through auto-account creation. An alias consists of \<shard>.\<realm>.\<bytes>.
 
-To learn more about accounts created via an account alias go [here](/hedera/sdks-and-apis/sdks/accounts-and-hbar/create-an-account).
+To learn more about accounts created via an account alias go [here](/native/accounts/create).
 
 ```javascript
 const privateKey = PrivateKey.generateECDSA();

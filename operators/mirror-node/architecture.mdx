@@ -45,7 +45,7 @@ The Hedera-hosted mainnet database is on the order of several terabytes. Self-ho
 
 ### REST API
 
-Default port `5551`. Exposes the standard Hedera mirror node endpoints documented under the [Mirror Node REST API](/hedera/sdks-and-apis/rest-api): `GET /api/v1/transactions/{id}`, `/accounts/{id}`, `/tokens/{id}`, `/contracts/{id}`, etc. Read-only, no authentication required, no transaction fees. This is the API most application code talks to.
+Default port `5551`. Exposes the standard Hedera mirror node endpoints documented under the [Mirror Node REST API](/reference/rest-api): `GET /api/v1/transactions/{id}`, `/accounts/{id}`, `/tokens/{id}`, `/contracts/{id}`, etc. Read-only, no authentication required, no transaction fees. This is the API most application code talks to.
 
 ### gRPC API
 
@@ -76,7 +76,7 @@ End-to-end latency from network consensus to mirror node visibility is usually a
 ## See also
 
 <CardGroup cols={2}>
-  <Card title="Mirror Node REST API" icon="code" href="/hedera/sdks-and-apis/rest-api">
+  <Card title="Mirror Node REST API" icon="code" href="/reference/rest-api">
     Full endpoint reference for the REST API surface.
   </Card>
   <Card title="Run your own mirror node" icon="server" href="/operators/mirror-node/run-your-own/index">

@@ -21,7 +21,7 @@ Besides creating NFTs using Hedera SDK, you can use a Solidity Contract to creat
 We recommend you complete the following introduction to get a basic understanding of Hedera transactions. This example does not build upon the previous examples.
 
 1. Get a [Hedera testnet account](https://portal.hedera.com/register).
-2. Set up your environment [here](/hedera/getting-started-hedera-native-developers/quickstart).
+2. Set up your environment [here](/native/quickstart/javascript).
 
 If you are interested in creating, minting, and transferring NFTs using Hedera SDKs you can find the example [here](https://docs.hedera.com/guides/getting-started/try-examples/create-and-transfer-your-first-nft).
 
@@ -415,7 +415,7 @@ The NFT is minted to the contract address because the contract is the treasury f
 The `transferNft` function in the Solidity contract contains a call to an `associateToken` function that will automatically associate Alice to the token ID. This association transaction must be signed using Alice's private key. After signing, Alice will receive the NFT.
 
 <Info>
-**Note:** For a more comprehensive explanation of how auto token association works, check out the *Auto Token Associations* section [here](/hedera/core-concepts/accounts/account-properties#automatic-token-associations). Reference Hedera Improvement Proposal: [HIP-23](https://hips.hedera.com/hip/hip-23)
+**Note:** For a more comprehensive explanation of how auto token association works, check out the *Auto Token Associations* section [here](/learn/core-concepts/accounts/account-properties#automatic-token-associations). Reference Hedera Improvement Proposal: [HIP-23](https://hips.hedera.com/hip/hip-23)
 </Info>
 
 <CodeGroup>

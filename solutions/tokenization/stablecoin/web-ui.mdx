@@ -94,12 +94,12 @@ cd web
 Before we can start the web application, we need to configure the environment variables. From the root of the `web` project workspace, rename the `.env.sample` file to `.env` and configure the variables required to run the application. For the purposes of this demo, we will need:
 
 1. The [factory contract ID.](https://github.com/hashgraph/hedera-accelerator-stablecoin/tree/main/cli#factories)
-2. The [REST API](/hedera/sdks-and-apis/rest-api) testnet endpoint.
-3. The [JSON-RPC relay ](/hedera/core-concepts/smart-contracts/json-rpc-relay)testnet endpoint.
+2. The [REST API](/reference/rest-api) testnet endpoint.
+3. The [JSON-RPC relay ](/evm/development/json-rpc)testnet endpoint.
 
 The `.env` file contains the following parameters:
 
-<table><thead><tr><th>Environment Variable</th><th>Description</th></tr></thead><tbody><tr><td><strong>REACT_APP_LOG_LEVEL</strong></td><td>Log level for the application. The default value is <code>ERROR</code>. Acceptable values are <code>ERROR</code>, <code>WARN</code>, <code>INFO</code>, <code>HTTP</code>, <code>VERBOSE</code>, <code>DEBUG</code>, and <code>SILLY</code> in order of priority (highest to lowest).</td></tr><tr><td><strong>REACT_APP_FACTORIES</strong></td><td>JSON array with a factory contract ID in Hedera format <code>0.0.XXXXX</code> per environment.</td></tr><tr><td><strong>REACT_APP_MIRROR_NODE</strong></td><td>The var must be a unique mirror node service for Hedera network, and this is the service that would be used when the UI starts. If the service doesn't require an API key to authorize requests the <code>API_KEY</code> and <code>HEADER</code> properties must remain empty. <a href="/hedera/sdks-and-apis/rest-api">Here</a> is a list of mirror node endpoints.</td></tr><tr><td><strong>REACT_APP_RPC_NODE</strong></td><td>The var must be a unique RPC node service for Hedera network, and this is the service that would be used when the UI starts. If the service doesn't require an API key to authorize requests the <code>API_KEY</code> and <code>HEADER</code> properties must remain empty. <a href="/hedera/core-concepts/smart-contracts/json-rpc-relay">Here</a> is a list of RPC providers.</td></tr><tr><td><strong>GENERATE_SOURCEMAP</strong></td><td>This is a proprietary Create React App configuration. You can read more information in its <a href="https://create-react-app.dev/docs/advanced-configuration/">Create React App documentation</a>.</td></tr></tbody></table>
+<table><thead><tr><th>Environment Variable</th><th>Description</th></tr></thead><tbody><tr><td><strong>REACT_APP_LOG_LEVEL</strong></td><td>Log level for the application. The default value is <code>ERROR</code>. Acceptable values are <code>ERROR</code>, <code>WARN</code>, <code>INFO</code>, <code>HTTP</code>, <code>VERBOSE</code>, <code>DEBUG</code>, and <code>SILLY</code> in order of priority (highest to lowest).</td></tr><tr><td><strong>REACT_APP_FACTORIES</strong></td><td>JSON array with a factory contract ID in Hedera format <code>0.0.XXXXX</code> per environment.</td></tr><tr><td><strong>REACT_APP_MIRROR_NODE</strong></td><td>The var must be a unique mirror node service for Hedera network, and this is the service that would be used when the UI starts. If the service doesn't require an API key to authorize requests the <code>API_KEY</code> and <code>HEADER</code> properties must remain empty. <a href="/reference/rest-api">Here</a> is a list of mirror node endpoints.</td></tr><tr><td><strong>REACT_APP_RPC_NODE</strong></td><td>The var must be a unique RPC node service for Hedera network, and this is the service that would be used when the UI starts. If the service doesn't require an API key to authorize requests the <code>API_KEY</code> and <code>HEADER</code> properties must remain empty. <a href="/evm/development/json-rpc">Here</a> is a list of RPC providers.</td></tr><tr><td><strong>GENERATE_SOURCEMAP</strong></td><td>This is a proprietary Create React App configuration. You can read more information in its <a href="https://create-react-app.dev/docs/advanced-configuration/">Create React App documentation</a>.</td></tr></tbody></table>
 
 <Accordion title="Example configured <code>.env</code> file ✅">
 ```bash .env wrap
@@ -167,7 +167,7 @@ While the basic details are mandatory, you also have an option to further specif
 
 #### Manage permissions
 
-When creating a stablecoin, you have multiple key configuration options. One of those is the “Underlying Token’s Keys Definition.” This determines which accounts control various operations of the stablecoin, such as who can approve [KYC](/hedera/support-and-community/glossary#know-your-customer-kyc) checks or which account can change the coin supply. You have the flexibility to set these keys to be controlled by the stablecoin’s initial smart contract, assign them to a different key, or even leave them undefined.
+When creating a stablecoin, you have multiple key configuration options. One of those is the “Underlying Token’s Keys Definition.” This determines which accounts control various operations of the stablecoin, such as who can approve [KYC](/support/glossary#know-your-customer-kyc) checks or which account can change the coin supply. You have the flexibility to set these keys to be controlled by the stablecoin’s initial smart contract, assign them to a different key, or even leave them undefined.
 
 If the KYC key is tied to the smart contract and the supply key isn't tied to the account that creates the stablecoin, you can opt to automatically grant KYC verification to the account creating the stablecoin at the time of its creation.
 
@@ -277,7 +277,7 @@ This menu option displays stablecoin details and allows the user to update some 
 
 <Card
   title="Glossary | Hedera"
-  href="/hedera/support-and-community/glossary"
+  href="/support/glossary"
 />
 
 <Card

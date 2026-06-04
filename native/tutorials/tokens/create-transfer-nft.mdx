@@ -13,9 +13,9 @@ Using the Hedera Token Service (HTS), you can create non-fungible tokens (NFTs).
 
 We recommend you complete the following introduction to get a basic understanding of Hedera transactions. This example does not build upon the previous examples.
 
-1. Get a [Hedera testnet account](/hedera/tutorials/more-tutorials/create-and-fund-your-hedera-testnet-account).
-2. Set up your environment [here](/hedera/getting-started-hedera-native-developers/quickstart).
-3. [Getting Started: Create a Token](/hedera/getting-started-hedera-native-developers/create-a-token).
+1. Get a [Hedera testnet account](/native/tutorials/getting-started/create-fund-account).
+2. Set up your environment [here](/native/quickstart/javascript).
+3. [Getting Started: Create a Token](/native/tutorials/tokens/create-first-token).
 
 ***
 
@@ -125,7 +125,7 @@ fmt.Println("\nCreated NFT with token ID:", tokenID)
 
 ## 2. Mint a New NFT
 
-When creating an NFT, the decimals and initial supply must be set to zero. After creating the token, you mint each NFT using the token mint operation. Specifying a *supply key* during token creation is a requirement to be able to [mint](/hedera/sdks-and-apis/sdks/token-service/mint-a-token) and [burn](/hedera/sdks-and-apis/sdks/token-service/burn-a-token) tokens. The supply key is required to sign mint and burn transactions.
+When creating an NFT, the decimals and initial supply must be set to zero. After creating the token, you mint each NFT using the token mint operation. Specifying a *supply key* during token creation is a requirement to be able to [mint](/native/tokens/mint) and [burn](/native/tokens/burn) tokens. The supply key is required to sign mint and burn transactions.
 
 Both the NFT image and metadata live in the InterPlanetary File System (IPFS), which provides decentralized storage. The file diploma\_metadata.json contains the metadata for the NFT. A content identifier (CID) pointing to the metadata file is used during minting of the new NFT. Notice that the metadata file contains a URI pointing to the NFT image.
 
@@ -258,7 +258,7 @@ fmt.Printf("Created NFT %s with serial number(s): %v\n\n", tokenID, mintRx.Seria
 
 #### **🚨 Throttle cap warning**
 
-Batch minting of 10+ NFTs can run into throughput issues and potentially hit the [transaction limit (throttle cap)](/hedera/networks/mainnet#network-throttles), causing the SDK to throw `BUSY` exceptions. Adding an application-level retry loop can help manage these exceptions for the batch-minting process.
+Batch minting of 10+ NFTs can run into throughput issues and potentially hit the [transaction limit (throttle cap)](/learn/networks/mainnet#network-throttles), causing the SDK to throw `BUSY` exceptions. Adding an application-level retry loop can help manage these exceptions for the batch-minting process.
 
 The following are examples of retry loops:
 

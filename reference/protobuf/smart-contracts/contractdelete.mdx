@@ -9,8 +9,8 @@ Delete a smart contract.
 
 | Field                | Type                                                                                         | Description                                                |
 | -------------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| `contractID`         | [ContractID](/hedera/sdks-and-apis/hedera-api/basic-types/contractid) | The Contract ID instance to delete (this can't be changed) |
+| `contractID`         | [ContractID](/reference/protobuf/basic-types/contractid) | The Contract ID instance to delete (this can't be changed) |
 | `obtainers`          |                                                                                              |                                                            |
 | **one of:**          |                                                                                              |                                                            |
-| `transferAccountID`  | [AccountID](/hedera/sdks-and-apis/hedera-api/basic-types/accountid)   | The account ID which will receive all remaining hbars      |
-| `transferContractID` | [ContractID](/hedera/sdks-and-apis/hedera-api/basic-types/contractid) | The contract ID which will receive all remaining hbars     |
+| `transferAccountID`  | [AccountID](/reference/protobuf/basic-types/accountid)   | The account ID which will receive all remaining hbars      |
+| `transferContractID` | [ContractID](/reference/protobuf/basic-types/contractid) | The contract ID which will receive all remaining hbars     |

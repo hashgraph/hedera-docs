@@ -4,9 +4,9 @@ title: "Create an account"
 
 A Hedera account is required to interact with any network service, since every transaction and query fee is paid from an account. You can create a previewnet or testnet account on the [Hedera Developer Portal](https://portal.hedera.com/), or use a third-party wallet to generate a free [mainnet account](/learn/networks/mainnet/access).
 
-This page covers programmatic account creation with `AccountCreateTransaction()`. The transaction must be signed and paid for by an existing account. To obtain the new account ID, request the [receipt](/hedera/sdks-and-apis/sdks/transactions/get-a-transaction-receipt) of the transaction.
+This page covers programmatic account creation with `AccountCreateTransaction()`. The transaction must be signed and paid for by an existing account. To obtain the new account ID, request the [receipt](/native/transactions/receipt) of the transaction.
 
-For a complete list of account properties, see the [accounts overview](/hedera/sdks-and-apis/sdks/accounts-and-hbar).
+For a complete list of account properties, see the [accounts overview](/native/accounts).
 
 ---
 
@@ -62,7 +62,7 @@ For a complete list of account properties, see the [accounts overview](/hedera/s
 <Info>
     #### High-volume entity creation
 
-    This transaction supports [high-volume entity creation](/hedera/core-concepts/high-volume-entity-creation) (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated high-volume throttle capacity with variable-rate pricing. Always pair this with `setMaxTransactionFee()` to cap your costs.
+    This transaction supports [high-volume entity creation](/learn/core-concepts/high-volume-entity-creation) (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated high-volume throttle capacity with variable-rate pricing. Always pair this with `setMaxTransactionFee()` to cap your costs.
 </Info>
 
 ### Maximum auto-associations
@@ -72,7 +72,7 @@ The `maxAutoAssociations` property determines how many automatic token associati
 | Value | Behavior |
 | :---: | --- |
 | `0` | Automatic token associations and token airdrops are not allowed. Tokens must be manually associated. This also applies when the value is less than or equal to `usedAutoAssociations`. |
-| `-1` | Unlimited automatic token associations. This is the default for accounts created via [auto account creation](../../../core-concepts/accounts/auto-account-creation) and for hollow accounts that have been completed. The sender still pays the association fee and initial rent for each new token. |
+| `-1` | Unlimited automatic token associations. This is the default for accounts created via [auto account creation](/learn/core-concepts/accounts/auto-account-creation) and for hollow accounts that have been completed. The sender still pays the association fee and initial rent for each new token. |
 | `> 0` | Automatic token associations are limited to the specified number. |
 
 Reference: [HIP-904](https://hips.hedera.com/hip/hip-904).
@@ -226,4 +226,4 @@ print(f"The new account ID is {new_account_id}")
 | `getStakedNodeId()` | long | Returns the staked node ID |
 | `getStakedAccountId()` | AccountId | Returns the staked account ID |
 | `getReceiverSignatureRequired()` | boolean | Returns whether the receiver signature is required |
-| `getHighVolume()` | boolean | Returns whether this transaction uses [high-volume throttles](/hedera/core-concepts/high-volume-entity-creation) |
+| `getHighVolume()` | boolean | Returns whether this transaction uses [high-volume throttles](/learn/core-concepts/high-volume-entity-creation) |

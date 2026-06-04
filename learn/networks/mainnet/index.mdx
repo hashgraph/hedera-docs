@@ -6,9 +6,9 @@ description: Join Hedera Mainnet
 
 The Hedera mainnet (short for main network) is where applications are run in production, with transaction fees paid in [HBAR](https://www.hedera.com/hbar). Any application or retail user can submit transactions to the Hedera mainnet; they're automatically consensus-timestamped and fairly ordered.
 
-Any Hedera account can query data associated with Hedera's services and stored on-chain. Every transaction requires payment of a fee. Fees follow a [base fee + extras model](/hedera/core-concepts/fee-model) defined in the network's fee schedule (system file `0.0.113`). Fees are denominated in USD (as tinycents) and paid in HBAR at the current exchange rate (100,000,000 tℏ = 1 ℏ). You can learn more about transaction fees [here](/hedera/core-concepts/fee-model) and estimate your application costs using the [fee tables](/hedera/networks/mainnet/fees) or the `POST /api/v1/network/fees` [Mirror Node endpoint](/hedera/sdks-and-apis/rest-api/network).
+Any Hedera account can query data associated with Hedera's services and stored on-chain. Every transaction requires payment of a fee. Fees follow a [base fee + extras model](/learn/core-concepts/fee-model) defined in the network's fee schedule (system file `0.0.113`). Fees are denominated in USD (as tinycents) and paid in HBAR at the current exchange rate (100,000,000 tℏ = 1 ℏ). You can learn more about transaction fees [here](/learn/core-concepts/fee-model) and estimate your application costs using the [fee tables](/learn/networks/mainnet/fees) or the `POST /api/v1/network/fees` [Mirror Node endpoint](/reference/rest-api/network).
 
-If you're looking to test your application (or just experiment), please visit [Testnet Access](/hedera/networks/testnet/testnet-access). The Hedera testnet enables developers to prototype and test applications in a simulated mainnet environment that uses test *HBAR* for paying transaction fees.
+If you're looking to test your application (or just experiment), please visit [Testnet Access](/learn/networks/testnet/access). The Hedera testnet enables developers to prototype and test applications in a simulated mainnet environment that uses test *HBAR* for paying transaction fees.
 
 <Warning>
 
@@ -41,7 +41,7 @@ capacity from them.
 | **Throttle Bucket** | **Transaction Types** | **Capacity** |
 |---|---|---|
 | HighVolumeCryptoThrottles | `CryptoCreate`, `ScheduleCreate` | *Set by governance* |
-| HighVolumeTotalThrottles | All 14 [supported types](/hedera/core-concepts/high-volume-entity-creation#supported-transaction-types) combined | *Set by governance* |
+| HighVolumeTotalThrottles | All 14 [supported types](/learn/core-concepts/high-volume-entity-creation#supported-transaction-types) combined | *Set by governance* |
 
 A high-volume transaction must pass **both** its per-type bucket and the total
 bucket to be accepted. If either is exhausted, the transaction receives a `BUSY`
@@ -49,6 +49,6 @@ response — the same behavior as the standard throttle system.
 
 <Note>
     High-volume transactions use **variable-rate pricing** that scales with utilization.
-    See the [High-Volume Entity Creation](/hedera/core-concepts/high-volume-entity-creation)
+    See the [High-Volume Entity Creation](/learn/core-concepts/high-volume-entity-creation)
     guide to understand how this affects your transaction fees before opting in.
 </Note>

@@ -964,9 +964,14 @@
         "icon": "graduation-cap",
         "groups": [
           {
+            "group": "Overview",
+            "pages": [
+              "learn/index"
+            ]
+          },
+          {
             "group": "Getting Started",
             "pages": [
-              "learn/index",
               "learn/getting-started/index",
               "learn/getting-started/what-is-hedera",
               "learn/getting-started/why-hedera",
@@ -1087,9 +1092,14 @@
         "icon": "ethereum",
         "groups": [
           {
+            "group": "Overview",
+            "pages": [
+              "evm/index"
+            ]
+          },
+          {
             "group": "Quickstart",
             "pages": [
-              "evm/index",
               "evm/quickstart/index",
               "evm/quickstart/setup-metamask",
               "evm/quickstart/get-test-hbar",
@@ -1339,9 +1349,14 @@
         "icon": "code",
         "groups": [
           {
+            "group": "Overview",
+            "pages": [
+              "native/index"
+            ]
+          },
+          {
             "group": "Quickstart",
             "pages": [
-              "native/index",
               "native/quickstart/index",
               "learn/getting-started/create-portal-account",
               "native/quickstart/javascript",
@@ -1619,9 +1634,14 @@
         "icon": "lightbulb",
         "groups": [
           {
+            "group": "Overview",
+            "pages": [
+              "solutions/index"
+            ]
+          },
+          {
             "group": "Tokenization",
             "pages": [
-              "solutions/index",
               "solutions/tokenization/index",
               {
                 "group": "Asset Tokenization Studio",
@@ -1781,9 +1801,14 @@
         "icon": "server",
         "groups": [
           {
+            "group": "Overview",
+            "pages": [
+              "operators/index"
+            ]
+          },
+          {
             "group": "Mirror Node",
             "pages": [
-              "operators/index",
               "operators/mirror-node/index",
               "operators/mirror-node/architecture",
               "operators/mirror-node/one-click-deploy",
@@ -1826,9 +1851,14 @@
         "icon": "book",
         "groups": [
           {
+            "group": "Overview",
+            "pages": [
+              "reference/index"
+            ]
+          },
+          {
             "group": "REST API",
             "pages": [
-              "reference/index",
               "reference/rest-api/index",
               "reference/rest-api/accounts/index",
               "reference/rest-api/balances/index",
@@ -2063,9 +2093,14 @@
         "icon": "circle-question",
         "groups": [
           {
+            "group": "Overview",
+            "pages": [
+              "support/index"
+            ]
+          },
+          {
             "group": "FAQs",
             "pages": [
-              "support/index",
               "support/faq/index",
               "support/faq/getting-started",
               "support/faq/governance",
@@ -2120,7 +2155,6 @@
             "pages": [
               "support/hedera-com-discord",
               "support/github-com-hashgraph",
-              "support/stackoverflow-com-questions-tagged-hedera-hashgraph",
               "support/help-hedera-com-hc-en-us",
               "support/hedera-com-blog-tagged-technical",
               "support/hedera-com-bounty",

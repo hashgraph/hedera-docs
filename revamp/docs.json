@@ -81,6 +81,22 @@
   },
   "redirects": [
     {
+      "source": "/evm/development/index",
+      "destination": "/evm/development/creating"
+    },
+    {
+      "source": "/solutions/tokenization/stablecoin",
+      "destination": "/solutions/tokenization/stablecoin/core-concepts"
+    },
+    {
+      "source": "/solutions/tokenization/stablecoin/index",
+      "destination": "/solutions/tokenization/stablecoin/core-concepts"
+    },
+    {
+      "source": "/evm/development",
+      "destination": "/evm/development/creating"
+    },
+    {
       "source": "/native/tutorials/index",
       "destination": "/native/tutorials/getting-started/create-fund-account"
     },
@@ -1169,7 +1185,6 @@
           {
             "group": "Development",
             "pages": [
-              "evm/development/index",
               "evm/development/creating",
               "evm/development/compiling",
               "evm/development/deploying",
@@ -1181,7 +1196,8 @@
               "evm/development/addresses",
               "evm/development/security",
               "evm/development/forking",
-              "evm/development/json-rpc/index"
+              "evm/development/json-rpc/index",
+              "evm/development/troubleshooting"
             ]
           },
           {
@@ -1656,7 +1672,6 @@
               {
                 "group": "Stablecoin Studio",
                 "pages": [
-                  "solutions/tokenization/stablecoin/index",
                   "solutions/tokenization/stablecoin/core-concepts",
                   "solutions/tokenization/stablecoin/web-ui",
                   "solutions/tokenization/stablecoin/cli"

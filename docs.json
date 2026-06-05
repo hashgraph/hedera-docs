@@ -129,6 +129,10 @@
       "destination": "/native/local-dev/setup-local-node"
     },
     {
+      "source": "/hedera",
+      "destination": "/"
+    },
+    {
       "source": "/hedera/sdks-and-apis/sdks/tokens",
       "destination": "/native/tokens"
     },

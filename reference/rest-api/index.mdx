@@ -1,0 +1,75 @@
+---
+title: "Mirror Node REST API"
+sidebarTitle: Introduction
+description: "The mirror node REST API offers the ability to query transaction information."
+---
+
+
+## Overview
+
+The **Hedera Mirror Node REST API** enables developers to access historical transaction data from Hedera's mainnet, testnet, and previewnet. Each transaction generates a record stored in a record file, which can be accessed via the Mirror Node REST APIs.
+
+***
+
+## Making a Request
+
+To make a request, use the network endpoint and the REST API of choice.
+
+For example, To get a list of transactions on the **Hedera mainnet**, use the following API endpoint:
+
+```bash
+https://mainnet.mirrornode.hedera.com/api/v1/transactions
+```
+
+This will return a JSON response containing transaction details such as transaction ID, timestamps, and fees.
+
+If you are using `curl`, you can make a request like this:
+
+```bash
+curl -X GET "https://mainnet.mirrornode.hedera.com/api/v1/transactions" -H "Accept: application/json"
+```
+
+***
+
+## Hedera Mirror Node Swagger UI Environments
+
+Hedera provides interactive Swagger UI for its Mirror Node REST API. Developers can use these environments to explore available endpoints, check request parameters, and test API calls without writing code.
+
+#### **Available Environments:**
+
+| Network | Swagger UI URL |
+|---|---|
+| **Mainnet** | [Mainnet Swagger UI](https://mainnet.mirrornode.hedera.com/api/v1/docs/) |
+| **Testnet** | [Testnet Swagger UI](https://testnet.mirrornode.hedera.com/api/v1/docs/) |
+| **Previewnet** | [Previewnet Swagger UI](https://previewnet.mirrornode.hedera.com/api/v1/docs/) |
+
+***
+
+## **Hedera Mirror Node Environments**
+
+Hedera provides three different network environments for interacting with the Mirror Node API.
+
+| Network | Base URL |
+|---|---|
+| **Mainnet** | `https://mainnet.mirrornode.hedera.com/` |
+| **Testnet** | `https://testnet.mirrornode.hedera.com/` |
+| **Previewnet** | `https://previewnet.mirrornode.hedera.com/` |
+
+Each of these base URLs serves as the foundation for all API calls.
+
+<Check>
+#### Community Providers
+
+You may also check out these community providers as alternatives:
+
+* [**LinkPool**](https://linkpool.com/)
+  * `https://hedera-mirror.linkpool.pro/`
+* [**Validation Cloud**](https://validationcloud.io/)
+  * `https://mainnet.hedera.validationcloud.io/`
+* [**DragonGlass**](https://app.dragonglass.me/hedera/pricing)
+  * `https://api.dragonglass.me/hedera/`
+</Check>
+
+<Warning>
+Public mainnet mirror node requests per second (RPS) are currently throttled at **50 per IP address**. These configurations may change in the future depending on performance or security considerations. At this time, no authentication is required.
+</Warning>

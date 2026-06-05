@@ -1,0 +1,204 @@
+---
+title: "ResponseCode"
+---
+
+
+<Accordion title="OK">
+The transaction passed the precheck validations.
+</Accordion>
+
+<Accordion title="INVALID_TRANSACTION">
+For any error not handled by specific error codes listed below.
+</Accordion>
+
+<Accordion title="PAYER_ACCOUNT_NOT_FOUND">
+Payer account does not exist.
+</Accordion>
+
+<Accordion title="INVALID_NODE_ACCOUNT">
+Node Account provided does not match the node account of the node the transaction was submitted to.
+</Accordion>
+
+<Accordion title="TRANSACTION_EXPIRED">
+Pre-Check error when TransactionValidStart + transactionValidDuration is less than current consensus time.
+</Accordion>
+
+<Accordion title="INVALID_TRANSACTION_START">
+Transaction start time is greater than current consensus time
+</Accordion>
+
+<Accordion title="INVALID_TRANSACTION_DURATION">
+Invalid transaction duration is a positive non-zero number that does not exceed 120 seconds
+</Accordion>
+
+<Accordion title="INVALID_SIGNATURE">
+The transaction signature is not valid
+</Accordion>
+
+<Accordion title="MEMO_TOO_LONG">
+Transaction memo size exceeded 100 bytes
+</Accordion>
+
+<Accordion title="INSUFFICIENT_TX_FEE">
+The fee provided in the transaction is insufficient for this type of transaction
+</Accordion>
+
+<Accordion title="INSUFFICIENT_PAYER_BALANCE">
+The payer account has insufficient cryptocurrency to pay the transaction fee
+</Accordion>
+
+<Accordion title="DUPLICATE_TRANSACTION">
+This transaction ID is a duplicate of one that was submitted to this node or reached consensus in the last 180 seconds (receipt period)
+</Accordion>
+
+<Accordion title="BUSY">
+If API is throttled out
+</Accordion>
+
+<Accordion title="NOT_SUPPORTED">
+The API is not currently supported
+</Accordion>
+
+<Accordion title="INVALID_FILE_ID">
+The file id is invalid or does not exist
+</Accordion>
+
+<Accordion title="INVALID_ACCOUNT_ID">
+The account id is invalid or does not exist
+</Accordion>
+
+<Accordion title="INVALID_CONTRACT_ID">
+The contract id is invalid or does not exist
+</Accordion>
+
+<Accordion title="INVALID_TRANSACTION_ID">
+Transaction id is not valid
+</Accordion>
+
+<Accordion title="RECEIPT_NOT_FOUND">
+Receipt for given transaction id does not exist
+</Accordion>
+
+<Accordion title="RECORD_NOT_FOUND">
+Record for given transaction id does not exist
+</Accordion>
+
+<Accordion title="INVALID_SOLIDITY_ID">
+The solidity id is invalid or entity with this solidity id does not exist
+</Accordion>
+
+<Accordion title="UNKNOWN">
+This node has submitted this transaction to the network. Status of the transaction is currently unknown.
+</Accordion>
+
+<Accordion title="SUCCESS">
+The transaction succeeded
+</Accordion>
+
+<Accordion title="FAIL_INVALID">
+There was a system error and the transaction failed because of invalid request parameters.
+</Accordion>
+
+<Accordion title="FAIL_FEE">
+There was a system error while performing fee calculation, reserved for future.
+</Accordion>
+
+<Accordion title="FAIL_BALANCE">
+There was a system error while performing balance checks, reserved for future.
+</Accordion>
+
+<Accordion title="KEY_REQUIRED">
+Key not provided in the transaction body
+</Accordion>
+
+<Accordion title="BAD_ENCODING">
+Unsupported algorithm/encoding used for keys in the transaction
+</Accordion>
+
+<Accordion title="INSUFFICIENT_ACCOUNT_BALANCE">
+When the account balance is not sufficient for the transfer
+</Accordion>
+
+<Accordion title="INVALID_SOLIDITY_ADDRESS">
+During an update transaction when the system is not able to find the Users Solidity address
+</Accordion>
+
+<Accordion title="INSUFFICIENT_GAS">
+Not enough gas was supplied to execute transaction
+</Accordion>
+
+<Accordion title="CONTRACT_SIZE_LIMIT_EXCEEDED">
+contract byte code size is over the limit
+</Accordion>
+
+<Accordion title="LOCAL_CALL_MODIFICATION_EXCEPTION">
+local execution (query) is requested for a function which changes state
+</Accordion>
+
+<Accordion title="CONTRACT_REVERT_EXECUTED">
+Contract REVERT OPCODE executed
+</Accordion>
+
+<Accordion title="CONTRACT_EXECUTION_EXCEPTION">
+For any contract execution-related error not handled by the specific error codes listed above.
+</Accordion>
+
+<Accordion title="INVALID_RECEIVING_NODE_ACCOUNT">
+In Query validation, an account with +ve(amount) value should be a Receiving node account, the receiver account should be only one account in the list.
+</Accordion>
+
+<Accordion title="MISSING_QUERY_HEADER">
+The header is missing in the Query request.
+</Accordion>
+
+<Accordion title="ACCOUNT_UPDATE_FAILED">
+The update of the account failed.
+</Accordion>
+
+<Accordion title="INVALID_KEY_ENCODING">
+Provided key encoding was not supported by the system.
+</Accordion>
+
+<Accordion title="NULL_SOLIDITY_ADDRESS">
+null solidity address
+</Accordion>
+
+<Accordion title="CONTRACT_UPDATE_FAILED">
+update of the contract failed
+</Accordion>
+
+<Accordion title="INVALID_QUERY_HEADER">
+the query header is invalid
+</Accordion>
+
+<Accordion title="INVALID_FEE_SUBMITTED">
+Invalid fee submitted
+</Accordion>
+
+<Accordion title="INVALID_PAYER_SIGNATURE">
+Payer signature is invalid
+</Accordion>
+
+<Accordion title="KEY_NOT_PROVIDED">
+The keys were not provided in the request.
+</Accordion>
+
+<Accordion title="INVALID_EXPIRATION_TIME">
+Expiration time provided in the transaction was invalid.
+</Accordion>
+
+<Accordion title="NO_WACL_KEY">
+WriteAccess Control Keys are not provided for the file
+</Accordion>
+
+<Accordion title="FILE_CONTENT_EMPTY">
+The contents of file are provided as empty.
+</Accordion>
+
+<Accordion title="INVALID_ACCOUNT_AMOUNTS">
+The crypto transfer credit and debit do not sum equal to 0
+</Accordion>
+
+<Accordion title="EMPTY_TRANSACTION_BODY">
+Transaction body provided is empty
+</Accordion>

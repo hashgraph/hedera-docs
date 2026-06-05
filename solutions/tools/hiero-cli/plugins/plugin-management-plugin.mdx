@@ -1,0 +1,58 @@
+---
+title: "Plugin Management Plugin"
+---
+
+
+## Full Command Reference
+
+<Accordion title="Plugin Management Add">
+    Add a new plugin to the plugin-management state and enable it. Provide **`--path`** for a custom plugin directory, or **`--name`** for a built-in plugin name (resolved under the CLI plugins directory). One of the two is required.
+
+    <ResponseField name="-p, --path" type="string">
+        Filesystem path to the plugin directory containing `manifest.js`
+    </ResponseField>
+
+    <ResponseField name="-n, --name" type="string">
+        Name of a default plugin to add (for example `account`, `token`). Use `--path` for custom plugins.
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Plugin Management Remove">
+    Remove a plugin from the plugin-management state.
+
+    <ResponseField name="-n, --name" type="string" required>
+        Name of the plugin to remove from the state
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Plugin Management Enable">
+    Enable a plugin by name in the plugin-management state.
+
+    <ResponseField name="-n, --name" type="string" required>
+        Name of the plugin to enable
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Plugin Management Disable">
+    Disable a plugin by name in the plugin-management state.
+
+    <ResponseField name="-n, --name" type="string" required>
+        Name of the plugin to disable.
+    </ResponseField>
+</Accordion>
+
+<Accordion title="Plugin Management List">
+    Show all loaded plugins.
+</Accordion>
+
+<Accordion title="Plugin Management Reset">
+    Clear plugin-management state. Custom plugins will be removed. Prompts for confirmation unless confirmations are skipped globally.
+</Accordion>
+
+<Accordion title="Plugin Management Info">
+    Show detailed information about a specific plugin.
+
+    <ResponseField name="-n, --name" type="string" required>
+        Name of the plugin for information display
+    </ResponseField>
+</Accordion>

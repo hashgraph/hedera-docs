@@ -1,0 +1,229 @@
+---
+title: "Create an account"
+---
+
+A Hedera account is required to interact with any network service, since every transaction and query fee is paid from an account. You can create a previewnet or testnet account on the [Hedera Developer Portal](https://portal.hedera.com/), or use a third-party wallet to generate a free [mainnet account](/learn/networks/mainnet/access).
+
+This page covers programmatic account creation with `AccountCreateTransaction()`. The transaction must be signed and paid for by an existing account. To obtain the new account ID, request the [receipt](/native/transactions/receipt) of the transaction.
+
+For a complete list of account properties, see the [accounts overview](/native/accounts).
+
+---
+
+## Transaction fees and signing
+
+- The account paying for the transaction fee is required to sign the transaction.
+- The sender also pays the `maxAutoAssociations` fee and the rent for the first auto-renewal period.
+- See the transaction and query [fees](/learn/networks/mainnet/fees) table for the base transaction fee.
+- Use the [Hedera fee estimator](https://hedera.com/fees) to estimate cost.
+
+---
+
+## Constructor
+
+| Constructor | Description |
+|---|---|
+| `new AccountCreateTransaction()` | Initializes the `AccountCreateTransaction` object |
+
+## Methods
+
+| Method | Type | Requirement |
+| --- | --- | --- |
+| `setKey(<key>)` | Key | Required |
+| `setKeyWithAlias(<key>)` | Key | Optional |
+| `setKeyWithoutAlias(<key>)` | Key | Optional |
+| `setAlias(<alias>)` | EvmAddress | Optional |
+| `setInitialBalance(<initialBalance>)` | Hbar | Optional |
+| `setReceiverSignatureRequired(<booleanValue>)` | boolean | Optional |
+| `setMaxAutomaticTokenAssociations(<amount>)` | int | Optional |
+| `setStakedAccountId(<stakedAccountId>)` | AccountId | Optional |
+| `setStakedNodeId(<stakedNodeId>)` | long | Optional |
+| `setDeclineStakingReward(<declineStakingReward>)` | boolean | Optional |
+| `setAccountMemo(<memo>)` | String | Optional |
+| `setHighVolume(<highVolume>)` | boolean | Optional |
+| `setAutoRenewPeriod(<autoRenewPeriod>)` | Duration | Disabled |
+
+
+<Note>
+    ### EVM address from public key
+
+    <a id="evm-address-from-public-key"></a>
+    <a id="evm-address-alias-recommended-for-evm-use-cases"></a>
+
+    Setting an ECDSA-derived EVM address at creation makes the account natively addressable from EVM wallets, JSON-RPC, and Solidity (`msg.sender`). The address is the rightmost 20 bytes of the Keccak-256 hash of the ECDSA public key. Use `setKeyWithAlias()` to enable this behavior, as shown in the [example](#example) below.
+
+    **Immutability:** The EVM address is bound to the original ECDSA public key and does **not** change if you later rotate keys via `CryptoUpdateTransaction`. Integrations keyed to that EVM address (smart-contract permissions, address-based access lists) will continue to reference the original address.
+
+    **If key rotation is required:** Use `setKeyWithoutAlias()` instead. The account will fall back to its EVM Address from Account ID (the long-zero form).
+
+    **Recovery model:** If keys are compromised or must be replaced, create a new account with a new ECDSA key, then migrate assets and state. Do not rely on key rotation to preserve the same EVM identity.
+
+</Note>
+<Info>
+    #### High-volume entity creation
+
+    This transaction supports [high-volume entity creation](/learn/core-concepts/high-volume-entity-creation) (HIP-1313). Setting `setHighVolume(true)` routes the transaction through dedicated high-volume throttle capacity with variable-rate pricing. Always pair this with `setMaxTransactionFee()` to cap your costs.
+</Info>
+
+### Maximum auto-associations
+
+The `maxAutoAssociations` property determines how many automatic token associations an account allows.
+
+| Value | Behavior |
+| :---: | --- |
+| `0` | Automatic token associations and token airdrops are not allowed. Tokens must be manually associated. This also applies when the value is less than or equal to `usedAutoAssociations`. |
+| `-1` | Unlimited automatic token associations. This is the default for accounts created via [auto account creation](/learn/core-concepts/accounts/auto-account-creation) and for hollow accounts that have been completed. The sender still pays the association fee and initial rent for each new token. |
+| `> 0` | Automatic token associations are limited to the specified number. |
+
+Reference: [HIP-904](https://hips.hedera.com/hip/hip-904).
+
+---
+
+## Example
+
+<CodeGroup>
+
+```javascript wrap JavaScript
+// Create new ECDSA key
+const ecdsaPublicKey = PrivateKey.generateECDSA().publicKey;
+
+// Create the transaction
+const transaction = new AccountCreateTransaction()
+    // Sets the EVM Address from Public Key (recommended for EVM compatibility)
+    .setKeyWithAlias(ecdsaPublicKey)
+    // Use .setKeyWithoutAlias(ecdsaPublicKey) if you plan to rotate keys soon after creation
+    .setInitialBalance(new Hbar(1));
+
+// Sign the transaction with the client operator private key and submit to a Hedera network
+const txResponse = await transaction.execute(client);
+
+//Request the receipt of the transaction
+const receipt = await txResponse.getReceipt(client);
+
+//Get the account ID
+const newAccountId = receipt.accountId;
+
+console.log("The new account ID is " + newAccountId);
+
+// v2.84.0
+```
+
+```java wrap Java
+// Create new ECDSA key
+PublicKey ecdsaPublicKey = PrivateKey.generateECDSA().getPublicKey();
+
+// Create the transaction
+AccountCreateTransaction transaction = new AccountCreateTransaction()
+    // Sets the EVM Address from Public Key (recommended for EVM compatibility)
+    .setKeyWithAlias(ecdsaPublicKey)
+    // Use .setKeyWithoutAlias(ecdsaPublicKey) if you plan to rotate keys soon after creation
+    .setInitialBalance(new Hbar(1));
+
+// Sign the transaction with the client operator private key and submit to a Hedera network
+TransactionResponse txResponse = transaction.execute(client);
+
+//Request the receipt of the transaction
+TransactionReceipt receipt = txResponse.getReceipt(client);
+
+//Get the account ID
+AccountId newAccountId = receipt.accountId;
+
+System.out.println("The new account ID is " + newAccountId);
+
+// v2.72.0
+```
+
+```go wrap Go
+// Create new ECDSA key
+ecdsaPrivateKey, _ := hedera.PrivateKeyGenerateECDSA()
+ecdsaPublicKey := ecdsaPrivateKey.PublicKey()
+
+// Create the transaction
+transaction := hedera.NewAccountCreateTransaction().
+    // Sets the EVM Address from Public Key (recommended for EVM compatibility)
+    SetKeyWithAlias(ecdsaPublicKey).
+    // Use SetKeyWithoutAlias(ecdsaPublicKey) if you plan to rotate keys soon after creation
+    SetInitialBalance(hedera.NewHbar(1))
+
+// Sign the transaction with the client operator private key and submit to a Hedera network
+txResponse, err := transaction.Execute(client)
+
+//Request the receipt of the transaction
+receipt, err := txResponse.GetReceipt(client)
+
+//Get the account ID
+newAccountId := *receipt.AccountID
+
+fmt.Printf("The new account ID is %v\n", newAccountId)
+
+// v2.80.0
+```
+
+```rust wrap Rust
+// Create new ECDSA key
+let ecdsa_public_key = PrivateKey::generate_ecdsa().public_key();
+
+// Create the transaction
+let transaction = AccountCreateTransaction::new()
+    // Sets the EVM Address from Public Key (recommended for EVM compatibility)
+    .key_with_alias(ecdsa_public_key)
+    // Use .key_without_alias(ecdsa_public_key) if you plan to rotate keys soon after creation
+    .initial_balance(Hbar::new(1));
+
+// Sign the transaction with the client operator private key and submit to a Hedera network
+let tx_response = transaction.execute(&client).await?;
+
+// Request the receipt of the transaction
+let receipt = tx_response.get_receipt(&client).await?;
+
+// Get the account ID
+let new_account_id = receipt.account_id.unwrap();
+
+println!("The new account ID is {}", new_account_id);
+
+// v0.45.0
+```
+
+```python Python
+# Create new ECDSA key
+ecdsa_public_key = PrivateKey.generate_ecdsa().public_key()
+
+# Create the transaction
+transaction = (
+    AccountCreateTransaction()
+    # Sets the EVM Address from Public Key (recommended for EVM compatibility)
+    .set_key_with_alias(ecdsa_public_key)
+    # Use .set_key_without_alias(ecdsa_public_key) if you plan to rotate keys soon after creation
+    .set_initial_balance(Hbar(1))
+)
+
+# Sign the transaction with the client operator private key and submit to a Hedera network
+tx_response = transaction.execute(client)
+
+# Request the receipt of the transaction
+receipt = tx_response.get_receipt(client)
+
+# Get the account ID
+new_account_id = receipt.account_id
+
+print(f"The new account ID is {new_account_id}")
+
+# v0.2.7
+```
+
+</CodeGroup>
+
+---
+
+## Get transaction values
+
+| Method | Type | Description |
+|---|---|---|
+| `getKey()` | Key | Returns the public key on the account |
+| `getInitialBalance()` | Hbar | Returns the initial balance of the account |
+| `getAutoRenewPeriod()` | Duration | Returns the auto-renew period on the account |
+| `getDeclineStakingReward()` | boolean | Returns whether the account declined staking rewards |
+| `getStakedNodeId()` | long | Returns the staked node ID |
+| `getStakedAccountId()` | AccountId | Returns the staked account ID |
+| `getReceiverSignatureRequired()` | boolean | Returns whether the receiver signature is required |
+| `getHighVolume()` | boolean | Returns whether this transaction uses [high-volume throttles](/learn/core-concepts/high-volume-entity-creation) |

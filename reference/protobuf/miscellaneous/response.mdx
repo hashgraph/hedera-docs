@@ -1,0 +1,32 @@
+---
+title: "Response"
+---
+
+
+A single response, which is returned from the node to the client, after the client sent the node a query. This includes all responses.
+
+| Field                         | Type                                                                                                                                                          | Description                                                                             |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `getByKey`                    | [GetByKeyResponse](/reference/protobuf/miscellaneous/getbykey#getbykeyresponse)                                                         | Get all entities associated with a given key                                            |
+| `getBySolidityID`             | [GetBySolidityIDResponse](/reference/protobuf/miscellaneous/getbysolidityid#getbysolidityidresponse)                                    | Get the IDs in the format used in transactions, given the format used in Solidity       |
+| `contractCallLocal`           | [ContractCallLocalResponse](/reference/protobuf/smart-contracts/contractcalllocal#contractcalllocalresponse)                         | Response to call a function of a smart contract instance                                |
+| `contractGetBytecodeResponse` | [ContractGetBytecodeResponse](/reference/protobuf/smart-contracts/contractgetbytecode)                                    | Get the bytecode for a smart contract instance                                          |
+| `contractGetInfo`             | [ContractGetInfoResponse](/reference/protobuf/smart-contracts/contractgetinfo#contractgetinforesponse)                               | Get information about a smart contract instance                                         |
+| `contractGetRecordsResponse`  | [ContractGetRecordsResponse](https://github.com/theekrystallee/hedera-style-guide/blob/sdk-v1/deprecated/hedera-api/miscellaneous/broken-reference/README.md) | Get all existing records for a smart contract instance                                  |
+| `cryptogetAccountBalance`     | [CryptoGetAccountBalanceResponse](/reference/protobuf/crypto/cryptogetaccountbalance)                    | Get the current balance in a cryptocurrency account                                     |
+| `cryptoGetAccountRecords`     | [CryptoGetAccountRecordsResponse](/reference/protobuf/crypto/cryptogetaccountrecords)                    | Get all the records that currently exist for transactions involving an account          |
+| `cryptoGetInfo`               | [CryptoGetInfoResponse](/reference/protobuf/crypto/cryptogetinfo#cryptogetinforesponse)                             | Get all information about an account                                                    |
+| `cryptoGetLiveHash`           | [CryptoGetLiveHashResponse](/reference/protobuf/crypto/cryptogetinfo)                                    | Get a single claim from a single account (or null if it doesn't exist)                  |
+| `cryptoGetProxyStakers`       | [CryptoGetStakersResponse](/reference/protobuf/crypto/cryptogetstakers)                                  | Get all the accounts that proxy stake to a given account, and how much they proxy stake |
+| `fileGetContents`             | [FileGetContentsResponse](/reference/protobuf/file/filegetcontents)                                               | Get the contents of a file (the bytes stored in it)                                     |
+| `fileGetInfo`                 | [FileGetInfoResponse](/reference/protobuf/file/filegetinfo)                                                       | Get information about a file, such as its expiration date                               |
+| `transactionGetReceipt`       | [TransactionGetReceiptResponse](/reference/protobuf/miscellaneous/transactiongetreceipt)                                  | Get a receipt for a transaction (lasts 180 seconds)                                     |
+| `transactionGetRecord`        | [TransactionGetRecordResponse](/reference/protobuf/miscellaneous/transactiongetrecord)                                    | Get a record for a transaction (lasts 1 hour)                                           |
+| `transactionGetFastRecord`    | [TransactionGetFastRecordResponse](/reference/protobuf/miscellaneous/transactiongetfastrecord)                            | Get a record for a transaction (lasts 180 seconds)                                      |
+| `consensusGetTopicInfo`       | [ConsensusGetTopicInfoResponse](/reference/protobuf/consensus/consensusgettopicinfo)                                      | Parameters of and state of a consensus topic.                                           |
+| `networkGetVersionInfo`       | [NetworkGetVersionInfoResponse](/reference/protobuf/miscellaneous/networkgetversioninfo)                                  | Semantic versions of Consensus Node and HAPI proto                                      |
+| `tokenGetInfo`                | [TokenGetInfoResponse](/reference/protobuf/token/tokengetinfo)                                                    | Get all information about a token                                                       |
+| `scheduleGetInfo`             | [ScheduleGetInfoResponse](/reference/protobuf/schedule/schedulegetinfo)                                           | Get all information about a schedule entity                                             |
+| `tokenGetAccountNftInfo`      | [TokenGetAccountNftInfoResponse](/reference/protobuf/token/tokengetaccountnftinfo)                                | A list of the NFTs associated with the account                                          |
+| `tokenGetNftInfo`             | [TokenGetNftInfoResponse](/reference/protobuf/token/tokengetnftinfo)                                              | All information about an NFT                                                            |
+| `tokenGetNftInfos`            | [TokenGetNftInfosResponse](/reference/protobuf/token/tokengetinfo)                                                | A list of the NFTs for the token                                                        |

@@ -14,7 +14,7 @@ Private keys *can only* be recovered once lost if created with an associated rec
 
 - ECDSA accounts should set an **EVM alias** — an EVM address derived from the ECDSA public key. The EVM alias is the rightmost 20 bytes of the 32-byte Keccak-256 hash of the ECDSA public key, calculated in the manner described by the Ethereum Yellow Paper. Note that the recovery ID is not formally part of the public key and is not included in the hash. The EVM address is also commonly known as the public address, and the account ID format is `<shardNum>.<realmNum>.<alias>` where alias is the EVM address.
 - The EVM alias enables full compatibility with Solidity smart contracts, `msg.sender` checks, and EVM-based tooling such as MetaMask, Hardhat, and Foundry.
-- ECDSA keys work seamlessly with wallets and dApps built for Ethereum-compatible networks.
+- ECDSA keys work seamlessly with wallets and dApps built for EVM-compatible networks.
 
 <Info>
 For maximum compatibility with Solidity and smart contracts, set the EVM alias when creating an account by using `setECDSAKeyWithAlias()`. This ensures the account's EVM address is derived from its ECDSA public key, so `msg.sender` in a contract resolves correctly to the account's EVM address.

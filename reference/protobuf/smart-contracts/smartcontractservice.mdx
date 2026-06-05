@@ -1,0 +1,18 @@
+---
+title: "SmartContractService"
+---
+
+
+| RPC                       | Request                                                                                          | Response                                                                                                         | Comments                                                                              |
+| ------------------------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `createContract`          | [Transaction](/reference/protobuf/miscellaneous/transaction) | [TransactionResponse](/reference/protobuf/miscellaneous/transactionresponse) | Creates a contract                                                                    |
+| `updateContract`          | [Transaction](/reference/protobuf/miscellaneous/transaction) | [TransactionResponse](/reference/protobuf/miscellaneous/transactionresponse) | Updates a contract with the content                                                   |
+| `contractCallMethod`      | [Transaction](/reference/protobuf/miscellaneous/transaction) | [TransactionResponse](/reference/protobuf/miscellaneous/transactionresponse) | Calls a contract                                                                      |
+| `getContractInfo`         | [Query](/reference/protobuf/miscellaneous/query)             | [Response](/reference/protobuf/miscellaneous/response)                       | Retrieves the contract information                                                    |
+| `contractCallLocalMethod` | [Query](/reference/protobuf/miscellaneous/query)             | [Response](/reference/protobuf/miscellaneous/response)                       | Calls a smart contract to be run on a single node                                     |
+| `ContractGetBytecode`     | [Query](/reference/protobuf/miscellaneous/query)             | [Response](/reference/protobuf/miscellaneous/response)                       | Retrieves the byte code of a contract                                                 |
+| `getBySolidityID`         | [Query](/reference/protobuf/miscellaneous/query)             | [Response](/reference/protobuf/miscellaneous/response)                       | Retrieves a contract by its Solidity address                                          |
+| `getTxRecordByContractID` | [Query](/reference/protobuf/miscellaneous/query)             | [Response](/reference/protobuf/miscellaneous/response)                       | Retrieves the 25-hour records stored for a contract                                   |
+| `deleteContract`          | [Transaction](/reference/protobuf/miscellaneous/transaction) | [TransactionResponse](/reference/protobuf/miscellaneous/transactionresponse) | Deletes a contract instance and transfers any remaining hbars to a specified receiver |
+| `systemDelete`            | [Transaction](/reference/protobuf/miscellaneous/transaction) | [TransactionResponse](/reference/protobuf/miscellaneous/transactionresponse) | Deletes a contract if the submitting account has network admin privileges             |
+| `systemUndelete`          | [Transaction](/reference/protobuf/miscellaneous/transaction) | [TransactionResponse](/reference/protobuf/miscellaneous/transactionresponse) | Undeletes a contract if the submitting account has network admin privileges           |

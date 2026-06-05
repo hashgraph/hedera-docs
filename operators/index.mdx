@@ -1,0 +1,145 @@
+---
+title: "Operators"
+description: "Run and operate Hedera infrastructure: mirror nodes, JSON-RPC relay, and consensus nodes."
+mode: wide
+---
+
+<div className="not-prose landing-container">
+
+{/* ── MIRROR NODE ──────────────────────────────────────── */}
+<div className="landing-section">
+  <h2 id="mirror-node-operators" className="landing-section-heading">
+    <a href="#mirror-node-operators">Mirror node operators</a>
+  </h2>
+  <p className="landing-section-description">
+    Mirror nodes stream consensus events from the network and serve them via REST, gRPC, and Web3 APIs.
+  </p>
+
+  <div className="landing-grid">
+
+    <a href="/operators/mirror-node/architecture" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      </div>
+      <div className="landing-card-title">Architecture</div>
+      <div className="landing-card-desc">Importer, REST API, gRPC, Web3: how the mirror node components fit together.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Overview</span>
+      </div>
+    </a>
+
+    <a href="/operators/mirror-node/one-click-deploy" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      <div className="landing-card-title">One-Click Deploy</div>
+      <div className="landing-card-desc">Spin up a mirror node in minutes using the official Helm chart.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Helm</span>
+        <span className="landing-tag">K8s</span>
+      </div>
+    </a>
+
+    <a href="/operators/mirror-node/run-your-own/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div className="landing-card-title">Run Your Own</div>
+      <div className="landing-card-desc">Self-host a mirror node backed by Google Cloud Storage or AWS S3.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">GCS</span>
+        <span className="landing-tag">S3</span>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── JSON-RPC RELAY ──────────────────────────────────────── */}
+<div className="landing-section">
+  <h2 id="json-rpc-relay-operators" className="landing-section-heading">
+    <a href="#json-rpc-relay-operators">JSON-RPC relay operators</a>
+  </h2>
+  <p className="landing-section-description">
+    The relay translates Ethereum JSON-RPC requests into Hedera transactions and queries.
+  </p>
+
+  <div className="landing-grid landing-grid--wide">
+
+    <a href="/operators/json-rpc/setup" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Setup</div>
+        <div className="landing-card-desc">Install and run the relay: local, Docker, or container orchestrator.</div>
+      </div>
+    </a>
+
+    <a href="/operators/json-rpc/configuration" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Configuration</div>
+        <div className="landing-card-desc">Tune chain ID, mirror node URL, networks, rate limits, and caching.</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── CONSENSUS NODES ──────────────────────────────────────── */}
+<div className="landing-section">
+  <h2 id="consensus-node-operators" className="landing-section-heading">
+    <a href="#consensus-node-operators">Consensus node operators</a>
+  </h2>
+  <p className="landing-section-description">
+    Run a network node: gossip, virtual voting, and the live state of every Hedera service.
+  </p>
+
+  <div className="landing-grid landing-grid--loose">
+
+    <a href="/operators/consensus-node/deployment" className="landing-media-card">
+      <div className="landing-media-card-hero">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      <div className="landing-media-card-body">
+        <div className="landing-card-title">Deployment</div>
+        <div className="landing-card-desc">Step-by-step procedure for bringing a consensus node online.</div>
+        <div className="landing-tag-group">
+          <span className="landing-tag">Deploy</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="/operators/consensus-node/requirements/index" className="landing-media-card">
+      <div className="landing-media-card-hero">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01 M6 18h.01"/></svg>
+      </div>
+      <div className="landing-media-card-body">
+        <div className="landing-card-title">Requirements</div>
+        <div className="landing-card-desc">Hardware, network, and operational requirements for running a node.</div>
+        <div className="landing-tag-group">
+          <span className="landing-tag">Hardware</span>
+          <span className="landing-tag">Network</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── FOOTER ───────────────────────────────────────────────────────────── */}
+<div className="landing-footer">
+  <h2 id="stay-connected" className="landing-footer-heading">
+    <a href="#stay-connected">Stay connected</a>
+  </h2>
+  <div className="landing-pill-group">
+    <a className="landing-pill" href="https://hedera.com/discord" target="_blank" rel="noopener noreferrer">Discord</a>
+    <a className="landing-pill" href="https://github.com/hashgraph" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a className="landing-pill" href="https://status.hedera.com" target="_blank" rel="noopener noreferrer">Status</a>
+  </div>
+</div>
+
+</div>

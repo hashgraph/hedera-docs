@@ -1,0 +1,204 @@
+---
+title: Fees
+description: Hedera network fees
+---
+
+The Hedera testnet fees tables found below offer a low-end estimate of transaction and query fees for all network services. The tables below contain USD, HBAR, and Tinybar (tℏ) values per each API call. All operation fees on the Hedera testnet are paid in test HBAR, which is freely available and only useful for development purposes.
+
+Fee estimates are based on assumptions about the details of a specific API call. For instance, the fee for an HBAR cryptocurrency transfer (`CryptoTransfer`) assumes a single signature on the transaction and the fee for storing a file assumes a 1,000-byte sized file stored for 90 days. Transactions exceeding these base assumptions will be more expensive; we recommend increasing your maximum allowable fee to accommodate additional complexity.
+
+Hedera transaction and query fees follow a **base fee + extras** model defined by [**HIP-1261 (Simple Fees)**](https://hips.hedera.com/hip/hip-1261). The base fees in the tables below are the starting cost — extras add to that cost based on what the transaction does. See [**Fee Model**](/learn/core-concepts/fee-model) for the full explanation, the complete extras list, and worked examples.
+
+## Mainnet Fees
+
+Mainnet transaction and query fees can be estimated using the [Hedera Fee Estimator](https://hedera.com/fees). The Fee Estimator allows you to determine fees (in both USD and HBAR, using the current exchange rate live on the mainnet) for individual transactions & queries based on their characteristics, as well as projected costs based on expected volume for those transactions. The estimations may not be 100% accurate and the underlying prices are subject to change without prior notice.
+
+## HBAR Denominations and Abbreviations
+
+| **Denominations** | **Abbreviations**  | **Amount of HBAR Cryptocurrency** |
+| ------------- | -------------- | ----------------------------- |
+| gigabar       | 1 Gℏ           | = 1,000,000,000 ℏ             |
+| megabar       | 1 Mℏ           | = 1,000,000 ℏ                 |
+| kilobar       | 1 Kℏ           | = 1,000 ℏ                     |
+| hbar          | 1 ℏ            | = 1 ℏ                         |
+| millibar      | 1,000 mℏ       | = 1 ℏ                         |
+| microbar      | 1,000,000 μℏ   | = 1 ℏ                         |
+| tinybar       | 100,000,000 tℏ | = 1 ℏ                         |
+
+
+## High-Volume Transaction Pricing
+
+The fee tables below reflect **standard** transaction pricing. If you set the
+`high_volume` flag on a [supported entity creation transaction](/learn/core-concepts/high-volume-entity-creation#supported-transaction-types),
+a **variable-rate multiplier** is applied on top of the standard fee. The multiplier
+scales with how much of the high-volume throttle capacity is currently in use — from
+1.0× at idle to a governance-configured maximum at full utilization.
+
+<Warning>
+    High-volume fees can be significantly higher than the standard fees listed in these
+    tables. Always check the current multiplier via the Mirror Node
+    [fee estimation endpoint](/reference/rest-api/network) and set `maxTransactionFee`
+    to cap your costs. The estimate reflects the multiplier at the time of the query and
+    is not guaranteed to match the multiplier applied when your transaction is processed,
+    use it to gauge current pricing, but expect the actual fee to vary. See the
+    [High-Volume Entity Creation](/learn/core-concepts/high-volume-entity-creation) guide
+    for full details on how variable-rate pricing works.
+</Warning>
+
+## Transaction and Query Fees
+
+All fees are subject to change. The fees below reflect a base price for the transaction or query. Transaction characteristics may increase the price from the base price shown below. Transaction characteristics include having more than one signature, a memo field, etc. Please reference the [Hedera fee estimator](https://hedera.com/fees) and the [Fee model](/learn/core-concepts/fee-model) page to estimate the transaction or query fee.
+
+### Cryptocurrency Service
+
+| **Operations**           | **USD ($)**  |
+| :--------------------------- | :------- |
+| CryptoCreate                 | $0.05    |
+| CryptoAccountAutoRenew       | $0.00022 |
+| CryptoDeleteAllowance        | $0.05    |
+| CryptoApproveAllowance       | $0.05    |
+| CryptoUpdate                 | $0.00022 |
+| CryptoTransfer               | $0.0001  |
+| CryptoTransfer (custom fees) | $0.002   |
+| CryptoDelete                 | $0.005   |
+| CryptoGetAccountRecords      | $0.0001  |
+| CryptoGetAccountBalance      | $0.00    |
+| CryptoGetInfo                | $0.0001  |
+
+### Consensus Service
+
+| **Operations**                        | **USD ($)**  |
+| ----------------------------------------- | -------- |
+| ConsensusCreateTopic                      | $0.01    |
+| ConsensusCreateTopic (with custom fees)   | $2.00    |
+| ConsensusUpdateTopic                      | $0.00022 |
+| ConsensusDeleteTopic                      | $0.005   |
+| ConsensusSubmitMessage                    | $0.0008  |
+| ConsensusSubmitMessage (with custom fees) | $0.05    |
+| ConsensusGetTopicInfo                     | $0.0001  |
+
+### Token Service Operations
+
+| **Operations**                                           | **USD ($)**  |
+| ------------------------------------------------------- | ------------- |
+| TokenAirdrop (no prior association with token)          | $0.10         |
+| TokenAssociate                                          | $0.05         |
+| TokenBurn                                               | $0.001        |
+| TokenCancelAirdrop                                      | $0.001        |
+| TokenClaimAirdrop                                       | $0.001        |
+| TokenCreate                                             | $1.00         |
+| TokenCreate (custom fees)                               | $2.00         |
+| TokenDelete                                             | $0.001        |
+| TokenDissociate                                         | $0.05         |
+| TokenFeeScheduleUpdate                                  | $0.001        |
+| TokenFreeze                                             | $0.001        |
+| TokenGetInfo                                            | $0.0001       |
+| TokenGetAccountNftInfos                                 | $0.0001       |
+| TokenGetNftInfo                                         | $0.0001       |
+| TokenGetNftInfos                                        | $0.0001       |
+| TokenGrantKyc                                           | $0.001        |
+| TokenMint (fungible)                                    | $0.001        |
+| TokenMint (non-fungible)                                | $0.02         |
+| TokenPause                                              | $0.001        |
+| TokenReject                                             | $0.001        |
+| TokenRevokeKyc                                          | $0.001        |
+| TokenTransfer                                           | $0.001        |
+| TokenUnfreeze                                           | $0.001        |
+| TokenUpdate                                             | $0.001        |
+| TokenUnpause                                            | $0.001        |
+| TokenUpdateNfts (updates metadata of 1 NFT)             | $0.001        |
+| TokenUpdateNfts (update multiple NFTs in a single call) | (N \* $0.001) |
+| TokenWipe                                               | $0.001        |
+
+### Schedule Transaction
+
+| **Operations** | **USD ($)** |
+| --------------- | ------- |
+| ScheduleCreate  | $0.01   |
+| ScheduleSign    | $0.001  |
+| ScheduleDelete  | $0.001  |
+| ScheduleGetInfo | $0.0001 |
+
+### File Service
+
+| **Operations**      | **USD ($)** |
+| --------------- | ------- |
+| FileCreate      | $0.05   |
+| FileUpdate      | $0.05   |
+| FileDelete      | $0.007  |
+| FileAppend      | $0.05   |
+| FileGetContents | $0.0001 |
+| FileGetInfo     | $0.0001 |
+
+### Smart Contract Service
+
+| **Operations**                                         | **USD ($)**                                                            |
+| ------------------------------------------------------ | ------------------------------------------------------------------ |
+| ContractCreate                                         | $1.00                                                              |
+| ContractUpdate                                         | $0.026                                                             |
+| ContractDelete                                         | $0.007                                                             |
+| ContractCall                                           | $0.00                                                              |
+| ContractCallLocal                                      | $0.001                                                             |
+| ContractGetByteCode                                    | $0.05                                                              |
+| ContractGetInfo                                        | $0.0001                                                            |
+| ContractAutoRenew                                      | $0.026                                                             |
+| EthereumTransaction (successful transactions)          | $0.00                                                              |
+| EthereumTransaction (failed transactions)              | $0.0001                                                            |
+| GetBySolidityID                                        | $0.0001                                                            |
+| Jumbo Transaction (HIP-1086) for Ethereum transactions | [based on gas](/evm/development/gas-fees) |
+
+### Miscellaneous
+
+| Operations                                                                | USD ($) |
+| -----------------------------------------------------------------         | ------- |
+| Add/Delete/Modify Hooks [(HIP-1195)](https://hips.hedera.com/hip/hip-551) | $1.00   |
+| BatchTransaction ([HIP-551](https://hips.hedera.com/hip/hip-551))         | $0.001  |
+| GetVersionInfo                                                            | $0.0001 |
+| GetByKey                                                                  | $0.0001 |
+| Invocation of Hook Program                                                | $0.005  |
+| HookStore                                                                 | $0.005  |
+| NodeCreate                                                                | $0.001  |
+| NodeDelete                                                                | $0.001  |
+| NodeUpdate                                                                | $0.001  |
+| PrngTransaction                                                           | $0.001  |
+| SystemDelete                                                              | $0.00   |
+| SystemUndelete                                                            | $0.00   |
+| TransactionGetReceipt                                                     | $0.00   |
+| TransactionGetRecord                                                      | $0.0001 |
+
+### Extras
+
+Under the [**Simple Fees model (HIP-1261)**](https://hips.hedera.com/hip/hip-1261), every transaction is calculated as a **base fee plus extras**. The base fees in the tables above are the starting cost — extras add to that cost based on what the transaction does (number of signatures, keys, NFT serials, gas used, etc.). Each extra has an included count that covers typical usage; you only pay for units above that count. See [**Fee Model**](/learn/core-concepts/fee-model) for the full explanation and worked examples.
+
+<Note>
+    This table reflects the extras currently defined in the live fee schedule (system file `0.0.113`). The published [HIP-1261](https://hips.hedera.com/hip/hip-1261) lists an earlier version of this set; consult the live schedule as the source of truth.
+</Note>
+
+| Extra                                       | USD ($)       |
+| ------------------------------------------- | ------------- |
+| Signatures                                  | $0.00001      |
+| Keys                                        | $0.01         |
+| Accounts                                    | $0.0001       |
+| TokenTypes                                  | $0.0001       |
+| Gas                                         | $0.0000000852 |
+| Allowances                                  | $0.05         |
+| Airdrops                                    | $0.05         |
+| TokenTransferBase                           | $0.0009       |
+| TokenTransferBaseCustomFees                 | $0.0019       |
+| TokenCreateWithCustomFee                    | $1.00         |
+| TokenMintNft                                | $0.02         |
+| TokenMintNftBase                            | $0.019        |
+| NftUpdate                                   | $0.001        |
+| TokenAssociate                              | $0.05         |
+| ConsensusCreateTopicWithCustomFee           | $1.99         |
+| ConsensusSubmitMessageWithCustomFee         | $0.04983      |
+| ConsensusSubmitMessageWithCustomFeeBytes    | $0.0001       |
+| ConsensusSubmitMessageWithoutCustomFeeBytes | $0.00000068   |
+| ScheduleCreateContractCallBase              | $0.09         |
+| Records                                     | $0.0001       |
+| StateBytes                                  | $0.0001       |
+| ProcessingBytes                             | $0.000001     |
+| EvmDispatchSurcharge                        | +20%          |
+
+
+Prices come from the configured fee schedule stored in system file `0.0.113` and may change. Fees are charged in HBAR, converted from USD at the live exchange rate.

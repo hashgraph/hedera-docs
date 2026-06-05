@@ -1,0 +1,65 @@
+---
+title: "Troubleshooting"
+description: "Diagnose and fix common issues when developing EVM smart contracts on Hedera."
+---
+
+Most failures on Hedera fall into one of a few buckets: gas problems, reverts you can't decode, HBAR transfers that don't trigger your contract, decimal mismatches between SDK and EVM, or RPC issues that look like contract bugs but aren't. The sections below cover the patterns that account for most of them.
+
+## Differences from Ethereum that bite
+
+Hedera is EVM-compatible, but a few things behave differently than Ethereum, and they account for most "this should work" tickets.
+
+### Decimal handling: 8 vs 18
+
+The native Hedera ledger uses 8 decimals for HBAR (1 ℏ = 10⁸ tinybars). The JSON-RPC relay scales values up to 18 decimals so they match Ethereum's `wei` convention. Inside an EVM contract, `msg.value`, `balance`, and `gasPrice` all use 18 decimals; the relay handles the conversion. The trap is when you mix native SDK calls and EVM contract calls in the same flow. You have to do the conversion yourself there, and the off-by-`10**10` bug is easy to write.
+
+```solidity
+// Inside a contract, msg.value is in 18-decimal wei (as on Ethereum).
+function deposit() external payable {
+    require(msg.value >= 1 ether, "send at least 1 HBAR");
+}
+```
+
+### HBAR transfers don't always trigger `receive()`
+
+On Ethereum, sending ETH to a contract address triggers `receive()` or `fallback()`. On Hedera, a native HAPI `CryptoTransfer` (from an SDK or wallet operating at the Hedera level rather than the EVM level) credits the contract's underlying Hedera account directly. No EVM frame opens, so `receive()` doesn't run. EVM-native paths still behave normally: `call{value: ...}`, `transfer`, and internal CALL frames all invoke `receive()` / `fallback()` as expected. If you want contract logic to execute on the HAPI path, route the deposit through a `payable` call instead:
+
+```solidity
+// This runs the contract's payable function and fires events.
+(bool ok, ) = contractAddr.call{value: 1 ether}(
+    abi.encodeWithSignature("deposit()")
+);
+require(ok, "deposit failed");
+```
+
+The full pattern is on the [Creating Smart Contracts](/evm/development/creating) page.
+
+### ECDSA vs ED25519 keys
+
+Hedera supports both ECDSA (secp256k1) and ED25519. The EVM toolchain only handles ECDSA. Accounts created through MetaMask or via the JSON-RPC relay get ECDSA by default; accounts created through the native SDK can get either. ED25519 accounts can still hold HBAR and HTS tokens, but they can't sign EVM transactions. If you plan to interact through the EVM, pick ECDSA at account creation.
+
+### Gas refund behavior
+
+Per [HIP-1249](https://hips.hedera.com/#hip-1249) (mirror node [v0.140.0 release notes](/learn/release-notes/mirror-node#v0-140-0)), unused gas is refunded in full, and only the gas you actually consumed is charged. The per-transaction limit remains 15M ([HIP-185](https://hips.hedera.com/#hip-185)). Hedera previously capped gas refunds at 20% of the limit, so setting a generous gas limit could quietly cost you. If you find guidance referencing the 20% cap, it's pre-HIP-1249 and no longer applies. See [Gas and Fees](/evm/development/gas-fees) for the full pricing model, intrinsic gas costs, and how to estimate fees.
+
+### Historical queries have a retention window
+
+The relay supports `eth_call` and `eth_getStorageAt` at historical blocks, but only as far back as the mirror node behind it has data. Query a block older than that and the relay returns an error. For deep history, retry against a provider with longer retention (Arkhia, Validation Cloud, Hgraph, QuickNode, thirdweb).
+
+## Where to ask for help
+
+<CardGroup cols={2}>
+  <Card title="Discord" icon="discord" href="https://hedera.com/discord">
+    `#developer-general` and `#smart-contracts`. Live answers from engineers and the community.
+  </Card>
+  <Card title="GitHub Issues" icon="github" href="https://github.com/hiero-ledger/hiero-json-rpc-relay/issues">
+    JSON-RPC relay bugs and feature requests.
+  </Card>
+  <Card title="HashScan" icon="magnifying-glass" href="https://hashscan.io">
+    Look up your transaction by hash to see the consensus-level result.
+  </Card>
+</CardGroup>
+
+<Tip>
+  Before filing an issue, look the transaction up on the mirror node. The SDK transaction ID format is `0.0.1234@1700000000.123456789`, but the REST API needs it in URL-safe form: `0.0.1234-1700000000-123456789`. So the full URL is `https://testnet.mirrornode.hedera.com/api/v1/transactions/0.0.1234-1700000000-123456789`. The mirror node tells you the consensus-level result, which is usually more specific than what the relay returns.
+</Tip>

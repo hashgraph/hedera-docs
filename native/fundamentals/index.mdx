@@ -1,0 +1,102 @@
+---
+title: "SDKs"
+description: "Community SDKs, wallets, decentralized identity, and REST options that complement the official Hedera SDKs."
+---
+
+Six official SDKs (JavaScript, Java, Go, Swift, Rust, C++) are listed on the [Native SDKs landing page](/native#pick-your-language). This page catalogs community SDKs, wallet integrations, decentralized identity libraries, and REST options that supplement them.
+
+<Info>
+  **React Native:** The JavaScript SDK supports React Native with Expo on Android devices and emulators. React Native Bare is not currently supported.
+</Info>
+
+---
+
+## Try without installing
+
+Use the [Developer Playground](https://portal.hedera.com/playground) to exercise account, token, and consensus operations on testnet directly from your browser, no SDK install required.
+
+<div className="not-prose" style={{ width: '100%', margin: '12px 0 16px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)', background: '#0c1226', boxShadow: '0 1px 2px rgba(0,0,0,0.2)' }}>
+  <iframe
+    src="https://portal.hedera.com/playground?minimal=1"
+    title="Hedera Developer Playground"
+    width="100%"
+    height="820"
+    style={{ border: 0, display: 'block', background: 'transparent' }}
+    loading="lazy"
+    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
+  ></iframe>
+</div>
+
+<p style={{ fontSize: '0.8125rem', color: 'var(--landing-fg-tertiary, rgba(255,255,255,0.55))', margin: '0 0 32px' }}>
+  Open it full-screen at <a href="https://portal.hedera.com/playground" style={{ color: '#8259EF', textDecoration: 'none' }}>portal.hedera.com/playground</a>.
+</p>
+
+---
+
+## Community language SDKs
+
+Community-maintained SDKs that extend Hedera support beyond the six official languages.
+
+<Columns cols={1}>
+  <Card title="Python SDK" icon="python" iconType="brands" href="https://github.com/hiero-ledger/hiero-sdk-python" arrow>
+    `pip install hiero-sdk-python`. Community-maintained, Apache 2.0.
+  </Card>
+</Columns>
+
+---
+
+## Wallet & auth integrations
+
+Connect end-user wallets and embedded auth flows to your Hedera dApp.
+
+<Columns cols={2}>
+  <Card title="HashPack (HashConnect)" img="/images/sdks-and-apis/image2.jpg" href="https://www.hashpack.app/hashconnect" arrow>
+    Connect to HashPack via the HashConnect protocol. MIT.
+  </Card>
+  <Card title="Kabila (WalletConnect)" img="/images/sdks-and-apis/image5.jpg" href="https://github.com/Kabila-Tech/hedera-wallet-connect" arrow>
+    Hedera WalletConnect implementation maintained by Kabila. Apache 2.0.
+  </Card>
+  <Card title="MetaMask + WalletConnect" img="/images/sdks-and-apis/image4.jpg" href="/native/tutorials/advanced/walletconnect-dapp" arrow>
+    Tutorial: build a Hedera dApp that connects to MetaMask via WalletConnect.
+  </Card>
+  <Card title="Magic Link (embedded auth)" img="/images/sdks-and-apis/image3.jpg" href="https://magic.link/docs/auth/blockchains/hedera" arrow>
+    Email/social auth and embedded wallet creation for Hedera. MIT.
+  </Card>
+</Columns>
+
+---
+
+## Decentralized identity
+
+W3C-compliant [DID Documents](https://www.w3.org/TR/did-core/) and a [Verifiable Credentials](https://www.w3.org/TR/vc-data-model/) registry backed by the Hedera Consensus Service.
+
+<Columns cols={3}>
+  <Card title="DID SDK for Java" icon="java" iconType="brands" href="https://github.com/hashgraph/did-sdk-java" arrow>
+    Reference Java implementation. Apache 2.0.
+  </Card>
+  <Card title="DID SDK for JavaScript" icon="js" iconType="brands" href="https://github.com/hashgraph/did-sdk-js" arrow>
+    TypeScript-friendly DID and VC management. Apache 2.0.
+  </Card>
+  <Card title="DID SDK for Python" icon="python" iconType="brands" href="https://github.com/hiero-ledger/hiero-did-sdk-python" arrow>
+    Python implementation maintained under Hiero. Apache 2.0.
+  </Card>
+</Columns>
+
+---
+
+## REST & serverless
+
+If you'd rather call HTTP than embed an SDK.
+
+<Columns cols={2}>
+  <Card title="Trust Enterprises REST API" icon="server" href="https://docs.trust.enterprises/" arrow>
+    Serverless REST wrapper around the Hedera API. Apache 2.0. [GitHub](https://github.com/trust-enterprises/hedera-rest-api).
+  </Card>
+  <Card title="Hedera Laravel Package" icon="php" iconType="brands" href="https://docs.trust.enterprises/laravel/working-with-laravel" arrow>
+    Laravel bindings on top of the Trust Enterprises REST API. Apache 2.0. [GitHub](https://github.com/trust-enterprises/hedera-laravel).
+  </Card>
+</Columns>
+
+---
+
+Building something that should live here? Open a PR or drop into [Discord](https://hedera.com/discord).

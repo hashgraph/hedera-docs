@@ -1,0 +1,229 @@
+---
+title: "Learn Hedera"
+description: "Get started with Hedera: what it is, how it works, and the core concepts behind accounts, tokens, consensus, and smart contracts."
+mode: wide
+icon: "book-arrow-right"
+---
+
+<div className="not-prose landing-container">
+
+{/* ── START HERE ──────────────────────────────────────────────── */}
+<div className="landing-section">
+  <h2 id="start-here" className="landing-section-heading">
+    <a href="#start-here">Start here</a>
+  </h2>
+
+  <div className="landing-grid">
+
+    <a href="/learn/getting-started/what-is-hedera" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3 M12 17h.01"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">What is Hedera?</div>
+        <div className="landing-card-desc">The 2-minute introduction to the network and what makes it different.</div>
+      </div>
+    </a>
+
+    <a href="/learn/getting-started/why-hedera" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 L9 17 L4 12"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Why Hedera?</div>
+        <div className="landing-card-desc">Predictable fees, fast finality, native services, and enterprise governance.</div>
+      </div>
+    </a>
+
+    <a href="/learn/getting-started/choose-your-path" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Choose Your Path</div>
+        <div className="landing-card-desc">EVM developer or native SDK developer: pick the right starting point.</div>
+      </div>
+    </a>
+
+    <a href="/learn/getting-started/testnet-faucet" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 22h18 M5 22V10 M19 22V10 M12 22V10 M12 6V2 M9 2h6 M5 10c0-3 7-3 7 0 M19 10c0-3-7-3-7 0"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Testnet Faucet</div>
+        <div className="landing-card-desc">Fund a testnet account in seconds: no real HBAR required.</div>
+      </div>
+    </a>
+
+    <a href="/learn/getting-started/portal-playground" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 3l14 9-14 9z"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Portal Playground</div>
+        <div className="landing-card-desc">Try Hedera transactions in your browser: no setup required.</div>
+      </div>
+    </a>
+
+    <a href="/learn/core-concepts/fee-model" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v10 M9.5 15h5a2 2 0 1 0 0-4h-5a2 2 0 1 1 0-4h5"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Fee Model</div>
+        <div className="landing-card-desc">How Hedera fees are calculated: fixed USD pricing, no gas auctions.</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── CORE CONCEPTS ──────────────────────────────────────── */}
+<div className="landing-section">
+  <h2 id="core-concepts" className="landing-section-heading">
+    <a href="#core-concepts">Core concepts</a>
+  </h2>
+  <p className="landing-section-description">
+    The building blocks behind every Hedera transaction.
+  </p>
+
+  <div className="landing-grid">
+
+    <a href="/learn/core-concepts/accounts/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div className="landing-card-title">Accounts</div>
+      <div className="landing-card-desc">Creation, auto-creation, properties, network accounts, and hooks.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Accounts</span>
+        <span className="landing-tag">Identity</span>
+      </div>
+    </a>
+
+    <a href="/learn/core-concepts/keys" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+      </div>
+      <div className="landing-card-title">Keys &amp; Signatures</div>
+      <div className="landing-card-desc">ED25519, ECDSA, key lists, and threshold keys for multi-sig flows.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Keys</span>
+        <span className="landing-tag">Crypto</span>
+      </div>
+    </a>
+
+    <a href="/learn/core-concepts/tokens/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v10 M9.5 15h5a2 2 0 1 0 0-4h-5a2 2 0 1 1 0-4h5"/></svg>
+      </div>
+      <div className="landing-card-title">Tokens</div>
+      <div className="landing-card-desc">HTS overview, types, properties, custom fees, and airdrops.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">HTS</span>
+        <span className="landing-tag">NFTs</span>
+      </div>
+    </a>
+
+    <a href="/learn/core-concepts/transactions/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 1l4 4-4 4 M3 11V9a4 4 0 0 1 4-4h14 M7 23l-4-4 4-4 M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+      </div>
+      <div className="landing-card-title">Transactions</div>
+      <div className="landing-card-desc">How transactions are formed, signed, scheduled, and submitted.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Transactions</span>
+        <span className="landing-tag">Signing</span>
+      </div>
+    </a>
+
+    <a href="/learn/core-concepts/hashgraph/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><circle cx="12" cy="12" r="2"/><path d="M8 6h8 M6 8v8 M8 18h8 M18 8v8"/></svg>
+      </div>
+      <div className="landing-card-title">Hashgraph Consensus</div>
+      <div className="landing-card-desc">Gossip about gossip and virtual voting: how Hedera reaches consensus.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Consensus</span>
+        <span className="landing-tag">aBFT</span>
+      </div>
+    </a>
+
+    <a href="/learn/core-concepts/staking/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1v22 M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <div className="landing-card-title">Staking</div>
+      <div className="landing-card-desc">Earn rewards by staking HBAR to a network node.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Staking</span>
+        <span className="landing-tag">Rewards</span>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── NETWORKS ──────────────────────────────────────── */}
+<div className="landing-section">
+  <h2 id="pick-a-network" className="landing-section-heading" style={{ marginBottom: '24px' }}>
+    <a href="#pick-a-network">Pick a network</a>
+  </h2>
+
+  <div className="landing-grid landing-grid--loose">
+
+    <a href="/learn/networks/mainnet/index" className="landing-media-card">
+      <div className="landing-media-card-hero">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20 M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 M12 2a15.3 15.3 0 0 0-4 10 15.3 15.3 0 0 0 4 10"/></svg>
+      </div>
+      <div className="landing-media-card-body">
+        <div className="landing-card-title">Mainnet</div>
+        <div className="landing-card-desc">Production network: real HBAR, real fees, real users.</div>
+        <div className="landing-tag-group">
+          <span className="landing-tag">Production</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="/learn/networks/testnet/index" className="landing-media-card">
+      <div className="landing-media-card-hero">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 11l3 3L22 4 M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </div>
+      <div className="landing-media-card-body">
+        <div className="landing-card-title">Testnet</div>
+        <div className="landing-card-desc">Free test HBAR for development: production-equivalent environment.</div>
+        <div className="landing-tag-group">
+          <span className="landing-tag">Testing</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="/learn/networks/localnet/index" className="landing-media-card">
+      <div className="landing-media-card-hero">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><path d="M8 21h8 M12 17v4"/></svg>
+      </div>
+      <div className="landing-media-card-body">
+        <div className="landing-card-title">Localnet</div>
+        <div className="landing-card-desc">Run Hedera on your laptop: single-node or multi-node.</div>
+        <div className="landing-tag-group">
+          <span className="landing-tag">Local</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── FOOTER ───────────────────────────────────────────────────────────── */}
+<div className="landing-footer">
+  <h2 id="stay-connected" className="landing-footer-heading">
+    <a href="#stay-connected">Stay connected</a>
+  </h2>
+  <div className="landing-pill-group">
+    <a className="landing-pill" href="https://hedera.com/discord" target="_blank" rel="noopener noreferrer">Discord</a>
+    <a className="landing-pill" href="https://github.com/hashgraph" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a className="landing-pill" href="https://portal.hedera.com/playground" target="_blank" rel="noopener noreferrer">Playground</a>
+  </div>
+</div>
+
+</div>

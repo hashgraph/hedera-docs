@@ -1,0 +1,288 @@
+---
+title: "Native SDKs"
+description: "Build on Hedera using the JavaScript, Java, Go, Swift, and Rust SDKs: full access to HTS, HCS, scheduled transactions, smart contracts, and the file service."
+mode: wide
+---
+
+<div className="not-prose landing-container">
+
+{/* ── QUICKSTARTS BY LANGUAGE ──────────────────────────────────────────── */}
+<div className="landing-section">
+  <h2 id="pick-your-language" className="landing-section-heading">
+    <a href="#pick-your-language">Pick your language</a>
+  </h2>
+  <p className="landing-section-description">
+    All Hedera SDKs share the same API surface. Pick the language that fits your stack.
+  </p>
+
+  <div className="landing-grid">
+
+    <a href="/native/quickstart/javascript" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><text x="12" y="16" textAnchor="middle" fontSize="9" fontWeight="700" fill="#fff" stroke="none" fontFamily="monospace">JS</text></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">JavaScript</div>
+        <div className="landing-card-desc">Node.js and browser. `npm install @hashgraph/sdk`.</div>
+      </div>
+    </a>
+
+    <a href="/native/quickstart/java" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><text x="12" y="16" textAnchor="middle" fontSize="7" fontWeight="700" fill="#fff" stroke="none" fontFamily="monospace">Java</text></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Java</div>
+        <div className="landing-card-desc">JDK 11+. Maven and Gradle artifacts for enterprise apps.</div>
+      </div>
+    </a>
+
+    <a href="/native/quickstart/go" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><text x="12" y="16" textAnchor="middle" fontSize="9" fontWeight="700" fill="#fff" stroke="none" fontFamily="monospace">Go</text></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Go</div>
+        <div className="landing-card-desc">`go get github.com/hashgraph/hedera-sdk-go/v2`.</div>
+      </div>
+    </a>
+
+    <a href="https://github.com/hashgraph/hedera-sdk-swift" target="_blank" rel="noopener noreferrer" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><text x="12" y="16" textAnchor="middle" fontSize="6" fontWeight="700" fill="#fff" stroke="none" fontFamily="monospace">Swift</text></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Swift</div>
+        <div className="landing-card-desc">iOS and macOS via Swift Package Manager.</div>
+      </div>
+    </a>
+
+    <a href="https://github.com/hiero-ledger/hiero-sdk-rust" target="_blank" rel="noopener noreferrer" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><text x="12" y="16" textAnchor="middle" fontSize="7" fontWeight="700" fill="#fff" stroke="none" fontFamily="monospace">Rust</text></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Rust</div>
+        <div className="landing-card-desc">`cargo add hedera`. Async-first with Tokio.</div>
+      </div>
+    </a>
+
+    <a href="https://github.com/hiero-ledger/hiero-sdk-cpp" target="_blank" rel="noopener noreferrer" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><text x="12" y="16" textAnchor="middle" fontSize="8" fontWeight="700" fill="#fff" stroke="none" fontFamily="monospace">C++</text></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">C++</div>
+        <div className="landing-card-desc">C++17 with CMake. Builds on Linux, macOS, and Windows.</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── CORE SERVICES SPOTLIGHT ──────────────────────────────────────────── */}
+<div className="landing-section">
+  <h2 id="native-services" className="landing-section-heading">
+    <a href="#native-services">Native services from the SDK</a>
+  </h2>
+  <p className="landing-section-description">
+    First-class access to every Hedera service, with no JSON-RPC layer, no gas auctions, and no surprises.
+  </p>
+
+  <div className="landing-grid">
+
+    <a href="/native/tokens/define" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v10 M9.5 15h5a2 2 0 1 0 0-4h-5a2 2 0 1 1 0-4h5"/></svg>
+      </div>
+      <div className="landing-card-title">Create a Token</div>
+      <div className="landing-card-desc">Fungible or NFT: define properties, supply, and admin keys in one transaction.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">HTS</span>
+        <span className="landing-tag">Tokens</span>
+      </div>
+    </a>
+
+    <a href="/native/consensus/submit-message" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div className="landing-card-title">Submit a Consensus Message</div>
+      <div className="landing-card-desc">Timestamped, ordered, immutable messages on HCS topics for any payload.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">HCS</span>
+        <span className="landing-tag">Messaging</span>
+      </div>
+    </a>
+
+    <a href="/native/scheduled/create" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4 M8 2v4 M3 10h18"/></svg>
+      </div>
+      <div className="landing-card-title">Schedule a Transaction</div>
+      <div className="landing-card-desc">Wait for multi-party signatures before executing: built-in multisig coordination.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">HSS</span>
+        <span className="landing-tag">Multisig</span>
+      </div>
+    </a>
+
+    <a href="/native/accounts/create" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M22 11h-2 M21 10v2"/></svg>
+      </div>
+      <div className="landing-card-title">Create an Account</div>
+      <div className="landing-card-desc">Generate a new Hedera account in code: fund, query balance, transfer HBAR.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Accounts</span>
+        <span className="landing-tag">HBAR</span>
+      </div>
+    </a>
+
+    <a href="/native/transactions/batch" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01 M6 18h.01"/></svg>
+      </div>
+      <div className="landing-card-title">Batch Transactions</div>
+      <div className="landing-card-desc">Atomic execution of multiple transactions all succeed or all fail.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Batch</span>
+        <span className="landing-tag">Atomic</span>
+      </div>
+    </a>
+
+    <a href="/native/signature-provider/provider" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div className="landing-card-title">Signature Provider</div>
+      <div className="landing-card-desc">Provider, Signer, and Wallet APIs: integrate hardware wallets and HSMs.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Wallets</span>
+        <span className="landing-tag">HSM</span>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── TUTORIALS ──────────────────────────────────────── */}
+<div className="landing-section">
+  <h2 id="tutorials" className="landing-section-heading">
+    <a href="#tutorials">Step-by-step tutorials</a>
+  </h2>
+  <p className="landing-section-description">
+    Hands-on SDK guides, from your first token to HSM-backed signing.
+  </p>
+
+  <div className="landing-grid landing-grid--loose">
+
+    <a href="/native/tutorials/tokens/create-first-token" className="landing-media-card">
+      <div className="landing-media-card-hero">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v10 M9.5 15h5a2 2 0 1 0 0-4h-5a2 2 0 1 1 0-4h5"/></svg>
+      </div>
+      <div className="landing-media-card-body">
+        <div className="landing-card-title">Create Your First Token</div>
+        <div className="landing-card-desc">Mint a fungible HTS token in JavaScript in under 15 minutes.</div>
+        <div className="landing-tag-group">
+          <span className="landing-tag">Beginner</span>
+          <span className="landing-tag">HTS</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="/native/tutorials/consensus/create-first-topic" className="landing-media-card">
+      <div className="landing-media-card-hero">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div className="landing-media-card-body">
+        <div className="landing-card-title">Create Your First HCS Topic</div>
+        <div className="landing-card-desc">Submit and subscribe to consensus messages on a topic you control.</div>
+        <div className="landing-tag-group">
+          <span className="landing-tag">HCS</span>
+          <span className="landing-tag">Beginner</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="/native/tutorials/advanced/hsm-signing/index" className="landing-media-card">
+      <div className="landing-media-card-hero">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--landing-demo-icon)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div className="landing-media-card-body">
+        <div className="landing-card-title">HSM-backed Signing</div>
+        <div className="landing-card-desc">Sign transactions with AWS KMS, Azure Key Vault, or GCP KMS.</div>
+        <div className="landing-tag-group">
+          <span className="landing-tag">Advanced</span>
+          <span className="landing-tag">HSM</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── LOCAL DEVELOPMENT ──────────────────────────────────────── */}
+<div className="landing-section">
+  <h2 id="local-development" className="landing-section-heading" style={{ marginBottom: '24px' }}>
+    <a href="#local-development">Local development</a>
+  </h2>
+
+  <div className="landing-grid landing-grid--wide">
+
+    <a href="/native/local-dev/setup-local-node" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><path d="M8 21h8 M12 17v4"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Local Node</div>
+        <div className="landing-card-desc">Run Hedera in Docker: full network on your laptop in minutes.</div>
+      </div>
+    </a>
+
+    <a href="/native/local-dev/setup-cli-npm" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 17l6-6-6-6 M12 19h8"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">CLI Tools</div>
+        <div className="landing-card-desc">Hedera CLI via npm: accounts, tokens, topics from your terminal.</div>
+      </div>
+    </a>
+
+    <a href="/native/local-dev/cde/gitpod" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Gitpod</div>
+        <div className="landing-card-desc">Cloud dev environment pre-configured with the SDK and local node.</div>
+      </div>
+    </a>
+
+    <a href="/native/local-dev/cde/codespaces" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">GitHub Codespaces</div>
+        <div className="landing-card-desc">One-click cloud dev container: ready for Hedera SDK development.</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── FOOTER ───────────────────────────────────────────────────────────── */}
+<div className="landing-footer">
+  <h2 id="stay-connected" className="landing-footer-heading">
+    <a href="#stay-connected">Stay connected</a>
+  </h2>
+  <div className="landing-pill-group">
+    <a className="landing-pill" href="https://hedera.com/discord" target="_blank" rel="noopener noreferrer">Discord</a>
+    <a className="landing-pill" href="https://github.com/hashgraph" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a className="landing-pill" href="https://portal.hedera.com/playground" target="_blank" rel="noopener noreferrer">Playground</a>
+  </div>
+</div>
+
+</div>

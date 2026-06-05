@@ -1,0 +1,211 @@
+---
+title: "Reference"
+description: "Complete API and protocol reference: REST, gRPC, Protobuf, and status APIs for every Hedera service."
+mode: wide
+---
+
+<div className="not-prose landing-container">
+
+{/* ── REST API ENDPOINTS ──────────────────────────────────────── */}
+<div className="landing-section">
+  <div className="landing-section-heading-row">
+    <h2 id="mirror-node-rest" className="landing-section-heading">
+      <a href="#mirror-node-rest">Mirror node REST endpoints</a>
+    </h2>
+    <a href="/reference/rest-api/index" className="landing-see-all">See all →</a>
+  </div>
+  <p className="landing-section-description">
+    Query historical and live state of every Hedera entity over plain HTTP.
+  </p>
+
+  <div className="landing-grid">
+
+    <a href="/reference/rest-api/accounts/index" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Accounts</div>
+        <div className="landing-card-desc">List, query, NFTs, allowances, staking, rewards.</div>
+      </div>
+    </a>
+
+    <a href="/reference/rest-api/balances/index" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20 M5 8l7-5 7 5 M5 8v8l7 5 7-5V8"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Balances</div>
+        <div className="landing-card-desc">HBAR and token balances at any historical timestamp.</div>
+      </div>
+    </a>
+
+    <a href="/reference/rest-api/blocks/index" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z M3.27 6.96L12 12.01l8.73-5.05 M12 22.08V12"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Blocks</div>
+        <div className="landing-card-desc">Block-level views over consensus events for EVM compatibility.</div>
+      </div>
+    </a>
+
+    <a href="/reference/rest-api/tokens/index" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v10 M9.5 15h5a2 2 0 1 0 0-4h-5a2 2 0 1 1 0-4h5"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Tokens</div>
+        <div className="landing-card-desc">HTS token metadata, balances, NFTs, and supply snapshots.</div>
+      </div>
+    </a>
+
+    <a href="/reference/rest-api/topics/index" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Topics</div>
+        <div className="landing-card-desc">HCS topic info and historical message retrieval.</div>
+      </div>
+    </a>
+
+    <a href="/reference/rest-api/transactions/index" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 1l4 4-4 4 M3 11V9a4 4 0 0 1 4-4h14 M7 23l-4-4 4-4 M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Transactions</div>
+        <div className="landing-card-desc">Transaction history, fees, records, and receipts.</div>
+      </div>
+    </a>
+
+    <a href="/reference/rest-api/contracts/index" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M9 13l2 2 4-4"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Contracts</div>
+        <div className="landing-card-desc">Bytecode, state, logs, and call results for deployed contracts.</div>
+      </div>
+    </a>
+
+    <a href="/reference/rest-api/schedules/index" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4 M8 2v4 M3 10h18"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Schedules</div>
+        <div className="landing-card-desc">Pending and executed scheduled transactions.</div>
+      </div>
+    </a>
+
+    <a href="/reference/rest-api/network/index" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20 M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 M12 2a15.3 15.3 0 0 0-4 10 15.3 15.3 0 0 0 4 10"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Network</div>
+        <div className="landing-card-desc">Nodes, exchange rates, fees, supply, and stake distribution.</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── PROTOBUF SERVICES ──────────────────────────────────────── */}
+<div className="landing-section">
+  <div className="landing-section-heading-row">
+    <h2 id="protobuf-services" className="landing-section-heading">
+      <a href="#protobuf-services">Protobuf services</a>
+    </h2>
+    <a href="/reference/protobuf/index" className="landing-see-all">See all →</a>
+  </div>
+  <p className="landing-section-description">
+    Wire-level definitions every SDK uses under the hood: submit raw transactions yourself.
+  </p>
+
+  <div className="landing-grid">
+
+    <a href="/reference/protobuf/crypto/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div className="landing-card-title">Crypto Service</div>
+      <div className="landing-card-desc">Account create, transfer, allowance, delete, plus balance/info queries.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Accounts</span>
+      </div>
+    </a>
+
+    <a href="/reference/protobuf/token/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v10 M9.5 15h5a2 2 0 1 0 0-4h-5a2 2 0 1 1 0-4h5"/></svg>
+      </div>
+      <div className="landing-card-title">Token Service</div>
+      <div className="landing-card-desc">HTS create, mint, burn, freeze, KYC, custom fees: full token lifecycle.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">HTS</span>
+      </div>
+    </a>
+
+    <a href="/reference/protobuf/consensus/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div className="landing-card-title">Consensus Service</div>
+      <div className="landing-card-desc">HCS topic create/update/delete and submit-message protobufs.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">HCS</span>
+      </div>
+    </a>
+
+    <a href="/reference/protobuf/smart-contracts/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6"/></svg>
+      </div>
+      <div className="landing-card-title">Smart Contract Service</div>
+      <div className="landing-card-desc">EVM contract create, call, update, get-info, get-bytecode.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">EVM</span>
+      </div>
+    </a>
+
+    <a href="/reference/protobuf/schedule/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4 M8 2v4 M3 10h18"/></svg>
+      </div>
+      <div className="landing-card-title">Schedule Service</div>
+      <div className="landing-card-desc">Multi-party scheduled transactions: create, sign, delete, query.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">HSS</span>
+      </div>
+    </a>
+
+    <a href="/reference/protobuf/file/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6"/></svg>
+      </div>
+      <div className="landing-card-title">File Service</div>
+      <div className="landing-card-desc">File create, append, update, delete and content/info queries.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Storage</span>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── FOOTER ───────────────────────────────────────────────────────────── */}
+<div className="landing-footer">
+  <h2 id="stay-connected" className="landing-footer-heading">
+    <a href="#stay-connected">Stay connected</a>
+  </h2>
+  <div className="landing-pill-group">
+    <a className="landing-pill" href="https://hedera.com/discord" target="_blank" rel="noopener noreferrer">Discord</a>
+    <a className="landing-pill" href="https://github.com/hashgraph" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a className="landing-pill" href="https://status.hedera.com" target="_blank" rel="noopener noreferrer">Status</a>
+  </div>
+</div>
+
+</div>

@@ -1,0 +1,58 @@
+---
+title: Understanding Hedera's EVM Differences and Compatibility
+sidebarTitle: Hedera vs. Ethereum
+---
+
+Hedera's EVM-compatible environment lets you deploy Solidity smart contracts using Hardhat, Foundry, or Remix and connect with standard Ethereum tooling. Hedera's architecture introduces differences in account models, key management, token handling, and JSON-RPC behavior that affect how you build and migrate from Ethereum.
+
+This guide is for:
+
+- **EVM developers migrating to Hedera:** Understand key differences in Hedera's architecture, tokenomics, and tooling, including ED25519 key management and native system contracts (introduced in [HIP-632](https://hips.hedera.com/hip/hip-632)).
+- **Hedera-native developers adding smart contract functionality:** Learn how EVM contracts interact with Hedera's native services (HTS, HCS, HFS) and how to bridge both worlds.
+
+## High-Level Differences: Hedera vs. Ethereum
+
+| **Feature** | **Hedera** | **Ethereum** |
+|---|:---|:---|
+| Consensus Mechanism | Asynchronous Byzantine Fault Tolerance (aBFT), Proof of Stake (PoS) | Byzantine Fault Tolerance (BFT), Proof of Stake (PoS) |
+| Transaction Fees | Low and predictable [fees](/learn/networks/mainnet/fees) | Variable gas fees; can spike during network congestion |
+| Governance Model | Governed by the Hedera Governing Council, comprising leading global organizations | Decentralized; governed by the Ethereum community |
+| Native Token | HBAR | ETH |
+| Token Standard | ERC-20 and ERC-721 supported; Hedera Token Service (HTS) enables native token issuance and management without smart contracts | ERC-20 and ERC-721 |
+| Network State | Virtual Merkle Tree | Merkle Patricia Trie |
+| Historical Data | Off-chain mirror nodes provide access to historical data and state queries | On-chain `stateRoot` |
+| Key Management | Supports [ED25519](/support/glossary#ed25519) (Hedera-native accounts), [ECDSA (secp256k1)](/support/glossary#ecdsa-secp256k1), and complex keys (keylist and threshold) | ECDSA (secp256k1) only |
+| Network Upgrades | Proposed through HIPs; governed by the Hedera Governing Council; backward compatible, not forks | Proposed and implemented through EIPs |
+
+---
+
+## Jumbo Ethereum Transactions
+
+Hedera supports jumbo Ethereum transactions (introduced in [HIP-1086](https://hips.hedera.com/hip/hip-1086)), allowing larger `callData` payloads to be included directly in the `ethereumData` field of `EthereumTransaction`. This aligns Hedera's EVM behavior more closely with Ethereum's, enabling seamless deployment of complex contracts.
+
+*📣 To learn more, including size limits, gas calculation, and limitations, see the* [*Ethereum Transaction SDK documentation*](/native/smart-contracts/ethereum-transaction)*.*
+
+---
+
+## EVM Developers: What Changes on Hedera
+
+The following topics cover the most common differences when coming from Ethereum:
+
+| **Topic** | **Description** |
+|---|---|
+| [Hedera Account Model & Aliases](/evm/differences/accounts-and-keys#understanding-account-models-and-aliases) | How Hedera's account structure differs from Ethereum's: ED25519 vs. ECDSA keys, dynamic key rotation, and aliases for EVM compatibility. |
+| [Decimal Handling](/evm/differences/hbar-decimals) | How to handle the difference between EVM's 18-decimal standard and Hedera's 8 decimals for accurate token calculations and conversions. |
+| [Key Rotation](/evm/differences/accounts-and-keys#key-rotation-adapting-to-hederas-dynamic-model) | Strategies for designing smart contracts that work with Hedera's dynamic key rotation model. |
+| [HBAR Transfers](/evm/differences/native-token-transfers) | Explicit handling of HBAR in Solidity contracts for native token flows. |
+| [JSON-RPC Relay](/evm/differences/json-rpc-differences) | How Hedera's JSON-RPC relay differs from standard EVM RPC APIs. |
+
+## Hedera-Native Developers: Adding Smart Contracts
+
+If you're already building with Hedera's native services and want to add EVM smart contract functionality, see [Hedera-Native Developers Adding Smart Contracts](/evm/differences/native-devs).
+
+## Additional Resources
+
+- [Getting Started for EVM Developers](/evm)
+- [JSON-RPC Documentation](/evm/development/json-rpc)
+- [Mirror Node API Documentation](/reference/rest-api)
+- [Java SDK](https://github.com/hiero-ledger/hiero-sdk-java), [Go SDK](https://github.com/hiero-ledger/hiero-sdk-go), [JavaScript SDK](https://github.com/hiero-ledger/hiero-sdk-js)

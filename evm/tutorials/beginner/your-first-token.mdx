@@ -1,0 +1,156 @@
+---
+title: "Your First Token"
+description: "Deploy and mint an ERC-20 token on Hedera testnet using Hardhat and OpenZeppelin."
+---
+
+This walks through deploying a standard ERC-20 token to Hedera testnet using Hardhat. The contract uses OpenZeppelin's audited ERC-20 base, so most of the code is library calls. The workflow is the same one you'd use on any EVM chain; the only Hedera-specific bit is the network config.
+
+<Tip>
+  **Run in your browser:** Skip local setup and try the same example in the [Contract Builder](https://portal.hedera.com/contract-builder/session/0.0.7785355/13): compile, deploy, and mint from your browser in seconds.
+</Tip>
+
+## Prerequisites
+
+<CardGroup cols={2}>
+  <Card title="MetaMask configured for Hedera Testnet" icon="wallet" href="/evm/quickstart/setup-metamask">
+    Network Name `Hedera Testnet`, RPC `https://testnet.hashio.io/api`, Chain ID `296`.
+  </Card>
+  <Card title="Testnet HBAR in your wallet" icon="faucet" href="/evm/quickstart/get-test-hbar">
+    Around 5 HBAR is plenty to cover deployment.
+  </Card>
+</CardGroup>
+
+You also need [Node.js 18 or later](https://nodejs.org) installed locally.
+
+## Step 1: Scaffold the project
+
+```bash
+mkdir my-first-token && cd my-first-token
+npm init -y
+npm install --save-dev hardhat @nomicfoundation/hardhat-toolbox
+npm install @openzeppelin/contracts dotenv
+npx hardhat init   # choose: "Create an empty hardhat.config.js"
+mkdir contracts scripts
+```
+
+## Step 2: Write the ERC-20 contract
+
+Create `contracts/MyToken.sol`:
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.22;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract MyToken is ERC20, Ownable {
+    constructor(address initialOwner)
+        ERC20("MyToken", "MTK")
+        Ownable(initialOwner)
+    {
+        // Mint 1,000,000 tokens (with 18 decimals) to the deployer.
+        _mint(initialOwner, 1_000_000 * 10 ** decimals());
+    }
+
+    function mint(address to, uint256 amount) public onlyOwner {
+        _mint(to, amount);
+    }
+}
+```
+
+The contract inherits OpenZeppelin's `ERC20` and `Ownable`, mints the initial 1,000,000 supply to the deployer in the constructor, and exposes a `mint()` function gated by `onlyOwner` for later minting.
+
+## Step 3: Configure Hardhat for Hedera testnet
+
+Create a `.env` file (and add it to `.gitignore`):
+
+```dotenv
+TESTNET_RPC=https://testnet.hashio.io/api
+TESTNET_PRIVATE_KEY=0xYOUR_METAMASK_PRIVATE_KEY
+```
+
+<Warning>
+  Use a dedicated dev wallet. Don't put a mainnet private key in a `.env` file you're experimenting with. To get the testnet key from MetaMask: Account → ⋮ → Account details → Show private key.
+</Warning>
+
+Replace `hardhat.config.js` with:
+
+```javascript
+require("@nomicfoundation/hardhat-toolbox");
+require("dotenv").config();
+
+module.exports = {
+  solidity: "0.8.22",
+  networks: {
+    hederaTestnet: {
+      url: process.env.TESTNET_RPC,
+      chainId: 296,
+      accounts: [process.env.TESTNET_PRIVATE_KEY],
+    },
+  },
+};
+```
+
+## Step 4: Write the deploy script
+
+Create `scripts/deploy.js`:
+
+```javascript
+const hre = require("hardhat");
+
+async function main() {
+  const [deployer] = await hre.ethers.getSigners();
+  console.log("Deploying with:", deployer.address);
+
+  const MyToken = await hre.ethers.getContractFactory("MyToken");
+  const token = await MyToken.deploy(deployer.address);
+  await token.waitForDeployment();
+
+  const address = await token.getAddress();
+  console.log("MyToken deployed to:", address);
+  console.log("Initial balance:", (await token.balanceOf(deployer.address)).toString());
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exitCode = 1;
+});
+```
+
+## Step 5: Deploy
+
+```bash
+npx hardhat compile
+npx hardhat run scripts/deploy.js --network hederaTestnet
+```
+
+Expected output:
+
+```text
+Deploying with: 0xAbC123...
+MyToken deployed to: 0xDeF456...
+Initial balance: 1000000000000000000000000
+```
+
+That balance figure is `1,000,000 × 10^18`, which is your million tokens with 18 decimals.
+
+## Step 6: Verify on HashScan
+
+Open `https://hashscan.io/testnet/contract/<your-deployed-address>`. HashScan picks the contract up automatically and shows its bytecode, the deployer account, and the deploy transaction.
+
+For source-code-level visibility, follow the [contract verification guide](/evm/development/verifying).
+
+## Step 7: Add the token to MetaMask
+
+In MetaMask: **Tokens** tab → **Import tokens**, paste your contract address. Symbol and decimals are auto-filled from the contract. You should now see your full supply in the wallet.
+
+## What's next
+
+The token works with any ERC-20-aware tool: DEX listings, wallet imports, indexers, block explorers.
+
+<CardGroup cols={1}>
+  <Card title="HTS from Solidity" icon="coins" href="/evm/hedera-services/hts-solidity/create-tokens">
+    The Hedera-native alternative: create an HTS token with built-in compliance keys (KYC, freeze, pause, wipe) enforced by the network.
+  </Card>
+</CardGroup>

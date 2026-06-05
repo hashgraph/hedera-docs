@@ -1,0 +1,61 @@
+---
+title: "Development Tools"
+description: "Tools and frameworks for building smart contracts on Hedera."
+---
+
+Hedera is fully EVM-compatible, so the same Solidity tooling you'd use on Ethereum works here including Hardhat, Foundry, Remix, ethers.js, web3.js, and so on. Point them at the [JSON-RPC relay](/evm/quickstart/setup-metamask) to use your existing workflow. The pages below cover the tools used most often on Hedera, plus a browser-based contract builder scaffold from the Hedera developer playgrounnd for projects that don't need a local environment.
+
+## Browser tools
+
+No install required. Author, compile, and deploy directly from the browser.
+
+<CardGroup cols={2}>
+  <Card title="Hedera Contract Builder" icon="hammer" href="/evm/tools/contract-builder">
+    Scaffold ERC-20, ERC-721, ERC-1155, and HTS system-contract templates, then compile, deploy, and verify from the browser.
+  </Card>
+  <Card title="Remix IDE" icon="browser" href="/evm/tools/remix">
+    Familiar online Solidity IDE wired up for Hedera testnet via MetaMask and the JSON-RPC relay.
+  </Card>
+</CardGroup>
+
+## Local development frameworks
+
+Full-featured Solidity toolchains for serious development, testing, and CI.
+
+<CardGroup cols={2}>
+  <Card title="Hardhat" icon="hard-hat" href="/evm/tools/hardhat">
+    The most widely used smart contract framework. Covers setup, testing, and forking workflows on Hedera.
+  </Card>
+  <Card title="Foundry" icon="terminal" href="/evm/tools/foundry">
+    Rust-based, fast, Solidity-native toolchain. Covers setup, testing, and HTS-aware forking on Hedera.
+  </Card>
+</CardGroup>
+
+## Other tools
+
+<CardGroup cols={2}>
+  <Card title="Truffle" icon="suitcase" href="/evm/tools/other/truffle">
+    Legacy framework still supported on Hedera, useful for projects already invested in the Truffle workflow.
+  </Card>
+  <Card title="The Graph" icon="chart-network" href="/evm/tools/other/the-graph">
+    Index and query on-chain Hedera data using subgraphs.
+  </Card>
+</CardGroup>
+
+## Which should I use?
+
+- **Just exploring or building a quick demo?** Start with the [Contract Builder](/evm/tools/contract-builder) or [Remix](/evm/tools/remix) for zero setup and deploy in minutes.
+- **Building a production dApp in JavaScript / TypeScript?** Use [Hardhat](/evm/tools/hardhat).
+- **Prefer a Solidity-native test framework with fast execution?** Use [Foundry](/evm/tools/foundry).
+- **Need to index contract data for a frontend?** Add [The Graph](/evm/tools/other/the-graph) on top of whichever framework you choose.
+
+## Need help?
+
+<CardGroup cols={2}>
+  <Card title="Discord" icon="discord" href="https://hedera.com/discord">
+    Join `#developer-general` for real-time help from engineers and the community.
+  </Card>
+  <Card title="GitHub" icon="github" href="https://github.com/hashgraph">
+    File issues or contribute to the Hedera repos.
+  </Card>
+</CardGroup>

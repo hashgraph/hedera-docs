@@ -1,0 +1,61 @@
+---
+title: "Configuring Hashio RPC endpoints"
+---
+
+How to configure a JSON-RPC endpoint that enables communication between EVM-compatible developer tools using Hashio.
+
+Hashio is a public RPC endpoint hosted by [Hashgraph](https://www.hashgraph.com/) that runs an instance of the [Hiero JSON-RPC Relay](https://github.com/hiero-ledger/hiero-json-rpc-relay). As a *public* endpoint, it:
+
+* Is free to use
+* Does not have any sign-up requirements
+* Has significantly restrictive rate limits
+
+While this combination may be considered less reliable, it offers the highest levels of ease of use among RPC endpoints.
+
+To connect to the Hedera networks via Hashio, simply use one of these URLs when initializing the wallet or web3 provider instance:
+
+<CodeGroup>
+  ```text Mainnet
+  https://mainnet.hashio.io/api
+  ```
+
+  ```text Testnet
+  https://testnet.hashio.io/api
+  ```
+
+  ```text Previewnet
+  https://previewnet.hashio.io/api
+  ```
+</CodeGroup>
+
+The corresponding chain IDs are:
+
+| Network        | Chain ID (decimal)   | Chain ID (hex) |
+| -------------- | :------------------: | :------------: |
+| **Mainnet**    | `295`                | `0x127`        |
+| **Testnet**    | `296`                | `0x128`        |
+| **Previewnet** | `297`                | `0x129`        |
+
+No further settings or configurations are needed!
+
+<Warning>
+  **Please note**: Hashio is for development and testing purposes only. Production use cases are strongly encouraged to use [commercial-grade JSON-RPC relays](/evm/development/json-rpc#community-hosted-json-rpc-relays) or host their own instance of the [Hiero JSON-RPC Relay](https://github.com/hiero-ledger/hiero-json-rpc-relay).
+</Warning>
+
+## Additional resources
+
+* [Hiero JSON-RPC Relay repository](https://github.com/hiero-ledger/hiero-json-rpc-relay)
+* [JSON-RPC Relay overview](/evm/development/json-rpc)
+* [How to connect MetaMask to Hedera](/evm/tutorials/beginner/connect-metamask)
+* [Add Hedera to MetaMask](/evm/quickstart/setup-metamask)
+
+---
+
+<Columns cols={2}>
+  <Card title="Editor: Krystal, Senior DX Engineer">
+    [GitHub](https://github.com/theekrystallee) | [X](https://X.com/theekrystallee) | [LinkedIn](https://linkedin.com/in/theekrystallee)
+  </Card>
+  <Card title="Editor: Logan, Senior Software Engineer" arrow>
+    [GitHub](https://github.com/quiet-node) | [LinkedIn](https://www.linkedin.com/in/logann131/)
+  </Card>
+</Columns>

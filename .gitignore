@@ -16,3 +16,7 @@ revamp/audit/
 
 # Migration backups (created by revamp/migrate.sh)
 hedera.backup.*
+
+# placeholder backups
+docs.json.backup
+placeholder-backup/

@@ -2075,6 +2075,10 @@
     {
       "source": "/hedera/tutorials/token/hybrid-hts-+-evm-tokenization",
       "destination": "/evm/tutorials/hedera/hybrid-hts-evm"
+    },
+    {
+      "source": "/hedera/readme",
+      "destination": "/learn"
     }
   ],
   "navigation": {

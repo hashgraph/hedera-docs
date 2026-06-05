@@ -285,6 +285,10 @@
       "destination": "/evm/development/verifying"
     },
     {
+      "source": "/evm/troubleshooting",
+      "destination": "/evm/development"
+    },
+    {
       "source": "/hedera/tutorials/smart-contracts/deploy-a-smart-contract-using-hardhat",
       "destination": "/evm/tools/hardhat/setup"
     },
@@ -1152,7 +1156,6 @@
           {
             "group": "Quickstart",
             "pages": [
-              "evm/quickstart/index",
               "evm/quickstart/setup-metamask",
               "evm/quickstart/get-test-hbar",
               "evm/quickstart/deploy-with-remix",
@@ -1190,7 +1193,6 @@
               "evm/differences/native-token-transfers",
               "evm/differences/json-rpc-differences",
               "evm/differences/tooling-compatibility",
-              "evm/differences/checklist",
               {
                 "group": "For Native Developers",
                 "pages": [
@@ -1216,8 +1218,6 @@
           {
             "group": "Hedera-Native Features",
             "pages": [
-              "evm/hedera-services/index",
-              "evm/hedera-services/why-use-native-services",
               {
                 "group": "System Contracts",
                 "pages": [
@@ -1225,26 +1225,20 @@
                   "evm/hedera-services/system-contracts/hts",
                   "evm/hedera-services/system-contracts/account-service",
                   "evm/hedera-services/system-contracts/schedule-service",
-                  "evm/hedera-services/system-contracts/exchange-rate",
-                  "evm/hedera-services/system-contracts/prng"
+                  "evm/hedera-services/system-contracts/exchange-rate"
                 ]
               },
               {
                 "group": "HTS from Solidity",
                 "pages": [
-                  "evm/hedera-services/hts-solidity/index",
-                  "evm/hedera-services/hts-solidity/create-tokens",
-                  "evm/hedera-services/hts-solidity/transfer-tokens",
-                  "evm/hedera-services/hts-solidity/token-management",
-                  "evm/hedera-services/hts-solidity/nft-operations"
+                  "evm/hedera-services/hts-solidity/create-tokens"
                 ]
               },
               {
                 "group": "Hybrid Tokenization",
                 "pages": [
                   "evm/hedera-services/hybrid/index",
-                  "evm/hedera-services/hybrid/erc-compatibility",
-                  "evm/hedera-services/hybrid/hts-vs-erc"
+                  "evm/hedera-services/hybrid/erc-compatibility"
                 ]
               }
             ]
@@ -1259,8 +1253,6 @@
                 "group": "Hardhat",
                 "pages": [
                   "evm/tools/hardhat/index",
-                  "evm/tools/hardhat/setup",
-                  "evm/tools/hardhat/testing",
                   "evm/tools/hardhat/forking-basic",
                   "evm/tools/hardhat/forking-advanced"
                 ]
@@ -1270,7 +1262,6 @@
                 "pages": [
                   "evm/tools/foundry/index",
                   "evm/tools/foundry/setup",
-                  "evm/tools/foundry/testing",
                   "evm/tools/foundry/forking",
                   "evm/tools/foundry/forking-advanced-hts"
                 ]
@@ -1292,9 +1283,7 @@
                 "group": "Beginner",
                 "pages": [
                   "evm/tutorials/beginner/connect-metamask",
-                  "evm/tutorials/beginner/your-first-token",
-                  "evm/tutorials/beginner/simple-nft",
-                  "evm/tutorials/beginner/read-contract-data"
+                  "evm/tutorials/beginner/your-first-token"
                 ]
               },
               {
@@ -1302,7 +1291,6 @@
                 "pages": [
                   "evm/tutorials/intermediate/send-receive-hbar",
                   "evm/tutorials/intermediate/verify-hashscan",
-                  "evm/tutorials/intermediate/events-and-logs",
                   {
                     "group": "JSON-RPC Connections",
                     "pages": [
@@ -1350,7 +1338,6 @@
           {
             "group": "Integrations",
             "pages": [
-              "evm/integrations/index",
               {
                 "group": "Oracles",
                 "pages": [
@@ -1371,21 +1358,11 @@
               {
                 "group": "Wallets",
                 "pages": [
-                  "evm/integrations/wallets/index",
                   "evm/integrations/wallets/walletconnect",
                   "evm/integrations/wallets/metamask-snap",
                   "evm/integrations/wallets/metamask-snap-tutorial"
                 ]
               }
-            ]
-          },
-          {
-            "group": "Troubleshooting",
-            "pages": [
-              "evm/troubleshooting/index",
-              "evm/troubleshooting/common-errors",
-              "evm/troubleshooting/gas-estimation",
-              "evm/troubleshooting/transaction-failures"
             ]
           }
         ]
@@ -1403,7 +1380,6 @@
           {
             "group": "Quickstart",
             "pages": [
-              "native/quickstart/index",
               "learn/getting-started/create-portal-account",
               "native/quickstart/javascript",
               "native/quickstart/java",
@@ -1653,12 +1629,6 @@
                 ]
               }
             ]
-          },
-          {
-            "group": "Integrations",
-            "pages": [
-              "native/integrations/index"
-            ]
           }
         ]
       },
@@ -1675,14 +1645,12 @@
           {
             "group": "Tokenization",
             "pages": [
-              "solutions/tokenization/index",
               {
                 "group": "Asset Tokenization Studio",
                 "pages": [
                   "solutions/tokenization/ats/index",
                   "solutions/tokenization/ats/web-ui",
-                  "solutions/tokenization/ats/faq",
-                  "solutions/tokenization/ats/quickstart"
+                  "solutions/tokenization/ats/faq"
                 ]
               },
               {
@@ -1748,7 +1716,6 @@
           {
             "group": "Governance",
             "pages": [
-              "solutions/governance/index",
               {
                 "group": "HashioDAO",
                 "pages": [
@@ -1765,14 +1732,12 @@
           {
             "group": "Sustainability",
             "pages": [
-              "solutions/sustainability/index",
               "solutions/sustainability/guardian"
             ]
           },
           {
             "group": "Developer Tools",
             "pages": [
-              "solutions/tools/index",
               "solutions/tools/playground",
               "solutions/tools/code-repo",
               "solutions/tools/custodians-library",
@@ -1813,7 +1778,6 @@
           {
             "group": "Examples",
             "pages": [
-              "solutions/examples/index",
               "solutions/examples/demos",
               "solutions/examples/starters",
               "solutions/examples/building-on-hedera"
@@ -2225,7 +2189,7 @@
               }
             ]
           },
-               {
+          {
             "group": "Network Response Codes",
             "pages": [
               "reference/network-responses"
@@ -2246,7 +2210,6 @@
           {
             "group": "FAQs",
             "pages": [
-              "support/faq/index",
               "support/faq/getting-started",
               "support/faq/governance",
               "support/faq/hbar",

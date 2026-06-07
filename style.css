@@ -5,16 +5,23 @@
 @font-face {
   font-family: "Styrene Light Web";
   src: url("/public/fonts/styrene/StyreneA-Light-Web.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Styrene Regular";
+  src: url("/public/fonts/styrene/StyreneA-Regular-Web.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 
-
 @font-face {
-  font-family: "Styrene Regular";
-  src: url("/public/fonts/styrene/StyreneA-Regular-Web.woff2") format("woff2");
-  font-weight: 700;
+  font-family: "Styrene A Medium";
+  src: url("/public/fonts/styrene/StyreneA-Medium-Web.woff2") format("woff2");
+  font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
@@ -44,38 +51,40 @@ b,
    ========================= */
 :root {
   --font-body: "Styrene Regular";
-  --font-heading: "Styrene Bold";
+  --font-heading: "Styrene A Medium";
 
   /* Landing page — light mode */
   --landing-fg-primary: #11151D;
   --landing-fg-secondary: rgba(17, 21, 29, 0.7);
   --landing-fg-tertiary: rgba(17, 21, 29, 0.55);
   --landing-border: rgba(17, 21, 29, 0.1);
-  --landing-card-bg: rgba(17, 21, 29, 0.02);
+  --landing-card-bg: #11151d05;
   --landing-demo-icon: rgba(17, 21, 29, 0.45);
   --landing-card-icon-bg: linear-gradient(135deg, #A893F4 0%, #5C7BFF 100%);
 
-  /* Footer pill buttons — match Join Hackathon button */
-  --landing-pill-bg: #1f1f1f;
-  --landing-pill-fg: #ffffff;
-  --landing-pill-border: #1f1f1f;
+  /* Footer pill buttons — match ai-spotlight-pill (light mode) */
+  --landing-pill-bg: linear-gradient(135deg, rgba(168, 147, 244, 0.18) 0%, rgba(92, 123, 255, 0.12) 100%);
+  --landing-pill-fg: #4A2FA8;
+  --landing-pill-border: rgba(130, 89, 239, 0.28);
+
+
 }
 
 .dark,
 [data-theme='dark'] {
   /* Landing page — dark mode */
   --landing-fg-primary: #ffffff;
-  --landing-fg-secondary: rgba(255, 255, 255, 0.70);
-  --landing-fg-tertiary: rgba(255, 255, 255, 0.50);
+  --landing-fg-secondary: rgba(255, 255, 255, 0.82);
+  --landing-fg-tertiary: rgba(255, 255, 255, 0.64);
   --landing-border: rgba(255, 255, 255, 0.10);
   --landing-card-bg: rgba(255, 255, 255, 0.09);
   --landing-demo-icon: rgba(255, 255, 255, 0.5);
   --landing-card-icon-bg: linear-gradient(135deg, #8259EF 25%, #0031FF 75%, #000000 100%);
 
-  /* Footer pill buttons — match Join Hackathon button (dark mode) */
-  --landing-pill-bg: #e8e8e8;
-  --landing-pill-fg: #000000;
-  --landing-pill-border: #e8e8e8;
+  /* Footer pill buttons — match ai-spotlight-pill (dark mode) */
+  --landing-pill-bg: #000000 100% !important;
+  --landing-pill-fg: rgba(255, 255, 255, 0.92);
+  --landing-pill-border: rgba(130, 89, 239, 0.40) !important;
 }
 
 /* Footer pill buttons — shape and behavior matches navbar (Join Hackathon / Dev Portal) buttons */
@@ -85,28 +94,30 @@ b,
   justify-content: center !important;
   height: 34px !important;
   padding: 6px 16px !important;
-  border-radius: 12px !important;
+  border-radius: 20px !important;
   font-size: 13px !important;
   line-height: 20px !important;
-  font-weight: 400 !important;
-  color: var(--landing-pill-fg) !important;
-  background: var(--landing-pill-bg) !important;
+  font-weight: 500 !important;
+  color: #ffffff !important;
+  background: #000000 !important;
   border: 1px solid var(--landing-pill-border) !important;
   text-decoration: none !important;
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
 }
 
+
 .landing-pill:hover {
-  background: #8259EF !important;
-  border-color: #8259EF !important;
+  background: #5b5470 !important;
+  border-color: rgba(130, 89, 239, 0.28) !important;
   color: #ffffff !important;
 }
 
 .dark .landing-pill:hover,
 [data-theme='dark'] .landing-pill:hover {
-  background: #8259EF !important;
-  border-color: #8259EF !important;
+  background: #342d46 !important;
+  border-color: #342d46 !important;
   color: #ffffff !important;
+
 }
 
 /* =========================
@@ -126,11 +137,11 @@ html:not(.dark):not([data-theme='dark']) .landing-container {
   --landing-fg-secondary: rgba(17, 21, 29, 0.70);
   --landing-fg-tertiary: rgba(17, 21, 29, 0.55);
   --landing-border: rgba(17, 21, 29, 0.10);
-  --landing-card-bg: rgba(255, 255, 255, 0.60);
+  --landing-card-bg: rgba(255, 255, 255, 0.82);
   --landing-card-icon-bg: linear-gradient(135deg, #A893F4 0%, #5C7BFF 100%);
-  --landing-pill-bg: #1f1f1f;
-  --landing-pill-fg: #ffffff;
-  --landing-pill-border: #1f1f1f;
+  --landing-pill-bg: linear-gradient(135deg, rgba(168, 147, 244, 0.18) 0%, rgba(92, 123, 255, 0.12) 100%);
+  --landing-pill-fg: #4A2FA8;
+  --landing-pill-border: rgba(130, 89, 239, 0.28);
 }
 
 .hero-split {
@@ -156,7 +167,7 @@ html:not(.dark):not([data-theme='dark']) .landing-container {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   padding: clamp(36px, 5vw, 56px) clamp(28px, 4vw, 48px);
-  margin-bottom: 8px;
+  margin-bottom: 28px;
   overflow: hidden;
 }
 
@@ -180,7 +191,7 @@ html:not(.dark):not([data-theme='dark']) .hero-panel {
   padding: 28px 36px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 14px;
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -189,9 +200,9 @@ html:not(.dark):not([data-theme='dark']) .hero-panel {
   overflow: hidden;
 }
 
-/* Light mode — very pale blue → violet (light version of AI Studio brand gradient) */
+/* Light mode; pink-tipped accent line sits on top */
 html:not(.dark):not([data-theme='dark']) .ai-spotlight-panel {
-  background: linear-gradient(to right, #ffffff 0%, #f5efff 100%);
+  background: transparent;
   border-color: rgba(130, 89, 239, 0.22);
   box-shadow: 0 2px 16px rgba(130, 89, 239, 0.10), 0 1px 4px rgba(130, 89, 239, 0.06);
 }
@@ -205,12 +216,12 @@ html:not(.dark):not([data-theme='dark']) .ai-spotlight-panel {
   right: 0;
   height: 3px;
   border-radius: 14px 14px 0 0;
-  background: linear-gradient(to right, #A893F4 0%, #5C7BFF 100%);
+  background: linear-gradient(to right, #E0249D 0%, #8259EF 52%, #5C7BFF 100%);
 }
 
 .dark .ai-spotlight-panel::before,
 [data-theme='dark'] .ai-spotlight-panel::before {
-  background: linear-gradient(to right, #8259EF 0%, #0031FF 100%);
+  background: linear-gradient(to right, #FF2E9A 0%, #8259EF 50%, #5C7BFF 100%);
 }
 
 .dark .ai-spotlight-panel,
@@ -220,14 +231,28 @@ html:not(.dark):not([data-theme='dark']) .ai-spotlight-panel {
 }
 
 .ai-spotlight-logo {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   flex-shrink: 0;
   display: block;
 }
 
-html:not(.dark):not([data-theme='dark']) .ai-spotlight-logo {
-  filter: brightness(0) saturate(0);
+/* dark mode: show white logo, hide dark logo */
+.ai-spotlight-logo--light {
+  display: none;
+}
+
+.ai-spotlight-logo--dark {
+  display: block;
+}
+
+/* light mode: show dark logo, hide white logo */
+html:not(.dark):not([data-theme='dark']) .ai-spotlight-logo--light {
+  display: block;
+}
+
+html:not(.dark):not([data-theme='dark']) .ai-spotlight-logo--dark {
+  display: none;
 }
 
 .ai-spotlight-title {
@@ -247,50 +272,91 @@ html:not(.dark):not([data-theme='dark']) .ai-spotlight-title {
   color: #ffffff;
 }
 
+/* Bounty pill — gray with a pink "live" dot (bounties-site look), both modes */
 .ai-spotlight-bounty {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   font-size: 0.8125rem;
   font-weight: 600;
   text-decoration: none;
   padding: 5px 13px;
   border-radius: 999px;
-  background: transparent;
-  border: 1.5px solid rgba(255, 255, 255, 0.40);
-  color: rgba(255, 255, 255, 0.92);
+  background: #1e1e24;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #ffffff;
   flex-shrink: 0;
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
-.ai-spotlight-bounty:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.65);
+/* pink status dot */
+.ai-spotlight-bounty::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #E0249D;
+  box-shadow: 0 0 6px rgba(224, 36, 157, 0.70);
+  flex-shrink: 0;
+  transition: box-shadow 0.15s ease;
 }
 
+.ai-spotlight-bounty:hover {
+  background: #26262E;
+  border-color: rgba(255, 255, 255, 0.24);
+  color: #ffffff;
+}
+
+.ai-spotlight-bounty:hover::before {
+  box-shadow: 0 0 9px rgba(224, 36, 157, 0.95);
+}
+
+/* Light mode — pale lavender-gray chip so it recedes (parity with dark glass) */
 html:not(.dark):not([data-theme='dark']) .ai-spotlight-bounty {
+  background: #EDEAF5;
+  border-color: rgba(130, 89, 239, 0.20);
+  color: #3C3C44;
+}
+
+html:not(.dark):not([data-theme='dark']) .ai-spotlight-bounty:hover {
+  background: #E4DEF2;
+  border-color: rgba(130, 89, 239, 0.30);
+}
+
+/* Ghost secondary CTA — outline version of ai-spotlight-cta, same size */
+.ai-spotlight-cta-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding: 5px 13px;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.40);
+  color: rgba(255, 255, 255, 0.88);
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.ai-spotlight-cta-ghost:hover {
+  background: rgba(255, 255, 255, 0.10);
+  border-color: rgba(255, 255, 255, 0.65);
+  color: #ffffff;
+}
+
+html:not(.dark):not([data-theme='dark']) .ai-spotlight-cta-ghost {
   border-color: rgba(130, 89, 239, 0.45);
   color: #6B42CC;
 }
 
-html:not(.dark):not([data-theme='dark']) .ai-spotlight-bounty:hover {
+html:not(.dark):not([data-theme='dark']) .ai-spotlight-cta-ghost:hover {
   background: rgba(130, 89, 239, 0.08);
   border-color: rgba(130, 89, 239, 0.65);
-}
-
-.dark .ai-spotlight-bounty,
-[data-theme='dark'] .ai-spotlight-bounty {
-  border-color: rgba(255, 255, 255, 0.35);
-  color: rgba(255, 255, 255, 0.88);
-}
-
-/* Stretched link — CTA covers the whole panel; bounty + title float above via z-index */
-.ai-spotlight-cta::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 14px;
-  z-index: 0;
+  color: #5130A0;
 }
 
 .ai-spotlight-bounty,
@@ -299,37 +365,74 @@ html:not(.dark):not([data-theme='dark']) .ai-spotlight-bounty:hover {
   z-index: 1;
 }
 
+/* Hero "Get started" CTA — same behavior as spotlight CTA */
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 24px;
+  border-radius: 999px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  background: #8259EF;
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(130, 89, 239, 0.35);
+  transition: background-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.hero-cta:hover {
+  background: #333335;
+  box-shadow: none;
+  color: #ffffff;
+}
+
+.dark .hero-cta,
+[data-theme='dark'] .hero-cta {
+  background: #ffffff;
+  color: #11151D;
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.dark .hero-cta:hover,
+[data-theme='dark'] .hero-cta:hover {
+  background: transparent;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.65);
+}
+
 /* CTA pill — Ultraviolet on light mode, white on dark glass spotlight */
 .ai-spotlight-cta {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   letter-spacing: -0.01em;
   text-decoration: none;
   white-space: nowrap;
   flex-shrink: 0;
-  padding: 8px 18px;
+  padding: 5px 13px;
   border-radius: 999px;
+  border: 1px solid transparent;
   background: #8259EF;
   color: #ffffff;
   transition: background-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.ai-spotlight-cta:hover {
-  background: #0031FF;
-}
-
 html:not(.dark):not([data-theme='dark']) .ai-spotlight-cta {
-  background: #8259EF;
+  background: #11151D;
   color: #ffffff;
-  box-shadow: 0 2px 10px rgba(130, 89, 239, 0.35);
+  box-shadow: 0 2px 10px rgba(17, 21, 29, 0.20);
 }
 
 html:not(.dark):not([data-theme='dark']) .ai-spotlight-cta:hover {
-  background: #0031FF;
-  box-shadow: 0 2px 12px rgba(0, 49, 255, 0.35);
+  background: #333335;
+  box-shadow: 0 2px 12px rgba(17, 21, 29, 0.28);
 }
 
 .dark .ai-spotlight-cta,
@@ -340,25 +443,27 @@ html:not(.dark):not([data-theme='dark']) .ai-spotlight-cta:hover {
 
 .dark .ai-spotlight-cta:hover,
 [data-theme='dark'] .ai-spotlight-cta:hover {
-  background: rgba(255, 255, 255, 0.88);
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.65);
 }
 
 .ai-spotlight-pill {
-  background: linear-gradient(135deg, rgba(130, 89, 239, 0.20) 0%, rgba(0, 49, 255, 0.15) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  color: rgba(255, 255, 255, 0.90);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.72);
   font-size: 0.8125rem;
   font-weight: 500;
-  padding: 5px 14px;
-  border-radius: 20px;
+  padding: 5px 13px;
+  border-radius: 999px;
   letter-spacing: 0.01em;
 }
 
 html:not(.dark):not([data-theme='dark']) .ai-spotlight-pill {
-  background: linear-gradient(135deg, rgba(168, 147, 244, 0.18) 0%, rgba(92, 123, 255, 0.12) 100%);
-  border-color: rgba(130, 89, 239, 0.28);
-  color: #4A2FA8;
-  font-weight: 600;
+  background: rgba(130, 89, 239, 0.06);
+  border-color: rgba(130, 89, 239, 0.18);
+  color: rgba(74, 47, 168, 0.85);
+  font-weight: 500;
 }
 
 .ai-spotlight-desc {
@@ -379,20 +484,157 @@ html:not(.dark):not([data-theme='dark']) .ai-spotlight-desc {
 
 .dark .ai-spotlight-pill,
 [data-theme='dark'] .ai-spotlight-pill {
-  background: linear-gradient(135deg, rgba(130, 89, 239, 0.35) 0%, rgba(0, 49, 255, 0.28) 100%);
-  border-color: rgba(130, 89, 239, 0.40);
-  color: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.70);
+}
+
+/* AI Bounty top announcement bar — inverted per mode (dark bar on light page,
+   light bar on dark page) with a pink-tipped gradient accent line, like the spotlight */
+.ai-bounty-bar {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  margin-bottom: 28px;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  text-decoration: none;
+  /* light page → dark bar */
+  background: #15121F;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  color: #ffffff;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.ai-bounty-bar:hover {
+  background: #1d1830;
+  border-color: rgba(255, 255, 255, 0.20);
+}
+
+/* pink-tipped gradient accent line on top edge */
+.ai-bounty-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 10px 10px 0 0;
+  background: linear-gradient(to right, #E0249D 0%, #8259EF 52%, #5C7BFF 100%);
+}
+
+/* dark page → light bar (inverted) */
+.ai-bounty-bar-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #FF2E9A;
+  box-shadow: 0 0 7px rgba(255, 46, 154, 0.85);
+  flex-shrink: 0;
+}
+
+
+.ai-bounty-bar-text {
+  flex: 1;
+  min-width: 0;
+}
+
+/* keep the bold lead-in legible — inherit the bar's text color in both modes
+   (the dark theme otherwise forces strong to white, invisible on the light bar) */
+.ai-bounty-bar strong,
+.ai-bounty-bar b {
+  color: inherit !important;
+}
+
+.ai-bounty-bar-cta {
+  font-weight: 700;
+  color: rgba(214, 199, 255, 1);
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-family: "Styrene Bold", sans-serif;
+  text-shadow: 0 0 10px rgba(168, 147, 244, 0.7), 0 0 18px rgba(130, 89, 239, 0.5);
+  transition: text-shadow 0.15s ease;
+}
+
+.ai-bounty-bar:hover .ai-bounty-bar-cta {
+  text-shadow: 0 0 12px rgba(168, 147, 244, 0.95), 0 0 24px rgba(130, 89, 239, 0.7);
 }
 
 /* Persona cards — glass inside the glass hero panel */
 .hero-persona-card {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   padding: 14px 16px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   text-decoration: none;
   background-color: rgba(255, 255, 255, 0.07);
+  position: relative;
+  overflow: hidden;
   transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+/* Persona icon tile (gradient tile + white SVG, reuses landing-card-icon system) */
+.hero-persona-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: var(--landing-card-icon-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.hero-persona-icon svg {
+  height: 18px;
+  width: auto;
+  max-width: 18px;
+}
+
+/* Left accent rail — dim at rest, saturates on hover (both modes) */
+.hero-persona-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, rgba(168, 147, 244, 0.5), rgba(92, 123, 255, 0.5));
+  transition: background 0.15s ease;
+}
+
+.dark .hero-persona-card::before,
+[data-theme='dark'] .hero-persona-card::before {
+  background: linear-gradient(to bottom, rgba(130, 89, 239, 0.55), rgba(0, 49, 255, 0.55));
+}
+
+.hero-persona-card:hover::before {
+  background: linear-gradient(to bottom, #A893F4, #5C7BFF);
+}
+
+.dark .hero-persona-card:hover::before,
+[data-theme='dark'] .hero-persona-card:hover::before {
+  background: linear-gradient(to bottom, #8259EF, #0031FF);
+}
+
+.hero-persona-card::after {
+  content: '→';
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.45);
+  flex-shrink: 0;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.hero-persona-card:hover::after {
+  color: rgba(255, 255, 255, 0.85);
+  transform: translateX(3px);
 }
 
 .hero-persona-card:hover {
@@ -400,18 +642,28 @@ html:not(.dark):not([data-theme='dark']) .ai-spotlight-desc {
   background-color: rgba(255, 255, 255, 0.12);
 }
 
-/* Light mode — soft violet-tinted glass */
+/* Light mode */
 html:not(.dark):not([data-theme='dark']) .hero-persona-card {
-  border-color: rgba(130, 89, 239, 0.15);
-  background-color: rgba(255, 255, 255, 0.30);
+  border-color: rgba(130, 89, 239, 0.18);
+  background-color: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 1px 2px rgba(17, 21, 29, 0.06), 0 2px 8px rgba(17, 21, 29, 0.05);
+}
+
+html:not(.dark):not([data-theme='dark']) .hero-persona-card::after {
+  color: rgba(17, 21, 29, 0.30);
 }
 
 html:not(.dark):not([data-theme='dark']) .hero-persona-card:hover {
   border-color: rgba(130, 89, 239, 0.35);
-  background-color: rgba(255, 255, 255, 0.55);
+  background-color: rgba(130, 89, 239, 0.07);
+  box-shadow: 0 2px 12px rgba(130, 89, 239, 0.14);
 }
 
-/* Dark mode — white glass over gradient (hedera.com style) */
+html:not(.dark):not([data-theme='dark']) .hero-persona-card:hover::after {
+  color: rgba(17, 21, 29, 0.70);
+}
+
+/* Dark mode */
 .dark .hero-persona-card,
 [data-theme='dark'] .hero-persona-card {
   background-color: rgba(255, 255, 255, 0.08);
@@ -518,23 +770,39 @@ html:not(.dark):not([data-theme='dark']) .landing-section-description {
   background-color: rgba(255, 255, 255, 0.14);
 }
 
+html:not(.dark):not([data-theme='dark']) .landing-card {
+  box-shadow: 0 1px 2px rgba(17, 21, 29, 0.06), 0 2px 8px rgba(17, 21, 29, 0.05);
+}
+
 html:not(.dark):not([data-theme='dark']) .landing-card:hover {
   border-color: rgba(130, 89, 239, 0.30);
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: rgba(130, 89, 239, 0.07);
+  box-shadow: 0 2px 12px rgba(130, 89, 239, 0.14);
 }
 
 .landing-card-icon {
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   background: var(--landing-card-icon-bg);
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
+
+.landing-card-icon img {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+/* Hiero is a bold filled mark — scale down so its stroke weight + footprint match the line icons */
+.landing-card-icon img[src*="icon-white-hiero"] {
+  width: 15px;
+  height: 15px;
+}
+
 
 .landing-card-title {
   font-weight: 700;
@@ -544,8 +812,8 @@ html:not(.dark):not([data-theme='dark']) .landing-card:hover {
 }
 
 .landing-card-desc {
-  font-size: 0.8125rem;
-  font-weight: 400;
+  font-size: 0.9rem;
+  font-weight: 500;
   color: var(--landing-fg-tertiary);
   line-height: 1.45;
 }
@@ -567,9 +835,14 @@ html:not(.dark):not([data-theme='dark']) .landing-card:hover {
   background-color: rgba(255, 255, 255, 0.14);
 }
 
+html:not(.dark):not([data-theme='dark']) .landing-card-stacked {
+  box-shadow: 0 1px 2px rgba(17, 21, 29, 0.06), 0 2px 8px rgba(17, 21, 29, 0.05);
+}
+
 html:not(.dark):not([data-theme='dark']) .landing-card-stacked:hover {
   border-color: rgba(130, 89, 239, 0.30);
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: rgba(130, 89, 239, 0.07);
+  box-shadow: 0 2px 12px rgba(130, 89, 239, 0.14);
 }
 
 .landing-card-stacked .landing-card-icon {
@@ -652,10 +925,12 @@ html:not(.dark):not([data-theme='dark']) .landing-tag {
 .landing-footer-heading {
   font-size: clamp(1.125rem, 2vw, 1.375rem);
   font-weight: 500;
+  align-items: center !important;
   margin: 0 0 12px;
   text-shadow: 0 0 24px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.35);
   letter-spacing: -0.01em;
   color: var(--landing-fg-primary);
+
 }
 
 html:not(.dark):not([data-theme='dark']) .landing-footer-heading {
@@ -667,10 +942,30 @@ html:not(.dark):not([data-theme='dark']) .landing-footer-heading {
   text-decoration: none;
 }
 
+.landing-prose-link {
+  color: rgba(200, 180, 255, 0.95);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-family: "Styrene A Medium", sans-serif;
+}
+
+.landing-prose-link:hover {
+  color: #ffffff;
+}
+
+html:not(.dark):not([data-theme='dark']) .landing-prose-link {
+  color: #6B42CC;
+}
+
+html:not(.dark):not([data-theme='dark']) .landing-prose-link:hover {
+  color: #5130A0;
+}
+
 .landing-pill-group {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+
 }
 
 /* =========================
@@ -679,19 +974,19 @@ html:not(.dark):not([data-theme='dark']) .landing-footer-heading {
 html,
 body {
   background: linear-gradient(to bottom,
-      #ffffff 40%,
-      #d8caff 90%) !important;
+      #ffffff 85%,
+      #7a72ff 100%) !important;
   min-height: 100%;
 }
 
-/* Dark mode — black → ultraviolet → azure */
+/* Dark mode — black → deep indigo (stays dark enough for white text throughout) */
 .dark,
 .dark body,
 [data-theme='dark'],
 [data-theme='dark'] body {
   background: linear-gradient(to bottom,
-      #000000 70%,
-      #5c3db3 100%) !important;
+      #000000 80%,
+      #1a0a3c 100%) !important;
   min-height: 100%;
 }
 
@@ -700,12 +995,31 @@ body {
   background-color: transparent !important;
 }
 
+/* Dark mode sidebar — frosted dark backdrop so gradient never bleeds through nav text */
+.dark aside,
+[data-theme='dark'] aside,
+.dark nav[class*="sidebar"],
+[data-theme='dark'] nav[class*="sidebar"] {
+  background: rgba(0, 0, 0, 0.35) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
 /* Transparent navbar — gradient shows through */
 header {
   background: transparent !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   border-bottom: none !important;
+  font-family: var(--font-body) !important;
+}
+
+/* Navbar logo — enlarge the round H + Hedera wordmark */
+header img[src*="/logo/light.svg"],
+header img[src*="/logo/dark.svg"] {
+  height: 35px !important;
+  width: auto !important;
+  max-height: none !important;
 }
 
 .dark header,
@@ -714,10 +1028,26 @@ header {
   border-bottom: none !important;
 }
 
+/* Top tab bar — bold all tab labels, extra weight on active */
+header nav a,
+header [role="tablist"] a,
+header ul[role="tablist"]>li>a,
+div[class*="tab"]>a,
+[data-component="tabs"] a {
+  font-weight: 600 !important;
+}
+
+header nav a[aria-current],
+header nav a[data-active="true"],
+header [role="tablist"] a[aria-current],
+header [role="tablist"] a[data-active="true"] {
+  font-weight: 700 !important;
+}
+
 html,
 body {
   font-family: var(--font-body);
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -795,7 +1125,7 @@ nav.text-sm a[href*="portal"] {
   justify-content: center;
   border-radius: 12px !important;
   font-size: 14px !important;
-  font-weight: 400 !important;
+  font-weight: 500 !important;
   line-height: 20px !important;
   height: 34px !important;
   padding: 6px 16px !important;
@@ -1008,4 +1338,13 @@ nav.text-sm a[href*="hackathon"] svg {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+}
+
+/* =========================
+   Footer social icons — hide Mintlify's built-in icon row.
+   Social links are now pills in each tab's "Stay connected" section.
+   ========================= */
+footer [class*="social"],
+footer [class*="Social"] {
+  display: none !important;
 }

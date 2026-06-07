@@ -37,16 +37,6 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
           Explore our SDKs, APIs, tutorials, and guides for building on the Hedera network.
         </p>
       </div>
-      <div>
-        <a href="/learn/getting-started/index" style={{
-          display: 'inline-flex', alignItems: 'center', gap: '6px',
-          padding: '10px 24px', borderRadius: '999px',
-          backgroundColor: '#ffffff', color: '#11151D',
-          fontSize: '0.9375rem', fontWeight: 600, textDecoration: 'none'
-        }}>
-          Get started →
-        </a>
-      </div>
     </div>
 
     {/* Right: persona selector */}
@@ -61,18 +51,33 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
       </div>
 
       <a href="/learn/getting-started/index" className="hero-persona-card">
-        <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--landing-fg-primary)', marginBottom: '3px' }}>New to Hedera</div>
-        <div style={{ fontSize: '0.75rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.4 }}>Accounts, HBAR, and your first transaction</div>
+        <div className="hero-persona-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--landing-fg-primary)', marginBottom: '3px' }}>New to Hedera</div>
+          <div style={{ fontSize: '0.75rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.4 }}>Accounts, HBAR, and your first transaction</div>
+        </div>
       </a>
 
       <a href="/evm" className="hero-persona-card">
-        <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--landing-fg-primary)', marginBottom: '3px' }}>EVM developer</div>
-        <div style={{ fontSize: '0.75rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.4 }}>Hardhat, Foundry, and MetaMask on Hedera</div>
+        <div className="hero-persona-icon">
+          <svg viewBox="0 0 256 417" fill="none"><path fill="#fff" d="M127.961 0l-2.795 9.5v275.668l2.795 2.79 127.962-75.638z"/><path fill="#fff" fillOpacity="0.7" d="M127.962 0L0 212.32l127.962 75.639V154.158z"/><path fill="#fff" d="M127.961 312.187l-1.575 1.92v98.199l1.575 4.6L256 236.587z"/><path fill="#fff" fillOpacity="0.7" d="M127.962 416.905v-104.72L0 236.585z"/><path fill="#fff" fillOpacity="0.4" d="M127.961 287.958l127.96-75.637-127.96-58.162z"/><path fill="#fff" fillOpacity="0.4" d="M0 212.32l127.96 75.638V154.159z"/></svg>
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--landing-fg-primary)', marginBottom: '3px' }}>EVM developers</div>
+          <div style={{ fontSize: '0.75rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.4 }}>Hardhat, Foundry, and MetaMask on Hedera</div>
+        </div>
       </a>
 
       <a href="/native" className="hero-persona-card">
-        <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--landing-fg-primary)', marginBottom: '3px' }}>Native SDKs</div>
-        <div style={{ fontSize: '0.75rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.4 }}>JavaScript, Java, and Go direct API access</div>
+        <div className="hero-persona-icon">
+          <svg viewBox="0 0 436.54 436.54" fill="#fff" stroke="#fff" strokeWidth="13" strokeLinejoin="round"><path d="M372.61,63.93C331.38,22.7,276.57,0,218.27,0S105.15,22.7,63.93,63.93C22.7,105.15,0,159.97,0,218.27s22.7,113.11,63.93,154.34c41.23,41.23,96.04,63.93,154.34,63.93s113.11-22.7,154.34-63.93c41.23-41.23,63.93-96.04,63.93-154.34s-22.7-113.11-63.93-154.34ZM218.27,417.82c-110.03,0-199.55-89.52-199.55-199.55S108.24,18.72,218.27,18.72s199.55,89.52,199.55,199.55-89.52,199.55-199.55,199.55Z"/><path d="M218.27,71.51l-115.65,115.65,31.11,31.11-31.11,31.11,115.65,115.65,115.65-115.65-31.11-31.11,31.11-31.11-115.65-115.65ZM218.27,95.56l91.59,91.59-91.59,91.59-91.59-91.59,91.59-91.59ZM309.86,249.38l-91.59,91.59-91.59-91.59,19.09-19.08,72.51,72.51,72.51-72.51,19.09,19.08Z"/></svg>
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--landing-fg-primary)', marginBottom: '3px' }}>Native SDKs</div>
+          <div style={{ fontSize: '0.75rem', color: 'var(--landing-fg-tertiary)', lineHeight: 1.4 }}>JavaScript, Java, and Go direct API access</div>
+        </div>
       </a>
     </div>
 
@@ -86,16 +91,22 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
   {/* top row: round H mark + title + bounty link | Explore → */}
   <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:'16px',flexWrap:'wrap'}}>
     <div style={{display:'flex',alignItems:'center',gap:'12px',flexWrap:'wrap'}}>
-      <img className="ai-spotlight-logo" src="/images/brand-icons/icon-white-ai-studio.svg" alt="AI Studio" />
-      <a href="/solutions/ai/index" className="ai-spotlight-title">AI Studio</a>
-      <a href="https://ai-bounties.hedera.com/" className="ai-spotlight-bounty">AI Bounties →</a>
+      <img className="ai-spotlight-logo ai-spotlight-logo--dark" src="/images/logos/hedera-con-white.svg" alt="Hedera" />
+      <img className="ai-spotlight-logo ai-spotlight-logo--light" src="/images/logos/hedera-con-dark.svg" alt="Hedera" />
+      <span className="ai-spotlight-title">AI Studio</span>
+      <a href="https://ai-bounties.hedera.com/" className="ai-spotlight-bounty">AI Bounty →</a>
     </div>
-    <a href="/solutions/ai/index" className="ai-spotlight-cta">
-      Hedera Studios
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M5 12h14M12 5l7 7-7 7"/>
-      </svg>
-    </a>
+    <div style={{display:'flex',gap:'8px',flexWrap:'wrap',alignItems:'center'}}>
+      <a href="/solutions/ai/index" className="ai-spotlight-cta">
+        AI Studio
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+      <a href="/solutions" className="ai-spotlight-cta-ghost">
+        More Studios →
+      </a>
+    </div>
   </div>
 
   {/* descriptor + pill tags */}
@@ -125,7 +136,9 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
   <div className="landing-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
 
     <a href="/learn" className="landing-card">
-      <div className="landing-card-icon" style={{WebkitMaskImage:'url(/images/brand-icons/icon-white-docs.svg)',maskImage:'url(/images/brand-icons/icon-white-docs.svg)'}} />
+      <div className="landing-card-icon">
+        <img src="/images/brand-icons/icon-white-docs.svg" alt="" aria-hidden="true" />
+      </div>
       <div>
         <div className="landing-card-title">Learn</div>
         <div className="landing-card-desc">Fundamentals: accounts, keys, transactions, tokens, hashgraph, and networks.</div>
@@ -133,7 +146,9 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
     </a>
 
     <a href="/evm" className="landing-card">
-      <div className="landing-card-icon" style={{WebkitMaskImage:'url(/images/brand-icons/icon-white-smart-contract.svg)',maskImage:'url(/images/brand-icons/icon-white-smart-contract.svg)'}} />
+      <div className="landing-card-icon">
+        <img src="/images/brand-icons/icon-white-ethereum.svg" alt="" aria-hidden="true" />
+      </div>
       <div>
         <div className="landing-card-title">EVM Developers</div>
         <div className="landing-card-desc">Deploy Solidity contracts with MetaMask, Hardhat, Foundry, and JSON-RPC relay.</div>
@@ -141,7 +156,9 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
     </a>
 
     <a href="/native" className="landing-card">
-      <div className="landing-card-icon" style={{WebkitMaskImage:'url(/images/brand-icons/icon-white-sdk.svg)',maskImage:'url(/images/brand-icons/icon-white-sdk.svg)'}} />
+      <div className="landing-card-icon">
+        <img src="/images/brand-icons/icon-white-sdk.svg" alt="" aria-hidden="true" />
+      </div>
       <div>
         <div className="landing-card-title">Native SDKs</div>
         <div className="landing-card-desc">JavaScript, Java, and Go SDKs for direct access to Hedera services.</div>
@@ -149,7 +166,9 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
     </a>
 
     <a href="/solutions" className="landing-card">
-      <div className="landing-card-icon" style={{WebkitMaskImage:'url(/images/brand-icons/icon-white-ecosystem.svg)',maskImage:'url(/images/brand-icons/icon-white-ecosystem.svg)'}} />
+      <div className="landing-card-icon">
+        <img src="/images/brand-icons/icon-white-ecosystem.svg" alt="" aria-hidden="true" />
+      </div>
       <div>
         <div className="landing-card-title">Solutions</div>
         <div className="landing-card-desc">Tokenization, AI agents, governance, sustainability, and developer tools.</div>
@@ -157,7 +176,9 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
     </a>
 
     <a href="/operators/mirror-node/index" className="landing-card">
-      <div className="landing-card-icon" style={{WebkitMaskImage:'url(/images/brand-icons/icon-white-hedera-network.svg)',maskImage:'url(/images/brand-icons/icon-white-hedera-network.svg)'}} />
+      <div className="landing-card-icon">
+        <img src="/images/brand-icons/icon-white-hedera-network.svg" alt="" aria-hidden="true" />
+      </div>
       <div>
         <div className="landing-card-title">Operators</div>
         <div className="landing-card-desc">Run your own mirror node, JSON-RPC relay, or consensus node.</div>
@@ -165,7 +186,9 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
     </a>
 
     <a href="/reference" className="landing-card">
-      <div className="landing-card-icon" style={{WebkitMaskImage:'url(/images/brand-icons/icon-white-file-alt.svg)',maskImage:'url(/images/brand-icons/icon-white-file-alt.svg)'}} />
+      <div className="landing-card-icon">
+        <img src="/images/brand-icons/icon-white-file-alt.svg" alt="" aria-hidden="true" />
+      </div>
       <div>
         <div className="landing-card-title">Reference</div>
         <div className="landing-card-desc">REST API, Protobuf, HCS gRPC, Status, and Contract Verification APIs.</div>
@@ -173,7 +196,9 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
     </a>
 
     <a href="/support" className="landing-card">
-      <div className="landing-card-icon" style={{WebkitMaskImage:'url(/images/brand-icons/icon-white-support.svg)',maskImage:'url(/images/brand-icons/icon-white-support.svg)'}} />
+      <div className="landing-card-icon">
+        <img src="/images/brand-icons/icon-white-support.svg" alt="" aria-hidden="true" />
+      </div>
       <div>
         <div className="landing-card-title">Support</div>
         <div className="landing-card-desc">FAQs, contributing, style guide, glossary, and community resources.</div>
@@ -181,18 +206,6 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
     </a>
 
   </div>
-</div>
-
-{/* ── POPULAR QUICKSTARTS ──────────────────────────────────────────────── */}
-<div className="landing-section">
-  <div className="landing-section-heading-row" style={{ marginBottom: '24px' }}>
-    <h2 id="popular-quickstarts" className="landing-section-heading">
-      <a href="#popular-quickstarts">Popular quickstarts</a>
-    </h2>
-    <a href="/learn/getting-started/index" className="landing-see-all">See all →</a>
-  </div>
-
-  <QuickstartsShowcase />
 </div>
 
 {/* ── BUILD ON HEDERA ──────────────────────────────────────────────────── */}
@@ -209,28 +222,22 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
 
   <div className="landing-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', marginBottom: '36px' }}>
 
-    <a href="/learn/core-concepts/accounts/index" className="landing-card-stacked">
-      <div className="landing-card-icon" style={{WebkitMaskImage:'url(/images/brand-icons/icon-white-people.svg)',maskImage:'url(/images/brand-icons/icon-white-people.svg)'}} />
-      <div className="landing-card-title">Account Service</div>
-      <div className="landing-card-desc">Create and manage Hedera accounts, keys, staking, and auto-account creation from a public key.</div>
-      <div className="landing-tag-group">
-        <span className="landing-tag">Accounts</span>
-        <span className="landing-tag">HBAR</span>
+    <a href="/native/consensus/create-topic" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <img src="/images/brand-icons/icon-white-consensus.svg" alt="" aria-hidden="true" />
       </div>
-    </a>
-
-    <a href="/learn/core-concepts/services/smart-contracts" className="landing-card-stacked">
-      <div className="landing-card-icon" style={{WebkitMaskImage:'url(/images/brand-icons/icon-white-smart-contract.svg)',maskImage:'url(/images/brand-icons/icon-white-smart-contract.svg)'}} />
-      <div className="landing-card-title">Smart Contracts</div>
-      <div className="landing-card-desc">EVM-compatible Solidity contracts with access to native Hedera services via system contracts.</div>
+      <div className="landing-card-title">Consensus Service</div>
+      <div className="landing-card-desc">Scalable, real-time audit logs with consensus timestamps. 10k+ TPS at $0.0001 per message.</div>
       <div className="landing-tag-group">
-        <span className="landing-tag">Solidity</span>
-        <span className="landing-tag">EVM</span>
+        <span className="landing-tag">HCS</span>
+        <span className="landing-tag">Messaging</span>
       </div>
     </a>
 
     <a href="/learn/core-concepts/tokens/index" className="landing-card-stacked">
-      <div className="landing-card-icon" style={{WebkitMaskImage:'url(/images/brand-icons/icon-white-tokens.svg)',maskImage:'url(/images/brand-icons/icon-white-tokens.svg)'}} />
+      <div className="landing-card-icon">
+        <img src="/images/brand-icons/icon-white-tokens.svg" alt="" aria-hidden="true" />
+      </div>
       <div className="landing-card-title">Token Service</div>
       <div className="landing-card-desc">Configure, mint, and manage native fungible and non-fungible tokens with built-in compliance.</div>
       <div className="landing-tag-group">
@@ -240,13 +247,27 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
       </div>
     </a>
 
-    <a href="/native/consensus/create-topic" className="landing-card-stacked">
-      <div className="landing-card-icon" style={{WebkitMaskImage:'url(/images/brand-icons/icon-white-consensus.svg)',maskImage:'url(/images/brand-icons/icon-white-consensus.svg)'}} />
-      <div className="landing-card-title">Consensus Service</div>
-      <div className="landing-card-desc">Scalable, real-time audit logs with consensus timestamps. 10k+ TPS at $0.0001 per message.</div>
+    <a href="/learn/core-concepts/services/smart-contracts" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <img src="/images/brand-icons/icon-white-smart-contract.svg" alt="" aria-hidden="true" />
+      </div>
+      <div className="landing-card-title">Smart Contracts</div>
+      <div className="landing-card-desc">EVM-compatible Solidity contracts with access to native Hedera services via system contracts.</div>
       <div className="landing-tag-group">
-        <span className="landing-tag">HCS</span>
-        <span className="landing-tag">Messaging</span>
+        <span className="landing-tag">Solidity</span>
+        <span className="landing-tag">EVM</span>
+      </div>
+    </a>
+
+    <a href="/learn/core-concepts/accounts/index" className="landing-card-stacked">
+      <div className="landing-card-icon">
+        <img src="/images/brand-icons/icon-white-people.svg" alt="" aria-hidden="true" />
+      </div>
+      <div className="landing-card-title">Account Service</div>
+      <div className="landing-card-desc">Create and manage Hedera accounts, keys, staking, and auto-account creation from a public key.</div>
+      <div className="landing-tag-group">
+        <span className="landing-tag">Accounts</span>
+        <span className="landing-tag">HBAR</span>
       </div>
     </a>
 
@@ -274,43 +295,41 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
   <PlaygroundShowcase />
 </div>
 
+
 {/* ── DEVELOPER TOOLS ──────────────────────────────────────────────────── */}
 <div className="landing-section">
   <div className="landing-section-heading-row" style={{ marginBottom: '24px' }}>
     <h2 id="developer-tools" className="landing-section-heading">
       <a href="#developer-tools">Developer tools &amp; resources</a>
     </h2>
-    <a href="/solutions/tools/playground" className="landing-see-all">See all →</a>
   </div>
 
   <div className="landing-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
 
-    <a href="/learn/networks/community-mirror-nodes" className="landing-card">
-      <div className="landing-card-icon" style={{WebkitMaskImage:'url(/images/brand-icons/icon-white-hedera-ecosystem.svg)',maskImage:'url(/images/brand-icons/icon-white-hedera-ecosystem.svg)'}} />
-      <div>
-        <div className="landing-card-title">Network Explorers</div>
-        <div className="landing-card-desc">Visualize accounts, tokens, transactions, and contracts on Hedera.</div>
-      </div>
-    </a>
-
-    <a href="https://solo.hiero.org/docs/" target="_blank" rel="noopener noreferrer" className="landing-card">
-      <div className="landing-card-icon" style={{WebkitMaskImage:'url(/images/brand-icons/icon-white-cloudbased.svg)',maskImage:'url(/images/brand-icons/icon-white-cloudbased.svg)'}} />
-      <div>
-        <div className="landing-card-title">Solo</div>
-        <div className="landing-card-desc">Deploy and operate a Hiero/Hedera network locally with Kubernetes, perfect for development and testing.</div>
-      </div>
-    </a>
-
     <a href="/native/tutorials/advanced/mcp-server-setup" className="landing-card">
-      <div className="landing-card-icon" style={{WebkitMaskImage:'url(/images/brand-icons/icon-white-integrations.svg)',maskImage:'url(/images/brand-icons/icon-white-integrations.svg)'}} />
+      <div className="landing-card-icon">
+        <img src="/images/brand-icons/icon-white-ai-studio.svg" alt="" aria-hidden="true" />
+      </div>
       <div>
         <div className="landing-card-title">MCP Server</div>
         <div className="landing-card-desc">Connect AI assistants like Claude and Cursor to Hedera with the Model Context Protocol server.</div>
       </div>
     </a>
 
+    <a href="/learn/networks/community-mirror-nodes" className="landing-card">
+      <div className="landing-card-icon">
+        <img src="/images/brand-icons/icon-white-hedera-ecosystem.svg" alt="" aria-hidden="true" />
+      </div>
+      <div>
+        <div className="landing-card-title">Network Explorers</div>
+        <div className="landing-card-desc">Visualize accounts, tokens, transactions, and contracts on Hedera.</div>
+      </div>
+    </a>
+
     <a href="/evm/development/json-rpc/index" className="landing-card">
-      <div className="landing-card-icon" style={{WebkitMaskImage:'url(/images/brand-icons/icon-white-technical.svg)',maskImage:'url(/images/brand-icons/icon-white-technical.svg)'}} />
+      <div className="landing-card-icon">
+        <img src="/images/brand-icons/icon-white-technical.svg" alt="" aria-hidden="true" />
+      </div>
       <div>
         <div className="landing-card-title">JSON-RPC Relay</div>
         <div className="landing-card-desc">EVM-compatible JSON-RPC endpoint: connect MetaMask, Hardhat, Foundry, and ethers.js to Hedera.</div>
@@ -318,7 +337,9 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
     </a>
 
     <a href="/native/fundamentals/index" className="landing-card">
-      <div className="landing-card-icon" style={{WebkitMaskImage:'url(/images/brand-icons/icon-white-wallet.svg)',maskImage:'url(/images/brand-icons/icon-white-wallet.svg)'}} />
+      <div className="landing-card-icon">
+        <img src="/images/brand-icons/icon-white-wallet.svg" alt="" aria-hidden="true" />
+      </div>
       <div>
         <div className="landing-card-title">Wallet Integration</div>
         <div className="landing-card-desc">Connect Hedera-native and EVM wallets: HashPack, Blade, Kabila, MetaMask, and more.</div>
@@ -326,17 +347,29 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
     </a>
 
     <a href="/evm/integrations/oracles/index" className="landing-card">
-      <div className="landing-card-icon" style={{WebkitMaskImage:'url(/images/brand-icons/icon-white-globe.svg)',maskImage:'url(/images/brand-icons/icon-white-globe.svg)'}} />
+      <div className="landing-card-icon">
+        <img src="/images/brand-icons/icon-white-globe.svg" alt="" aria-hidden="true" />
+      </div>
       <div>
         <div className="landing-card-title">Oracle Networks</div>
         <div className="landing-card-desc">Pull external data into Hedera smart contracts: Chainlink, Pyth, Supra, and other oracle providers.</div>
       </div>
     </a>
 
+    <a href="https://solo.hiero.org/docs/" target="_blank" rel="noopener noreferrer" className="landing-card">
+      <div className="landing-card-icon">
+        <img src="/images/brand-icons/icon-white-hiero.svg" alt="" aria-hidden="true" />
+      </div>
+      <div>
+        <div className="landing-card-title">Solo</div>
+        <div className="landing-card-desc">Deploy and operate a Hiero/Hedera network locally with Kubernetes, perfect for development and testing.</div>
+      </div>
+    </a>
+
   </div>
 </div>
 
-{/* ── FOOTER ───────────────────────────────────────────────────────────── */}
+{/* ── CONTRIBUTING ─────────────────────────────────────────────────────── */}
 <div className="landing-footer">
   <h2 id="contributing" className="landing-footer-heading">
     <a href="#contributing">Contributing</a>
@@ -346,17 +379,19 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
     color: 'var(--landing-fg-tertiary)',
     margin: '0 0 20px',
     lineHeight: 1.55,
-    maxWidth: '540px'
+    maxWidth: '600px'
   }}>
     Whether you're fixing bugs, enhancing features, or improving documentation, your contributions are important. Read our{' '}
-    <a href="https://github.com/hashgraph/.github/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(200,180,255,0.9)', textDecoration: 'none' }}>contributing guide</a>{' '}
+    <a href="https://github.com/hashgraph/.github/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer" className="landing-prose-link">contributing guide</a>{' '}
     to get involved.
   </p>
   <div className="landing-pill-group">
-    <a href="https://github.com/hashgraph/.github/blob/main/CODE_OF_CONDUCT.md" target="_blank" rel="noopener noreferrer" className="landing-pill">Code of Conduct</a>
-    <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noopener noreferrer" className="landing-pill">Apache License 2.0</a>
-    <a href="https://hedera.com/roadmap" target="_blank" rel="noopener noreferrer" className="landing-pill">Hedera Roadmap</a>
+    <a className="landing-pill" href="https://github.com/hashgraph" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a className="landing-pill" href="https://hedera.com/discord" target="_blank" rel="noopener noreferrer">Discord</a>
+    <a className="landing-pill" href="https://www.youtube.com/hederahashgraph" target="_blank" rel="noopener noreferrer">YouTube</a>
+    <a className="landing-pill" href="https://x.com/hedera" target="_blank" rel="noopener noreferrer">X</a>
+    <a className="landing-pill" href="https://www.linkedin.com/company/hedera-network" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+
   </div>
 </div>
-
 </div>

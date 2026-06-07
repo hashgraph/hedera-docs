@@ -73,17 +73,7 @@ export const QuickstartsShowcase = () => {
           <a
             key={it.title}
             href={it.href}
-            style={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: '14px',
-              padding: '18px',
-              borderRadius: '10px',
-              border: '1px solid var(--landing-border)',
-              textDecoration: 'none',
-              backgroundColor: 'var(--landing-card-bg)',
-              transition: 'border-color 0.15s ease'
-            }}
+            className="landing-card"
           >
             <div style={{
               width: '36px', height: '36px', borderRadius: '8px',

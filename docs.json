@@ -18,8 +18,8 @@
       "weight": 700
     },
     "body": {
-      "family": "Styrene Light Web",
-      "source": "/public/fonts/styrene/StyreneA-Light-Web.woff2",
+      "family": "Styrene Regular",
+      "source": "/public/fonts/styrene/StyreneA-Regular-Web.woff2",
       "format": "woff2",
       "weight": 500
     }
@@ -66,17 +66,6 @@
       "type": "button",
       "label": "Dev Portal",
       "href": "https://portal.hedera.com"
-    }
-  },
-  "footer": {
-    "socials": {
-      "discord": "https://hedera.com/discord",
-      "linkedin": "https://www.linkedin.com/company/hedera-network",
-      "medium": "https://medium.com/hedera",
-      "reddit": "https://www.reddit.com/r/Hedera/",
-      "telegram": "https://t.me/hederahashgraph",
-      "x": "https://X.com/hedera",
-      "youtube": "https://www.youtube.com/hederahashgraph"
     }
   },
   "redirects": [
@@ -1158,7 +1147,11 @@
     },
     {
       "source": "/hedera/getting-started-evm-developers/docs-hedera-com-hedera-core-concepts-smart-contracts-understanding-hederas-evm-differences-and-compatibility",
-      "destination": "/evm/quickstart/evm-compatibility-overview"
+      "destination": "/evm/hedera-vs-ethereum"
+    },
+    {
+      "source": "/evm/quickstart/evm-compatibility-overview",
+      "destination": "/evm/hedera-vs-ethereum"
     },
     {
       "source": "/hedera/getting-started-evm-developers/hedera-testnet-faucet",
@@ -1874,7 +1867,7 @@
     },
     {
       "source": "/hedera/tutorials/building-on-hedera",
-      "destination": "/solutions/examples/building-on-hedera"
+      "destination": "/solutions/examples"
     },
     {
       "source": "/hedera/tutorials/consensus/batch-anchor-verify-records-with-hcs",
@@ -2234,7 +2227,8 @@
           {
             "group": "Overview",
             "pages": [
-              "evm/index"
+              "evm/index",
+              "evm/hedera-vs-ethereum"
             ]
           },
           {
@@ -2246,7 +2240,6 @@
               "evm/quickstart/deploy-with-hardhat",
               "evm/quickstart/deploy-with-foundry",
               "evm/quickstart/deploy-with-contract-builder",
-              "evm/quickstart/evm-compatibility-overview",
               "evm/quickstart/portal-contract-builder"
             ]
           },
@@ -2862,8 +2855,7 @@
             "group": "Examples",
             "pages": [
               "solutions/examples/demos",
-              "solutions/examples/starters",
-              "solutions/examples/building-on-hedera"
+              "solutions/examples/starters"
             ]
           }
         ]

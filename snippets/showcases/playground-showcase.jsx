@@ -1,6 +1,7 @@
 export const PlaygroundShowcase = () => {
   const [tabIdx, setTabIdx] = useState(0);
   const [itemIdx, setItemIdx] = useState(0);
+  const [hoverIdx, setHoverIdx] = useState(-1);
 
   const ICON = {
     bot: <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4 M8 16h.01 M16 16h.01"/></svg>,
@@ -233,14 +234,16 @@ export const PlaygroundShowcase = () => {
               <button
                 key={it.title}
                 onClick={() => setItemIdx(i)}
+                onMouseEnter={() => setHoverIdx(i)}
+                onMouseLeave={() => setHoverIdx(-1)}
                 style={{
                   display: 'flex',
                   alignItems: 'flex-start',
                   gap: '14px',
                   padding: '16px',
                   borderRadius: '10px',
-                  border: '1px solid ' + (active ? '#8259EF' : 'var(--landing-border)'),
-                  background: active ? 'var(--landing-card-bg)' : 'transparent',
+                  border: '1px solid ' + (active ? '#8259EF' : (hoverIdx === i ? 'rgba(130,89,239,0.45)' : 'var(--landing-border)')),
+                  background: (active || hoverIdx === i) ? 'var(--landing-card-bg)' : 'transparent',
                   textAlign: 'left',
                   cursor: 'pointer',
                   width: '100%',

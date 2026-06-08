@@ -167,7 +167,7 @@ html:not(.dark):not([data-theme='dark']) .landing-container {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   padding: clamp(36px, 5vw, 56px) clamp(28px, 4vw, 48px);
-  margin-bottom: 28px;
+  margin-bottom: 16px;
   overflow: hidden;
 }
 
@@ -184,31 +184,34 @@ html:not(.dark):not([data-theme='dark']) .hero-panel {
   border: none;
 }
 
-/* AI Studio spotlight panel — glass over body gradient */
-.ai-spotlight-panel {
-  border-radius: 14px;
-  margin-bottom: 32px;
-  padding: 28px 36px;
+/* =========================
+   AI Studio spotlight
+   ========================= */
+.ai-spotlight {
   display: flex;
-  flex-direction: column;
-  gap: 14px;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  align-items: center;
+  gap: 28px;
   position: relative;
   overflow: hidden;
+  margin: 0 0 28px;
+  padding: 14px 28px;
+  border-radius: 14px;
+  text-align: left;
+  text-decoration: none;
+  /* glass panel — per-mode, like the original spotlight (base = dark mode) */
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
 }
 
-/* Light mode; pink-tipped accent line sits on top */
-html:not(.dark):not([data-theme='dark']) .ai-spotlight-panel {
-  background: transparent;
-  border-color: rgba(130, 89, 239, 0.22);
-  box-shadow: 0 2px 16px rgba(130, 89, 239, 0.10), 0 1px 4px rgba(130, 89, 239, 0.06);
+.ai-spotlight:hover {
+  transform: translateY(-2px);
 }
 
-/* Accent line along the top edge — both modes */
-.ai-spotlight-panel::before {
+/* pink-tipped gradient accent line on the top edge — both modes */
+.ai-spotlight::before {
   content: '';
   position: absolute;
   top: 0;
@@ -219,153 +222,206 @@ html:not(.dark):not([data-theme='dark']) .ai-spotlight-panel {
   background: linear-gradient(to right, #E0249D 0%, #8259EF 52%, #5C7BFF 100%);
 }
 
-.dark .ai-spotlight-panel::before,
-[data-theme='dark'] .ai-spotlight-panel::before {
+.dark .ai-spotlight::before,
+[data-theme='dark'] .ai-spotlight::before {
   background: linear-gradient(to right, #FF2E9A 0%, #8259EF 50%, #5C7BFF 100%);
 }
 
-.dark .ai-spotlight-panel,
-[data-theme='dark'] .ai-spotlight-panel {
+/* Left head block: brand + title + subtitle, stacked tight */
+.ai-spotlight-head {
+  flex-shrink: 0;
+  width: 220px;
+}
+
+/* Light mode — transparent with violet rim + soft halo */
+html:not(.dark):not([data-theme='dark']) .ai-spotlight {
+  background: transparent;
+  border-color: rgba(130, 89, 239, 0.22);
+  box-shadow: 0 2px 16px rgba(130, 89, 239, 0.10), 0 1px 4px rgba(130, 89, 239, 0.06);
+}
+
+html:not(.dark):not([data-theme='dark']) .ai-spotlight:hover {
+  box-shadow: 0 6px 24px rgba(130, 89, 239, 0.18), 0 2px 8px rgba(130, 89, 239, 0.10);
+}
+
+/* Dark mode — translucent white fill */
+.dark .ai-spotlight,
+[data-theme='dark'] .ai-spotlight {
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 255, 255, 0.10);
 }
 
-.ai-spotlight-logo {
-  width: 40px;
-  height: 40px;
+/* Round H badge + title, on one row */
+.ai-spotlight-titlerow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 5px;
+}
+
+.ai-spotlight-badge {
+  width: 23px;
+  height: 23px;
   flex-shrink: 0;
   display: block;
 }
 
-/* dark mode: show white logo, hide dark logo */
-.ai-spotlight-logo--light {
+/* badge swaps per mode: white mark on the dark panel, dark mark on the light panel */
+.ai-spotlight-badge--dark {
   display: none;
 }
 
-.ai-spotlight-logo--dark {
+.ai-spotlight-badge--white {
   display: block;
 }
 
-/* light mode: show dark logo, hide white logo */
-html:not(.dark):not([data-theme='dark']) .ai-spotlight-logo--light {
-  display: block;
-}
-
-html:not(.dark):not([data-theme='dark']) .ai-spotlight-logo--dark {
+html:not(.dark):not([data-theme='dark']) .ai-spotlight-badge--white {
   display: none;
+}
+
+html:not(.dark):not([data-theme='dark']) .ai-spotlight-badge--dark {
+  display: block;
 }
 
 .ai-spotlight-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  text-decoration: none;
-  color: #ffffff;
-}
-
-html:not(.dark):not([data-theme='dark']) .ai-spotlight-title {
-  color: #11151D;
-}
-
-.dark .ai-spotlight-title,
-[data-theme='dark'] .ai-spotlight-title {
-  color: #ffffff;
-}
-
-/* Bounty pill — gray with a pink "live" dot (bounties-site look), both modes */
-.ai-spotlight-bounty {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  text-decoration: none;
-  padding: 5px 13px;
-  border-radius: 999px;
-  background: #1e1e24;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: #ffffff;
-  flex-shrink: 0;
-  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-}
-
-/* pink status dot */
-.ai-spotlight-bounty::before {
-  content: '';
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #E0249D;
-  box-shadow: 0 0 6px rgba(224, 36, 157, 0.70);
-  flex-shrink: 0;
-  transition: box-shadow 0.15s ease;
-}
-
-.ai-spotlight-bounty:hover {
-  background: #26262E;
-  border-color: rgba(255, 255, 255, 0.24);
-  color: #ffffff;
-}
-
-.ai-spotlight-bounty:hover::before {
-  box-shadow: 0 0 9px rgba(224, 36, 157, 0.95);
-}
-
-/* Light mode — pale lavender-gray chip so it recedes (parity with dark glass) */
-html:not(.dark):not([data-theme='dark']) .ai-spotlight-bounty {
-  background: #EDEAF5;
-  border-color: rgba(130, 89, 239, 0.20);
-  color: #3C3C44;
-}
-
-html:not(.dark):not([data-theme='dark']) .ai-spotlight-bounty:hover {
-  background: #E4DEF2;
-  border-color: rgba(130, 89, 239, 0.30);
-}
-
-/* Ghost secondary CTA — outline version of ai-spotlight-cta, same size */
-.ai-spotlight-cta-ghost {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-family: "Styrene Regular", sans-serif;
+  font-size: 1.0625rem;
+  font-weight: 400;
   letter-spacing: -0.01em;
-  text-decoration: none;
-  white-space: nowrap;
+  line-height: 1.1;
+  margin: 0;
+  color: var(--landing-fg-primary);
+}
+
+.ai-spotlight-subtitle {
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--landing-fg-tertiary);
+  margin: 0;
+  max-width: none;
+  line-height: 1.4;
+}
+
+/* 5-across feature row — fills the remaining width */
+.ai-spotlight-features {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 16px;
+  margin: 0;
+}
+
+.ai-spotlight-feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* Exact brand icons, recolored per mode via CSS mask (each icon includes its
+   own circular frame, so it IS the circle — no separate ring container). */
+.ai-spotlight-ico {
+  width: 36px;
+  height: 36px;
   flex-shrink: 0;
-  padding: 5px 13px;
-  border-radius: 999px;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.40);
-  color: rgba(255, 255, 255, 0.88);
-  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  display: block;
+  /* white on the dark panel (base) */
+  background-color: #ffffff;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  transition: background-color 0.15s ease, transform 0.15s ease;
 }
 
-.ai-spotlight-cta-ghost:hover {
-  background: rgba(255, 255, 255, 0.10);
-  border-color: rgba(255, 255, 255, 0.65);
-  color: #ffffff;
+/* black on the light panel */
+html:not(.dark):not([data-theme='dark']) .ai-spotlight-ico {
+  background-color: #000000;
 }
 
-html:not(.dark):not([data-theme='dark']) .ai-spotlight-cta-ghost {
-  border-color: rgba(130, 89, 239, 0.45);
+.ai-spotlight-caption {
+  font-size: 0.625rem;
+  line-height: 1.25;
+  color: var(--landing-fg-secondary);
+  max-width: 150px;
+}
+
+.ai-spotlight-footer {
+  flex-shrink: 0;
+  align-self: center;
+  margin-left: 4px;
+  white-space: nowrap;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  font-family: "Styrene Bold", sans-serif;
+  color: rgba(214, 199, 255, 1);
+  transition: transform 0.15s ease;
+}
+
+html:not(.dark):not([data-theme='dark']) .ai-spotlight-footer {
   color: #6B42CC;
 }
 
-html:not(.dark):not([data-theme='dark']) .ai-spotlight-cta-ghost:hover {
-  background: rgba(130, 89, 239, 0.08);
-  border-color: rgba(130, 89, 239, 0.65);
-  color: #5130A0;
+.ai-spotlight:hover .ai-spotlight-footer {
+  transform: translateX(3px);
 }
 
-.ai-spotlight-bounty,
-.ai-spotlight-title {
-  position: relative;
-  z-index: 1;
+/* Tablet/mobile — stack the band: head on top, features wrap, footer below */
+@media (max-width: 900px) {
+  .ai-spotlight {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 22px 24px;
+  }
+
+  .ai-spotlight-head {
+    width: auto;
+  }
+
+  .ai-spotlight-features {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 18px 12px;
+  }
+
+  .ai-spotlight-feature {
+    flex: 1 1 30%;
+    min-width: 110px;
+  }
+
+  .ai-spotlight-footer {
+    align-self: flex-start;
+    margin-left: 0;
+  }
 }
 
-/* Hero "Get started" CTA — same behavior as spotlight CTA */
+/* Phone — features become left-aligned icon+caption rows */
+@media (max-width: 520px) {
+  .ai-spotlight-feature {
+    flex-direction: row;
+    flex-basis: 100%;
+    align-items: center;
+    text-align: left;
+    gap: 12px;
+  }
+
+  .ai-spotlight-caption {
+    max-width: none;
+  }
+}
+
+/* Hero "Get started" CTA */
 .hero-cta {
   display: inline-flex;
   align-items: center;
@@ -405,90 +461,6 @@ html:not(.dark):not([data-theme='dark']) .ai-spotlight-cta-ghost:hover {
   border-color: rgba(255, 255, 255, 0.65);
 }
 
-/* CTA pill — Ultraviolet on light mode, white on dark glass spotlight */
-.ai-spotlight-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  text-decoration: none;
-  white-space: nowrap;
-  flex-shrink: 0;
-  padding: 5px 13px;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  background: #8259EF;
-  color: #ffffff;
-  transition: background-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-html:not(.dark):not([data-theme='dark']) .ai-spotlight-cta {
-  background: #11151D;
-  color: #ffffff;
-  box-shadow: 0 2px 10px rgba(17, 21, 29, 0.20);
-}
-
-html:not(.dark):not([data-theme='dark']) .ai-spotlight-cta:hover {
-  background: #333335;
-  box-shadow: 0 2px 12px rgba(17, 21, 29, 0.28);
-}
-
-.dark .ai-spotlight-cta,
-[data-theme='dark'] .ai-spotlight-cta {
-  background: #ffffff;
-  color: #11151D;
-}
-
-.dark .ai-spotlight-cta:hover,
-[data-theme='dark'] .ai-spotlight-cta:hover {
-  background: transparent;
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.65);
-}
-
-.ai-spotlight-pill {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 0.8125rem;
-  font-weight: 500;
-  padding: 5px 13px;
-  border-radius: 999px;
-  letter-spacing: 0.01em;
-}
-
-html:not(.dark):not([data-theme='dark']) .ai-spotlight-pill {
-  background: rgba(130, 89, 239, 0.06);
-  border-color: rgba(130, 89, 239, 0.18);
-  color: rgba(74, 47, 168, 0.85);
-  font-weight: 500;
-}
-
-.ai-spotlight-desc {
-  font-size: 0.9rem;
-  line-height: 1.55;
-  margin: 0;
-  color: rgba(255, 255, 255, 0.70);
-}
-
-html:not(.dark):not([data-theme='dark']) .ai-spotlight-desc {
-  color: rgba(17, 21, 29, 0.60);
-}
-
-.dark .ai-spotlight-desc,
-[data-theme='dark'] .ai-spotlight-desc {
-  color: rgba(255, 255, 255, 0.65);
-}
-
-.dark .ai-spotlight-pill,
-[data-theme='dark'] .ai-spotlight-pill {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.14);
-  color: rgba(255, 255, 255, 0.70);
-}
-
 /* AI Bounty top announcement bar — inverted per mode (dark bar on light page,
    light bar on dark page) with a pink-tipped gradient accent line, like the spotlight */
 .ai-bounty-bar {
@@ -516,17 +488,6 @@ html:not(.dark):not([data-theme='dark']) .ai-spotlight-desc {
 }
 
 /* pink-tipped gradient accent line on top edge */
-.ai-bounty-bar::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  border-radius: 10px 10px 0 0;
-  background: linear-gradient(to right, #E0249D 0%, #8259EF 52%, #5C7BFF 100%);
-}
-
 /* dark page → light bar (inverted) */
 .ai-bounty-bar-dot {
   width: 8px;
@@ -541,6 +502,7 @@ html:not(.dark):not([data-theme='dark']) .ai-spotlight-desc {
 .ai-bounty-bar-text {
   flex: 1;
   min-width: 0;
+  align-items: center !important;
 }
 
 /* keep the bold lead-in legible — inherit the bar's text color in both modes
@@ -562,6 +524,27 @@ html:not(.dark):not([data-theme='dark']) .ai-spotlight-desc {
 
 .ai-bounty-bar:hover .ai-bounty-bar-cta {
   text-shadow: 0 0 12px rgba(168, 147, 244, 0.95), 0 0 24px rgba(130, 89, 239, 0.7);
+}
+
+/* Light mode → light bar with dark text (base rule above is the dark-mode bar) */
+html:not(.dark):not([data-theme='dark']) .ai-bounty-bar {
+  background: #F3F0FC;
+  border: 1px solid rgba(130, 89, 239, 0.22);
+  color: #11151D;
+}
+
+html:not(.dark):not([data-theme='dark']) .ai-bounty-bar:hover {
+  background: #ECE6FB;
+  border-color: rgba(130, 89, 239, 0.38);
+}
+
+html:not(.dark):not([data-theme='dark']) .ai-bounty-bar-cta {
+  color: #6B42CC;
+  text-shadow: none;
+}
+
+html:not(.dark):not([data-theme='dark']) .ai-bounty-bar:hover .ai-bounty-bar-cta {
+  text-shadow: none;
 }
 
 /* Persona cards — glass inside the glass hero panel */

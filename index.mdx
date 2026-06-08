@@ -5,7 +5,6 @@ mode: "custom"
 ---
 
 import { PlaygroundShowcase } from '/snippets/showcases/playground-showcase.jsx';
-import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.jsx';
 
 <div className="not-prose landing-container">
 
@@ -86,42 +85,50 @@ import { QuickstartsShowcase } from '/snippets/showcases/quickstarts-showcase.js
 
 
 {/* ── AI STUDIO SPOTLIGHT ─────────────────────────────────────────────── */}
-<div className="ai-spotlight-panel">
+<a href="/solutions/ai/index" className="ai-spotlight" aria-label="Hedera AI Studio: open-source toolkit bridging artificial intelligence and Hedera">
 
-  {/* top row: round H mark + title + bounty link | Explore → */}
-  <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:'16px',flexWrap:'wrap'}}>
-    <div style={{display:'flex',alignItems:'center',gap:'12px',flexWrap:'wrap'}}>
-      <img className="ai-spotlight-logo ai-spotlight-logo--dark" src="/images/logos/hedera-con-white.svg" alt="Hedera" />
-      <img className="ai-spotlight-logo ai-spotlight-logo--light" src="/images/logos/hedera-con-dark.svg" alt="Hedera" />
-      <span className="ai-spotlight-title">AI Studio</span>
-      <a href="https://ai-bounties.hedera.com/" className="ai-spotlight-bounty">AI Bounty →</a>
+  {/* Left: round H badge + title, subtitle below */}
+  <div className="ai-spotlight-head">
+    <div className="ai-spotlight-titlerow">
+      <img className="ai-spotlight-badge ai-spotlight-badge--white" src="/images/logos/hedera-con-white.svg" alt="Hedera" />
+      <img className="ai-spotlight-badge ai-spotlight-badge--dark" src="/images/logos/hedera-con-dark.svg" alt="Hedera" />
+      <div className="ai-spotlight-title">Hedera AI Studio</div>
     </div>
-    <div style={{display:'flex',gap:'8px',flexWrap:'wrap',alignItems:'center'}}>
-      <a href="/solutions/ai/index" className="ai-spotlight-cta">
-        AI Studio
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M5 12h14M12 5l7 7-7 7"/>
-        </svg>
-      </a>
-      <a href="/solutions" className="ai-spotlight-cta-ghost">
-        More Studios →
-      </a>
-    </div>
+    <div className="ai-spotlight-subtitle">Open-source toolkit bridging artificial intelligence and Hedera</div>
   </div>
 
-  {/* descriptor + pill tags */}
-  <p className="ai-spotlight-desc">
-    Build verifiable AI agents on Hedera. Audit trails, on-chain token flows, and a modular toolkit for production-grade agent systems.
-  </p>
-  <div style={{display:'flex',flexWrap:'wrap',gap:'8px'}}>
-    <span className="ai-spotlight-pill">Modular agent tools</span>
-    <span className="ai-spotlight-pill">LangChain &amp; LangGraph</span>
-    <span className="ai-spotlight-pill">ElizaOS</span>
-    <span className="ai-spotlight-pill">Tokenization &amp; logging</span>
-    <span className="ai-spotlight-pill">Open source</span>
+  {/* 5 circles — exact brand icons, recolored per mode via CSS mask */}
+  <div className="ai-spotlight-features">
+
+    <div className="ai-spotlight-feature">
+      <span className="ai-spotlight-ico" style={{ WebkitMaskImage: "url('/images/brand-icons/ai-studio/ai.svg')", maskImage: "url('/images/brand-icons/ai-studio/ai.svg')" }}></span>
+      <span className="ai-spotlight-caption">Modular tools to build AI agents</span>
+    </div>
+
+    <div className="ai-spotlight-feature">
+      <span className="ai-spotlight-ico" style={{ WebkitMaskImage: "url('/images/brand-icons/ai-studio/connect.svg')", maskImage: "url('/images/brand-icons/ai-studio/connect.svg')" }}></span>
+      <span className="ai-spotlight-caption">Connect AI agents seamlessly</span>
+    </div>
+
+    <div className="ai-spotlight-feature">
+      <span className="ai-spotlight-ico" style={{ WebkitMaskImage: "url('/images/brand-icons/ai-studio/code.svg')", maskImage: "url('/images/brand-icons/ai-studio/code.svg')" }}></span>
+      <span className="ai-spotlight-caption">Build with LangChain, LangGraph, and JavaScript</span>
+    </div>
+
+    <div className="ai-spotlight-feature">
+      <span className="ai-spotlight-ico" style={{ WebkitMaskImage: "url('/images/brand-icons/ai-studio/cube.svg')", maskImage: "url('/images/brand-icons/ai-studio/cube.svg')" }}></span>
+      <span className="ai-spotlight-caption">Automated tokenization, messaging, and data logging</span>
+    </div>
+
+    <div className="ai-spotlight-feature">
+      <span className="ai-spotlight-ico" style={{ WebkitMaskImage: "url('/images/brand-icons/ai-studio/gear.svg')", maskImage: "url('/images/brand-icons/ai-studio/gear.svg')" }}></span>
+      <span className="ai-spotlight-caption">Integrated with ElizaOS for intuitive agent interactions</span>
+    </div>
+
   </div>
 
-</div>
+  <span className="ai-spotlight-footer">Explore AI Studio →</span>
+</a>
 
 
 {/* ── EXPLORE THE DOCS ─────────────────────────────────────────────────── */}

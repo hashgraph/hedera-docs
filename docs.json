@@ -68,6 +68,17 @@
       "href": "https://portal.hedera.com"
     }
   },
+  "footer": {
+    "socials": {
+      "discord": "https://hedera.com/discord",
+      "linkedin": "https://www.linkedin.com/company/hedera-network",
+      "medium": "https://medium.com/hedera",
+      "reddit": "https://www.reddit.com/r/Hedera/",
+      "telegram": "https://t.me/hederahashgraph",
+      "x": "https://X.com/hedera",
+      "youtube": "https://www.youtube.com/hederahashgraph"
+    }
+  },
   "redirects": [
     {
       "source": "/evm/development/index",
@@ -1147,11 +1158,11 @@
     },
     {
       "source": "/hedera/getting-started-evm-developers/docs-hedera-com-hedera-core-concepts-smart-contracts-understanding-hederas-evm-differences-and-compatibility",
-      "destination": "/evm/hedera-vs-ethereum"
+      "destination": "/evm/differences"
     },
     {
       "source": "/evm/quickstart/evm-compatibility-overview",
-      "destination": "/evm/hedera-vs-ethereum"
+      "destination": "/evm/differences"
     },
     {
       "source": "/hedera/getting-started-evm-developers/hedera-testnet-faucet",
@@ -2227,8 +2238,7 @@
           {
             "group": "Overview",
             "pages": [
-              "evm/index",
-              "evm/hedera-vs-ethereum"
+              "evm/index"
             ]
           },
           {

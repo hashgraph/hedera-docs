@@ -5,13 +5,30 @@ description: "Consensus Node release information"
 
 Visit the [Hedera status page](https://status.hedera.com/) for the latest versions supported on each network.
 
-## Release v0.74
+## Release v0.74+
+
 <Info>
   **MAINNET UPDATE: JUNE 10, 2026**
 </Info>
-<Info>
-  **TESTNET UPDATE: MAY 27, 2026**
-</Info>
+<Check>
+  **TESTNET UPDATED: MAY 27, 2026**
+</Check>
+
+### Release highlights
+
+Release v0.74 delivers bug fixes, ongoing feature development, and the completion of [HIP-1137](https://hips.hedera.com/#hip-1137) Block Node Discoverability. This release strengthens Block Node endpoint management by introducing support for multiple services per entry, streamlining service discovery for clients.
+
+
+<Accordion title="What's new in Release v0.74?">
+
+  #### [HIP-1137 Enhancements (HIP-1137)](https://hips.hedera.com/#hip-1137)
+  Completes the on-chain registered-node registry by enabling Block Node operators to publish multiple API endpoints per node through `AddressBookService` transactions. The `BlockNodeEndpoint.endpoint_api` field now supports repeated entries, allowing a single endpoint to advertise multiple service types (PUBLISH, SUBSCRIBE, etc.).
+  
+  **Benefits**
+  - Supports complex Block Node configurations with multiple APIs per endpoint
+  - Provides operator-managed, trustworthy source for finding Block Node services
+  - Links consensus node accounts to registered nodes for block node daily subsidy payments.
+</Accordion>
 
 ### [**Build 0.74.0**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.74.0)
 

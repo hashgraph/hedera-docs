@@ -24,7 +24,7 @@ The server uses the MCP Streamable HTTP transport.
 - **Transport:** Streamable HTTP
 - **Network:** Hedera Testnet
 
-## Context Initialization
+## Connect with a Hedera Account
 
 When connecting to the server, provide your Hedera Account ID via an HTTP header. This initializes the session context so every tool call knows which account to build transactions for.
 
@@ -71,7 +71,7 @@ Replace `0.0.YOUR_ACCOUNT_ID` with your [Hedera Testnet account ID](https://port
 - **Claude Desktop:** `claude_desktop_config.json` — the path depends on your OS; see Anthropic's MCP setup guide.
 - **Custom MCP clients:** consult your client's documentation for how to register MCP servers and pass HTTP headers.
 
-## Working with RETURN_BYTES
+## Creating and Sending Transactions
 
 Because this server never handles your private keys or signs transactions on your behalf, any action that changes data on the blockchain will come back to you as transaction data (bytes) to be signed and submitted on-chain. 
 
@@ -80,6 +80,31 @@ To use this MCP server, you must build or use a client application for this MCP 
 1. Receive the hex bytes from the tool response.
 2. Decode and sign them using a Hedera SDK with the account's private key.
 3. Submit the signed transaction to the Hedera network.
+
+#### Example: Sign and Submit Transactions
+Set up an operator account and a Hedera client, then decode, sign, and submit the bytes returned by a transaction-building tool:
+
+```typescript return-bytes-tool-calling-agent.ts
+import { Client, PrivateKey, Transaction } from '@hiero-ledger/sdk';
+
+// Set up your operator account and a Hedera client (Testnet by default)
+const operatorAccountId = process.env.ACCOUNT_ID!;
+const operatorPrivateKey = PrivateKey.fromStringECDSA(process.env.PRIVATE_KEY!);
+// const operatorPrivateKey = PrivateKey.fromStringED25519(process.env.PRIVATE_KEY!); // Use this line if you have an ED25519 key
+
+const client = Client.forTestnet().setOperator(operatorAccountId, operatorPrivateKey);
+
+// When a transaction-building tool returns bytes, sign and submit them on-chain
+if (toolCall.parsedData?.raw?.bytes) {
+  const bytes = toolCall.parsedData.raw.bytes;
+  const tx = Transaction.fromBytes(bytes);
+  const result = await tx.execute(client);
+  const receipt = await result.getReceipt(client);
+
+  console.log('Transaction status:', receipt.status.toString());
+  console.log('Transaction ID:', result.transactionId.toString());
+}
+```
 
 Read-only queries such as balances, token info, transaction records, exchange rates, and similar can return their results directly through your AI application, since no transaction signature is required.
 

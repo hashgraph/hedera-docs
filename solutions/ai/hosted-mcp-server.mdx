@@ -73,7 +73,8 @@ Replace `0.0.YOUR_ACCOUNT_ID` with your [Hedera Testnet account ID](https://port
 
 ## Creating and Sending Transactions
 
-Because this server never handles your private keys or signs transactions on your behalf, any action that changes data on the blockchain will come back to you as transaction data (bytes) to be signed and submitted on-chain. 
+Because this server never handles your private keys or signs transactions on your behalf, most tools calls (that complete actions on the Hedera Network) 
+blockchain will return transaction data (bytes) to you as transaction data (bytes) to be signed and submitted on-chain. Only queries are supported by standard IDEs and GUI clients.
 
 To use this MCP server, you must build or use a client application for this MCP that can:
 
@@ -108,7 +109,7 @@ if (toolCall.parsedData?.raw?.bytes) {
 
 Read-only queries such as balances, token info, transaction records, exchange rates, and similar can return their results directly through your AI application, since no transaction signature is required.
 
-See the [Hedera Agent Kit examples](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/examples/langchain-v1/return-bytes-tool-calling-agent.ts) for examples of signing and submitting transaction bytes.
+See the [Hedera Agent Kit example](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/examples/langchain-v1/return-bytes-tool-calling-agent.ts) for a complete implementation of signing and submitting transaction bytes.
 
 
 ## Available Tools

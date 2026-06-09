@@ -85,26 +85,20 @@ To use this MCP server, you must build or use a client application for this MCP 
 #### Example: Sign and Submit Transactions
 Set up an operator account and a Hedera client, then decode, sign, and submit the bytes returned by a transaction-building tool:
 
-```typescript return-bytes-tool-calling-agent.ts
-import { Client, PrivateKey, Transaction } from '@hiero-ledger/sdk';
+```typescript return-bytes.ts
+const bytesObject = parsed.bytes || parsed.raw.bytes;
+            const realBytes = Buffer.isBuffer(bytesObject)
+              ? bytesObject
+              : Buffer.from(bytesObject.data || bytesObject);
 
-// Set up your operator account and a Hedera client (Testnet by default)
-const operatorAccountId = process.env.ACCOUNT_ID!;
-const operatorPrivateKey = PrivateKey.fromStringECDSA(process.env.PRIVATE_KEY!);
-// const operatorPrivateKey = PrivateKey.fromStringED25519(process.env.PRIVATE_KEY!); // Use this line if you have an ED25519 key
+console.log('Transaction bytes found. Executing...');
+const tx = Transaction.fromBytes(realBytes);
+const result = await tx.execute(humanInTheLoopClient);
+const receipt = await result.getReceipt(humanInTheLoopClient);
 
-const client = Client.forTestnet().setOperator(operatorAccountId, operatorPrivateKey);
-
-// When a transaction-building tool returns bytes, sign and submit them on-chain
-if (toolCall.parsedData?.raw?.bytes) {
-  const bytes = toolCall.parsedData.raw.bytes;
-  const tx = Transaction.fromBytes(bytes);
-  const result = await tx.execute(client);
-  const receipt = await result.getReceipt(client);
-
-  console.log('Transaction status:', receipt.status.toString());
-  console.log('Transaction ID:', result.transactionId.toString());
-}
+console.log('Transaction receipt:', receipt.status.toString());
+console.log('Transaction ID:', result.transactionId.toString());
+bytesHandled = true;
 ```
 
 Read-only queries such as balances, token info, transaction records, exchange rates, and similar can return their results directly through your AI application, since no transaction signature is required.

@@ -7,6 +7,167 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Latest Releases
 
+
+
+
+## [v0.156.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.156.0)
+
+This release verifies support for PostgreSQL 17 and 18 and upgrades our managed databases from PostgreSQL 16 to PostgreSQL 18. This also required upgrading Citus from 12.1.5 to 14.0.0 and Stackgres from 1.18.3 to 1.18.6. Testing shows a significant performance gain of 10-20% from the database version bumps. Note that at this time we are not requiring a change to the minimum version of PostgreSQL that we support. We still support PostgreSQL 14 for the foreseeable future, but it is recommended that operators look to upgrade their database to 17 or 18 to stay ahead of any changes.
+
+The `/api/v1/contracts/call` REST API now supports the ability for client calls to change contract state in memory and persist those changes across calls. This feature is controlled via a new property `hiero.mirror.web3.evm.sharedWritableState` and is disabled by default. Developers can use this feature to run a Hedera EVM locally to debug their calls. The changes are not stored in the database and will be lost upon application restart.
+
+<!-- TODO: this release has Breaking Changes in the upstream notes — add a "### Breaking Changes" prose section above the accordions. -->
+
+<Accordion title="Enhancements">
+  * HIP-1427 Relax WRB block root hash validation (0.156) #13666
+  * K6 improvment for prometheus metrics #13617
+  * Fix env_category missing from PromQL queries #13609
+  * Re-enable network dependent auto cutover logic #13589
+  * Disable collecting k6 test report in script and workflow #13587
+  * Separate streaming and request backends #13586
+  * Add monitor rules suppressions #13585
+  * Add a notification-policy with the same route the individual clusters use #13576
+  * Return access list as object array in REST API response #13571
+  * cleaned-up and improved rules.tf #13552
+  * refactor: remove Serializable from EntityId and update runtime hints #13551
+  * Add 'upgrade started' notifications to previewnet/testnet/mainnet #13544
+  * Add the missing 'Database' alert-group #13543
+  * Bump hedera-app to 0.74.0 #13539
+  * feat: Add Shared Writeable State #13501
+  * feat(web3): return actual gas used for contract calls #13458
+</Accordion>
+
+<Accordion title="Bug Fixes">
+  * Upgrade micrometer to 1.17.0 (0.156) #13686
+  * Register nested classes for `RecordFileConsensusTimestampsRecalculateMigration` (0.156) #13664
+  * Fix native image resources (0.156) #13663
+  * Fix bad grammar in `RecordFileConsensusTimestampsRecalculateMigration` #13621
+  * Fix helm url used in marketplace release #13614
+  * Fix non zero shard and realm tests #13610
+  * Fix slow record file timestamp migration #13607
+  * Fix rest-java native image #13594
+  * Fix native image startup crashes #13580
+  * Fix native image builds #13577
+  * Fix two noisy Database alert rules #13573
+  * Conditionally set token fee schedule key in acceptance test #13569
+  * fix: Normalize file path separators in LocalStreamFileProvider and up… #13565
+  * Adjust `record_file` consensus start and end timestamps migration #13521
+</Accordion>
+
+<Accordion title="Dependency Upgrades">
+  * Bump tmp from 0.2.5 to 0.2.7 in /rest #13615
+  * Bump tmp from 0.2.5 to 0.2.6 in /rest #13611
+  * Bump the dependencies group in /rest with 2 updates #13605
+  * Bump the dependencies group with 7 updates #13604
+  * Bump org.gradle:test-retry-gradle-plugin from 1.6.4 to 1.6.5 #13603
+  * Bump org.hiero.block-node:protobuf-sources from 0.33.0 to 0.34.0 #13602
+  * Bump com.gorylenko.gradle-git-properties:gradle-git-properties from 2.5.7 to 3.0.2 #13601
+  * Bump com.github.luben:zstd-jni from 1.5.7-8 to 1.5.7-9 #13600
+  * Bump consensusNodeVersion from 0.74.0-rc.4 to 0.75.0-rc.3 #13599
+  * Bump org.flywaydb:flyway-database-postgresql from 12.6.1 to 12.6.2 #13598
+  * Bump protobufVersion from 4.34.1 to 4.35.0 #13597
+  * Bump software.amazon.awssdk:bom from 2.44.7 to 2.44.12 #13596
+  * Bump qs from 6.15.0 to 6.15.2 in /rest/monitoring #13591
+  * Bump uuid and `@testcontainers`/postgresql in /rest #13584
+  * Bump the dependencies group in /rest with 3 updates #13563
+  * Bump the dependencies group with 2 updates #13562
+  * Bump org.flywaydb:flyway-database-postgresql from 12.6.0 to 12.6.1 #13561
+  * Bump io.fabric8:kubernetes-client-bom from 7.6.1 to 7.7.0 #13560
+  * Bump gradle-wrapper from 9.5.0 to 9.5.1 #13559
+  * Bump software.amazon.awssdk:bom from 2.44.4 to 2.44.7 #13558
+  * Bump jooqVersion from 3.21.3 to 3.21.4 #13557
+  * Bump com.diffplug.spotless:spotless-plugin-gradle from 8.4.0 to 8.5.1 #13556
+  * Bump com.hedera.hashgraph:sdk from 2.71.0 to 2.72.0 #13555
+  * Bump consensusNodeVersion from 0.74.0-rc.3 to 0.74.0-rc.4 #13554
+  * Bump org.hiero.block-node:protobuf-sources from 0.32.0 to 0.33.0 #13553
+  * Bump versions for v0.156.0-SNAPSHOT #13546
+  * Add support for upgrading citus and postgres #13540
+</Accordion>
+
+## [v0.155.1](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.155.1)
+
+<Accordion title="Bug Fixes">
+  * Fix bad grammar in `RecordFileConsensusTimestampsRecalculateMigration` #13623
+</Accordion>
+
+## [v0.155.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.155.0)
+
+[HIP-1261](https://hips.hedera.com/#hip-1261) Simple fees is now enabled by default on our `/api/v1/contracts/call` endpoint. This behavior matches the behavior of the consensus node after the recent rollout of v0.73.0 to mainnet.
+
+The `/api/v1/contracts/results/{transactionIdOrHash}/opcodes` REST API is now enabled by default in all environments. This endpoint re-executes an existing EVM transaction and returns a list of opcodes that were executed during the replay.
+
+Block nodes support saw additional refinements in this release. A new `hiero.mirror.importer.block.initialLedgerIdPublication` property was added to the importer to allow custom ledger IDs. Block node communication now supports Zstandard compression if available, reducing the amount of data sent over the wire. The importer now also prioritizes block nodes by latency in addition to the existing priority groups and fail-over logic. This works by measuring node latency in the background and switching to lower latency block nodes if available. New TSS transaction types were added to the REST API for filtering transactions. Finally, the property that enables automatic cut-over from record streams to block streams was enabled by default.
+
+Support for Ethereum Pectra via [HIP-1340](https://hips.hedera.com/#hip-1340) and [HIP-1341](https://hips.hedera.com/#hip-1341) was improved in this release. The importer can now persist the EOA code delegation information. Additionally, the contract REST APIs now work with account IDs since with the advent of EOA delegation accounts can behave in a similar way as contracts.
+
+<Accordion title="Enhancements">
+  * Re-enable network dependent auto cutover logic (0.155) #13593
+  * include web3j plugin for tests only #13533
+  * Add TSS system transaction types to REST #13525
+  * Support accounts as input for contract related api endpoints as part of HIP-1340 introduction #13524
+  * Cherry-pick Pectra importer handlers #13523
+  * feat: Implement Zstandard compression codec for gRPC #13506
+  * Enable simple fees and opcode API by default #13505
+  * HIP-1193 Incorporate network ledger info #13498
+  * chore: Update OpenAPI specification to version 3.1.0 and adjust data … #13489
+  * feat: Add contractsIdStateTimestamp test scenario #13482
+  * Conditionally login to docker hub in acceptance workflow #13476
+  * feat: enable k6 opcode performance tests in CI #13454
+  * Push k6 metrics to Prometheus #13419
+  * Update bloom for contract_result and record_file tables by aggregating bloom with synthetic log blooms #13368
+  * HIP-1081 Prioritize block nodes by latency #11607
+</Accordion>
+
+<Accordion title="Bug Fixes">
+  * Fix slow record file timestamp migration (0.155) #13608
+  * Adjust `record_file` consensus start and end timestamps migration (0.155) #13592
+  * Fix native image builds (0.155) #13578
+  * Conditionally set token fee schedule key in acceptance test (0.155) #13572
+  * chore: Update Google Cloud authentication and Docker login steps in w… #13527
+  * Skip running acceptance test on monitor test failure #13502
+  * Fix RegisteredNodeCreateTransformer unable to get new registered node id #13499
+  * Change solo cluster config in CI to run k6 tests #13494
+  * Increase API keepalive timeout #13493
+  * Add converter for opscode endpoint #13477
+  * Fix vulnerabilities in marketplace #13452
+</Accordion>
+
+<Accordion title="Dependency Upgrades">
+  * Bump tomcat from 11.0.21 to 11.0.22 #13541
+  * Bump fast-uri to 3.1.2 #13534
+  * Bump protobufjs from 7.5.5 to 7.5.8 in /rest #13531
+  * Bump protobufjs from 7.5.5 to 7.5.8 in /tools/log-downloader #13529
+  * Bump `@protobufjs`/utf8 from 1.1.0 to 1.1.1 in /rest #13528
+  * Bump github.com/hiero-ledger/hiero-sdk-go/v2 from 2.79.0 to 2.80.0 in /pinger in the dependencies group #13518
+  * Bump golang.org/x/text from 0.36.0 to 0.37.0 in /tools/bootstrap in the dependencies group #13517
+  * Bump the dependencies group in /rest with 4 updates #13516
+  * Bump github.com/hiero-ledger/hiero-sdk-go/v2 from 2.79.0 to 2.80.0 in /rosetta in the dependencies group #13515
+  * Bump jest from 30.3.0 to 30.4.2 in /tools/mirror-report in the dependencies group #13514
+  * Bump sigstore/cosign-installer from 4.1.1 to 4.1.2 in the dependencies group #13513
+  * Bump com.hedera.cryptography:hedera-cryptography-wraps from 3.8.0 to 3.8.1 #13512
+  * Bump jooqVersion from 3.21.2 to 3.21.3 #13511
+  * Bump software.amazon.awssdk:bom from 2.44.0 to 2.44.4 #13510
+  * Bump org.msgpack:jackson-dataformat-msgpack from 0.9.11 to 0.9.12 #13509
+  * Bump org.owasp:dependency-check-gradle from 12.2.1 to 12.2.2 #13508
+  * Bump org.flywaydb:flyway-database-postgresql from 12.5.0 to 12.6.0 #13507
+  * Bump hedera-cryptography-wraps to 3.8.0 #13504
+  * Bump github.com/hiero-ledger/hiero-sdk-go/v2 from 2.78.1 to 2.79.0 in /pinger in the dependencies group #13471
+  * Bump the dependencies group in /rest with 3 updates #13470
+  * Bump github.com/hiero-ledger/hiero-sdk-go/v2 from 2.78.1 to 2.79.0 in /rosetta in the dependencies group #13469
+  * Bump the dependencies group with 2 updates #13468
+  * Bump org.flywaydb:flyway-database-postgresql from 12.4.0 to 12.5.0 #13467
+  * Bump org.hiero.block-node:protobuf-sources from 0.31.0 to 0.32.0 #13466
+  * Bump io.freefair.gradle:lombok-plugin from 9.4.0 to 9.5.0 #13465
+  * Bump org.openapitools:openapi-generator-gradle-plugin from 7.21.0 to 7.22.0 #13464
+  * Bump grpcVersion from 1.80.0 to 1.81.0 #13463
+  * Bump com.hedera.hashgraph:sdk from 2.70.0 to 2.71.0 #13462
+  * Bump software.amazon.awssdk:bom from 2.42.41 to 2.44.0 #13461
+  * Bump com.github.luben:zstd-jni from 1.5.7-7 to 1.5.7-8 #13460
+  * Bump Go from 1.26 to 1.26.2 #13453
+  * Bump versions for v0.155.0-SNAPSHOT #13448
+  * Bump org.graalvm.buildtools:native-gradle-plugin from 0.11.5 to 1.1.0 #13409
+</Accordion>
+
 ## [v0.154.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.154.0)
 
 This release adds support for block hash when simulating or estimating contracts. The `/api/v1/contracts/call` REST API now accepts a 64 or 96 character hexadecimal value for the `block` field. This helps to avoid an extra call to `/api/v1/blocks/{hash}` for clients that only have the block hash.

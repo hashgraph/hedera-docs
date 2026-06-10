@@ -28,7 +28,6 @@ The REST API now returns access list as an object array instead of as a hex enco
     }
   ]
 ```
-The REST API now returns access list as an object array instead of as a hex encoded string. While a breaking change, this field is empty in all environments since consensus nodes do not yet support them. After the consensus nodes gain Pectra support, they will add support for access lists, so we took the opportunity to improve our field to be similar to the JSON-RPC specification. Below is an example of the new format:
 <Accordion title="Enhancements">
   * HIP-1427 Relax WRB block root hash validation (0.156) #13666
   * K6 improvment for prometheus metrics #13617

@@ -18,7 +18,16 @@ The `/api/v1/contracts/call` REST API now supports the ability for client calls 
 
 ### Breaking Changes
 The REST API now returns access list as an object array instead of as a hex encoded string. While a breaking change, this field is empty in all environments since consensus nodes do not yet support them. After the consensus nodes gain Pectra support, they will add support for access lists, so we took the opportunity to improve our field to be similar to the JSON-RPC specification. Below is an example of the new format:
-  {
+```json
+"access_list": [
+    {
+      "address": "0xa02457e5dfd32bda5fc7e1f1b008aa5979568150",
+      "storage_keys": [
+        "0x0000000000000000000000000000000000000000000000000000000000000081",
+      ]
+    }
+  ]
+```
     "address": "0xa02457e5dfd32bda5fc7e1f1b008aa5979568150",
     "storage_keys": [
       "0x0000000000000000000000000000000000000000000000000000000000000081"

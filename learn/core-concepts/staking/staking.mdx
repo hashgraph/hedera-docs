@@ -6,16 +6,17 @@ The Hedera staking program allows you to earn rewards by staking your HBAR to a 
 
 ## Staking Nodes
 
-All consensus nodes run by the Hedera Council distribute rewards to the accounts staked to them. You can find information about each node by visiting a Hedera network explorer or by getting the network [address book](/reference/rest-api#api-v1-network-nodes).
+All consensus nodes run by the Hedera Council distribute rewards to the accounts staked to them. You can find information about each node by visiting a Hedera network explorer or by querying the [address book API](/reference/rest-api#api-v1-network-nodes).
 
-Nodes have a minimum stake and maximum stake. The node's **minimum stake is $0**, meaning there is no minimum HBAR amount required for a node to be eligible for rewards. However, staked HBAR that exceeds the maximum stake does not increase the proportion of rewards returned. The maximum stake for each node is the total number of HBAR divided by the total number of nodes, and this value changes as more nodes join the network.
+Nodes have a minimum stake and maximum stake, both configurable per node. The minimum stake is currently set to 0, meaning any amount of staked HBAR makes a node eligible for rewards. The maximum stake is a per-node value set by the network. Staked HBAR that exceeds it does not increase the proportion of rewards returned.
+
 ## Lockup Period
 
 There is **no lock-up period** when you stake your account. Your account's entire balance is automatically staked to the selected node or account, and your HBAR remains liquid at all times. There is no "bonding" or "slashing."
 
 ## Staking Reward Account
 
-The staking reward account [(`0.0.800`)](https://hashscan.io/#/mainnet/account/0.0.800) distributes rewards to eligible staked accounts. Its primary funding comes from the daily distribution from the [Fee Collection Account](/support/glossary#fee-collection-account) [(`0.0.802`)](https://hashscan.io/mainnet/account/0.0.802).
+The staking reward account [(`0.0.800`)](https://hashscan.io/mainnet/account/0.0.800) distributes rewards to eligible staked accounts. Its primary funding comes from the daily distribution from the [Fee Collection Account](/support/glossary#fee-collection-account) [(`0.0.802`)](https://hashscan.io/mainnet/account/0.0.802).
 
 Anyone in the community can also contribute to the rewards pool by transferring HBAR into this account. This account has no keys; any HBAR transferred into it cannot be returned.
 
@@ -31,9 +32,23 @@ For a staked account to earn rewards, the following must be true:
 *   The node the account is staked to must meet the minimum node stake threshold.
 *   The account must be staked for the entire 24-hour staking period.
 
+### Node Removal and Pending Rewards
+
+Nodes are occasionally removed from the network address book, most commonly when transitional nodes are replaced by permanent ones. When this happens, staked accounts stop accruing new rewards, and accounts will not be able to claim the pending rewards that accrued while staked to the node that was removed.
+
+Rewards are paid out when your account balance changes (HBAR sent or received), when you update your staking settings, or when the account auto-renews. Rewards can also only be collected for up to 365 days back. If no payout has been triggered in over a year, earlier periods are dropped. Accounts with very little activity can accumulate pending rewards without realizing it, and if their node is removed, those rewards cannot be recovered.
+
+<Warning>
+  Node removals are not always announced in advance, so redeem rewards periodically rather than waiting. If you find out your node has been removed, switch to an active node to start earning again.
+</Warning>
+
+<Info>
+  A change to this behavior is being tracked in [hiero-consensus-node#25701](https://github.com/hiero-ledger/hiero-consensus-node/issues/25701). Details and timing are still being defined.
+</Info>
+
 ### Staking Reward Distribution
 
-With the implementation of [HIP-1259](https://hips.hedera.com/hip/hip-1259), the mechanism for handling fees and distributing rewards has been significantly streamlined to improve network efficiency and simplify transaction records.
+With the implementation of [HIP-1259](https://hips.hedera.com/hip/hip-1259), the mechanism for handling fees and distributing rewards has been streamlined to improve network efficiency and simplify transaction records.
 
 Previously, transaction fees were immediately split and distributed to multiple accounts. The new system introduces the **[Fee Collection Account](/support/glossary#fee-collector-account) (`0.0.802`)**, a network-controlled account that consolidates all transaction fees.
 

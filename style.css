@@ -326,25 +326,20 @@ html:not(.dark):not([data-theme='dark']) .ai-spotlight-badge--dark {
 
 /* Exact brand icons, recolored per mode via CSS mask (each icon includes its
    own circular frame, so it IS the circle — no separate ring container). */
+/* inline SVG icon — fill/stroke follow currentColor so it themes; inline
+   (not CSS mask) so it survives the Mintlify production build */
 .ai-spotlight-ico {
-  width: 36px;
-  height: 36px;
+  width: 22px;
+  height: 22px;
   flex-shrink: 0;
   display: block;
-  /* white on the dark panel (base) */
-  background-color: #ffffff;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  transition: background-color 0.15s ease, transform 0.15s ease;
+  color: #ffffff; /* white on the dark panel (base) */
+  transition: color 0.15s ease, transform 0.15s ease;
 }
 
 /* black on the light panel */
 html:not(.dark):not([data-theme='dark']) .ai-spotlight-ico {
-  background-color: #000000;
+  color: #000000;
 }
 
 .ai-spotlight-caption {

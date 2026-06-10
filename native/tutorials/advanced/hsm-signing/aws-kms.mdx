@@ -4,6 +4,20 @@ title: "Sign Hedera Transactions with AWS KMS"
 
 This tutorial demonstrates how to use an `ECC_SECG_P256K1` key in AWS KMS to sign Hedera transactions. This solution ensures that your private keys are never exposed in your application environment.
 
+<Note>
+**SDK constraint:** In **Rust, C++, and Swift**, the one-shot `setECDSAKeyWithAlias()` / `set_ecdsa_key_with_alias()` / `keyWithAlias()` methods require a local `PrivateKey` and cannot be used in HSM flows. In these SDKs, use the manual two-step pattern:
+
+```pseudo
+publicKey = hsm.getPublicKey()
+evmAddress = publicKey.toEvmAddress()
+tx = AccountCreateTransaction()
+       .setKeyWithoutAlias(publicKey)
+       .setAlias(evmAddress)
+```
+
+In JavaScript, Java, Python, and Go, the one-shot method accepts `PublicKey` directly.
+</Note>
+
 ---
 
 ## Prerequisites

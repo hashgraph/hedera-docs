@@ -22,3 +22,7 @@ By logging issues and creating pull requests, you're helping us make the Hedera 
 <Info>
 **Note:** The Hedera team will review issues and pull requests.
 </Info>
+
+## Controlled vocabulary
+
+Hedera documentation uses a controlled vocabulary for accounts, EVM addresses, and aliases (for example, **EVM Address from Public Key** and **EVM Address from Account ID**). A few legacy terms are retired and are blocked automatically: a pull request that introduces a retired term in docs will fails the **Terminology Check** workflow, which reads its word list from [`.github/terminology-banned.txt`](https://github.com/hashgraph/hedera-docs/blob/main/.github/terminology-banned.txt). If your PR fails that check, the annotation tells you which term to replace. See the [glossary](/support/glossary) for the canonical definitions.

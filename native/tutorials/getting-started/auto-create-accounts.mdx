@@ -15,7 +15,7 @@ The figure below highlights the transaction flow before HIP-542 and after.
   <img src="/images/tutorials/more-tutorials/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers-1.png" />
 </Frame>
 
-In this tutorial, a treasury account will be created to transfer HTS tokens to Bob's ECDSA public key alias, involving a transfer of 10 FT and 1 NFT. The tutorial will also cover creating fungible tokens and an NFT collection (1000 FT / 5 NFT), creating Bob's ECDSA public key alias, and returning Bob's new account ID while confirming their ownership of the transferred tokens and NFT.
+In this tutorial, a treasury account transfers HTS tokens to Bob's **EVM Address from Public Key** (derived from an ECDSA key) to trigger auto account creation. The flow covers creating fungible tokens and an NFT collection (1000 FT / 5 NFT), deriving Bob's EVM address, and returning Bob's new account ID after the transfer of 10 FT and 1 NFT completes.
 
 ---
 
@@ -37,7 +37,7 @@ In this tutorial, a treasury account will be created to transfer HTS tokens to B
 
 1. [Create Treasury Account](#create-treasury-account)
 2. [Create FTs and NFT Collection](#create-fts-and-an-nft-collection)
-3. [Create Bob's ECDSA Public Key Alias](#create-bobs-ecdsa-public-key-alias)
+3. [Derive Bob's EVM Address from Public Key](#derive-bobs-evm-address-from-public-key)
 4. [Return New Account ID](#return-new-account-id)
 
 ---
@@ -271,9 +271,10 @@ const nftCreateTxnResponse = await createNewNftCollection(
 
 ---
 
-## Create Bob's ECDSA Public Key Alias
+<a id="create-bobs-ecdsa-public-key-alias"></a>
+## Derive Bob's EVM Address from Public Key
 
-An alias is an initial public key that will convert into a Hedera account through auto-account creation. An alias consists of \<shard>.\<realm>.\<bytes>.
+The alias is Bob's **EVM Address from Public Key** — the rightmost 20 bytes of the Keccak-256 hash of his ECDSA public key. Transferring value to this address triggers auto account creation. On mainnet, the alias account ID is `0.0.<evmAddress>`.
 
 To learn more about accounts created via an account alias go [here](/native/accounts/create).
 
@@ -446,7 +447,7 @@ tokenBalanceAccountId.toInt() === 5
   ? console.log(
       `Account is created successfully using HTS 'TransferTransaction'`
     )
-  : console.log("Creating account with HTS using public key alias failed");
+  : console.log("Creating account with HTS using EVM address failed");
 
 client.close();
 ```

@@ -8,6 +8,10 @@ This page covers programmatic account creation with `AccountCreateTransaction()`
 
 For a complete list of account properties, see the [accounts overview](/native/accounts).
 
+<Tip>
+**Recommended default for EVM compatibility:** Create accounts with an ECDSA key and set the **EVM Address from Public Key** at creation. This enables native compatibility with EVM wallets, JSON-RPC tooling, and smart-contract interactions. Use `setECDSAKeyWithAlias()` (or `setKeyWithAlias()` with an ECDSA key) to do this in a single call.
+</Tip>
+
 ---
 
 ## Transaction fees and signing
@@ -27,21 +31,24 @@ For a complete list of account properties, see the [accounts overview](/native/a
 
 ## Methods
 
-| Method | Type | Requirement |
-| --- | --- | --- |
-| `setKey(<key>)` | Key | Required |
-| `setKeyWithAlias(<key>)` | Key | Optional |
-| `setKeyWithoutAlias(<key>)` | Key | Optional |
-| `setAlias(<alias>)` | EvmAddress | Optional |
-| `setInitialBalance(<initialBalance>)` | Hbar | Optional |
-| `setReceiverSignatureRequired(<booleanValue>)` | boolean | Optional |
-| `setMaxAutomaticTokenAssociations(<amount>)` | int | Optional |
-| `setStakedAccountId(<stakedAccountId>)` | AccountId | Optional |
-| `setStakedNodeId(<stakedNodeId>)` | long | Optional |
-| `setDeclineStakingReward(<declineStakingReward>)` | boolean | Optional |
-| `setAccountMemo(<memo>)` | String | Optional |
-| `setHighVolume(<highVolume>)` | boolean | Optional |
-| `setAutoRenewPeriod(<autoRenewPeriod>)` | Duration | Disabled |
+Exactly one of `setKey`, `setKeyWithAlias`, `setECDSAKeyWithAlias`, or `setKeyWithoutAlias` is required. See [Setting the key and alias](#setting-the-key-and-alias) for which to use.
+
+| Method | Type | Key type accepted | Requirement |
+| --- | --- | --- | --- |
+| `setKey(<key>)` | Key | PublicKey or PrivateKey | Sets the account key with no EVM Address from Public Key. Accepts ED25519 or ECDSA. |
+| `setKeyWithAlias(<key>)` | Key (ECDSA) | PublicKey or PrivateKey | Sets the key and the EVM Address from Public Key. Java's one-argument recommended form; in other SDKs this is the two-argument overload `setKeyWithAlias(key, aliasKey)`. |
+| `setECDSAKeyWithAlias(<key>)` | Key (ECDSA) | PrivateKey only in Rust, C++, Swift; PublicKey or PrivateKey elsewhere | **Recommended for EVM use cases.** Sets the key and the EVM Address from Public Key in one call. Not available in Java, which uses the one-argument `setKeyWithAlias` instead. |
+| `setKeyWithoutAlias(<key>)` | Key | PublicKey or PrivateKey | Sets the key with no EVM Address from Public Key (the account falls back to its EVM Address from Account ID). Use if you plan to rotate keys later. |
+| `setAlias(<alias>)` | EvmAddress | — | Explicitly sets the `alias` bytes. Pair with `publicKey.toEvmAddress()` to set the EVM Address from Public Key. |
+| `setInitialBalance(<initialBalance>)` | Hbar | — | Optional |
+| `setReceiverSignatureRequired(<booleanValue>)` | boolean | — | Optional |
+| `setMaxAutomaticTokenAssociations(<amount>)` | int | — | Optional |
+| `setStakedAccountId(<stakedAccountId>)` | AccountId | — | Optional |
+| `setStakedNodeId(<stakedNodeId>)` | long | — | Optional |
+| `setDeclineStakingReward(<declineStakingReward>)` | boolean | — | Optional |
+| `setAccountMemo(<memo>)` | String | — | Optional |
+| `setHighVolume(<highVolume>)` | boolean | — | Optional |
+| `setAutoRenewPeriod(<autoRenewPeriod>)` | Duration | — | Disabled |
 
 
 <Note>
@@ -50,7 +57,7 @@ For a complete list of account properties, see the [accounts overview](/native/a
     <a id="evm-address-from-public-key"></a>
     <a id="evm-address-alias-recommended-for-evm-use-cases"></a>
 
-    Setting an ECDSA-derived EVM address at creation makes the account natively addressable from EVM wallets, JSON-RPC, and Solidity (`msg.sender`). The address is the rightmost 20 bytes of the Keccak-256 hash of the ECDSA public key. Use `setKeyWithAlias()` to enable this behavior, as shown in the [example](#example) below.
+    Setting an ECDSA-derived EVM address at creation makes the account natively addressable from EVM wallets, JSON-RPC, and Solidity (`msg.sender`). The address is the rightmost 20 bytes of the Keccak-256 hash of the ECDSA public key. To enable this behavior, use the one-argument key-with-alias method for your SDK (`setECDSAKeyWithAlias()` in most SDKs, `setKeyWithAlias()` in Java). See [Setting the key and alias](#setting-the-key-and-alias) for the full breakdown.
 
     **Immutability:** The EVM address is bound to the original ECDSA public key and does **not** change if you later rotate keys via `CryptoUpdateTransaction`. Integrations keyed to that EVM address (smart-contract permissions, address-based access lists) will continue to reference the original address.
 
@@ -79,6 +86,62 @@ Reference: [HIP-904](https://hips.hedera.com/hip/hip-904).
 
 ---
 
+## Setting the key and alias
+
+`AccountCreateTransaction` provides three ways to set the account key and the EVM address. Which one you choose depends on whether you want EVM compatibility and whether you plan to rotate the account key later. The method names below use the JavaScript SDK; see the [per-SDK quick reference](#per-sdk-quick-reference) for the equivalent in each language.
+
+| Pattern | Method | What it does | Use when |
+| --- | --- | --- | --- |
+| **Key with matching EVM address** (recommended) | `setECDSAKeyWithAlias(key)` | Sets the account key and derives the EVM Address from Public Key from the same ECDSA key. Accepts a private or public ECDSA key. | You want a standard EVM-compatible account. The signing key and the EVM address are backed by the same ECDSA key, so `msg.sender`, EVM wallets, and JSON-RPC all resolve correctly. |
+| **Key with a separate alias key** | `setKeyWithAlias(key, aliasKey)` | Sets the account (signing) key to one key and derives the EVM address from a different ECDSA key. Both keys must sign the transaction. | The account is controlled by one key (for example an Ed25519 key, or a different ECDSA key) but you want the EVM address derived from a separate ECDSA key. |
+| **Key without an alias** | `setKeyWithoutAlias(key)` | Sets only the account key, with no EVM Address from Public Key. The account falls back to its EVM Address from Account ID (long-zero form). | You plan to rotate or update the account key later. The EVM Address from Public Key is immutable once set, so omit it if the key is not final. |
+
+<Note>
+To assign a specific, pre-computed EVM address instead of deriving one from the key, combine `setKeyWithoutAlias(key)` with `setAlias(evmAddress)`. This is the [HIP-583](https://hips.hedera.com/hip/hip-583) pattern, useful when you already hold the target EVM address (for example, when migrating an existing EVM address).
+</Note>
+
+### Private or public key input
+
+Whether the one-shot method accepts a **public** key or requires a **private** key depends on the SDK (see the [per-SDK quick reference](#per-sdk-quick-reference)):
+
+- **JavaScript, Java, Python, and Go** accept either a public or a private ECDSA key. The EVM address is derived from the public component, so the choice is only about what key material you hand the builder. Pass a public key when the private key is held externally (a hardware wallet, HSM, or another party); the create transaction must still be signed by the corresponding private key.
+- **Rust, C++, and Swift** accept a **private key only**. If you hold just a public key (HSM or external-signer flows), use the manual path instead: set the key without an alias and set the alias explicitly from the derived address, for example `setKeyWithoutAlias(publicKey)` with `setAlias(publicKey.toEvmAddress())`. See the [HSM-signing tutorials](/native/tutorials/advanced/hsm-signing/aws-kms).
+
+In the **JavaScript SDK**, the four derive variants are:
+
+| Variant | Call |
+| --- | --- |
+| Derived EVM address from a **private account key** | `setECDSAKeyWithAlias(privateKey)` |
+| Derived EVM address from a **public account key** | `setECDSAKeyWithAlias(publicKey)` |
+| Derived EVM address from a **private alias key** | `setKeyWithAlias(accountKey, privateAliasKey)` |
+| Derived EVM address from a **public alias key** | `setKeyWithAlias(accountKey, publicAliasKey)` |
+
+(In Java, the one-argument forms use `setKeyWithAlias(key)` rather than `setECDSAKeyWithAlias`.) When you use a separate alias key, both the account key and the alias key must sign the transaction.
+
+---
+
+## Per-SDK quick reference
+
+| SDK | One-shot method | Accepts `PublicKey`? | `PublicKey.toEvmAddress()` returns | `AccountId.toEvmAddress()` |
+|---|---|---|---|---|
+| JavaScript | `setECDSAKeyWithAlias(key)` | Yes | `string` (hex, no `0x`) | Yes |
+| Java | `setKeyWithAlias(key)` (1-arg) | Yes | `EvmAddress` | Yes |
+| Python | `set_key_with_alias(key)` | Yes | `EvmAddress` | Yes |
+| Rust | `set_ecdsa_key_with_alias(key)` | No, `PrivateKey` only | `Option<EvmAddress>` | Use `to_solidity_address()` |
+| C++ | `setECDSAKeyWithAlias(key)` | No, `PrivateKey` only | `EvmAddress` (on `ECDSAsecp256k1PublicKey`) | Use `toSolidityAddress()` |
+| Swift | `keyWithAlias(_ privateKeyECDSA:)` | No, `PrivateKey` only | `EvmAddress?` | Yes (`throws`) |
+| Go | `SetECDSAKeyWithAlias(key)` | Yes | `string` (hex, no `0x`) | Yes |
+
+<Note>
+**Java naming:** `setKeyWithAlias(key)` with one argument is Java's equivalent of `setECDSAKeyWithAlias(key)` in other SDKs. The two-argument overload `setKeyWithAlias(key, ecdsaKey)` is used when the account key and the alias-derivation key differ.
+
+**Long-zero address parallel:** Rust and C++ do not expose `toEvmAddress()` on `AccountId`. They expose `to_solidity_address()` / `toSolidityAddress()` instead, which returns the same long-zero form (the **EVM Address from Account ID**). Functionally equivalent, just a naming difference.
+
+**Swift `throws`:** Swift's `AccountId.toEvmAddress()` is declared `throws`, so call sites need `try` (e.g., `try accountId.toEvmAddress()`).
+</Note>
+
+---
+
 ## Example
 
 <CodeGroup>
@@ -90,7 +153,7 @@ const ecdsaPublicKey = PrivateKey.generateECDSA().publicKey;
 // Create the transaction
 const transaction = new AccountCreateTransaction()
     // Sets the EVM Address from Public Key (recommended for EVM compatibility)
-    .setKeyWithAlias(ecdsaPublicKey)
+    .setECDSAKeyWithAlias(ecdsaPublicKey)
     // Use .setKeyWithoutAlias(ecdsaPublicKey) if you plan to rotate keys soon after creation
     .setInitialBalance(new Hbar(1));
 
@@ -135,13 +198,13 @@ System.out.println("The new account ID is " + newAccountId);
 
 ```go wrap Go
 // Create new ECDSA key
-ecdsaPrivateKey, _ := hedera.PrivateKeyGenerateECDSA()
+ecdsaPrivateKey, _ := hedera.PrivateKeyGenerateEcdsa()
 ecdsaPublicKey := ecdsaPrivateKey.PublicKey()
 
 // Create the transaction
 transaction := hedera.NewAccountCreateTransaction().
     // Sets the EVM Address from Public Key (recommended for EVM compatibility)
-    SetKeyWithAlias(ecdsaPublicKey).
+    SetECDSAKeyWithAlias(ecdsaPublicKey).
     // Use SetKeyWithoutAlias(ecdsaPublicKey) if you plan to rotate keys soon after creation
     SetInitialBalance(hedera.NewHbar(1))
 
@@ -161,13 +224,14 @@ fmt.Printf("The new account ID is %v\n", newAccountId)
 
 ```rust wrap Rust
 // Create new ECDSA key
-let ecdsa_public_key = PrivateKey::generate_ecdsa().public_key();
+let ecdsa_private_key = PrivateKey::generate_ecdsa();
 
 // Create the transaction
 let transaction = AccountCreateTransaction::new()
-    // Sets the EVM Address from Public Key (recommended for EVM compatibility)
-    .key_with_alias(ecdsa_public_key)
-    // Use .key_without_alias(ecdsa_public_key) if you plan to rotate keys soon after creation
+    // Sets the EVM Address from Public Key (recommended for EVM compatibility).
+    // In Rust this method takes the ECDSA PrivateKey; a PublicKey is not accepted.
+    .set_ecdsa_key_with_alias(ecdsa_private_key)
+    // Use .set_key_without_alias(key) if you plan to rotate keys soon after creation
     .initial_balance(Hbar::new(1));
 
 // Sign the transaction with the client operator private key and submit to a Hedera network
@@ -212,6 +276,153 @@ print(f"The new account ID is {new_account_id}")
 ```
 
 </CodeGroup>
+
+---
+
+## Deriving the EVM address (`toEvmAddress` helper)
+
+If you call `setAlias(...)` directly instead of a one-shot key-with-alias method, derive the EVM address from the ECDSA public key with the SDK helper:
+
+<CodeGroup>
+
+```javascript JavaScript
+// publicKey.toEvmAddress() returns the EVM Address from Public Key (hex, no 0x prefix)
+const evmAddress = ecdsaPublicKey.toEvmAddress();
+
+const transaction = new AccountCreateTransaction()
+  .setKeyWithoutAlias(ecdsaPublicKey)
+  .setAlias(evmAddress)
+  .setInitialBalance(new Hbar(1));
+```
+
+```java Java
+String evmAddress = ecdsaPublicKey.toEvmAddress();
+
+AccountCreateTransaction transaction = new AccountCreateTransaction()
+  .setKeyWithoutAlias(ecdsaPublicKey)
+  .setAlias(evmAddress)
+  .setInitialBalance(new Hbar(1));
+```
+
+```go Go
+evmAddress := ecdsaPublicKey.ToEvmAddress()
+
+transaction := hedera.NewAccountCreateTransaction().
+  SetKeyWithoutAlias(ecdsaPublicKey).
+  SetAlias(evmAddress).
+  SetInitialBalance(hedera.NewHbar(1))
+```
+
+```rust Rust
+// to_evm_address() returns Option<EvmAddress> for an ECDSA public key
+let evm_address = ecdsa_public_key.to_evm_address().expect("ECDSA key has an EVM address");
+
+let transaction = AccountCreateTransaction::new()
+  .set_key_without_alias(ecdsa_public_key)
+  .alias(evm_address)
+  .initial_balance(Hbar::new(1));
+```
+
+```python Python
+# public_key.to_evm_address() returns the EVM Address from Public Key
+evm_address = ecdsa_public_key.to_evm_address()
+
+transaction = (
+    AccountCreateTransaction()
+    .set_key_without_alias(ecdsa_public_key)
+    .set_alias(evm_address)
+    .set_initial_balance(Hbar(1))
+)
+```
+
+</CodeGroup>
+
+<Tip>
+In most cases, prefer `setECDSAKeyWithAlias(publicKey)`, which sets the key and derives the alias in one call. Use the `toEvmAddress` helper when you need the value separately (for logging, validation, or pairing with `setAlias`).
+</Tip>
+
+**Note on overloading:** `toEvmAddress` is also exposed on `AccountId` in some SDKs. `AccountId.toEvmAddress()` returns the **EVM Address from Account ID** (the long-zero form), not the **EVM Address from Public Key**. For EVM compatibility, you want the `PublicKey` variant. `AccountId.toEvmAddress()` is not implemented in Rust and is named `toSolidityAddress()` in C++.
+
+---
+
+## Verifying the EVM address
+
+After creating an account, confirm the EVM Address from Public Key was set correctly using either the SDK or the mirror node.
+
+### Using the SDK
+
+<CodeGroup>
+
+```javascript JavaScript
+const info = await new AccountInfoQuery()
+  .setAccountId(newAccountId)
+  .execute(client);
+console.log(`EVM address: 0x${info.contractAccountId}`);
+```
+
+```java Java
+AccountInfo info = new AccountInfoQuery()
+  .setAccountId(newAccountId)
+  .execute(client);
+System.out.println("EVM address: 0x" + info.contractAccountId);
+```
+
+```python Python
+info = AccountInfoQuery().set_account_id(new_account_id).execute(client)
+print(f"EVM address: 0x{info.contract_account_id}")
+```
+
+```go Go
+info, _ := hedera.NewAccountInfoQuery().
+  SetAccountID(newAccountId).
+  Execute(client)
+fmt.Printf("EVM address: 0x%s\n", info.ContractAccountID)
+```
+
+</CodeGroup>
+
+<Note>
+If the account was created with `setKeyWithoutAlias(...)`, `contractAccountId` returns the **EVM Address from Account ID** (long-zero form, starting with 24 zero hex characters). If it was created with `setECDSAKeyWithAlias(...)` or equivalent, it returns the **EVM Address from Public Key**.
+</Note>
+
+### Using the mirror node REST API
+
+```bash
+# Look up by account ID
+curl https://mainnet.mirrornode.hedera.com/api/v1/accounts/0.0.1234
+
+# Look up by EVM address
+curl https://mainnet.mirrornode.hedera.com/api/v1/accounts/0xab...cd
+```
+
+The `evm_address` field in the response is the canonical EVM address for the account.
+
+---
+
+## Common pitfalls
+
+<Warning>
+**Creating an ECDSA account with `setKey()` only.** The account is valid and can hold HBAR, but it has no **EVM Address from Public Key**. It falls back to its **EVM Address from Account ID** (long-zero form), which means:
+
+- It is not natively addressable from MetaMask or other EVM wallets keyed to the public-key EVM address.
+- Solidity contracts that compare `msg.sender` against the expected EVM address will not match.
+- JSON-RPC tooling expecting an ECDSA-derived address sees an unexpected long-zero address.
+
+Use `setECDSAKeyWithAlias(publicKey)` (or `setKeyWithAlias(publicKey)` with an ECDSA key) instead.
+</Warning>
+
+<Warning>
+**Using deprecated `PrivateKey.generate()`.** This helper silently returns an ED25519 key, which cannot be used to derive an EVM address. Use `PrivateKey.generateECDSA()` for new accounts.
+</Warning>
+
+### Common consensus errors
+
+| Error code | Cause | Resolution |
+| --- | --- | --- |
+| `INVALID_ALIAS_KEY` | Alias is not derivable from the supplied key (typically an ED25519 key was used in an ECDSA alias flow). | Use `PrivateKey.generateECDSA()` (or the equivalent in your SDK). |
+| `INVALID_SIGNATURE` | Two-key form (`setKeyWithAlias(key, ecdsaKey)`) was not signed by both the account key and the alias key. | Sign the transaction with both keys before submitting. |
+| `ALIAS_ALREADY_ASSIGNED` | The EVM address is already in use by another account (for example, a hollow account previously received funds at this address). | Generate a fresh ECDSA key, or complete the existing hollow account by signing a transaction from it. |
+| `ACCOUNT_ID_DOES_NOT_EXIST` | A query referenced an EVM address with no associated account. | Confirm the account was created and the receipt returned `SUCCESS`. |
 
 ---
 

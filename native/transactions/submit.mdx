@@ -13,22 +13,29 @@ The `execute()` method submits a transaction to a Hedera network. This method wi
 
 * Please refer to the specific transaction type and defined key structure of the account, topic, token, file, or smart contract to understand the signing requirements
 
-<table><thead><tr><th>Method</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>execute(&#x3C;client>)</code></td><td>Client</td><td>Sign with the client operator and submit to a Hedera network</td></tr><tr><td><code>execute(&#x3C;client, timeout>)</code></td><td>Client, Duration</td><td>The duration of times the client will try to submit the transaction upon the network being busy</td></tr><tr><td><code>executeWithSigner(&#x3C;signer>)</code></td><td></td><td>Sign the transaction with a local wallet. This feature is available in the Hedera JavaScript SDK only. >=<code>v2.11.0</code></td></tr><tr><td><code>&#x3C;transactionResponse>.transactionId</code></td><td>TransactionId</td><td>Returns the transaction ID of the transaction</td></tr><tr><td><code>&#x3C;transactionResponse>.nodeId</code></td><td>AccountId</td><td>Returns the node ID of the node that processed the transaction</td></tr><tr><td><code>&#x3C;transactionResponse>.transactionHash</code></td><td>byte [ ]</td><td>Returns the hash of the transaction</td></tr><tr><td><code>&#x3C;transactionResponse>.setValidateStatus(&#x3C;validateStatus>)</code></td><td>boolean</td><td>Whether getReceipt() or getRecord() will throw an exception if the receipt status is not SUCCESS</td></tr><tr><td><code>&#x3C;transactionResponse>.getValidateStatus</code></td><td>boolean</td><td>Return whether getReceipt() or getRecord() will throw an exception if the receipt status is not SUCCESS</td></tr></tbody></table>
+| Method | Type | Description |
+| --- | --- | --- |
+| `execute(<client>)` | Client | Sign with the client operator and submit to a Hedera network |
+| `execute(<client, timeout>)` | Client, Duration | The duration of times the client will try to submit the transaction upon the network being busy |
+| `executeWithSigner(<signer>)` | | Sign the transaction with a local wallet. This feature is available in the Hedera JavaScript SDK only. `>=v2.11.0` |
+| `<transactionResponse>.transactionId` | TransactionId | Returns the transaction ID of the transaction |
+| `<transactionResponse>.nodeId` | AccountId | Returns the node ID of the node that processed the transaction |
+| `<transactionResponse>.transactionHash` | byte [ ] | Returns the hash of the transaction |
+| `<transactionResponse>.setValidateStatus(<validateStatus>)` | boolean | Whether `getReceipt()` or `getRecord()` will throw an exception if the receipt status is not `SUCCESS` |
+| `<transactionResponse>.getValidateStatus` | boolean | Return whether `getReceipt()` or `getRecord()` will throw an exception if the receipt status is not `SUCCESS` |
 
-<Warning>
-**Account Alias**
-
-If an alias is set during account creation, it becomes [immutable](/support/glossary#immutability), meaning it cannot be changed. If you plan to update or rotate keys in the future, do not set the alias at the time of initial account creation. The alias can be set after finalizing all key updates.
-</Warning>
+<Note>
+The example below uses `setKeyWithAlias()` to set the **EVM Address from Public Key** at account creation, the recommended pattern for EVM compatibility. See [Create an Account](/native/accounts/create#evm-address-from-public-key) for details, including the immutability behavior and when to use `setKeyWithoutAlias()` instead.
+</Note>
 
 <CodeGroup>
 
 ```java Java
 //Create the transaction
 AccountCreateTransaction transaction = new AccountCreateTransaction()
+        // Sets the EVM Address from Public Key (recommended for EVM compatibility)
         .setKeyWithAlias(ecdsaPublicKey)
-        //do not set if you need to rotate keys in the future
-        // .setKeyWithoutAlias(ecdsaPublicKey)
+        // Use setKeyWithoutAlias(ecdsaPublicKey) if you plan to rotate keys soon after creation
         .setInitialBalance(new Hbar(1));
 
 //Sign with client operator private key and submit the transaction to a Hedera network
@@ -54,9 +61,9 @@ System.out.println("The node ID is " +nodeId);
 ```javascript JavaScript
 //Create the transaction
 const transaction = new AccountCreateTransaction()
+        // Sets the EVM Address from Public Key (recommended for EVM compatibility)
         .setKeyWithAlias(ecdsaPublicKey)
-        //do not set if you need to rotate keys in the future
-        // .setKeyWithoutAlias(ecdsaPublicKey)
+        // Use .setKeyWithoutAlias(ecdsaPublicKey) if you plan to rotate keys soon after creation
         .setInitialBalance(new Hbar(1));
 
 //Sign with client operator private key and submit the transaction to a Hedera network
@@ -82,9 +89,9 @@ console.log("The node ID is " +nodeId);
 ```go Go
 //Create the transaction
 transaction := hedera.NewAccountCreateTransaction().
+        // Sets the EVM Address from Public Key (recommended for EVM compatibility)
         SetKeyWithAlias(ecdsaPublicKey).
-        //do not set if you need to rotate keys in the future
-        // SetKeyWithoutAlias(ecdsaPublicKey).
+        // Use SetKeyWithoutAlias(ecdsaPublicKey). if you plan to rotate keys soon after creation
         SetInitialBalance(hedera.NewHbar(1))
 
 //Sign with client operator private key and submit the transaction to a Hedera network
@@ -114,9 +121,9 @@ fmt.Printf("The node id is %v\n", transactionNodeId)
 ```rust Rust
 // Create the transaction
 let transaction = AccountCreateTransaction::new()
-    .key_with_alias(ecdsa_public_key)
-    // do not set if you need to rotate keys in the future
-    // .key_without_alias(ecdsa_public_key)
+    // Sets the EVM Address from Public Key (recommended for EVM compatibility); takes the ECDSA PrivateKey
+    .set_ecdsa_key_with_alias(ecdsa_private_key)
+    // Use .set_key_without_alias(key) if you plan to rotate keys soon after creation
     .initial_balance(Hbar::new(1));
 
 // Sign with client operator private key and submit the transaction to a Hedera network

@@ -7,11 +7,19 @@ title: "Account Properties"
 
 The account ID is the ID of the account **entity** on the Hedera network. The account ID includes the **shard number**, **realm number**, and an **account** `<shardNum>.<realmNum>.<account>`. The account ID is used to specify the account in all Hedera transactions and queries. There can be more than one account ID that can represent an account.
 
-<Check>
+<Info>
+**Mainnet default:** Every Hedera mainnet account ID is `0.0.<num>` (e.g., `0.0.1234`). Both the shard and realm segments are `0` and have been since launch. Hardcode `0.0` when constructing `AccountId` values for mainnet — do not take shard/realm as user-configurable parameters unless your application explicitly targets a private network.
+
+Non-zero realm IDs (e.g., `0.100.0`) are supported for **private networks**. Non-zero shard IDs are not yet active on any network. The rest of this section documents the underlying format for completeness.
+</Info>
+
 #### Support for Arbitrary Shards & Realms
 
-The Hedera network now supports non-zero realm IDs (such as *`0.100.0`*). This is particularly important for private networks that will populate realm values. The default values for the Hedera network are `shard 0` and `realm 0`. For private networks or other implementations, shard and realm values will be different. Refer to the specific network's documentation for accurate values in your implementation.
-</Check>
+<Info>
+**Mainnet default:** Every Hedera mainnet account ID is `0.0.<num>` (e.g., `0.0.1234`). Both the shard and realm segments are `0` and have been since launch. Hardcode `0.0` when constructing `AccountId` values for mainnet; do not take shard and realm as user-configurable parameters unless your application explicitly targets a private network.
+
+Non-zero realm IDs (e.g., `0.100.0`) are supported for **private networks**. Non-zero shard IDs are not yet active on any network. The accordions below document the underlying format for completeness.
+</Info>
 
 <Accordion title="Shard Number">
 Format: **`shardNum`**`.realmNum.account`
@@ -58,17 +66,22 @@ Each realm maintains a single counter for assigning entity numbers. This ensures
 
 Each Hedera account has a system-provided **account number** when the account is created.  An account number is a non-negative number of 8 bytes. You can use the account number to specify the account in all Hedera transactions and query requests. Account numbers are unique and immutable. The account number for a newly created account is returned in the transaction receipt or transaction record for the transaction ID that created the account. The account number ID has the following format  `<shardNum>.<realmNum>.<accountNum>`.
 
-<table><thead><tr><th>Account Number ID</th><th>Description</th></tr></thead><tbody><tr><td><code>0.0.10</code></td><td>The account number 10 in account number ID format.</td></tr></tbody></table>
+| Account Number ID | Description |
+| --- | --- |
+| `0.0.10` | The account number 10 in account number ID format. |
 
-#### Account Number Alias
+<a id="account-number-alias"></a>
+#### EVM Address from Account ID (long-zero form)
 
-All accounts can have an **account number alias.** An account number alias is a hex-encoded form of the account number prefixed with 20 bytes of zeros. It is an EVM-compatible address that references the Hedera account. The account number alias does not contain the shard ID and realm ID.
+All accounts can have an **EVM Address from Account ID**. It is a hex-encoded form of the account number prefixed with 20 bytes of zeros, the "long-zero" form. It is an EVM-compatible address that references the Hedera account. The EVM Address from Account ID does not contain the shard ID and realm ID.
 
 This account property is not stored in consensus node state. You will not see this value returned when querying the consensus nodes for the account object and inspecting the account alias field.
 
-The mirror node will calculate the account number alias from the account number. The account number alias is calculated and returned in account REST APIs only when the account does not have an existing account alias. For example, if the account was created through the [auto account creation](/learn/core-concepts/accounts/auto-account-creation) flow using an account alias the account number alias will not be populated. If the account was normally created then the account alias field will store the account number alias.
+The mirror node will calculate the EVM Address from Account ID. It is calculated and returned in account REST APIs only when the account does not have an existing EVM Address from Public Key. For example, if the account was created through the [auto account creation](/learn/core-concepts/accounts/auto-account-creation) flow with an EVM Address from Public Key, the EVM Address from Account ID will not be populated. If the account was normally created then the account alias field will store the EVM Address from Account ID.
 
-<table><thead><tr><th>Account ID</th><th>Account Number Alias Example</th></tr></thead><tbody><tr><td><code>0.0.10</code></td><td>The hex encoding value for 10 is "0a."<br/><br/><code>000000000000000000000000000000000000000a</code></td></tr></tbody></table>
+| Account ID | EVM Address from Account ID Example |
+| --- | --- |
+| `0.0.10` | The hex encoding value for 10 is "0a." <br/><br/> `000000000000000000000000000000000000000a` |
 
 ### Account Alias
 
@@ -76,45 +89,34 @@ Some Hedera accounts will have an **account alias**. Account aliases are a point
 
 This format is only acceptable when specified in the `TransferTransaction`, `AccountInfoQuery` and `AccountBalanceQuery`. If this format is used to reference an account in any other transaction type the transaction will not succeed.
 
-The  `alias` can be one of the following alias types:
+For new accounts, the recommended `alias` value is the account's [EVM Address from Public Key](#evm-address-from-public-key).
 
-<Columns cols={2}>
-  <Card
-    title="Public Key"
-    href="#public-key-account-alias"
-    arrow
-  />
-  <Card
-    title="EVM Address"
-    href="#public-key-account-alias"
-    arrow
-  />
-</Columns>
+<a id="public-key-account-alias"></a>
+<a id="evm-address-account-alias"></a>
+<a id="evm-address-from-public-key"></a>
+#### EVM Address from Public Key (recommended)
 
-#### Public Key Account Alias
+The EVM Address from Public Key is the rightmost 20 bytes of the 32-byte Keccak-256 hash of the account's ECDSA public key, computed per the [Ethereum Yellow Paper](https://ethereum.github.io/yellowpaper/paper.pdf). The recovery ID is not part of the public key and is not included in the hash. On mainnet, the corresponding account-ID-style identifier is `0.0.<evmAddress>` (the full format is `<shardNum>.<realmNum>.<alias>`; shard and realm are `0` on mainnet, see [Shards & Realms](#support-for-arbitrary-shards--realms)).
 
-The account alias public key is the public key of an ECDSA secp256k1 or ED25519 key type. The public key account ID format is `<shardNum>.<realmNum>.<alias>` where `alias` is the public key. This format is created using the bytes of a simple cryptographic public key supported by Hedera. The public key account alias is not required to match the account's [public key](#keys) used to determine the cryptographic signature needed to sign transactions for the account.
+It makes the account natively addressable from EVM wallets, JSON-RPC, and Solidity (`msg.sender`), and is the recommended default for new accounts. To set it at creation, use `setECDSAKeyWithAlias()` (see [Create an account](/native/accounts/create)).
 
-<Accordion title="Example Public Key Alias Account ID">
-`0.0.302d300706052b8104000a03220002d588ec1000770949ab77516c77ee729774de1c8fe058cab6d64f1b12ffc8ff07`
-</Accordion>
+<Warning>
+**Immutable identity:** The EVM Address from Public Key is bound to the original ECDSA public key. If you later rotate keys via `CryptoUpdateTransaction`, this address will no longer match the new public key. Integrations that depend on the original EVM identity (smart-contract permissions, address-based access) will continue to reference the original address.
 
-#### **EVM Address Account Alias**
+If you expect to rotate keys soon after creation, defer setting the EVM Address from Public Key. If keys are compromised, create a new account with a new ECDSA key and migrate assets/state rather than relying on key rotation.
+</Warning>
 
-An EVM address account alias is the rightmost 20 bytes of the 32-byte `Keccak-256` hash of the `ECDSA` public key of the account. This calculation is in the manner described by the [Ethereum Yellow Paper](https://ethereum.github.io/yellowpaper/paper.pdf). Note that the recovery id is not formally part of the public key and is not included in the hash. This is calculated on the consensus nodes using the `ECDSA` key provided in the [auto account creation](/learn/core-concepts/accounts/auto-account-creation) flow.  The EVM address is also commonly known as the public address. The EVM address account ID format is `<shardNum>.<realmNum>.<alias>` where `alias` is the EVM address.
-
-The EVM address account and the [account number alias](#account-number-alias) are 20-byte values. They can be differentiated because the account number alias is always prefixed with 12 bytes. The EVM address account alias is commonly used in wallets and tools to represent account addresses.
+Both the EVM Address from Public Key and the [EVM Address from Account ID](#evm-address-from-account-id-long-zero-form) are 20-byte values. They are distinguishable because the EVM Address from Account ID is always prefixed with 12 zero bytes (the "long-zero" form).
 
 #### Value Transfer Behavior with Account Identifiers
 
-* `CryptoTransfer` Transactions: When transferring value via the SDK, any of the four account identifiers can be used:
-  * Standard Hedera account ID (`shard.realm.num`)
-  * Public key alias
-  * Account number alias (a hex-encoded form of the account number prefixed with 20 bytes of zeros)
-  * EVM address alias (the rightmost 20 bytes of the 32-byte Keccak-256 hash of the ECDSA public key)
-* EVM Transactions: The address used for a value transfer recipient in EVM transactions (`ContractCreate`, `ContractCall`, and `EthereumTransaction`) must be the main one for the account. This will be the ECDSA-derived EVM address alias if set on the account. If not, the long zero address (account number alias) will be used. This ensures compatibility with the EVM's expected behavior for account addresses.
+* `CryptoTransfer` Transactions: When transferring value via the SDK, any of the following account identifiers can be used:
+  * Standard Hedera account ID, on mainnet `0.0.<num>` (e.g., `0.0.1234`)
+  * **EVM Address from Public Key** (the rightmost 20 bytes of the Keccak-256 hash of the ECDSA public key), recommended for EVM compatibility
+  * **EVM Address from Account ID** (the account number prefixed with 12 zero bytes, the "long-zero" form)
+* EVM Transactions: The address used for a value transfer recipient in EVM transactions (`ContractCreate`, `ContractCall`, and `EthereumTransaction`) must be the main one for the account. This will be the EVM Address from Public Key if set on the account. If not, the EVM Address from Account ID (long-zero form) will be used. This ensures compatibility with the EVM's expected behavior for account addresses.
 
-<Accordion title="EVM Address Account Alias Account ID Example">
+<Accordion title="EVM Address from Public Key Account ID Example">
 The shard number and realm number are set to `0` followed by the EVM address.
 
 **Example**
@@ -123,7 +125,7 @@ EVM Address: `b794f5ea0ba39494ce839613fffba74279579268`
 
 HEX Encoded EVM Address: `0xb794f5ea0ba39494ce839613fffba74279579268`
 
-EVM Address Account Alias Account ID:
+Account ID with EVM Address:
 
 `0.0.b794f5ea0ba39494ce839613fffba74279579268`
 </Accordion>
@@ -180,7 +182,11 @@ Accounts can automatically approve up to 5,000 tokens without manually preauthor
 
 The property `maxAutoAssociations` defines how many tokens an account can automatically associate with.
 
-<table><thead><tr><th align="center">Property Value</th><th></th></tr></thead><tbody><tr><td align="center"><code>0</code></td><td>Automatic token associations or airdrops are not allowed; the account must manually associate each token.</td></tr><tr><td align="center"><code>-1</code></td><td>Unlimited automatic token associations are allowed. this is the default for accounts created via <strong>auto account creation</strong> and for accounts that originated as hollow accounts (created from EVM aliases) and have since been completed. a value of <code>-1</code> allows the account to receive new tokens without manually associating them</td></tr><tr><td align="center"><code>> 0</code></td><td>the account can automatically associate up to that number of tokens. the sender covers the <code>maxAutoAssociations</code> fee and the first auto‑renewal rent for the association.</td></tr></tbody></table>
+| Property Value | Description |
+| :---: | --- |
+| `0` | Automatic token associations or airdrops are not allowed; the account must manually associate each token. |
+| `-1` | Unlimited automatic token associations are allowed. This is the default for accounts created via **auto account creation** and for accounts that originated as hollow accounts and have since been completed. A value of `-1` allows the account to receive new tokens without manually associating them. |
+| `> 0` | The account can automatically associate up to that number of tokens. The sender covers the `maxAutoAssociations` fee and the first auto-renewal rent for the association. |
 
 This feature is enabled on Hedera mainnet as part of frictionless airdrops (hip‑904). When tokens are sent to an account with available auto‑association slots, one slot is consumed and the account becomes associated automatically.
 
@@ -192,11 +198,11 @@ When a new account is created, you can specify an initial HBAR balance for the a
 
 A Hedera account can hold a balance of HBAR and custom fungible and non-fungible tokens (NFTs). Account balances can be viewed on a [Network Explorer](/learn/networks/community-mirror-nodes) and queried from mirror node REST APIs or consensus nodes.
 
-| Token Type                    | Description                                                                               | Token ID Example                                                                                          |
-| ----------------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| **HBAR**                      | The native Hedera fungible token used to pay for transaction fees and secure the network. | None                                                                                                      |
-| **Fungible Token**            | Custom fungible tokens created on Hedera.                                                 | <p>The fungible token ID is represented as <code>0.0.tokenNum</code> <br/><br/>ex: <code>0.0.100</code></p> |
-| **Non-Fungible Token (NFTs)** | Custom non-fungible tokens (NFTs) created on Hedera.                                      | <p>NFT ID is represented as <code>0.0.tokenNum-serialNum</code>.<br/></p><p>ex: <code>0.0.101-1</code></p> |
+| Token Type | Description | Token ID Example |
+| --- | --- | --- |
+| **HBAR** | The native Hedera fungible token used to pay for transaction fees and secure the network. | None |
+| **Fungible Token** | Custom fungible tokens created on Hedera. | The fungible token ID is represented as `0.0.tokenNum`, ex: `0.0.100` |
+| **Non-Fungible Token (NFTs)** | Custom non-fungible tokens (NFTs) created on Hedera. | NFT ID is represented as `0.0.tokenNum-serialNum`, ex: `0.0.101-1` |
 
 ## Keys
 

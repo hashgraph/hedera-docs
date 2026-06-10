@@ -5,6 +5,14 @@ title: "Update an account"
 
 A transaction that updates the properties of an existing account. The network will store the latest updates on the account. If you would like to retrieve the state of an account in the past, you can query a mirror node.
 
+<Warning>
+**You cannot add an EVM Address from Public Key to an existing account.** The `alias` is set only at account creation via `setECDSAKeyWithAlias()` / `setKeyWithAlias()` (or the equivalent in your SDK). `AccountUpdateTransaction` has no functional alias setter, so it cannot add or change an account's EVM Address from Public Key. (Some SDKs, such as Java, expose a deprecated `setAliasKey` that has no on-wire effect.)
+
+If your existing account does not have an EVM Address from Public Key and you need EVM compatibility, the recommended path is to **create a new ECDSA account with the EVM address set at creation** and migrate assets and state. See [Create an Account](/native/accounts/create) for the recommended pattern.
+
+Rotating keys with `CryptoUpdateTransaction` does **not** update the EVM address — the original EVM Address from Public Key remains tied to the original ECDSA public key.
+</Warning>
+
 **Account Properties**
 
 <Card

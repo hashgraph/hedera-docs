@@ -1,0 +1,147 @@
+name: Mirror Node Release Notes
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'A specific version to add (e.g. 0.155.1). Leave blank to backfill every missing release.'
+        required: false
+        type: string
+  schedule:
+    # Daily at 07:00 UTC. Safety net in case no push to main happened that day.
+    - cron: '0 7 * * *'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  TARGET: learn/release-notes/mirror-node.mdx
+  REPO: hiero-ledger/hiero-mirror-node
+
+jobs:
+  add-release-notes:
+    runs-on: hashgraph-docs-linux-medium
+
+    steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout docs repo
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: '22'
+
+      - name: Plan versions to add
+        id: plan
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION_INPUT: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+
+          if [[ -n "${VERSION_INPUT}" ]]; then
+            # Single-version mode: validate and use exactly the requested version.
+            VERSION="${VERSION_INPUT#v}"
+            if [[ ! "${VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+              echo "Invalid version: ${VERSION_INPUT}" >&2
+              echo "Expected X.Y.Z or vX.Y.Z, for example 0.155.1 or v0.155.1." >&2
+              exit 1
+            fi
+            echo "${VERSION}" > "${RUNNER_TEMP}/versions.txt"
+          else
+            # Backfill mode: every stable release newer than the latest on the page.
+            gh release list \
+              --repo "${REPO}" \
+              --exclude-pre-releases \
+              --exclude-drafts \
+              --limit 100 \
+              --json tagName \
+              > "${RUNNER_TEMP}/releases.json"
+
+            node .github/scripts/select-backfill-versions.js \
+              --target "${TARGET}" \
+              --releases "${RUNNER_TEMP}/releases.json" \
+              > "${RUNNER_TEMP}/versions.txt"
+          fi
+
+          COUNT="$(grep -c . "${RUNNER_TEMP}/versions.txt" || true)"
+          echo "count=${COUNT}" >> "${GITHUB_OUTPUT}"
+
+          if [[ "$COUNT" -eq 0 ]]; then
+            echo "No missing releases — nothing to do."
+          else
+            echo "Will add $COUNT release(s):"
+            cat "${RUNNER_TEMP}/versions.txt"
+            # Comma-separated v-prefixed list for the PR title/commit message.
+            CSV="$(sed 's/^/v/' "${RUNNER_TEMP}/versions.txt" | paste -sd, -)"
+            echo "versions_csv=${CSV}" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Generate MDX entries
+        if: steps.plan.outputs.count != '0'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          # Oldest-first so the newest release ends up prepended last (on top).
+          while IFS= read -r VERSION; do
+            [[ -z "${VERSION}" ]] && continue
+            echo "::group::v${VERSION}"
+            gh release view "v${VERSION}" \
+              --repo "${REPO}" \
+              --json body,tagName,url \
+              > "${RUNNER_TEMP}/release.json"
+
+            node .github/scripts/mirror-node-release-entry.js \
+              --version "${VERSION}" \
+              --release-json "${RUNNER_TEMP}/release.json" \
+              --target "${TARGET}"
+            echo "::endgroup::"
+          done < "${RUNNER_TEMP}/versions.txt"
+
+      - name: Open pull request
+        if: steps.plan.outputs.count != '0'
+        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          add-paths: learn/release-notes/mirror-node.mdx
+          commit-message: "docs: add mirror node release notes (${{ steps.plan.outputs.versions_csv }})"
+          signoff: true
+          sign-commits: true
+          branch: automation/mirror-node-release-notes
+          title: "docs: mirror node release notes (${{ steps.plan.outputs.versions_csv }})"
+          assignees: ${{ github.actor }}
+          labels: automated-pr
+          delete-branch: true
+          body: |
+            ## Mirror Node Release Notes
+
+            This PR adds the following mirror node release notes: **${{ steps.plan.outputs.versions_csv }}**
+
+            Source: https://github.com/hiero-ledger/hiero-mirror-node/releases
+
+            ### Review checklist
+
+            - [ ] Verify bullets are accurate and complete
+            - [ ] Confirm the summary prose copied from each release body reads well (edit if needed)
+            - [ ] If flagged, add a `### Breaking Changes` prose section above the accordions
+            - [ ] Check for HIP references that should link to hips.hedera.com
+
+            ---
+            This PR was generated by the mirror node release notes workflow.

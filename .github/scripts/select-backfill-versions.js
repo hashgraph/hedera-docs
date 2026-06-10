@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Determines which upstream releases are missing from a release-notes page.
+// Determines which upstream releases are missing from the release-notes page.
 // Prints the missing stable versions newer than the latest documented one,
 // oldest-first, one per line. The caller adds them in that order so the newest
 // ends up at the top of the page.

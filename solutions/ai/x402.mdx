@@ -153,11 +153,7 @@ Because the facilitator pays the fee, the spec requires it to verify that the `f
 
 ## Implementing it
 
-The `@x402/hedera` package implements the scheme for both client and resource server.
-
-<Warning>
-`@x402/hedera` is **not yet published to npm**. For now, use it from source in the official [x402 monorepo](https://github.com/x402-foundation/x402/tree/main/typescript/packages/mechanisms/hedera) (clone and build the workspace, or reference it locally). The core `@x402/core` package *is* published. The examples below show how the Hedera scheme is wired once the package is available to your project.
-</Warning>
+The [`@x402/hedera`](https://www.npmjs.com/package/@x402/hedera) package implements the scheme for both client and resource server.
 
 **Client** — register the Hedera scheme with a signer for your account:
 

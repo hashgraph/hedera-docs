@@ -1,0 +1,131 @@
+---
+title: "Faucet API"
+description: "Fund testnet and previewnet accounts with HBAR programmatically over HTTP, no browser required."
+icon: "terminal"
+---
+
+The Hedera Portal faucet exposes an HTTP endpoint so you can fund Hedera accounts programmatically, with no browser, no reCAPTCHA, and no copy-pasting addresses into a web form.
+
+The Faucet API supports funding accounts from the terminal, scripts, CI/CD pipelines, SDKs, or agentic workflows.
+
+<Info>
+	For a one-off, the [web faucet](/learn/getting-started/testnet-faucet) at [portal.hedera.com](https://portal.hedera.com/faucet) is the simplest
+	path. Use the Faucet API when you want to fund accounts programmatically or in bulk.
+</Info>
+
+<Note>
+	**Need mainnet HBAR?** This Portal Faucet API serves **testnet and previewnet** only. For mainnet, the ecosystem project HashPort runs a
+	community-operated [Faucet API](https://faucet.hashport.network/) that distributes HBAR to onboard new users.
+</Note>
+
+---
+
+## Before you start
+
+The Faucet API requires a Hedera Portal account and a Personal Access Token (the web faucet does not):
+
+1. **A Hedera Portal account.** [Sign up](https://portal.hedera.com/register) if you don't have one.
+2. **A Personal Access Token (PAT).** Generate one from the Portal UI, following [Create an API Key](/native/tutorials/getting-started/create-api-key).
+
+In your terminal, set your token as an environment variable so the `curl` examples below can read it. The `export` command runs in a macOS or Linux shell (bash or zsh) and lasts for the current terminal session:
+
+```bash
+export HEDERA_PAT="<your-personal-access-token>"
+```
+
+On Windows PowerShell, use:
+
+```powershell
+$env:HEDERA_PAT = "<your-personal-access-token>"
+```
+
+---
+
+## Make a request
+
+Send a `POST` to `/api/disbursement/cli` with your PAT as a Bearer token.
+
+```bash wrap
+curl -X POST https://portal.hedera.com/api/disbursement/cli \
+  -H "Authorization: Bearer $HEDERA_PAT" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "address": "0.0.12345",
+    "amount": 25,
+    "network": "testnet"
+  }'
+```
+
+### Request fields
+
+| Field        | Required | Description                                                                                 |
+| ------------ | -------- | ------------------------------------------------------------------------------------------- |
+| `address`    | Yes      | The destination: a Hedera account ID (`0.0.12345`) or an EVM address (`0x…`, 40 hex chars). |
+| `amount`     | Yes      | A whole number of HBAR to send, from `1` to `100`.                                          |
+| `network`    | No       | `testnet` (default) or `previewnet`.                                                        |
+| `sdkVersion` | No       | For tool authors: the SDK version, so usage can be attributed.                              |
+| `cliVersion` | No       | For tool authors: the CLI version.                                                          |
+
+<Info>
+	**About the destination:** A Hedera account ID (`0.0.x`) must already exist on the network. An EVM address that has no account yet gets one created
+	on the spot through [auto account creation](/learn/core-concepts/accounts/auto-account-creation) when the HBAR lands.
+</Info>
+
+---
+
+## Response
+
+A successful request returns the amount sent, the on-chain transaction ID, and your remaining daily allowance:
+
+```json
+{
+	"amount": 25,
+	"transactionId": "0.0.2@1715600000.123456789",
+	"dailyQuota": {
+		"used": 25,
+		"remaining": 75
+	}
+}
+```
+
+- **`amount`**: how much HBAR was actually sent.
+- **`transactionId`**: the on-chain transaction ID. Use it to look up the transfer on a [mirror node](/reference/rest-api) or [HashScan](https://hashscan.io).
+- **`dailyQuota`**: `used` and `remaining` HBAR in your rolling 24-hour window.
+
+---
+
+## Limits
+
+Three limits apply to every request, and a call must satisfy all three:
+
+- **Up to 100 HBAR per call.**
+- **Up to 100 HBAR per 24 hours**, as a rolling window tied to your Hedera Portal account.
+- **One funding per destination account per 24 hours.** This cooldown is shared with the web faucet, so if an account was funded on the web today, the API will refuse it for the next 24 hours, and vice versa.
+
+A few things to know:
+
+- You can spread your daily 100 HBAR across multiple accounts (for example, 10 HBAR to each of 10 accounts).
+- You can hit your daily cap while fresh destinations are still available, in which case you'll need to wait for the window to roll off.
+- You can hit a destination's cooldown while you still have HBAR left, so switch to another account.
+
+---
+
+## Troubleshooting
+
+The faucet uses standard HTTP status codes:
+
+| Status                      | What it means                                                                                                               | How to fix it                                                                                             |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `400 Bad Request`           | Your request body didn't pass validation, for example `amount` is missing or outside `1` to `100`, or `network` is invalid. | Check the request body against the [request fields](#request-fields).                                     |
+| `403 Forbidden`             | Your token is missing, malformed, or has been revoked.                                                                      | Verify the `Authorization` header reads `Bearer <token>`, and that the token still exists in the Portal.  |
+| `422 Unprocessable Entity`  | The destination can't be funded: the account ID does not exist, address is invalid, or it was funded in the last 24 hours.  | Confirm the account exists or the address is well-formed, and off cooldown, or fund a different account.  |
+| `429 Too Many Requests`     | You've used your full 100 HBAR for the last 24 hours.                                                                       | Wait for your 24-hour window to roll off, then try again.                                                 |
+| `500 Internal Server Error` | The transfer failed on the server side.                                                                                     | Retry after a minute. If it persists, check the transaction ID on a mirror node and reach out to support. |
+
+---
+
+## Next steps
+
+- [Create an API Key (PAT)](/native/tutorials/getting-started/create-api-key): required to authenticate Faucet API requests.
+- [Web Testnet Faucet](/learn/getting-started/testnet-faucet): create and fund an account from the browser.
+- [Learn more about accounts](/learn/core-concepts/accounts)

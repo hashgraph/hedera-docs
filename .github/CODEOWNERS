@@ -16,12 +16,12 @@
 /CODEOWNERS                                             @hashgraph/release-engineering-managers
 
 # Protect the repository root files
-/README.md                                              @hashgraph/platform-ci @hashgraph/release-engineering-managers @hashgraph/hedera-docs
+/README.md                                              @hashgraph/hedera-docs @hashgraph/hedera-docs-committers
 **/LICENSE                                              @hashgraph/release-engineering-managers
 
 # CodeCov configuration
 **/codecov.yml                                          @hashgraph/platform-ci @hashgraph/release-engineering-managers @hashgraph/hedera-docs
 
 # Git Ignore definitions
-**/.gitignore                                           @hashgraph/platform-ci @hashgraph/release-engineering-managers @hashgraph/hedera-docs
-**/.gitignore.*                                         @hashgraph/platform-ci @hashgraph/release-engineering-managers @hashgraph/hedera-docs
+**/.gitignore                                           @hashgraph/hedera-docs @hashgraph/hedera-docs-committers
+**/.gitignore.*                                         @hashgraph/hedera-docs @hashgraph/hedera-docs-committers

@@ -24,7 +24,7 @@ The server uses the MCP Streamable HTTP transport.
 - **Transport:** Streamable HTTP
 - **Network:** Hedera Testnet
 
-## Context Initialization
+## Connect with a Hedera Account
 
 When connecting to the server, provide your Hedera Account ID via an HTTP header. This initializes the session context so every tool call knows which account to build transactions for.
 
@@ -71,9 +71,10 @@ Replace `0.0.YOUR_ACCOUNT_ID` with your [Hedera Testnet account ID](https://port
 - **Claude Desktop:** `claude_desktop_config.json` — the path depends on your OS; see Anthropic's MCP setup guide.
 - **Custom MCP clients:** consult your client's documentation for how to register MCP servers and pass HTTP headers.
 
-## Working with RETURN_BYTES
+## Creating and Sending Transactions
 
-Because this server never handles your private keys or signs transactions on your behalf, any action that changes data on the blockchain will come back to you as transaction data (bytes) to be signed and submitted on-chain. 
+Because this server never handles your private keys or signs transactions on your behalf, most tools calls (that complete actions on the Hedera Network) 
+blockchain will return transaction data (bytes) to you as transaction data (bytes) to be signed and submitted on-chain. Only queries are supported by standard IDEs and GUI clients.
 
 To use this MCP server, you must build or use a client application for this MCP that can:
 
@@ -81,9 +82,30 @@ To use this MCP server, you must build or use a client application for this MCP 
 2. Decode and sign them using a Hedera SDK with the account's private key.
 3. Submit the signed transaction to the Hedera network.
 
+#### Example: Sign and Submit Transactions
+Set up an operator account and a Hedera client, then decode, sign, and submit the bytes returned by a transaction-building tool:
+
+```typescript return-bytes.ts
+const bytesObject = parsed.bytes || parsed.raw.bytes;
+            const realBytes = Buffer.isBuffer(bytesObject)
+              ? bytesObject
+              : Buffer.from(bytesObject.data || bytesObject);
+
+console.log('Transaction bytes found. Executing...');
+const tx = Transaction.fromBytes(realBytes);
+const result = await tx.execute(humanInTheLoopClient);
+const receipt = await result.getReceipt(humanInTheLoopClient);
+
+console.log('Transaction receipt:', receipt.status.toString());
+console.log('Transaction ID:', result.transactionId.toString());
+bytesHandled = true;
+```
+
 Read-only queries such as balances, token info, transaction records, exchange rates, and similar can return their results directly through your AI application, since no transaction signature is required.
 
-See the [Hedera Agent Kit examples](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/examples/langchain-v1/return-bytes-tool-calling-agent.ts) for examples of signing and submitting transaction bytes.
+See the [Hedera Agent Kit example](https://github.com/hashgraph/hedera-agent-kit-js/blob/main/examples/langchain-v1/external-mcp-return-bytes-agent.ts
+
+) for a complete implementation of signing and submitting transaction bytes.
 
 
 ## Available Tools

@@ -4,9 +4,7 @@ description: "Fund testnet and previewnet accounts with HBAR programmatically ov
 icon: "terminal"
 ---
 
-The Hedera Portal faucet exposes an HTTP endpoint so you can fund Hedera accounts programmatically, with no browser, no reCAPTCHA, and no copy-pasting addresses into a web form.
-
-The Faucet API supports funding accounts from the terminal, scripts, CI/CD pipelines, SDKs, or agentic workflows.
+The Hedera Portal exposes an HTTP faucet endpoint so you can fund testnet and previewnet accounts programmatically from the terminal, scripts, CI/CD pipelines, SDKs, or agentic workflows, with no browser, no reCAPTCHA, and no copy-pasting.
 
 <Info>
 	For a one-off, the [web faucet](/learn/getting-started/testnet-faucet) at [portal.hedera.com](https://portal.hedera.com/faucet) is the simplest
@@ -45,6 +43,11 @@ $env:HEDERA_PAT = "<your-personal-access-token>"
 
 Send a `POST` to `/api/disbursement/cli` with your PAT as a Bearer token.
 
+<Info>
+	**About the destination:** A Hedera account ID (`0.0.x`) must already exist on the network. An EVM address that has no account yet gets one created
+	on the spot through [auto account creation](/learn/core-concepts/accounts/auto-account-creation) when the HBAR lands.
+</Info>
+
 ```bash wrap
 curl -X POST https://portal.hedera.com/api/disbursement/cli \
   -H "Authorization: Bearer $HEDERA_PAT" \
@@ -65,11 +68,6 @@ curl -X POST https://portal.hedera.com/api/disbursement/cli \
 | `network`    | No       | `testnet` (default) or `previewnet`.                                                        |
 | `sdkVersion` | No       | For tool authors: the SDK version, so usage can be attributed.                              |
 | `cliVersion` | No       | For tool authors: the CLI version.                                                          |
-
-<Info>
-	**About the destination:** A Hedera account ID (`0.0.x`) must already exist on the network. An EVM address that has no account yet gets one created
-	on the spot through [auto account creation](/learn/core-concepts/accounts/auto-account-creation) when the HBAR lands.
-</Info>
 
 ---
 

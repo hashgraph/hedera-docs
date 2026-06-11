@@ -1,5 +1,6 @@
 ---
 title: "Hiero Hooks"
+description: "Hiero Hooks let developers attach Solidity logic to Hedera accounts to validate transfers and extend transactions without deploying full contracts."
 ---
 
 Hiero Hooks provide programmable extension points to inject Solidity-based logic directly into the network's transaction pipeline. Hooks attach to accounts to enforce custom rules on actions like token transfers, but they do not run automatically—a hook is triggered only when explicitly referenced in a `TransferTransaction` (e.g., `CryptoTransfer`).

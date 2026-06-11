@@ -1,6 +1,7 @@
 ---
 title: System Smart Contracts
 sidebarTitle: System Contracts
+description: "Overview of Hedera system smart contracts at reserved EVM addresses that expose HTS, account, schedule, and exchange rate functions to Solidity."
 ---
 System smart contracts are Hedera API functionality logic presented at reserved address locations on the EVM network. These addresses contain reserved function selectors. When a deployed contract calls these selectors, they execute as though a corresponding system contract exists on the network. Both system and user-deployed contracts live at the same address. If a contract is redeployed, it gets a new address while the original address retains the old bytecode.
 

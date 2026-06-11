@@ -1,6 +1,6 @@
 ---
 title: "Mirror Node Architecture"
-description: "How the Hedera mirror node components fit together: importer, database, REST API, gRPC, and Web3 APIs."
+description: "How Hedera mirror node components fit together: the importer ingests record files, PostgreSQL stores state, and REST, gRPC, and Web3 APIs expose data."
 ---
 
 A Hedera mirror node is several services that share a PostgreSQL database. Consensus nodes write record and event files (plus sidecar files for richer smart contract data) to cloud object storage. The mirror node pulls those files down, validates them, populates the database, and exposes the data through several APIs.

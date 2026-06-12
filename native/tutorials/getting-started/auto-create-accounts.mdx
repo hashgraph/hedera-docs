@@ -1,7 +1,7 @@
 ---
 title: "Auto-Create Hedera Accounts with HBAR and Token Transfers"
 sidebarTitle: "Auto-Create Accounts"
-description: "Walkthrough of HIP-32 and HIP-542 auto-account creation on Hedera: send HBAR or HTS tokens to an EVM address alias to create the account on first transfer."
+description: "Walkthrough of HIP-32 and HIP-542 auto-account creation on Hedera: send HBAR or HTS tokens to an EVM Address from Public Key to create the account on first transfer."
 ---
 
 [HIP-32](https://hips.hedera.com/hip/hip-32) introduced the ability to auto-create accounts when sending HBAR to an [alias](/native/accounts/create#create-an-account-via-an-account-alias) that does not exist on the network. When HBAR is sent to an alias that does not exist on the network, the account creation fee is deducted from the HBAR sent and the account is auto-created. The new account's initial balance is (sent HBAR - account creation fee). This new method of account creation allowed wallet providers to create free "accounts" to users. However, if a user sends fungible tokens or NFT's to an alias, it would result in an _INVALID_ACCOUNT_ID_ error because the alias does not exist on the network. The auto-account creation flow could not deduct the account creation fee from an HTS token; the account creation fee must be paid in HBAR.

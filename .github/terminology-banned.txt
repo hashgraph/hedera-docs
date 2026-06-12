@@ -1,0 +1,15 @@
+# Retired developer-facing terms, enforced by .github/workflows/terminology-check.yml
+#
+# Format:  <case-insensitive ERE pattern>===<suggested replacement>
+# Lines starting with '#' and blank lines are ignored.
+# Canonical reference: support/contributing/style-guide/terminology.mdx
+#
+# Scope: the check runs only on CHANGED .mdx files in a PR, and excludes
+# protocol/API-reference pages and historical release notes (see the workflow).
+
+EVM Address Account Alias===EVM Address from Public Key
+EVM[ -]address alias===EVM Address from Public Key
+EVM alias===EVM Address
+Account Number Alias===EVM Address from Account ID
+Public Key Account Alias===remove the concept (public-key alias is retired)
+public key alias===remove or rephrase (public-key alias is retired)

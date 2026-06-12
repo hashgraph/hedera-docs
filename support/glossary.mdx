@@ -34,15 +34,15 @@ A way to control accounts using programmable logic instead of just private keys.
 ### Account Alias
 
 ---
-An account alias is a user-friendly identifier that can be classified as either a public key or an [Ethereum Virtual Machine (EVM) address](/learn/core-concepts/accounts/account-properties#evm-address-account-alias). It serves as a reference to the account object, in addition to its account number, and is assigned during the auto account creation process. The purpose of an account alias is to facilitate easier management and recall of accounts, particularly in distributed ledger technology and cryptocurrency contexts where addresses are often complex and difficult to remember. Instead of inputting a long string of characters, users can use simpler and more memorable aliases.
+A protocol-level identifier (set via the `alias` field in account-creation APIs) used to reference an account in addition to its [Account ID](#account-id). For new accounts, the alias is an [EVM Address from Public Key](#evm-address) derived from the account's ECDSA public key, enabling native compatibility with EVM wallets and tooling.
 
-📒 For more information, refer to the [Account Alias section](/learn/core-concepts/accounts/account-properties#account-alias) on the [Account Properties](/learn/core-concepts/accounts/account-properties) page.
+📒 See [EVM Address from Public Key](/learn/core-concepts/accounts/account-properties#evm-address-from-public-key) for details.
 
 ### Account ID
 
 ---
 
-A unique identifier associated with an account on a distributed ledger. Each account on the ledger has a unique [account ID](/reference/protobuf/basic-types/accountid), which is used to track and manage all transactions associated with that account.
+A unique identifier for an account on the network, written as `0.0.<num>` on mainnet (for example, `0.0.1234`). Each account has a unique [account ID](/reference/protobuf/basic-types/accountid), which is used to track and manage all transactions associated with that account. The full `<shard>.<realm>.<num>` form exists for future and private-network support; both shard and realm are `0` on mainnet today.
 
 ### Address
 
@@ -442,6 +442,17 @@ The runtime environment in Ethereum, where smart contracts are executed. It is a
 ---
 
 Event files record the history of transactions that have occurred on the Hedera Network. They contain the details of all the transactions and the order in which they were processed. The files are created on each node in the network and are then shared with [mirror nodes](#mirror-nodes), which are nodes that maintain a copy of the network's history but do not participate in [consensus](#consensus).
+
+### EVM Address
+
+---
+
+A 20-byte address compatible with the Ethereum Virtual Machine. On Hedera, an account's EVM address comes from one of two sources:
+
+- **EVM Address from Public Key** (recommended): the rightmost 20 bytes of the Keccak-256 hash of the account's ECDSA public key. Set at creation via `setECDSAKeyWithAlias()`.
+- **EVM Address from Account ID** (fallback, "long-zero" form): 12 zero bytes followed by the 8-byte account number. Used when no public-key-derived address is set.
+
+The EVM address is the value seen by Solidity contracts as `msg.sender` and used by EVM wallets and tooling.
 
 ### Externally Owned Account (EOA)
 

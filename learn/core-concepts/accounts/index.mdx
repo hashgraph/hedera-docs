@@ -49,7 +49,7 @@ A Hedera account is a unique entity in the Hedera Network that can hold tokens. 
 </Accordion>
 
 <Accordion title="What is a 'hollow' account?">
-If an account is created with an [EVM address](/learn/core-concepts/accounts/auto-account-creation#evm-address) via [Auto Account Creation](/learn/core-concepts/accounts/auto-account-creation), it results in a "hollow" account. This account has an account number and alias but no account key. It can accept token transfers but cannot transfer tokens or modify account properties until the account key has been added, completing the account.
+A hollow account is created when value is transferred to an [EVM Address from Public Key](/learn/core-concepts/accounts/auto-account-creation#auto-account-creation-with-an-evm-address) via [Auto Account Creation](/learn/core-concepts/accounts/auto-account-creation) without a corresponding key on file. It has an account number and an EVM address but no account key. It can receive tokens but cannot send tokens or modify account properties until the matching ECDSA key is added, completing the account. This is the standard onboarding path for EVM-wallet users.
 </Accordion>
 </AccordionGroup>
 

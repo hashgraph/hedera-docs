@@ -1,0 +1,49 @@
+name: "Terminology Check"
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+    paths:
+      - "**/*.mdx"
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: read
+
+jobs:
+  terminology:
+    name: Retired Terminology Check
+    runs-on: hashgraph-docs-linux-medium
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Collect changed .mdx files
+        id: changed
+        run: |
+          base="origin/${{ github.base_ref }}"
+          git fetch --no-tags --depth=1 origin "${{ github.base_ref }}"
+          mapfile -t files < <(git diff --name-only --diff-filter=ACMR "$base"...HEAD -- '*.mdx')
+          printf '%s\n' "${files[@]}" > changed-mdx.txt
+          echo "count=${#files[@]}" >> "$GITHUB_OUTPUT"
+          echo "Changed .mdx files:"
+          printf '  %s\n' "${files[@]}"
+
+      - name: Check terminology
+        if: steps.changed.outputs.count != '0'
+        run: |
+          mapfile -t files < changed-mdx.txt
+          bash .github/scripts/check-terminology.sh "${files[@]}"

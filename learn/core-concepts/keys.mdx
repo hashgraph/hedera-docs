@@ -12,12 +12,12 @@ Private keys *can only* be recovered once lost if created with an associated rec
 
 **ECDSA secp256k1 is the recommended key type for all new accounts and applications on Hedera.** It is the same cryptographic curve used by Ethereum and the broader EVM ecosystem, which means:
 
-- ECDSA accounts should set an **EVM alias** — an EVM address derived from the ECDSA public key. The EVM alias is the rightmost 20 bytes of the 32-byte Keccak-256 hash of the ECDSA public key, calculated in the manner described by the Ethereum Yellow Paper. Note that the recovery ID is not formally part of the public key and is not included in the hash. The EVM address is also commonly known as the public address, and the account ID format is `<shardNum>.<realmNum>.<alias>` where alias is the EVM address.
-- The EVM alias enables full compatibility with Solidity smart contracts, `msg.sender` checks, and EVM-based tooling such as MetaMask, Hardhat, and Foundry.
+- ECDSA accounts should set an **EVM Address from Public Key**, an EVM address derived from the ECDSA public key. It is the rightmost 20 bytes of the 32-byte Keccak-256 hash of the ECDSA public key, calculated in the manner described by the Ethereum Yellow Paper. Note that the recovery ID is not formally part of the public key and is not included in the hash. The EVM address is also commonly known as the public address. On mainnet, the corresponding account ID is `0.0.<evmAddress>`.
+- The EVM Address from Public Key enables full compatibility with Solidity smart contracts, `msg.sender` checks, and EVM-based tooling such as MetaMask, Hardhat, and Foundry.
 - ECDSA keys work seamlessly with wallets and dApps built for EVM-compatible networks.
 
 <Info>
-For maximum compatibility with Solidity and smart contracts, set the EVM alias when creating an account by using `setECDSAKeyWithAlias()`. This ensures the account's EVM address is derived from its ECDSA public key, so `msg.sender` in a contract resolves correctly to the account's EVM address.
+For maximum compatibility with Solidity and smart contracts, set the EVM Address from Public Key when creating an account by using `setECDSAKeyWithAlias()`. This ensures the account's EVM address is derived from its ECDSA public key, so `msg.sender` in a contract resolves correctly to the account's EVM address.
 
 ```javascript
 // Generate a new ECDSA key for the account
@@ -29,13 +29,13 @@ const txCreateAccount = new AccountCreateTransaction()
 ```
 </Info>
 
-<Warning>
-Do not use `setECDSAKeyWithAlias()` if you plan to update or rotate the account key in the future. The EVM alias is permanently bound to the original ECDSA public key and does not change when the key is rotated. Use `setKeyWithoutAlias()` instead if key rotation is a requirement. See the [Create an Account](/native/accounts/create) reference for details.
-</Warning>
+<Info>
+**Key rotation trade-off:** The EVM Address from Public Key is permanently bound to the original ECDSA public key and does not change when the key is rotated. If your operational model requires key rotation, use `setKeyWithoutAlias()` at creation, and the account will fall back to its EVM Address from Account ID (long-zero form). See the [Create an Account](/native/accounts/create) reference for details.
+</Info>
 
 ### Ed25519 (Supported)
 
-Ed25519 is a supported key type on Hedera. It does **not** produce an EVM alias, so Ed25519 accounts cannot use EVM tooling, MetaMask, or Solidity's native `ECRECOVER` function directly. However, Ed25519 accounts can interact with smart contracts through the [HIP-632 system contract functions](/evm/hedera-services/system-contracts/account-service) (`isAuthorized` and `isAuthorizedRaw`), which enable on-chain verification of Ed25519 signatures.
+Ed25519 is a supported key type on Hedera. It does **not** produce an EVM Address from Public Key, so Ed25519 accounts cannot use EVM tooling, MetaMask, or Solidity's native `ECRECOVER` function directly. However, Ed25519 accounts can interact with smart contracts through the [HIP-632 system contract functions](/evm/hedera-services/system-contracts/account-service) (`isAuthorized` and `isAuthorizedRaw`), which enable on-chain verification of Ed25519 signatures.
 
 Ed25519 is appropriate for HCS-based applications, Hedera-native workflows, and scenarios where EVM compatibility is not required
 
@@ -73,11 +73,11 @@ A key in Hedera can be a [public key](/support/glossary#public-key) of a support
 </Accordion>
 
 <Accordion title="Which key type should I use?">
-Use **ECDSA secp256k1** for all new accounts and applications. ECDSA keys are compatible with Ethereum and the EVM ecosystem, can be assigned an EVM alias (EVM address) at account creation using `setECDSAKeyWithAlias()`, and work with tools like MetaMask, Hardhat, and Solidity smart contracts. Ed25519 is supported but does not provide an EVM address and is not compatible with EVM tooling. Ed25519 accounts can still interact with smart contracts through [HIP-632 system contract functions](/evm/hedera-services/system-contracts/account-service).
+Use **ECDSA secp256k1** for all new accounts and applications. ECDSA keys are compatible with Ethereum and the EVM ecosystem, can be assigned an EVM Address from Public Key at account creation using `setECDSAKeyWithAlias()`, and work with tools like MetaMask, Hardhat, and Solidity smart contracts. Ed25519 is supported but does not provide an EVM address and is not compatible with EVM tooling. Ed25519 accounts can still interact with smart contracts through [HIP-632 system contract functions](/evm/hedera-services/system-contracts/account-service).
 </Accordion>
 
-<Accordion title="What is an EVM alias and why does it matter?">
-An EVM address account alias is the rightmost 20 bytes of the 32-byte Keccak-256 hash of the ECDSA public key of the account, calculated in the manner described by the Ethereum Yellow Paper. The recovery ID is not formally part of the public key and is not included in the hash. To set this alias, use `setECDSAKeyWithAlias()` when creating the account. This alias is the account's EVM address, what Solidity contracts see as `msg.sender`, and enables full compatibility with smart contracts and EVM-based tooling. See [ECDSA secp256k1 (Recommended)](/learn/core-concepts/keys#ecdsa-secp256k1-recommended) above for the full derivation details.
+<Accordion title="What is an EVM Address from Public Key and why does it matter?">
+The EVM Address from Public Key is the rightmost 20 bytes of the 32-byte Keccak-256 hash of the ECDSA public key of the account, calculated in the manner described by the Ethereum Yellow Paper. The recovery ID is not formally part of the public key and is not included in the hash. To set it, use `setECDSAKeyWithAlias()` when creating the account. This address is what Solidity contracts see as `msg.sender`, and it enables full compatibility with smart contracts and EVM-based tooling. See [ECDSA secp256k1 (Recommended)](/learn/core-concepts/keys#ecdsa-secp256k1-recommended) above for the full derivation details.
 </Accordion>
 
 <Accordion title="What happens if I lose my private key?">

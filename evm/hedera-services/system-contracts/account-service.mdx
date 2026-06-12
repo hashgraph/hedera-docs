@@ -36,7 +36,7 @@ By addressing these use cases, HIP-632 provides a seamless way for developers to
 
 #### **isAuthorized(address, message, signatureBlob)**
 
-* Extends **isAuthorizedRaw** by validating that the specific Hedera account (referenced by either an account number alias or EVM address alias) is authorized to execute the transaction.
+* Extends **isAuthorizedRaw** by validating that the specific Hedera account (referenced by either its EVM Address from Account ID or EVM Address from Public Key) is authorized to execute the transaction.
 * Supports Hedera’s complex account key structures, including multi-sig and threshold key requirements.
 * Provides a way to confirm authorization based on Hedera’s advanced account-based key management.
 * Returns `true` if the signature is valid and linked to the account, otherwise `false`.

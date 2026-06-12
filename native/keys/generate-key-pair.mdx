@@ -2,16 +2,20 @@
 title: "Generate a new key pair"
 ---
 
+<Tip>
+**ECDSA is recommended for new accounts and applications.** It enables setting an **EVM Address from Public Key** on the account, native compatibility with EVM tooling, and `msg.sender` resolution in Solidity. See [Keys and Signatures](/learn/core-concepts/keys) for the full comparison.
+</Tip>
+
 ## ECDSA (secp256k1\_)
 
 Create a new ***ECDSA*** (secp256k1) key pair used to sign transactions and queries on a Hedera network. The private key is kept confidential and is used to sign transactions that modify the state of an account, topic, token, smart contract, or file entity on the network. The public key can be shared with other users on the network.
 
 | **Method**                                                             | **Type**   | **Description**                                          |
-| ---------------------------------------------------------------------- | ---------- | -------------------------------------------------------- |
+| ---------------------------------------------------------------------- | :--------: | -------------------------------------------------------- |
 | `PrivateKey.generateECDSA()`                                           | PrivateKey | Generates an ECSDA private key                           |
 | `PrivateKey.generateECDSA().getPublicKey()`                            | PublicKey  | Derive a public key from this ECDSA private key          |
 | `PrivateKey.generateECDSA().publicKey()`                               | PublicKey  | Derive a public key from this ECDSA private key          |
-| `PrivateKey.generateECDSA().publicKey().toAccountId(<shard>, <realm>)` | long, long | Contructs an account ID from an account alias public key |
+| `PrivateKey.generateECDSA().publicKey().toAccountId(<shard>, <realm>)` | long, long | Constructs an account ID from a public key |
 
 <CodeGroup>
 
@@ -21,6 +25,7 @@ PublicKey publicKey = privateKey.getPublicKey();
 
 System.out.println("private key = " + privateKey);
 System.out.println("public key = " + publicKey);
+System.out.println("evm address = " + publicKey.toEvmAddress());
 ```
 
 
@@ -30,6 +35,7 @@ const publicKey = privateKey.publicKey;
 
 console.log("private key = " + privateKey);
 console.log("public key = " + publicKey);
+console.log("evm address = " + publicKey.toEvmAddress());
 ```
 
 
@@ -43,33 +49,40 @@ publicKey := privateKey.PublicKey()
 
 fmt.Printf("private key = %v\n", privateKey)
 fmt.Printf("public key = %v\n", publicKey)
+fmt.Printf("evm address = %v\n", publicKey.ToEvmAddress())
 ```
 
 
 ```rust Rust
-// Generate ED25519 key pair
-let private_key = PrivateKey::generate_ed25519()?;
-let public_key = private_key.public_key();
-
-println!("private key = {:?}", private_key);
-println!("public key = {:?}", public_key);
-
 // Generate ECDSA key pair
 let private_key = PrivateKey::generate_ecdsa()?;
 let public_key = private_key.public_key();
 
 println!("private key = {:?}", private_key);
 println!("public key = {:?}", public_key);
+println!("evm address = {:?}", public_key.to_evm_address());
 
 // v0.34.0
+```
+
+```python Python
+from hiero_sdk_python.crypto.private_key import PrivateKey
+
+private_key = PrivateKey.generate_ecdsa()
+public_key = private_key.public_key()
+
+print(f"private key = {private_key}")
+print(f"public key = {public_key}")
+print(f"evm address = {public_key.to_evm_address()}")
 ```
 
 </CodeGroup>
 
 **Sample Output:**
 
-```bash
+```bash wrap
 private key = 3030020100300706052b8104000a042204205edee337f333dbf6ae3e0b1e1298cbe1fe37faf47b9faed326a3917b0e828891
+
 public key = 302d300706052b8104000a03220002e1f3b3bad1e0d97ed129725efaa4fc0289735a9f355438d2619676f1ff3f30dd
 ```
 
@@ -78,13 +91,16 @@ public key = 302d300706052b8104000a03220002e1f3b3bad1e0d97ed129725efaa4fc0289735
 
 Create a new ***ED25519*** key pair used to sign transactions and queries on the Hedera network. The private key is kept confidential and is used to sign transactions that modify the state of an account, topic, token, smart contract, or file entity on the network. The public key can be shared with other users on the network.
 
+<Warning>
+`PrivateKey.generate()` is **deprecated** and silently generates an ED25519 key. Use `PrivateKey.generateECDSA()` for new accounts (recommended) or `PrivateKey.generateED25519()` if ED25519 is required.
+</Warning>
+
 | **Method**                                                              | **Type**   | **Description**                                              |
-| ----------------------------------------------------------------------- | ---------- | ------------------------------------------------------------ |
+| ----------------------------------------------------------------------- | :--------: | ------------------------------------------------------------ |
 | `PrivateKey.generateED25519()`                                          | PrivateKey | Generates an Ed25519 private key                             |
 | `PrivateKey.generateED25519().getPublicKey()`                           | PublicKey  | Derive a public key from this Ed25519 private key            |
 | `PrivateKey.generateED25519().publicKey()`                              | PublicKey  | Derive a public key from this Ed25519 private key            |
 | `PrivateKey.generateED25519().publicKey().toAccountId(<shard>,<realm>)` | long, long | Contruct an alias account ID from a alias public key address |
-| **`[DEPRECATED]`**`PrivateKey.generate()`                               | PrivateKey | Generates an Ed25519 private key                             |
 
 <CodeGroup>
 
@@ -141,7 +157,8 @@ println!("public key = {:?}", public_key);
 
 **Sample Output:**
 
-```
+```bash wrap
 private key = 302e020100300506032b657004220420b9c3ebac81a72aafa5490cc78111643d016d311e60869436fbb91c73307ed35a
+
 public key = 302a300506032b65700321001a5a62bb9f35990d3fea1a5bb7ef6f1df0a297697adef1e04510c9d4ecc5db3f
 ```

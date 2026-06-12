@@ -4,6 +4,20 @@ title: "Sign Hedera Transactions with Google Cloud HSM"
 
 This tutorial demonstrates how to use a Google Cloud HSM-backed `secp256k1` key for signing Hedera transactions. This solution ensures that your private keys are stored securely in Google Cloud's Hardware Security Module.
 
+<Note>
+**SDK constraint:** In **Rust, C++, and Swift**, the one-shot `setECDSAKeyWithAlias()` / `set_ecdsa_key_with_alias()` / `keyWithAlias()` methods require a local `PrivateKey` and cannot be used in HSM flows. In these SDKs, use the manual two-step pattern:
+
+```pseudo
+publicKey = hsm.getPublicKey()
+evmAddress = publicKey.toEvmAddress()
+tx = AccountCreateTransaction()
+       .setKeyWithoutAlias(publicKey)
+       .setAlias(evmAddress)
+```
+
+In JavaScript, Java, Python, and Go, the one-shot method accepts `PublicKey` directly.
+</Note>
+
 ---
 
 ## Prerequisites

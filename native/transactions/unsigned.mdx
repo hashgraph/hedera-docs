@@ -7,11 +7,9 @@ These methods allow you to build a transaction that requires further processing 
 
 <table><thead><tr><th></th><th></th><th></th></tr></thead><tbody><tr><td><strong>Method</strong></td><td><strong>Type</strong></td><td><strong>Description</strong></td></tr><tr><td><code>freeze()</code></td><td></td><td>Freeze this transaction from further modification to prepare for signing or serialization. You will need to set the node account ID (<code>setNodeAccountId()</code>) and transaction ID (<code>setTransactionId()</code>).</td></tr><tr><td><code>freezeWith(&#x3C;client>)</code></td><td>Client</td><td>Freeze this transaction from further modification to prepare for signing or serialization. Will use the 'Client', if available, to generate a default Transaction ID and select 1/3 nodes to prepare this transaction for.</td></tr><tr><td><code>freezeWithSigner(&#x3C;signer>)</code></td><td></td><td>Freeze the transaction with a local wallet. Local wallet available in Hedera JavaScript SDK only. >=<code>v2.11.0</code></td></tr></tbody></table>
 
-<Warning>
-**Account Alias**
-
-If an alias is set during account creation, it becomes [immutable](/support/glossary#immutability), meaning it cannot be changed. If you plan to update or rotate keys in the future, do not set the alias at the time of initial account creation. The alias can be set after finalizing all key updates.
-</Warning>
+<Note>
+The example below uses `setKeyWithAlias()` to set the **EVM Address from Public Key** at account creation, the recommended pattern for EVM compatibility. See [Create an Account](/native/accounts/create#evm-address-from-public-key) for details, including the immutability behavior and when to use `setKeyWithoutAlias()` instead.
+</Note>
 
 <CodeGroup>
 
@@ -54,7 +52,7 @@ console.log(freezeTransaction);
 ```go Go
 //Create an unsigned transaction 
 transaction := hedera.NewAccountCreateTransaction().
-    SetKeyWithAlias(ecdsaPublicKey).
+    SetECDSAKeyWithAlias(ecdsaPublicKey).
     // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .SetKeyWithoutAlias instead 
     // SetKeyWithoutAlias(ecdsaPublicKey)
     SetInitialBalance(hedera.NewHbar(1)).
@@ -75,9 +73,9 @@ println(freezeTransaction.String())
 ```rust Rust
 // Create an unsigned transaction
 let transaction = AccountCreateTransaction::new()
-    .key_with_alias(ecdsa_public_key)
-    // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .key_without_alias instead
-    // .key_without_alias(ecdsa_public_key)
+    // Sets the EVM Address from Public Key (recommended for EVM compatibility); takes the ECDSA PrivateKey
+    .set_ecdsa_key_with_alias(ecdsa_private_key)
+    // Use .set_key_without_alias(key) if you plan to rotate keys soon after creation
     .initial_balance(Hbar::new(1));
 
 // Freeze the transaction for signing

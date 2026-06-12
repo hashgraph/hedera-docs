@@ -13,16 +13,16 @@ This section helps you navigate ECDSA and ED25519 signature workflows, introduce
 
 Hedera’s account model supports both ED25519 and ECDSA keys by identifying accounts by aliases instead of static addresses. This allows dynamic key rotation without changing an account’s ID, unlike EVM's static ECDSA-only approach. Signature validation varies accordingly: ED25519 keys use `isAuthorized` or `isAuthorizedRaw`, while Hedera's ECDSA accounts with aliases can still rely on `ECRECOVER`.
 
-### **Clarifying Account Number Alias vs. EVM Address Alias**
+### **Clarifying Account ID vs. EVM Address**
 
-Hedera accounts can have both a native "Hedera account number alias" (e.g., `0.0.xxxx`) and a derived EVM address alias (a 20-byte address similar to Ethereum). The EVM alias makes the account compatible with `ECRECOVER` and other familiar EVM tools. For more details, see the [Smart Contract Addresses](/evm/development/addresses) page.
+Hedera accounts have a native **Account ID** (e.g., `0.0.xxxx`) and can also have an **EVM Address from Public Key** (a 20-byte address like Ethereum's, derived from the ECDSA public key). The EVM Address from Public Key makes the account compatible with `ECRECOVER` and other familiar EVM tools. For more details, see the [Smart Contract Addresses](/evm/development/addresses) page.
 
-### **Working With ECDSA Account Aliases in Testing**
+### **Working With ECDSA Accounts in Testing**
 
-If you are writing an Ethereum smart contract and need to interact with an ECDSA Hedera account—particularly one identified by a Hedera account number alias—you must convert that alias into a format compatible with EVM tools. This ensures that when you call functions like `ECRECOVER`, you reference the correct account. Here are some considerations:
+If you are writing an Ethereum smart contract and need to interact with an ECDSA Hedera account identified by its **Account ID**, reference it by its **EVM Address** so that functions like `ECRECOVER` resolve the correct account, as long as the EVM Address is correctly set from the account's public key. Here are some considerations:
 
-* During testing, confirm that your test scripts and configuration files convert the Hedera account number alias (e.g., `0.0.xxxx`) into the corresponding 20-byte alias derived from `Keccak-256(publicKey)`. Doing so allows your EVM testing environment (Hardhat, Truffle) to interact with Hedera accounts like standard EVM addresses.
-* Including this conversion step in your test setup saves time and confusion, ensuring your EVM-style smart contracts can reliably work with Hedera’s ECDSA accounts.
+* During testing, use the **EVM Address** returned by the account object, not the Account ID (e.g., `0.0.xxxx`). If the account was created with `setECDSAKeyWithAlias()`, that value is the **EVM Address from Public Key** (the 20-byte `Keccak-256(publicKey)` form) and works with EVM tools like Hardhat and Truffle and with `ECRECOVER`. If no alias was set at creation, the account falls back to the **EVM Address from Account ID** (the long-zero form), which is **not** compatible with `ECRECOVER`. Confirm which form your account uses before deploying.
+* Including this conversion step in your test setup saves time and confusion, ensuring your EVM-compatible smart contracts can reliably work with Hedera’s ECDSA accounts.
 
 ### **Key Permutations & Scenarios on Hedera**
 

@@ -3,40 +3,14 @@ title: "Auto Account Creation"
 ---
 
 
-Auto account creation is a unique flow in which applications, like wallets and exchanges, can create free user "accounts" instantly, even without an internet connection. Applications can make these by generating an **account alias.** The alias account ID format used to specify the account alias in Hedera transactions comprises the shard ID, realm ID, and account alias `<shardNum>.<realmNum>.<alias>`. This is an alternative account identifier compared to the standard account number format `<shardId>.<realmId>.<accountNum>`.
+Auto account creation is a unique flow in which applications like wallets and exchanges can create free user accounts instantly, even without an internet connection. Applications do this by generating an **EVM address** derived from an ECDSA public key and using it as the alias. The alias account ID format is `0.0.<evmAddress>` on mainnet (the full format is `<shardNum>.<realmNum>.<alias>`, shard and realm are `0` on mainnet today), an alternative to the standard account number format `0.0.<accountNum>`.
 
-The account alias can be either one of the supported types:
-
-<Accordion title="Public Key">
-The public key alias can be an ED25519 or ECDSA secp256k1 public key type.
-
-**Example**
-
-ECDSA secp256k1 Public Key:
-`02d588ec1000770949ab77516c77ee729774de1c8fe058cab6d64f1b12ffc8ff07`
-
-DER Encoded ECDSA secp256k1 Public Key Alias:
-`302d300706052b8104000a03220002d588ec1000770949ab77516c77ee729774de1c8fe058cab6d64f1b12ffc8ff07`
-
-ECDSA secp256k1 Public Key Alias Account ID:
-`0.0.302d300706052b8104000a03220002d588ec1000770949ab77516c77ee729774de1c8fe058cab6d64f1b12ffc8ff07`
-
-
-
-EDDSA ED25519 Public Key:
-`1a5a62bb9f35990d3fea1a5bb7ef6f1df0a297697adef1e04510c9d4ecc5db3f`
-
-DER Encoded EDDSA ED25519 Public Key Alias:
-`302a300506032b65700321001a5a62bb9f35990d3fea1a5bb7ef6f1df0a297697adef1e04510c9d4ecc5db3f`
-
-EDDSA ED25519 Public Key Alias Account ID:
-`0.0.302a300506032b65700321001a5a62bb9f35990d3fea1a5bb7ef6f1df0a297697adef1e04510c9d4ecc5db3f`
-</Accordion>
+**For EVM-compatible accounts, the alias is an EVM address derived from the account's ECDSA public key**.
 
 <Accordion title="EVM Address">
-The EVM address alias is created by using the rightmost 20 bytes of the 32 byte `Keccak-256` hash of an `ECDSA secp256k1` public key. This calculation is in the manner described by the [Ethereum Yellow Paper](https://ethereum.github.io/yellowpaper/paper.pdf). The EVM address is not equivalent to the ECDSA public key.
+The EVM Address from Public Key is created by using the rightmost 20 bytes of the 32 byte `Keccak-256` hash of an `ECDSA secp256k1` public key. This calculation is in the manner described by the [Ethereum Yellow Paper](https://ethereum.github.io/yellowpaper/paper.pdf). The EVM address is not equivalent to the ECDSA public key.
 
-The acceptable format for Hedera transactions is the EVM Address Alias Account ID. The acceptable format for Ethereum public addresses to denote an account address is the hex encoded public address.
+The acceptable format for Hedera transactions is the account ID with the EVM address (`0.0.<evmAddress>`). The acceptable format for Ethereum public addresses to denote an account address is the hex encoded public address.
 
 **Example**
 
@@ -44,7 +18,7 @@ EVM Address: `b794f5ea0ba39494ce839613fffba74279579268`
 
 HEX Encoded EVM Address: `0xb794f5ea0ba39494ce839613fffba74279579268`
 
-EVM Address Alias Account ID: `0.0.b794f5ea0ba39494ce839613fffba74279579268`
+Account ID with EVM Address: `0.0.b794f5ea0ba39494ce839613fffba74279579268`
 </Accordion>
 
 The `<shardNum>.<realmNum>.<alias>` format is only acceptable when specified in the `TransferTransaction`, `AccountInfoQuery`, and `AccountBalanceQuery` transaction types. If this format is used to specify an account in any other transaction type, the transaction will not succeed.
@@ -66,7 +40,7 @@ When the transfer executes, the network:
 * Creates a **child** account-creation transaction just before the transfer
 * Assigns a new account number and stores the alias on the account
 * Sets the memo to indicate an auto-created account
-* Sets the account key if the alias is a public key, or leaves the account **hollow** if the alias is an EVM address
+* Leaves the account **hollow** until the matching ECDSA key signs a transaction (see [Complete a Hollow Account](#complete-a-hollow-account))
 
 The **parent** transaction is the token transfer. The **child** is the account creation. They share a transaction ID; the child uses the same ID with a nonce increment. To fetch the new account ID, query the child record or request the parent record with child records included.
 
@@ -120,14 +94,9 @@ Once a hollow account has been converted into a complete account by acting as th
 
 ## Examples
 
-<Accordion title="Auto-create an account using a public key alias">
-- [Java](https://github.com/hiero-ledger/hiero-sdk-java/blob/main/examples/src/main/java/com/hedera/hashgraph/sdk/examples/AccountAliasExample.java)
-- [JavaScript](https://github.com/hiero-ledger/hiero-sdk-js/blob/main/examples/account-alias.js)
-- [Go](https://github.com/hiero-ledger/hiero-sdk-go/blob/main/examples/alias_id_example/main.go)
-</Accordion>
-
 <Accordion title="Auto-create an account using an EVM address (public address) alias">
 - [Java](https://github.com/hiero-ledger/hiero-sdk-java/blob/main/examples/src/main/java/com/hedera/hashgraph/sdk/examples/AutoCreateAccountTransferTransactionExample.java)
-- [JavaScript](https://github.com/hiero-ledger/hiero-sdk-js/blob/main/examples/transfer-using-evm-address.js)
+- [JavaScript](https://github.com/hiero-ledger/hiero-sdk-js/blob/main/examples/account/transfer-using-evm-address.js)
 - [Go](https://github.com/hiero-ledger/hiero-sdk-go/blob/main/examples/account_create_token_transfer/main.go)
+- [C++](https://github.com/hiero-ledger/hiero-sdk-cpp/blob/main/src/sdk/examples/AutoCreateAccountTransferTransactionExample.cpp)
 </Accordion>

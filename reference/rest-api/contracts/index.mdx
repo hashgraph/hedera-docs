@@ -25,3 +25,51 @@ The following endpoints are available for the Smart Contracts object:
 | `GET /api/v1/contracts/{id}/results/logs`                     | Fetches logs for a specific contract.                               |
 | `GET /api/v1/contracts/{id}/results/opcodes`                  | Get the opcode traces for historical transactions                   |
 | `POST /api/v1/contracts/call`                                 | Invokes a smart contract method.                                    |
+
+## Pectra updates (HIP-1340)
+
+Under the Pectra hard fork, all `/api/v1/contracts/*` endpoints accept **EOA addresses** in addition to contract IDs. When an EOA has [code delegation](/evm/development/eoa-code-delegation) configured, calls to its address execute the delegate contract's code in the EOA's storage context, so the EOA emits logs, holds storage slots, and produces traces that these endpoints surface.
+
+### New `authorization_list` field on contract results
+
+Contract-result endpoints include a new `authorization_list` field for Ethereum Type 4 ([EIP-7702](https://eips.ethereum.org/EIPS/eip-7702)) transactions:
+
+- `GET /api/v1/contracts/{contractIdOrAddress}/results/{timestamp}`
+- `GET /api/v1/contracts/results/{transactionIdOrHash}`
+- `GET /api/v1/contracts/results`
+
+#### Example response excerpt
+
+```json wrap
+{
+  "address": "0x4af07974dae3cb2daf46fb80e8544d45138ee54f",
+  "amount": 0,
+  "authorization_list": [
+    {
+      "chain_id": "0x127",
+      "address":  "0x1111111111111111111111111111111111111111",
+      "nonce":    5,
+      "y_parity": 1,
+      "r": "0x2222222222222222222222222222222222222222222222222222222222222222",
+      "s": "0x3333333333333333333333333333333333333333333333333333333333333333"
+    }
+  ],
+  "contract_id": "0.0.7488214"
+}
+```
+
+For non-Type-4 transactions the field is either absent or returned as an empty array. The `chain_id` of an authorization entry is hex-encoded (e.g. `0x127` = 295 mainnet, `0x128` = 296 testnet, `0x129` = 297 previewnet, `0x12A` = 298 development networks).
+
+### Endpoints that now serve EOA addresses
+
+The following endpoints accept an EOA address (or its `0.0.x` account ID) without schema changes; they were previously contract-only:
+
+- `GET /api/v1/contracts/{contractIdOrAddress}/results`
+- `GET /api/v1/contracts/{contractIdOrAddress}/results/logs`
+- `GET /api/v1/contracts/{contractIdOrAddress}/state`
+- `GET /api/v1/contracts/results/{transactionIdOrHash}/actions`
+- `GET /api/v1/contracts/results/{transactionIdOrHash}/opcodes`
+- `GET /api/v1/contracts/results/logs`
+- `POST /api/v1/contracts/call`
+
+Reference: [HIP-1340](https://hips.hedera.com/hip/hip-1340), [HIP-1341](https://hips.hedera.com/hip/hip-1341)

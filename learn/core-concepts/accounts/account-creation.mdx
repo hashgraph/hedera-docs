@@ -9,6 +9,12 @@ You will need access to an existing account with enough HBAR to cover the transa
 
 When an account is created, it is stored in the state on the Hedera network. The current state can be queried from the ledger and viewed in a [Network Explorer](/learn/networks/community-mirror-nodes). Each account has at least one public and private key pair. The private key(s) on the account is used to sign and authorize transactions that involve the account. To view the properties that can be set for an account, check out the "[Account Properties](/learn/core-concepts/accounts/account-properties)" section.
 
+<Tip>
+  **Recommended default for EVM compatibility:** Create accounts with an ECDSA key and set the **EVM Address from Public Key** at creation. This enables native compatibility with EVM wallets, JSON-RPC tooling, and smart-contract interactions.
+  
+  The EVM Address from Public Key is immutable and can only be set at creation. If keys are later rotated via `CryptoUpdateTransaction`, the address no longer matches the new public key. For recovery from compromised keys, create a new ECDSA account and migrate assets and state. See [Create an account](/native/accounts/create#setting-the-key-and-alias) for the SDK methods and full immutability/recovery guidance.
+</Tip>
+
 An account can be created through any of the following methods. To create accounts using the SDKs, you will need access to an existing account to pay for the transaction fee to create a new account.
 
 <Warning>

@@ -58,7 +58,9 @@ Each realm maintains a single counter for assigning entity numbers. This ensures
 
 Each Hedera account has a system-provided **account number** when the account is created.  An account number is a non-negative number of 8 bytes. You can use the account number to specify the account in all Hedera transactions and query requests. Account numbers are unique and immutable. The account number for a newly created account is returned in the transaction receipt or transaction record for the transaction ID that created the account. The account number ID has the following format  `<shardNum>.<realmNum>.<accountNum>`.
 
-<table><thead><tr><th>Account Number ID</th><th>Description</th></tr></thead><tbody><tr><td><code>0.0.10</code></td><td>The account number 10 in account number ID format.</td></tr></tbody></table>
+| Account Number ID | Description |
+| --- | --- |
+| `0.0.10` | The account number 10 in account number ID format. |
 
 #### Account Number Alias
 
@@ -68,7 +70,9 @@ This account property is not stored in consensus node state. You will not see th
 
 The mirror node will calculate the account number alias from the account number. The account number alias is calculated and returned in account REST APIs only when the account does not have an existing account alias. For example, if the account was created through the [auto account creation](/learn/core-concepts/accounts/auto-account-creation) flow using an account alias the account number alias will not be populated. If the account was normally created then the account alias field will store the account number alias.
 
-<table><thead><tr><th>Account ID</th><th>Account Number Alias Example</th></tr></thead><tbody><tr><td><code>0.0.10</code></td><td>The hex encoding value for 10 is "0a."<br/><br/><code>000000000000000000000000000000000000000a</code></td></tr></tbody></table>
+| Account ID | Account Number Alias Example |
+| --- | --- |
+| `0.0.10` | The hex encoding value for 10 is "0a."<br/><br/>`000000000000000000000000000000000000000a` |
 
 ### Account Alias
 
@@ -170,6 +174,22 @@ Accounts on Hedera can submit `EthereumTransaction` types processed by the Ether
 
 Reference Hedera Improvement Proposal: [HIP-410](https://hips.hedera.com/hip/hip-410)
 
+## Delegation Address
+
+Under the Pectra hard fork ([HIP-1340](https://hips.hedera.com/hip/hip-1340)), every account has an optional `delegation_address` field, a 20-byte EVM address. When set, any EVM call targeting the account executes the bytecode at that address in the account's storage context (similar to `DELEGATECALL`). When unset, calls behave as they always did (no-op for EOAs, regular execution for contracts).
+
+| Property                         | Value                                                                                            |
+| -------------------------------- | ------------------------------------------------------------------------------------------------ |
+| **Type**                         | 20-byte EVM address (or empty)                                                                   |
+| **Mutability**                   | Mutable. Update via `CryptoUpdate` (account key signs) or via a Type 4 EthereumTransaction (EIP-7702 authorization). |
+| **Clearing**                     | Set to `0x0000000000000000000000000000000000000000` to clear the delegation.                     |
+| **External representation**      | Reported by `ContractGetBytecodeQuery` / `eth_getCode` as `0xef0100 ‖ delegation_address` (the EIP-7702 Delegation Indicator). |
+| **Mirror Node field**            | `delegation_address` on `/api/v1/accounts` and `/api/v1/accounts/{idOrAliasOrEvmAddress}`.       |
+
+For the full feature description (configuration paths, execution semantics, HAS precedence rules, smart-account patterns), see [EOA Code Delegation](/evm/development/eoa-code-delegation).
+
+Reference Hedera Improvement Proposal: [HIP-1340](https://hips.hedera.com/hip/hip-1340)
+
 ## Automatic Token Associations
 
 Hedera accounts must generally approve custom tokens before transferring them into the receiving account. The receiving account must sign the transaction that will associate the tokens, allowing the specified tokens to be deposited into their account. The automatic token association feature allows the account to bypass manually associating the custom token before transferring it into the account.
@@ -180,7 +200,11 @@ Accounts can automatically approve up to 5,000 tokens without manually preauthor
 
 The property `maxAutoAssociations` defines how many tokens an account can automatically associate with.
 
-<table><thead><tr><th align="center">Property Value</th><th></th></tr></thead><tbody><tr><td align="center"><code>0</code></td><td>Automatic token associations or airdrops are not allowed; the account must manually associate each token.</td></tr><tr><td align="center"><code>-1</code></td><td>Unlimited automatic token associations are allowed. this is the default for accounts created via <strong>auto account creation</strong> and for accounts that originated as hollow accounts (created from EVM aliases) and have since been completed. a value of <code>-1</code> allows the account to receive new tokens without manually associating them</td></tr><tr><td align="center"><code>> 0</code></td><td>the account can automatically associate up to that number of tokens. the sender covers the <code>maxAutoAssociations</code> fee and the first auto‑renewal rent for the association.</td></tr></tbody></table>
+| Property Value |  |
+| :---: | --- |
+| `0` | Automatic token associations or airdrops are not allowed; the account must manually associate each token. |
+| `-1` | Unlimited automatic token associations are allowed. this is the default for accounts created via **auto account creation** and for accounts that originated as hollow accounts (created from EVM aliases) and have since been completed. a value of `-1` allows the account to receive new tokens without manually associating them |
+| `> 0` | the account can automatically associate up to that number of tokens. the sender covers the `maxAutoAssociations` fee and the first auto‑renewal rent for the association. |
 
 This feature is enabled on Hedera mainnet as part of frictionless airdrops (hip‑904). When tokens are sent to an account with available auto‑association slots, one slot is consumed and the account becomes associated automatically.
 
@@ -211,7 +235,9 @@ Accounts can optionally have more than one key associated with them. These kinds
 />
 
 <Danger>
-Warning: The private key(s) associated with the account is not to be shared with anyone as it will allow others to authorize transactions from your account on your behalf. Sharing your private key is like sharing your bank account password. Please make sure your private keys are stored in a secure wallet.
+  **Warning** 
+  
+  The private key(s) associated with the account is not to be shared with anyone as it will allow others to authorize transactions from your account on your behalf. Sharing your private key is like sharing your bank account password. Please make sure your private keys are stored in a secure wallet.
 </Danger>
 
 ## Receiver Signature Required
@@ -223,7 +249,7 @@ Accounts can optionally require the account to sign any transactions depositing 
 Staking in Hedera is taking an account and associating the HBAR balance to a node in the network. Custom fungible or non-fungible token balances an account holds do not contribute to staking on the network. The purpose of staking accounts to a node on the network is to strengthen the security of the network. To contribute to the security of the network, staked accounts can earn rewards in HBAR. Please see this [guide](/learn/core-concepts/staking) for additional information about the staking rewards program. Contracts can also stake their accounts to earn rewards.
 
 <Info>
-An account can only stake to one node or one account at any given time.
+  An account can only stake to one node or one account at any given time.
 </Info>
 
 <AccordionGroup>
@@ -290,9 +316,9 @@ Reference Hedera Improvement Proposal: [HIP-406](https://hips.hedera.com/hip/hip
 
 ## Auto Renewals & **Expiration**
 
-<Warning>
-Auto-renewals and expiration (rent) are currently not enabled.
-</Warning>
+<Info>
+  Auto-renewals and expiration (rent) are currently not enabled.
+</Info>
 
 Like the other Hedera entities, accounts take up network storage. To cover the cost of storing an account, a renewal fee will be charged for the storage utilized on the network. This feature is not enabled on the network today; however, in the future, when it is enabled, the account must have sufficient funds to pay for the renewal fees.
 

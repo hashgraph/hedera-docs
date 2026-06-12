@@ -37,7 +37,7 @@ Gas fees for EVM transactions consist of:
     **High-volume contract creation.** `ContractCreateTransaction` supports the
     `high_volume` flag ([HIP-1313](https://hips.hedera.com/hip/hip-1313)), which routes
     the transaction through dedicated high-volume throttle capacity with variable-rate
-    pricing. This applies to **HAPI-based contract creation only** — contract deployments
+    pricing. This applies to **HAPI-based contract creation only**; contract deployments
     via EVM `CREATE` / `CREATE2` opcodes are not included. See the
     [High-Volume Entity Creation](/learn/core-concepts/high-volume-entity-creation) guide
     for details.
@@ -45,7 +45,7 @@ Gas fees for EVM transactions consist of:
 
 ### Intrinsic Gas
 
-A transaction submitted to the smart contract service must be sent with enough gas to cover **intrinsic gas**. With the **Cancun fork** of the EVM update, intrinsic gas is calculated as:
+A transaction submitted to the smart contract service must be sent with enough gas to cover **intrinsic gas**. Under the **Pectra hard fork** (Prague EVM execution layer), intrinsic gas is calculated as:
 
 ```bash
 21000 + 4 × (number of zero bytes) + 16 × (number of non-zero bytes) = intrinsic gas
@@ -58,7 +58,21 @@ A transaction submitted to the smart contract service must be sent with enough g
 If insufficient gas is submitted, the transaction will **fail during precheck** and no record will be created.
 
 <Note>
+**Pectra calldata floor ([EIP-7623](https://eips.ethereum.org/EIPS/eip-7623)).** Under Pectra, transactions must additionally satisfy a calldata floor:
+
+```bash
+floor = 21000 + 10 × (zero bytes + 4 × non-zero bytes)
+```
+
+The transaction pays `MAX(standard intrinsic + execution gas, floor)`. The floor primarily affects calldata-heavy transactions with low execution cost; most contract calls are unaffected. See [HIP-1341](https://hips.hedera.com/hip/hip-1341) for Pectra adoption details on Hedera.
+</Note>
+
+<Note>
 This applies to both standard transactions and **jumbo EthereumTransactions** introduced by **[HIP-1086](https://hips.hedera.com/hip/hip-1086)**, which allow larger `callData` payloads.
+</Note>
+
+<Note>
+**Type 4 (EIP-7702) authorization gas.** Each entry in a Type 4 EthereumTransaction's `authorization_list` costs **25,000 gas** if it creates a new account, or **12,500 gas** if the authorizing account already exists. Hedera additionally charges its usual hollow-account creation cost for any newly created accounts. See the [EOA Code Delegation](/evm/development/eoa-code-delegation) page and [HIP-1340](https://hips.hedera.com/hip/hip-1340).
 </Note>
 
 ### EVM Opcode Gas
@@ -80,7 +94,7 @@ If `SLOAD` accesses a storage slot twice within the same transaction, the total 
 - **Second Access (Warm)** = `100 + 100 = 200 gas`
 - **Final Gas Cost Total** = `2,400 gas`
 
-📣 *Explore [opcodes in Cancun fork](https://www.evm.codes/).*
+📣 *Explore [opcodes in Pectra (Prague) fork](https://www.evm.codes/?fork=prague).*
 
 
 ### Hedera System Contract Gas
@@ -154,7 +168,7 @@ The **gas limit** is the maximum amount of gas you are willing to pay for an ope
 
 The current opcode gas fees are reflective as of the **[0.22 Hedera Service release](/learn/release-notes/services#v0.22)**.
 
-| Operation                                                                | Cancun Cost (Gas)                           | Current Hedera (Gas)                        |
+| Operation                                                                | Pectra Cost (Gas)                           | Current Hedera (Gas)                        |
 | ------------------------------------------------------------------------ | ------------------------------------------- | ------------------------------------------- |
 | Code deposit                                                             | 200 \* bytes                                | 200 \* bytes                                |
 | <p><code>BALANCE</code><br/>(cold account)</p>                           | 2600                                        | 2600                                        |
@@ -187,7 +201,121 @@ The terms **'warm'** and **'cold'** in the above table correspond with whether t
 
 **'CALL et al.'** includes with limitation: `CALL`, `CALLCODE`, `DELEGATECALL`, and `STATICCALL`
 
-Reference: [HIP-206](https://hips.hedera.com/hip/hip-206), [HIP-865](https://hips.hedera.com/hip/hip-865)
+**BLS12-381 precompiles ([EIP-2537](https://eips.ethereum.org/EIPS/eip-2537))** are available under Pectra at the following addresses, callable via `call` / `staticcall`:
+
+| Function              | Address | Input size (bytes) | Purpose                                                                  |
+| --------------------- | ------- | ------------------ | ------------------------------------------------------------------------ |
+| `BLS12_G1ADD`         | `0x0b`  | 256                | Add two G1 points.                                                       |
+| `BLS12_G1MSM`         | `0x0c`  | 160 × k slices     | Multi-scalar multiplication on G1 (sum of `scalar[i] × point[i]`).       |
+| `BLS12_G2ADD`         | `0x0d`  | 512                | Add two G2 points.                                                       |
+| `BLS12_G2MSM`         | `0x0e`  | 288 × k slices     | Multi-scalar multiplication on G2.                                       |
+| `BLS12_PAIRING_CHECK` | `0x0f`  | 384 × k slices     | Verify `Π e(G1_i, G2_i) == 1`, the core check for BLS signature verification. |
+| `BLS12_MAP_FP_TO_G1`  | `0x10`  | 64                 | Map a field element (`Fp`) onto the G1 curve.                            |
+| `BLS12_MAP_FP2_TO_G2` | `0x11`  | 128                | Map a field element (`Fp2`) onto the G2 curve (used in hash-to-curve).   |
+
+**Input encoding** (per EIP-2537):
+
+- `Fp` element: 64 bytes, a 48-byte field element left-padded to 64 bytes (16 bytes of leading zeros).
+- `G1` point: 128 bytes, two `Fp` elements (`x`, `y`).
+- `G2` point: 256 bytes, two `Fp2` elements, each `Fp2 = (c0, c1)` written as two `Fp` values.
+- Scalar (for MSM): 32 bytes, big-endian, full 256-bit width.
+
+Each MSM input is `point ‖ scalar`, repeated `k` times. The pairing check input is `(G1_i ‖ G2_i)` tuples of 384 bytes each, repeated `k` times.
+
+### Example: BLS signature verification
+
+The most common use case is verifying a BLS signature against a public key and message hash. The pairing check verifies `e(signature, G2_generator) == e(H(m), public_key)`, which the precompile expresses as `Π e(G1, G2) == 1` by including the second pair with a negated G1 generator.
+
+```solidity Solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.30;
+
+/// @title BLSVerifier
+/// @notice Verifies a single BLS signature using EIP-2537 precompiles on Hedera/Ethereum.
+contract BLSVerifier {
+    /// Address of BLS12_PAIRING_CHECK precompile.
+    address constant BLS12_PAIRING_CHECK = address(0x0f);
+
+    /// Address of BLS12_MAP_FP2_TO_G2 (used for hash-to-curve message encoding).
+    address constant BLS12_MAP_FP2_TO_G2 = address(0x11);
+
+    /// Verifies that `signature` (G2 point, 256 bytes) was produced by the holder of
+    /// `publicKey` (G1 point, 128 bytes) over the G2-encoded message `messagePoint`
+    /// (256 bytes, typically produced by hash-to-curve onto G2 off-chain or via
+    /// BLS12_MAP_FP2_TO_G2 on-chain).
+    ///
+    /// Pairing check: e(-G1_generator, signature) · e(publicKey, messagePoint) == 1
+    function verify(
+        bytes calldata publicKey,        // 128 bytes, G1 point
+        bytes calldata messagePoint,     // 256 bytes, G2 point
+        bytes calldata signature         // 256 bytes, G2 point
+    ) external view returns (bool valid) {
+        require(publicKey.length    == 128, "bad pubkey len");
+        require(messagePoint.length == 256, "bad msg len");
+        require(signature.length    == 256, "bad sig len");
+
+        // Negated G1 generator (-G1) in EIP-2537's 128-byte encoding: the canonical
+        // BLS12-381 generator's x coordinate, then (p - y), each left-padded to 64 bytes.
+        // As with any cryptographic constant, exercise this contract against the
+        // EIP-2537 test vectors before production use.
+        bytes memory negG1 = hex"0000000000000000000000000000000017f1d3a73197d7942695638c4fa9ac0f"
+                             hex"c3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb"
+                             hex"00000000000000000000000000000000114d1d6855d545a8aa7d76c8cf2e21f2"
+                             hex"67816aef1db507c96655b9d5caac42364e6f38ba0ecb751bad54dcd6b939c2ca";
+
+        // Build pairing input: (negG1 ‖ signature) ‖ (publicKey ‖ messagePoint) = 768 bytes
+        bytes memory input = bytes.concat(negG1, signature, publicKey, messagePoint);
+
+        bytes memory output = new bytes(32);
+        bool ok;
+        assembly {
+            ok := staticcall(
+                gas(),
+                BLS12_PAIRING_CHECK,
+                add(input, 0x20),
+                768,
+                add(output, 0x20),
+                32
+            )
+        }
+        require(ok, "precompile failed");
+
+        // Pairing check returns 32 bytes: 0x00..01 = valid, 0x00..00 = invalid.
+        valid = (uint256(bytes32(output)) == 1);
+    }
+}
+```
+
+### Example: aggregate two G1 public keys
+
+BLS aggregation is the canonical reason to want native curve precompiles. Adding two G1 public keys lets you combine signatures over the same message into a single signature that verifies against the sum of the keys.
+
+```solidity Solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.30;
+
+contract BLSAggregator {
+    address constant BLS12_G1ADD = address(0x0b);
+
+    /// Adds two G1 points (each 128 bytes). Returns the 128-byte sum.
+    function aggregate(bytes calldata a, bytes calldata b) external view returns (bytes memory sum) {
+        require(a.length == 128 && b.length == 128, "bad point len");
+
+        bytes memory input = bytes.concat(a, b);  // 256 bytes
+        sum = new bytes(128);
+
+        bool ok;
+        assembly {
+            ok := staticcall(gas(), BLS12_G1ADD, add(input, 0x20), 256, add(sum, 0x20), 128)
+        }
+        require(ok, "G1ADD failed");
+    }
+}
+```
+
+> See the [EIP-2537 specification](https://eips.ethereum.org/EIPS/eip-2537) for the full input format of each precompile and the test vectors used to validate implementations.
+
+Reference: [HIP-206](https://hips.hedera.com/hip/hip-206), [HIP-865](https://hips.hedera.com/hip/hip-865), [HIP-1341](https://hips.hedera.com/hip/hip-1341)
 
 ## Operational-Based Throttling
 

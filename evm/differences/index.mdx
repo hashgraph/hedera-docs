@@ -34,6 +34,30 @@ Hedera supports jumbo Ethereum transactions (introduced in [HIP-1086](https://hi
 
 ---
 
+## Pectra Compatibility
+
+Hedera adopts the applicable EIPs from Ethereum's Pectra upgrade under [HIP-1341](https://hips.hedera.com/hip/hip-1341), so Ethereum tooling that targets Pectra (Prague EVM execution layer) works on Hedera with no special handling:
+
+| Pectra capability                                                | EVM-equivalent on Hedera | Notes                                                                                                                                              |
+| ---------------------------------------------------------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **BLS12-381 precompiles** ([EIP-2537](https://eips.ethereum.org/EIPS/eip-2537))              | ✅                       | Seven new precompiles at addresses `0x0b`–`0x11`. Callable via `call`/`staticcall` exactly as on Ethereum. See [Gas and Fees](/evm/development/gas-fees#hedera-system-contract-gas). |
+| **Calldata gas floor** ([EIP-7623](https://eips.ethereum.org/EIPS/eip-7623))                  | ✅                       | Same formula: `21000 + 10 × (zero_bytes + 4 × non_zero_bytes)` floor. Most contract calls (where execution gas dominates) are unaffected.         |
+| **EOA Code Delegation** ([EIP-7702](https://eips.ethereum.org/EIPS/eip-7702))                 | ✅                       | Hedera accepts Type 4 `EthereumTransaction` payloads carrying an `authorization_list`. Account delegation can additionally be configured via native HAPI (`CryptoCreate` / `CryptoUpdate`). See [EOA Code Delegation](/evm/development/eoa-code-delegation) and [HIP-1340](https://hips.hedera.com/hip/hip-1340). |
+| **Blob transactions** ([EIP-4844](https://eips.ethereum.org/EIPS/eip-4844), [EIP-7691](https://eips.ethereum.org/EIPS/eip-7691)) | ❌                       | Hedera does not support blobs ([HIP-866](https://hips.hedera.com/hip/hip-866)). Type 3 transactions are rejected. Use [jumbo EthereumTransactions](#jumbo-ethereum-transactions) for large payloads. |
+
+### Type 4 transactions and smart accounts
+
+Type 4 transactions enable **smart-account** patterns (transaction batching, sponsored gas, session keys, privilege de-escalation) without migrating funds to a new contract wallet. The EOA's address, balance, NFTs, and tokens stay put; only the *execution* is delegated to a contract's code running in the EOA's storage frame.
+
+Two important Hedera-specific behaviors apply:
+
+1. **HAS precedence.** When an EOA has a code delegation set, calls whose 4-byte selector matches a [Hedera Account Service](/evm/hedera-services/system-contracts/account-service) facade function (`hbarAllowance`, `hbarApprove`, `setUnlimitedAutomaticAssociations`) are routed to HAS and take precedence over the user's delegation.
+2. **Account-type applicability.** Only ECDSA accounts with a public-key-derived alias can configure delegation via Type 4 transactions (same rule as for submitting any Ethereum transaction). ED25519 accounts and ECDSA accounts with a long-zero alias must use the native HAPI path (`CryptoCreate` / `CryptoUpdate`).
+
+*📣 See the full feature page:* [*EOA Code Delegation*](/evm/development/eoa-code-delegation)*.*
+
+---
+
 ## EVM Developers: What Changes on Hedera
 
 The following topics cover the most common differences when coming from Ethereum:

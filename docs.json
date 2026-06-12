@@ -2264,6 +2264,7 @@
               "evm/development/creating",
               "evm/development/compiling",
               "evm/development/deploying",
+              "evm/development/eoa-code-delegation",
               "evm/development/verifying",
               "evm/development/gas-fees",
               "evm/development/rent",

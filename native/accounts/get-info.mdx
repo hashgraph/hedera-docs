@@ -37,7 +37,31 @@ For obtaining account information and historical data, consider using the Mirror
 
 ### Methods
 
-<table><thead><tr><th>Method</th><th>Type</th><th>Requirement</th></tr></thead><tbody><tr><td><code>setAccountId(&#x3C;accountId>)</code></td><td>AccountId</td><td>Required</td></tr><tr><td><code>&#x3C;AccountInfo>.accountId</code></td><td>AccountId</td><td>Optional</td></tr><tr><td><code>&#x3C;AccountInfo>.contractAccountId</code></td><td>String</td><td>Optional</td></tr><tr><td><code>&#x3C;AccountInfo>.isDeleted</code></td><td>boolean</td><td>Optional</td></tr><tr><td><code>&#x3C;AccountInfo>.key</code></td><td>Key</td><td>Optional</td></tr><tr><td><code>&#x3C;AccountInfo>.balance</code></td><td>HBAR</td><td>Optional</td></tr><tr><td><code>&#x3C;AccountInfo>.isReceiverSignatureRequired</code></td><td>boolean</td><td>Optional</td></tr><tr><td><code>&#x3C;AccountInfo>.ownedNfts</code></td><td>long</td><td>Optional</td></tr><tr><td><code>&#x3C;AccountInfo>.maxAutomaticTokenAssociations</code></td><td>int</td><td>Optional</td></tr><tr><td><code>&#x3C;AccountInfo>.accountMemo</code></td><td>String</td><td>Optional</td></tr><tr><td><code>&#x3C;AccountInfo>.expirationTime</code></td><td>Instant</td><td>Optional</td></tr><tr><td><code>&#x3C;AccountInfo>.autoRenewPeriod</code></td><td>Duration</td><td>Optional</td></tr><tr><td><code>&#x3C;AccountInfo>.ledgerId</code></td><td>LedgerId</td><td>Optional</td></tr><tr><td><code>&#x3C;AccountInfo>.ethereumNonce</code></td><td>long</td><td>Optional</td></tr><tr><td><code>&#x3C;AccountInfo>.stakingInfo</code></td><td>StakingInfo</td><td>Optional</td></tr><tr><td><code>&#x3C;AccountInfo>.tokenRelationships</code></td><td>Map&#x3C;TokenId, TokenRelationships></td><td>Optional</td></tr><tr><td></td><td></td><td></td></tr></tbody></table>
+| Method | Type | Requirement |
+| --- | --- | --- |
+| `setAccountId(<accountId>)` | AccountId | Required |
+| `<AccountInfo>.accountId` | AccountId | Optional |
+| `<AccountInfo>.contractAccountId` | String | Optional |
+| `<AccountInfo>.isDeleted` | boolean | Optional |
+| `<AccountInfo>.key` | Key | Optional |
+| `<AccountInfo>.balance` | HBAR | Optional |
+| `<AccountInfo>.isReceiverSignatureRequired` | boolean | Optional |
+| `<AccountInfo>.ownedNfts` | long | Optional |
+| `<AccountInfo>.maxAutomaticTokenAssociations` | int | Optional |
+| `<AccountInfo>.accountMemo` | String | Optional |
+| `<AccountInfo>.expirationTime` | Instant | Optional |
+| `<AccountInfo>.autoRenewPeriod` | Duration | Optional |
+| `<AccountInfo>.ledgerId` | LedgerId | Optional |
+| `<AccountInfo>.ethereumNonce` | long | Optional |
+| `<AccountInfo>.stakingInfo` | StakingInfo | Optional |
+| `<AccountInfo>.tokenRelationships` | Map&#x3C;TokenId, TokenRelationships> | Optional |
+| `<AccountInfo>.delegationAddress` | EvmAddress | Optional |
+
+<Info>
+**`delegationAddress` ([HIP-1340](https://hips.hedera.com/hip/hip-1340))**
+
+Returns the 20-byte EVM address the account is currently delegating execution to under EOA Code Delegation, or empty if no delegation is configured. When set, EVM calls to the account's address execute the bytecode at this address in the account's storage context. See [EOA Code Delegation](/evm/development/eoa-code-delegation).
+</Info>
 
 <CodeGroup>
 

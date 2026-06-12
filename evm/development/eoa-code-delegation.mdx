@@ -1,0 +1,455 @@
+---
+title: "EOA Code Delegation"
+description: "Set, execute, and clear code on an Externally Owned Account using EIP-7702 (EVM) or native CryptoUpdate (HAPI). Covers Hedera Account Service (HAS) precedence, smart-account patterns, and Hedera-specific gas rules."
+---
+
+
+**EOA Code Delegation** lets an Externally Owned Account (EOA) point at a contract whose code will execute *in the EOA's own context* whenever the EOA is called, similar to how `DELEGATECALL` runs Contract B's code inside Contract A's storage frame. It is Hedera's adoption of Ethereum's [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702), defined for Hedera by [HIP-1340](https://hips.hedera.com/hip/hip-1340) and rolled out as part of the [Pectra hard fork](https://hips.hedera.com/hip/hip-1341).
+
+Delegation unlocks **smart-account** use cases (transaction batching, sponsored gas, session keys, privilege de-escalation) without migrating funds to a new contract wallet; the EOA's address, balance, NFTs, and tokens stay put.
+
+***
+
+## How delegation is stored
+
+The `Account` entity gains a new optional 20-byte field, `delegation_address`. When set, calls to the EOA's address resolve to the code at `delegation_address`.
+
+For Ethereum-tool compatibility, the Smart Contract Service exposes the delegation as a **Delegation Indicator** in the EOA's `code` field:
+
+```
+delegation_indicator = 0xef0100 ‖ <20-byte delegation_address>
+```
+
+- Before Pectra, `eth_getCode(eoa)` always returned `0x`.
+- After Pectra, an EOA with delegation set returns the 23-byte `0xef0100...` indicator. An EOA with no delegation still returns `0x`.
+- Regular contract bytecode cannot start with `0xef` (per [EIP-3541](https://eips.ethereum.org/EIPS/eip-3541)), so the prefix is unambiguous.
+
+A `delegation_address` of `0x0000000000000000000000000000000000000000` **clears** the delegation (the field becomes empty).
+
+***
+
+## Two paths to configure delegation
+
+You can set, change, or clear an EOA's delegation through either an Ethereum-compatible Type 4 transaction or a native HAPI `CryptoCreate` / `CryptoUpdate`. Both routes converge on the same `delegation_address` field on the account.
+
+```
+                 ┌──────────────────────────┐
+                 │       User / Wallet      │
+                 └────────────┬─────────────┘
+                              │
+                   ┌──────────┴──────────┐
+                   │                     │
+                   ▼                     ▼
+         ┌───────────────┐     ┌────────────────────┐
+         │    EVM path   │     │    HAPI path       │
+         │    EIP-7702   │     │   CryptoCreate /   │
+         │   Type 4 tx   │     │   CryptoUpdate     │
+         └───────┬───────┘     └──────────┬─────────┘
+                 │                        │
+                 └───────────┬────────────┘
+                             ▼
+                 Account.delegation_address
+```
+
+### Path A: EVM (Type 4 EthereumTransaction)
+
+A Type 4 transaction extends the standard RLP-encoded fields with an `authorization_list`:
+
+```
+transaction_payload = rlp([
+  chain_id, nonce, max_priority_fee_per_gas, max_fee_per_gas, gas_limit,
+  destination, value, data, access_list, authorization_list,
+  signature_y_parity, signature_r, signature_s
+])
+
+authorization_list = [
+  [chain_id, address, nonce, y_parity, r, s],
+  ...
+]
+```
+
+Each entry is an **independent intent**, signed by the EOA that wants delegation set. The signature is recovered with `ecrecover`, and the recovered account's `delegation_address` is set to the entry's `address`. A single Type 4 transaction can authorize delegations for many unrelated EOAs in one shot, and the transaction sender may be a third party (i.e., **sponsored** delegation setup, useful for onboarding flows).
+
+**Validity rules** (per EIP-7702, enforced by Hedera):
+
+- Signature must be valid `ecrecover` over `(MAGIC ‖ rlp([chain_id, address, nonce]))`.
+- `chain_id` must be `0` (any chain) or match the network's chain ID (296 testnet, 295 mainnet).
+- `nonce` must match the authorizing account's current nonce.
+- If the authorization list is empty, the transaction is **invalid** and rejected.
+- Invalid entries are silently skipped (no revert).
+- If multiple valid entries target the same EOA, **only the last one** is applied.
+
+Each authorization spawns a child `CryptoCreate` (for a brand-new hollow account) or `CryptoUpdate` (for an existing account). These child records appear in the transaction's record stream regardless of whether the parent EVM call reverts; the delegation persists even if the subsequent code execution fails.
+
+#### JavaScript example (viem)
+
+There are two common flows: **self-submitted** (the EOA pays for and sends its own delegation transaction) and **sponsored** (a third party pays; the EOA only signs the authorization).
+
+**Self-submitted** (the EOA owns the gas):
+
+```javascript JavaScript
+import { createWalletClient, http } from "viem";
+import { privateKeyToAccount } from "viem/accounts";
+import { hederaTestnet } from "viem/chains";
+
+const eoa       = privateKeyToAccount(process.env.EOA_PRIVATE_KEY);
+const eoaClient = createWalletClient({ chain: hederaTestnet, transport: http(), account: eoa });
+
+// `executor: 'self'` tells viem the EOA will also submit the transaction,
+// so the authorization must be signed with the next nonce (current + 1).
+const authorization = await eoaClient.signAuthorization({
+  contractAddress: "0x<smart-account-implementation>",
+  executor: "self",
+});
+
+const hash = await eoaClient.sendTransaction({
+  authorizationList: [authorization],
+  to: eoa.address,    // can be the EOA itself, the zero address, or any target
+  data: "0x",         // optional follow-up call data (executed after the auth is processed)
+});
+```
+
+**Sponsored** (a third party pays; the EOA only signs the authorization):
+
+```javascript JavaScript
+import { createWalletClient, http } from "viem";
+import { privateKeyToAccount } from "viem/accounts";
+import { hederaTestnet } from "viem/chains";
+
+const eoa     = privateKeyToAccount(process.env.EOA_PRIVATE_KEY);
+const sponsor = privateKeyToAccount(process.env.SPONSOR_PRIVATE_KEY);
+
+const eoaClient     = createWalletClient({ chain: hederaTestnet, transport: http(), account: eoa });
+const sponsorClient = createWalletClient({ chain: hederaTestnet, transport: http(), account: sponsor });
+
+// Omit `executor`; the sponsor submits the transaction, so the EOA's nonce
+// is only consumed once (by the authorization itself).
+const authorization = await eoaClient.signAuthorization({
+  contractAddress: "0x<smart-account-implementation>",
+});
+
+const hash = await sponsorClient.sendTransaction({
+  authorizationList: [authorization],
+  to: eoa.address,
+  data: "0x",
+});
+```
+
+After the transaction is mined, calls to `eoa.address` will execute the smart-account implementation's code in the EOA's storage context. To **revoke**, the EOA signs a new authorization with `contractAddress: "0x0000000000000000000000000000000000000000"`.
+
+#### Submitting via `EthereumTransaction` (Hedera SDK)
+
+If you have a fully-signed Type 4 RLP payload, you submit it the same way as any other Ethereum transaction:
+
+```javascript JavaScript
+import { EthereumTransaction, Hbar } from "@hashgraph/sdk";
+
+const tx = await new EthereumTransaction()
+  .setEthereumData(rawType4RlpBytes)          // raw 0x04 || rlp(...)
+  .setMaxGasAllowanceHbar(new Hbar(2))
+  .execute(client);
+
+const receipt = await tx.getReceipt(client);
+console.log(receipt.status.toString());
+```
+
+The SDK also models the Type 4 payload directly via `EthereumTransactionDataEip7702`, which carries the standard EIP-1559-style fields plus `accessList` and an `authorizationList` of `Authorization` entries (`chainId`, `address`, `nonce`, `yParity`, `r`, `s`). Calling `toBytes()` on it produces the raw payload to pass to `setEthereumData()`.
+
+### Path B: Native HAPI (CryptoCreate / CryptoUpdate)
+
+[HIP-1340](https://hips.hedera.com/hip/hip-1340) extends both `CryptoCreateTransactionBody` and `CryptoUpdateTransactionBody` with a `delegation_address` field (bytes, 20 raw EVM address bytes, **not** the `0xef0100`-prefixed indicator). The SDK lifts this onto `AccountCreateTransaction` and `AccountUpdateTransaction` as `setDelegationAddress()`, which accepts raw bytes, a hex string (with or without the `0x` prefix), or an `EvmAddress`.
+
+```javascript JavaScript
+import { AccountUpdateTransaction, AccountId } from "@hashgraph/sdk";
+
+// Point an existing EOA at a smart-account implementation
+const tx = await new AccountUpdateTransaction()
+  .setAccountId(AccountId.fromString("0.0.4567"))
+  .setDelegationAddress("0x019b8ee526333d9cbbbc35fff0309794dfa73451")
+  .freezeWith(client)
+  .sign(eoaKey);                              // EOA must sign
+
+await (await tx.execute(client)).getReceipt(client);
+
+// Read it back via property access
+console.log(`Delegation address: ${tx.delegationAddress?.toString()}`);
+```
+
+To **clear** the delegation, set it to the zero address (`0x0000000000000000000000000000000000000000`) or pass `null` on an `AccountUpdateTransaction`.
+
+> Native HAPI is the only path available to **ED25519 accounts** and **ECDSA accounts with a long-zero alias**, since those account types cannot sign EIP-7702 authorizations. See [Account-type applicability](#account-type-applicability).
+
+***
+
+## What happens when a delegated EOA is called
+
+When the Smart Contract Service processes a call whose target is an EOA address:
+
+```
+1. Look up the target Account.
+2. Inspect the call's 4-byte selector.
+   ├─ Matches a HAS facade selector? → route to Hedera Account Service. (HAS precedence)
+   ├─ Account has delegation_address set? → execute target's code in EOA's storage context.
+   └─ Otherwise → no-op (value transfer only, if any).
+3. If the delegated code reverts, any value transfer also reverts.
+```
+
+The call applies uniformly whether it originated from:
+
+- A top-level transaction (`transaction.to == eoa`).
+- An inner `CALL` / `STATICCALL` from another contract (`address(eoa).call(...)`).
+- Any of the legacy transaction types (0, 1, 2), not just Type 4.
+
+### Code queries
+
+`EXTCODESIZE`, `EXTCODECOPY`, `EXTCODEHASH`, `eth_getCode`, and `ContractGetBytecodeQuery` against a delegated EOA all return the Delegation Indicator (`0xef0100 ‖ delegation_address`). For an undelegated EOA they return empty bytecode, as before.
+
+### Storage & logs
+
+A delegated EOA can now hold **mutable storage slots** and **emit EVM logs**, because the delegated code runs in its context. Tooling implications:
+
+- `eth_getStorageAt(eoa, slot)` returns the EOA's storage.
+- `eth_getLogs` returns logs emitted from the EOA's address.
+- Mirror Node `/api/v1/contracts/{eoa}/state`, `/results/logs`, `/call`, and friends now work on EOA addresses too.
+
+### Chains & loops
+
+If `delegation_address` points to another EOA that *itself* has a delegation, **only the first hop is resolved**. The bytecode at the second hop is interpreted literally, and since `0xef` is a banned opcode (EIP-3541), the call reverts. In practice this means **don't chain delegations**: always delegate directly to a real contract.
+
+### No-op targets
+
+Setting `delegation_address` to any of the following is allowed, but the resulting call to the EOA is a no-op (value transfer only, no code executes):
+
+- A non-existent account.
+- A precompile address (`0x01`–`0x11`).
+- A system contract (HTS at `0x167`, HAS at `0x16a`, HSS at `0x16b`, Exchange Rate at `0x168`, PRNG at `0x169`).
+- A Hedera system account.
+- Another EOA whose own code is empty.
+
+Direct delegation from a regular EOA to a system contract is therefore intentionally inert; the token-proxy / schedule-proxy accounts are the only entities permitted to "delegate" to a system contract address.
+
+***
+
+## HAS facade precedence
+
+Calls that match a [Hedera Account Service](/evm/hedera-services/system-contracts/account-service) facade selector are **always routed to HAS**, even if the EOA has a delegation set. This preserves the user-facing behavior of pre-Pectra HAS calls.
+
+| HAS function                                              | Selector       |
+| --------------------------------------------------------- | -------------- |
+| `hbarAllowance(address spender)`                          | `0xbbee989e`   |
+| `hbarApprove(address spender, int256 amount)`             | `0x86aff07c`   |
+| `setUnlimitedAutomaticAssociations(bool enabled)`         | `0xf5677e99`   |
+
+Processing order (per HIP-1340):
+
+1. **If the call selector matches a HAS facade function** → HAS handles it. The user's delegation is ignored for this call.
+2. **Else if the EOA has a delegation** → run the delegate contract's code.
+3. **Else** → no-op (with any attached value transfer).
+
+> ⚠️ **Selector-collision warning.** If your smart-account delegate defines a function whose selector happens to equal one of the HAS selectors above (e.g. you happen to write a `hbarApprove(address,int256)` method), that function will be **unreachable**; HAS will intercept the call first. Pick distinct signatures.
+
+***
+
+## Account-type applicability
+
+Whether you can use the EVM path depends on the account's key type and alias scheme.
+
+| Account type                                               | EVM path (Type 4) | HAPI path (CryptoCreate/Update) |
+| ---------------------------------------------------------- | ----------------- | ------------------------------- |
+| ED25519 account                                            | ❌                | ✅                              |
+| ECDSA account, long-zero alias (`0x0000…<accountNum>`)     | ❌                | ✅                              |
+| ECDSA account, public-key-derived alias                    | ✅                | ✅                              |
+
+This isn't new behavior; it reflects the existing rule that only ECDSA-with-public-key-derived-alias accounts can submit Ethereum transactions on Hedera. Once delegation is configured, **execution semantics are uniform** across account types: a call to an ED25519 account with `delegation_address` set runs the delegate code just like for any other account.
+
+`CryptoTransfer` signature validation is unchanged. Hedera-native authorization (e.g., multi-sig threshold keys) continues to govern transfers initiated through HAPI.
+
+***
+
+## Gas costs
+
+Per EIP-7702, every entry in an `authorization_list` costs gas, whether valid, invalid, or duplicate:
+
+| Authorization outcome                                     | Gas charged                                                                 |
+| --------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Authorizes an **existing** account                        | 12,500                                                                      |
+| Authorizes a **new** account (hollow account creation)    | 25,000 + Hedera's hollow-account creation cost                              |
+| Invalid signature / wrong chain ID / wrong nonce          | 12,500 (consumed, then silently skipped)                                    |
+| Duplicate entry for an EOA already authorized in the list | 12,500 (consumed, then skipped)                                             |
+
+The cap on hollow accounts created in one transaction is governed by the transaction's `gas_limit` and the network's [operations-per-second throttle](/evm/development/gas-fees#operational-based-throttling). For the calldata and execution sides of the gas calculation, see [Gas and Fees](/evm/development/gas-fees).
+
+> **Gas shortage on a valid authorization.** If an otherwise-valid authorization can't be processed because the transaction ran out of gas (for example, it would require creating a hollow account but the `gas_limit` is exhausted), Hedera still emits a child `CryptoCreate` / `CryptoUpdate` record with a **failed status** so the error surfaces in the record stream rather than being silently dropped.
+
+***
+
+## Smart-account example (Solidity)
+
+A minimal smart-account delegate that supports batched calls and an owner-only check:
+
+```solidity Solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.30;
+
+/// @title MinimalSmartAccount
+/// @notice Intended to be installed as an EOA delegation target via EIP-7702.
+///         All state read/written here lives in the *EOA's* storage frame.
+contract MinimalSmartAccount {
+    // EIP-7201 namespaced storage slot for "hedera.smart-account.v1".
+    // Derivation: keccak256(abi.encode(uint256(keccak256("hedera.smart-account.v1")) - 1)) & ~bytes32(uint256(0xff))
+    // Reproduce with Foundry: `cast index-erc7201 "hedera.smart-account.v1"`
+    // If you change the namespace string, recompute this constant.
+    bytes32 private constant SLOT =
+        0xf7bd8ee8b6b02e586c7a21c9ecc95fa2e26786f8e462f9f9103d541de5d4bf00;
+
+    struct Layout {
+        uint256 nonce;
+    }
+
+    function _s() private pure returns (Layout storage $) {
+        assembly { $.slot := SLOT }
+    }
+
+    /// Only the EOA itself (i.e. address(this) == msg.sender after delegation) may call.
+    modifier onlyOwner() {
+        require(msg.sender == address(this), "not owner");
+        _;
+    }
+
+    struct Call { address to; uint256 value; bytes data; }
+
+    /// Execute a batch of calls atomically from the EOA's address.
+    function executeBatch(Call[] calldata calls) external onlyOwner {
+        _s().nonce++;
+        for (uint256 i = 0; i < calls.length; i++) {
+            (bool ok, bytes memory ret) = calls[i].to.call{value: calls[i].value}(calls[i].data);
+            require(ok, _revertReason(ret));
+        }
+    }
+
+    function nonce() external view returns (uint256) { return _s().nonce; }
+
+    receive() external payable {}
+
+    function _revertReason(bytes memory ret) private pure returns (string memory) {
+        if (ret.length < 68) return "call reverted";
+        assembly { ret := add(ret, 0x04) }
+        return abi.decode(ret, (string));
+    }
+}
+```
+
+**Deploy once** with a regular `ContractCreate`. Then **any number of EOAs can delegate** to that deployed address, and they each get smart-account behavior without re-deploying.
+
+> Use namespaced storage ([ERC-7201](https://eips.ethereum.org/EIPS/eip-7201)) in delegate contracts so the EOA can later switch delegates without colliding on storage slots written by the previous implementation.
+
+### Sponsored onboarding (batched approve + swap, gas paid by a sponsor)
+
+This is the flagship EIP-7702 use case: a new user with **zero HBAR** gets smart-account behavior and executes a multi-step action in one transaction, while a sponsor pays the gas. The single Type 4 transaction does two things at once: it sets the EOA's delegation *and* runs a batched call in the EOA's context.
+
+```javascript JavaScript
+import { createWalletClient, http, encodeFunctionData, parseAbi } from "viem";
+import { privateKeyToAccount } from "viem/accounts";
+import { hederaTestnet } from "viem/chains";
+
+const eoa     = privateKeyToAccount(process.env.EOA_PRIVATE_KEY);       // new user, no HBAR
+const sponsor = privateKeyToAccount(process.env.SPONSOR_PRIVATE_KEY);   // pays the gas
+
+const eoaClient     = createWalletClient({ chain: hederaTestnet, transport: http(), account: eoa });
+const sponsorClient = createWalletClient({ chain: hederaTestnet, transport: http(), account: sponsor });
+
+// 1. The EOA signs an authorization delegating to the deployed MinimalSmartAccount.
+//    No `executor` field, because the sponsor (not the EOA) submits the transaction.
+const authorization = await eoaClient.signAuthorization({
+  contractAddress: "0x<deployed-MinimalSmartAccount>",
+});
+
+// 2. Build the batched call: approve a router, then swap (both run in the EOA's context).
+const smartAccountAbi = parseAbi([
+  "struct Call { address to; uint256 value; bytes data; }",
+  "function executeBatch(Call[] calls)",
+]);
+const erc20Abi  = parseAbi(["function approve(address spender, uint256 amount)"]);
+const routerAbi = parseAbi(["function swapExactTokensForHBAR(uint256 amountIn, address token)"]);
+
+const batch = encodeFunctionData({
+  abi: smartAccountAbi,
+  functionName: "executeBatch",
+  args: [[
+    { to: "0x<token>",  value: 0n, data: encodeFunctionData({ abi: erc20Abi,  functionName: "approve", args: ["0x<router>", 1_000_000n] }) },
+    { to: "0x<router>", value: 0n, data: encodeFunctionData({ abi: routerAbi, functionName: "swapExactTokensForHBAR", args: [1_000_000n, "0x<token>"] }) },
+  ]],
+});
+
+// 3. Sponsor submits one Type 4 transaction: it sets the delegation AND invokes the batch.
+const hash = await sponsorClient.sendTransaction({
+  authorizationList: [authorization],   // sets eoa.delegation_address
+  to: eoa.address,                      // call resolves to the delegate code, in the EOA's context
+  data: batch,                          // executeBatch([approve, swap])
+});
+```
+
+The EOA never needed HBAR or a prior on-chain footprint. After this transaction, `eth_getCode(eoa.address)` returns the Delegation Indicator, and the approve + swap have executed from the EOA's own address.
+
+<Warning>
+The delegation set by the authorization **persists even if the batched call reverts** (authorizations are committed before EVM execution). If you want all-or-nothing onboarding, have the delegate contract revert on any sub-call failure (as `executeBatch` does via its `require`), and treat the delegation itself as a separate, durable state change.
+</Warning>
+
+***
+
+## Mirror Node surface
+
+[HIP-1340](https://hips.hedera.com/hip/hip-1340) extends the Mirror Node REST API:
+
+- **Accounts endpoints** (`GET /api/v1/accounts`, `GET /api/v1/accounts/{idOrAliasOrEvmAddress}`) include a new `delegation_address` field per account. The value is `0x` when no delegation is set.
+- **Contract-result endpoints** (`GET /api/v1/contracts/{id}/results/{timestamp}`, `GET /api/v1/contracts/results`, `GET /api/v1/contracts/results/{txOrHash}`) include a new `authorization_list` field for Type 4 transactions:
+
+  ```json
+  {
+    "authorization_list": [
+      {
+        "chain_id": "0x127",
+        "address":  "0x1111111111111111111111111111111111111111",
+        "nonce":    5,
+        "y_parity": 1,
+        "r": "0x2222...",
+        "s": "0x3333..."
+      }
+    ]
+  }
+  ```
+
+- **EOA contract APIs.** `/api/v1/contracts/{eoa}/state`, `/results/logs`, `/results`, `/results/{tx}/actions`, `/results/{tx}/opcodes`, and `/api/v1/contracts/call` now accept EOA addresses and return contract-style data when the EOA has a delegation set.
+
+JSON-RPC Relay updates: `eth_getCode`, `eth_getStorageAt`, and `eth_getLogs` work for delegated EOAs; the relay handles Type 4 transaction parsing and submission.
+
+***
+
+## HTS / HSS proxy accounts
+
+[HIP-1340](https://hips.hedera.com/hip/hip-1340) also re-implements the long-standing HTS-token and HSS-schedule **facade calls** (HIP-218 / HIP-719 / HIP-755 / HIP-906) using the new Delegation Indicator format. Calls like `IERC20(tokenAddress).transfer(...)` continue to work exactly as before, but `ContractGetBytecode(tokenAddress)` now returns a stable `0xef0100 ‖ <HTS-system-contract-address>` indicator instead of a runtime-synthesized `DELEGATECALL` stub.
+
+This is invisible to most users. Tools that **introspect** the bytecode of token-proxy or schedule-proxy accounts (e.g. block explorers, custom indexers) may need to update their parsing.
+
+***
+
+## Caveats and edge cases
+
+- **An empty `authorization_list` makes a Type 4 transaction invalid.** Don't construct one and then drop entries client-side; either include at least one authorization or send a different type.
+- **Authorizations persist even if the EVM execution reverts.** They are processed before EVM code runs and committed independently; this is a feature (so onboarding flows still succeed even if the follow-up call fails), but it does mean a "rolled back" transaction can still leave delegations in place.
+- **Selector collisions with HAS** make those functions unreachable on a delegated EOA. Pick non-colliding signatures.
+- **Storage migration.** Switching delegation targets does *not* migrate storage. Use [ERC-7201](https://eips.ethereum.org/EIPS/eip-7201) namespaces in your delegates to avoid collisions.
+- **`msg.sender == tx.origin` invariant no longer holds in deeper frames.** Code historically used `msg.sender == tx.origin` as a "no contracts" check. With delegation, the topmost frame on a Type 4 transaction can be a delegated EOA, meaning `tx.origin` and `msg.sender` align in places they previously wouldn't. Treat this check as advisory, not a security boundary.
+- **No impact on hooks.** A call to a delegated EOA inside a [hook](/learn/core-concepts/accounts/hiero-hooks) behaves the same as outside one. Hooks use a dedicated storage namespace, so delegate code writing to the EOA's storage slots cannot collide with hook storage.
+
+***
+
+## References
+
+- [HIP-1340](https://hips.hedera.com/hip/hip-1340): EOA Code Delegation (Hedera adoption)
+- [HIP-1341](https://hips.hedera.com/hip/hip-1341): Support for Ethereum Pectra Release
+- [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702): Set EOA Account Code
+- [EIP-3541](https://eips.ethereum.org/EIPS/eip-3541): Reject `0xef`-prefixed contract code
+- [Hedera Account Service](/evm/hedera-services/system-contracts/account-service)
+- [`EthereumTransaction`](/native/smart-contracts/ethereum-transaction)
+- [Gas and Fees](/evm/development/gas-fees)

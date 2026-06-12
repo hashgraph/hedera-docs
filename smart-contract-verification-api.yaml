@@ -113,7 +113,7 @@ paths:
                         content: "\nnumber: public(uint256)\n\n@external\ndef __init__():\n    self.number = 0\n\n@external\ndef setNumber(newNumber: uint256):\n    self.number = newNumber\n\n@view\n@external\ndef getNumber() -> uint256:\n    return self.number\n"
                     settings:
                       optimize: gas
-                      evmVersion: cancun
+                      evmVersion: prague
                   compilerVersion: 0.3.10+commit.91361694
                   contractIdentifier: MyVyperContract.vy:MyVyperContract
                   creationTransactionHash: '0xb6ee9d528b336942dd70d3b41e2811be10a473776352009fd73f85604f5ed206'
@@ -125,7 +125,7 @@ paths:
                       test.vy:
                         content: "\na: public(uint256)\nb: public(uint256)\n\n@deploy\ndef __init__():\n    self.a = 1\n    self.b = 2\n"
                     settings:
-                      evmVersion: cancun
+                      evmVersion: prague
                     storage_layout_overrides:
                       test.vy:
                         a:

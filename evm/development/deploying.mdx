@@ -3,11 +3,13 @@ title: "Deploying Smart Contracts"
 ---
 
 
-After compiling your smart contract, you can deploy it to the Hedera network. The constructor's "*init code*" includes the contract's entire bytecode. When deploying, the EVM is expected to be supplied with both the smart contract [bytecode](/support/glossary#bytecode) and the gas required to execute and deploy the contract. Post-deployment, the constructor is removed, leaving only the `runtime_bytecode` for future contract interactions.
+After compiling your smart contract, you can deploy it to the Hedera network. The deployment payload, or "*init code*", contains the constructor logic together with the contract's runtime bytecode. When deploying, the EVM is expected to be supplied with both the smart contract [bytecode](/support/glossary#bytecode) and the gas required to execute and deploy the contract. The constructor runs once during deployment and returns the `runtime_bytecode`, which is what's stored on-chain for future contract interactions.
 
 **➡** [**Hyperledger Besu EVM**](#hyperledger-besu-evm-on-hedera)
 
-**➡** [**Cancun Hard Fork**](#cancun-hard-fork)
+**➡** [**Pectra Hard Fork**](#pectra-hard-fork)
+
+**➡** [**Past Hard Forks**](#past-hard-forks)
 
 **➡** [**Solidity Variables and Opcodes**](#solidity-variables-and-opcodes)
 
@@ -19,15 +21,17 @@ The [Ethereum Virtual Machine (EVM)](/support/glossary#ethereum-virtual-machine-
 
 On Hedera, users can interact with the EVM-compatible environment in several ways. They can submit `ContractCreate`, `EthereumTransaction`, or make `eth_sendRawTransaction` RPC calls with the contract bytecode directly. These various paths allow developers to deploy and manage smart contracts efficiently.
 
-When the EVM receives the bytecode, it will be further broken down into operation codes ([opcodes](/support/glossary#opcodes)). The EVM opcodes represent the specific instructions it can perform. Each opcode is one byte and has its own gas cost associated with it. The cost per opcode for the Ethereum Cancun hard fork can be found [here](https://www.evm.codes/?fork=cancun).
+When the EVM receives the bytecode, it will be further broken down into operation codes ([opcodes](/support/glossary#opcodes)). The EVM opcodes represent the specific instructions it can perform. Each opcode is one byte and has its own gas cost associated with it. The cost per opcode for the Ethereum Pectra hard fork (Prague EVM execution layer) can be found [here](https://www.evm.codes/?fork=prague).
 
 #### Smart Contract Opcode Example
 
-```solidity
+<Accordion title="Example: compiled contract bytecode disassembled into opcodes">
+```text wrap
 PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH2 0x10 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x40 MLOAD PUSH2 0x558 CODESIZE SUB DUP1 PUSH2 0x558 DUP4 CODECOPY DUP2 DUP2 ADD PUSH1 0x40 MSTORE PUSH1 0x20 DUP2 LT ISZERO PUSH2 0x33 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST DUP2 ADD SWAP1 DUP1 DUP1 MLOAD PUSH1 0x40 MLOAD SWAP4 SWAP3 SWAP2 SWAP1 DUP5 PUSH5 0x100000000 DUP3 GT ISZERO PUSH2 0x53 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST DUP4 DUP3 ADD SWAP2 POP PUSH1 0x20 DUP3 ADD DUP6 DUP2 GT ISZERO PUSH2 0x69 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST DUP3 MLOAD DUP7 PUSH1 0x1 DUP3 MUL DUP4 ADD GT PUSH5 0x100000000 DUP3 GT OR ISZERO PUSH2 0x86 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST DUP1 DUP4 MSTORE PUSH1 0x20 DUP4 ADD SWAP3 POP POP POP SWAP1 DUP1 MLOAD SWAP1 PUSH1 0x20 ADD SWAP1 DUP1 DUP4 DUP4 PUSH1 0x0 JUMPDEST DUP4 DUP2 LT ISZERO PUSH2 0xBA JUMPI DUP1 DUP3 ADD MLOAD DUP2 DUP5 ADD MSTORE PUSH1 0x20 DUP2 ADD SWAP1 POP PUSH2 0x9F JUMP JUMPDEST POP POP POP POP SWAP1 POP SWAP1 DUP2 ADD SWAP1 PUSH1 0x1F AND DUP1 ISZERO PUSH2 0xE7 JUMPI DUP1 DUP3 SUB DUP1 MLOAD PUSH1 0x1 DUP4 PUSH1 0x20 SUB PUSH2 0x100 EXP SUB NOT AND DUP2 MSTORE PUSH1 0x20 ADD SWAP2 POP JUMPDEST POP PUSH1 0x40 MSTORE POP POP POP CALLER PUSH1 0x0 DUP1 PUSH2 0x100 EXP DUP2 SLOAD DUP2 PUSH20 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF MUL NOT AND SWAP1 DUP4 PUSH20 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF AND MUL OR SWAP1 SSTORE POP DUP1 PUSH1 0x1 SWAP1 DUP1 MLOAD SWAP1 PUSH1 0x20 ADD SWAP1 PUSH2 0x144 SWAP3 SWAP2 SWAP1 PUSH2 0x14B JUMP JUMPDEST POP POP PUSH2 0x1E8 JUMP JUMPDEST DUP3 DUP1 SLOAD PUSH1 0x1 DUP2 PUSH1 0x1 AND ISZERO PUSH2 0x100 MUL SUB AND PUSH1 0x2 SWAP1 DIV SWAP1 PUSH1 0x0 MSTORE PUSH1 0x20 PUSH1 0x0 KECCAK256 SWAP1 PUSH1 0x1F ADD PUSH1 0x20 SWAP1 DIV DUP2 ADD SWAP3 DUP3 PUSH1 0x1F LT PUSH2 0x18C JUMPI DUP1 MLOAD PUSH1 0xFF NOT AND DUP4 DUP1 ADD OR DUP6 SSTORE PUSH2 0x1BA JUMP JUMPDEST DUP3 DUP1 ADD PUSH1 0x1 ADD DUP6 SSTORE DUP3 ISZERO PUSH2 0x1BA JUMPI SWAP2 DUP3 ADD JUMPDEST DUP3 DUP2 GT ISZERO PUSH2 0x1B9 JUMPI DUP3 MLOAD DUP3 SSTORE SWAP2 PUSH1 0x20 ADD SWAP2 SWAP1 PUSH1 0x1 ADD SWAP1 PUSH2 0x19E JUMP JUMPDEST JUMPDEST POP SWAP1 POP PUSH2 0x1C7 SWAP2 SWAP1 PUSH2 0x1CB JUMP JUMPDEST POP SWAP1 JUMP JUMPDEST JUMPDEST DUP1 DUP3 GT ISZERO PUSH2 0x1E4 JUMPI PUSH1 0x0 DUP2 PUSH1 0x0 SWAP1 SSTORE POP PUSH1 0x1 ADD PUSH2 0x1CC JUMP JUMPDEST POP SWAP1 JUMP JUMPDEST PUSH2 0x361 DUP1 PUSH2 0x1F7 PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN INVALID PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH2 0x10 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x4 CALLDATASIZE LT PUSH2 0x36 JUMPI PUSH1 0x0 CALLDATALOAD PUSH1 0xE0 SHR DUP1 PUSH4 0x2E982602 EQ PUSH2 0x3B JUMPI DUP1 PUSH4 0x32AF2EDB EQ PUSH2 0xF6 JUMPI JUMPDEST PUSH1 0x0 DUP1 REVERT JUMPDEST PUSH2 0xF4 PUSH1 0x4 DUP1 CALLDATASIZE SUB PUSH1 0x20 DUP2 LT ISZERO PUSH2 0x51 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST DUP2 ADD SWAP1 DUP1 DUP1 CALLDATALOAD SWAP1 PUSH1 0x20 ADD SWAP1 PUSH5 0x100000000 DUP2 GT ISZERO PUSH2 0x6E JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST DUP3 ADD DUP4 PUSH1 0x20 DUP3 ADD GT ISZERO PUSH2 0x80 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST DUP1 CALLDATALOAD SWAP1 PUSH1 0x20 ADD SWAP2 DUP5 PUSH1 0x1 DUP4 MUL DUP5 ADD GT PUSH5 0x100000000 DUP4 GT OR ISZERO PUSH2 0xA2 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST SWAP2 SWAP1 DUP1 DUP1 PUSH1 0x1F ADD PUSH1 0x20 DUP1 SWAP2 DIV MUL PUSH1 0x20 ADD PUSH1 0x40 MLOAD SWAP1 DUP2 ADD PUSH1 0x40 MSTORE DUP1 SWAP4 SWAP3 SWAP2 SWAP1 DUP2 DUP2 MSTORE PUSH1 0x20 ADD DUP4 DUP4 DUP1 DUP3 DUP5 CALLDATACOPY PUSH1 0x0 DUP2 DUP5 ADD MSTORE PUSH1 0x1F NOT PUSH1 0x1F DUP3 ADD AND SWAP1 POP DUP1 DUP4 ADD SWAP3 POP POP POP POP POP POP POP SWAP2 SWAP3 SWAP2 SWAP3 SWAP1 POP POP POP PUSH2 0x179 JUMP JUMPDEST STOP JUMPDEST PUSH2 0xFE PUSH2 0x1EC JUMP JUMPDEST PUSH1 0x40 MLOAD DUP1 DUP1 PUSH1 0x20 ADD DUP3 DUP2 SUB DUP3 MSTORE DUP4 DUP2 DUP2 MLOAD DUP2 MSTORE PUSH1 0x20 ADD SWAP2 POP DUP1 MLOAD SWAP1 PUSH1 0x20 ADD SWAP1 DUP1 DUP4 DUP4 PUSH1 0x0 JUMPDEST DUP4 DUP2 LT ISZERO PUSH2 0x13E JUMPI DUP1 DUP3 ADD MLOAD DUP2 DUP5 ADD MSTORE PUSH1 0x20 DUP2 ADD SWAP1 POP PUSH2 0x123 JUMP JUMPDEST POP POP POP POP SWAP1 POP SWAP1 DUP2 ADD SWAP1 PUSH1 0x1F AND DUP1 ISZERO PUSH2 0x16B JUMPI DUP1 DUP3 SUB DUP1 MLOAD PUSH1 0x1 DUP4 PUSH1 0x20 SUB PUSH2 0x100 EXP SUB NOT AND DUP2 MSTORE PUSH1 0x20 ADD SWAP2 POP JUMPDEST POP SWAP3 POP POP POP PUSH1 0x40 MLOAD DUP1 SWAP2 SUB SWAP1 RETURN JUMPDEST PUSH1 0x0 DUP1 SLOAD SWAP1 PUSH2 0x100 EXP SWAP1 DIV PUSH20 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF AND PUSH20 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF AND CALLER PUSH20 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF AND EQ PUSH2 0x1D1 JUMPI PUSH2 0x1E9 JUMP JUMPDEST DUP1 PUSH1 0x1 SWAP1 DUP1 MLOAD SWAP1 PUSH1 0x20 ADD SWAP1 PUSH2 0x1E7 SWAP3 SWAP2 SWAP1 PUSH2 0x28E JUMP JUMPDEST POP JUMPDEST POP JUMP JUMPDEST PUSH1 0x60 PUSH1 0x1 DUP1 SLOAD PUSH1 0x1 DUP2 PUSH1 0x1 AND ISZERO PUSH2 0x100 MUL SUB AND PUSH1 0x2 SWAP1 DIV DUP1 PUSH1 0x1F ADD PUSH1 0x20 DUP1 SWAP2 DIV MUL PUSH1 0x20 ADD PUSH1 0x40 MLOAD SWAP1 DUP2 ADD PUSH1 0x40 MSTORE DUP1 SWAP3 SWAP2 SWAP1 DUP2 DUP2 MSTORE PUSH1 0x20 ADD DUP3 DUP1 SLOAD PUSH1 0x1 DUP2 PUSH1 0x1 AND ISZERO PUSH2 0x100 MUL SUB AND PUSH1 0x2 SWAP1 DIV DUP1 ISZERO PUSH2 0x284 JUMPI DUP1 PUSH1 0x1F LT PUSH2 0x259 JUMPI PUSH2 0x100 DUP1 DUP4 SLOAD DIV MUL DUP4 MSTORE SWAP2 PUSH1 0x20 ADD SWAP2 PUSH2 0x284 JUMP JUMPDEST DUP3 ADD SWAP2 SWAP1 PUSH1 0x0 MSTORE PUSH1 0x20 PUSH1 0x0 KECCAK256 SWAP1 JUMPDEST DUP2 SLOAD DUP2 MSTORE SWAP1 PUSH1 0x1 ADD SWAP1 PUSH1 0x20 ADD DUP1 DUP4 GT PUSH2 0x267 JUMPI DUP3 SWAP1 SUB PUSH1 0x1F AND DUP3 ADD SWAP2 JUMPDEST POP POP POP POP POP SWAP1 POP SWAP1 JUMP JUMPDEST DUP3 DUP1 SLOAD PUSH1 0x1 DUP2 PUSH1 0x1 AND ISZERO PUSH2 0x100 MUL SUB AND PUSH1 0x2 SWAP1 DIV SWAP1 PUSH1 0x0 MSTORE PUSH1 0x20 PUSH1 0x0 KECCAK256 SWAP1 PUSH1 0x1F ADD PUSH1 0x20 SWAP1 DIV DUP2 ADD SWAP3 DUP3 PUSH1 0x1F LT PUSH2 0x2CF JUMPI DUP1 MLOAD PUSH1 0xFF NOT AND DUP4 DUP1 ADD OR DUP6 SSTORE PUSH2 0x2FD JUMP JUMPDEST DUP3 DUP1 ADD PUSH1 0x1 ADD DUP6 SSTORE DUP3 ISZERO PUSH2 0x2FD JUMPI SWAP2 DUP3 ADD JUMPDEST DUP3 DUP2 GT ISZERO PUSH2 0x2FC JUMPI DUP3 MLOAD DUP3 SSTORE SWAP2 PUSH1 0x20 ADD SWAP2 SWAP1 PUSH1 0x1 ADD SWAP1 PUSH2 0x2E1 JUMP JUMPDEST JUMPDEST POP SWAP1 POP PUSH2 0x30A SWAP2 SWAP1 PUSH2 0x30E JUMP JUMPDEST POP SWAP1 JUMP JUMPDEST JUMPDEST DUP1 DUP3 GT ISZERO PUSH2 0x327 JUMPI PUSH1 0x0 DUP2 PUSH1 0x0 SWAP1 SSTORE POP PUSH1 0x1 ADD PUSH2 0x30F JUMP JUMPDEST POP SWAP1 JUMP INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 AND DIFFICULTY CHAINID 0x5F 0x5F PUSH20 0xDFD73A518B57770F5ADB27F025842235980D7A0F 0x4E ISZERO 0xB1 0xAC 0xB1 DUP15 PUSH5 0x736F6C6343 STOP SMOD STOP STOP CALLER
 ```
+</Accordion>
 
-Reference: https://ethervm.io/
+Reference: [ethervm.io](https://ethervm.io/)
 
 ***
 
@@ -59,7 +63,7 @@ If you need to set any of the above properties for your contract, you will have 
 
 ### Deploying Large Contracts
 
-Hedera supports **jumbo Ethereum transactions (**[**HIP-1086**](https://hips.hedera.com/hip/hip-1086)**)** for large bytecode payloads. You can include up to **24KB for contract creation** and **128KB for contract calls** directly in `ethereumData`, without using the File Service (`callDataFileId`).
+Hedera supports **jumbo Ethereum transactions (**[**HIP-1086**](https://hips.hedera.com/hip/hip-1086)**)** for large bytecode payloads, letting you include `callData` directly in `ethereumData` without using the File Service (`callDataFileId`). The exact ceilings are **network-configurable parameters**, not fixed protocol constants; current values are on the order of **~24KB for contract creation** (the [EIP-170](https://eips.ethereum.org/EIPS/eip-170) code-size limit) and **~128KB for contract calls**. Check the active network configuration for the precise limits.
 
 However, jumbo transactions:
 
@@ -70,9 +74,8 @@ However, jumbo transactions:
 
 When deploying contracts, gas must cover both intrinsic gas and the cost of executing deployment code. Intrinsic gas includes a base fee (21,000) plus a per-byte cost for `callData`:
 
-* Intrinsic gas includes a base fee (21,000) plus a per-byte cost for `callData`:
-  * 4 gas per zero byte
-  * 16 gas per non-zero byte
+* 4 gas per zero byte
+* 16 gas per non-zero byte
 
 #### Example
 
@@ -82,43 +85,104 @@ If your contract bytecode is 10KB, with 20% (2KB) as zero bytes and 80% (8KB) as
 * **gas for non-zero bytes**: 16 × 8,192 = 131,072
 * **total intrinsic gas** = 21,000 + 8,192 + 131,072 = 160,264
 
+Under Pectra, the transaction also has to satisfy the [EIP-7623](https://eips.ethereum.org/EIPS/eip-7623) calldata floor: `21000 + 10 × (zero + 4 × non_zero)`. For this example that floor is `21,000 + 10 × (2,048 + 4 × 8,192) = 369,160` gas, well above the 160,264 intrinsic figure. The deployment pays whichever is greater: the intrinsic **plus execution** total, or the floor. In practice deployment execution includes the code-deposit charge (200 gas per byte of runtime bytecode, roughly 2M gas for a 10KB contract), which pushes the standard total far past the floor, so the floor mainly matters for calldata-heavy transactions with little execution work.
+
 Ensure you adjust `gasLimit` (RLP) and `maxGasAllowance` (wrapper) to cover this total gas.
 
-📣 Learn more on the [Gas and Fees page,](/evm/development/gas-fees) [EthereumTransaction SDK page](/native/smart-contracts/ethereum-transaction), and the [Understanding Hedera's EVM Differences and Compatibility page](/evm/differences).
-
+<Info>
+  📣 Learn more on the [Gas and Fees page,](/evm/development/gas-fees) [`EthereumTransaction` SDK page](/native/smart-contracts/ethereum-transaction), and the [Understanding Hedera's EVM Differences and Compatibility page](/evm/differences).
+</Info>
 ***
 
 ## Hyperledger Besu EVM on Hedera
 
 The Hedera network nodes utilize the [HyperLedger Besu EVM ](/support/glossary#hyperledger-besu-evm)Client written in Java as an execution layer for Ethereum-type transactions. The codebase is up to date with the current Ethereum Mainnet hard forks. The Besu EVM client library is used without hooks for Ethereum's consensus, networking, and storage features. Instead, Hedera hooks into its own Hashgraph consensus, Gossip communication, and [Virtual Merkle Trees](/support/glossary#virtual-merkle-tree) components for greater fault tolerance, finality, and scalability.
 
-As of the Hedera Mainnet release [`0.50.0`](/learn/release-notes/services#v0.50), the Besu EVM client is configured to support the Cancun hard fork of the Ethereum Mainnet, with some modifications.
+The Besu EVM client is configured to support the **Pectra hard fork** of the Ethereum Mainnet (activated May 7, 2025), with some modifications. Pectra was originally introduced on Hedera under [HIP-1340](https://hips.hedera.com/hip/hip-1340) ([EOA Code Delegation](/evm/development/eoa-code-delegation)) and [HIP-1341](https://hips.hedera.com/hip/hip-1341) (Support for Ethereum Pectra Release).
 
-### **Cancun Hard Fork**
+### **Pectra Hard Fork**
 
-The smart contract platform has been upgraded to support the visible EVM changes introduced in the [Cancun](https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/cancun.md) hard fork. This includes adding new opcodes for transient storage and memory copy, semantic updates for opcodes introduced certain operations introduced in the [Shanghai](https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/shanghai.md), [London](https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/london.md), [Istanbul](https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/istanbul.md), and [Berlin](https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/berlin.md) hard forks, except those with changes in block production, data serialization, and the double fee market.
+The smart contract platform has been upgraded to support the visible EVM changes introduced in the [Pectra](https://eips.ethereum.org/EIPS/eip-7600) hard fork (Prague execution layer + Electra consensus layer). The applicable EIPs adopted on Hedera are:
 
-As of the Consensus Node [0.22](/learn/release-notes/services#v0.22) release, gas and input data costs are charged. The amount of intrinsic gas consumed is a constant charge that occurs before any code executes. The intrinsic gas cost is 21,000. The associated cost of input data is 16 gas for each byte of data that is not zero and 4 gas for each byte of data that is zero. The amount of intrinsic gas consumed is charged in relation to the data supplied when making a contract call to the function parameters of external contracts. The gas schedule and the fees table can be found in the gas section of this documentation page.
+| EIP                                                  | Title                                | Summary                                                                                                       |
+| ---------------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| [EIP-2537](https://eips.ethereum.org/EIPS/eip-2537)  | BLS12-381 curve precompiles          | Adds precompiles at addresses `0x0b`–`0x11` for efficient BLS signature/pairing operations.                  |
+| [EIP-7623](https://eips.ethereum.org/EIPS/eip-7623)  | Increase calldata cost (floor)       | Introduces a calldata gas floor: `21000 + 10 × (zero_bytes + 4 × non_zero_bytes)`.                            |
+| [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702)  | Set EOA account code                 | Adds a new transaction type (Type 4) allowing EOAs to delegate execution to a contract. See [EOA Code Delegation](/evm/development/eoa-code-delegation). |
+
+The following Pectra EIPs are **not applicable** to Hedera and are not adopted: EIP-7691, EIP-7840 (blob-related, Hedera does not support blobs), EIP-6110, EIP-7002, EIP-7251, EIP-7685 (Ethereum validator features, no Hedera equivalent), EIP-2935, EIP-7549 (Ethereum 2.0 features), EIP-7642 (informational). Per [HIP-1341](https://hips.hedera.com/hip/hip-1341).
+
+As of the Consensus Node [0.22](/learn/release-notes/services#v0.22) release ([HIP-185](https://hips.hedera.com/hip/hip-185)), gas and input data costs are charged. The amount of intrinsic gas consumed is a constant charge that occurs before any code executes. _The intrinsic gas cost is `21,000`_. The associated cost of input data is 16 gas for each byte of data that is not zero and 4 gas for each byte of data that is zero. Under Pectra (EIP-7623), an additional floor of `21000 + 10 × (zero + 4 × non_zero)` applies to calldata-heavy transactions. The amount of intrinsic gas consumed is charged in relation to the data supplied when making a contract call to the function parameters of external contracts. The gas schedule and the fees table can be found in the gas section of this documentation page.
+
+#### Supported Ethereum Transaction Types
+
+`EthereumTransaction` accepts RLP-encoded payloads for all of the following types:
+
+| Type | Spec                                                  | Description                                                                                                   |
+| :--: | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `0`  | Legacy ([EIP-155](https://eips.ethereum.org/EIPS/eip-155))    | Pre-Berlin legacy transactions.                                                                       |
+| `1`  | [EIP-2930](https://eips.ethereum.org/EIPS/eip-2930)   | Optional `access_list` to pre-warm storage slots and addresses.                                              |
+| `2`  | [EIP-1559](https://eips.ethereum.org/EIPS/eip-1559)   | `max_fee_per_gas` + `max_priority_fee_per_gas` (priority fee is ignored on Hedera; fees are fixed by the network). |
+| `4`  | [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) (Pectra) | Adds an `authorization_list` for EOA code delegation. See [EOA Code Delegation](/evm/development/eoa-code-delegation). |
+
+Type 3 (blob transactions per EIP-4844) is **not supported** on Hedera (see [HIP-866](https://hips.hedera.com/hip/hip-866)).
 
 <Frame>
   <img src="/images/core-concepts/smart-contracts/deploying-smart-contracts/deploying-smart-contracts-1.jpg" />
 </Frame>
 
-#### Proto-Danksharding
+#### Blobs supported on Hedera?
 
-As an interim solution to full sharding, introduced in the Cancun hard fork, the proto-danksharding offers some of the advantages of sharding with reduced complexity and infrastructure changes that are part of a sharding implementation. This, in turn, opens the gates for adding "blobs" of data to append to blocks to increase data availability further and allow more processing efficiency.
+Hedera does not provide blobs under [EIP-4844](https://eips.ethereum.org/EIPS/eip-4844) (Cancun), nor under the Pectra blob-throughput EIPs ([EIP-7691](https://eips.ethereum.org/EIPS/eip-7691), [EIP-7840](https://eips.ethereum.org/EIPS/eip-7840)). [HIP-866](https://hips.hedera.com/hip/hip-866) defines how Hedera behaves without blob support. To preserve compatibility and future design space, Hedera acts as if blobs are not being added. This allows existing contracts that depend on blob behavior to function without blobs. Blobs are prevented from entering the system by prohibiting "Type 3" transactions, which enable blobs. This keeps blobs out of the EVM's concern without affecting other desirable interactions on Hedera. With jumbo `EthereumTransaction` support ([HIP-1086](https://hips.hedera.com/hip/hip-1086)) on Hedera, large `callData` payloads are the preferred path for rollup-style data.
 
-Blobs are big data objects within blocks. These can be utilized to store rollups (Layer 2 solutions) and different kinds of apps requiring big data objects to be stored in an efficient way. This is data off-chain for the validators and requires minimal processing on their part. It reduces the computational load on the network and hence reduces the transaction gas fee.
+### **Past Hard Forks**
 
-#### ❌ Blobs supported on Hedera?
+Hedera tracks Ethereum mainnet hard forks and adopts the EIPs that apply to the Smart Contract Service. The table below summarizes recent forks and the practical differences between them on Hedera.
 
-Hedera does not provide blobs under [EIP-4844](https://eips.ethereum.org/EIPS/eip-4844). [HIP-866](https://hips.hedera.com/hip/hip-866) defines how Hedera behaves without blob support. To preserve compatibility and future design space, Hedera will act as if blobs are not being added. This allows existing contracts dependent on blob behavior to function without blobs. Blobs will be prevented from entering the system by prohibiting "Type 3" transactions, which enable blobs. This will keep blobs out of the EVM's concern without affecting other desirable interactions on Hedera.
+| Fork (Ethereum activation) | First adopted on Hedera                                                            | Headline changes on Hedera                                                                                                                                                                                                                                                                                  |
+| -------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Pectra** (May 7, 2025)   | [HIP-1340](https://hips.hedera.com/hip/hip-1340), [HIP-1341](https://hips.hedera.com/hip/hip-1341) | • [EIP-2537](https://eips.ethereum.org/EIPS/eip-2537): BLS12-381 precompiles (`0x0b`–`0x11`). <br/>• [EIP-7623](https://eips.ethereum.org/EIPS/eip-7623): calldata gas floor. <br/>• [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702): new **Type 4** `EthereumTransaction` and `authorization_list` enabling EOA code delegation. |
+| **Cancun** (Mar 13, 2024)  | Mainnet release [`v0.50`](/learn/release-notes/services#v0.50)          | • New opcodes `TLOAD`/`TSTORE` (transient storage), `MCOPY`, `BLOBHASH`, `BLOBBASEFEE`. <br/>• `SELFDESTRUCT` semantics updated per [EIP-6780](https://eips.ethereum.org/EIPS/eip-6780). <br/>• Blob support (EIP-4844) **not** adopted; Type 3 transactions are rejected ([HIP-866](https://hips.hedera.com/hip/hip-866)).                              |
+| **Shanghai** (Apr 12, 2023)| Mainnet release [`v0.38`](/learn/release-notes/services#v0.38)                      | • `PUSH0` opcode. <br/>• Updated `INITCODE` cost for contract creation.                                                                                                                                                                                                                                     |
+
+#### What changed from Cancun to Pectra?
+
+If you previously targeted Cancun, the practical differences on Hedera are:
+
+1. **New transaction type: Type 4.** The `EthereumTransaction` HAPI message now accepts RLP-encoded Type 4 payloads carrying an `authorization_list`. Each authorization sets a `delegation_address` on the signing EOA, causing future EVM calls to that EOA to execute the target contract's bytecode in the EOA's storage context (similar to `DELEGATECALL`). Full details in [EOA Code Delegation](/evm/development/eoa-code-delegation).
+2. **EOA bytecode is no longer always empty.** Pre-Pectra, `eth_getCode(eoa)` always returned empty. After Pectra, an EOA with delegation set returns the **Delegation Indicator** `0xef0100 || <20-byte target address>`. EOAs may now also have non-empty storage slots and emit logs.
+3. **Calldata floor (EIP-7623).** Calldata-heavy transactions must now pay at least `21000 + 10 × (zero_bytes + 4 × non_zero_bytes)`. Standard contract calls (where execution gas dominates) are unaffected.
+4. **BLS12-381 precompiles (EIP-2537).** Seven new precompiles at addresses `0x0b`–`0x11` for G1/G2 add, multi-scalar multiplication, pairing check, and field-to-curve mapping. These make BLS aggregation, threshold signatures, and zk-friendly cryptography native (no Solidity gymnastics).
+5. **HTS/HSS facade calls re-implemented as Delegation Indicators.** Token and Schedule "proxy" accounts now return a fixed Delegation Indicator pointing at the corresponding system contract instead of dynamic synthesized bytecode. User-visible behavior is unchanged, but tools that inspect the bytecode of these proxy accounts will now see a consistent `0xef0100...`-prefixed value rather than a custom `DELEGATECALL` shim.
+6. **HAS precedence rules.** When an EOA has a code delegation set, calls whose 4-byte selector matches a [Hedera Account Service](/evm/hedera-services/system-contracts/account-service) facade function (`hbarAllowance`, `hbarApprove`, `setUnlimitedAutomaticAssociations`) are routed to HAS and take precedence over the user's delegation. Be aware of potential selector collisions when designing a smart-account delegate.
+
+> Blobs (EIP-4844 / EIP-7691 / EIP-7840) remain unsupported on Hedera. Type 3 transactions are rejected.
 
 ### Solidity Variables and Opcodes
 
-The table below defines the mapping of Solidity variables and operation codes to Hedera. The full list of supported Opcodes for the Cancun hard fork can be found [here](https://www.evm.codes/).
+The table below defines the mapping of Solidity variables and operation codes to Hedera. The full list of supported Opcodes for the Pectra hard fork (Prague EVM execution layer) can be found [here](https://www.evm.codes/?fork=prague).
 
-<table><thead><tr><th align="center">Solidity</th><th align="center">Opcode</th><th>Hedera</th></tr></thead><tbody><tr><td align="center"><code>address</code></td><td align="center"></td><td>The address is a mapping of shard.realm.number (0.0.10) into a 20 byte Solidity address. The address can be a Hedera account ID or contract ID in Solidity format.</td></tr><tr><td align="center"><code>block.basefee</code></td><td align="center"><code>BASEFEE</code></td><td>The <code>BASEFEE</code> opcode will return zero. Hedera does not use the Fee Market mechanism this is designed to support.</td></tr><tr><td align="center"><code>block.chainId</code></td><td align="center"><code>CHAINID</code></td><td>The <code>CHAINID</code> opcode will return 295(hex <code>0x0127</code>) for mainnet, 296( hex <code>0x0128</code>) for testnet, 297( hex <code>0x0129</code>) for previewnet, and 298 (<code>0x12A</code>) for development networks.</td></tr><tr><td align="center"><code>block.coinbase</code></td><td align="center"><code>COINBASE</code></td><td>The <code>COINBASE</code> operation will return the funding account (Hedera transaction fee collecting account <code>0.0.98</code>).</td></tr><tr><td align="center"><code>block.number</code></td><td align="center"></td><td>The index of the record file (not recommended, use <code>block.timestamp</code>).</td></tr><tr><td align="center"><code>block.timestamp</code></td><td align="center"></td><td>The transaction consensus timestamp.</td></tr><tr><td align="center"><code>block.difficulty</code></td><td align="center"></td><td>Always zero.</td></tr><tr><td align="center"><code>block.gaslimit</code></td><td align="center"><code>GASLIMIT</code></td><td>The <code>GASLIMIT</code> operation will return the <code>gasLimit</code> of the transaction. The transaction <code>gasLimit</code> will be the lowest of the gas limit requested in the transaction or a global upper gas limit configured for all smart contracts.</td></tr><tr><td align="center"><code>msg.sender</code></td><td align="center"></td><td>The address of the Hedera contract ID or account ID in Solidity format that called this contract. For the root level or for delegate chains that go to the root, it is the account ID paying for the transaction.</td></tr><tr><td align="center"><code>msg.value</code></td><td align="center"></td><td>The value associated to the transaction associated in tinybar.</td></tr><tr><td align="center"><code>tx.origin</code></td><td align="center"></td><td>The account ID paying for the transaction, regardless of depth.</td></tr><tr><td align="center"><code>tx.gasprice</code></td><td align="center"></td><td>Fixed (varies with the global fee schedule and exchange rate).</td></tr><tr><td align="center"><p><code>selfdestruct</code></p><p><code>(address payable recipient)</code></p></td><td align="center"><code>SELFDESTRUCT</code></td><td>Address will not be reusable due to Hedera’s account numbering policies. On <code>SELFDESTRUCT</code> the contracts HBAR and HTS tokens are transferred to the recipients. If the recipient does not exist or does not have an allowance for any of the HTS tokens, this opcode will fail.</td></tr><tr><td align="center"><code>&#x3C;address>.code</code></td><td align="center"></td><td>Precompile contract addresses will report no code, including HTS System contract.</td></tr><tr><td align="center"><code>&#x3C;address>.codehash</code></td><td align="center"></td><td>Precompile contract addresses will report the empty code hash.</td></tr><tr><td align="center"></td><td align="center"><code>PRNGSEED</code></td><td>This opcode returns a random number based on the n-3 record running hash.</td></tr><tr><td align="center"><code>delegateCall</code></td><td align="center"></td><td>Contracts may no longer use <code>delegateCall()</code> to invoke system contracts. Contracts should instead use the <code>call()</code> method.</td></tr><tr><td align="center"><code>blobVersionedHashesAtIndex</code></td><td align="center"><code>BLOBHASH</code></td><td>The <code>BLOBHASH</code> operation will return all zeros at all times.</td></tr><tr><td align="center"><code>blobBaseFee</code></td><td align="center"><code>BLOBBASEFEE</code></td><td><p>The <code>BLOBBASEFEE</code> operation will return</p><p><code>1</code> at all times.</p></td></tr></tbody></table>
+| Solidity | Opcode | Hedera |
+| :---: | :---: | --- |
+| `address` |  | The address is a mapping of shard.realm.number (0.0.10) into a 20 byte Solidity address. The address can be a Hedera account ID or contract ID in Solidity format. |
+| `block.basefee` | `BASEFEE` | The `BASEFEE` opcode will return zero. Hedera does not use the Fee Market mechanism this is designed to support. |
+| `block.chainid` | `CHAINID` | The `CHAINID` opcode will return 295(hex `0x0127`) for mainnet, 296( hex `0x0128`) for testnet, 297( hex `0x0129`) for previewnet, and 298 (`0x12A`) for development networks. |
+| `block.coinbase` | `COINBASE` | The `COINBASE` operation will return the funding account (Hedera transaction fee collecting account `0.0.98`). |
+| `block.number` |  | The index of the record file (not recommended, use `block.timestamp`). |
+| `block.timestamp` |  | The transaction consensus timestamp. |
+| `block.difficulty` |  | Always zero. |
+| `block.gaslimit` | `GASLIMIT` | The `GASLIMIT` operation will return the `gasLimit` of the transaction. The transaction `gasLimit` will be the lowest of the gas limit requested in the transaction or a global upper gas limit configured for all smart contracts. |
+| `msg.sender` |  | The address of the Hedera contract ID or account ID in Solidity format that called this contract. For the root level or for delegate chains that go to the root, it is the account ID paying for the transaction. |
+| `msg.value` |  | The value associated to the transaction associated in tinybar. |
+| `tx.origin` |  | The account ID paying for the transaction, regardless of depth. |
+| `tx.gasprice` |  | Fixed (varies with the global fee schedule and exchange rate). |
+| `selfdestruct`<br/>`(address payable recipient)` | `SELFDESTRUCT` | Address will not be reusable due to Hedera’s account numbering policies. On `SELFDESTRUCT` the contracts HBAR and HTS tokens are transferred to the recipients. If the recipient does not exist or does not have an allowance for any of the HTS tokens, this opcode will fail. |
+| `<address>.code` |  | Precompile and system-contract addresses (including the HTS system contract at `0x167`) report no code. Under Pectra ([HIP-1340](https://hips.hedera.com/hip/hip-1340)), HTS token and HSS schedule proxy addresses, and EOAs with a code delegation set, report a 23-byte `0xef0100…` Delegation Indicator instead of empty code. See [EOA Code Delegation](/evm/development/eoa-code-delegation). |
+| `<address>.codehash` |  | Precompile contract addresses will report the empty code hash. |
+|  | PRNG system contract (`0x169`) | There is no PRNG opcode. Per [HIP-351](https://hips.hedera.com/hip/hip-351), contracts call `getPseudorandomSeed()` on the PRNG system contract at `0x169`, which returns a 256-bit seed derived from the n-3 record running hash. |
+| `delegateCall` |  | Contracts may no longer use `delegateCall()` to invoke system contracts. Contracts should instead use the `call()` method. |
+| `blobVersionedHashesAtIndex` | `BLOBHASH` | The `BLOBHASH` operation will return all zeros at all times. |
+| `blobBaseFee` | `BLOBBASEFEE` | The `BLOBBASEFEE` operation will return<br/>`1` at all times. |
 
 Reference: [HIP-866](https://hips.hedera.com/hip/hip-866), [HIP-868](https://hips.hedera.com/hip/hip-868)
 
@@ -150,30 +214,30 @@ Understanding these differences is crucial for anyone developing smart contracts
 Yes, you can use Solidity functions directly with the Hedera EVM. However, refer to the [Solidity Variables and Opcodes](#solidity-variables-and-opcodes) table to understand any modifications to opcode descriptions that better reflect their behavior on the Hedera network.
 </Accordion>
 
-<Accordion title="Can i deploy large contracts with big bytecode?">
-Yes, hedera supports jumbo ethereum transactions (HIP-1086), allowing up to **24kb for contract creation** and **128kb for contract calls**. this eliminates the need for uploading bytecode to the file service in most cases. [Learn more](/evm/differences#jumbo-ethereum-transactions).
-</Accordion>
-
-<Accordion title="Do jumbo transactions work with batch transactions?">
-No, jumbo ethereum transactions cannot be included in a `TransactionList` (batch). each jumbo transaction must be submitted individually.
+<Accordion title="Can I deploy large contracts with big bytecode?">
+Yes. Hedera supports jumbo Ethereum transactions ([HIP-1086](https://hips.hedera.com/hip/hip-1086)), which carry `callData` directly in `ethereumData` and remove the need to upload bytecode to the File Service in most cases. Note that jumbo transactions cannot be included in a `TransactionList` (batch); each one must be submitted individually. See [Deploying Large Contracts](#deploying-large-contracts) for the current size ceilings and throttling details.
 </Accordion>
 
 <Accordion title="How does gas work when deploying a contract?">
 Gas covers intrinsic costs (base + per-byte of `callData`) and execution costs (opcodes run by the EVM). Ensure your `gasLimit` and `maxGasAllowance` cover the total. See the [gas and fees page](/evm/development/gas-fees) for details.
 </Accordion>
 
-<Accordion title="How does hedera handle <code>fallback()</code> and <code>receive()</code> functions?">
+<Accordion title="How does Hedera handle <code>fallback()</code> and <code>receive()</code> functions?">
 Hedera does not trigger `fallback()` or `receive()` functions on HBAR transfers. Balances may change through native operations, so use explicit functions to handle HBAR. [Learn more](#limitation-on-fallback-receive-functions-in-hedera-smart-contracts).
 </Accordion>
 
-<Accordion title="Can i deploy contracts using only hardhat?">
+<Accordion title="Can I deploy contracts using only Hardhat?">
 Yes, but Hardhat cannot set Hedera-native properties like admin key or token associations. For these, use the [Hedera SDK](/native/fundamentals).
 </Accordion>
 
 <Accordion title="What should I do if my contract relies on blob-related opcodes?">
-If your contract relies on blob-related opcodes introduced in the Cancun hard fork, you can still deploy it on Hedera. The blob-related opcodes **will** **not** fail. They'll return default values as [specified by the EVM](https://www.evm.codes/?fork=cancun).
+If your contract relies on blob-related opcodes introduced in the Cancun hard fork (`BLOBHASH`, `BLOBBASEFEE`), you can still deploy it on Hedera. The blob-related opcodes **will not** fail; they return default values (`0` and `1` respectively) as [specified by the EVM](https://www.evm.codes/?fork=prague). Blob transactions themselves (Type 3) remain unsupported.
 </Accordion>
 
 <Accordion title="Are there any special considerations for using updated EVM opcodes on Hedera?">
-Yes, while the Hedera EVM supports the updated opcodes from the Cancun hard fork, you should know the intrinsic gas costs and input data charges specific to Hedera. Refer to the [gas schedule and fees](/evm/development/gas-fees) table for more information.
+Yes, while the Hedera EVM supports the updated opcodes from the Pectra hard fork (including Cancun-era `TLOAD`/`TSTORE`/`MCOPY` and Pectra-era BLS12-381 precompiles), you should know the intrinsic gas costs and input data charges specific to Hedera, including the EIP-7623 calldata floor. Refer to the [gas schedule and fees](/evm/development/gas-fees) table for more information.
+</Accordion>
+
+<Accordion title="Can I use EIP-7702 (Type 4) transactions on Hedera?">
+Yes. Hedera supports Type 4 `EthereumTransaction` payloads under [HIP-1340](https://hips.hedera.com/hip/hip-1340). You can also configure EOA code delegation via native `CryptoCreate` / `CryptoUpdate` transactions. See the [EOA Code Delegation](/evm/development/eoa-code-delegation) page for both paths and the HAS precedence rules.
 </Accordion>

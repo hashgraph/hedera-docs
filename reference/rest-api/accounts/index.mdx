@@ -32,3 +32,40 @@ Account IDs take the following format: **0.0.\<account number>**.‌
 Example: 0.0.1000‌
 
 Account IDs can also take the account number as an input value. For example, for account ID 0.0.1000, the number 1000 can be specified in the request.
+
+## EOA Code Delegation field (HIP-1340)
+
+Under the Pectra hard fork ([HIP-1340](https://hips.hedera.com/hip/hip-1340)), every account record returned by the Accounts API includes a new `delegation_address` field. The value is the 20-byte EVM address of the contract whose code executes when the account is called, or `0x` if no delegation is configured.
+
+This field appears in responses from both:
+
+- `GET /api/v1/accounts`
+- `GET /api/v1/accounts/{idOrAliasOrEvmAddress}`
+
+### Example response (delegated account)
+
+```json
+{
+  "account": "0.0.7488058",
+  "alias": "LTKD3QWHBYS2FPYGSNYMRWCHBGCQNKWB",
+  "created_timestamp": "1766093540.161994001",
+  "decline_reward": false,
+  "delegation_address": "0x019b8ee526333d9cbbbc35fff0309794dfa73451",
+  "deleted": false
+}
+```
+
+### Example response (no delegation)
+
+```json
+{
+  "account": "0.0.2",
+  "alias": null,
+  "created_timestamp": "1706812520.644859498",
+  "decline_reward": false,
+  "delegation_address": "0x",
+  "deleted": false
+}
+```
+
+Externally, the corresponding EVM `eth_getCode(account)` returns either an empty value (`0x`) or a 23-byte EIP-7702 Delegation Indicator of the form `0xef0100 ‖ delegation_address`. See [EOA Code Delegation](/evm/development/eoa-code-delegation) for the full data model.

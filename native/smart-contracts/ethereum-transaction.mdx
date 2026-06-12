@@ -1,11 +1,23 @@
 ---
 title: "Ethereum transaction"
+description: "Execute raw RLP-encoded EVM transactions on Hedera with `EthereumTransaction`, including call data via HFS file ID and max gas allowance settings."
 ---
 
 
-An `EthereumTransaction` lets you execute a raw, RLP-encoded (type 0, 1, or 2) Ethereum transaction on the Hedera network. This enables developers familiar with EVM tooling to leverage their existing knowledge and infrastructure when interacting with the [Hedera Smart Contract Service (HSCS)](/evm/tutorials).
+An `EthereumTransaction` lets you execute a raw, RLP-encoded EVM transaction (**type 0, 1, 2, or 4**) on the Hedera network. This enables developers familiar with EVM tooling to leverage their existing knowledge and infrastructure when interacting with the [Hedera Smart Contract Service (HSCS)](/evm/tutorials).
 
-<Warning>
+## Supported transaction types
+
+| Type  | Spec                                                          | Use it when…                                                                                                                              
+| :---: | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `0`   | Legacy ([EIP-155](https://eips.ethereum.org/EIPS/eip-155))    | You need maximum compatibility with older tooling. No `access_list`, no priority fee.                                                                                                                                                                         |
+| `1`   | [EIP-2930](https://eips.ethereum.org/EIPS/eip-2930)           | You want to pre-warm storage slots / addresses via an [`access_list`](#access-lists-eip-2930) to reduce execution gas.                                                                                                                                        |                                                                        
+| `2`   | [EIP-1559](https://eips.ethereum.org/EIPS/eip-1559)           | The default for most modern wallets. Carries `max_fee_per_gas` + `max_priority_fee_per_gas` (priority fee is ignored; Hedera fees are network-determined).                                                                                                    |
+| `4`   | [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) (Pectra)  | You're delegating EOA execution to a smart-contract implementation. Carries an `authorization_list`. See [EOA Code Delegation](/evm/development/eoa-code-delegation).                                                                                         |
+                                                                                                                                                                                                                                                                                                                                        |
+Type 3 (blob transactions per [EIP-4844](https://eips.ethereum.org/EIPS/eip-4844)) is **not supported** on Hedera. See [HIP-866](https://hips.hedera.com/hip/hip-866). For large `callData`, use [jumbo `EthereumTransaction` payloads](#handling-large-calldata-payloads) ([HIP-1086](https://hips.hedera.com/hip/hip-1086)) instead.  
+
+<Warning> 
 #### **Important**
 
 Hedera interprets HBAR decimals differently depending on the context:
@@ -17,7 +29,111 @@ Hedera interprets HBAR decimals differently depending on the context:
   Reference: [HIP-410](https://hips.hedera.com/hip/hip-410)
 </Warning>
 
-<table><thead><tr><th>Field</th><th>Description</th></tr></thead><tbody><tr><td><strong>Ethereum Data</strong></td><td>An RLP-encoded (type 0, 1, or 2) Ethereum transaction to execute on the Hedera network. This enables developers to leverage existing EVM tooling and workflows with the Hedera Smart Contract Service (HSCS).</td></tr><tr><td><strong>Call Data File ID</strong></td><td>An optional field referencing a file on the Hedera File Service (HFS) containing the <code>callData</code>. When set, the network ignores the <code>callData</code> in <code>ethereumData</code> during execution and instead loads the data from the referenced file. However, the full <code>callData</code> must still be present in the originally signed <code>ethereumData</code> for signature validation. In this case, <code>ethereumData</code> will contain a placeholder where <code>callData</code> normally resides, and the transaction must be "rehydrated" with the HFS content during validation.<br/><br/><em><strong>Note:</strong> With</em> <a href="https://hips.hedera.com/hip/hip-1086"><em>HIP-1086</em></a><em>, jumbo <code>ethereumData</code> is the preferred approach for large payloads, but <code>callDataFileId</code> remains supported for oversized payloads or legacy workflows.</em></td></tr><tr><td><strong>Max Allowance</strong></td><td><p>The maximum amount of HBAR (specified in <strong>tinybars</strong>) the payer is willing to cover for the gas consumed during transaction execution. This value acts as a ceiling if the actual gas cost (determined by <code>gasLimit</code> in the RLP-encoded transaction and the network's gas price) exceeds this amount, the transaction fails.<br/></p><p>Ordinarily, the account with the ECDSA alias extracted from the <code>ethereumData</code> signature covers the execution fees. If insufficient fees are authorized by that account, the payer can be charged up to but not exceeding <code>maxGasAllowance</code>. If the authorized fee is zero, the payer is charged the full amount.</p></td></tr></tbody></table>
+| Field | Description |
+| --- | --- |
+| **Ethereum Data** | An RLP-encoded (type 0, 1, 2, or 4) Ethereum transaction to execute on the Hedera network. This enables developers to leverage existing EVM tooling and workflows with the Hedera Smart Contract Service (HSCS). |
+| **Call Data File ID** | An optional field referencing a file on the Hedera File Service (HFS) containing the `callData`. When set, the network ignores the `callData` in `ethereumData` during execution and instead loads the data from the referenced file. However, the full `callData` must still be present in the originally signed `ethereumData` for signature validation. In this case, `ethereumData` will contain a placeholder where `callData` normally resides, and the transaction must be "rehydrated" with the HFS content during validation.<br/><br/>***Note:** With* [*HIP-1086*](https://hips.hedera.com/hip/hip-1086)*, jumbo `ethereumData` is the preferred approach for large payloads, but `callDataFileId` remains supported for oversized payloads or legacy workflows.* |
+| **Max Allowance** | The maximum amount of HBAR (specified in **tinybars**) the payer is willing to cover for the gas consumed during transaction execution. This value acts as a ceiling if the actual gas cost (determined by `gasLimit` in the RLP-encoded transaction and the network's gas price) exceeds this amount, the transaction fails.<br/><br/>Ordinarily, the account with the ECDSA alias extracted from the `ethereumData` signature covers the execution fees. If insufficient fees are authorized by that account, the payer can be charged up to but not exceeding `maxGasAllowance`. If the authorized fee is zero, the payer is charged the full amount. |
+
+## Access Lists (EIP-2930)
+
+Type 1 and Type 2 transactions accept an optional `access_list`, a list of `{address, storageKeys[]}` tuples that the EVM "warms up" before execution. Slots and addresses on the list are charged at the warm rate (`100` gas) on first touch instead of the cold rate (`2,100` for storage, `2,600` for accounts).
+
+```plain wrap
+access_list = [
+  { address: "0x<contract>", storageKeys: ["0x<slot1>", "0x<slot2>", ...] },
+  { address: "0x<another>",  storageKeys: [] },
+  ...
+]
+```
+
+**When access lists save gas:**
+
+- Cross-contract calls where the EVM doesn't already know about the target address. Listing it converts a 2,600-gas cold `CALL` into a 100-gas warm one.
+- Reads of storage slots in another contract (a token balance lookup, a registry probe). Listing the slot converts a 2,100-gas cold `SLOAD` into a 100-gas warm one.
+
+**When they don't save gas:**
+
+- Slots in the contract that owns the transaction's `to` address are warm anyway (the contract's own storage is pre-warmed).
+- Speculative listings of slots that never get read. You still pay the access-list overhead (`2,400` per address + `1,900` per slot) without recouping the cold-access discount.
+
+### Example: hand-built Type 1 transaction (ethers v6)
+
+```javascript wrap JavaScript 
+import { Wallet, JsonRpcProvider, Transaction } from "ethers";
+
+const provider = new JsonRpcProvider("https://testnet.hashio.io/api");
+const wallet   = new Wallet(process.env.OPERATOR_KEY, provider);
+
+const tx = new Transaction();
+tx.type     = 1;                               // EIP-2930
+tx.chainId  = 296n;                            // Hedera testnet
+tx.to       = "0x<router-address>";
+tx.value    = 0n;
+tx.gasLimit = 200_000n;
+tx.gasPrice = (await provider.getFeeData()).gasPrice;
+tx.nonce    = await provider.getTransactionCount(wallet.address);
+tx.data     = "0x<encoded-call-data>";
+tx.accessList = [
+  {
+    address: "0x<token-contract>",
+    storageKeys: [
+      // balanceOf slot
+      "0x0000000000000000000000000000000000000000000000000000000000000003",
+      // allowance slot
+      "0x0000000000000000000000000000000000000000000000000000000000000004", 
+    ],
+  },
+];
+
+const signed = await wallet.signTransaction(tx);
+const sent   = await provider.broadcastTransaction(signed);
+console.log("tx hash:", sent.hash);
+```
+
+The same payload can be submitted via `EthereumTransaction` directly by passing the raw signed RLP bytes as `ethereumData`.
+
+### Example: Type 2 with access list (viem)
+
+```javascript wrap JavaScript
+import { createWalletClient, http, parseGwei } from "viem";
+import { privateKeyToAccount } from "viem/accounts";
+import { hederaTestnet } from "viem/chains";
+
+const account = privateKeyToAccount(process.env.OPERATOR_KEY);
+const client  = createWalletClient({ chain: hederaTestnet, transport: http(), account });
+
+const hash = await client.sendTransaction({
+  type: "eip1559",
+  to: "0x<router-address>",
+  data: "0x<encoded-call-data>",
+  // example value; query eth_gasPrice for the live rate (Hedera's gas price is network-determined)
+  maxFeePerGas: parseGwei("710"), 
+  // ignored on Hedera; fees are network-determined
+  maxPriorityFeePerGas: 0n,       
+  accessList: [
+    {
+      address: "0x<token-contract>",
+      storageKeys: [
+        "0x0000000000000000000000000000000000000000000000000000000000000003",
+      ],
+    },
+  ],
+});
+```
+
+> **Tip:** Most JSON-RPC providers expose `eth_createAccessList`; call it against a simulated transaction to get a near-optimal access list before signing.
+
+#### Hedera specifics
+
+A few things to know before you rely on access lists on Hedera:
+
+- **The warm/cold discount is honored.** Hedera applies the same EIP-2929/2930 gas accounting as Ethereum, so listed addresses and slots are charged at the warm rate on first touch. The exact cold/warm opcode costs are in the [gas schedule](/evm/development/gas-fees#evm-opcode-gas).
+- **`access_list` also rides on Type 4 transactions.** The EIP-7702 payload carries both `access_list` and `authorization_list`, so you can pre-warm storage *and* set EOA code delegation in a single transaction. See [EOA Code Delegation](/evm/development/eoa-code-delegation).
+- **Access-list bytes count toward the EIP-7623 calldata floor.** A large speculative access list increases `callData` size and can push a low-execution transaction into the [calldata floor](/evm/development/gas-fees#intrinsic-gas); list only slots you'll actually touch.
+- **Submitting via the SDK.** Pass the raw signed RLP (Type 1 or Type 2) as `ethereumData` on an `EthereumTransaction`; Hedera preserves the access list during execution. No Hedera-native field mirrors `access_list`; it lives entirely inside the RLP payload.
+
+***
 
 ## Handling Large callData Payloads
 
@@ -37,7 +153,13 @@ This is added to base gas and execution gas. Developers must ensure both `gasLim
 
 #### **Quick reference: Jumbo vs Standard Transactions**
 
-<table><thead><tr><th>Feature</th><th>Jumbo Ethereum Transaction</th><th>Standard Ethereum Transaction</th></tr></thead><tbody><tr><td><strong>callData Size Limit</strong></td><td>24KB (creation) / 128KB (call)</td><td>~6KB total transaction size</td></tr><tr><td><strong>callDataFileId Needed?</strong></td><td>Only if limits exceeded</td><td>Always for large payloads</td></tr><tr><td><strong>Gas Calculation</strong></td><td>Always for large payloads</td><td>Same</td></tr><tr><td><strong>Batch Inclusion</strong></td><td>Not supported</td><td>Supported</td></tr><tr><td><strong>Network Throttling</strong></td><td>Dedicated throttle bucket</td><td>Standard throttling</td></tr></tbody></table>
+| Feature | Jumbo Ethereum Transaction | Standard Ethereum Transaction |
+| --- | --- | --- |
+| **callData Size Limit** | 24KB (creation) / 128KB (call) | ~6KB total transaction size |
+| **callDataFileId Needed?** | Only if limits exceeded | Always for large payloads |
+| **Gas Calculation** | Always for large payloads | Same |
+| **Batch Inclusion** | Not supported | Supported |
+| **Network Throttling** | Dedicated throttle bucket | Standard throttling |
 
 📣 *See* [*HIP-1086*](https://hips.hedera.com/hip/hip-1086) *and the* [*Gas and Fees page*](/evm/development/gas-fees#gas-schedule-and-fee-calculation) *for complete technical details.*
 
@@ -69,7 +191,7 @@ The total transaction cost includes:
 
 <CodeGroup>
 
-```java Java
+```java wrap Java
 //Create the transaction
 EthereumTransaction transaction = new EthereumTransaction()
      .setEthereumData(ethereumData)
@@ -90,7 +212,7 @@ System.out.println("The transaction consensus status is " +transactionStatus);
 ```
 
 
-```javascript JavaScript
+```javascript wrap JavaScript
 //Create the transaction
 const transaction = new EthereumTransaction()
      .setEthereumData(ethereumData)
@@ -111,7 +233,7 @@ console.log("The transaction consensus status is " +transactionStatus);
 ```
 
 
-```go Go
+```go wrap Go
 //Create the transaction
 transaction, err := hedera.NewEthereumTransaction().
      SetEthereumData(ethereumData)

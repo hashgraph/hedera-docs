@@ -8,7 +8,7 @@ sidebarTitle: "Account Service"
 
 EVM developers should note that `ECRECOVER` natively supports ECDSA accounts on Hedera. Aliases for these accounts, derived using Keccak-256(publicKey), are fully compatible with Ethereum's `ECRECOVER` logic. This enables seamless interaction with ECDSA accounts on Hedera using `ECRECOVER`, just like standard Ethereum accounts.
 
-To verify an ECDSA signature, developers can call `ECRECOVER(messageHash, r, s, v)` in Ethereum smart contracts. If the recovered address matches the alias of a Hedera account, the signer is confirmed to control the account. No special integration is needed—`ECRECOVER` functions as a standard EVM precompiled contract on Hedera
+To verify an ECDSA signature, developers can call `ECRECOVER(messageHash, r, s, v)` in Ethereum smart contracts. If the recovered address matches the alias of a Hedera account, the signer is confirmed to control the account. No special integration is needed; `ECRECOVER` functions as a standard EVM precompiled contract on Hedera
 
 <Info>
 **Note**: This functionality is specific to ECDSA accounts with Keccak-256(publicKey) aliases. For ED25519 accounts, Hedera offers alternative authorization methods, such as `isAuthorized()` or `isAuthorizedRaw()`, to verify control of an account. For details, refer to the [Hedera Account Service System Contract](https://github.com/hiero-ledger/hiero-contracts/tree/main/contracts/account-service). See below for details on these two precompile functions.
@@ -41,7 +41,12 @@ By addressing these use cases, HIP-632 provides a seamless way for developers to
 * Provides a way to confirm authorization based on Hedera’s advanced account-based key management.
 * Returns `true` if the signature is valid and linked to the account, otherwise `false`.
 
-<table><thead><tr><th>Parameter</th><th>Description</th></tr></thead><tbody><tr><td><strong>address</strong></td><td>A 20-byte identifier used to represent an account on the Hedera network or an EVM-compatible account.</td></tr><tr><td><strong>message</strong></td><td>The original plaintext data or payload that the signature is derived from. This is the information that was signed to produce the signature.</td></tr><tr><td><strong>messaHash</strong></td><td>A cryptographic hash of the <code>message</code>, calculated using an algorithm like SHA-256 or Keccak-256. This is typically what is signed instead of the raw message.</td></tr><tr><td><strong>signatureBlob</strong></td><td>A concatenation of the digital signature components, typically including <code>r</code>, <code>s</code>, and <code>v</code> values for ECDSA, or the equivalent data for ED25519 signatures.</td></tr></tbody></table>
+| Parameter | Description |
+| --- | --- |
+| **address** | A 20-byte identifier used to represent an account on the Hedera network or an EVM-compatible account. |
+| **message** | The original plaintext data or payload that the signature is derived from. This is the information that was signed to produce the signature. |
+| **messaHash** | A cryptographic hash of the `message`, calculated using an algorithm like SHA-256 or Keccak-256. This is typically what is signed instead of the raw message. |
+| **signatureBlob** | A concatenation of the digital signature components, typically including `r`, `s`, and `v` values for ECDSA, or the equivalent data for ED25519 signatures. |
 
 #### Behavior and Cost
 
@@ -57,3 +62,31 @@ Gas fee schedule and calculation
 </Card>
 
 **Reference**: [HIP-632](https://hips.hedera.com/hip/hip-632)
+
+***
+
+## HAS Facade Precedence Over EOA Code Delegation
+
+When [EOA Code Delegation](/evm/development/eoa-code-delegation) ([HIP-1340](https://hips.hedera.com/hip/hip-1340)) was introduced in the Pectra upgrade, EOAs gained the ability to redirect calls into a delegate contract's bytecode. To preserve the existing user-facing behavior of HAS facade calls, **HAS facade selectors take precedence** over any user-set delegation.
+
+When the Smart Contract Service receives a call whose target is an EOA, it inspects the first 4 bytes of `callData`:
+
+1. **If the selector matches a HAS facade function** → the call is routed to HAS. Any `delegation_address` configured on the EOA is ignored for this call.
+2. **Else if the EOA has a code delegation set** → the delegate contract's code is executed in the EOA's storage context.
+3. **Otherwise** → no-op (the call carries through any value transfer but executes no code).
+
+### Intercepted HAS facade selectors
+
+| Function signature                                              | 4-byte selector |
+| --------------------------------------------------------------- | --------------- |
+| `hbarAllowance(address spender)`                                | `0xbbee989e`    |
+| `hbarApprove(address spender, int256 amount)`                   | `0x86aff07c`    |
+| `setUnlimitedAutomaticAssociations(bool enableAutoAssociations)`| `0xf5677e99`    |
+
+> ⚠️ **Selector-collision warning.** If your smart-account delegate happens to define a function whose 4-byte selector equals any of the above, that function will be unreachable on a delegated EOA; HAS will intercept the call first. Pick distinct signatures when designing a delegate.
+
+### Direct EOA delegation to system contracts is forbidden
+
+Setting `delegation_address` on a regular EOA to a system-contract address (HTS `0x167`, HAS `0x16a`, HSS `0x16b`, Exchange Rate `0x168`, PRNG `0x169`, or any precompile `0x01`–`0x11`) is allowed at the protocol level, but **calls to such a delegated EOA are no-ops**. Only the network-owned Token Proxy and Schedule Proxy accounts may "delegate" to a system contract; they do so via fixed Delegation Indicators set at the protocol level for the facade mechanism.
+
+**Reference**: [HIP-1340](https://hips.hedera.com/hip/hip-1340)

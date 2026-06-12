@@ -55,7 +55,48 @@ Reference: [HIP-904](https://hips.hedera.com/hip/hip-904)
 | `setStakedAccountId(<stakedAccountId>)` | AccountId | Optional |
 | `setStakedNodeId(<stakedNodeId>)` | long | Optional |
 | `setDeclineStakingReward(<declineStakingReward>)` | boolean | Optional |
+| `setDelegationAddress(<delegationAddress>)` | EvmAddress | Optional |
 | `setExpirationTime(<expirationTime>)` | Instant | Disabled |
+
+<Info>
+**`setDelegationAddress` ([HIP-1340](https://hips.hedera.com/hip/hip-1340))**
+
+Sets, changes, or clears the account's EOA Code Delegation. The address must be exactly 20 bytes and can be provided as raw bytes, a hex string (with or without the `0x` prefix), or an `EvmAddress`. Pass `0x0000000000000000000000000000000000000000` or `null` to clear an existing delegation. After update, any EVM call to the account's address executes the delegate's code in the account's storage context.
+
+For ECDSA accounts with a public-key-derived alias, you can alternatively configure delegation via an [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) Type 4 Ethereum transaction. ED25519 accounts and ECDSA accounts with a long-zero alias must use this HAPI path. See [EOA Code Delegation](/evm/development/eoa-code-delegation).
+</Info>
+
+#### Example: set a delegation target
+
+```javascript JavaScript
+import { AccountUpdateTransaction, AccountId } from "@hashgraph/sdk";
+
+const tx = await new AccountUpdateTransaction()
+  .setAccountId(AccountId.fromString("0.0.4567"))
+  .setDelegationAddress("0x019b8ee526333d9cbbbc35fff0309794dfa73451")
+  .freezeWith(client)
+  .sign(accountKey);
+
+await (await tx.execute(client)).getReceipt(client);
+
+// Read it back via property access
+console.log(`Delegation address: ${tx.delegationAddress?.toString()}`);
+```
+
+#### Example: clear an existing delegation
+
+```javascript JavaScript
+import { AccountUpdateTransaction, AccountId } from "@hashgraph/sdk";
+
+// Pass the zero address (or null) to clear
+const tx = await new AccountUpdateTransaction()
+  .setAccountId(AccountId.fromString("0.0.4567"))
+  .setDelegationAddress("0x0000000000000000000000000000000000000000")
+  .freezeWith(client)
+  .sign(accountKey);
+
+await (await tx.execute(client)).getReceipt(client);
+```
 
 <CodeGroup>
 

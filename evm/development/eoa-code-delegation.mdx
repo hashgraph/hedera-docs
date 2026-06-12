@@ -153,24 +153,29 @@ const receipt = await tx.getReceipt(client);
 console.log(receipt.status.toString());
 ```
 
+The SDK also models the Type 4 payload directly via `EthereumTransactionDataEip7702`, which carries the standard EIP-1559-style fields plus `accessList` and an `authorizationList` of `Authorization` entries (`chainId`, `address`, `nonce`, `yParity`, `r`, `s`). Calling `toBytes()` on it produces the raw payload to pass to `setEthereumData()`.
+
 ### Path B: Native HAPI (CryptoCreate / CryptoUpdate)
 
-[HIP-1340](https://hips.hedera.com/hip/hip-1340) extends both `CryptoCreateTransactionBody` and `CryptoUpdateTransactionBody` with a `delegation_address` field (bytes, 20 raw EVM address bytes, **not** the `0xef0100`-prefixed indicator). The SDK lifts this onto `AccountCreateTransaction` and `AccountUpdateTransaction`.
+[HIP-1340](https://hips.hedera.com/hip/hip-1340) extends both `CryptoCreateTransactionBody` and `CryptoUpdateTransactionBody` with a `delegation_address` field (bytes, 20 raw EVM address bytes, **not** the `0xef0100`-prefixed indicator). The SDK lifts this onto `AccountCreateTransaction` and `AccountUpdateTransaction` as `setDelegationAddress()`, which accepts raw bytes, a hex string (with or without the `0x` prefix), or an `EvmAddress`.
 
 ```javascript JavaScript
-import { AccountUpdateTransaction, AccountId, EvmAddress } from "@hashgraph/sdk";
+import { AccountUpdateTransaction, AccountId } from "@hashgraph/sdk";
 
 // Point an existing EOA at a smart-account implementation
 const tx = await new AccountUpdateTransaction()
   .setAccountId(AccountId.fromString("0.0.4567"))
-  .setDelegationAddress(EvmAddress.fromString("019b8ee526333d9cbbbc35fff0309794dfa73451"))
+  .setDelegationAddress("0x019b8ee526333d9cbbbc35fff0309794dfa73451")
   .freezeWith(client)
   .sign(eoaKey);                              // EOA must sign
 
 await (await tx.execute(client)).getReceipt(client);
+
+// Read it back via property access
+console.log(`Delegation address: ${tx.delegationAddress?.toString()}`);
 ```
 
-To **clear** the delegation, set it to the zero address: `0x0000000000000000000000000000000000000000`.
+To **clear** the delegation, set it to the zero address (`0x0000000000000000000000000000000000000000`) or pass `null` on an `AccountUpdateTransaction`.
 
 > Native HAPI is the only path available to **ED25519 accounts** and **ECDSA accounts with a long-zero alias**, since those account types cannot sign EIP-7702 authorizations. See [Account-type applicability](#account-type-applicability).
 

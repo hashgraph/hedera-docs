@@ -47,7 +47,7 @@ For a complete list of account properties, see the [accounts overview](/native/a
 <Info>
 **`setDelegationAddress` ([HIP-1340](https://hips.hedera.com/hip/hip-1340))**
 
-Sets a 20-byte EVM `delegation_address` on the new account. When set, any EVM call to the account's address executes the bytecode at `delegationAddress` in the account's storage context (EOA Code Delegation per EIP-7702). Pass the raw 20-byte EVM address, **not** the `0xef0100`-prefixed Delegation Indicator. Pass `0x0000000000000000000000000000000000000000` to leave the field unset.
+Sets a 20-byte EVM `delegation_address` on the new account. When set, any EVM call to the account's address executes the bytecode at `delegationAddress` in the account's storage context (EOA Code Delegation per [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702)). The address must be exactly 20 bytes and can be provided as raw bytes, a hex string (with or without the `0x` prefix), or an `EvmAddress`; pass the raw EVM address, **not** the `0xef0100`-prefixed Delegation Indicator. Passing `0x0000000000000000000000000000000000000000` leaves the field unset.
 
 See [EOA Code Delegation](/evm/development/eoa-code-delegation) for the full feature description, including the HAS facade precedence rules and which account types can also configure delegation via Ethereum Type 4 transactions.
 </Info>

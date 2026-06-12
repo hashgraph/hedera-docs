@@ -52,7 +52,7 @@ console.log(freezeTransaction);
 ```go Go
 //Create an unsigned transaction 
 transaction := hedera.NewAccountCreateTransaction().
-    SetKeyWithAlias(ecdsaPublicKey).
+    SetECDSAKeyWithAlias(ecdsaPublicKey).
     // DO NOT set an alias with your key if you plan to update/rotate keys in the future, Use .SetKeyWithoutAlias instead 
     // SetKeyWithoutAlias(ecdsaPublicKey)
     SetInitialBalance(hedera.NewHbar(1)).

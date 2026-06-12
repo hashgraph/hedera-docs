@@ -8,7 +8,7 @@ title: "Account Properties"
 The account ID is the ID of the account **entity** on the Hedera network. The account ID includes the **shard number**, **realm number**, and an **account** `<shardNum>.<realmNum>.<account>`. The account ID is used to specify the account in all Hedera transactions and queries. There can be more than one account ID that can represent an account.
 
 <Info>
-**Mainnet default:** Every Hedera mainnet account ID is `0.0.<num>` (e.g., `0.0.1234`). Both the shard and realm segments are `0` and have been since launch. Hardcode `0.0` when constructing `AccountId` values for mainnet — do not take shard/realm as user-configurable parameters unless your application explicitly targets a private network.
+**Mainnet default:** Every Hedera mainnet account ID is `0.0.<num>` (e.g., `0.0.1234`). Both the shard and realm segments are `0` and have been since launch. Hardcode `0.0` when constructing `AccountId` values for mainnet. Do not take shard/realm as user-configurable parameters unless your application explicitly targets a private network.
 
 Non-zero realm IDs (e.g., `0.100.0`) are supported for **private networks**. Non-zero shard IDs are not yet active on any network. The rest of this section documents the underlying format for completeness.
 </Info>

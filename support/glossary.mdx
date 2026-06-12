@@ -449,8 +449,8 @@ Event files record the history of transactions that have occurred on the Hedera 
 
 A 20-byte address compatible with the Ethereum Virtual Machine. On Hedera, an account's EVM address comes from one of two sources:
 
-- **EVM Address from Public Key** (recommended) — the rightmost 20 bytes of the Keccak-256 hash of the account's ECDSA public key. Set at creation via `setECDSAKeyWithAlias()`.
-- **EVM Address from Account ID** (fallback, "long-zero" form) — 12 zero bytes followed by the 8-byte account number. Used when no public-key-derived address is set.
+- **EVM Address from Public Key** (recommended): the rightmost 20 bytes of the Keccak-256 hash of the account's ECDSA public key. Set at creation via `setECDSAKeyWithAlias()`.
+- **EVM Address from Account ID** (fallback, "long-zero" form): 12 zero bytes followed by the 8-byte account number. Used when no public-key-derived address is set.
 
 The EVM address is the value seen by Solidity contracts as `msg.sender` and used by EVM wallets and tooling.
 

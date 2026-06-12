@@ -1,5 +1,6 @@
 ---
 title: "Account Creation"
+description: "Create a Hedera account using the Developer Portal, a supported wallet, or the Hiero SDKs, and learn the HBAR fees required to register on-chain."
 ---
 
 
@@ -14,7 +15,7 @@ When an account is created, it is stored in the state on the Hedera network. The
 </Tip>
 
 <Info>
-The **EVM Address from Public Key** is **immutable** and can only be set at account creation — it cannot be added later. If account keys are later rotated (for example, via `CryptoUpdateTransaction`), this address will no longer match the new public key, and integrations that depend on the original EVM identity can break. For recovery from compromised keys, create a new ECDSA account and migrate assets and state rather than relying on key rotation.
+The **EVM Address from Public Key** is **immutable** and can only be set at account creation. **_It cannot be added later_**. If account keys are later rotated (for example, via `CryptoUpdateTransaction`), this address will no longer match the new public key, and integrations that depend on the original EVM identity can break. For recovery from compromised keys, create a new ECDSA account and migrate assets and state rather than relying on key rotation.
 </Info>
 
 An account can be created through any of the following methods. To create accounts using the SDKs, you will need access to an existing account to pay for the transaction fee to create a new account.

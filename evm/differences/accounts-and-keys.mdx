@@ -19,10 +19,10 @@ Hedera accounts have a native **Account ID** (e.g., `0.0.xxxx`) and can also hav
 
 ### **Working With ECDSA Accounts in Testing**
 
-If you are writing an Ethereum smart contract and need to interact with an ECDSA Hedera account identified by its **Account ID**, reference it by its **EVM Address** so that functions like `ECRECOVER` resolve the correct account — as long as the EVM Address is correctly set from the account's public key. Here are some considerations:
+If you are writing an Ethereum smart contract and need to interact with an ECDSA Hedera account identified by its **Account ID**, reference it by its **EVM Address** so that functions like `ECRECOVER` resolve the correct account, as long as the EVM Address is correctly set from the account's public key. Here are some considerations:
 
-* During testing, use the **EVM Address** returned by the account object — not the Account ID (e.g., `0.0.xxxx`). If the account was created with `setECDSAKeyWithAlias()`, that value is the **EVM Address from Public Key** (the 20-byte `Keccak-256(publicKey)` form) and works with EVM tools like Hardhat and Truffle and with `ECRECOVER`. If no alias was set at creation, the account falls back to the **EVM Address from Account ID** (the long-zero form), which is **not** compatible with `ECRECOVER`. Confirm which form your account uses before deploying.
-* Including this conversion step in your test setup saves time and confusion, ensuring your EVM-style smart contracts can reliably work with Hedera’s ECDSA accounts.
+* During testing, use the **EVM Address** returned by the account object, not the Account ID (e.g., `0.0.xxxx`). If the account was created with `setECDSAKeyWithAlias()`, that value is the **EVM Address from Public Key** (the 20-byte `Keccak-256(publicKey)` form) and works with EVM tools like Hardhat and Truffle and with `ECRECOVER`. If no alias was set at creation, the account falls back to the **EVM Address from Account ID** (the long-zero form), which is **not** compatible with `ECRECOVER`. Confirm which form your account uses before deploying.
+* Including this conversion step in your test setup saves time and confusion, ensuring your EVM-compatible smart contracts can reliably work with Hedera’s ECDSA accounts.
 
 ### **Key Permutations & Scenarios on Hedera**
 

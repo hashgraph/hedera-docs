@@ -70,7 +70,7 @@ const transaction = await new AccountCreateTransaction() //Any transaction can b
 //Create the transaction and set the transaction properties
 transaction := hedera.NewAccountCreateTransaction(). //Any transaction can be applied here
     // Sets the EVM Address from Public Key (recommended for EVM compatibility)
-    SetKeyWithAlias(ecdsaPublicKey).
+    SetECDSAKeyWithAlias(ecdsaPublicKey).
     // Use SetKeyWithoutAlias(ecdsaPublicKey). if you plan to rotate keys soon after creation
     SetInitialBalance(hedera.NewHbar(1)).
     SetMaxTransactionFee(hedera.NewHbar(2)). //Set the max transaction fee to 2 hbar
@@ -138,7 +138,7 @@ const maxTransactionFee = transaction.getMaxTransactionFee();
 ```go Go
 //Create the transaction and set the transaction properties
 transaction := hedera.NewAccountCreateTransaction(). //Any transaction can be applied here
-    SetKeyWithAlias(newKey).
+    SetECDSAKeyWithAlias(newKey).
     SetInitialBalance(hedera.NewHbar(100)).
     SetMaxTransactionFee(hedera.NewHbar(2)). //Set the max transaction fee to 2 hbar
     SetTransactionMemo("Transaction memo") //Add a transaction memo

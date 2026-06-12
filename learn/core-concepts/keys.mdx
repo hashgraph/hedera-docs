@@ -29,9 +29,9 @@ const txCreateAccount = new AccountCreateTransaction()
 ```
 </Info>
 
-<Warning>
-Do not use `setECDSAKeyWithAlias()` if you plan to update or rotate the account key in the future. The EVM Address from Public Key is permanently bound to the original ECDSA public key and does not change when the key is rotated. Use `setKeyWithoutAlias()` instead if key rotation is a requirement. See the [Create an Account](/native/accounts/create) reference for details.
-</Warning>
+<Info>
+**Key rotation trade-off:** The EVM Address from Public Key is permanently bound to the original ECDSA public key and does not change when the key is rotated. If your operational model requires key rotation, use `setKeyWithoutAlias()` at creation, and the account will fall back to its EVM Address from Account ID (long-zero form). See the [Create an Account](/native/accounts/create) reference for details.
+</Info>
 
 ### Ed25519 (Supported)
 

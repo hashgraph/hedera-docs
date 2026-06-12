@@ -164,7 +164,7 @@ console.log("The transaction record is " +record);
 //Create a transaction
 transaction := hedera.NewAccountCreateTransaction().
     // Sets the EVM Address from Public Key (recommended for EVM compatibility)
-    SetKeyWithAlias(ecdsaPublicKey).
+    SetECDSAKeyWithAlias(ecdsaPublicKey).
     // Use SetKeyWithoutAlias(ecdsaPublicKey). if you plan to rotate keys soon after creation
     SetInitialBalance(hedera.NewHbar(1))
 

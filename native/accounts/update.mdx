@@ -10,7 +10,7 @@ A transaction that updates the properties of an existing account. The network wi
 
 If your existing account does not have an EVM Address from Public Key and you need EVM compatibility, the recommended path is to **create a new ECDSA account with the EVM address set at creation** and migrate assets and state. See [Create an Account](/native/accounts/create) for the recommended pattern.
 
-Rotating keys with `CryptoUpdateTransaction` does **not** update the EVM address — the original EVM Address from Public Key remains tied to the original ECDSA public key.
+Rotating keys with `CryptoUpdateTransaction` does **not** update the EVM address. The original EVM Address from Public Key remains tied to the original ECDSA public key.
 </Warning>
 
 **Account Properties**

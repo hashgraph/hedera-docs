@@ -1,0 +1,417 @@
+---
+title: "Scaffold HBAR"
+description: "Scaffold Hedera dApps from the command line. Pick a template, frontend, and Solidity framework—then get a runnable project in one step."
+---
+
+## What is Scaffold HBAR?
+
+Scaffold HBAR is an interactive CLI tool (similar to `create-next-app` or `create-react-app`) for the Hedera ecosystem. It generates production-ready monorepo projects with:
+
+- **Smart contracts** (Hardhat or Foundry)
+- **Frontend** (Next.js App Router with RainbowKit, wagmi, and viem)
+- **Hedera network configuration** (Testnet or Mainnet with Hashio RPC)
+- **Pre-built UI components** for wallet connection, address display, and HBAR input
+
+<CardGroup cols={2}>
+  <Card title="Quick Start" icon="rocket" href="#quick-start">
+    Create your first Hedera dApp in under a minute
+  </Card>
+  <Card title="Templates" icon="layer-group" href="#available-templates">
+    Browse pre-built templates for common use cases
+  </Card>
+  <Card title="Scaffold UI" icon="puzzle-piece" href="/solutions/tools/scaffold-hbar/scaffold-ui">
+    Shared components, hooks, and MCP server for AI agents
+  </Card>
+  <Card title="GitHub" icon="github" href="https://github.com/hedera-dev/create-scaffold-hbar">
+    Source code and contributing guide
+  </Card>
+</CardGroup>
+
+---
+
+## Quick Start
+
+### Prerequisites
+
+Before using Scaffold HBAR, ensure you have:
+
+- **Node.js** ≥ 20.18.3 — [nodejs.org](https://nodejs.org/)
+- **Git** with `user.name` and `user.email` configured — [git-scm.com](https://git-scm.com/)
+- **Yarn** (scaffolded projects use Yarn workspaces):
+  ```bash
+  corepack enable && corepack prepare yarn@stable --activate
+  ```
+
+If you choose **Foundry** as the Solidity framework:
+
+```bash
+curl -L https://foundry.paradigm.xyz | bash
+foundryup
+```
+
+### Create a New Project
+
+Run the CLI with npx:
+
+```bash
+npx create-scaffold-hbar@latest
+```
+
+You'll be prompted to select:
+
+1. **Project name** — Directory name for your new project
+2. **Template** — Starting point for your dApp (blank, HTS token, NFT, etc.)
+3. **Frontend** — `nextjs-app` or `none` (contracts only)
+4. **Solidity framework** — `foundry`, `hardhat`, or `none`
+5. **Network** — `testnet` or `mainnet`
+
+<Accordion title="Non-Interactive Mode">
+
+For CI pipelines or scripting, use flags to skip prompts:
+
+```bash
+# Accept all defaults (blank template, Foundry, testnet)
+npx create-scaffold-hbar@latest --yes
+
+# Full customization
+npx create-scaffold-hbar@latest my-scheduler-app \
+  --template payments-scheduler \
+  --frontend nextjs-app \
+  --solidity-framework foundry \
+  --network testnet
+```
+
+| Flag | Description |
+|------|-------------|
+| `-y, --yes` | Use defaults for all prompts |
+| `-t, --template <key>` | Template key (see [Available Templates](#available-templates)) |
+| `-f, --frontend <fw>` | `nextjs-app` or `none` |
+| `-s, --solidity-framework <fw>` | `foundry`, `hardhat`, or `none` |
+| `--network <network>` | `testnet` or `mainnet` |
+| `--skip-install` | Don't run `yarn install` after scaffolding |
+
+</Accordion>
+
+### Start Development
+
+After scaffolding, start the development servers:
+
+<Tabs>
+<Tab title="Foundry">
+```bash
+cd my-hedera-dapp
+
+# Terminal 1: Start local chain
+yarn foundry:chain
+
+# Terminal 2: Deploy contracts
+yarn foundry:deploy
+
+# Terminal 3: Start frontend
+yarn next:start
+```
+</Tab>
+<Tab title="Hardhat">
+```bash
+cd my-hedera-dapp
+
+# Terminal 1: Start local chain
+yarn hardhat:chain
+
+# Terminal 2: Deploy contracts
+yarn hardhat:deploy
+
+# Terminal 3: Start frontend
+yarn next:start
+```
+</Tab>
+</Tabs>
+
+Open [http://localhost:3000](http://localhost:3000) to see your dApp.
+
+---
+
+## Available Templates
+
+Scaffold HBAR includes starter templates for common Hedera use cases. The CLI fetches templates dynamically from `templates/*` branches:
+
+| Template | CLI Value | Description | Framework |
+|----------|-----------|-------------|-----------|
+| **Blank Starter** | `blank` | Minimal baseline scaffold with no opinionated features—ideal starting point for custom dApps | Foundry or Hardhat |
+| **Hedera Native** | `hedera-demo` | Demo focused on Hedera-native services (HTS, HCS, Mirror Node) with end-to-end UI—no Solidity contracts | Next.js only |
+| **Onchain Cron Job** | `payments-scheduler` | Scheduled payments using Hedera Schedule Service (HSS) with a ScheduledVault pattern and pluggable strategies (e.g., DCA) | Foundry |
+| **Bridge** | `bridge` | Cross-chain bridge connecting Ethereum Sepolia and Hedera Testnet with Axelar, CCIP, or LayerZero providers | Foundry |
+| **Oracles** | `oracles` | Provider-agnostic oracle pattern with adapters for Chainlink, Supra, and Pyth price feeds | Foundry |
+| **Tokenize Subscriptions** | `tokenise-subscriptions` | SubRent NFT marketplace—tokenize subscriptions (gym, WiFi, streaming) as HTS NFTs with rental and sales | Hardhat |
+| **x402 Pay-Per-Use** | `x402-pay-per-use` | Pay-per-download file marketplace using the x402 protocol with HashPack payments and MinIO storage | Hardhat |
+
+<Tip>
+**Template selection:**
+```bash
+# Interactive mode shows all available templates
+npx create-scaffold-hbar@latest
+
+# Or specify directly
+npx create-scaffold-hbar@latest --template payments-scheduler
+npx create-scaffold-hbar@latest --template hedera-demo
+```
+</Tip>
+
+<Note>
+Templates are maintained in the [scaffold-hbar repository](https://github.com/buidler-labs/scaffold-hbar) as separate branches (`templates/*`). The CLI fetches templates at runtime, so you always get the latest version.
+</Note>
+
+---
+
+## External Templates
+
+Beyond the built-in templates, Scaffold HBAR supports **external templates** from any GitHub repository. This allows the community to create and share specialized templates.
+
+### Using External Templates
+
+Specify an external template using the `owner/repo` or `owner/repo#branch` format:
+
+```bash
+# Use the main branch
+npx create-scaffold-hbar@latest --template hedera-dev/template-hedera-lz-app
+
+# Use a specific branch
+npx create-scaffold-hbar@latest --template hedera-dev/template-hedera-lz-app#main
+```
+
+The CLI fetches the template via [giget](https://github.com/unjs/giget), so any public GitHub repository can serve as a template.
+
+### Featured: LayerZero on Hedera Template
+
+The [template-hedera-lz-app](https://github.com/hedera-dev/template-hedera-lz-app) is a comprehensive tutorial template for building cross-chain applications using LayerZero V2 on Hedera.
+
+```bash
+npx create-scaffold-hbar@latest my-lz-app --template hedera-dev/template-hedera-lz-app
+```
+
+**What you'll build:**
+
+| Chapter | Topic | Description |
+|---------|-------|-------------|
+| 1 | Cross-Chain OFT | Send native ETH from Base Sepolia to Hedera as an HTS-wrapped token |
+| 2 | Cross-Chain Vault | ERC4626 vault with omnichain deposits and share token redemptions |
+| 3 | ETF Strategy | Auto-investing vault that swaps deposits into a 50/50 HBAR + HUSTLERS basket via SaucerSwap |
+
+**Architecture:**
+
+```
+BASE (Spoke)                           HEDERA (Hub)
+┌─────────────────┐                   ┌─────────────────────────┐
+│ MyNativeOFT     │◄──── LayerZero ──►│ MyHTSConnector          │
+│ Adapter         │                   │ (wraps ETH as HTS)      │
+└─────────────────┘                   └─────────────────────────┘
+```
+
+<Note>
+This template uses **pnpm** (not Yarn) and requires testnet funds on both Base Sepolia and Hedera Testnet. See the [template README](https://github.com/hedera-dev/template-hedera-lz-app) for complete setup instructions.
+</Note>
+
+### Creating Your Own Template
+
+Any GitHub repository can be used as an external template. To make your template compatible:
+
+1. **Structure** — Use a monorepo layout with `packages/` for contracts and frontend
+2. **Manifest** (optional) — Add a `template.json` to specify capabilities:
+
+```json
+{
+  "create-scaffold-hbar": {
+    "capabilities": {
+      "frontend": ["nextjs-app"],
+      "solidityFramework": ["hardhat"],
+      "packageManager": ["pnpm", "yarn"]
+    },
+    "defaults": {
+      "frontend": "nextjs-app",
+      "solidityFramework": "hardhat"
+    }
+  }
+}
+```
+
+3. **Share** — Users can scaffold with `npx create-scaffold-hbar@latest --template your-org/your-repo`
+
+---
+
+## Project Structure
+
+A scaffolded project has this structure:
+
+```
+my-hedera-dapp/
+├── packages/
+│   ├── foundry/          # OR hardhat/ (Solidity contracts)
+│   │   ├── contracts/    # Smart contract source files
+│   │   ├── script/       # Deployment scripts (Foundry)
+│   │   ├── deploy/       # Deployment scripts (Hardhat)
+│   │   └── test/         # Contract tests
+│   │
+│   └── nextjs/           # Frontend application
+│       ├── app/          # Next.js App Router pages
+│       ├── components/   # React components
+│       ├── contracts/    # Auto-generated contract ABIs
+│       ├── hooks/        # Custom React hooks
+│       └── services/     # Web3 service utilities
+│
+├── package.json          # Workspace configuration
+└── yarn.lock
+```
+
+### Key Features
+
+**Auto-generated Contract Types**
+
+After deploying contracts, ABIs are automatically generated to `packages/nextjs/contracts/deployedContracts.ts`. This provides full TypeScript support when interacting with your contracts.
+
+**Pre-built Hooks**
+
+The frontend includes scaffold hooks for common operations:
+
+```typescript
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-hbar";
+
+// Read contract state
+const { data: greeting } = useScaffoldReadContract({
+  contractName: "YourContract",
+  functionName: "greeting",
+});
+
+// Write to contract
+const { writeContractAsync } = useScaffoldWriteContract({
+  contractName: "YourContract",
+});
+
+await writeContractAsync({
+  functionName: "setGreeting",
+  args: ["Hello, Hedera!"],
+});
+```
+
+**Hedera-Optimized Configuration**
+
+Projects come pre-configured with:
+- Hashio JSON-RPC endpoints for Testnet and Mainnet
+- Mirror Node API integration
+- Proper gas estimation for Hedera's fee model
+- RainbowKit with Hedera wallet support
+
+---
+
+## Common Commands
+
+| Command | Description |
+|---------|-------------|
+| `yarn foundry:chain` / `yarn hardhat:chain` | Start local development chain |
+| `yarn foundry:deploy` / `yarn hardhat:deploy` | Deploy contracts |
+| `yarn next:start` | Start Next.js frontend |
+| `yarn next:build` | Build frontend for production |
+| `yarn lint` | Run linters on all packages |
+| `yarn format` | Format code with Prettier |
+| `yarn foundry:test` / `yarn hardhat:test` | Run contract tests |
+
+---
+
+## Deploying to Testnet
+
+1. **Get testnet HBAR** from the [Hedera Portal Faucet](https://portal.hedera.com/faucet)
+
+2. **Configure your account**:
+
+<Tabs>
+<Tab title="Foundry">
+```bash
+# Generate a new account
+yarn foundry:account:generate
+
+# Or import an existing key
+yarn foundry:account:import
+```
+
+Set your account alias in `packages/foundry/.env`:
+```bash
+ACCOUNT=your_keystore_alias
+```
+</Tab>
+<Tab title="Hardhat">
+```bash
+# Generate a new account
+yarn hardhat:account:generate
+
+# Or import an existing key
+yarn hardhat:account:import
+```
+
+Set your private key in `packages/hardhat/.env`:
+```bash
+DEPLOYER_PRIVATE_KEY=your_private_key
+```
+</Tab>
+</Tabs>
+
+3. **Deploy to testnet**:
+
+```bash
+yarn foundry:deploy --network hedera_testnet
+# or
+yarn hardhat:deploy --network hederaTestnet
+```
+
+4. **Verify contracts** (optional):
+
+```bash
+yarn foundry:verify:testnet 0xYourContractAddress contracts/YourContract.sol:YourContract
+# or
+yarn hardhat:verify:testnet
+```
+
+---
+
+## Hedera Skills (AI-Assisted Development)
+
+All scaffolded projects include [Hedera Skills](https://github.com/hedera-dev/hedera-skills) by default—a collection of AI coding assistant skills that help you build on Hedera faster.
+
+**What's included:**
+
+- **Agent prompts** — Pre-configured prompts for Cursor, Claude Code, and other AI assistants
+- **Code generation skills** — Hedera-specific patterns for HTS, HCS, smart contracts, and more
+- **Documentation context** — Embedded Hedera docs for accurate AI responses
+
+Skills are installed automatically during scaffolding via:
+
+```bash
+npx skills add hedera-dev/hedera-skills --all
+```
+
+<Tip>
+To skip Hedera Skills installation (e.g., for CI pipelines), use:
+```bash
+npx create-scaffold-hbar@latest --yes --skip-hedera-skills
+```
+</Tip>
+
+---
+
+## Ecosystem
+
+<CardGroup cols={2}>
+  <Card title="Scaffold UI" icon="palette" href="/solutions/tools/scaffold-hbar/scaffold-ui">
+    Shared React components and hooks for Hedera dApps, plus an MCP server for AI-assisted development
+  </Card>
+  <Card title="Hedera Skills" icon="wand-magic-sparkles" href="https://github.com/hedera-dev/hedera-skills">
+    AI coding assistant skills for Hedera development
+  </Card>
+</CardGroup>
+
+---
+
+## Resources
+
+- [GitHub: create-scaffold-hbar](https://github.com/hedera-dev/create-scaffold-hbar) — CLI source and issues
+- [GitHub: scaffold-hbar](https://github.com/hedera-dev/scaffold-hbar) — Templates repository
+- [Hedera Portal](https://portal.hedera.com/) — Account creation and testnet faucet
+- [HashScan](https://hashscan.io/) — Block explorer for Hedera

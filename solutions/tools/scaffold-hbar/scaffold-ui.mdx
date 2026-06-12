@@ -1,0 +1,423 @@
+---
+title: "Scaffold UI"
+description: "Shared React components, hooks, and an MCP server for building Hedera dApps with AI-assisted development."
+---
+
+## Overview
+
+**Scaffold UI** (`@scaffold-hbar-ui/*`) is a collection of React packages designed for Hedera and EVM-compatible dApps:
+
+| Package | Description |
+|---------|-------------|
+| `@scaffold-hbar-ui/components` | Address display, balance, HBAR input components |
+| `@scaffold-hbar-ui/hooks` | Hedera account resolution, address formatting hooks |
+| `@scaffold-hbar-ui/debug-contracts` | Contract debugging UI with multiplier inputs |
+| `@scaffold-hbar-ui/mcp-server` | MCP server for AI-assisted development |
+
+<CardGroup cols={2}>
+  <Card title="Components" icon="palette" href="#components">
+    Pre-built UI for addresses, balances, and inputs
+  </Card>
+  <Card title="Hooks" icon="code" href="#hooks">
+    Hedera account resolution and address utilities
+  </Card>
+  <Card title="MCP Server" icon="robot" href="#mcp-server-for-ai-agents">
+    AI agent integration for accurate code generation
+  </Card>
+  <Card title="GitHub" icon="github" href="https://github.com/hedera-dev/scaffold-hbar-ui">
+    Source code and examples
+  </Card>
+</CardGroup>
+
+---
+
+## Installation
+
+Install the packages you need:
+
+```bash
+# Core packages (most projects need both)
+npm install @scaffold-hbar-ui/components @scaffold-hbar-ui/hooks
+
+# Optional: Contract debugging UI
+npm install @scaffold-hbar-ui/debug-contracts
+```
+
+### Peer Dependencies
+
+Ensure you have these peer dependencies:
+
+```bash
+npm install react viem wagmi @tanstack/react-query
+```
+
+### Styles
+
+Import the component styles in your app's root layout:
+
+```tsx
+import "@scaffold-hbar-ui/components/styles.css";
+
+// If using debug-contracts
+import "@scaffold-hbar-ui/debug-contracts/styles.css";
+```
+
+---
+
+## Components
+
+### Address
+
+Displays an EVM address with a blockie avatar, copy button, and block explorer link. Automatically uses HashScan for Hedera chains.
+
+```tsx
+import { Address } from "@scaffold-hbar-ui/components";
+import { hederaTestnet } from "viem/chains";
+
+<Address
+  address="0x1234567890123456789012345678901234567890"
+  chain={hederaTestnet}
+/>
+```
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `address` | `string` | The EVM address to display |
+| `chain` | `Chain` | Viem chain for explorer links (uses HashScan for Hedera) |
+| `format` | `"short"` \| `"long"` | Address display format |
+| `size` | `"xs"` \| `"sm"` \| `"base"` \| `"lg"` \| `"xl"` \| `"2xl"` \| `"3xl"` | Component size |
+| `disableAddressLink` | `boolean` | Disable the explorer link |
+
+### Balance
+
+Shows native token balance with automatic USD conversion. Uses HBAR pricing for Hedera chains.
+
+```tsx
+import { Balance } from "@scaffold-hbar-ui/components";
+import { hederaTestnet } from "viem/chains";
+
+<Balance
+  address="0x1234567890123456789012345678901234567890"
+  chain={hederaTestnet}
+/>
+```
+
+### HbarInput
+
+Number input optimized for HBAR amounts with tinybar conversion.
+
+```tsx
+import { HbarInput } from "@scaffold-hbar-ui/components";
+
+const [amount, setAmount] = useState("");
+
+<HbarInput
+  value={amount}
+  onChange={setAmount}
+  placeholder="0.0"
+/>
+```
+
+### HederaAddressInput
+
+Input field that accepts both Hedera native addresses (`0.0.12345`) and EVM addresses (`0x...`), with validation and resolution.
+
+```tsx
+import { HederaAddressInput } from "@scaffold-hbar-ui/components";
+import { hederaTestnet } from "viem/chains";
+
+const [address, setAddress] = useState("");
+
+<HederaAddressInput
+  value={address}
+  onChange={setAddress}
+  chainId={hederaTestnet.id}
+  placeholder="0.0.12345 or 0x..."
+/>
+```
+
+---
+
+## Hooks
+
+### useAddress
+
+Formats EVM addresses with checksumming, short form display, and block explorer URLs.
+
+```tsx
+import { useAddress } from "@scaffold-hbar-ui/hooks";
+import { hederaTestnet } from "viem/chains";
+
+function AddressDisplay({ address }) {
+  const {
+    checkSumAddress,
+    shortAddress,
+    blockExplorerAddressLink,
+    blockieUrl,
+    isValidAddress,
+  } = useAddress({ address, chain: hederaTestnet });
+
+  return (
+    <div>
+      <img src={blockieUrl} alt="" width={24} height={24} />
+      <span>{shortAddress}</span>
+      <a href={blockExplorerAddressLink} target="_blank">
+        View on HashScan
+      </a>
+    </div>
+  );
+}
+```
+
+### useHederaAccountId
+
+Resolves a Hedera account ID (`0.0.12345`) from an EVM address by querying the Mirror Node.
+
+```tsx
+import { useHederaAccountId } from "@scaffold-hbar-ui/hooks";
+import { hederaTestnet } from "viem/chains";
+
+function AccountInfo({ evmAddress }) {
+  const { accountId, isLoading, status } = useHederaAccountId(
+    evmAddress,
+    hederaTestnet.id
+  );
+
+  if (isLoading) return <span>Loading...</span>;
+
+  return <span>Account: {accountId}</span>;
+}
+```
+
+### useHederaEvmAddress
+
+Resolves an EVM address from a Hedera native account ID.
+
+```tsx
+import { useHederaEvmAddress } from "@scaffold-hbar-ui/hooks";
+import { hederaTestnet } from "viem/chains";
+
+function EvmAddressDisplay({ accountId }) {
+  const { evmAddress, isLoading } = useHederaEvmAddress(
+    accountId,
+    hederaTestnet.id
+  );
+
+  return <span>EVM: {evmAddress}</span>;
+}
+```
+
+### useHederaAddressInput
+
+Validates and resolves Hedera address input (either format). Powers the `HederaAddressInput` component.
+
+```tsx
+import { useHederaAddressInput } from "@scaffold-hbar-ui/hooks";
+
+const {
+  evmAddress,      // Resolved EVM address (checksummed)
+  accountIdFromEvm, // Resolved account ID (if input was EVM)
+  error,           // Validation error message
+  warning,         // Warning message
+  isResolving,     // Loading state
+} = useHederaAddressInput({
+  value: inputValue,
+  chainId: 296, // Hedera Testnet
+  debounceDelay: 400,
+});
+```
+
+### Mirror Node Resolution
+
+All Hedera account resolution uses the Mirror Node API directly:
+
+| Chain | Mirror Node URL |
+|-------|----------------|
+| Mainnet (295) | `https://mainnet.mirrornode.hedera.com` |
+| Testnet (296) | `https://testnet.mirrornode.hedera.com` |
+
+---
+
+## Debug Contracts
+
+The `@scaffold-hbar-ui/debug-contracts` package provides a contract interaction UI for development.
+
+### Contract Component
+
+Renders a form for interacting with deployed contracts—call read functions, execute writes, and view events.
+
+```tsx
+import { Contract } from "@scaffold-hbar-ui/debug-contracts";
+import "@scaffold-hbar-ui/debug-contracts/styles.css";
+import { hederaTestnet } from "viem/chains";
+
+const deployedContract = {
+  address: "0xYourContractAddress",
+  abi: [/* your ABI */],
+};
+
+<Contract
+  contracts={deployedContract}
+  chainId={hederaTestnet.id}
+/>
+```
+
+### IntegerInput
+
+Integer input with **decimal multiplier buttons** for converting human-readable amounts to chain units:
+
+- **×1e8** — Multiplies by 10^8 (tinybars → HBAR)
+- **×1e18** — Multiplies by 10^18 (wei → ETH)
+
+```tsx
+import { IntegerInput } from "@scaffold-hbar-ui/debug-contracts";
+
+const [value, setValue] = useState("");
+
+<IntegerInput
+  value={value}
+  onChange={setValue}
+  placeholder="Enter amount"
+/>
+```
+
+---
+
+## MCP Server for AI Agents
+
+The `@scaffold-hbar-ui/mcp-server` package exposes Scaffold UI documentation to AI coding assistants via the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/).
+
+### Why Use It?
+
+When building Hedera dApps with AI assistance (Cursor, Claude Desktop, etc.), the MCP server provides:
+
+- **Accurate imports** — AI knows the exact package exports
+- **Correct props** — TypeScript signatures for all components and hooks
+- **Working examples** — Real code snippets from the example app
+- **Hedera-specific guidance** — Mirror Node URLs, chain IDs, HBAR formatting
+
+### Quick Setup
+
+<Tabs>
+<Tab title="Cursor">
+
+Add to `~/.cursor/mcp.json` (global) or `.cursor/mcp.json` (project):
+
+```json
+{
+  "mcpServers": {
+    "scaffold-hbar-ui": {
+      "command": "npx",
+      "args": ["-y", "@scaffold-hbar-ui/mcp-server"]
+    }
+  }
+}
+```
+
+Restart Cursor, then verify the server appears in Settings → MCP Servers.
+
+</Tab>
+<Tab title="Claude Desktop">
+
+Open Settings → Developer → Edit Config, then add:
+
+```json
+{
+  "mcpServers": {
+    "scaffold-hbar-ui": {
+      "command": "npx",
+      "args": ["-y", "@scaffold-hbar-ui/mcp-server"]
+    }
+  }
+}
+```
+
+Restart Claude Desktop.
+
+</Tab>
+<Tab title="Local Development">
+
+For local development (pointing at the cloned repo):
+
+```json
+{
+  "mcpServers": {
+    "scaffold-hbar-ui": {
+      "command": "node",
+      "args": ["/path/to/scaffold-hbar-ui/packages/mcp-server/dist/esm/bin/scaffold-hbar-ui-mcp.js"]
+    }
+  }
+}
+```
+
+Build first with `pnpm build` in the mcp-server package.
+
+</Tab>
+</Tabs>
+
+### Available Tools
+
+The MCP server exposes these tools to AI agents:
+
+| Tool | Description |
+|------|-------------|
+| `search_components` | Find components by keyword |
+| `search_hooks` | Find hooks by keyword |
+| `get_component_props` | Get TypeScript props for a component |
+| `get_hook_signature` | Get hook signature and return type |
+| `get_component_example` | Get usage example for a component |
+| `get_hook_example` | Get usage example for a hook |
+| `get_installation_guide` | Get installation instructions |
+| `get_theming_guide` | Get theming and styling info |
+
+### Example Prompts
+
+After configuring the MCP server, try these prompts:
+
+- *"Show me how to use the HederaAddressInput component with validation"*
+- *"What hooks are available for Hedera account resolution?"*
+- *"Get the props for the Address component"*
+
+### HTTP Mode (Remote Agents)
+
+For remote AI agents or server-side integrations:
+
+```bash
+# Start HTTP server
+PORT=3100 node ./dist/esm/bin/scaffold-hbar-ui-mcp.js --http
+
+# With authentication
+SCAFFOLD_HBAR_UI_MCP_KEY=your-secret PORT=3100 node ./dist/esm/bin/scaffold-hbar-ui-mcp.js --http
+```
+
+Connect with:
+
+```json
+{
+  "mcpServers": {
+    "scaffold-hbar-ui": {
+      "url": "http://localhost:3100/mcp"
+    }
+  }
+}
+```
+
+### Testing with MCP Inspector
+
+Debug the server visually with the [MCP Inspector](https://github.com/modelcontextprotocol/inspector):
+
+```bash
+npx @modelcontextprotocol/inspector npx @scaffold-hbar-ui/mcp-server
+```
+
+Open `http://localhost:6274` to browse tools, resources, and prompts interactively.
+
+---
+
+## Resources
+
+- [GitHub: scaffold-hbar-ui](https://github.com/hedera-dev/scaffold-hbar-ui) — Source code
+- [Example App](https://github.com/hedera-dev/scaffold-hbar-ui/tree/main/example) — Live demos of all components
+- [MCP Documentation](https://modelcontextprotocol.io/) — Learn more about Model Context Protocol
+- [npm: @scaffold-hbar-ui/components](https://www.npmjs.com/package/@scaffold-hbar-ui/components)
+- [npm: @scaffold-hbar-ui/hooks](https://www.npmjs.com/package/@scaffold-hbar-ui/hooks)

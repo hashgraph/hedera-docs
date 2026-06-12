@@ -2833,6 +2833,13 @@
             "group": "Developer Tools",
             "pages": [
               "solutions/tools/playground",
+              {
+                "group": "Scaffold HBAR",
+                "pages": [
+                  "solutions/tools/scaffold-hbar/index",
+                  "solutions/tools/scaffold-hbar/scaffold-ui"
+                ]
+              },
               "solutions/tools/code-repo",
               "solutions/tools/custodians-library",
               "solutions/tools/custodians-library-usage",

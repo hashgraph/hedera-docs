@@ -2443,8 +2443,9 @@
                 "group": "Cross-Chain",
                 "pages": [
                   "evm/integrations/cross-chain/index",
+                  "evm/integrations/cross-chain/chainlink-ccip",
                   "evm/integrations/cross-chain/layerzero",
-                  "evm/integrations/cross-chain/chainlink-ccip"
+                  "evm/integrations/cross-chain/usdt0"
                 ]
               },
               {

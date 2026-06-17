@@ -14,6 +14,20 @@ This section helps you navigate ECDSA and ED25519 signature workflows, introduce
 
 Hedera’s account model supports both ED25519 and ECDSA keys by identifying accounts by aliases instead of static addresses. This allows dynamic key rotation without changing an account’s ID, unlike EVM's static ECDSA-only approach. Signature validation varies accordingly: ED25519 keys use `isAuthorized` or `isAuthorizedRaw`, while Hedera's ECDSA accounts with aliases can still rely on `ECRECOVER`.
 
+### **Hollow Accounts and Long-Zero Addresses**
+
+Hedera can create a **hollow account** when an EVM alias is used for account creation and the account has an ID but no key material yet. A hollow account can receive HBAR and tokens, but it cannot sign transactions or modify its account properties until the matching ECDSA key signs a transaction and the account is completed.
+
+Hollow accounts are often created via auto account creation or when an account is initialized with an EVM address alias but no on-file key. Once the account is completed, it behaves like any regular Hedera account. For an example flow, see [Hedera Testnet Faucet](/evm/quickstart/get-test-hbar).
+
+Some Hedera accounts may also fall back to the **EVM Address from Account ID** when no public-key alias is set. This fallback is the “long-zero” form: 12 bytes of zero followed by the 8-byte account number. It is a valid 20-byte EVM address, but it is not derived from an ECDSA public key and therefore is not compatible with `ECRECOVER` the way a public-key-derived alias is.
+
+If you want full EVM tooling compatibility, prefer the **EVM Address from Public Key** by creating the account with an ECDSA alias or by completing a hollow account with the matching ECDSA key. Accounts created with `setKeyWithoutAlias()` or with no alias will be reachable via the long-zero EVM Address from Account ID instead.
+
+<Info>
+A hollow account becomes complete when it is used as the transaction fee payer and the matching ECDSA private key signs the transaction. Until then, the account can only receive value or tokens.
+</Info>
+
 ### **Clarifying Account ID vs. EVM Address**
 
 Hedera accounts have a native **Account ID** (e.g., `0.0.xxxx`) and can also have an **EVM Address from Public Key** (a 20-byte address like Ethereum's, derived from the ECDSA public key). The EVM Address from Public Key makes the account compatible with `ECRECOVER` and other familiar EVM tools. For more details, see the [Smart Contract Addresses](/evm/development/addresses) page.

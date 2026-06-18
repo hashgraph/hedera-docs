@@ -1522,8 +1522,8 @@ externalDocs:
   description: REST API Docs
   url: "https://docs.hedera.com/guides/docs/mirror-node-api/cryptocurrency-api"
 servers:
-  - description: The current REST API server
-    url: ""
+  - description: Hedera Mainnet Mirror Node
+    url: "https://mainnet.mirrornode.hedera.com"
   - description: The production REST API servers
     url: "{scheme}://{network}.mirrornode.hedera.com"
     variables:

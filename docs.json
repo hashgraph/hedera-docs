@@ -28,6 +28,9 @@
     "decoration": "gradient"
   },
   "favicon": "/favicon.png",
+  "api": {
+    "baseUrl": "https://mainnet.mirrornode.hedera.com"
+  },
   "appearance": {
     "default": "light"
   },

@@ -8,6 +8,7 @@
 const fs = require('fs');
 
 const REPO_URL = 'https://github.com/hiero-ledger/hiero-mirror-node';
+const GITHUB_URL = 'https://github.com';
 
 // The only categories rendered as accordions on this page, in this order.
 // The release body also emits "Breaking Changes" (rewritten as editorial prose
@@ -46,6 +47,13 @@ function normalizeVersion(input) {
   }
 
   return version;
+}
+
+function linkAuthor(bullet) {
+  return bullet.replace(
+    /\bby @([A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)\s*$/,
+    (match, handle) => `by [@${handle}](${GITHUB_URL}/${handle})`
+  );
 }
 
 function escapeRegExp(value) {
@@ -116,11 +124,12 @@ function parseReleaseBody(body) {
       //  - strip the leading marker
       //  - reduce PR links `[#NNN](url)` to the plain `#NNN` ref the page uses
       //  - unescape markdown-escaped punctuation (e.g. `\_` -> `_`)
-      const bullet = line
-        .replace(/^[-*]\s+/, '')
-        .replace(/\[#(\d+)\]\([^)]*\)/g, '#$1')
-        .replace(/\\([^A-Za-z0-9])/g, '$1')
-        .trimEnd();
+      const bullet = linkAuthor(
+        line
+          .replace(/^[-*]\s+/, '')
+          .replace(/\\([^A-Za-z0-9])/g, '$1')
+          .trimEnd()
+      );
 
       if (bullet.trim()) {
         blocks.get(currentCategory).push(`  * ${bullet}`);

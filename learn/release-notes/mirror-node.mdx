@@ -10,6 +10,79 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 
 
+
+## [v0.157.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.157.0)
+
+The configuration for [HIP-1137](https://hips.hedera.com/#hip-1137) has improved to allow separate endpoints for different block node APIs. The wrapped record block (WRB) root hash validation has been relaxed to allow for multiple jump start files as long as they are not TSS signed. We now support initial state changes in a genesis WRB. This can be used by new mirror nodes running against mainnet to get a complete state of pre-genesis accounts, contracts, and files.
+
+This release improves how some null fields are handled on contract result REST APIs. Fields like `chain_id`, `gas_price`, and `type` are only present in `EthereumTransaction` and not available in `ContractCall` or `ContractCreate` transactions so historically we would return `null` for these. The `type` field will now fallback to type zero transactions if null. The chain ID will now be set to the value of the configuration property `hiero.mirror.rest.chainId` if null. Operators should ensure this value is set to either `0x127` (mainnet), `0x128` (testnet), `0x129` (previewnet), or `0x12a` (other). Finally, `gas_price` will display the historical gas rate from the fee schedule at the given timestamp if null.
+
+<Accordion title="Enhancements">
+  * HIP-1137 Allow separate host/port for block node APIs #13702
+  * Migrate Loki rules to GC #13696
+  * Reduce alert verbosity #13690
+  * HIP-1427 Relax WRB block root hash validation #13662
+  * HIP-1427 Support initial StateChanges in genesis WRB #13650
+  * Add synthetic transactions to contracts/result #13503
+  * feat: Implement fee schedule handling in contract processing #13491
+</Accordion>
+
+<Accordion title="Bug Fixes">
+  * Fix consensus start/end timestamps to use min/max across all transactions  #13595
+  * Fix ecdsa recover in native image (0.157) #13751
+  * Fix rest monitor check failure (0.157) #13740
+  * Refactor contract/results syntetic result query to prevent full scan in v2(0.157.0) #13739
+  * Fix importer native image (0.157) #13736
+  * Fix docker build after Spring Boot 4.1 #13703
+  * Upgrade micrometer to 1.17.0 #13685
+  * Fix native image resources #13660
+  * Register nested classes for `RecordFileConsensusTimestampsRecalculateMigration` #13656
+  * Add a more recent mainnet bootstrap address book #13652
+  * Optimize pending staking reward calculation #13647
+  * Refactor contract action handling and revert reason retrieval #13566
+</Accordion>
+
+<Accordion title="Dependency Upgrades">
+  * Update PostgreSQL in GCP Marketplace (0.157) #13730
+  * Bump the dependencies group with 3 updates #13721
+  * Bump golang.org/x/text from 0.37.0 to 0.38.0 in /tools/bootstrap in the dependencies group #13719
+  * Bump org.openapitools:openapi-generator-gradle-plugin from 7.22.0 to 7.23.0 #13717
+  * Bump com.hedera.hashgraph:sdk from 2.72.0 to 2.73.0 #13716
+  * Bump com.github.luben:zstd-jni from 1.5.7-10 to 1.5.7-11 #13715
+  * Bump software.amazon.awssdk:bom from 2.46.5 to 2.46.10 #13711
+  * Bump esbuild from 0.28.0 to 0.28.1 in /rest #13710
+  * Bump uuid to 11.1.1 in log-downloader #13704
+  * Exclude vulnerable plugin dependencies #13700
+  * Bump `@grpc`/grpc-js from 1.14.3 to 1.14.4 in /tools/log-downloader #13699
+  * Bump Spring Boot from 4.0.6 to 4.1.0 #13695
+  * Bump Go from 1.26.2 to 1.26.4 #13693
+  * Bump node from 24.15.0 to 24.16.0 #13692
+  * Bump github.com/jackc/pgx/v5 from 5.9.2 to 5.10.0 in /tools/bootstrap in the dependencies group #13680
+  * Bump `@google-cloud`/logging from 11.2.1 to 11.2.2 in /tools/log-downloader in the dependencies group #13679
+  * Bump the dependencies group in /rest with 4 updates #13678
+  * Bump net.java.dev.jna:jna from 5.18.1 to 5.19.0 #13677
+  * Bump io.hypersistence:hypersistence-utils-hibernate-71 from 3.15.2 to 3.15.3 #13676
+  * Bump com.gorylenko.gradle-git-properties:gradle-git-properties from 4.0.0 to 4.0.1 #13675
+  * Bump org.hiero.block-node:protobuf-sources from 0.34.0 to 0.35.1 #13674
+  * Bump com.github.luben:zstd-jni from 1.5.7-9 to 1.5.7-10 #13673
+  * Bump org.flywaydb:flyway-database-postgresql from 12.7.0 to 12.8.1 #13672
+  * Bump consensusNodeVersion from 0.75.0-rc.3 to 0.75.0-rc.4 #13671
+  * Bump software.amazon.awssdk:bom from 2.45.1 to 2.46.5 #13670
+  * Bump jooqVersion from 3.21.4 to 3.21.5 #13669
+  * Bump the dependencies group in /rest with 3 updates #13645
+  * Bump github.com/go-playground/validator/v10 from 10.30.2 to 10.30.3 in /rosetta in the dependencies group #13644
+  * Bump commander from 14.0.3 to 15.0.0 in /tools/mirror-report in the dependencies group across 1 directory #13643
+  * Bump docker/setup-qemu-action from 4.0.0 to 4.1.0 in the dependencies group #13642
+  * Bump com.gradleup.shadow:shadow-gradle-plugin from 9.3.1 to 9.4.2 #13641
+  * Bump software.amazon.awssdk:bom from 2.44.12 to 2.45.1 #13640
+  * Bump org.graalvm.buildtools:native-gradle-plugin from 1.1.0 to 1.1.1 #13639
+  * Bump org.flywaydb:flyway-database-postgresql from 12.6.2 to 12.7.0 #13638
+  * Bump com.gorylenko.gradle-git-properties:gradle-git-properties from 3.0.2 to 4.0.0 #13637
+  * Bump com.diffplug.spotless:spotless-plugin-gradle from 8.5.1 to 8.6.0 #13636
+  * Bump org.web3j:core from 5.0.2 to 5.0.3 #13635
+  * Bump versions for v0.157.0-SNAPSHOT #13622
+</Accordion>
+
 ## [v0.156.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.156.0)
 
 This release verifies support for PostgreSQL 17 and 18 and upgrades our managed databases from PostgreSQL 16 to PostgreSQL 18. This also required upgrading Citus from 12.1.5 to 14.0.0 and Stackgres from 1.18.3 to 1.18.6. Testing shows a significant performance gain of 10-20% from the database version bumps. Note that at this time we are not requiring a change to the minimum version of PostgreSQL that we support. We still support PostgreSQL 14 for the foreseeable future, but it is recommended that operators look to upgrade their database to 17 or 18 to stay ahead of any changes.

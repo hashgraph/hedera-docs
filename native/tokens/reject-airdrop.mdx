@@ -21,7 +21,7 @@ The `TokenRejectTransaction` allows users to reject and return unwanted airdrops
 
 **Transaction Fees**
 
-* Please see the transaction and query [fees](/learn/networks/mainnet/fees#transaction-and-query-fees) table for the base transaction fee.
+* Please see the transaction and query [fees](/networks/fees#transaction-and-query-fees) table for the base transaction fee.
 * Please use the [Hedera fee estimator](https://hedera.com/fees) to estimate the cost of your transaction fee.
 
 <table><thead><tr><th>SDK Method</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>setOwnerId(accountId)</code></td><td><a href="/native/fundamentals/specialized-types#accountid">AccountId</a></td><td>Sets the ID of the account holding/owning the tokens.</td></tr><tr><td><code>addTokenId(&#x3C;tokenId>)</code></td><td>TokenId</td><td>Adds a token to be rejected.</td></tr><tr><td><code>setTokenIds(tokenIds)</code></td><td>List&#x3C;TokenId></td><td>Adds a list of one or more token IDs to be rejected.</td></tr><tr><td><code>addNftId(&#x3C;nftId>)</code></td><td>TokenId</td><td>Adds a NFT ID to be rejected.</td></tr><tr><td><code>setNftIds(&#x3C;nftIds>)</code></td><td>List&#x3C;NftId></td><td>Adds a list of one or more NFT IDs to be rejected.</td></tr></tbody></table>
@@ -144,7 +144,7 @@ The `TokenRejectFlow` simplifies the process of rejecting unwanted tokens and di
 
 **Transaction Fees**
 
-* Please see the transaction and query [fees](/learn/networks/mainnet/fees#transaction-and-query-fees) table for the base transaction fee.
+* Please see the transaction and query [fees](/networks/fees#transaction-and-query-fees) table for the base transaction fee.
 * Please use the [Hedera fee estimator](https://hedera.com/fees) to estimate the cost of your transaction fee.
 
 <table><thead><tr><th>Method</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>setOwnerId(accountId)</code></td><td><a href="/native/fundamentals/specialized-types#accountid">AccountId</a></td><td>Sets the ID of the account holding/owning the tokens. This is the receiver account that will be rejecting the token.</td></tr><tr><td><code>addTokenId(&#x3C;tokenId>)</code></td><td>TokenId</td><td>Adds a token ID to be rejected and dissociated.</td></tr><tr><td><code>setTokenIds(tokenIds)</code></td><td>List&#x3C;TokenId></td><td>Sets a list of one or more token IDs to be rejected and dissociated.</td></tr><tr><td><code>addNftId(&#x3C;NftId>)</code></td><td>NftId</td><td>Adds a NFT ID to be rejected and dissociated.</td></tr><tr><td><code>setNftIds(&#x3C;nftIds>)</code></td><td>List&#x3C;NftId></td><td>Sets a list of one or more NFT IDs to be rejected and dissociated.</td></tr></tbody></table>

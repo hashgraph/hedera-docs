@@ -258,7 +258,7 @@ fmt.Printf("Created NFT %s with serial number(s): %v\n\n", tokenID, mintRx.Seria
 
 #### **🚨 Throttle cap warning**
 
-Batch minting of 10+ NFTs can run into throughput issues and potentially hit the [transaction limit (throttle cap)](/learn/networks/mainnet#network-throttles), causing the SDK to throw `BUSY` exceptions. Adding an application-level retry loop can help manage these exceptions for the batch-minting process.
+Batch minting of 10+ NFTs can run into throughput issues and potentially hit the [transaction limit (throttle cap)](/networks/mainnet#network-throttles), causing the SDK to throw `BUSY` exceptions. Adding an application-level retry loop can help manage these exceptions for the batch-minting process.
 
 The following are examples of retry loops:
 

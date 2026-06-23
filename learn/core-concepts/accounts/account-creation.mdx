@@ -8,7 +8,7 @@ New accounts are created on the Hedera ledger by submitting a transaction to the
 
 You will need access to an existing account with enough HBAR to cover the transaction fee to create the account. Suppose you don't have access to an existing account. In that case, you can use a supported wallet or visit the [Hedera Developer Portal](https://portal.hedera.com/register) to create an account. You can also ask a friend with an existing Hedera account to generously create one for you. Applications can check out the "[Auto Account Creation](/learn/core-concepts/accounts/auto-account-creation)" feature to make free Hedera user accounts.
 
-When an account is created, it is stored in the state on the Hedera network. The current state can be queried from the ledger and viewed in a [Network Explorer](/learn/networks/community-mirror-nodes). Each account has at least one public and private key pair. The private key(s) on the account is used to sign and authorize transactions that involve the account. To view the properties that can be set for an account, check out the "[Account Properties](/learn/core-concepts/accounts/account-properties)" section.
+When an account is created, it is stored in the state on the Hedera network. The current state can be queried from the ledger and viewed in a [Network Explorer](/networks/community-mirror-nodes-explorers). Each account has at least one public and private key pair. The private key(s) on the account is used to sign and authorize transactions that involve the account. To view the properties that can be set for an account, check out the "[Account Properties](/learn/core-concepts/accounts/account-properties)" section.
 
 <Tip>
 **Recommended default for EVM compatibility:** Create accounts with an ECDSA key and set the **EVM Address from Public Key** at creation. This enables native compatibility with Ethereum wallets, JSON-RPC tooling, and smart-contract interactions. See [Create an account](/native/accounts/create#setting-the-key-and-alias) for the SDK methods.
@@ -37,7 +37,7 @@ Supported wallets may or may not support creating testnet and previewnet account
   </Card>
   <Card
     title="Wallets"
-    href="/learn/networks/mainnet/access"
+    href="/networks/mainnet/access"
     arrow
   >
     

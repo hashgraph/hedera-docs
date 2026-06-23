@@ -3,7 +3,7 @@ title: "Create an account"
 description: "Programmatically create a Hedera account with AccountCreateTransaction, set an ECDSA key with EVM Address from Public Key, and fund the new account with HBAR."
 ---
 
-A Hedera account is required to interact with any network service, since every transaction and query fee is paid from an account. You can create a previewnet or testnet account on the [Hedera Developer Portal](https://portal.hedera.com/), or use a third-party wallet to generate a free [mainnet account](/learn/networks/mainnet/access).
+A Hedera account is required to interact with any network service, since every transaction and query fee is paid from an account. You can create a previewnet or testnet account on the [Hedera Developer Portal](https://portal.hedera.com/), or use a third-party wallet to generate a free [mainnet account](/networks/mainnet/access).
 
 This page covers programmatic account creation with `AccountCreateTransaction()`. The transaction must be signed and paid for by an existing account. To obtain the new account ID, request the [receipt](/native/transactions/receipt) of the transaction.
 
@@ -19,7 +19,7 @@ For a complete list of account properties, see the [accounts overview](/native/a
 
 - The account paying for the transaction fee is required to sign the transaction.
 - The sender also pays the `maxAutoAssociations` fee and the rent for the first auto-renewal period.
-- See the transaction and query [fees](/learn/networks/mainnet/fees) table for the base transaction fee.
+- See the transaction and query [fees](/networks/fees) table for the base transaction fee.
 - Use the [Hedera fee estimator](https://hedera.com/fees) to estimate cost.
 
 ---

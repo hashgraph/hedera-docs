@@ -365,7 +365,7 @@
     },
     {
       "source": "/docs/join-hedera-testnet",
-      "destination": "/learn/networks/testnet"
+      "destination": "/networks/testnet"
     },
     {
       "source": "/docs/:slug*",
@@ -517,7 +517,7 @@
     },
     {
       "source": "/hedera/networks/mainnet/fees/transaction-records",
-      "destination": "/learn/networks/mainnet/transaction-records"
+      "destination": "/networks/mainnet/transaction-records"
     },
     {
       "source": "/hedera/networks/mainnet/mainnet-nodes",
@@ -529,19 +529,19 @@
     },
     {
       "source": "/hedera/networks/release-notes",
-      "destination": "/learn/release-notes"
+      "destination": "/networks/release-notes"
     },
     {
       "source": "/hedera/networks/release-notes/services",
-      "destination": "/learn/release-notes/services"
+      "destination": "/networks/release-notes/services"
     },
     {
       "source": "/hedera/networks/testnet/testnet-access",
-      "destination": "/learn/networks/testnet/access"
+      "destination": "/networks/testnet/access"
     },
     {
       "source": "/hedera/networks/testnet/testnet-nodes",
-      "destination": "/learn/networks/testnet/nodes"
+      "destination": "/networks/testnet/nodes"
     },
     {
       "source": "/hedera/open-source-solutions/ai-studio-on-hedera",
@@ -949,11 +949,43 @@
     },
     {
       "source": "/hedera/networks",
-      "destination": "/learn/networks"
+      "destination": "/networks"
+    },
+    {
+      "source": "/learn/networks",
+      "destination": "/networks"
+    },
+    {
+      "source": "/networks/community-mirror-nodes",
+      "destination": "/networks/community-mirror-nodes-explorers"
+    },
+    {
+      "source": "/learn/networks/community-mirror-nodes",
+      "destination": "/networks/community-mirror-nodes-explorers"
+    },
+    {
+      "source": "/networks/mainnet/fees",
+      "destination": "/networks/fees"
+    },
+    {
+      "source": "/learn/networks/mainnet/fees",
+      "destination": "/networks/fees"
+    },
+    {
+      "source": "/learn/networks/:slug*",
+      "destination": "/networks/:slug*"
+    },
+    {
+      "source": "/learn/release-notes",
+      "destination": "/networks/release-notes"
+    },
+    {
+      "source": "/learn/release-notes/:slug*",
+      "destination": "/networks/release-notes/:slug*"
     },
     {
       "source": "/hedera/networks/:slug*",
-      "destination": "/learn/networks/:slug*"
+      "destination": "/networks/:slug*"
     },
     {
       "source": "/hedera/open-source-solutions",
@@ -1181,15 +1213,15 @@
     },
     {
       "source": "/hedera/networks/localnet/multinode-configuration",
-      "destination": "/learn/networks/localnet/multinode"
+      "destination": "/networks/localnet/multinode"
     },
     {
       "source": "/hedera/networks/localnet/single-node-configuration",
-      "destination": "/learn/networks/localnet/single-node"
+      "destination": "/networks/localnet/single-node"
     },
     {
       "source": "/hedera/networks/mainnet/mainnet-access",
-      "destination": "/learn/networks/mainnet/access"
+      "destination": "/networks/mainnet/access"
     },
     {
       "source": "/hedera/networks/mainnet/mainnet-nodes/node-deployment-process",
@@ -1201,7 +1233,7 @@
     },
     {
       "source": "/hedera/networks/release-notes/mirror-node",
-      "destination": "/learn/release-notes/mirror-node"
+      "destination": "/networks/release-notes/mirror-node"
     },
     {
       "source": "/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/elizaos-plugin",
@@ -2198,6 +2230,18 @@
               "learn/core-concepts/fee-model",
               "learn/core-concepts/high-volume-entity-creation"
             ]
+          }
+        ]
+      },
+      {
+        "tab": "Networks",
+        "icon": "network-wired",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "networks/index"
+            ]
           },
           {
             "group": "Networks",
@@ -2205,36 +2249,36 @@
               {
                 "group": "Mainnet",
                 "pages": [
-                  "learn/networks/mainnet/index",
-                  "learn/networks/mainnet/access",
-                  "learn/networks/mainnet/fees",
-                  "learn/networks/mainnet/transaction-records"
+                  "networks/mainnet/index",
+                  "networks/mainnet/access",
+                  "networks/mainnet/transaction-records"
                 ]
               },
               {
                 "group": "Testnet",
                 "pages": [
-                  "learn/networks/testnet/index",
-                  "learn/networks/testnet/access",
-                  "learn/networks/testnet/nodes"
+                  "networks/testnet/index",
+                  "networks/testnet/access",
+                  "networks/testnet/nodes"
                 ]
               },
               {
                 "group": "Localnet",
                 "pages": [
-                  "learn/networks/localnet/index",
-                  "learn/networks/localnet/single-node",
-                  "learn/networks/localnet/multinode"
+                  "networks/localnet/index",
+                  "networks/localnet/single-node",
+                  "networks/localnet/multinode"
                 ]
               },
-              "learn/networks/community-mirror-nodes"
+              "networks/fees",
+              "networks/community-mirror-nodes-explorers"
             ]
           },
           {
             "group": "Release Notes",
             "pages": [
-              "learn/release-notes/services",
-              "learn/release-notes/mirror-node"
+              "networks/release-notes/services",
+              "networks/release-notes/mirror-node"
             ]
           }
         ]

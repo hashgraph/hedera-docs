@@ -142,6 +142,12 @@ A block stream is a new, unified data format for consensus nodes that consolidat
 [HIP-1056: Block Streams](https://hips.hedera.com/hip/hip-1056) | [Block Node Repository](https://github.com/hiero-ledger/hiero-block-node)
 
 
+### Block Node
+
+---
+
+A block node is a service that receives the [block stream](#block-stream) from a consensus node and makes it available to downstream consumers such as mirror nodes, indexers, and analytics services. Block nodes replace the previous record stream file upload mechanism, providing a real-time, push-based feed of all network activity. The reference implementation is maintained in the [Hiero Block Node repository](https://github.com/hiero-ledger/hiero-block-node).
+
 ### Block Timestamp
 
 ---
@@ -1116,7 +1122,7 @@ Solidity is a Turing-complete object-oriented programming language for developin
 
 ---
 
-Solo is a Kubernetes-native tool for running a private Hedera network locally or in CI environments. It deploys the full Hedera stack — consensus node, mirror node, JSON-RPC relay, and block explorer — in a configuration that mirrors production behavior. Solo is the recommended replacement for Hiero Local Node (deprecating September 2026) and supports development workflows for both EVM-based and native SDK applications. See the [Solo documentation](https://solo.hiero.org/docs/) for setup and usage guides.
+Solo is a Kubernetes-native tool for running a private Hedera network locally or in CI environments. It deploys the full Hedera stack — consensus node, block nodes, mirror node, JSON-RPC relay, and mirror node explorer — in a configuration that mirrors production behavior. Solo is the recommended replacement for Hiero Local Node (deprecating September 2026) and supports development workflows for both EVM-based and native SDK applications. See the [Solo documentation](https://solo.hiero.org/docs/) for setup and usage guides.
 
 ### Soul-Bound Token (SBT)
 

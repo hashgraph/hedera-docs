@@ -23,7 +23,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  TARGET: learn/release-notes/services.mdx
+  TARGET: networks/release-notes/services.mdx
   REPO: hiero-ledger/hiero-consensus-node
 
 jobs:
@@ -127,7 +127,7 @@ jobs:
         uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          add-paths: learn/release-notes/services.mdx
+          add-paths: networks/release-notes/services.mdx
           commit-message: "docs: add consensus node release notes (${{ steps.plan.outputs.versions_csv }})"
           signoff: true
           sign-commits: true

@@ -29,7 +29,7 @@ We recommend you complete the "Submit Your First Message" tutorial [here](/nativ
 
 ## 1. Create a private topic
 
-To create a private topic, you will use [**_`setSubmitKey()`_**](/native/consensus/create-topic#methods) to set a Submit Key. This key needs to sign all messages someone sends to the topic. A message will be rejected if you don't sign the message or sign with an incorrect key. The cost of creating a private topic is the same as a public topic: [**$0.01**](/learn/networks/mainnet/fees#consensus-service).
+To create a private topic, you will use [**_`setSubmitKey()`_**](/native/consensus/create-topic#methods) to set a Submit Key. This key needs to sign all messages someone sends to the topic. A message will be rejected if you don't sign the message or sign with an incorrect key. The cost of creating a private topic is the same as a public topic: [**$0.01**](/networks/fees#consensus-service).
 
 <CodeGroup>
 
@@ -139,7 +139,7 @@ _, err = hedera.NewTopicMessageQuery().
 
 ## 3. Submit a message
 
-Now you are ready to submit a message to your private topic. To do this, you will use [**_`TopicMessageSubmitTransaction()`_**](/native/consensus/submit-message). However, you need to sign this transaction with your Submit Key. The cost for sending a message to a private topic is the same as a public topic: [**$0.0001**](/learn/networks/mainnet/fees#consensus-service).
+Now you are ready to submit a message to your private topic. To do this, you will use [**_`TopicMessageSubmitTransaction()`_**](/native/consensus/submit-message). However, you need to sign this transaction with your Submit Key. The cost for sending a message to a private topic is the same as a public topic: [**$0.0001**](/networks/fees#consensus-service).
 
 <CodeGroup>
 

@@ -40,7 +40,7 @@ TopicMessageSubmitTransaction()
 - The Fee Schedule Key allows authorized users to update fee structures. If set, it must sign transactions modifying fees.
 - If the topic has custom fees, the sender must have sufficient balance to cover the fees unless they are exempt via the Fee Exempt Key List. It is recommended to use `setCustomFees` on the `TopicMessageSubmitTransaction` to ensure the expected fee structure is applied and avoid unexpected transaction failures due to insufficient funds.
 - If you submit a message to a topic with a custom fee, the cost changes from the baseline $0.0001 USD to roughly $0.05 USD per `TopicMessageSubmitTransaction`.
-- Use the [query fees table](/learn/networks/mainnet/fees#consensus-service) for the base transaction fee and the [Hedera Fee Estimator](https://hedera.com/fees) to estimate standard network fees.
+- Use the [query fees table](/networks/fees#consensus-service) for the base transaction fee and the [Hedera Fee Estimator](https://hedera.com/fees) to estimate standard network fees.
 
 ## Methods
 

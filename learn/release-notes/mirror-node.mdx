@@ -11,6 +11,13 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 
 
+
+## [v0.157.1](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.157.1)
+
+<Accordion title="Bug Fixes">
+  * Fix rest chainId property conversion (0.157) [#13783](https://github.com/hiero-ledger/hiero-mirror-node/pull/13783)
+</Accordion>
+
 ## [v0.157.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.157.0)
 
 The configuration for [HIP-1137](https://hips.hedera.com/#hip-1137) has improved to allow separate endpoints for different block node APIs. The wrapped record block (WRB) root hash validation has been relaxed to allow for multiple jump start files as long as they are not TSS signed. We now support initial state changes in a genesis WRB. This can be used by new mirror nodes running against mainnet to get a complete state of pre-genesis accounts, contracts, and files.

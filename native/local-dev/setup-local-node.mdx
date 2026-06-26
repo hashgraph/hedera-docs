@@ -6,7 +6,11 @@ import LocalNodeDeprecation from '/snippets/local-node-deprecation.mdx';
 
 <LocalNodeDeprecation />
 
-The [**Hedera Local Node**](https://github.com/hashgraph/hedera-local-node) project enables developers to establish their own local network for development and testing. The local network comprises the consensus node, mirror node, [JSON-RPC relay](https://github.com/hashgraph/hedera-json-rpc-relay#readme), and other Hedera products, and can be set up using the CLI tool and Docker. This setup allows you to seamlessly build and deploy smart contracts from your local environment.
+<Info>
+**Looking for the recommended replacement?** [Solo](https://solo.hiero.org/docs/) is a Kubernetes-native local network that replaces Local Node and is compatible with the Hiero SDKs. See the [Solo quickstart](https://solo.hiero.org/docs/simple-solo-setup/quickstart/) to get started.
+</Info>
+
+The [**Hedera Local Node**](https://github.com/hiero-ledger/hiero-local-node) project enables developers to establish their own local network for development and testing. The local network comprises the consensus node, mirror node, [JSON-RPC relay](https://github.com/hashgraph/hedera-json-rpc-relay#readme), and other Hedera products, and can be set up using the CLI tool and Docker. This setup allows you to seamlessly build and deploy smart contracts from your local environment.
 
 By the end of this tutorial, you'll be equipped to run a Hedera local node and generate keys, allowing you to test your projects and deploy projects in your local environment.
 
@@ -22,7 +26,7 @@ By the end of this tutorial, you'll be equipped to run a Hedera local node and g
 * Have Docker running on your machine with the correct configurations.
 
 <Accordion title="Docker configuration 🛠️">
-<a href="https://github.com/hashgraph/hedera-local-node#requirements"></a>
+<a href="https://github.com/hiero-ledger/hiero-local-node#requirements"></a>
 
 
 Ensure the **`VirtioFS`** file sharing implementation is enabled in the docker settings.
@@ -51,7 +55,7 @@ Ensure the **`Allow the default Docker sockets to be used (requires password)`**
 **Note:** The image may look different if you are on a different version
 </Accordion>
 
-*Local node can be run using Docker or NPM but we will use Docker for this tutorial. *[Here](https://github.com/hashgraph/hedera-local-node#official-npm-release)* are the installation steps for NPM.*
+*Local node can be run using Docker or NPM but we will use Docker for this tutorial. *[Here](https://github.com/hiero-ledger/hiero-local-node#official-npm-release)* are the installation steps for NPM.*
 
 ***
 
@@ -69,7 +73,7 @@ Ensure the **`Allow the default Docker sockets to be used (requires password)`**
 Open a new terminal and navigate to your preferred directory where your Hedera Local Node project will live. Run the following command to clone the repo and install dependencies to your local machine:
 
 ```bash
-git clone https://github.com/hashgraph/hedera-local-node.git
+git clone https://github.com/hiero-ledger/hiero-local-node.git
 cd hedera-local-node
 npm install
 ```
@@ -198,14 +202,14 @@ HEAD is now at ......
 ```
 </Accordion>
 
-***📣 Note**: All available commands can be checked out* [*here*](https://github.com/hashgraph/hedera-local-node/tree/main?tab=readme-ov-file#using-hedera-local)*.*
+***📣 Note**: All available commands can be checked out* [*here*](https://github.com/hiero-ledger/hiero-local-node/tree/main?tab=readme-ov-file#using-hedera-local)*.*
 
 ***
 
 ## Additional Resources
 
-**➡** [**Hedera Local Node Repository**](https://github.com/hashgraph/hedera-local-node#readme)
+**➡** [**Hedera Local Node Repository**](https://github.com/hiero-ledger/hiero-local-node#readme)
 
-**➡** [**Hedera Local Node CLI Tool Commands**](https://github.com/hashgraph/hedera-local-node#using-hedera-local)
+**➡** [**Hedera Local Node CLI Tool Commands**](https://github.com/hiero-ledger/hiero-local-node#using-hedera-local)
 
 **➡** [**Hedera Local Node Docker Setup** ](https://www.youtube.com/watch?v=KOhzu6ftmbY)**\[Video Tutorial]**

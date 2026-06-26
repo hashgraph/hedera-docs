@@ -2,6 +2,10 @@
 title: Run Your Own Mirror Node
 sidebarTitle: Run Your Own
 ---
+<Tip>
+  **Testing mirror node configuration locally?** [Solo](https://solo.hiero.org/docs/) runs a full Hedera stack including a mirror node, so you can point your importer at a local network to validate stream processing, REST API behavior, and configuration before connecting to a live network. See [Accessing Solo Services](https://solo.hiero.org/docs/using-solo/accessing-solo-services/) for the mirror node endpoint details.
+</Tip>
+
 ## Overview
 
 A Hedera Mirror Node is a node that receives pre-constructed files from the Hedera Mainnet. These pre-constructed files include **transaction records** and **account balance files**. Transaction records include information about a transaction, like the transaction ID, transaction hash, account, etc. The account balance files give you a snapshot of the balances for all accounts at a given timestamp.

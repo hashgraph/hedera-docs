@@ -6,16 +6,37 @@ import LocalNodeDeprecation from '/snippets/local-node-deprecation.mdx';
 
 <LocalNodeDeprecation />
 
-While you are developing your application, you can use the Hedera-supported networks (previewnet and testnet) to test your application against. In addition to using those networks, you have the option to set up your own local consensus node and mirror node for testing purposes.
+While you are developing your application, you can use the Hedera-supported networks (previewnet and testnet) to test against. You can also run your own local network — a consensus node and mirror node on your machine — for development without testnet rate limits, resets, or faucet dependencies.
 
-With your local network set up, you can:
+With a local network set up, you can:
 
 * Create and submit transactions and queries to a consensus node
 * Interact with the mirror node via REST APIs
 
+## Recommended: Solo
+
+[Solo](https://solo.hiero.org/docs/) is the recommended way to run a local Hedera network. It deploys a full stack — consensus node, mirror node, JSON-RPC relay, and block explorer — and is compatible with all Hiero SDKs.
+
+<CardGroup cols={2}>
+  <Card title="Get started with Solo" href="https://solo.hiero.org/docs/simple-solo-setup/quickstart/" arrow>
+    Install Solo and start a local network.
+  </Card>
+  <Card title="Using Solo with Hiero SDKs" href="https://solo.hiero.org/docs/using-solo/using-solo-with-hiero-sdks/" arrow>
+    Point the JavaScript, Java, or Go SDK at your Solo network.
+  </Card>
+</CardGroup>
+
+The SDK connection pattern is the same as shown below — `Client.forNetwork()` and `Client.setMirrorNetwork()` — only the endpoint addresses differ. See [Using Solo with Hiero SDKs](https://solo.hiero.org/docs/using-solo/using-solo-with-hiero-sdks/) for the host and port values for your Solo deployment.
+
+## Local Node (deprecated)
+
+<Warning>
+The walkthrough below uses Hiero Local Node, which is in a 6-month deprecation period ending September 2026. The steps remain valid until then, but new projects should use [Solo](#recommended-solo) instead.
+</Warning>
+
 ### 1. Set Up your local network
 
-Set-up your local network by following the instructions found in the [readme](https://github.com/hashgraph/hedera-local-node#docker) of the `hedera-local-node` project. This will create a Hedera network composed of one consensus node and one mirror node. The consensus node will process incoming transactions and queries. The mirror node stores the history of transactions. Both nodes are created at startup.
+Set-up your local network by following the instructions found in the [readme](https://github.com/hiero-ledger/hiero-local-node#docker) of the `hedera-local-node` project. This will create a Hedera network composed of one consensus node and one mirror node. The consensus node will process incoming transactions and queries. The mirror node stores the history of transactions. Both nodes are created at startup.
 
 ### 2. Configure your network
 

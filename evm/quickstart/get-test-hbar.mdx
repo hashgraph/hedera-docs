@@ -27,9 +27,13 @@ To use the faucet, head to the [faucet](https://portal.hedera.com/faucet) landin
 
 When you use an EVM wallet address for the first time, **Auto Account Creation** kicks in to establish a new Hedera account linked to your EVM address.
 
-This process creates a **hollow account**, an account with an ID and alias but no key. Hollow accounts can receive HBAR and tokens, but it cannot transfer tokens from the account or modify any account properties until the account key has been added and the account is complete.
+This process creates a **hollow account**, an account with an ID and alias but no key. Hollow accounts can receive HBAR and tokens, but they cannot transfer tokens or modify account properties until the account key has been added and the account is complete.
 
 To complete the account, use it as the **fee payer** in a transaction and sign with the **ECDSA private key** tied to the EVM address. Once completed, the account works like any regular Hedera account.
+
+If the account is instead created without an alias, it falls back to the **EVM Address from Account ID** (the long-zero form). That long-zero address is still a 20-byte EVM address, but it is not derived from a public key and does not support `ECRECOVER` in the same way as the alias-based EVM Address from Public Key.
+
+For more detail, see [EVM account models and aliases](/evm/differences/accounts-and-keys).
 
 </Warning>
 

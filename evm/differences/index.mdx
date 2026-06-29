@@ -34,6 +34,23 @@ Hedera supports jumbo Ethereum transactions (introduced in [HIP-1086](https://hi
 
 ---
 
+## Pectra Compatibility
+
+Hedera adopts the applicable EIPs from Ethereum's Pectra upgrade under [HIP-1341](https://hips.hedera.com/hip/hip-1341), so Ethereum tooling that targets Pectra (Prague EVM execution layer) works on Hedera with no special handling:
+
+| Pectra capability                                                | Supported on Hedera | Notes                                                                                                                                              |
+| ---------------------------------------------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **BLS12-381 precompiles** ([EIP-2537](https://eips.ethereum.org/EIPS/eip-2537))              | ✅                  | Seven new precompiles at addresses `0x0b`–`0x11`. Callable via `call`/`staticcall` exactly as on Ethereum. See [Gas and Fees](/evm/development/gas-fees#hedera-system-contract-gas). |
+| **Calldata gas floor** ([EIP-7623](https://eips.ethereum.org/EIPS/eip-7623))                  | ✅                  | Same formula: `21000 + 10 × (zero_bytes + 4 × non_zero_bytes)` floor. Most contract calls (where execution gas dominates) are unaffected.         |
+| **EOA Code Delegation** ([EIP-7702](https://eips.ethereum.org/EIPS/eip-7702))                 | ❌                  | **Currently deactivated on Hedera.** Type 4 (set-code) transactions are not accepted and no account delegation takes execution effect. |
+| **Blob transactions** ([EIP-4844](https://eips.ethereum.org/EIPS/eip-4844), [EIP-7691](https://eips.ethereum.org/EIPS/eip-7691)) | ❌                  | Hedera does not support blobs ([HIP-866](https://hips.hedera.com/hip/hip-866)). Type 3 transactions are rejected. Use [jumbo EthereumTransactions](#jumbo-ethereum-transactions) for large payloads. |
+
+<Info>
+**EIP-7702 is deactivated.** Hedera runs the Prague EVM, but EIP-7702 (set EOA account code), and therefore EOA Code Delegation, is currently disabled. Type 4 transactions are rejected and account delegations have no execution effect.
+</Info>
+
+---
+
 ## EVM Developers: What Changes on Hedera
 
 The following topics cover the most common differences when coming from Ethereum:

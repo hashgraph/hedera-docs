@@ -2,7 +2,12 @@
 title: "Hedera Testnet Faucet"
 ---
 
-The Hedera faucet allows you to quickly create and fund a testnet account without creating a developer portal account. The faucet flow auto-creates an account when you enter an EVM wallet address to receive testnet HBAR.
+There are two ways to get testnet HBAR:
+
+- **Hedera Portal**: [create a portal account](https://portal.hedera.com) for a fully provisioned testnet account with a stable Account ID, private key, and access to all developer tools. No EVM wallet required.
+- **Faucet**: paste any EVM wallet address to instantly fund an account. No portal account needed.
+
+The faucet auto-creates a Hedera account when you enter an EVM wallet address for the first time.
 
 <Steps>
 <Step title="Step 1: Visit the faucet">
@@ -25,11 +30,13 @@ To use the faucet, head to the [faucet](https://portal.hedera.com/faucet) landin
 <Warning>
 #### ⚠️ **Important**
 
-When you use an EVM wallet address for the first time, **Auto Account Creation** kicks in to establish a new Hedera account linked to your EVM address.
+When you use an EVM wallet address for the first time, [**Auto Account Creation**](/learn/core-concepts/accounts/auto-account-creation) kicks in to establish a new Hedera account linked to your EVM address.
 
-This process creates a **hollow account**, an account with an ID and alias but no key. Hollow accounts can receive HBAR and tokens, but it cannot transfer tokens from the account or modify any account properties until the account key has been added and the account is complete.
+This process creates a **hollow account**, an account with an Account ID and your EVM address set as its alias, but no signing key on record yet. Hollow accounts can receive HBAR and tokens, but cannot transfer funds or modify account properties until completed.
 
-To complete the account, use it as the **fee payer** in a transaction and sign with the **ECDSA private key** tied to the EVM address. Once completed, the account works like any regular Hedera account.
+To complete the account, use it as the **fee payer** in a transaction and sign with the ECDSA private key corresponding to your EVM address. Once completed, it behaves like any regular Hedera account.
+
+For a full explanation of the Hedera account model, hollow accounts, and accounts without an ECDSA key, see [Account Model for EVM Developers](/evm/development/accounts).
 
 </Warning>
 

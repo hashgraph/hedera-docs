@@ -93,6 +93,10 @@ If either condition is missing, the transaction is rejected. After completion, t
 
 Once a hollow account has been converted into a complete account by acting as the payer for a transaction and signing with its ECDSA private key, it inherits the default automatic association settings. Specifically, the account’s `maxAutoAssociations` property defaults to `–1`, enabling unlimited automatic token associations. This means that any subsequent HTS tokens transferred to the completed account will be automatically associated, and the recipient does not need to manually associate with each token. This behavior is part of frictionless airdrops ([HIP‑904](https://hips.hedera.com/hip/hip-904)) and differs from earlier network versions where auto‑association for new tokens was not available.
 
+## EVM Developer Reference
+
+Building a dApp? See [Account Model for EVM Developers](/evm/development/accounts) for how hollow accounts and long-zero accounts affect EVM tooling, wallet compatibility, and token association.
+
 ## Examples
 
 <Accordion title="Auto-create an account using an EVM address (public address) alias">

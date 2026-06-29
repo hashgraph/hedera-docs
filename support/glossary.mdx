@@ -599,6 +599,12 @@ A governance token is a utility token that can help democratize decision-making 
 
 ## H
 
+### Hollow Account
+
+---
+
+A Hedera account that was created automatically when HBAR or tokens were first sent to an EVM address with no existing account (see [auto account creation](/learn/core-concepts/accounts/auto-account-creation)). A hollow account has a native Account ID and an EVM address alias but no signing key on record. It can receive HBAR and tokens and interact with smart contracts via EVM tooling, but it cannot initiate native Hedera transactions until it is completed. Completion happens automatically when the account owner sends their first outbound transaction and signs with the ECDSA private key corresponding to the EVM address.
+
 ### Hardhat
 
 ---

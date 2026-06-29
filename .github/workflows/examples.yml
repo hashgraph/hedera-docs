@@ -232,7 +232,7 @@ jobs:
           } > "$STATUS_FILE"
 
       - name: Open/Update PR with status
-        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
+        uses: step-security/create-pull-request@e604d57b37b404d8bb34d152fa905e45d003a895 # v8.1.0
         with:
           commit-message: "chore: update example run status"
           signoff: true

@@ -1,54 +1,57 @@
 ---
 title: Interoperability and Bridging
+description: "Explore Hedera's interoperability and bridging options: cross-chain messaging protocols like Chainlink CCIP and LayerZero, and ready-to-use bridged assets like USDT0."
+mode: "wide"
 ---
 
-Interoperability and bridging on Hedera enable seamless communication and asset transfers between Hedera and other blockchain networks. This will allow developers to create dApps across multiple blockchain platforms, furthering the functionality and versatility of applications. Projects like **LayerZero**, **Chainlink**, and **Hashport** are among the leading providers of these integrations. Learn more about these integrations below.
+Interoperability and bridging let Hedera applications communicate and move assets across other networks so a dApp is not confined to a single chain. These integrations fall into two broad groups:
+
+- **Cross-chain messaging protocols** that carry arbitrary data and token transfers between chains, such as [Chainlink CCIP](/evm/integrations/cross-chain/chainlink-ccip) and [LayerZero](/evm/integrations/cross-chain/layerzero).
+- **Ready-to-use bridged assets** that already span multiple chains, such as [USDT0](/evm/integrations/cross-chain/usdt0), the omnichain deployment of Tether's USDT.
 
 <Columns cols={2}>
 
 {" "}
 
 <Card
-  title=""
-  href="/evm/integrations/cross-chain/layerzero"
-  arrow
-  img="/images/open-source-solutions/interoperability-and-bridging/interoperability-and-bridging-layerzero.png"
->
-  <a href="/evm/integrations/cross-chain/layerzero#getting-started-with-layerzero-on-hedera">
-    🖥️ GETTING STARTED
-  </a>
-  <br />
-  <a href="https://docs.layerzero.network/v2/developers/evm/oapp/overview">
-    🧱 DOCUMENTATION
-  </a>
-</Card>
-
-{" "}
-
-<Card
-  title=""
+  title="Chainlink CCIP"
   href="/evm/integrations/cross-chain/chainlink-ccip"
   arrow
   img="/images/open-source-solutions/interoperability-and-bridging/interoperability-and-bridging-chainlink.png"
 >
-  <a href="/evm/integrations/cross-chain/chainlink-ccip#getting-started-with-ccip-on-hedera">
-    🖥️ GETTING STARTED
-  </a>
-  <br />
-  <a href="https://docs.chain.link/ccip">🧱 DOCUMENTATION</a>
+  Programmable cross-chain messaging and token transfers with built-in risk controls.
 </Card>
 
 {" "}
 
 <Card
-  title=""
-  href="https://www.hashport.network/getting-started/"
+  title="LayerZero"
+  href="/evm/integrations/cross-chain/layerzero"
   arrow
-  img="/images/open-source-solutions/interoperability-and-bridging/interoperability-and-bridging-hashport.png"
+  img="/images/open-source-solutions/interoperability-and-bridging/interoperability-and-bridging-layerzero.png"
 >
-  <a href="https://www.hashport.network/getting-started/">🖥️ GETTING STARTED</a>
-  <br />
-  <a href="https://docs.hashport.network/">🧱 DOCUMENTATION</a>
+  Omnichain messaging and token bridging via the OApp and OFT standards.
+</Card>
+
+{" "}
+
+<Card
+  title="USDT0"
+  href="/evm/integrations/cross-chain/usdt0"
+  arrow
+  img="/images/open-source-solutions/interoperability-and-bridging/usdt0-card-logo.png"
+>
+  Omnichain USDT on Hedera, built on LayerZero's OFT standard.
 </Card>
 
 </Columns>
+
+## Choosing an integration
+
+Match the integration to what you are trying to do, not the other way around.
+
+| Integration | Best for | You deploy a contract? | Under the hood |
+| --- | --- | --- | --- |
+| [Chainlink CCIP](/evm/integrations/cross-chain/chainlink-ccip) | Programmable cross-chain messaging and token transfers with risk controls | Yes, integrate the CCIP router and receiver | CCIP messaging plus supported token transfers |
+| [LayerZero](/evm/integrations/cross-chain/layerzero) | Sending arbitrary messages or bridging your own token across chains | Yes, an OApp/OFT contract (or HTS Connector for HTS tokens) | OFT, ONFT, OFT Adapter, HTS Connector |
+| [USDT0](/evm/integrations/cross-chain/usdt0) | Using a dollar stablecoin that already exists on Hedera and other chains | No, the token is already deployed | HTS token; LayerZero OFT |

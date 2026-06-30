@@ -1,0 +1,226 @@
+---
+title: "USDT0 Omnichain Stablecoin on Hedera"
+sidebarTitle: "USDT0"
+description: "Integrate USDT0, the omnichain deployment of Tether's USDT, on Hedera. Move native USDT liquidity across 20+ chains with LayerZero's OFT standard, no wrapped tokens or third-party bridges."
+---
+
+[USDT0](https://usdt0.to/) is the omnichain deployment of Tether's USDT, the largest and most widely used dollar stablecoin. It is now live on Hedera, giving applications access to deep, cross-chain dollar liquidity that moves between networks as a single unified token, without wrapped assets, synthetic representations, or third-party bridges.
+
+USDT0 is built on LayerZero's Omnichain Fungible Token (OFT) standard, so the same USDT0 balance can move between Hedera and other supported chains with 1:1 backing and no liquidity fragmentation. It is a production deployment of the same standard covered generically in [LayerZero on Hedera](/evm/integrations/cross-chain/layerzero). See that page for the OFT, OFT Adapter, and HTS Connector building blocks. This page covers the USDT0 deployment specifically and how to use it.
+
+<Info>
+For the background and Hedera's perspective on why this matters, read the announcement: [**Hedera integrates USDT0 for crosschain stablecoin liquidity**](https://hedera.com/blog/hedera-integrates-usdt0-for-crosschain-stablecoin-liquidity/).
+</Info>
+
+## What USDT0 is (and what it is not)
+
+<Columns cols={2}>
+  <Card title="What USDT0 IS" icon="circle-check">
+    - **Native USDT liquidity** on Hedera, backed 1:1 by Tether's USDT
+    - A **single omnichain token**, the same asset across every supported chain
+    - Built on **LayerZero's OFT standard** for secure cross-chain messaging
+    - On Hedera, a standard **HTS fungible token** with an EVM-compatible interface
+  </Card>
+  <Card title="What USDT0 is NOT" icon="circle-xmark">
+    - **Not a wrapped or synthetic token** with its own separate liquidity pool
+    - **Not a third-party bridge** that issues a chain-specific IOU
+    - **Not a new stablecoin** with a separate peg or reserve from USDT
+    - **Not custodied by Hedera** or the LayerZero messaging layer
+  </Card>
+</Columns>
+
+## How it works
+
+USDT0 uses a lock-and-mint model anchored on Ethereum and an omnichain messaging layer to keep one unified supply across chains.
+
+<Steps>
+<Step title="USDT locks on Ethereum">
+The canonical USDT supply is held by an OFT Adapter contract on Ethereum mainnet. Locking USDT there authorizes an equivalent mint elsewhere.
+</Step>
+<Step title="USDT0 mints on the destination chain">
+An equivalent amount of USDT0 mints on the destination chain (such as Hedera) with strict 1:1 backing.
+</Step>
+<Step title="Transfers move over LayerZero">
+A cross-chain transfer burns USDT0 on the source chain and mints it on the destination chain. LayerZero's decentralized verifier network carries and validates the message, so no separate bridge liquidity pool is involved.
+</Step>
+<Step title="Redemption unlocks the original">
+Burning USDT0 and routing back to Ethereum unlocks the original USDT from the adapter, keeping total supply constant.
+</Step>
+</Steps>
+
+## USDT0 on Hedera
+
+On Hedera, USDT0 is a native **Hedera Token Service (HTS)** fungible token that is also reachable through its EVM address, so you can work with it from both native SDKs and EVM tooling such as ethers.js, Hardhat, or Foundry.
+
+| Detail | Value |
+| --- | --- |
+| Token name | USDT0 |
+| Decimals | 6 |
+| Hedera token ID | `0.0.10282787` |
+| Token EVM address | `0x00000000000000000000000000000000009Ce723` |
+| OFT contract (cross-chain send/receive) | `0xe3119e23fC2371d1E6b01775ba312035425A53d6` |
+| LayerZero endpoint ID (EID) for Hedera | `30316` |
+| Hedera EVM chain ID | `295` (mainnet) |
+
+<Warning>
+Contract addresses and endpoint IDs are reproduced here for convenience and were accurate at the time of writing. Always confirm against the canonical [USDT0 deployments page](https://docs.usdt0.to/technical-documentation/deployments) before sending value, and treat the official USDT0 documentation as the source of truth.
+</Warning>
+
+<Tip>
+Because USDT0 is an HTS token, a receiving Hedera account must be **associated** with the token before it can hold a balance. Accounts with automatic association slots available, or that already hold the token, do not need an explicit association. See [Token Association](/native/tokens/associate-tokens-to-an-account) for details.
+</Tip>
+
+<Warning>
+The underlying token is an **HTS token reached through Hedera's [EVM facade](/support/glossary#facade-contract)**, not a plain ERC-20. The OFT contract reports `approvalRequired() == true`, so you must `approve` the OFT to spend USDT0 before calling `send`; that approval routes through the HTS allowance facade. The OFT is deployed behind an **upgradeable proxy**, so confirm current behavior against the [USDT0 Developer Guide](https://docs.usdt0.to/technical-documentation/developer/) before integrating.
+</Warning>
+
+## Sending USDT0 across chains
+
+Cross-chain transfers go through the OFT contract, not a plain ERC-20 `transfer`. The flow is the same as any LayerZero OFT: quote the messaging fee, approve the amount if needed, then call `send`. You pay the LayerZero messaging fee in the source chain's native gas token (HBAR when sending from Hedera).
+
+<Info>
+The code below **illustrates the standard LayerZero OFT pattern** so you can see the shape of the flow. It is not a Hedera-tested recipe. Treat the [**USDT0 Developer Guide**](https://docs.usdt0.to/technical-documentation/developer/) as the source of truth for working integration code — it ships maintained TypeScript/ethers.js examples — and verify the Hedera-specific behavior noted below before moving real value.
+
+In particular, mind the **tinybar/weibar unit difference**: `quoteSend` returns the fee in tinybars (8 decimals), but the JSON-RPC relay expects `msg.value` in weibars (18 decimals), so the fee must be converted before it is attached to `send`. See [Developer Considerations on the LayerZero page](/evm/integrations/cross-chain/layerzero#developer-considerations-to-note-evm-differences) for more on this.
+</Info>
+
+The `send` function takes a `SendParam` struct and a `MessagingFee`:
+
+```solidity SendParam
+struct SendParam {
+    uint32 dstEid;       // destination chain LayerZero endpoint ID
+    bytes32 to;          // recipient address, left-padded to bytes32
+    uint256 amountLD;    // amount to send, in local decimals (6 for USDT0)
+    uint256 minAmountLD; // minimum received after fees/slippage
+    bytes extraOptions;  // execution options (e.g. gas for the destination)
+    bytes composeMsg;    // optional composed message payload
+    bytes oftCmd;        // OFT command bytes (empty for a standard send)
+}
+
+struct MessagingFee {
+    uint256 nativeFee;   // fee paid in native gas (HBAR on Hedera)
+    uint256 lzTokenFee;  // optional fee paid in the LayerZero token
+}
+```
+
+### Example: send USDT0 from Hedera with ethers.js
+
+```javascript send-usdt0.js
+import { ethers } from "ethers";
+
+// Minimal ABI for the OFT send flow.
+const OFT_ABI = [
+  "function quoteSend((uint32 dstEid, bytes32 to, uint256 amountLD, uint256 minAmountLD, bytes extraOptions, bytes composeMsg, bytes oftCmd) sendParam, bool payInLzToken) view returns ((uint256 nativeFee, uint256 lzTokenFee) fee)",
+  "function send((uint32 dstEid, bytes32 to, uint256 amountLD, uint256 minAmountLD, bytes extraOptions, bytes composeMsg, bytes oftCmd) sendParam, (uint256 nativeFee, uint256 lzTokenFee) fee, address refundAddress) payable returns ((bytes32 guid, uint64 nonce, (uint256 nativeFee, uint256 lzTokenFee) fee) msgReceipt, (uint256 amountSentLD, uint256 amountReceivedLD) oftReceipt)",
+  "function token() view returns (address)",
+];
+
+const ERC20_ABI = [
+  "function approve(address spender, uint256 amount) returns (bool)",
+  "function allowance(address owner, address spender) view returns (uint256)",
+];
+
+// USDT0 OFT contract on Hedera mainnet.
+const HEDERA_USDT0_OFT = "0xe3119e23fC2371d1E6b01775ba312035425A53d6";
+
+// Left-pad a 20-byte EVM address to a 32-byte value.
+function addressToBytes32(address) {
+  return ethers.zeroPadValue(address, 32);
+}
+
+async function sendUsdt0({ provider, signer, dstEid, recipient, amount }) {
+  const oft = new ethers.Contract(HEDERA_USDT0_OFT, OFT_ABI, signer);
+
+  const sendParam = {
+    dstEid,                          // e.g. 30110 for Arbitrum One
+    to: addressToBytes32(recipient), // recipient on the destination chain
+    amountLD: amount,                // 6-decimal amount, e.g. 100 USDT0 = 100_000000n
+    minAmountLD: amount,             // adjust to allow for slippage if needed
+    extraOptions: "0x",              // default execution options
+    composeMsg: "0x",
+    oftCmd: "0x",
+  };
+
+  // 1. Quote the LayerZero messaging fee (paid in HBAR when sending from Hedera).
+  const fee = await oft.quoteSend(sendParam, false);
+
+  // 2. Approve the OFT to pull the underlying token, if it is not already approved.
+  const tokenAddress = await oft.token();
+  const token = new ethers.Contract(tokenAddress, ERC20_ABI, signer);
+  const owner = await signer.getAddress();
+  const allowance = await token.allowance(owner, HEDERA_USDT0_OFT);
+  if (allowance < amount) {
+    await (await token.approve(HEDERA_USDT0_OFT, amount)).wait();
+  }
+
+  // 3. Send, attaching the native fee as msg.value.
+  //    Hedera gotcha: quoteSend returns nativeFee in tinybars (8 decimals), but the
+  //    JSON-RPC relay expects msg.value in weibars (18 decimals). Convert before sending.
+  const nativeFeeWeibars = fee.nativeFee * 10n ** 10n;
+  const tx = await oft.send(sendParam, fee, owner, { value: nativeFeeWeibars });
+  return tx.wait();
+}
+```
+
+<Note>
+`amountLD` and `minAmountLD` are expressed in USDT0's 6 decimals, so 100 USDT0 is `100_000000`. USDT0's OFT uses 6 shared decimals, matching its 6 local decimals, so there is no dust removal or rounding on transfer; the full amount you send is delivered. The LayerZero messaging fee is paid separately in HBAR (the `nativeFee`), not deducted from the transferred USDT0.
+</Note>
+
+### Common destination endpoint IDs
+
+Use the destination chain's LayerZero endpoint ID (EID) as `dstEid`. A few common values:
+
+| Destination chain | Chain ID | LayerZero EID |
+| --- | --- | --- |
+| Ethereum | 1 | 30101 |
+| Arbitrum One | 42161 | 30110 |
+| Optimism | 10 | 30111 |
+| Polygon PoS | 137 | 30109 |
+| Hedera | 295 | 30316 |
+
+The full, authoritative list lives on the [USDT0 deployments page](https://docs.usdt0.to/technical-documentation/deployments) and the [LayerZero deployments reference](https://docs.layerzero.network/v2/deployments/deployed-contracts).
+
+## Using USDT0 as a regular token on Hedera
+
+Once USDT0 is on a Hedera account, it behaves like any other HTS fungible token for in-network use. You can transfer it between Hedera accounts, hold it in smart contracts, and use it in DeFi protocols using either the native SDKs or the EVM interface:
+
+- **Native SDKs:** use [`TransferTransaction`](/native/transactions/transfer-cryptocurrency) with the token ID `0.0.10282787`, and [associate the token](/native/tokens/associate-tokens-to-an-account) first if needed.
+- **EVM tooling:** treat the token EVM address `0x00000000000000000000000000000000009Ce723` as a standard 6-decimal ERC-20.
+
+Reserve the OFT `send` flow for moving USDT0 **across chains**; a same-chain Hedera transfer is just a normal HTS or ERC-20 transfer.
+
+## Requirements and limitations
+
+<Warning>
+USDT0 is a third-party omnichain token. Hedera does not custody it or operate the cross-chain messaging layer. Review the official USDT0 and LayerZero documentation before moving real value.
+</Warning>
+
+- **The USDT0 token is mainnet-only:** USDT0 is deployed on Hedera **mainnet**; there is no Hedera testnet USDT0 token to test transfers against. LayerZero's messaging layer itself does have a [Hedera testnet endpoint](https://docs.layerzero.network/v2/deployments/chains/hedera-testnet) (EID 40285), so you can exercise OFT wiring on testnet with your own token. Validate the USDT0 path with small amounts on mainnet.
+- **HBAR for fees:** Sending USDT0 from Hedera requires HBAR to cover both the Hedera transaction fee and the LayerZero messaging fee (the `nativeFee` you attach as `msg.value`).
+- **Token association:** A receiving Hedera account must be associated with USDT0 (or have an open auto-association slot) before it can hold a balance.
+- **6 decimals:** USDT0 uses 6 decimals on every chain, and its OFT uses 6 shared decimals, so cross-chain transfers move the exact amount with no dust rounding.
+- **Destination gas:** Cross-chain delivery may require execution options (`extraOptions`) that allocate enough gas on the destination chain. Use `quoteSend` to price the transfer with the options you intend to use.
+- **Confirm addresses:** Always verify contract addresses and endpoint IDs against the canonical USDT0 deployments page before integrating.
+
+## Resources
+
+<CardGroup cols={2}>
+  <Card title="USDT0 documentation" icon="book" href="https://docs.usdt0.to/">
+    Official USDT0 technical documentation, architecture, and developer guide.
+  </Card>
+  <Card title="USDT0 developer guide" icon="code" href="https://docs.usdt0.to/technical-documentation/developer/">
+    Maintained TypeScript/ethers.js integration examples — the source of truth for working code.
+  </Card>
+  <Card title="USDT0 deployments" icon="list" href="https://docs.usdt0.to/technical-documentation/deployments">
+    Canonical contract addresses and endpoint IDs for every supported chain.
+  </Card>
+  <Card title="Hedera integrates USDT0" icon="newspaper" href="https://hedera.com/blog/hedera-integrates-usdt0-for-crosschain-stablecoin-liquidity/">
+    Hedera's announcement covering the what and why.
+  </Card>
+  <Card title="LayerZero on Hedera" icon="layer-group" href="/evm/integrations/cross-chain/layerzero">
+    The OFT, OFT Adapter, and HTS Connector building blocks USDT0 is built on.
+  </Card>
+  <Card title="LayerZero OFT standard" icon="arrows-left-right" href="https://docs.layerzero.network/v2/developers/evm/oft/quickstart">
+    How the Omnichain Fungible Token standard works under the hood.
+  </Card>
+</CardGroup>

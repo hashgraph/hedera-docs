@@ -140,6 +140,7 @@ Scaffold HBAR includes starter templates for common Hedera use cases. The CLI fe
 | **Blank Starter** | `blank` | Minimal baseline scaffold with no opinionated features—ideal starting point for custom dApps | Foundry or Hardhat |
 | **Hedera Native** | `hedera-demo` | Demo focused on Hedera-native services (HTS, HCS, Mirror Node) with end-to-end UI—no Solidity contracts | Next.js only |
 | **Onchain Cron Job** | `payments-scheduler` | Scheduled payments using Hedera Schedule Service (HSS) with a ScheduledVault pattern and pluggable strategies (e.g., DCA) | Foundry |
+| **Cross-chain DCA** | `cross-chain-dca` | Hedera-orchestrated recurring DCA: `DcaOrchestrator` uses Schedule Service to trigger cross-chain swaps on Sepolia via Axelar GMP and Uniswap v3 | Hardhat |
 | **Bridge** | `bridge` | Cross-chain bridge connecting Ethereum Sepolia and Hedera Testnet with Axelar, CCIP, or LayerZero providers | Foundry |
 | **Oracles** | `oracles` | Provider-agnostic oracle pattern with adapters for Chainlink, Supra, and Pyth price feeds | Foundry |
 | **Tokenize Subscriptions** | `tokenise-subscriptions` | SubRent NFT marketplace—tokenize subscriptions (gym, WiFi, streaming) as HTS NFTs with rental and sales | Hardhat |
@@ -153,6 +154,7 @@ npx create-scaffold-hbar@latest
 
 # Or specify directly
 npx create-scaffold-hbar@latest --template payments-scheduler
+npx create-scaffold-hbar@latest --template cross-chain-dca
 npx create-scaffold-hbar@latest --template hedera-demo
 ```
 </Tip>

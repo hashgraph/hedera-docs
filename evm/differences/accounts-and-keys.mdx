@@ -18,6 +18,8 @@ Hedera’s account model supports both ED25519 and ECDSA keys by identifying acc
 
 Hedera accounts have a native **Account ID** (e.g., `0.0.xxxx`) and can also have an **EVM Address from Public Key** (a 20-byte address like Ethereum's, derived from the ECDSA public key). The EVM Address from Public Key makes the account compatible with `ECRECOVER` and other familiar EVM tools. For more details, see the [Smart Contract Addresses](/evm/development/addresses) page.
 
+For a full explanation of how Hedera accounts work in EVM context — including hollow accounts (auto-created with no signing key) and accounts without an ECDSA key — see [Account Model for EVM Developers](/evm/development/accounts).
+
 ### **Working With ECDSA Accounts in Testing**
 
 If you are writing an Ethereum smart contract and need to interact with an ECDSA Hedera account identified by its **Account ID**, reference it by its **EVM Address** so that functions like `ECRECOVER` resolve the correct account, as long as the EVM Address is correctly set from the account's public key. Here are some considerations:

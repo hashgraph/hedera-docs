@@ -2264,6 +2264,7 @@
           {
             "group": "Development",
             "pages": [
+              "evm/development/accounts",
               "evm/development/creating",
               "evm/development/compiling",
               "evm/development/deploying",

@@ -1,0 +1,145 @@
+---
+title: "Account Model for EVM Developers"
+description: "How Hedera accounts work in EVM context: every EVM address maps to a native account entity with an Account ID. Covers hollow accounts, long-zero accounts, completion, and token association behavior."
+---
+
+On Hedera, every active EVM address corresponds to a registered account entity with a native **Account ID** (e.g., `0.0.1234`). Unlike Ethereum, where any address can exist implicitly without ever being registered, a Hedera account entity is only created when HBAR or tokens are first sent to an address, or when an account is explicitly created. Understanding this model is important when building dApps that interact with users holding different account types.
+
+There are two account types EVM developers encounter in practice:
+
+- [**Hollow accounts**](#hollow-accounts) - created automatically when HBAR or tokens are sent to an EVM address for the first time
+- [**Long-zero accounts**](#long-zero-accounts) - existing Hedera accounts created without an ECDSA key, represented in the EVM by an address padded with leading zeros
+
+---
+
+## Hollow Accounts
+
+### What They Are
+
+A hollow account is created automatically by the network when HBAR or tokens are first sent to an EVM address that has no corresponding account yet. This process is called [auto account creation](/learn/core-concepts/accounts/auto-account-creation).
+
+The resulting account has:
+- a native Account ID (e.g., `0.0.5678`)
+- an EVM address (e.g., `0xabc...def`) stored as the account alias
+- no signing key on record
+
+Because the network has not yet verified which private key controls the address, the account is hollow until completion.
+
+### What Hollow Accounts Can Do
+
+EVM tooling works normally with hollow accounts. JSON-RPC calls, Hardhat scripts, Foundry tests, and smart contract interactions all function as expected because the EVM layer does not require a signing key on record. The account can:
+
+- receive and hold HBAR and tokens
+- be the target of contract calls
+- receive ERC-20 and ERC-721 tokens (Solidity-based token transfers require no Hedera-level association and behave the same as on Ethereum)
+
+<Info>
+HTS (native Hedera Token Service) tokens require token association. Hollow accounts are created with `maxAutoAssociations = -1` (unlimited) by default, so they accept HTS token transfers automatically from the moment they are created — no completion required for this. See [HIP-904](https://hips.hedera.com/hip/hip-904).
+</Info>
+
+### What Hollow Accounts Cannot Do
+
+A hollow account cannot perform actions that require an authorized key signature until it is completed:
+
+- it cannot transfer tokens or HBAR out of the account via HAPI
+- it cannot modify its own account properties (keys, memo, staking)
+- it cannot explicitly manage token associations via HAPI
+
+### How Completion Works
+
+A hollow account is completed when a transaction is submitted that requires its signature and includes the matching ECDSA key. This most commonly happens in two ways:
+
+**Via EVM wallet (automatic):** When the user sends their first outbound transaction from MetaMask or a similar EVM wallet, the wallet signs it with their ECDSA private key. The relay submits it to the network as an `EthereumTransaction`. The network extracts the ECDSA public key from the transaction signature, derives the EVM address from it, matches it against the hollow account's alias, and sets the key on the account to complete it.
+
+**Via SDK (explicit):** Build any transaction, set the hollow account as the fee payer, and sign with the ECDSA key that corresponds to the EVM address.
+
+```javascript
+const tx = new TransferTransaction()
+  .addHbarTransfer(hollowAccountId, new Hbar(-1))
+  .addHbarTransfer(recipientId, new Hbar(1))
+  .setTransactionId(TransactionId.generate(hollowAccountId))
+  .freezeWith(client);
+
+const signedTx = await tx.sign(ecdsaPrivateKey);
+await signedTx.execute(client);
+```
+
+After completion, the account behaves like any standard Hedera account.
+
+### Looking Up an Account ID from an EVM Address
+
+To find the Account ID for a given EVM address, use either of these methods:
+
+**Mirror Node REST API:**
+```
+GET https://mainnet-public.mirrornode.hedera.com/api/v1/accounts/{evmAddress}
+```
+The response includes the `account` field with the Account ID.
+
+**HashScan:** Paste the EVM address into the search bar on [hashscan.io](https://hashscan.io) to see the account details, including its Account ID.
+
+---
+
+## Long-Zero Accounts
+
+### What They Are
+
+Many Hedera users hold accounts created through the native HAPI flow, typically with an ED25519 key and no ECDSA alias. These accounts have no EVM Address from Public Key set. When the EVM needs to represent such an account, it constructs a synthetic address by left-padding the account number with zeros to fill 20 bytes. For example, account `0.0.77` becomes `0x000000000000000000000000000000000000004d`.
+
+This is called the **EVM Address from Account ID** or the "long-zero" form.
+
+| Account ID | Long-Zero EVM Address |
+| --- | --- |
+| `0.0.77` | `0x000000000000000000000000000000000000004d` |
+| `0.0.1000` | `0x00000000000000000000000000000000000003e8` |
+
+### Limitations for EVM Workflows
+
+Long-zero accounts cannot participate in standard EVM developer workflows:
+
+| Capability | Long-Zero Account |
+| --- | --- |
+| Sign `EthereumTransaction` (MetaMask, Hardhat, etc.) | No — no ECDSA key |
+| Connect via EVM wallet | No |
+| Call smart contracts using EVM tooling | No |
+| Pass `ECRECOVER`-based signature checks | No — no ECDSA key to recover |
+| Receive HBAR via EVM transfer | Yes |
+
+### Why This Matters for dApp Developers
+
+When building dApps, some of your users will have long-zero accounts. Common failure modes:
+
+- **Wallet connection fails silently.** EVM wallets require an ECDSA key. A long-zero account user has no compatible key and cannot connect.
+- **Permit and off-chain signing flows break.** EIP-2612 and similar patterns rely on `ECRECOVER` to verify signatures. Long-zero accounts cannot produce a valid ECDSA signature, so these checks will fail.
+- **Access control based on address matching fails.** If your contract stores an expected signer address and validates with `ECRECOVER`, it will never match a long-zero address because recovery requires a valid ECDSA signature.
+
+<Warning>
+Do not assume all Hedera users can sign EVM transactions. Design fallback flows or clearly communicate wallet requirements to users who may hold long-zero accounts.
+</Warning>
+
+### Distinguishing Address Types
+
+Both address forms are 20 bytes. You can tell them apart by inspecting the prefix:
+
+- **Long-zero:** first 12 bytes are all zeros (`0x000000000000000000000000...`)
+- **EVM Address from Public Key:** no zero prefix, derived from a Keccak-256 hash
+
+```javascript
+function isLongZero(address) {
+  return address.startsWith("0x000000000000000000000000");
+}
+```
+
+---
+
+## Reference
+
+| Topic | Link |
+| --- | --- |
+| Auto account creation flow | [Auto Account Creation](/learn/core-concepts/accounts/auto-account-creation) |
+| Account ID and alias properties | [Account Properties](/learn/core-concepts/accounts/account-properties) |
+| EVM address vs. Account ID differences | [Accounts, Signature Verification & Keys](/evm/differences/accounts-and-keys) |
+| HIP-32 (auto account creation) | [HIP-32](https://hips.hedera.com/hip/hip-32) |
+| HIP-542 (ECDSA EVM Address support in CryptoCreate/CryptoTransfer) | [HIP-542](https://hips.hedera.com/hip/hip-542) |
+| HIP-583 (hollow account completion) | [HIP-583](https://hips.hedera.com/hip/hip-583) |
+| HIP-904 (frictionless token associations) | [HIP-904](https://hips.hedera.com/hip/hip-904) |

@@ -161,8 +161,12 @@ To initiate the creation of a new bond, choose New Bond and enter the basic deta
 Toggle the permissions you want to enable for your new bond:
 
 * **Controllable**: Enables token controller role and compliance operations.
-* **Blocklist**: Enables access control to the security using a list of blocked accounts.
-* **Approval list**: Enables access control to the security using a list of approved/allowed accounts.
+* **Blocklist**: Enables access control using a list of blocked accounts.
+* **Approval list**: Enables access control using a list of approved accounts.
+
+<Warning>
+Blocklist and Approval list are mutually exclusive — you can enable one or the other, not both, on a single token.
+</Warning>
 
 <Frame>
   <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/asset-tokenization-studio-create-bond-permissions.png" />
@@ -291,8 +295,12 @@ To initiate the creation of new equity, choose New Equity and enter the basic de
 Toggle the permissions you want to enable for your new equity:
 
 * **Controllable**: Enables token controller role and compliance operations.
-* **Blocklist**: Enables access control to the security using a list of blocked accounts.
-* **Approval list**: Enables access control to the security using a list of approved/allowed accounts.
+* **Blocklist**: Enables access control using a list of blocked accounts.
+* **Approval list**: Enables access control using a list of approved accounts.
+
+<Warning>
+Blocklist and Approval list are mutually exclusive — you can enable one or the other, not both, on a single token.
+</Warning>
 
 <Frame>
   <img src="/images/open-source-solutions/asset-tokenization-studio-ats/web-user-interface-ui/web-user-interface-ui-11.png" />
@@ -405,7 +413,7 @@ Roles you can manage include:
 * **Controller**: Authorizes the account to execute specific control actions over the tokenized asset, such as regulatory or operational updates.
 * **Pause**: Allows the account to temporarily halt all transactions for the asset, useful in emergencies or during maintenance.
 * **Control List**: Manages approval lists and blacklists, determining which accounts can or cannot participate in asset transactions.
-* **Corporate Actions**: Enables the execution of corporate actions like dividend distributions or token conversions.
+* **Corporate Actions**: Enables the execution of corporate actions like dividend distributions (equities) and coupon payments (bonds).
 * **Document**: Grants the ability to manage and update asset-related documents, such as legal or compliance files.
 * **Snapshot**: Authorizes the creation of snapshots, capturing the state of token holder balances at a specific point in time for reporting or auditing purposes.
 
@@ -528,7 +536,7 @@ The **SSI Manager** manages the list of **trusted issuers** * entities authorize
 **How to add:**
 
 1. Make sure you have assigned yourself the SSI Role under 'Roles'
-2. Go to token detail → **SST Manager** tab
+2. Go to token detail → **SSI Manager** tab
 3. Click **Add Issuer**
 4. Enter your **Hedera Account ID**: `0.0.xxx` (the account that will sign VCs)
 5. Click **Add**
@@ -561,6 +569,8 @@ Now your account is authorized to issue Verifiable Credentials that this token w
 
 ## Additional Resources
 
+* [ATS Official Documentation](https://docs.tokenization-studio.hedera.com/)
+* [ATS Source Code](https://github.com/hashgraph/asset-tokenization-studio)
 * [Hedera Developer Portal](https://portal.hedera.com/)
 * [HashScan Network Explorer](https://hashscan.io/)
 * [Frequently Asked Questions (FAQs)](/solutions/tokenization/ats/faq)

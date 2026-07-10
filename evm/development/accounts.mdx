@@ -1,6 +1,6 @@
 ---
 title: "Account Model for EVM Developers"
-description: "How Hedera accounts work in EVM context: every EVM address maps to a native account entity with an Account ID. Covers hollow accounts, long-zero accounts, completion, and token association behavior."
+description: "How Hedera accounts work in EVM contexts: EVM addresses map to native account entities, covering hollow accounts, long-zero accounts, and token association."
 ---
 
 On Hedera, every active EVM address corresponds to a registered account entity with a native **Account ID** (e.g., `0.0.1234`). Unlike Ethereum, where any address can exist implicitly without ever being registered, a Hedera account entity is only created when HBAR or tokens are first sent to an address, or when an account is explicitly created. Understanding this model is important when building dApps that interact with users holding different account types.

@@ -67,7 +67,7 @@ Contract addresses and endpoint IDs are reproduced here for convenience and were
 </Warning>
 
 <Tip>
-Because USDT0 is an HTS token, a receiving Hedera account must be **associated** with the token before it can hold a balance. Accounts with automatic association slots available, or that already hold the token, do not need an explicit association. See [Token Association](/native/tokens/associate-tokens-to-an-account) for details.
+Because USDT0 is an HTS token, a receiving Hedera account must be **associated** with the token before it can hold a balance. Accounts with automatic association slots available, or that already hold the token, do not need an explicit association. See [Token Association](/native/tokens/associate) for details.
 </Tip>
 
 <Warning>
@@ -184,7 +184,7 @@ The full, authoritative list lives on the [USDT0 deployments page](https://docs.
 
 Once USDT0 is on a Hedera account, it behaves like any other HTS fungible token for in-network use. You can transfer it between Hedera accounts, hold it in smart contracts, and use it in DeFi protocols using either the native SDKs or the EVM interface:
 
-- **Native SDKs:** use [`TransferTransaction`](/native/transactions/transfer-cryptocurrency) with the token ID `0.0.10282787`, and [associate the token](/native/tokens/associate-tokens-to-an-account) first if needed.
+- **Native SDKs:** use [`TransferTransaction`](/native/accounts/transfer) with the token ID `0.0.10282787`, and [associate the token](/native/tokens/associate) first if needed.
 - **EVM tooling:** treat the token EVM address `0x00000000000000000000000000000000009Ce723` as a standard 6-decimal ERC-20.
 
 Reserve the OFT `send` flow for moving USDT0 **across chains**; a same-chain Hedera transfer is just a normal HTS or ERC-20 transfer.

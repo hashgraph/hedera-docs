@@ -1981,7 +1981,11 @@
     },
     {
       "source": "/hedera/tutorials/more-tutorials/hedera-mcp-server-setup-guide",
-      "destination": "/native/tutorials/advanced/mcp-server-setup"
+      "destination": "/learn/getting-started/mcp-setup"
+    },
+    {
+      "source": "/native/tutorials/advanced/mcp-server-setup",
+      "destination": "/learn/getting-started/mcp-setup"
     },
     {
       "source": "/hedera/tutorials/more-tutorials/how-to-auto-create-hedera-accounts-with-hbar-and-token-transfers",
@@ -2165,7 +2169,8 @@
               "learn/getting-started/choose-your-path",
               "learn/getting-started/testnet-faucet",
               "learn/getting-started/faucet-api",
-              "learn/getting-started/portal-playground"
+              "learn/getting-started/portal-playground",
+              "learn/getting-started/mcp-setup"
             ]
           },
           {
@@ -2734,7 +2739,6 @@
                   "native/tutorials/advanced/javascript-testing",
                   "native/tutorials/advanced/walletconnect-dapp",
                   "native/tutorials/advanced/hashgraphdev",
-                  "native/tutorials/advanced/mcp-server-setup",
                   {
                     "group": "HSM Signing",
                     "pages": [

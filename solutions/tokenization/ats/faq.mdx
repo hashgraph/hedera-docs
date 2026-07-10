@@ -1,5 +1,6 @@
 ---
-title: "Frequently Asked Questions (FAQs)"
+title: "Asset Tokenization Studio FAQs: features, roles, compliance"
+description: "Answers to common questions about Asset Tokenization Studio: source code access, supported assets, roles, compliance, and Hedera integration."
 ---
 
 <AccordionGroup>
@@ -55,7 +56,7 @@ Yes, ATS allows certain [updates to tokenized assets using proxy contracts](/sol
 
 <Accordion title="Does Asset Tokenization Studio Support ERC-3643 Compliance?">
 
-Yes, Asset Tokenization Studio supports optional integration with [ERC-3643](/support/glossary#erc-3643), a standard for permissioned tokens that enables compliance with securities regulations through on-chain compliance rules and identity verification. During bond or equity creation, issuers can configure ERC-3643 by specifying a Compliance ID (the smart contract enforcing regulatory rules) and an Identity Registry ID (the contract managing investor identities and compliance status). This integration allows ATS to work seamlessly with existing ERC-3643 compliance infrastructure for enhanced regulatory compliance.
+Yes, Asset Tokenization Studio includes partial [ERC-3643](/support/glossary#erc-3643) support by default. Full ERC-3643 integration is available as an optional configuration — during bond or equity creation, issuers can specify a Compliance ID (the smart contract enforcing regulatory rules) and an Identity Registry ID (the contract managing investor identities and compliance status) to work with existing ERC-3643 compliance infrastructure.
 </Accordion>
 
 <Accordion title="What Are External Management Lists and How Do They Work?">
@@ -66,6 +67,6 @@ External Management Lists in Asset Tokenization Studio allow issuers to integrat
 
 <Accordion title="What Wallets Are Supported by Asset Tokenization Studio?">
 
-Asset Tokenization Studio supports wallets compatible with the Hedera network, including [MetaMask](https://metamask.io/) and [HashPack](https://www.hashpack.app/). This allows users to easily interact with their tokenized assets through secure wallet integrations.
+Asset Tokenization Studio supports wallets compatible with the Hedera network, including [MetaMask](https://metamask.io/), [HashPack](https://www.hashpack.app/), and [Blade Wallet](https://bladelabs.io/). This allows users to easily interact with their tokenized assets through secure wallet integrations.
 </Accordion>
 </AccordionGroup>

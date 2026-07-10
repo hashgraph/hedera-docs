@@ -1,5 +1,6 @@
 ---
-title: Asset Tokenization Studio
+title: "Asset Tokenization Studio: tokenize RWAs on Hedera"
+description: "Open-source Hedera platform for tokenizing real-world assets—stocks, bonds, real estate—into compliant digital securities under SEC Reg D and Reg S."
 ---
 
 ## Introduction to Asset Tokenization
@@ -31,13 +32,20 @@ The tokenization process involves several key steps:
 
 By transforming asset ownership into digital form, tokenization paves the way for a more efficient and inclusive financial system, opening up new opportunities for investors and asset owners.
 
-➡️[Asset Tokenization Studio Source Code Repo](https://github.com/hashgraph/asset-tokenization-studio)
+<CardGroup cols={2}>
+  <Card title="ATS Source Code" icon="github" href="https://github.com/hashgraph/asset-tokenization-studio" arrow>
+    Open-source monorepo on GitHub — smart contracts, SDK, and Web UI source.
+  </Card>
+  <Card title="ATS Official Documentation" icon="book-open" href="https://docs.tokenization-studio.hedera.com/" arrow>
+    Full API references, guides, and integration documentation for Asset Tokenization Studio.
+  </Card>
+</CardGroup>
 
 ---
 
 ## Introducing Asset Tokenization Studio (ATS)
 
-To streamline and simplify the asset tokenization process, Asset Tokenization Studio (ATS)—Hedera's open-source platform that allows issuers to create, manage, and operate [digital securities](/support/glossary#digital-security) in [compliance](/support/glossary#compliance) with global regulations by adhering to the guidelines set forth by [SEC Regulations D](https://www.sec.gov/resources-for-investors/investor-alerts-bulletins/private-placements-under-regulation-d-investor-bulletin) ([506-b](https://www.sec.gov/resources-small-businesses/exempt-offerings/private-placements-rule-506b), [506-c](https://www.sec.gov/resources-small-businesses/exempt-offerings/general-solicitation-rule-506c)) and [Regulation S](https://www.sec.gov/rules-regulations/1998/02/offshore-offers-sales-regulation-s-effective-date-60-days-after-publication-federal-register). ATS makes asset tokenization accessible through the below key components and features that are open-source under an Apache 2.0 license, with the source code to be publicly available on GitHub soon:
+To streamline and simplify the asset tokenization process, Asset Tokenization Studio (ATS)—Hedera's open-source platform that allows issuers to create, manage, and operate [digital securities](/support/glossary#digital-security) in [compliance](/support/glossary#compliance) with global regulations by adhering to the guidelines set forth by [SEC Regulations D](https://www.sec.gov/resources-for-investors/investor-alerts-bulletins/private-placements-under-regulation-d-investor-bulletin) ([506-b](https://www.sec.gov/resources-small-businesses/exempt-offerings/private-placements-rule-506b), [506-c](https://www.sec.gov/resources-small-businesses/exempt-offerings/general-solicitation-rule-506c)) and [Regulation S](https://www.sec.gov/rules-regulations/1998/02/offshore-offers-sales-regulation-s-effective-date-60-days-after-publication-federal-register). ATS makes asset tokenization accessible through the below key components and features that are open-source under an Apache 2.0 license:
 
 <Columns cols={3}>
 <Card
@@ -47,9 +55,6 @@ To streamline and simplify the asset tokenization process, Asset Tokenization St
   img="/images/open-source-solutions/asset-tokenization-studio-ats/asset-tokenization-studio-ats-3.png"
 >
   A user-friendly web application that simplifies tokenization, making it accessible for developers and non-technical users to easily interact with digital securities.
-
-✅ Available
-
 </Card>
 <Card
   title="Customizable SDK"
@@ -58,29 +63,23 @@ To streamline and simplify the asset tokenization process, Asset Tokenization St
   img="/images/open-source-solutions/asset-tokenization-studio-ats/asset-tokenization-studio-ats-4.png"
 >
   A flexible open-source Software Development Kit (SDK) that enables developers to build custom tokenization solutions and deploy decentralized apps on the Hedera network.
-
-✅ Available
-
 </Card>
 
 <Card
   title="Smart Contracts"
-  href="https://github.com/hashgraph/asset-tokenization-studio/tree/main/contracts"
+  href="https://github.com/hashgraph/asset-tokenization-studio/tree/main/packages/ats/contracts"
   arrow
   img="/images/open-source-solutions/asset-tokenization-studio-ats/asset-tokenization-studio-ats-5.png"
 >
   Open-source, pre-built, and fully audited smart contracts that automate and standardize the tokenization process according to the <a href="https://github.com/ethereum/EIPs/issues/1411" target="_blank" rel="noopener noreferrer">ERC-1400</a> standard.
-
-✅ Available
-
 </Card>
 </Columns>
 
-Additional features include support for popular wallets, including [MetaMask](), [HashPack](), and [Blade Wallet](), and also extend the ERC-1400 standard by integrating additional modules to manage asset-specific metadata directly on the Hedera network. This includes functionalities like managing coupon payments or approval lists on-chain, enhancing transparency, and mitigating off-chain management risks.
+Additional features include support for popular wallets — [MetaMask](https://metamask.io/) connects directly, while [HashPack](https://www.hashpack.app/) and [Blade Wallet](https://bladelabs.io/) connect via Hedera WalletConnect 2.0 — and also extend the ERC-1400 standard by integrating additional modules to manage asset-specific metadata directly on the Hedera network. This includes functionalities like managing coupon payments or approval lists on-chain, enhancing transparency, and mitigating off-chain management risks.
 
 ## Ecosystem Integrations & Launch Partners
 
-ATS integrates with key partners like [RedSwan](https://redswan.io/), [ioBuilders](https://io.builders/), and [The Hedera Foundation](https://hedera.foundation/) to facilitate the issuance and management of tokenized bonds and equities on the Hedera network. These partners provide solutions for [KYC](/support/glossary#know-your-customer-kyc) [AML](/support/glossary#anti-money-laundering-aml) compliance, [custody](/support/glossary#custody), wallet integration, infrastructure management, [smart contract]() monitoring, and regulatory compliance.
+ATS integrates with key partners like [RedSwan](https://redswan.io/), [ioBuilders](https://io.builders/), and [The Hedera Foundation](https://hedera.foundation/) to facilitate the issuance and management of tokenized bonds and equities on the Hedera network. These partners provide solutions for [KYC](/support/glossary#know-your-customer-kyc) [AML](/support/glossary#anti-money-laundering-aml) compliance, [custody](/support/glossary#custody), wallet integration, infrastructure management, smart contract monitoring, and regulatory compliance.
 
 <Columns cols={3}>
   <Card
@@ -181,9 +180,7 @@ ATS integrates with key partners like [RedSwan](https://redswan.io/), [ioBuilder
     arrow
     img="/images/open-source-solutions/asset-tokenization-studio-ats/asset-tokenization-studio-ats-15.png"
   >
-    Dfns provides secure, API-driven custody solutions for digital assets,
-    ensuring that tokenized assets and transactions are protected with
-    military-grade encryption.
+    Dfns provides secure, API-driven custody solutions for digital assets. ATS also integrates with [Fireblocks](https://www.fireblocks.com/) and [AWS KMS](https://aws.amazon.com/kms/) for institutional and cloud-based key management signing.
   </Card>
   <Card
     title="Diamond Standard"
@@ -218,7 +215,7 @@ standard, which is interoperable with other key standards like [ERC-20](https://
 [ERC-1594](https://github.com/ethereum/eips/issues/1594),
 [ERC-1643](https://github.com/ethereum/eips/issues/1643),
 and [ERC-1644](https://github.com/ethereum/EIPs/issues/1644)
-to offer a comprehensive solution for managing [security tokens](/support/glossary#security-token). Additionally, ATS supports [ERC-3643](/support/glossary#erc-3643) integration for enhanced compliance and identity management through optional configuration of compliance smart contracts and identity registries. It
+to offer a comprehensive solution for managing [security tokens](/support/glossary#security-token). Additionally, ATS includes partial [ERC-3643](/support/glossary#erc-3643) support by default, with full integration available through optional configuration of compliance smart contracts and identity registries. It
 provides a comprehensive framework for managing [digital securities](/support/glossary#digital-security). The
 core implementation layer includes the following modules:
 
@@ -231,7 +228,7 @@ core implementation layer includes the following modules:
 | **Lock**           | The lock function freezes specific tokens or accounts, useful for restricted trading periods, legal holds, or tokens subject to vesting schedules or escrow.                                                                                                                                 |
 | **Snapshots**      | Snapshots capture token holder balances at any given time, providing accurate records for audits, dividends, or voting rights, ensuring compliance with corporate actions.                                                                                                                   |
 
-These modules provide a solid framework for efficient and compliant token management. ATS also supports integration with external management lists, including external pause contracts, control contracts, and [KYC](/support/glossary#know-your-customer-kyc) verification providers for enhanced security and compliance. Future module enhancements, such as Protected Partitions, will further enhance security and compliance capabilities.
+These modules provide a solid framework for efficient and compliant token management. ATS also supports integration with external management lists, including external pause contracts, control contracts, and [KYC](/support/glossary#know-your-customer-kyc) verification providers for enhanced security and compliance.
 <Accordion title="📚 Learn more about ERC-1400 ⬇">
 
 [**ERC-1400**](https://github.com/ethereum/EIPs/issues/1411) **is an extension of the** [**ERC-20**](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) **through the combination of 4 independent ERCs**:
@@ -265,7 +262,7 @@ ATS provides an easy-to-use comprehensive framework and makes asset tokenization
 
 For those interested in technical architecture, ATS utilizes factory contracts to create new digital securities, resolver contracts to manage and execute specific functions, and proxy contracts to enable seamless upgrades. When tokenization is initiated, two smart contracts are deployed, these contracts work together with the proxy contract to create, operate, and upgrade [digital securities](/support/glossary#digital-security).
 
-- **Factory Contract:** This contract is used to create new **digital securities**, like bonds or equities. It has methods like `deployBond` and `deployEquity` to generate these tokens. Each security token is created with a **diamond proxy**, a design that allows flexible and modular contract logic.
+- **Factory Contract:** This contract is used to create new **digital securities**, like bonds or equities. It has methods like `deployBond` and `deployEquity` to generate these tokens. Each security token is created with a **diamond proxy** following the [EIP-2535 Diamond Standard](https://eips.ethereum.org/EIPS/eip-2535), a design that allows flexible and modular contract logic.
 - **Resolver Contract**: This contract links to different logic modules, each serving a specific function for the **security tokens**. When a tokenized asset needs to perform an action, it refers to the resolver contract to find the right module to execute that function.
 - **Proxy Contract**: This contract acts as a layer wrapped around each **security token**, directing operations to the main logic contract. If the rules or functions of a token need to change (e.g., due to new regulations), the proxy can be updated to point to a new logic contract via the resolver. This allows all assets to be updated without interrupting their operation.
 
@@ -275,11 +272,3 @@ This architecture allows administrators or issuers to update their digital secur
   <img src="/images/open-source-solutions/asset-tokenization-studio-ats/asset-tokenization-studio-ats-2.png" />
 </Frame>
 
-<Columns cols={2}>
-  <Card title="Editor: Krystal, Senior DX Engineer" arrow>
-    [GitHub](https://github.com/theekrystallee) |
-    [X](https://x.com/theekrystallee)
-  </Card>
-</Columns>
-
-hedera\open-source-solutions\asset-tokenization-studio-ats.mdx

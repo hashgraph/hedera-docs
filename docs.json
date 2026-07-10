@@ -2308,6 +2308,7 @@
           {
             "group": "Development",
             "pages": [
+              "evm/development/accounts",
               "evm/development/creating",
               "evm/development/compiling",
               "evm/development/deploying",
@@ -2490,8 +2491,9 @@
                 "group": "Cross-Chain",
                 "pages": [
                   "evm/integrations/cross-chain/index",
+                  "evm/integrations/cross-chain/chainlink-ccip",
                   "evm/integrations/cross-chain/layerzero",
-                  "evm/integrations/cross-chain/chainlink-ccip"
+                  "evm/integrations/cross-chain/usdt0"
                 ]
               },
               {

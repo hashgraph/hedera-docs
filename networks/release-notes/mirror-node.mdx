@@ -12,6 +12,92 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 
 
+
+
+## [v0.158.1](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.158.1)
+
+<Accordion title="Bug Fixes">
+  * Fix slow query in grpc API (0.158) [#13871](https://github.com/hiero-ledger/hiero-mirror-node/pull/13871)
+</Accordion>
+
+<Accordion title="Dependency Upgrades">
+  * Bump vulnerable dependencies and fix web3 build (0.158) [#13872](https://github.com/hiero-ledger/hiero-mirror-node/pull/13872)
+</Accordion>
+
+## [v0.158.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.158.0)
+
+This release is mainly a bug fix release with the exception of one important feature. The `/api/v1/contracts/call` REST API can now support state overrides. This allows users to substitute an account's balance or nonce and a contract's bytecode or storage. This functionality is currently disabled behind a feature flag as we await further feedback on our proposed HIP. Below is an example of a state override:
+
+```json
+	"state_overrides": [{
+            "address": "0x00000000000000000000000000000000000004e4", 
+            "balance": "0xFFFFFFFFFFFFFFFFFFFF", 
+            "code": "0x602a60005260206000f3", 
+            "nonce": "0x1", 
+            "state": [{
+                  "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+                  "value": "0x000000000000000000000000000000000000000000000000000000000000370f"
+            }], 
+            "state_diff": []
+        }]
+```
+
+<Accordion title="Enhancements">
+  * Remove simple fees workaround in acceptance tests [#13790](https://github.com/hiero-ledger/hiero-mirror-node/pull/13790)
+  * WRB differential test [#13764](https://github.com/hiero-ledger/hiero-mirror-node/pull/13764)
+  * Disable testkube test artifactRequest when pushing metrics [#13744](https://github.com/hiero-ledger/hiero-mirror-node/pull/13744)
+  * Log API response time in acceptance tests [#13728](https://github.com/hiero-ledger/hiero-mirror-node/pull/13728)
+  * Common chart alerting cleanups [#13727](https://github.com/hiero-ledger/hiero-mirror-node/pull/13727)
+  * Adjustments to a couple of alerts [#13709](https://github.com/hiero-ledger/hiero-mirror-node/pull/13709)
+  * Implement state overrides for contract calls [#13545](https://github.com/hiero-ledger/hiero-mirror-node/pull/13545)
+</Accordion>
+
+<Accordion title="Bug Fixes">
+  * Fix INSUFFICIENT_TX_FEE error on contract create (0.158.0) [#13832](https://github.com/hiero-ledger/hiero-mirror-node/pull/13832)
+  * Fix public key recovery in native image (0.158) [#13837](https://github.com/hiero-ledger/hiero-mirror-node/pull/13837)
+  * Add validation message in GRPC that can resolve for native image build (0.158) [#13825](https://github.com/hiero-ledger/hiero-mirror-node/pull/13825)
+  * Fix broken lazy database pool connection in rosetta (0.158) [#13822](https://github.com/hiero-ledger/hiero-mirror-node/pull/13822)
+  * Change hollow account Ethereum transaction signer [#13794](https://github.com/hiero-ledger/hiero-mirror-node/pull/13794)
+  * Fix web3 native image [#13793](https://github.com/hiero-ledger/hiero-mirror-node/pull/13793)
+  * Fix rest chainId property conversion [#13782](https://github.com/hiero-ledger/hiero-mirror-node/pull/13782)
+  * Fix null from and make contract results main and synthetic query parallel [#13774](https://github.com/hiero-ledger/hiero-mirror-node/pull/13774)
+  * Fix copy live environment script issues [#13772](https://github.com/hiero-ledger/hiero-mirror-node/pull/13772)
+  * Fix ecdsa recover in native image [#13746](https://github.com/hiero-ledger/hiero-mirror-node/pull/13746)
+  * Refactor contract/results synthetic result query to prevent full scan in v2 [#13737](https://github.com/hiero-ledger/hiero-mirror-node/pull/13737)
+  * Fix importer native image [#13735](https://github.com/hiero-ledger/hiero-mirror-node/pull/13735)
+  * Fix rest monitor check failure [#13734](https://github.com/hiero-ledger/hiero-mirror-node/pull/13734)
+  * Fix pending reward deduction logic for accounts staking for over 365 days [#13706](https://github.com/hiero-ledger/hiero-mirror-node/pull/13706)
+</Accordion>
+
+<Accordion title="Dependency Upgrades">
+  * Bump vulnerable dependencies (0.158) [#13839](https://github.com/hiero-ledger/hiero-mirror-node/pull/13839)
+  * Bump the dependencies group with 3 updates [#13806](https://github.com/hiero-ledger/hiero-mirror-node/pull/13806)
+  * Bump the dependencies group in /rosetta with 3 updates [#13803](https://github.com/hiero-ledger/hiero-mirror-node/pull/13803)
+  * Bump software.amazon.awssdk:bom from 2.46.15 to 2.46.17 [#13802](https://github.com/hiero-ledger/hiero-mirror-node/pull/13802)
+  * Bump com.asarkar.grpc:grpc-test from 2.0.0 to 2.0.1 [#13801](https://github.com/hiero-ledger/hiero-mirror-node/pull/13801)
+  * Bump gradle-wrapper from 9.6.0 to 9.6.1 [#13798](https://github.com/hiero-ledger/hiero-mirror-node/pull/13798)
+  * Bump io.cucumber:cucumber-bom from 7.34.3 to 7.34.4 [#13796](https://github.com/hiero-ledger/hiero-mirror-node/pull/13796)
+  * Bump com.gradleup.shadow:shadow-gradle-plugin from 9.4.2 to 9.4.3 [#13795](https://github.com/hiero-ledger/hiero-mirror-node/pull/13795)
+  * Bump Jackson 2 and Java versions [#13785](https://github.com/hiero-ledger/hiero-mirror-node/pull/13785)
+  * Bump github.com/opencontainers/runc from 1.2.8 to 1.3.6 in /rosetta [#13770](https://github.com/hiero-ledger/hiero-mirror-node/pull/13770)
+  * Bump the dependencies group with 2 updates [#13762](https://github.com/hiero-ledger/hiero-mirror-node/pull/13762)
+  * Bump `@google-cloud`/logging from 11.2.2 to 11.2.3 in /tools/log-downloader in the dependencies group [#13760](https://github.com/hiero-ledger/hiero-mirror-node/pull/13760)
+  * Bump the dependencies group in /rest with 4 updates [#13759](https://github.com/hiero-ledger/hiero-mirror-node/pull/13759)
+  * Bump com.diffplug.spotless:spotless-plugin-gradle from 8.6.0 to 8.7.0 [#13758](https://github.com/hiero-ledger/hiero-mirror-node/pull/13758)
+  * Bump software.amazon.awssdk:bom from 2.46.10 to 2.46.15 [#13757](https://github.com/hiero-ledger/hiero-mirror-node/pull/13757)
+  * Bump gradle-wrapper from 9.5.1 to 9.6.0 [#13756](https://github.com/hiero-ledger/hiero-mirror-node/pull/13756)
+  * Bump org.gaul:s3proxy from 3.1.0 to 3.2.0 [#13754](https://github.com/hiero-ledger/hiero-mirror-node/pull/13754)
+  * Bump org.flywaydb:flyway-database-postgresql from 12.8.1 to 12.9.0 [#13753](https://github.com/hiero-ledger/hiero-mirror-node/pull/13753)
+  * Bump jooqVersion from 3.21.5 to 3.21.6 [#13752](https://github.com/hiero-ledger/hiero-mirror-node/pull/13752)
+  * Bump form-data from 2.5.5 to 2.5.6 in /tools/log-downloader [#13748](https://github.com/hiero-ledger/hiero-mirror-node/pull/13748)
+  * Update vulnerable rest dependencies [#13745](https://github.com/hiero-ledger/hiero-mirror-node/pull/13745)
+  * Update PostgreSQL in GCP Marketplace [#13729](https://github.com/hiero-ledger/hiero-mirror-node/pull/13729)
+  * Bump versions for v0.158.0-SNAPSHOT [#13723](https://github.com/hiero-ledger/hiero-mirror-node/pull/13723)
+  * Bump the dependencies group across 1 directory with 3 updates [#13722](https://github.com/hiero-ledger/hiero-mirror-node/pull/13722)
+  * Bump com.hedera.cryptography:hedera-cryptography-wraps from 3.8.1 to 3.9.0 [#13714](https://github.com/hiero-ledger/hiero-mirror-node/pull/13714)
+  * Bump org.graalvm.buildtools:native-gradle-plugin from 1.1.1 to 1.1.2 [#13712](https://github.com/hiero-ledger/hiero-mirror-node/pull/13712)
+</Accordion>
+
 ## [v0.157.1](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.157.1)
 
 <Accordion title="Bug Fixes">

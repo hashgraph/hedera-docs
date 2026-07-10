@@ -472,9 +472,9 @@ An account controlled by [private keys](#private-key) that can send transactions
 
 ---
 
-A facade contract on Hedera acts as a built-in adapter, allowing Hedera Token Service (HTS) tokens to function seamlessly as standard ERC-20 or ERC-721 tokens within EVM-compatible (EVM) environments. This integration enables developers to interact with HTS tokens using familiar Ethereum interfaces, such as `transfer()`, `approve()`, and `transferFrom()`, without requiring modifications to existing EVM wallets or decentralized applications (dApps).
+A facade contract on Hedera is a built-in proxy that lets a Hedera Token Service (HTS) token be called as if it were a standard ERC-20 or ERC-721 contract from EVM-compatible (EVM) environments. Calls to familiar Ethereum interfaces such as `transfer()`, `approve()`, `allowance()`, and `transferFrom()` are redirected to the HTS system contract and executed by the native token service ([HIP-218](https://hips.hedera.com/hip/hip-218), [HIP-376](https://hips.hedera.com/hip/hip-376)), so most EVM wallets and decentralized applications (dApps) can work with HTS tokens without code changes.
 
-Under the hood, when an EVM-compatible tool interacts with an HTS token's facade contract, the call is delegated to Hedera's native token service. This design ensures that HTS tokens can be managed and transacted using standard EVM tooling, providing a seamless developer experience. ​
+HTS-specific behavior still applies: an account must be **associated** with a token before it can hold a balance. The facade also exposes the HTS-native `associate()`, `dissociate()`, and `isAssociated()` functions through the IHRC interface ([HIP-719](https://hips.hedera.com/hip/hip-719)).
 
 ### Fair Order
 

@@ -54,7 +54,7 @@ In the most generic case, a sender is making a remittance to a receiver, and a s
 The amount of that fee is split between account 0.0.98 (a special Hedera account that represents the network) and the specific node that submitted the transaction.
 
 <Frame>
-![](/images/networks/fees/transaction-records/transaction-records-1.png)
+![](/images/networks/mainnet/fees/transaction-records/transaction-records-1.png)
 </Frame>
 
 #### Case 2 - Fees only
@@ -64,7 +64,7 @@ Many transactions do not allow for an explicit remittance, for instance, a FileC
 As before, the fee for the transaction is split between 0.0.98 and a node.
 
 <Frame>
-![](/images/networks/fees/transaction-records/transaction-records-2.png)
+![](/images/networks/mainnet/fees/transaction-records/transaction-records-2.png)
 </Frame>
 
 #### Case 3 - Sender account pays fees
@@ -74,7 +74,7 @@ It will often be the case that the fee for a CryptoTransfer sending remittance f
 In principle, the receiver could pay the fee as well.
 
 <Frame>
-![](/images/networks/fees/transaction-records/transaction-records-3.png)
+![](/images/networks/mainnet/fees/transaction-records/transaction-records-3.png)
 </Frame>
 
 #### Case 4 - Sender account has a threshold that is crossed
@@ -88,7 +88,7 @@ Account 98 receives the sum of the network, service, and also this threshold fee
 Not shown here but if it were also the case that the sender was paying the transaction fee (as above) then the balance of the sender’s account would decrease by the sum of the remittance, the transaction fee, and this threshold fee.
 
 <Frame>
-![](/images/networks/fees/transaction-records/transaction-records-4.png)
+![](/images/networks/mainnet/fees/transaction-records/transaction-records-4.png)
 </Frame>
 
 #### Case 5 - Receiver account has a threshold that is crossed
@@ -108,7 +108,7 @@ The transaction fees are not impacted by the threshold fee being paid.
 If the value of the remittance is less than the threshold fee, the transaction will fail.
 
 <Frame>
-![](/images/networks/fees/transaction-records/transaction-records-5.png)
+![](/images/networks/mainnet/fees/transaction-records/transaction-records-5.png)
 </Frame>
 
 #### Case 6 - Node account is receiver
@@ -120,7 +120,7 @@ As a specific example, clients compensate nodes for responding to a query by inc
 In this scenario, the node account’s balance will increase by the sum of the node fee it receives for processing the CryptoTransfer plus the value of the actual remittance that pays the node for the query response.
 
 <Frame>
-![](/images/networks/fees/transaction-records/transaction-records-6.png)
+![](/images/networks/mainnet/fees/transaction-records/transaction-records-6.png)
 </Frame>
 
 ### Transaction Records
@@ -132,7 +132,7 @@ When retrieved from a mirror node and not the mainnet, the transaction that resu
 The flow of information is shown below:
 
 <Frame>
-![](/images/networks/fees/transaction-records/transaction-records-7.png)
+![](/images/networks/mainnet/fees/transaction-records/transaction-records-7.png)
 </Frame>
 
 A client that retrieves the pair of a transaction and its associated record may want to distinguish between remittances and fee components for the transaction - that is, what part of an account’s balance change was due to transaction fees, what part due to a threshold fee, and what part due to a remittance.
@@ -161,13 +161,13 @@ As the remittance value exceeds these thresholds, both sender and receiver will 
 **R3**
 
 <Frame>
-![](/images/networks/fees/transaction-records/transaction-records-1.jpeg)
+![](/images/networks/mainnet/fees/transaction-records/transaction-records-1.jpeg)
 </Frame>
 
 **R4**
 
 <Frame>
-![](/images/networks/fees/transaction-records/transaction-records-1.jpg)
+![](/images/networks/mainnet/fees/transaction-records/transaction-records-1.jpg)
 </Frame>
 
 In the R4 format, the record transfer list no longer has multiple transfers for the different accounts – each account has only a single transfer with a value that reflects the sum of the various transfers that impacted each account.

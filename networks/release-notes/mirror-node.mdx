@@ -14,6 +14,56 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 
 
+
+## [v0.159.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.159.0)
+
+Besides the usual dose of bug fixes, this release focuses on improving our block node integration in preparation for block node availability in Consensus Node release 0.75. The block node streaming implementation was hardened against malicious block nodes through various changes like limiting the decompressed block size, timeouts, closing resources, etc. Historical migrations are now properly skipped when starting with block streams enabled.
+
+<Accordion title="Enhancements">
+  * Harden block node streaming implementation [#13863](https://github.com/hiero-ledger/hiero-mirror-node/pull/13863)
+  * Migrate GraphQL to GC, remove Rosetta [#13855](https://github.com/hiero-ledger/hiero-mirror-node/pull/13855)
+  * HIP-1427 Skip historical migrations when starting with blockstream [#13821](https://github.com/hiero-ledger/hiero-mirror-node/pull/13821)
+  * Remove inhibit rules from chart [#13815](https://github.com/hiero-ledger/hiero-mirror-node/pull/13815)
+</Accordion>
+
+<Accordion title="Bug Fixes">
+  * Fix WRB differential test script [#13881](https://github.com/hiero-ledger/hiero-mirror-node/pull/13881)
+  * Update OpenAPI with delegation_address [#13880](https://github.com/hiero-ledger/hiero-mirror-node/pull/13880)
+  * Reset pending reward to 0 when all earned is out of the retention window [#13873](https://github.com/hiero-ledger/hiero-mirror-node/pull/13873)
+  * Fix slow query in grpc API [#13870](https://github.com/hiero-ledger/hiero-mirror-node/pull/13870)
+  * Bypass solc resolution issue on web3 compileTestHistoricalSolidity [#13866](https://github.com/hiero-ledger/hiero-mirror-node/pull/13866)
+  * Fix monitor test failure in CI [#13838](https://github.com/hiero-ledger/hiero-mirror-node/pull/13838)
+  * Fix public key recovery in native image [#13835](https://github.com/hiero-ledger/hiero-mirror-node/pull/13835)
+  * Load historical state in `/opcodes` endpoint [#13831](https://github.com/hiero-ledger/hiero-mirror-node/pull/13831)
+  * Fix INSUFFICIENT_TX_FEE error on contract create [#13829](https://github.com/hiero-ledger/hiero-mirror-node/pull/13829)
+  * Add validation message in GRPC that can resolve for native image build [#13824](https://github.com/hiero-ledger/hiero-mirror-node/pull/13824)
+  * Fix broken lazy database pool connection in rosetta [#13814](https://github.com/hiero-ledger/hiero-mirror-node/pull/13814)
+  * Fix account nonce on delegation address update in block stream [#13811](https://github.com/hiero-ledger/hiero-mirror-node/pull/13811)
+  * Fix missing transaction_hash entries for synthetic logs [#13792](https://github.com/hiero-ledger/hiero-mirror-node/pull/13792)
+</Accordion>
+
+<Accordion title="Dependency Upgrades">
+  * Update vulnerable dependencies [#13860](https://github.com/hiero-ledger/hiero-mirror-node/pull/13860)
+  * Bump the dependencies group with 5 updates [#13851](https://github.com/hiero-ledger/hiero-mirror-node/pull/13851)
+  * Bump github.com/hiero-ledger/hiero-sdk-go/v2 from 2.80.0 to 2.81.0 in /pinger in the dependencies group [#13849](https://github.com/hiero-ledger/hiero-mirror-node/pull/13849)
+  * Bump the dependencies group in /rest with 4 updates [#13848](https://github.com/hiero-ledger/hiero-mirror-node/pull/13848)
+  * Bump github.com/hiero-ledger/hiero-sdk-go/v2 from 2.80.0 to 2.81.0 in /rosetta in the dependencies group [#13847](https://github.com/hiero-ledger/hiero-mirror-node/pull/13847)
+  * Bump io.hypersistence:hypersistence-utils-hibernate-71 from 3.15.3 to 3.15.4 [#13846](https://github.com/hiero-ledger/hiero-mirror-node/pull/13846)
+  * Bump software.amazon.awssdk:bom from 2.46.17 to 2.46.21 [#13845](https://github.com/hiero-ledger/hiero-mirror-node/pull/13845)
+  * Bump com.diffplug.spotless:spotless-plugin-gradle from 8.7.0 to 8.8.0 [#13844](https://github.com/hiero-ledger/hiero-mirror-node/pull/13844)
+  * Bump com.hedera.cryptography:hedera-cryptography-wraps from 3.11.0 to 3.11.2 [#13843](https://github.com/hiero-ledger/hiero-mirror-node/pull/13843)
+  * Bump io.fabric8:kubernetes-client-bom from 7.7.0 to 7.8.0 [#13842](https://github.com/hiero-ledger/hiero-mirror-node/pull/13842)
+  * Bump org.gaul:s3proxy from 3.2.0 to 3.3.0 [#13841](https://github.com/hiero-ledger/hiero-mirror-node/pull/13841)
+  * Bump vulnerable dependencies [#13836](https://github.com/hiero-ledger/hiero-mirror-node/pull/13836)
+  * Bump golang.org/x/net from 0.54.0 to 0.55.0 in /rosetta [#13828](https://github.com/hiero-ledger/hiero-mirror-node/pull/13828)
+  * Bump golang.org/x/net from 0.52.0 to 0.55.0 in /pinger [#13827](https://github.com/hiero-ledger/hiero-mirror-node/pull/13827)
+  * Bump versions for v0.159.0-SNAPSHOT [#13807](https://github.com/hiero-ledger/hiero-mirror-node/pull/13807)
+  * Bump the dependencies group in /rest with 6 updates [#13804](https://github.com/hiero-ledger/hiero-mirror-node/pull/13804)
+  * Bump org.graalvm.buildtools:native-gradle-plugin from 1.1.2 to 1.1.3 [#13800](https://github.com/hiero-ledger/hiero-mirror-node/pull/13800)
+  * Bump com.hedera.cryptography:hedera-cryptography-wraps from 3.9.0 to 3.11.0 [#13799](https://github.com/hiero-ledger/hiero-mirror-node/pull/13799)
+  * Bump org.hiero.block-node:protobuf-sources from 0.35.1 to 0.37.0 [#13797](https://github.com/hiero-ledger/hiero-mirror-node/pull/13797)
+</Accordion>
+
 ## [v0.158.1](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.158.1)
 
 <Accordion title="Bug Fixes">

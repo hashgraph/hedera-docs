@@ -5,7 +5,7 @@ set -euo pipefail
 # Hedera Node Tables Update Script
 # 
 # This script fetches the latest node data from the Hedera Mirror Node API
-# and updates the mainnet-nodes.mdx documentation file with:
+# and updates the operators/consensus-node/index.mdx documentation file with:
 # - Service endpoints
 # - Public keys
 # - Certificate hashes
@@ -18,7 +18,7 @@ set -euo pipefail
 # Configuration
 # ──────────────────────────────────────────────────────────────────────────────
 BASE_URL="https://mainnet.mirrornode.hedera.com/api/v1/network/nodes?limit=100&order=asc"
-DOC_FILE="hedera/networks/mainnet/mainnet-nodes.mdx"
+DOC_FILE="operators/consensus-node/index.mdx"
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Temp files and cleanup

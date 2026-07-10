@@ -23,7 +23,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  TARGET: learn/release-notes/mirror-node.mdx
+  TARGET: networks/release-notes/mirror-node.mdx
   REPO: hiero-ledger/hiero-mirror-node
 
 jobs:
@@ -120,7 +120,7 @@ jobs:
         uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          add-paths: learn/release-notes/mirror-node.mdx
+          add-paths: networks/release-notes/mirror-node.mdx
           commit-message: "docs: add mirror node release notes (${{ steps.plan.outputs.versions_csv }})"
           signoff: true
           sign-commits: true

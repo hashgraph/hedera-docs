@@ -15,6 +15,17 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 
 
+
+## [v0.159.1](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.159.1)
+
+<Accordion title="Bug Fixes">
+  * Fix entity type keys in cache (#13929) [#13932](https://github.com/hiero-ledger/hiero-mirror-node/pull/13932)
+</Accordion>
+
+<Accordion title="Dependency Upgrades">
+  * Bump Jackson versions (0.159) [#13933](https://github.com/hiero-ledger/hiero-mirror-node/pull/13933)
+</Accordion>
+
 ## [v0.159.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.159.0)
 
 Besides the usual dose of bug fixes, this release focuses on improving our block node integration in preparation for block node availability in Consensus Node release 0.75. The block node streaming implementation was hardened against malicious block nodes through various changes like limiting the decompressed block size, timeouts, closing resources, etc. Historical migrations are now properly skipped when starting with block streams enabled.

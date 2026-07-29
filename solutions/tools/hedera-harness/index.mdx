@@ -1,0 +1,198 @@
+---
+title: "Hedera Harness"
+description: "Generate and validate scaffold-hbar templates from a product brief using an agentic seed → generate → validate → repair loop."
+---
+
+## What is Hedera Harness?
+
+Hedera Harness is a TypeScript CLI that **generates and validates [Scaffold HBAR](/solutions/tools/scaffold-hbar/index) templates** from a product brief (PRD) you supply. You bring a YAML spec and validators for *your* Hedera demo; the loop is always the same: seed → vendor skills → generate → validate → repair until pass or budget exhausted.
+
+Use it to:
+
+- Turn a PRD into a runnable scaffold-hbar workspace with an agent CLI (Cursor `agent` by default)
+- Enforce structural, browser, semantic, and optional on-chain checks in layers you opt into
+- Benchmark template quality with isolated runs under `runs/`
+
+<CardGroup cols={2}>
+  <Card title="Quick Start" icon="rocket" href="#quick-start">
+    Clone the harness, copy the skeleton, and run your first Tier 0–1 loop
+  </Card>
+  <Card title="How it works" icon="diagram-project" href="#how-it-works">
+    Seed, vendor, generate, validate, and repair at a glance
+  </Card>
+  <Card title="Validation tiers" icon="layer-group" href="#validation-tiers">
+    Deterministic, Playwright, semantic, and on-chain gates
+  </Card>
+  <Card title="GitHub" icon="github" href="https://github.com/hedera-dev/hedera-harness">
+    Source, examples, and authoring guide
+  </Card>
+</CardGroup>
+
+---
+
+## How it relates to Scaffold HBAR
+
+| Tool | Role |
+|------|------|
+| **[Scaffold HBAR](/solutions/tools/scaffold-hbar/index)** | Interactive CLI that scaffolds a Hedera monorepo (contracts, Next.js, network config) from templates |
+| **Hedera Harness** | Agentic loop that *generates* a new template workspace from a PRD against a pinned scaffold-hbar seed, then validates it |
+
+Scaffold creates apps for humans. The harness asks an agent to produce a template from a brief, then scores the result. Skills default to the public [hedera-skills](https://github.com/hedera-dev/hedera-skills) repo; the seed defaults to public [scaffold-hbar](https://github.com/hedera-dev/scaffold-hbar).
+
+---
+
+## Prerequisites
+
+Before using Hedera Harness, ensure you have:
+
+- **Node.js** ≥ 20 — [nodejs.org](https://nodejs.org/)
+- **Git** — [git-scm.com](https://git-scm.com/)
+- **Yarn** (seeded workspaces are Yarn-based):
+  ```bash
+  corepack enable && corepack prepare yarn@stable --activate
+  ```
+- **Cursor CLI** (`agent` on your `PATH`, authenticated) — or another agent CLI you configure in the spec
+- A **product idea** written as a PRD (start from the skeleton in the repo)
+
+<Info>
+Tier 3.5 on-chain validation is optional. It needs a funded Hedera **testnet** account created with an **ECDSA** key (not ED25519). Export `HEDERA_OPERATOR_ID` and `HEDERA_OPERATOR_KEY` in the shell that runs the harness — never write those into a generated workspace.
+</Info>
+
+---
+
+## Quick Start
+
+### 1. Clone and install
+
+```bash
+git clone https://github.com/hedera-dev/hedera-harness.git
+cd hedera-harness
+npm install
+```
+
+### 2. Copy the skeleton for your idea
+
+```bash
+NAME=my-hedera-demo
+
+cp skeletons/new-template/prd.md              docs/prds/${NAME}.md
+cp skeletons/new-template/spec.yaml           specs/${NAME}.yaml
+cp skeletons/new-template/acceptance-contract.json contracts/${NAME}-acceptance.json
+cp skeletons/new-template/static.json         validators/${NAME}-static.json
+cp skeletons/new-template/yarn.json           validators/${NAME}-yarn.json
+cp skeletons/new-template/playwright-smoke.yaml playwright/${NAME}-smoke.yaml
+
+# Align internal paths / names with $NAME (macOS; on Linux drop the '').
+sed -i '' "s/my-template/${NAME}/g" \
+  specs/${NAME}.yaml \
+  validators/${NAME}-static.json \
+  validators/${NAME}-yarn.json \
+  contracts/${NAME}-acceptance.json \
+  playwright/${NAME}-smoke.yaml
+```
+
+### 3. Write the PRD and fill remaining placeholders
+
+1. Rewrite `docs/prds/${NAME}.md` for your product (goal, journeys, Hedera services, non-goals).
+2. Edit `specs/${NAME}.yaml`: fill remaining `REPLACE_ME` stubs. `seed.repo` already defaults to the public scaffold-hbar remote.
+3. Keep Tier 2 / 3 / 3.5 commented until Tier 0–1 passes.
+
+### 4. Run the harness
+
+```bash
+npm run harness -- run specs/${NAME}.yaml --max-attempts 3
+```
+
+Artifacts land under `runs/` (workspace, logs, report).
+
+<Tip>
+Example PRDs and specs ship in the repo (Proof Wall, HTS precompile, x402) as **inspiration only**. You do not need to run them to use the harness. See the [repository README](https://github.com/hedera-dev/hedera-harness) for the full CLI reference.
+</Tip>
+
+---
+
+## How it works
+
+Each run follows a vertical happy path. Skip validation tiers that are not enabled in the spec. On validation failure with attempts remaining, the harness repairs and returns to **Generate**.
+
+<Frame>
+  <img src="/images/solutions/tools/hedera-harness/harness-flow.png" alt="Hedera Harness vertical run graph: Inputs, Seed, Vendor, Generate, Oracle audit, Validate tiers, Outcome, with repair loop" />
+</Frame>
+
+| Stage | What happens |
+|-------|----------------|
+| **Seed** | Clone pinned scaffold-hbar ref into an isolated workspace; optional yarn preflight |
+| **Vendor** | Fetch skills (default: hedera-skills) and copy PRD / contract context into the workspace |
+| **Generate** | Agent CLI builds the template from the PRD |
+| **Oracle audit** | Informational check for peeking — never blocks a pass |
+| **Validate** | Enabled tiers in order (see below) |
+| **Outcome** | Pass, fail (budget exhausted), or infra abort → `runs/` |
+
+<Accordion title="Detailed sequence (who talks to whom)">
+
+Actors: CLI, Harness, Git sources, Workspace, Generator, Validators.
+
+<Frame>
+  <img src="/images/solutions/tools/hedera-harness/harness-sequence.png" alt="Hedera Harness sequence diagram showing messages between CLI, Harness, Git sources, Workspace, Generator, and Validators" />
+</Frame>
+
+</Accordion>
+
+---
+
+## Validation tiers
+
+**Pass condition:** every validation tier enabled in the spec must pass.
+
+| Tier | Spec fields | What it checks |
+|------|-------------|----------------|
+| **0–1 Deterministic** | `validators.static`, `validators.commands`, `requiredFiles`, `forbiddenFiles`, `secretScan` | Files, JSON/text assertions, secrets, yarn install/lint/build (or your commands) |
+| **2 Playwright gate** | `validators.playwright` | Dev server boots; configured routes return OK; optional console / forbidden-text checks |
+| **3 Semantic** | `contract` + `validator` | Read-only agent drives the live app and grades numbered acceptance assertions |
+| **3.5 On-chain** | `chainValidation` (+ Tier 3) | Ephemeral funded ECDSA test signer injected as burner wallet; real txs verified via mirror node |
+
+Tier 0–1 is the minimum. Tier 2–3 are optional but recommended for UI demos. The skeleton ships with Tier 2 / 3 / 3.5 commented out so first runs stay simple.
+
+<Warning>
+Semantic infrastructure failures (for example MCP or browser unavailable) **abort** the repair loop — the harness does not ask the generator to “fix” a missing browser.
+</Warning>
+
+---
+
+## Author your own idea
+
+The harness is template-agnostic: start from the skeleton, not from forking the example demos.
+
+1. Copy skeletons as in [Quick Start](#quick-start).
+2. Follow the checklist in the repo: [authoring-a-template.md](https://github.com/hedera-dev/hedera-harness/blob/main/docs/authoring-a-template.md).
+3. Enable higher tiers only after Tier 0–1 is green (`npx playwright install chromium` for Tier 2; Playwright MCP + acceptance contract for Tier 3).
+
+Private WIP PRDs can live under `docs/prds/local/` in a local clone (that path is gitignored).
+
+---
+
+## Ecosystem
+
+<CardGroup cols={2}>
+  <Card title="Scaffold HBAR" icon="layer-group" href="/solutions/tools/scaffold-hbar/index">
+    Scaffold Hedera dApps from the CLI—templates, contracts, Next.js, and Hedera Skills
+  </Card>
+  <Card title="Scaffold UI" icon="palette" href="/solutions/tools/scaffold-hbar/scaffold-ui">
+    Shared React components, hooks, and MCP server for AI-assisted development
+  </Card>
+  <Card title="Hedera Skills" icon="wand-magic-sparkles" href="https://github.com/hedera-dev/hedera-skills">
+    AI coding assistant skills fetched by the harness into each run
+  </Card>
+  <Card title="AI Studio" icon="robot" href="/solutions/ai/index">
+    Broader toolkit for building verifiable AI agents on Hedera
+  </Card>
+</CardGroup>
+
+---
+
+## Resources
+
+- [GitHub: hedera-harness](https://github.com/hedera-dev/hedera-harness) — CLI source, examples, and issues
+- [GitHub: scaffold-hbar](https://github.com/hedera-dev/scaffold-hbar) — Seed templates repository
+- [Hedera Portal](https://portal.hedera.com/) — Account creation and testnet faucet
+- [HashScan](https://hashscan.io/) — Block explorer for Hedera

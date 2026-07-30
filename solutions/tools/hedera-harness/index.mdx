@@ -1,17 +1,19 @@
 ---
 title: "Hedera Harness"
-description: "Generate and validate scaffold-hbar templates from a product brief using an agentic seed → generate → validate → repair loop."
+description: "Describe a Hedera demo in a PRD, then let an agent build a Scaffold HBAR template and check that it works."
 ---
 
 ## What is Hedera Harness?
 
-Hedera Harness is a TypeScript CLI that **generates and validates [Scaffold HBAR](/solutions/tools/scaffold-hbar/index) templates** from a product brief (PRD) you supply. You bring a YAML spec and validators for *your* Hedera demo; the loop is always the same: seed → vendor skills → generate → validate → repair until pass or budget exhausted.
+Hedera Harness helps you turn a product idea into a working [Scaffold HBAR](/solutions/tools/scaffold-hbar/index) template — and prove that template actually runs.
+
+You write a short product brief (PRD) and a few validation rules for *your* Hedera demo. The harness seeds a clean workspace, asks an AI coding agent to build the template, then checks the result. If something fails, it feeds the failures back to the agent and tries again until the checks pass or the attempt budget runs out.
 
 Use it to:
 
-- Turn a PRD into a runnable scaffold-hbar workspace with an agent CLI (Cursor `agent` by default)
-- Enforce structural, browser, semantic, and optional on-chain checks in layers you opt into
-- Benchmark template quality with isolated runs under `runs/`
+- Go from PRD → runnable Scaffold HBAR workspace without hand-writing the whole template
+- Catch structural, UI, semantic, and optional on-chain issues before you share the template
+- Keep each attempt isolated under `runs/` so you can inspect what the agent produced
 
 <CardGroup cols={2}>
   <Card title="Quick Start" icon="rocket" href="#quick-start">
@@ -35,9 +37,9 @@ Use it to:
 | Tool | Role |
 |------|------|
 | **[Scaffold HBAR](/solutions/tools/scaffold-hbar/index)** | Interactive CLI that scaffolds a Hedera monorepo (contracts, Next.js, network config) from templates |
-| **Hedera Harness** | Agentic loop that *generates* a new template workspace from a PRD against a pinned scaffold-hbar seed, then validates it |
+| **Hedera Harness** | Takes your PRD, asks an agent to build a hedera demo application compatible with scaffold-hbar templates, then validates the result |
 
-Scaffold creates apps for humans. The harness asks an agent to produce a template from a brief, then scores the result. Skills default to the public [hedera-skills](https://github.com/hedera-dev/hedera-skills) repo; the seed defaults to public [scaffold-hbar](https://github.com/hedera-dev/scaffold-hbar).
+Scaffold provisions apps for humans. The harness asks an agent to produce a template from your brief, then checks whether that template works. Skills default to the public [hedera-skills](https://github.com/hedera-dev/hedera-skills) repo; the seed defaults to public [scaffold-hbar](https://github.com/hedera-dev/scaffold-hbar).
 
 ---
 

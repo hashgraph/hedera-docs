@@ -3,7 +3,7 @@ title: "Ethereum transaction"
 ---
 
 
-An `EthereumTransaction` lets you execute a raw, RLP-encoded (type 0, 1, or 2) Ethereum transaction on the Hedera network. This enables developers familiar with EVM tooling to leverage their existing knowledge and infrastructure when interacting with the [Hedera Smart Contract Service (HSCS)](/evm/tutorials).
+An `EthereumTransaction` lets you execute a raw, RLP-encoded Ethereum transaction on the Hedera network. Legacy, access list ([EIP-2930](https://eips.ethereum.org/EIPS/eip-2930)), and dynamic fee ([EIP-1559](https://eips.ethereum.org/EIPS/eip-1559)) transactions are supported; see [Supported Ethereum transaction types](#supported-ethereum-transaction-types). This enables developers familiar with EVM tooling to reuse their existing knowledge and infrastructure when interacting with the [Hedera Smart Contract Service (HSCS)](/evm/tutorials).
 
 <Warning>
 #### **Important**
@@ -17,7 +17,42 @@ Hedera interprets HBAR decimals differently depending on the context:
   Reference: [HIP-410](https://hips.hedera.com/hip/hip-410)
 </Warning>
 
-<table><thead><tr><th>Field</th><th>Description</th></tr></thead><tbody><tr><td><strong>Ethereum Data</strong></td><td>An RLP-encoded (type 0, 1, or 2) Ethereum transaction to execute on the Hedera network. This enables developers to leverage existing EVM tooling and workflows with the Hedera Smart Contract Service (HSCS).</td></tr><tr><td><strong>Call Data File ID</strong></td><td>An optional field referencing a file on the Hedera File Service (HFS) containing the <code>callData</code>. When set, the network ignores the <code>callData</code> in <code>ethereumData</code> during execution and instead loads the data from the referenced file. However, the full <code>callData</code> must still be present in the originally signed <code>ethereumData</code> for signature validation. In this case, <code>ethereumData</code> will contain a placeholder where <code>callData</code> normally resides, and the transaction must be "rehydrated" with the HFS content during validation.<br/><br/><em><strong>Note:</strong> With</em> <a href="https://hips.hedera.com/hip/hip-1086"><em>HIP-1086</em></a><em>, jumbo <code>ethereumData</code> is the preferred approach for large payloads, but <code>callDataFileId</code> remains supported for oversized payloads or legacy workflows.</em></td></tr><tr><td><strong>Max Allowance</strong></td><td><p>The maximum amount of HBAR (specified in <strong>tinybars</strong>) the payer is willing to cover for the gas consumed during transaction execution. This value acts as a ceiling if the actual gas cost (determined by <code>gasLimit</code> in the RLP-encoded transaction and the network's gas price) exceeds this amount, the transaction fails.<br/></p><p>Ordinarily, the account with the ECDSA alias extracted from the <code>ethereumData</code> signature covers the execution fees. If insufficient fees are authorized by that account, the payer can be charged up to but not exceeding <code>maxGasAllowance</code>. If the authorized fee is zero, the payer is charged the full amount.</p></td></tr></tbody></table>
+<table><thead><tr><th>Field</th><th>Description</th></tr></thead><tbody><tr><td><strong>Ethereum Data</strong></td><td>An RLP-encoded Ethereum transaction (legacy, EIP-2930, or EIP-1559) to execute on the Hedera network. This enables developers to leverage existing EVM tooling and workflows with the Hedera Smart Contract Service (HSCS).</td></tr><tr><td><strong>Call Data File ID</strong></td><td>An optional field referencing a file on the Hedera File Service (HFS) containing the <code>callData</code>. When set, the network ignores the <code>callData</code> in <code>ethereumData</code> during execution and instead loads the data from the referenced file. However, the full <code>callData</code> must still be present in the originally signed <code>ethereumData</code> for signature validation. In this case, <code>ethereumData</code> will contain a placeholder where <code>callData</code> normally resides, and the transaction must be "rehydrated" with the HFS content during validation.<br/><br/><em><strong>Note:</strong> With</em> <a href="https://hips.hedera.com/hip/hip-1086"><em>HIP-1086</em></a><em>, jumbo <code>ethereumData</code> is the preferred approach for large payloads, but <code>callDataFileId</code> remains supported for oversized payloads or legacy workflows.</em></td></tr><tr><td><strong>Max Allowance</strong></td><td><p>The maximum amount of HBAR (specified in <strong>tinybars</strong>) the payer is willing to cover for the gas consumed during transaction execution. This value acts as a ceiling if the actual gas cost (determined by <code>gasLimit</code> in the RLP-encoded transaction and the network's gas price) exceeds this amount, the transaction fails.<br/></p><p>Ordinarily, the account with the ECDSA alias extracted from the <code>ethereumData</code> signature covers the execution fees. If insufficient fees are authorized by that account, the payer can be charged up to but not exceeding <code>maxGasAllowance</code>. If the authorized fee is zero, the payer is charged the full amount.</p></td></tr></tbody></table>
+
+## Supported Ethereum transaction types
+
+`EthereumTransaction` accepts RLP-encoded Ethereum transactions of the following types:
+
+| Type | Name | EIP | Status on Hedera |
+| --- | --- | --- | --- |
+| `0x00` | Legacy | Pre-typed | Supported |
+| `0x01` | Access list | [EIP-2930](https://eips.ethereum.org/EIPS/eip-2930) | Supported |
+| `0x02` | Dynamic fee | [EIP-1559](https://eips.ethereum.org/EIPS/eip-1559) | Supported |
+| `0x03` | Blob | [EIP-4844](https://eips.ethereum.org/EIPS/eip-4844) | Not supported |
+| `0x04` | Set code | [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) | Deactivated |
+
+Type 3 (blob) transactions are rejected because Hedera does not implement blobs ([HIP-866](https://hips.hedera.com/hip/hip-866)). Type 4 (set-code) transactions are part of Ethereum's Pectra upgrade, but **EIP-7702 is deactivated on Hedera**, so type 4 transactions are rejected and EOA code delegation is not available. Support is tracked for a future release under [HIP-1340](https://hips.hedera.com/hip/hip-1340). For type 2 (EIP-1559), the priority fee (`max_priority_fee_per_gas`) is ignored on Hedera because network fees are fixed by the fee schedule rather than a priority market.
+
+### Access lists (EIP-2930)
+
+A type 1 (and type 2) transaction can carry an `accessList`: a list of addresses and storage keys the transaction expects to touch. Pre-declaring these accesses marks them "warm," lowering the gas cost of the first access to each. An access list is encoded as an array of `{ address, storageKeys }` entries:
+
+```json
+[
+  {
+    "address": "0xa02457e5dfd32bda5fc7e1f1b008aa5979568150",
+    "storageKeys": [
+      "0x0000000000000000000000000000000000000000000000000000000000000081"
+    ]
+  }
+]
+```
+
+You can submit an access-list transaction either through the JSON-RPC Relay (`eth_sendRawTransaction`) or directly to HAPI via `EthereumTransaction`, where the access list is part of the RLP-encoded `ethereumData`.
+
+<Info>
+Access lists are supported as part of Hedera's [Pectra](/evm/development/deploying#pectra-hard-fork) hard fork.
+</Info>
 
 ## Handling Large callData Payloads
 

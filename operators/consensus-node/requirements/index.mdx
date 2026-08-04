@@ -328,14 +328,20 @@ A proxy is required to expose the node’s public APIs.
 
 The following ports must be configured for **public internet access** unless otherwise stated:
 
-| Port    | Protocol | Direction      | Description                           |
-| ------- | -------- | -------------- | ------------------------------------- |
-| `50111` | TCP      | Ingress/Egress | Gossip protocol                       |
-| `50211` | TCP      | Ingress/Egress | gRPC (public) API access (HAPI)       |
-| `50212` | TCP      | Ingress/Egress | TLS-encrypted gRPC                    |
-| `80`    | TCP      | Egress only    | OS package repository connectivity    |
-| `443`   | TCP      | Egress only    | Secure package & system update access |
-| `123`   | UDP      | Ingress/Egress | Time sync via NTP pool                |
+| Port    | Protocol | Direction      | Description                               |
+| ------- | -------- | -------------- | ----------------------------------------- |
+| `50111` | TCP      | Ingress/Egress | Gossip protocol                           |
+| `50211` | TCP      | Ingress/Egress | gRPC (public) API access (HAPI)           |
+| `50212` | TCP      | Ingress/Egress | TLS-encrypted gRPC                        |
+| `80`    | TCP      | Egress only    | OS package repository connectivity        |
+| `443`   | TCP      | Egress only    | Secure package & system update access     |
+| `123`   | UDP      | Ingress/Egress | Time sync via NTP pool                    |
+| `40984` | TCP/UDP  | Egress only    | Block node streaming (gRPC) Publisher     |
+| `40982` | TCP/UDP  | Egress only    | Block node streaming (gRPC) Server Status |
+
+> 📁 **Note:** Block node connections are outbound (egress) only; no inbound rule is required. Because block nodes are operated across multiple networks and the set of block nodes changes over time, allow egress on the block node ports (`40984`, `40982`) to any destination rather than to a fixed IP allowlist.
+
+> 📁 **Further Note:** Block Nodes may configure other ports for the Publish or Server Status APIs. The exact ports for each block node will be available, once fully implemented, in the `RegisteredNode` entries in network state as defined in HIP-1137.
 
 </Accordion>
 
@@ -415,3 +421,4 @@ For questions or approval of infrastructure plans, contact:
 ## Next Steps
 
 For detailed guidance on deploying and onboarding your Hedera mainnet node, please see the [Node Deployment Steps](/operators/consensus-node/deployment).
+

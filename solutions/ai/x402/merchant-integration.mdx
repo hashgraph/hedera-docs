@@ -1,36 +1,12 @@
 ---
-title: "Merchant & resource-server integration"
-sidebarTitle: "Merchant integration"
-description: "Add x402 payment gating to a Hedera resource server with the @x402/hedera middleware."
+title: "Accept x402 on Hedera"
+sidebarTitle: "Accept x402"
+description: "Gate an HTTP resource and accept HBAR or HTS token payments with the @x402/hedera resource-server middleware."
 ---
 
-The [`@x402/hedera`](https://www.npmjs.com/package/@x402/hedera) package implements the scheme for both client and resource server.
+The [`@x402/hedera`](https://www.npmjs.com/package/@x402/hedera) package implements the scheme for both client and resource server. This page covers the resource-server side: gating an API and settling payments.
 
-## Client
-
-Register the Hedera scheme with a signer for your account:
-
-```typescript client.ts
-import { x402Client } from "@x402/core/client";
-import { createClientHederaSigner } from "@x402/hedera";
-import { ExactHederaScheme } from "@x402/hedera/exact/client";
-import { PrivateKey } from "@hiero-ledger/sdk";
-
-const signer = createClientHederaSigner(
-  "0.0.1111",
-  PrivateKey.fromString(process.env.HEDERA_PRIVATE_KEY!),
-  { network: "hedera:testnet" }
-);
-
-// Register the scheme for any Hedera network and let the client
-// auto-handle 402 responses by signing and retrying.
-const client = new x402Client().register(
-  "hedera:*",
-  new ExactHederaScheme(signer)
-);
-```
-
-## Resource server
+## Register the resource server
 
 Register the scheme and declare the asset you accept:
 
@@ -59,7 +35,10 @@ The `facilitatorClient` points at a facilitator that supports Hedera (see [Facil
   <Card title="Hedera's exact scheme" icon="file-lines" href="/solutions/ai/x402/exact-scheme">
     Message shapes, assets, and safety checks.
   </Card>
-  <Card title="x402 facilitators" icon="wallet" href="/solutions/ai/x402/facilitators">
+  <Card title="Pay with x402 on Hedera" icon="wallet" href="/solutions/ai/x402/pay-with-x402">
+    Client setup for AI agents and other payers.
+  </Card>
+  <Card title="x402 facilitators" icon="server" href="/solutions/ai/x402/facilitators">
     Hosted options and how to run your own.
   </Card>
 </CardGroup>

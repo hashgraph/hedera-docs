@@ -3,6 +3,10 @@ title: "Network MCP Server"
 description: "Connect your own MCP-compatible agents to the Hedera Network Hosted MCP Server to access Hedera Agent Kit tools without deploying local infrastructure."
 sidebarTitle: "Hedera Network MCP"
 ---
+<Note>
+**Network:** The hosted server is connected to **Hedera Testnet only**. For Mainnet integrations, run the [self-hosted MCP server](https://github.com/hashgraph/hedera-agent-kit-js/tree/main/examples/modelcontextprotocol).
+</Note>
+
 
 ## Overview
 
@@ -12,9 +16,6 @@ The **Hedera Network Hosted MCP Server** provides a managed, remote instance of 
 **RETURN_BYTES Mode:** The Network MCP Server operates exclusively in `RETURN_BYTES` mode. The server will *not* sign or execute transactions on-chain. Every transaction-building tool returns the constructed transaction as hex-encoded bytes, and your client application is responsible for signing and submitting them to the network.
 </Note>
 
-<Note>
-**Network:** The hosted server is connected to **Hedera Testnet only**. For Mainnet integrations, run the [self-hosted MCP server](https://github.com/hashgraph/hedera-agent-kit-js/tree/main/examples/modelcontextprotocol).
-</Note>
 
 ## Connection Details
 

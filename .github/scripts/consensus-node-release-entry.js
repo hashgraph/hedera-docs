@@ -85,7 +85,7 @@ function linkAuthor(bullet) {
 function escapeMdx(text) {
   return text
     .split(/(`[^`]*`)/g)
-    .map(part => (part.startsWith('`') ? part : part.replace(/[<{]/g, '\\$&')))
+    .map(part => (part.startsWith('`') ? part : part.replace(/[\\<{]/g, '\\$&')))
     .join('');
 }
 

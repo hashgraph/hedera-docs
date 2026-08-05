@@ -79,9 +79,10 @@ function linkAuthor(bullet) {
 // Escape MDX-significant characters in upstream release text so it renders
 // literally. The page compiles as JSX, so a bare "<" (e.g. "<maxRetries>") is
 // parsed as an unclosed JSX tag and fails the WHOLE page build (404), and "{"
-// opens a JS expression that is equally fatal. Inline `code` spans already
-// treat both as literal, so they are left untouched to avoid inserting visible
-// backslashes inside code.
+// opens a JS expression that is equally fatal. Backslash is escaped too so an
+// input like "\<" cannot un-escape a following "<" and re-open the tag. Inline
+// `code` spans already treat these as literal, so they are left untouched to
+// avoid inserting visible backslashes inside code.
 function escapeMdx(text) {
   return text
     .split(/(`[^`]*`)/g)
@@ -112,6 +113,11 @@ function parseReleaseBody(body) {
       const bullet = line
         .replace(/^[-*]\s+/, '')
         .replace(/[ \t]{2,}/g, ' ')
+        // Unescape markdown-escaped punctuation (e.g. `\_` -> `_`) before we
+        // re-escape MDX-significant chars, so escaped identifiers render cleanly
+        // and a stray `\<` collapses to `<` (then gets escaped) rather than
+        // slipping through.
+        .replace(/\\([^A-Za-z0-9])/g, '$1')
         .trimEnd();
 
       if (bullet.trim()) {

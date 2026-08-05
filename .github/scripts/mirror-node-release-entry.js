@@ -63,9 +63,10 @@ function escapeRegExp(value) {
 // Escape MDX-significant characters in upstream release text so it renders
 // literally. The page compiles as JSX, so a bare "<" (e.g. "<maxRetries>") is
 // parsed as an unclosed JSX tag and fails the WHOLE page build (404), and "{"
-// opens a JS expression that is equally fatal. Inline `code` spans already
-// treat both as literal, so they are left untouched to avoid inserting visible
-// backslashes inside code.
+// opens a JS expression that is equally fatal. Backslash is escaped too so an
+// input like "\<" cannot un-escape a following "<" and re-open the tag. Inline
+// `code` spans already treat these as literal, so they are left untouched to
+// avoid inserting visible backslashes inside code.
 function escapeMdx(text) {
   return text
     .split(/(`[^`]*`)/g)

@@ -1,0 +1,65 @@
+---
+title: "Merchant & resource-server integration"
+sidebarTitle: "Merchant integration"
+description: "Add x402 payment gating to a Hedera resource server with the @x402/hedera middleware."
+---
+
+The [`@x402/hedera`](https://www.npmjs.com/package/@x402/hedera) package implements the scheme for both client and resource server.
+
+## Client
+
+Register the Hedera scheme with a signer for your account:
+
+```typescript client.ts
+import { x402Client } from "@x402/core/client";
+import { createClientHederaSigner } from "@x402/hedera";
+import { ExactHederaScheme } from "@x402/hedera/exact/client";
+import { PrivateKey } from "@hiero-ledger/sdk";
+
+const signer = createClientHederaSigner(
+  "0.0.1111",
+  PrivateKey.fromString(process.env.HEDERA_PRIVATE_KEY!),
+  { network: "hedera:testnet" }
+);
+
+// Register the scheme for any Hedera network and let the client
+// auto-handle 402 responses by signing and retrying.
+const client = new x402Client().register(
+  "hedera:*",
+  new ExactHederaScheme(signer)
+);
+```
+
+## Resource server
+
+Register the scheme and declare the asset you accept:
+
+```typescript server.ts
+import { x402ResourceServer } from "@x402/core/server";
+import { ExactHederaScheme } from "@x402/hedera/exact/server";
+
+const server = new x402ResourceServer(facilitatorClient);
+
+server.register(
+  "hedera:*",
+  new ExactHederaScheme({
+    defaultAssets: {
+      "hedera:testnet": { asset: "0.0.6001", decimals: 6 },
+      "hedera:mainnet": { asset: "0.0.9001", decimals: 6 },
+    },
+  })
+);
+```
+
+The `facilitatorClient` points at a facilitator that supports Hedera (see [Facilitators](/solutions/ai/x402/facilitators)). The resource server uses it to `/verify` and `/settle` payments without holding funds or running its own node.
+
+## Further reading
+
+<CardGroup cols={2}>
+  <Card title="Hedera's exact scheme" icon="file-lines" href="/solutions/ai/x402/exact-scheme">
+    Message shapes, assets, and safety checks.
+  </Card>
+  <Card title="x402 facilitators" icon="wallet" href="/solutions/ai/x402/facilitators">
+    Hosted options and how to run your own.
+  </Card>
+</CardGroup>

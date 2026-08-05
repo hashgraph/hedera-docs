@@ -1,0 +1,88 @@
+---
+title: "x402 Facilitators"
+sidebarTitle: "Facilitators"
+description: "Hosted x402 facilitators for Hedera, plus how to run and list your own facilitator."
+---
+
+You can point your resource server's `facilitatorClient` at any facilitator that advertises the Hedera network you need. The options below support Hedera today.
+
+## Official x402 facilitator
+
+The x402 project hosts a public facilitator at `https://x402.org/facilitator` for quickstart and testnet use. It **requires no setup and no API key**, and now advertises `hedera:testnet` alongside its other supported chains.
+
+| | Value |
+| --- | --- |
+| Facilitator base URL | `https://x402.org/facilitator` |
+| Capability discovery | `GET /supported` |
+| Verify endpoint | `POST /verify` |
+| Settle endpoint | `POST /settle` |
+| Hedera network | `hedera:testnet` |
+| Advertised fee payer | `0.0.9185802` |
+| API key | Not required |
+| Documentation | [docs.x402.org](https://docs.x402.org/) |
+
+You can confirm Hedera support live by querying its capabilities:
+
+```bash
+curl https://x402.org/facilitator/supported
+```
+
+The response lists `hedera:testnet` among the supported `kinds`, along with the fee-payer account the facilitator will sponsor. This facilitator is aimed at quickstart and testnet; for Hedera **mainnet**, use a facilitator that advertises `hedera:mainnet` (such as Blocky402, below).
+
+<Tip>
+Point the `facilitatorClient` in your resource server at `https://x402.org/facilitator` to verify and settle Hedera testnet payments through the official x402 facilitator.
+</Tip>
+
+## Blocky402
+
+[**Blocky402**](https://blocky402.com/) is an open x402 facilitator that supports Hedera on **both testnet and mainnet**, so you can wire up x402 payments on Hedera without standing up your own infrastructure first. Both facilitators are live with **open access (no API key required)**.
+
+| | Testnet | Mainnet |
+| --- | --- | --- |
+| Facilitator base URL | `https://api.testnet.blocky402.com` | `https://api.blocky402.com` |
+| Hedera network | `hedera:testnet` | `hedera:mainnet` |
+| Advertised fee payer | `0.0.7162784` | `0.0.10571514` |
+
+Both expose the standard endpoints (`GET /supported`, `POST /verify`, and `POST /settle`) and are documented at [blocky402.com/docs](https://blocky402.com/docs/) ([quickstart](https://blocky402.com/docs/quickstart/), [API reference](https://blocky402.com/docs/api-reference/), [networks](https://blocky402.com/docs/networks/)).
+
+You can confirm Hedera support live by querying either facilitator's capabilities:
+
+```bash
+# testnet
+curl https://api.testnet.blocky402.com/supported
+
+# mainnet
+curl https://api.blocky402.com/supported
+```
+
+The response lists the supported Hedera network among the `kinds`, along with the fee-payer account the facilitator will sponsor.
+
+<Tip>
+Point the `facilitatorClient` in your resource server at `https://api.testnet.blocky402.com` (testnet) or `https://api.blocky402.com` (mainnet) to verify and settle Hedera payments through Blocky402.
+</Tip>
+
+## Run your own Hedera facilitator
+
+x402 is permissionless: any team can operate a facilitator, and the more independent Hedera facilitators there are, the healthier the network. Below are the steps to follow to stand one up for yourself:
+
+<Steps>
+<Step title="Implement the exact Hedera scheme">
+Use the [`@x402/hedera` reference implementation](https://github.com/x402-foundation/x402/tree/main/typescript/packages/mechanisms/hedera) and the [scheme spec](https://github.com/x402-foundation/x402/blob/main/specs/schemes/exact/scheme_exact_hedera.md) to handle verification and settlement.
+</Step>
+<Step title="Fund and configure a fee-payer account">
+Provision a Hedera account that will act as the `feePayer`, sponsoring network fees and submitting transactions on behalf of clients.
+</Step>
+<Step title="Expose the standard endpoints">
+Serve `GET /supported`, `POST /verify`, and `POST /settle`. Advertise `hedera:mainnet` and/or `hedera:testnet` (and your fee-payer account) from `/supported` so clients can discover you.
+</Step>
+<Step title="Enforce the safety checks">
+Validate transaction layout, asset and amount exactness, fee-payer safety, and replay protection exactly as the spec requires, and publish your alias-handling policy.
+</Step>
+</Steps>
+
+### Get listed as a Hedera facilitator
+
+Once your facilitator is live and supports Hedera:
+
+- **Be discoverable across the ecosystem** by listing in the broader x402 directories such as the [x402 ecosystem directory](https://www.x402.org/ecosystem?filter=facilitators) and [x402scan facilitators](https://www.x402scan.com/facilitators).
+- **Be listed here as a Hedera facilitator** by opening a pull request against the [Hedera docs repository](https://github.com/hashgraph/hedera-docs) that adds your facilitator (base URL, supported Hedera networks, fee-payer account, and documentation link) to this page.

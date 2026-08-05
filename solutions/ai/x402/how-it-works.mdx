@@ -1,0 +1,43 @@
+---
+title: "How x402 works"
+sidebarTitle: "How it works"
+description: "The core x402 request-pay-response flow and the concepts behind per-request HTTP payments."
+---
+
+x402 adds a short negotiation loop on top of a normal HTTP request. On Hedera, the distinguishing detail is the **fee-payer model**: the client signs a transfer of value, and the *facilitator* adds its signature, pays the network fee, and submits the transaction. The merchant never has to run blockchain infrastructure or hold gas.
+
+## The flow
+
+<Steps>
+<Step title="Client requests a protected resource">
+The client makes an ordinary request to a resource server (for example, `GET /weather`).
+</Step>
+<Step title="Server responds with 402 Payment Required">
+The server replies with HTTP `402` and a set of `PaymentRequirements` describing how much to pay, in which asset, to which account, and which `feePayer` (the facilitator) will sponsor fees.
+</Step>
+<Step title="Client builds and partially signs a transfer">
+The client constructs a Hedera `TransferTransaction` that moves the requested asset to the `payTo` account, sets the transaction's payer account to the `feePayer`, signs it, and Base64-encodes it into a `PaymentPayload`.
+</Step>
+<Step title="Server forwards to the facilitator's /verify">
+The resource server passes the payload to a facilitator, which validates the transaction structure, asset, amount, and destination before anything is submitted on-chain.
+</Step>
+<Step title="Facilitator settles via /settle">
+Once verified, the facilitator adds its signature as fee payer, **pays the gas**, and submits the transaction to Hedera, then returns a settlement result.
+</Step>
+<Step title="Server grants access">
+On confirmed settlement, the resource server returns the protected response to the client.
+</Step>
+</Steps>
+
+## Requirements and limitations
+
+<Warning>
+x402 is a focused primitive, not a turnkey payments product. Be sure to plan around these constraints according to your use-case(s).
+</Warning>
+
+- **A facilitator that supports Hedera is required** to verify and submit transactions. You can use a hosted one or [run your own](/solutions/ai/x402/facilitators#run-your-own-hedera-facilitator).
+- **The client account must be funded** with the asset being paid (HBAR or the relevant HTS token), and for HTS tokens it must be **associated** with that token.
+- **Settlement is per-request and discrete.** x402 is not built for streaming payments or multi-hop routing across ledgers.
+- **No native privacy** — amounts, accounts, and transfers are visible on the public Hedera ledger.
+- **Facilitator concentration is a real risk.** If most traffic flows through a few facilitators, the network starts to look like traditional payment infrastructure — a reason to encourage many independent Hedera facilitators.
+- **Alias / auto-account-creation policy:** when `payTo` is an alias (EVM address or public key), a transfer can trigger auto-account creation that the facilitator funds. Each facilitator sets and documents its own policy (`allow` or `reject`; the reference implementation defaults to `reject`).

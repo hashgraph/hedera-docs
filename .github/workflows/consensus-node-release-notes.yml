@@ -122,6 +122,17 @@ jobs:
             echo "::endgroup::"
           done < "${RUNNER_TEMP}/versions.txt"
 
+      - name: Validate MDX compiles
+        if: steps.plan.outputs.count != '0'
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Guard against machine-generated MDX that fails to compile (e.g. an
+          # unescaped "<...>" token parsed as an unclosed JSX tag), which would
+          # ship a page that 404s. Fail the PR here instead.
+          npm install --no-save @mdx-js/mdx
+          node .github/scripts/check-mdx-compiles.js "${TARGET}"
+
       - name: Open pull request
         if: steps.plan.outputs.count != '0'
         uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8

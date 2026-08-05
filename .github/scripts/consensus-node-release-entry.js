@@ -76,6 +76,19 @@ function linkAuthor(bullet) {
   );
 }
 
+// Escape MDX-significant characters in upstream release text so it renders
+// literally. The page compiles as JSX, so a bare "<" (e.g. "<maxRetries>") is
+// parsed as an unclosed JSX tag and fails the WHOLE page build (404), and "{"
+// opens a JS expression that is equally fatal. Inline `code` spans already
+// treat both as literal, so they are left untouched to avoid inserting visible
+// backslashes inside code.
+function escapeMdx(text) {
+  return text
+    .split(/(`[^`]*`)/g)
+    .map(part => (part.startsWith('`') ? part : part.replace(/[<{]/g, '\\$&')))
+    .join('');
+}
+
 // Parse the release body into ordered [category, bullets[]] pairs, preserving
 // the order categories appear in the release body.
 function parseReleaseBody(body) {
@@ -102,7 +115,7 @@ function parseReleaseBody(body) {
         .trimEnd();
 
       if (bullet.trim()) {
-        current.bullets.push(`  * ${linkAuthor(bullet)}`);
+        current.bullets.push(`  * ${linkAuthor(escapeMdx(bullet))}`);
       }
     }
   }
@@ -204,8 +217,6 @@ function buildStubMinorSection(minor, version, changelogBlock, maintenances) {
     `## Release v${minor}`,
     ...networkBlock('MAINNET', mainnet),
     ...networkBlock('TESTNET', testnet),
-    '',
-    `<!-- highlights: TODO - add a "### Release highlights" paragraph and a "What's new in Release v${minor}?" accordion above the build block -->`,
     '',
     changelogBlock,
   ].join('\n');

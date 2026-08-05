@@ -60,6 +60,19 @@ function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+// Escape MDX-significant characters in upstream release text so it renders
+// literally. The page compiles as JSX, so a bare "<" (e.g. "<maxRetries>") is
+// parsed as an unclosed JSX tag and fails the WHOLE page build (404), and "{"
+// opens a JS expression that is equally fatal. Inline `code` spans already
+// treat both as literal, so they are left untouched to avoid inserting visible
+// backslashes inside code.
+function escapeMdx(text) {
+  return text
+    .split(/(`[^`]*`)/g)
+    .map(part => (part.startsWith('`') ? part : part.replace(/[<{]/g, '\\$&')))
+    .join('');
+}
+
 function escapeMdxAttribute(value) {
   return value
     .replace(/&/g, '&amp;')
@@ -125,10 +138,12 @@ function parseReleaseBody(body) {
       //  - reduce PR links `[#NNN](url)` to the plain `#NNN` ref the page uses
       //  - unescape markdown-escaped punctuation (e.g. `\_` -> `_`)
       const bullet = linkAuthor(
-        line
-          .replace(/^[-*]\s+/, '')
-          .replace(/\\([^A-Za-z0-9])/g, '$1')
-          .trimEnd()
+        escapeMdx(
+          line
+            .replace(/^[-*]\s+/, '')
+            .replace(/\\([^A-Za-z0-9])/g, '$1')
+            .trimEnd()
+        )
       );
 
       if (bullet.trim()) {
@@ -217,13 +232,13 @@ function main() {
     })
     .join('\n\n');
 
-  const warnings = [];
-
   // Breaking Changes are rewritten as editorial prose by a human, not rendered
-  // as an accordion. If the body has a Breaking Changes section, flag it.
+  // as an accordion. If the body has a Breaking Changes section, flag it in the
+  // workflow log for the reviewer (not as an in-page comment).
   if (blocks.has('Breaking Changes')) {
-    warnings.push(
-      '<!-- TODO: this release has Breaking Changes in the upstream notes — add a "### Breaking Changes" prose section above the accordions. -->'
+    console.warn(
+      `WARNING: v${version} has Breaking Changes in the upstream notes — add a ` +
+        '"### Breaking Changes" prose section above the accordions during review.'
     );
   }
 
@@ -234,7 +249,6 @@ function main() {
 
   const parts = [`## [v${version}](${tagUrl})`, ''];
   if (summary) parts.push(summary, '');
-  if (warnings.length > 0) parts.push(...warnings, '');
   parts.push(accordions, '', '');
 
   const entry = parts.join('\n');

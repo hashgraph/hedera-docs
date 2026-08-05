@@ -69,7 +69,13 @@ function escapeRegExp(value) {
 function escapeMdx(text) {
   return text
     .split(/(`[^`]*`)/g)
-    .map(part => (part.startsWith('`') ? part : part.replace(/[<{]/g, '\\$&')))
+    .map(part =>
+      part.startsWith('`')
+        ? part
+        : part
+            .replace(/\\/g, '\\\\')
+            .replace(/[<{]/g, '\\$&')
+    )
     .join('');
 }
 

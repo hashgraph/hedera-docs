@@ -12,18 +12,19 @@ You write a short product brief (PRD) and a few validation rules for *your* Hede
 Use it to:
 
 - Go from PRD → runnable Scaffold HBAR workspace without hand-writing the whole template
+- **Extend** an already-scaffolded app in place (`.harness/` + `yarn harness:extend`) without re-seeding
 - Catch structural, UI, semantic, and optional on-chain issues before you share the template
-- Keep each attempt isolated under `runs/` so you can inspect what the agent produced
+- Keep each attempt isolated under `runs/` (or `.harness/runs/` for extend) so you can inspect what the agent produced
 
 <CardGroup cols={2}>
   <Card title="Quick Start" icon="rocket" href="#quick-start">
     Clone the harness, copy the skeleton, and run your first Tier 0–1 loop
   </Card>
+  <Card title="Extend in place" icon="screwdriver-wrench" href="#extend-an-existing-app">
+    Scaffold once, then `yarn harness:extend` against `.harness/`
+  </Card>
   <Card title="How it works" icon="diagram-project" href="#how-it-works">
     Seed, vendor, generate, validate, and repair at a glance
-  </Card>
-  <Card title="Validation tiers" icon="layer-group" href="#validation-tiers">
-    Deterministic, Playwright, semantic, and on-chain gates
   </Card>
   <Card title="GitHub" icon="github" href="https://github.com/hedera-dev/hedera-harness">
     Source, examples, and authoring guide
@@ -37,9 +38,9 @@ Use it to:
 | Tool | Role |
 |------|------|
 | **[Scaffold HBAR](/solutions/tools/scaffold-hbar/index)** | Interactive CLI that scaffolds a Hedera monorepo (contracts, Next.js, network config) from templates |
-| **Hedera Harness** | Takes your PRD, asks an agent to build a hedera demo application compatible with scaffold-hbar templates, then validates the result |
+| **Hedera Harness** | Takes your PRD, asks an agent to build or extend a Hedera demo compatible with scaffold-hbar templates, then validates the result |
 
-Scaffold provisions apps for humans. The harness asks an agent to produce a template from your brief, then checks whether that template works. Skills default to the public [hedera-skills](https://github.com/hedera-dev/hedera-skills) repo; the seed defaults to public [scaffold-hbar](https://github.com/hedera-dev/scaffold-hbar).
+Scaffold provisions apps for humans. The harness asks an agent to produce (or extend) a template from your brief, then checks whether it works. Skills default to the public [hedera-skills](https://github.com/hedera-dev/hedera-skills) repo; greenfield `run` seeds from public [scaffold-hbar](https://github.com/hedera-dev/scaffold-hbar).
 
 ---
 
@@ -113,6 +114,44 @@ Example PRDs and specs ship in the repo (Proof Wall, HTS precompile, x402) as **
 
 ---
 
+## Extend an existing app
+
+Prefer this path when a Scaffold HBAR template already ships a `.harness/` recipe (for example the Learn-page pilot on `hedera-demo`).
+
+### 1. Scaffold and install
+
+```bash
+npx create-scaffold-hbar@latest
+cd my-app
+yarn install
+```
+
+### 2. Confirm the extend recipe
+
+Templates that support in-place extend include:
+
+- `.harness/spec.yaml` — no `seed`; includes `extend.baseline`
+- `.harness/prd.md` — product brief for the delta
+- `.harness/validators/` — static + yarn gates
+- `package.json` script: `"harness:extend": "hedera-harness extend .harness/spec.yaml"`
+- Dev dependency: `hedera-harness` (optional peers `playwright` / `@hiero-ledger/sdk` only if you enable Tier 2 / 3.5)
+
+### 3. Run extend
+
+```bash
+yarn harness:extend
+```
+
+The harness uses the project directory as the workspace (no re-seed), runs baseline commands, asks the agent to implement the PRD, then validates enabled tiers. Artifacts land under `.harness/runs/`.
+
+Author a new extend recipe with the [hedera-skills hedera-harness plugin](https://github.com/hedera-dev/hedera-skills) (`/create-harness-spec` detects scaffolded apps and emits under `.harness/`).
+
+<Info>
+Greenfield `run` (clone the harness repo) and in-place `extend` share the same validation tiers. Only layout and CLI entrypoint differ.
+</Info>
+
+---
+
 ## How it works
 
 Each run follows a vertical happy path. Skip validation tiers that are not enabled in the spec. On validation failure with attempts remaining, the harness repairs and returns to **Generate**.
@@ -163,9 +202,9 @@ Semantic infrastructure failures (for example MCP or browser unavailable) **abor
 
 ## Author your own idea
 
-The harness is template-agnostic: start from the skeleton, not from forking the example demos.
+The harness is template-agnostic: start from the skeleton (greenfield) or from `.harness/` (extend), not from forking the example demos.
 
-1. Copy skeletons as in [Quick Start](#quick-start).
+1. Copy skeletons as in [Quick Start](#quick-start), **or** author under `.harness/` as in [Extend an existing app](#extend-an-existing-app).
 2. Follow the checklist in the repo: [authoring-a-template.md](https://github.com/hedera-dev/hedera-harness/blob/main/docs/authoring-a-template.md).
 3. Enable higher tiers only after Tier 0–1 is green (`npx playwright install chromium` for Tier 2; Playwright MCP + acceptance contract for Tier 3).
 

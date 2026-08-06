@@ -1236,6 +1236,10 @@
       "destination": "/networks/release-notes/mirror-node"
     },
     {
+      "source": "/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/elizaos-plugin",
+      "destination": "/solutions/ai/elizaos"
+    },
+    {
       "source": "/hedera/open-source-solutions/ai-studio-on-hedera/hedera-ai-agent-kit/hedera-agent-kit-js/migration-guide",
       "destination": "/solutions/ai/agent-kit/js/migration-guide"
     },
@@ -2848,6 +2852,7 @@
                   }
                 ]
               },
+              "solutions/ai/elizaos",
               "solutions/ai/hosted-mcp-server",
               "solutions/ai/x402"
             ]

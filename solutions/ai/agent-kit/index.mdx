@@ -35,11 +35,11 @@ The Agent Kit is available in two languages and provides different tools:
 
 ---
 
-## Hosted MCP Server
+## Hosted Network MCP Server
 
-The **Hashgraph Hosted MCP Server** provides a managed, remote instance of the Hedera Agent Kit exposing its tools via the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/). It operates strictly in `RETURN_BYTES` mode.
+The **Hashgraph Hosted Network MCP Server** provides a managed, remote instance of the Hedera Agent Kit exposing its tools via the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/). It operates strictly in `RETURN_BYTES` mode.
 
-[Learn more about the Hosted MCP Server →](/solutions/ai/hosted-mcp-server)
+[Learn more about the Hosted Network MCP Server →](/solutions/ai/hosted-mcp-server)
 
 ---
 ## Hedera Agent Kit JavaScript Packages
@@ -56,6 +56,7 @@ The JavaScript Agent Kit ships as a core package with separate framework toolkit
 | `@hashgraph/hedera-agent-kit-langchain` | LangChain toolkit (`HederaLangchainToolkit`) |
 | `@hashgraph/hedera-agent-kit-ai-sdk` | Vercel AI SDK toolkit (`HederaAIToolkit`) |
 | `@hashgraph/hedera-agent-kit-adk` | Google ADK toolkit (`HederaADKToolkit`) |
+| `@hashgraph/hedera-agent-kit-elizaos` | ElizaOS toolkit (`HederaElizaOSToolkit`) |
 | `@hashgraph/hedera-agent-kit-mcp` | MCP toolkit (`HederaMCPToolkit`) |
 
 
@@ -90,6 +91,7 @@ Both SDKs provide:
 | **Vercel AI SDK**       | ✅ Supported        | ❌ Not Available    |
 | **Google ADK**          | ✅ Supported        | ✅ Supported        |
 | **RETURN_BYTES Mode**   | ✅ Supported        | ✅ Supported     |
+| **ElizaOS Integration** | ✅ Supported        | ❌ Not Available    |
 | **MCP Server**          | ✅ Supported        | ✅ Coming Soon     |
 | **Hooks & Policies**    | ✅ Supported        | ✅ Supported     |
 
@@ -121,6 +123,7 @@ Both SDKs provide the same core functionality through plugins:
 Best for:
 - Web applications
 - Node.js backends
+- Full feature set including ElizaOS
 
 [Get Started with JavaScript →](/solutions/ai/agent-kit/js/quickstart
 )

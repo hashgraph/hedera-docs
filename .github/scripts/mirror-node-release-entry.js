@@ -6,6 +6,7 @@
 'use strict';
 
 const fs = require('fs');
+const { escapeMdx } = require('./lib/escape-mdx');
 
 const REPO_URL = 'https://github.com/hiero-ledger/hiero-mirror-node';
 const GITHUB_URL = 'https://github.com';
@@ -58,26 +59,6 @@ function linkAuthor(bullet) {
 
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-// Escape MDX-significant characters in upstream release text so it renders
-// literally. The page compiles as JSX, so a bare "<" (e.g. "<maxRetries>") is
-// parsed as an unclosed JSX tag and fails the WHOLE page build (404), and "{"
-// opens a JS expression that is equally fatal. Backslash is escaped too so an
-// input like "\<" cannot un-escape a following "<" and re-open the tag. Inline
-// `code` spans already treat these as literal, so they are left untouched to
-// avoid inserting visible backslashes inside code.
-function escapeMdx(text) {
-  return text
-    .split(/(`[^`]*`)/g)
-    .map(part =>
-      part.startsWith('`')
-        ? part
-        : part
-            .replace(/\\/g, '\\\\')
-            .replace(/[<{]/g, '\\$&')
-    )
-    .join('');
 }
 
 function escapeMdxAttribute(value) {

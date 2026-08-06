@@ -12,6 +12,7 @@
 'use strict';
 
 const fs = require('fs');
+const { escapeMdx } = require('./lib/escape-mdx');
 
 const REPO_URL = 'https://github.com/hiero-ledger/hiero-consensus-node';
 const GITHUB_URL = 'https://github.com';
@@ -99,10 +100,15 @@ function parseReleaseBody(body) {
       const bullet = line
         .replace(/^[-*]\s+/, '')
         .replace(/[ \t]{2,}/g, ' ')
+        // Unescape markdown-escaped punctuation (e.g. `\_` -> `_`) before we
+        // re-escape MDX-significant chars, so escaped identifiers render cleanly
+        // and a stray `\<` collapses to `<` (then gets escaped) rather than
+        // slipping through.
+        .replace(/\\([^A-Za-z0-9])/g, '$1')
         .trimEnd();
 
       if (bullet.trim()) {
-        current.bullets.push(`  * ${linkAuthor(bullet)}`);
+        current.bullets.push(`  * ${linkAuthor(escapeMdx(bullet))}`);
       }
     }
   }
@@ -204,8 +210,6 @@ function buildStubMinorSection(minor, version, changelogBlock, maintenances) {
     `## Release v${minor}`,
     ...networkBlock('MAINNET', mainnet),
     ...networkBlock('TESTNET', testnet),
-    '',
-    `<!-- highlights: TODO - add a "### Release highlights" paragraph and a "What's new in Release v${minor}?" accordion above the build block -->`,
     '',
     changelogBlock,
   ].join('\n');

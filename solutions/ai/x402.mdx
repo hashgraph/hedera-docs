@@ -213,30 +213,61 @@ x402 is a focused primitive, not a turnkey payments product. Be sure to plan aro
 
 ## Hedera facilitators
 
-### Blocky402
+You can point your resource server's `facilitatorClient` at any facilitator that advertises the Hedera network you need. The options below support Hedera today.
 
-[**Blocky402**](https://blocky402.com/) is an open x402 facilitator that supports Hedera, so you can wire up x402 payments on Hedera without standing up your own infrastructure first. Its testnet facilitator is live with **open access (no API key required)**.
+### Official x402 facilitator
+
+The x402 project hosts a public facilitator at `https://x402.org/facilitator` for quickstart and testnet use. It **requires no setup and no API key**, and now advertises `hedera:testnet` alongside its other supported chains.
 
 | | Value |
 | --- | --- |
-| Facilitator base URL (testnet) | `https://api.testnet.blocky402.com` |
+| Facilitator base URL | `https://x402.org/facilitator` |
 | Capability discovery | `GET /supported` |
 | Verify endpoint | `POST /verify` |
 | Settle endpoint | `POST /settle` |
 | Hedera network | `hedera:testnet` |
-| Advertised fee payer | `0.0.7162784` |
-| Documentation | [blocky402.com/docs](https://blocky402.com/docs/) ([quickstart](https://blocky402.com/docs/quickstart/), [API reference](https://blocky402.com/docs/api-reference/), [networks](https://blocky402.com/docs/networks/)) |
+| Advertised fee payer | `0.0.9185802` |
+| API key | Not required |
+| Documentation | [docs.x402.org](https://docs.x402.org/) |
 
-You can confirm Hedera support live by querying the facilitator's capabilities:
+You can confirm Hedera support live by querying its capabilities:
 
 ```bash
-curl https://api.testnet.blocky402.com/supported
+curl https://x402.org/facilitator/supported
 ```
 
-The response lists `hedera:testnet` among the supported `kinds`, along with the fee-payer account the facilitator will sponsor. Mainnet support is rolling out and will require an API key.
+The response lists `hedera:testnet` among the supported `kinds`, along with the fee-payer account the facilitator will sponsor. This facilitator is aimed at quickstart and testnet; for Hedera **mainnet**, use a facilitator that advertises `hedera:mainnet` (such as Blocky402, below).
 
 <Tip>
-Point the `facilitatorClient` in your resource server at `https://api.testnet.blocky402.com` to verify and settle Hedera testnet payments through Blocky402.
+Point the `facilitatorClient` in your resource server at `https://x402.org/facilitator` to verify and settle Hedera testnet payments through the official x402 facilitator.
+</Tip>
+
+### Blocky402
+
+[**Blocky402**](https://blocky402.com/) is an open x402 facilitator that supports Hedera on **both testnet and mainnet**, so you can wire up x402 payments on Hedera without standing up your own infrastructure first. Both facilitators are live with **open access (no API key required)**.
+
+| | Testnet | Mainnet |
+| --- | --- | --- |
+| Facilitator base URL | `https://api.testnet.blocky402.com` | `https://api.blocky402.com` |
+| Hedera network | `hedera:testnet` | `hedera:mainnet` |
+| Advertised fee payer | `0.0.7162784` | `0.0.10571514` |
+
+Both expose the standard endpoints (`GET /supported`, `POST /verify`, and `POST /settle`) and are documented at [blocky402.com/docs](https://blocky402.com/docs/) ([quickstart](https://blocky402.com/docs/quickstart/), [API reference](https://blocky402.com/docs/api-reference/), [networks](https://blocky402.com/docs/networks/)).
+
+You can confirm Hedera support live by querying either facilitator's capabilities:
+
+```bash
+# testnet
+curl https://api.testnet.blocky402.com/supported
+
+# mainnet
+curl https://api.blocky402.com/supported
+```
+
+The response lists the supported Hedera network among the `kinds`, along with the fee-payer account the facilitator will sponsor.
+
+<Tip>
+Point the `facilitatorClient` in your resource server at `https://api.testnet.blocky402.com` (testnet) or `https://api.blocky402.com` (mainnet) to verify and settle Hedera payments through Blocky402.
 </Tip>
 
 ### Run your own Hedera facilitator

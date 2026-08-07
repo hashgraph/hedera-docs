@@ -1,0 +1,56 @@
+---
+title: "Atomic Batch Composition and Caller Checks"
+description: "Hedera provides atomic composition at the transaction layer, so a composing caller is an ordinary account with no code. Caller-inspection checks ported from other EVM chains do not detect it."
+---
+
+## Overview
+
+On Ethereum, a caller that composes operations atomically around your contract call generally has to place something in your call frame: a wrapper contract, an ERC-4337 smart account, or an [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) delegation designator. Contracts that need to identify such a caller inspect `msg.sender` for code.
+
+Hedera provides atomic composition at the **transaction layer** through Atomic Batch Transactions ([HIP-551](https://hips.hedera.com/hip/hip-551)). A batched call reaches your contract directly from an externally owned account carrying no code, and the composing transaction is a sibling inner transaction your contract cannot observe.
+
+**Caller-inspection checks ported from other EVM chains therefore report nothing on Hedera.**
+
+***
+
+## What differs
+
+| Composition route | Observable in the callee's frame |
+|---|:---|
+| Wrapper contract | `msg.sender` is a contract — `code.length > 0` |
+| ERC-4337 | `msg.sender` is a smart account — `code.length > 0` |
+| EIP-7702 delegation | `msg.sender` carries a designator — `code.length == 23` |
+| **Hedera Atomic Batch** | **nothing** |
+
+During a batched call, `msg.sender` is an ordinary account, `msg.sender.code.length` is `0`, and `msg.sender == tx.origin` holds — exactly as in a legitimate direct call from a user.
+
+<Warning>
+  If you are migrating a contract that relies on `require(msg.sender == tx.origin)` or on inspecting `msg.sender`'s code to prevent a caller from atomically reverting based on your result, that protection does not carry over. Review the contract before deploying.
+</Warning>
+
+***
+
+## What this affects
+
+Contracts that resolve a value-bearing outcome in the same transaction that commits to it. A caller can invoke the contract, observe the outcome, and revert the batch if it is unfavorable, paying only gas.
+
+This covers any operation whose profitability the caller can read before the transaction becomes final — settlement priced from instantaneous on-chain state, auctions resolved on entry, prize draws and randomized rewards, and anything reading spot prices or balances to decide a transfer.
+
+Note that `msg.sender == tx.origin` no longer prevents this on Ethereum either. EIP-7702, live since the Pectra upgrade, allows an account with delegated code to satisfy the equality while composing atomically. The underlying design issue is not Hedera-specific; what differs on Hedera is that the composition leaves no trace in the call frame.
+
+***
+
+## What to do
+
+The fix is architectural rather than a different caller check: never resolve a value-bearing outcome in the same transaction, or the same atomic context, that commits to it. Commit and lock the value in one transaction, then resolve in a later transaction that the beneficiary does not submit.
+
+For the full explanation, replacement patterns for each use of `tx.origin`, worked code examples, and an audit checklist, see [Atomic Batches and Caller Assumptions](/evm/development/atomic-batch-security).
+
+***
+
+## Additional References and Resources
+
+* [**Atomic Batches and Caller Assumptions**](/evm/development/atomic-batch-security)
+* [**Smart Contract Security**](/evm/development/security)
+* [**HIP-551: Batch Transactions**](https://hips.hedera.com/hip/hip-551)
+* [**EIP-7702: Set Code for EOAs**](https://eips.ethereum.org/EIPS/eip-7702)

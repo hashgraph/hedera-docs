@@ -2324,6 +2324,7 @@
               "evm/development/archive-queries",
               "evm/development/addresses",
               "evm/development/security",
+              "evm/development/atomic-batch-security",
               "evm/development/forking",
               "evm/development/json-rpc/index",
               "evm/development/troubleshooting"
@@ -2338,6 +2339,7 @@
               "evm/differences/native-token-transfers",
               "evm/differences/json-rpc-differences",
               "evm/differences/tooling-compatibility",
+              "evm/differences/atomic-batch-composition",
               {
                 "group": "For Native Developers",
                 "pages": [

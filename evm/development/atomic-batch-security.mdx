@@ -1,0 +1,332 @@
+---
+title: "Atomic Batches and Caller Assumptions"
+description: "Why msg.sender == tx.origin does not prevent atomic composition on Hedera, and how to design contracts that resolve value-bearing outcomes safely."
+---
+
+Atomic Batch Transactions ([HIP-551](https://hips.hedera.com/hip/hip-551)) let a caller bundle independent transactions that execute all-or-nothing. This is a powerful composition primitive, and it changes an assumption some contracts rely on: that a caller cannot make your result and their payment atomically dependent without routing through a contract.
+
+If your contract uses `require(msg.sender == tx.origin)` — the "onlyEOA" guard — to prevent that, this page explains why it does not work, and what to do instead.
+
+***
+
+## Overview
+
+An AtomicBatch bundles inner transactions that either all commit or all roll back. Each inner transaction is signed individually and has its own payer.
+
+The consequence for a contract is:
+
+> A caller can invoke your contract in one inner transaction, observe the outcome, and cause a second inner transaction to revert — rolling back your contract's state and their payment, at the cost of gas only.
+
+Both inner calls are **direct calls from an externally owned account**. No wrapper contract is involved.
+
+```
+AtomicBatch (all-or-nothing)
+├── inner tx 1:  EOA ──────► YourContract.doSomething()
+│                            msg.sender = EOA
+│                            tx.origin  = EOA      ← guard passes, correctly
+│
+└── inner tx 2:  EOA ──────► CallerContract.check()
+                             reverts if the outcome was unfavorable
+                             → entire batch rolls back, including inner tx 1
+```
+
+Your contract is never called by a contract. The revert originates from a **sibling inner transaction** that your contract cannot see, query, or influence.
+
+***
+
+## Why caller checks do not detect this
+
+Here is everything your contract can observe during a batched call, compared with an ordinary direct call from a user:
+
+| Observable in your call frame | Ordinary user call | Batched call |
+|---|:---|:---|
+| `msg.sender` | the user's account | the caller's account |
+| `tx.origin` | the same account | the same account |
+| `msg.sender == tx.origin` | `true` | `true` |
+| `msg.sender.code.length` | `0` | `0` |
+| `isContract(msg.sender)` | `false` | `false` |
+
+The two cases are identical from inside the contract. There is no check you can write — on the caller, the call frame, gas, or account state — that distinguishes them.
+
+<Warning>
+  Caller inspection is not a reliable defense on any EVM chain. Even where a composing caller is a contract, a contract calling from inside its **constructor** reports `code.length == 0`, because its code is not yet stored. And under [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702), a caller with delegated code satisfies `msg.sender == tx.origin`, so that check passes on Ethereum too.
+
+  **Do not attempt to detect the caller. Design so that it does not matter who is calling.**
+</Warning>
+
+***
+
+## What the guard was doing, and what replaces it
+
+`require(msg.sender == tx.origin)` is commonly used for three unrelated purposes. Two have direct replacements. The third requires a design change.
+
+### Purpose 1: Confirming the caller is a specific party
+
+This is an identity question, and account type is the wrong proxy for it.
+
+Use signature verification instead — verify an EIP-712 signature from the party you care about, and support [ERC-1271](https://eips.ethereum.org/EIPS/eip-1271) so smart contract accounts can participate. For access control, use an explicit allowlist or role-based access control such as OpenZeppelin `AccessControl`.
+
+```solidity
+// Instead of: require(msg.sender == tx.origin);
+// Verify the party you actually care about:
+bytes32 digest = _hashTypedDataV4(structHash);
+require(
+    SignatureChecker.isValidSignatureNow(expectedSigner, digest, signature),
+    "invalid signature"
+);
+```
+
+### Purpose 2: Preventing reentrancy
+
+This was a crude but historically functional defense — a reentrant call arrives from a contract, so `msg.sender != tx.origin` and the guard fires. It no longer works: under EIP-7702 a caller with delegated code satisfies the equality, and that EIP explicitly names reentrancy guards of this style among the patterns it breaks.
+
+Use a standard reentrancy guard and checks-effects-interactions ordering.
+
+```solidity
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+
+contract YourContract is ReentrancyGuard {
+    function withdraw() external nonReentrant {
+        uint256 amount = balances[msg.sender];
+        balances[msg.sender] = 0;              // effects before interactions
+        (bool ok, ) = msg.sender.call{value: amount}("");
+        require(ok, "transfer failed");
+    }
+}
+```
+
+### Purpose 3: Preventing atomic composition around your call
+
+Flash loan protection, sandwich protection, and revert-on-loss protection all fall here.
+
+**There is no replacement.** You cannot prevent a caller from composing atomically around your call. If your contract's economic security depends on that being impossible, the dependency has to be removed. Four principles, in order of importance:
+
+* **Make the operation span more than one transaction.** Nothing atomic can straddle a transaction boundary. Commit in transaction 1; resolve in transaction 2.
+* **Do not let the beneficiary submit the resolving transaction.** Whoever submits a transaction can revert it. If the party who profits from the outcome is not the party who submits the resolution, there is nothing for them to wrap.
+* **Make re-running the resolution deterministic.** If the outcome is fixed by data committed before resolution and outside the caller's control, reverting and retrying produces the same answer. Discarding the result becomes worthless rather than impossible, which is sufficient.
+* **Do not read instantaneous state for value-bearing decisions.** Use time-weighted averages or oracle feeds rather than spot balances, spot prices, or same-transaction randomness.
+
+***
+
+## Worked example: resolving a value-bearing outcome
+
+The example below uses a randomized payout because it makes the timing problem easy to see, but the shape is general. The same vulnerability appears anywhere a caller can evaluate a result before it becomes final — prize draws and randomized rewards, settlement priced from instantaneous on-chain state, auctions resolved on entry, and any operation whose profitability the caller can read within the transaction.
+
+### Vulnerable pattern
+
+```solidity
+contract RandomizedPayout {
+    uint256 private nonce;
+
+    function enter() external payable {
+        require(msg.sender == tx.origin, "no contracts");   // ← no protection
+
+        // Outcome resolved in the same transaction that commits the value:
+        uint256 r = uint256(keccak256(abi.encodePacked(
+            block.timestamp, block.prevrandao, msg.sender, nonce++
+        )));
+
+        if (r % 2 == 0) {
+            (bool ok, ) = payable(msg.sender).call{value: msg.value * 2}("");
+            require(ok, "payout failed");                   // ← outcome observable pre-commit
+        }
+    }
+}
+```
+
+There is one vulnerability here, and one defense that fails to cover it.
+
+**The vulnerability** is that the outcome is resolved inside the transaction that commits the value. The caller learns the result before the transaction commits, so they can discard unfavorable outcomes and keep favorable ones. This is the actual flaw, and it is exploitable on any EVM chain.
+
+**The failed defense** is the `tx.origin` guard. It was written to prevent exactly this, by refusing calls that arrive through a contract. But a batched call arrives directly from an account, so the guard passes and the caller composes around it regardless.
+
+The order matters when you come to fix it. Removing the guard changes nothing on its own, and adding a better caller check changes nothing either. Correcting *when* the outcome is resolved removes the vulnerability — and a contract designed that way has no need for the guard in the first place.
+
+<Note>
+  Where the outcome depends on randomness, the same flaw applies whether it comes from `block.prevrandao`, `block.timestamp`, or the [Pseudorandom Number Generator system contract](/evm/hedera-services/system-contracts) (`0x169`, [HIP-351](https://hips.hedera.com/hip/hip-351)). All of these are synchronous. The problem is not the entropy source — improving it changes nothing. The problem is **when the outcome becomes final**.
+</Note>
+
+### Fixed: two-phase, resolved by a separate party
+
+```solidity
+contract RandomizedPayout {
+    enum Status { NONE, PENDING, RESOLVED }
+
+    struct Entry {
+        address participant;
+        uint128 amount;
+        uint64  commitBlock;
+        Status  status;
+    }
+
+    mapping(uint256 => Entry) public entries;
+    uint256 public nextEntryId;
+    address public resolver;
+
+    uint256 public constant MIN_ENTRY   = 1e18;   // msg.value uses 18 decimals
+    uint256 public constant MAX_ENTRY_BP = 50;    // per-entry cap: 0.5% of reserves
+
+    event EntryCommitted(uint256 indexed id, address indexed participant, uint256 amount);
+    event EntryResolved(uint256 indexed id, bool favorable, uint256 payout);
+
+    modifier onlyResolver() {
+        require(msg.sender == resolver, "not resolver");
+        _;
+    }
+
+    /// PHASE 1 — value is committed and locked. No outcome exists yet, so there
+    /// is nothing for the caller to observe or revert on.
+    function enter() external payable {
+        // address(this).balance already includes msg.value during a payable call,
+        // so subtract it to measure reserves as they stood before this deposit.
+        uint256 reserves = address(this).balance - msg.value;
+
+        require(msg.value >= MIN_ENTRY, "below minimum");
+        require(msg.value <= (reserves * MAX_ENTRY_BP) / 10_000, "exceeds per-entry cap");
+
+        uint256 id = ++nextEntryId;
+        entries[id] = Entry(msg.sender, uint128(msg.value), uint64(block.number), Status.PENDING);
+
+        emit EntryCommitted(id, msg.sender, msg.value);
+    }
+
+    /// PHASE 2 — resolved in a SEPARATE transaction, submitted by the resolver.
+    /// The participant cannot wrap or revert this call.
+    function resolve(uint256 id, bytes32 seed) external onlyResolver {
+        Entry storage e = entries[id];
+        require(e.status == Status.PENDING, "not pending");
+        require(block.number > e.commitBlock, "too early");
+
+        e.status = Status.RESOLVED;
+
+        bool favorable = uint256(keccak256(abi.encode(seed, id))) % 2 == 0;
+        uint256 payout = favorable ? uint256(e.amount) * 2 : 0;
+
+        if (favorable) {
+            (bool ok, ) = payable(e.participant).call{value: payout}("");
+            require(ok, "payout failed");
+        }
+        emit EntryResolved(id, favorable, payout);
+    }
+
+    /// Current per-entry cap, for callers to query before entering.
+    function maxEntry() external view returns (uint256) {
+        return (address(this).balance * MAX_ENTRY_BP) / 10_000;
+    }
+}
+```
+
+Why this holds:
+
+* Value is committed in phase 1, when no outcome exists.
+* Phase 2 is submitted by the resolver, so the participant has no transaction to wrap.
+* `block.number > commitBlock` ensures the phases cannot share an atomic context.
+* No caller check is needed anywhere. The design is indifferent to caller type, so it is unaffected by batching, delegation, or account abstraction.
+
+### Alternative: mutual commit-reveal
+
+If you do not want a trusted resolver:
+
+1. The participant commits `keccak256(participantSecret)` and locks their value.
+2. The contract operator commits `keccak256(operatorSeed)`.
+3. Both reveal. The outcome is `keccak256(participantSecret, operatorSeed)`.
+4. Failure to reveal forfeits the committed value — this is what makes it enforceable.
+
+Neither party alone controls the result, and the outcome is fixed once both commitments are on-chain. Even if the participant submits the reveal and reverts it, re-running produces the identical outcome, so discarding it gains nothing.
+
+### Alternative: asynchronous VRF or oracle
+
+Request the deciding input in transaction 1; a callback delivers it in a later transaction the beneficiary does not submit. More moving parts, same guarantee.
+
+***
+
+## Defense in depth
+
+Even with a correct design, these limit damage from any residual flaw:
+
+* **Cap exposure per operation** as a fraction of current reserves, so a drain is asymptotic rather than terminal.
+* **Add a pause or circuit breaker**, and make sure someone is authorized and available to use it.
+* **Monitor and alert off-chain.** Watch failure rates and reserve balances. A contract with a stable history that suddenly logs many reverts per hour is a strong signal, and reacting quickly is worth far more than any post-hoc analysis.
+
+<Danger>
+  **You cannot count failed attempts from inside your contract.**
+
+  When a batch reverts, every state change your contract made in that batch reverts with it — including any counter you incremented. A `failedAttempts++` guard is erased by the very thing it is trying to detect, and will read zero no matter how many times you are probed. Detecting reverts requires an off-chain monitor reading transaction records.
+
+  Committed payouts do survive, and they are what actually drains reserves. An in-contract circuit breaker should therefore track outflow, not failures.
+</Danger>
+
+```solidity
+event CircuitBreakerTripped(uint256 paidInWindow, uint256 reserves);
+
+uint256 public windowStart;
+uint256 public paidInWindow;
+bool    public paused;
+
+uint256 constant WINDOW  = 1 hours;
+uint256 constant MAX_PCT = 10;          // pause if >10% of reserves paid out per hour
+
+/// Call immediately AFTER transferring `amount` out of the contract.
+function _recordPayout(uint256 amount) internal {
+    if (block.timestamp >= windowStart + WINDOW) {
+        windowStart  = block.timestamp;
+        paidInWindow = 0;
+    }
+    paidInWindow += amount;
+
+    // The payout has already left, so add it back to get pre-payout reserves.
+    uint256 reserves = address(this).balance + amount;
+
+    if (paidInWindow * 100 > reserves * MAX_PCT) {
+        paused = true;
+        emit CircuitBreakerTripped(paidInWindow, reserves);
+    }
+}
+```
+
+This acts automatically, without waiting for a human to see an alert. Enforce the flag on the entry path — for example `require(!paused, "paused")` — so that tripping the breaker actually stops new activity.
+
+***
+
+## Audit checklist
+
+Search your codebase for:
+
+| Pattern | Action |
+|---|:---|
+| `tx.origin` | Review every occurrence. If used for access control or composition prevention, redesign. |
+| `require(msg.sender == tx.origin)` | Remove. Provides no protection against batch composition. |
+| `extcodesize`, `.code.length`, `isContract()` | Not a substitute. Review the underlying assumption. |
+| Randomness resolved and paid out in one transaction | Redesign as two-phase, regardless of entropy source. |
+| Spot balances or spot prices driving value transfers | Use a time-weighted average or an oracle. |
+| Flash loan or sandwich protection via `tx.origin` | Redesign — the property cannot be guarded. |
+
+Then ask the design question that matters:
+
+> **If the caller could see the result of this function and undo the whole transaction for free, would my contract still be safe?**
+
+If the answer is no, the contract is vulnerable — on Hedera and on every other EVM chain — and no caller-side check will fix it.
+
+***
+
+## Summary
+
+| Question | Answer |
+|---|:---|
+| Does `msg.sender == tx.origin` prevent batch composition? | No. |
+| Can composition be detected from inside the contract? | No — the call frame is identical to a direct call. |
+| Is there a drop-in replacement? | No, for the composition-prevention case. |
+| What is the fix? | Two-phase design: commit and resolve in separate transactions, with the beneficiary unable to submit the resolving one. |
+| Is this Hedera-specific? | No. Resolving a value-bearing outcome in the committing transaction is exploitable on every EVM chain. |
+
+***
+
+## Additional References and Resources
+
+* [**Atomic Batch Composition and Caller Checks**](/evm/differences/atomic-batch-composition)
+* [**Smart Contract Security**](/evm/development/security)
+* [**HIP-551: Batch Transactions**](https://hips.hedera.com/hip/hip-551)
+* [**HIP-351: Pseudorandom Number Generator**](https://hips.hedera.com/hip/hip-351)
+* [**Solidity Documentation: `tx.origin` Security Considerations**](https://docs.soliditylang.org/en/latest/security-considerations.html#tx-origin)
+* [**SWC-115: Authorization Through `tx.origin`**](https://swcregistry.io/docs/SWC-115/)
+* [**ERC-1271: Standard Signature Validation Method for Contracts**](https://eips.ethereum.org/EIPS/eip-1271)

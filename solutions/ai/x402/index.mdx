@@ -1,0 +1,69 @@
+---
+title: "About x402 on Hedera"
+sidebarTitle: "About"
+description: "Use Hedera's official x402 payment scheme to settle HBAR and HTS token payments inside HTTP requests for apps, APIs, and AI agent transactions."
+---
+
+[x402](https://www.x402.org/) is an open payment standard that reuses the existing HTTP `402 Payment Required` status code to let a server ask for payment, and let a client pay, inside an ordinary HTTP request/response cycle. It turns a payment into something a client can satisfy as easily as it follows a redirect — no checkout page, account signup, or API-key dance required.
+
+Hedera contributes its own [**`exact` payment scheme**](/solutions/ai/x402/exact-scheme) and a reference implementation to the official [x402 repository](https://github.com/x402-foundation/x402), so applications and AI agents can settle payments in HBAR or HTS tokens over x402 with the speed and low, predictable fees of the Hedera network.
+
+<Info>
+For the background story and Hedera's perspective on why this matters, read the announcement: [**Hedera and the x402 Payment Standard**](https://hedera.com/blog/hedera-and-the-x402-payment-standard/).
+</Info>
+
+## What x402 actually is (and what it is not)
+
+x402 is best understood as **the missing payment layer of the web**: HTTP can move information instantly, but it has never had a native, standardized way to move money. x402 fills exactly that gap — and nothing more.
+
+It is easy to over-read x402 as a magic switch that suddenly lets "agents use crypto" for anything. The real scope is much narrower then that and spans multiple use-cases.
+
+<Columns cols={2}>
+  <Card title="What x402 IS" icon="circle-check">
+    - An **HTTP-native standard** for a single, discrete request → pay → response handshake
+    - **Stateless and per-request** — each payment is self-verifying, with no billing session or subscription
+    - **Settlement-agnostic** — works across chains and assets; on Hedera it settles in HBAR or HTS tokens
+    - A **shared rulebook** so any wallet or service can negotiate value the same way it negotiates data
+  </Card>
+  <Card title="What x402 is NOT" icon="circle-xmark">
+    - **Not a blockchain or a new payment network** — it lives on top of existing rails
+    - **Not a custodial processor** — facilitators verify and submit, but can never move funds without a signed authorization
+    - **Not for streaming or multi-hop routing** — it is optimized for discrete request/response cycles, not continuous value flows
+    - **Not a general "agentic wallet"** — it is one well-scoped primitive, not an autonomy framework
+  </Card>
+</Columns>
+
+## Who uses it and what it is useful for
+
+x402 shines whenever value needs to change hands **per request, at machine speed, without a human in the loop**:
+
+- **AI agents** paying for API calls, context, datasets, inference, or tool use on demand
+- **Paid APIs and per-request metering** — bill for exactly what is consumed instead of selling subscriptions or API keys
+- **Pay-per-view digital content** — articles, reports, research papers, sensor feeds, OCR, translations
+- **Micropayments at internet scale** — amounts too small to justify a checkout flow or a card fee
+
+Because the payment is just an HTTP exchange, it composes cleanly with the web technologies you are already familiar with — reverse proxies, CDNs, TLS, and REST or GraphQL APIs.
+
+
+## Resources
+
+<CardGroup cols={2}>
+  <Card title="Hedera and the x402 Payment Standard" icon="newspaper" href="https://hedera.com/blog/hedera-and-the-x402-payment-standard/">
+    Hedera's announcement blog covering the what and why.
+  </Card>
+  <Card title="Hedera exact scheme spec" icon="file-lines" href="https://github.com/x402-foundation/x402/blob/main/specs/schemes/exact/scheme_exact_hedera.md">
+    The authoritative definition of the Hedera scheme.
+  </Card>
+  <Card title="@x402/hedera reference implementation" icon="github" href="https://github.com/x402-foundation/x402/tree/main/typescript/packages/mechanisms/hedera">
+    The official TypeScript package for client and server.
+  </Card>
+  <Card title="x402 whitepaper" icon="file" href="https://www.x402.org/x402-whitepaper.pdf">
+    The protocol's design and rationale.
+  </Card>
+  <Card title="x402: The Missing Payment Layer of the Web" icon="magnifying-glass" href="https://blockyresearch.com/en/reports/x402-the-missing-payment-layer-of-the-web">
+    Blocky Research's deep-dive report on x402's scope, users, and limits.
+  </Card>
+  <Card title="Blocky402 facilitator" icon="server" href="https://blocky402.com/">
+    An open x402 facilitator with Hedera support.
+  </Card>
+</CardGroup>

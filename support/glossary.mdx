@@ -23,6 +23,14 @@ A 1/3 attack is a less discussed threat in distributed networks such as Hedera, 
 
 ## A
 
+### Access List (EIP-2930)
+
+---
+
+An optional list of addresses and storage keys that a type 1 or type 2 Ethereum transaction declares it expects to access. Pre-declaring these accesses marks them "warm" and lowers the gas cost of the first access to each. Access lists are supported on Hedera as part of the [Prague](#prague-pectra) upgrade.
+
+📒 See [EIP-2930](https://eips.ethereum.org/EIPS/eip-2930) and the [Ethereum transaction](/native/smart-contracts/ethereum-transaction#access-lists-eip-2930) page.
+
 ### Account Abstraction
 
 ---
@@ -154,6 +162,12 @@ A block node is a service that receives the [block stream](#block-stream) from a
 
 The [consensus](#consensus) [timestamp](#timestamp) of the first transaction in the Record file.
 
+### BLS12-381
+
+---
+
+A pairing-friendly elliptic curve widely used for signature aggregation and zero-knowledge proofs. [EIP-2537](https://eips.ethereum.org/EIPS/eip-2537), adopted by Hedera through the [Prague](#prague-pectra) upgrade ([HIP-1341](https://hips.hedera.com/hip/hip-1341)), adds seven precompiles at addresses `0x0b` through `0x11` for BLS12-381 curve operations. They perform curve arithmetic, multi-scalar multiplication, and pairing checks at a lower gas cost than an equivalent Solidity implementation.
+
 ### Bytecode
 
 ---
@@ -170,6 +184,12 @@ Bytecode is the information that Solidity code gets "translated" into. It contai
 ---
 
 Contract call trace information captures the input, output, and gas details of all the nested smart contracts functions executed in a transaction. On Ethereum, these are occasionally called inner transactions but they simply capture snapshots of the message frame consideration the EVM encounters when processing a smart contract execution at each depth for all involved functions.
+
+### Calldata
+
+---
+
+The input data sent with a transaction to a smart contract, encoding the function to call and its arguments. Calldata is priced per byte: zero bytes cost less than non-zero bytes. [EIP-7623](https://eips.ethereum.org/EIPS/eip-7623), adopted through the [Prague](#prague-pectra) upgrade, adds a gas floor that raises the cost of transactions carrying large amounts of calldata relative to the computation they perform.
 
 ### Central Bank Digital Currency (CBDC)
 
@@ -897,6 +917,12 @@ The integration showcases a groundbreaking application of distributed ledger tec
 
 ## P
 
+### Pectra
+
+---
+
+An Ethereum network upgrade (activated on Ethereum Mainnet in May 2025) that bundles a set of EIPs across the execution and consensus layers. Its execution-layer component is the [Prague](#prague-pectra) hard fork. Hedera adopts the applicable Pectra EIPs through [HIP-1341](https://hips.hedera.com/hip/hip-1341).
+
 ### Peer-to-Peer (P2P)
 
 ---
@@ -922,6 +948,12 @@ Permissionless means a system or property accessible by anyone without permissio
 ---
 
 A free and open-source relational database management system emphasizing extensibility and SQL compliance. [Mirror nodes](#mirror-nodes) use a PostgreSQL database to store the transaction and event data organized in a structure that mirrors the Hedera Network.
+
+### Prague (Pectra)
+
+---
+
+The execution-layer hard fork of Ethereum's [Pectra](#pectra) upgrade. On Hedera, Prague is defined by [HIP-1341](https://hips.hedera.com/hip/hip-1341), which adopts [EIP-2537](https://eips.ethereum.org/EIPS/eip-2537) ([BLS12-381](#bls12-381) precompiles), [EIP-7623](https://eips.ethereum.org/EIPS/eip-7623) (a [calldata](#calldata) gas floor), and [EIP-2930](#access-list-eip-2930) access lists. Blob and validator/consensus-layer EIPs are not adopted, and set-code / code delegation ([EIP-7702](https://eips.ethereum.org/EIPS/eip-7702)) is **deactivated**, tracked for a future release under [HIP-1340](https://hips.hedera.com/hip/hip-1340).
 
 ### Precompile
 

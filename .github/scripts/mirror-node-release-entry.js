@@ -206,10 +206,27 @@ function main() {
     0
   );
 
-  if (totalBullets === 0) {
+  // The entry opens with the release's own summary prose, copied verbatim from
+  // the body. If the body has no preamble (e.g. a small patch release), omit it
+  // entirely — no placeholder.
+  const summary = extractSummary(body);
+
+  // No categorized bullets is not an error on its own: small patches (or a
+  // maintainer changing the changelog format) can ship a one-line summary with
+  // no "## Enhancements/Bug Fixes/..." section. Render the summary as the whole
+  // entry so the PR still opens for review. Only bail when there is genuinely
+  // nothing to render.
+  if (totalBullets === 0 && !summary) {
     throw new Error(
-      `No bullets parsed from release body for v${version}.\n` +
-        `The upstream release body format may have changed. Review manually:\n${body.slice(0, 500)}`
+      `No bullets or summary parsed from release body for v${version}.\n` +
+        `The upstream release body may be empty or in an unexpected format. Review manually:\n${body.slice(0, 500)}`
+    );
+  }
+
+  if (totalBullets === 0) {
+    console.warn(
+      `WARNING: v${version} has no categorized bullets — rendering the release summary only. ` +
+        'Verify the wording in the PR.'
     );
   }
 
@@ -229,11 +246,6 @@ function main() {
         '"### Breaking Changes" prose section above the accordions during review.'
     );
   }
-
-  // The entry opens with the release's own summary prose, copied verbatim from
-  // the body. If the body has no preamble (e.g. a small patch release), omit it
-  // entirely — no placeholder.
-  const summary = extractSummary(body);
 
   const parts = [`## [v${version}](${tagUrl})`, ''];
   if (summary) parts.push(summary, '');

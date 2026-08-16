@@ -51,11 +51,13 @@ foundryup
 
 ### Create a New Project
 
-Run the CLI with npx:
+Run the CLI with `npm create`:
 
 ```bash
-npx create-scaffold-hbar@latest
+npm create scaffold-hbar@latest
 ```
+
+`npx create-scaffold-hbar@latest` is equivalent.
 
 You'll be prompted to select:
 
@@ -71,10 +73,10 @@ For CI pipelines or scripting, use flags to skip prompts:
 
 ```bash
 # Accept all defaults (blank template, Foundry, testnet)
-npx create-scaffold-hbar@latest --yes
+npm create scaffold-hbar@latest -- --yes
 
 # Full customization
-npx create-scaffold-hbar@latest my-scheduler-app \
+npm create scaffold-hbar@latest my-scheduler-app -- \
   --template payments-scheduler \
   --frontend nextjs-app \
   --solidity-framework foundry \
@@ -150,12 +152,12 @@ Scaffold HBAR includes starter templates for common Hedera use cases. The CLI fe
 **Template selection:**
 ```bash
 # Interactive mode shows all available templates
-npx create-scaffold-hbar@latest
+npm create scaffold-hbar@latest
 
 # Or specify directly
-npx create-scaffold-hbar@latest --template payments-scheduler
-npx create-scaffold-hbar@latest --template cross-chain-dca
-npx create-scaffold-hbar@latest --template hedera-demo
+npm create scaffold-hbar@latest -- --template payments-scheduler
+npm create scaffold-hbar@latest -- --template cross-chain-dca
+npm create scaffold-hbar@latest -- --template hedera-demo
 ```
 </Tip>
 
@@ -175,10 +177,10 @@ Specify an external template using the `owner/repo` or `owner/repo#branch` forma
 
 ```bash
 # Use the main branch
-npx create-scaffold-hbar@latest --template hedera-dev/template-hedera-lz-app
+npm create scaffold-hbar@latest -- --template hedera-dev/template-hedera-lz-app
 
 # Use a specific branch
-npx create-scaffold-hbar@latest --template hedera-dev/template-hedera-lz-app#main
+npm create scaffold-hbar@latest -- --template hedera-dev/template-hedera-lz-app#main
 ```
 
 The CLI fetches the template via [giget](https://github.com/unjs/giget), so any public GitHub repository can serve as a template.
@@ -188,7 +190,7 @@ The CLI fetches the template via [giget](https://github.com/unjs/giget), so any 
 The [template-hedera-lz-app](https://github.com/hedera-dev/template-hedera-lz-app) is a comprehensive tutorial template for building cross-chain applications using LayerZero V2 on Hedera.
 
 ```bash
-npx create-scaffold-hbar@latest my-lz-app --template hedera-dev/template-hedera-lz-app
+npm create scaffold-hbar@latest my-lz-app -- --template hedera-dev/template-hedera-lz-app
 ```
 
 **What you'll build:**
@@ -236,7 +238,7 @@ Any GitHub repository can be used as an external template. To make your template
 }
 ```
 
-3. **Share** — Users can scaffold with `npx create-scaffold-hbar@latest --template your-org/your-repo`
+3. **Share** — Users can scaffold with `npm create scaffold-hbar@latest -- --template your-org/your-repo`
 
 ---
 
@@ -392,7 +394,7 @@ npx skills add hedera-dev/hedera-skills --all
 <Tip>
 To skip Hedera Skills installation (e.g., for CI pipelines), use:
 ```bash
-npx create-scaffold-hbar@latest --yes --skip-hedera-skills
+npm create scaffold-hbar@latest -- --yes --skip-hedera-skills
 ```
 </Tip>
 

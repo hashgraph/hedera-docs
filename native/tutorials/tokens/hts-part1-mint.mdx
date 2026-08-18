@@ -3,6 +3,10 @@ title: "Hedera Token Service - Part 1: How to Mint NFTs"
 sidebarTitle: "HTS Part 1: Mint NFTs"
 ---
 
+<Warning>
+The `AccountBalanceQuery` shown in this tutorial is deprecated and will stop working per the [deprecation timeline](/native/accounts/get-balance). The balance checks below still function today. For new code, use `MirrorNodeAccountBalanceQuery` (JavaScript, available now) or the [Mirror Node REST API](/reference/rest-api/balances). `MirrorNodeAccountBalanceQuery` returns HBAR balances only; for the token balances checked in this tutorial, use the [Mirror Node REST API token balances endpoint](/reference/rest-api/tokens).
+</Warning>
+
 Hedera Token Service (HTS) enables you to configure, mint, and manage tokens on the Hedera network without the need to set up and deploy a smart contract. Tokens are as fast, fair, and secure as HBAR and cost a fraction of 1¢ USD to transfer.
 
 <iframe

@@ -66,6 +66,7 @@ func main() {
     client.SetOperator(operatorID, operatorKey)
 
     // 1. Query the operator's balance.
+    // AccountBalanceQuery is deprecated, see /native/accounts/get-balance
     balance, err := hedera.NewAccountBalanceQuery().
         SetAccountID(operatorID).
         Execute(client)

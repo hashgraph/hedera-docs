@@ -7,7 +7,7 @@ Queries are requests that do not require network consensus. Queries are processe
 
 <Note>
 #### **Recommend Using Mirror Node REST API**
-For obtaining token information and historical data, consider using the Mirror Node REST API endpoint [**Get Token Account Balance**](https://docs.hedera.com/api-reference/tokens/list-token-balances ) which offers several advantages:
+For obtaining token information and historical data, consider using the Mirror Node REST API endpoint [**Get Token Account Balance**](/reference/rest-api/tokens) which offers several advantages:
 * **Cost-effective and scalable:** [Mirror node providers](/operators/mirror-node#mainnet) offer paid plans with a large number of queries included. The Hedera-hosted mirror node offers free queries with specific throttles for testing. While some SDK queries are currently free, these are subject to change in the future.
 * **Performance:** Mirror nodes don't burden consensus nodes, allowing them to focus on processing transactions and providing efficient access to historical data without impacting network performance.
 * **Historical data:** Mirror nodes store complete transaction history, records, and events - ideal for analytics, auditing, and monitoring past activity.
@@ -17,23 +17,28 @@ For obtaining token information and historical data, consider using the Mirror N
 
 <Warning>
 #### **DEPRECATION NOTICE: `AccountBalanceQuery`**
-The `AccountBalanceQuery` is deprecated and will be completely removed in **July 2026**. This is the only SDK method presented on this page and it will no longer function after this date.
 
-A gradual throttle reduction begins in **May 2026**. To avoid rate limiting and future service disruptions, you must migrate to the Mirror Node REST API.
+`AccountBalanceQuery` reads the consensus node's `cryptoGetBalance` query, which is being throttled to zero as part of its deprecation. It has been throttled to zero on **testnet** (August 13, 2026) and is scheduled for **mainnet** on **September 9, 2026** (consensus node release 0.77, an estimate subject to change). After removal, `AccountBalanceQuery` will no longer function.
 
-📚 **For the full migration guide, read:** [Migrating from AccountBalanceQuery: What You Need to Know](https://hedera.com/blog/migrating-from-accountbalancequery-what-you-need-to-know )
+**JavaScript/TypeScript developers:** migrate to `MirrorNodeAccountBalanceQuery`, available now in `@hiero-ledger/sdk` v2.87.0+. See [Get account balance](/native/accounts/get-balance). Java and Go implementations are in progress. For Rust, and for Java and Go until those ship, call the [Mirror Node REST API](/reference/rest-api/balances) directly. `MirrorNodeAccountBalanceQuery` returns HBAR balances only; for token balances, use the [Mirror Node REST API token balances endpoint](/reference/rest-api/tokens).
+
+📚 **For the full migration guide, read:** [Migrating from AccountBalanceQuery: What You Need to Know](https://hedera.com/blog/migrating-from-accountbalancequery-what-you-need-to-know)
 </Warning>
 
 
 
 | Cryptocurrency Accounts                                                                                        | Consensus                                                                                                  | Tokens                                                                                                         | File Service                                                                                          | Smart Contracts                                                                                                        | Schedule Service                                                                                              |
 | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| [AccountBalanceQuery](/native/accounts/get-balance) | [TopicInfoQuery](/native/consensus/get-info)       | [TokenBalanceQuery](/native/tokens/get-balance) | [FileContentsQuery](/native/files/get-contents) | [ContractCallQuery](/native/smart-contracts/get-function)   | [ScheduleInfoQuery](/native/scheduled/get-info) |
+| [AccountBalanceQuery](/native/accounts/get-balance)<br/>[MirrorNodeAccountBalanceQuery](/native/accounts/get-balance) | [TopicInfoQuery](/native/consensus/get-info)       | [TokenBalanceQuery](/native/tokens/get-balance) | [FileContentsQuery](/native/files/get-contents) | [ContractCallQuery](/native/smart-contracts/get-function)   | [ScheduleInfoQuery](/native/scheduled/get-info) |
 | [AccountInfoQuery](/native/accounts/get-info)       | [TopicMessageQuery](/native/consensus/get-message) | [TokenInfoQuery](/native/tokens/get-info)               | [FileInfoQuery](/native/files/get-info)         | [ContractByteCodeQuery](/native/smart-contracts/get-bytecode) |                                                                                                               |
 
 ## Get Query Cost
 
 A query that returns the cost of a query prior to submitting the query to the network node for processing. If the cost of the query is greater than the default max query payment (1 HBAR) you can use `setMaxQueryPayment(<hbar>)` to change the default.
+
+<Info>
+`MirrorNodeAccountBalanceQuery` has no `getCost()` or query-payment concept. It is a free Mirror Node REST call, not a paid consensus-node query, so the Get Query Cost pattern below does not apply to it. The example below uses `AccountBalanceQuery` because query-cost estimation is inherently a consensus-node-query concept.
+</Info>
 
 <table><thead><tr><th>Method</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>getCost(&#x3C;client>)</code></td><td>Client</td><td>Get the cost of the query in HBAR</td></tr><tr><td><code>getCost(&#x3C;client, timeout>)</code></td><td>Client, Duration</td><td>The max length of time the SDK will attempt to retry in the event of repeated busy responses from the node(s)</td></tr><tr><td><code>getCostAsync(&#x3C;client>)</code></td><td>Client</td><td>Get the cost of a query asynchronously</td></tr></tbody></table>
 
@@ -67,7 +72,7 @@ console.log("The account balance query cost is " +queryCost);
 ```
 
 
-```java Go
+```go Go
 //Create the query request
 query := hedera.NewAccountBalanceQuery().
      SetAccountID(newAccountId)

@@ -4,6 +4,10 @@ sidebarTitle: "Auto-Create Accounts"
 description: "Walkthrough of HIP-32 and HIP-542 auto-account creation on Hedera: send HBAR or HTS tokens to an EVM Address from Public Key to create the account on first transfer."
 ---
 
+<Warning>
+The `AccountBalanceQuery` shown in this tutorial is deprecated and will stop working per the [deprecation timeline](/native/accounts/get-balance). The balance checks below still function today. For new code, use `MirrorNodeAccountBalanceQuery` (JavaScript, available now) or the [Mirror Node REST API](/reference/rest-api/balances). `MirrorNodeAccountBalanceQuery` returns HBAR balances only; for the token balances checked in this tutorial, use the [Mirror Node REST API token balances endpoint](/reference/rest-api/tokens).
+</Warning>
+
 [HIP-32](https://hips.hedera.com/hip/hip-32) introduced the ability to auto-create accounts when sending HBAR to an [alias](/native/accounts/create#create-an-account-via-an-account-alias) that does not exist on the network. When HBAR is sent to an alias that does not exist on the network, the account creation fee is deducted from the HBAR sent and the account is auto-created. The new account's initial balance is (sent HBAR - account creation fee). This new method of account creation allowed wallet providers to create free "accounts" to users. However, if a user sends fungible tokens or NFT's to an alias, it would result in an _INVALID_ACCOUNT_ID_ error because the alias does not exist on the network. The auto-account creation flow could not deduct the account creation fee from an HTS token; the account creation fee must be paid in HBAR.
 
 [HIP-542](https://hips.hedera.com/hip/hip-542) provides a solution to allow sending HTS tokens to an alias that does not exist on the network. This is achieved by charging the account creation fee to the transfer transaction payer. In addition, there will be one auto-association slot included in the transaction for the new account to associate with the HTS token. You won't have to first create the account, complete a token association, and then finally do a token transfer.

@@ -2997,106 +2997,107 @@
           },
           {
             "group": "Mirror Node REST API",
+            "openapi": "openapi.yaml",
             "pages": [
               "reference/rest-api/index",
               {
                 "group": "Accounts",
                 "pages": [
                   "reference/rest-api/accounts/index",
-                  "openapi.yaml GET /api/v1/accounts",
-                  "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}",
-                  "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/crypto",
-                  "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/rewards",
-                  "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/tokens",
-                  "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/airdrops/outstanding",
-                  "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/airdrops/pending",
-                  "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/tokens",
-                  "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/nfts",
-                  "openapi.yaml GET /api/v1/accounts/{idOrAliasOrEvmAddress}/nfts"
+                  "GET /api/v1/accounts",
+                  "GET /api/v1/accounts/{idOrAliasOrEvmAddress}",
+                  "GET /api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/crypto",
+                  "GET /api/v1/accounts/{idOrAliasOrEvmAddress}/rewards",
+                  "GET /api/v1/accounts/{idOrAliasOrEvmAddress}/tokens",
+                  "GET /api/v1/accounts/{idOrAliasOrEvmAddress}/airdrops/outstanding",
+                  "GET /api/v1/accounts/{idOrAliasOrEvmAddress}/airdrops/pending",
+                  "GET /api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/tokens",
+                  "GET /api/v1/accounts/{idOrAliasOrEvmAddress}/allowances/nfts",
+                  "GET /api/v1/accounts/{idOrAliasOrEvmAddress}/nfts"
                 ]
               },
               {
                 "group": "Balances",
                 "pages": [
                   "reference/rest-api/balances/index",
-                  "openapi.yaml GET /api/v1/balances"
+                  "GET /api/v1/balances"
                 ]
               },
               {
                 "group": "Blocks",
                 "pages": [
                   "reference/rest-api/blocks/index",
-                  "openapi.yaml GET /api/v1/blocks",
-                  "openapi.yaml GET /api/v1/blocks/{hashOrNumber}"
+                  "GET /api/v1/blocks",
+                  "GET /api/v1/blocks/{hashOrNumber}"
                 ]
               },
               {
                 "group": "Contracts",
                 "pages": [
                   "reference/rest-api/contracts/index",
-                  "openapi.yaml GET /api/v1/contracts",
-                  "openapi.yaml GET /api/v1/contracts/{contractIdOrAddress}",
-                  "openapi.yaml GET /api/v1/contracts/results",
-                  "openapi.yaml GET /api/v1/contracts/results/{transactionIdOrHash}",
-                  "openapi.yaml GET /api/v1/contracts/{contractIdOrAddress}/results",
-                  "openapi.yaml GET /api/v1/contracts/{contractIdOrAddress}/state",
-                  "openapi.yaml GET /api/v1/contracts/results/{transactionIdOrHash}/actions",
-                  "openapi.yaml GET /api/v1/contracts/{contractIdOrAddress}/results/{timestamp}",
-                  "openapi.yaml GET /api/v1/contracts/{contractIdOrAddress}/results/logs",
-                  "openapi.yaml GET /api/v1/contracts/results/logs",
-                  "openapi.yaml GET /api/v1/contracts/results/{transactionIdOrHash}/opcodes",
-                  "openapi.yaml POST /api/v1/contracts/call"
+                  "GET /api/v1/contracts",
+                  "GET /api/v1/contracts/{contractIdOrAddress}",
+                  "GET /api/v1/contracts/results",
+                  "GET /api/v1/contracts/results/{transactionIdOrHash}",
+                  "GET /api/v1/contracts/{contractIdOrAddress}/results",
+                  "GET /api/v1/contracts/{contractIdOrAddress}/state",
+                  "GET /api/v1/contracts/results/{transactionIdOrHash}/actions",
+                  "GET /api/v1/contracts/{contractIdOrAddress}/results/{timestamp}",
+                  "GET /api/v1/contracts/{contractIdOrAddress}/results/logs",
+                  "GET /api/v1/contracts/results/logs",
+                  "GET /api/v1/contracts/results/{transactionIdOrHash}/opcodes",
+                  "POST /api/v1/contracts/call"
                 ]
               },
               {
                 "group": "Tokens",
                 "pages": [
                   "reference/rest-api/tokens/index",
-                  "openapi.yaml GET /api/v1/tokens",
-                  "openapi.yaml GET /api/v1/tokens/{tokenId}",
-                  "openapi.yaml GET /api/v1/tokens/{tokenId}/balances",
-                  "openapi.yaml GET /api/v1/tokens/{tokenId}/nfts",
-                  "openapi.yaml GET /api/v1/tokens/{tokenId}/nfts/{serialNumber}",
-                  "openapi.yaml GET /api/v1/tokens/{tokenId}/nfts/{serialNumber}/transactions"
+                  "GET /api/v1/tokens",
+                  "GET /api/v1/tokens/{tokenId}",
+                  "GET /api/v1/tokens/{tokenId}/balances",
+                  "GET /api/v1/tokens/{tokenId}/nfts",
+                  "GET /api/v1/tokens/{tokenId}/nfts/{serialNumber}",
+                  "GET /api/v1/tokens/{tokenId}/nfts/{serialNumber}/transactions"
                 ]
               },
               {
                 "group": "Topics",
                 "pages": [
                   "reference/rest-api/topics/index",
-                  "openapi.yaml GET /api/v1/topics/{topicId}",
-                  "openapi.yaml GET /api/v1/topics/{topicId}/messages",
-                  "openapi.yaml GET /api/v1/topics/{topicId}/messages/{sequenceNumber}",
-                  "openapi.yaml GET /api/v1/topics/messages/{timestamp}"
+                  "GET /api/v1/topics/{topicId}",
+                  "GET /api/v1/topics/{topicId}/messages",
+                  "GET /api/v1/topics/{topicId}/messages/{sequenceNumber}",
+                  "GET /api/v1/topics/messages/{timestamp}"
                 ]
               },
               {
                 "group": "Transactions",
                 "pages": [
                   "reference/rest-api/transactions/index",
-                  "openapi.yaml GET /api/v1/transactions",
-                  "openapi.yaml GET /api/v1/transactions/{transactionId}"
+                  "GET /api/v1/transactions",
+                  "GET /api/v1/transactions/{transactionId}"
                 ]
               },
               {
                 "group": "Schedules",
                 "pages": [
                   "reference/rest-api/schedules/index",
-                  "openapi.yaml GET /api/v1/schedules",
-                  "openapi.yaml GET /api/v1/schedules/{scheduleId}"
+                  "GET /api/v1/schedules",
+                  "GET /api/v1/schedules/{scheduleId}"
                 ]
               },
               {
                 "group": "Network",
                 "pages": [
                   "reference/rest-api/network/index",
-                  "openapi.yaml GET /api/v1/network/exchangerate",
-                  "openapi.yaml GET /api/v1/network/fees",
-                  "openapi.yaml POST /api/v1/network/fees",
-                  "openapi.yaml GET /api/v1/network/nodes",
-                  "openapi.yaml GET /api/v1/network/registered-nodes",
-                  "openapi.yaml GET /api/v1/network/stake",
-                  "openapi.yaml GET /api/v1/network/supply"
+                  "GET /api/v1/network/exchangerate",
+                  "GET /api/v1/network/fees",
+                  "POST /api/v1/network/fees",
+                  "GET /api/v1/network/nodes",
+                  "GET /api/v1/network/registered-nodes",
+                  "GET /api/v1/network/stake",
+                  "GET /api/v1/network/supply"
                 ]
               }
             ]
@@ -3308,33 +3309,35 @@
             "pages": [
               {
                 "group": "Status API",
+                "openapi": "hedera-status-api.yaml",
                 "pages": [
                   "reference/status-api",
-                  "hedera-status-api.yaml GET /summary.json",
-                  "hedera-status-api.yaml GET /status.json",
-                  "hedera-status-api.yaml GET /components.json",
-                  "hedera-status-api.yaml GET /incidents.json",
-                  "hedera-status-api.yaml GET /incidents/unresolved.json",
-                  "hedera-status-api.yaml GET /scheduled-maintenances.json",
-                  "hedera-status-api.yaml GET /scheduled-maintenances/upcoming.json",
-                  "hedera-status-api.yaml GET /scheduled-maintenances/active.json"
+                  "GET /summary.json",
+                  "GET /status.json",
+                  "GET /components.json",
+                  "GET /incidents.json",
+                  "GET /incidents/unresolved.json",
+                  "GET /scheduled-maintenances.json",
+                  "GET /scheduled-maintenances/upcoming.json",
+                  "GET /scheduled-maintenances/active.json"
                 ]
               },
               {
                 "group": "Contract Verification API",
+                "openapi": "smart-contract-verification-api.yaml",
                 "pages": [
                   "reference/verification-api",
-                  "smart-contract-verification-api.yaml POST /v2/verify/{chainId}/{address}",
-                  "smart-contract-verification-api.yaml POST /v2/verify/metadata/{chainId}/{address}",
-                  "smart-contract-verification-api.yaml POST /v2/verify/etherscan/{chainId}/{address}",
-                  "smart-contract-verification-api.yaml POST /v2/verify/similarity/{chainId}/{address}",
-                  "smart-contract-verification-api.yaml GET /v2/verify/{verificationId}",
-                  "smart-contract-verification-api.yaml GET /v2/contract/{chainId}/{address}",
-                  "smart-contract-verification-api.yaml GET /v2/contract/all-chains/{address}",
-                  "smart-contract-verification-api.yaml GET /v2/contracts/{chainId}",
-                  "smart-contract-verification-api.yaml GET /health",
-                  "smart-contract-verification-api.yaml GET /version",
-                  "smart-contract-verification-api.yaml GET /chains"
+                  "POST /v2/verify/{chainId}/{address}",
+                  "POST /v2/verify/metadata/{chainId}/{address}",
+                  "POST /v2/verify/etherscan/{chainId}/{address}",
+                  "POST /v2/verify/similarity/{chainId}/{address}",
+                  "GET /v2/verify/{verificationId}",
+                  "GET /v2/contract/{chainId}/{address}",
+                  "GET /v2/contract/all-chains/{address}",
+                  "GET /v2/contracts/{chainId}",
+                  "GET /health",
+                  "GET /version",
+                  "GET /chains"
                 ]
               }
             ]

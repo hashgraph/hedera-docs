@@ -72,6 +72,7 @@ public class HederaQuickstart {
         client.setOperator(operatorId, operatorKey);
 
         // 1. Query the operator's balance.
+        // AccountBalanceQuery is deprecated, see /native/accounts/get-balance
         Hbar balance = new AccountBalanceQuery()
             .setAccountId(operatorId)
             .execute(client)

@@ -51,7 +51,10 @@ A type 1 (and type 2) transaction can carry an `accessList`: a list of addresses
 You can submit an access-list transaction either through the JSON-RPC Relay (`eth_sendRawTransaction`) or directly to HAPI via `EthereumTransaction`, where the access list is part of the RLP-encoded `ethereumData`.
 
 <Info>
-Access lists are supported as part of Hedera's [Pectra](/evm/development/deploying#pectra-hard-fork) hard fork.
+Access lists were introduced in Ethereum's Berlin upgrade ([EIP-2930](https://eips.ethereum.org/EIPS/eip-2930)). Two current limitations apply on Hedera:
+
+- `eth_createAccessList` (the JSON-RPC method that builds an access list for a transaction) is not yet supported.
+- `eth_estimateGas` does not include access lists in its gas estimate.
 </Info>
 
 ## Handling Large callData Payloads

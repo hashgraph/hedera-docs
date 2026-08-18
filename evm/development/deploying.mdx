@@ -119,6 +119,27 @@ The following Pectra EIPs are **not applicable** to Hedera and are not adopted: 
 
 As of the Consensus Node [0.22](/networks/release-notes/services#v0.22) release ([HIP-185](https://hips.hedera.com/hip/hip-185)), gas and input data costs are charged. The amount of intrinsic gas consumed is a constant charge that occurs before any code executes. _The intrinsic gas cost is `21,000`_. The associated cost of input data is 16 gas for each byte of data that is not zero and 4 gas for each byte of data that is zero. Under Pectra (EIP-7623), an additional floor of `21000 + 10 × (zero + 4 × non_zero)` applies to calldata-heavy transactions. The amount of intrinsic gas consumed is charged in relation to the data supplied when making a contract call to the function parameters of external contracts. The gas schedule and the fees table can be found in the gas section of this documentation page.
 
+#### Precompiles by fork
+
+The Hedera EVM supports the standard Ethereum precompiles, plus the BLS12-381 set added in Pectra. The table below lists each precompile and the fork that introduced it.
+
+| Address | Precompile | Introduced |
+| --- | --- | --- |
+| `0x01` | `ecRecover` | Frontier |
+| `0x02` | `SHA2-256` | Frontier |
+| `0x03` | `RIPEMD-160` | Frontier |
+| `0x04` | `identity` | Frontier |
+| `0x05` | `modexp` | Byzantium |
+| `0x06` | `ecAdd` (alt_bn128) | Byzantium |
+| `0x07` | `ecMul` (alt_bn128) | Byzantium |
+| `0x08` | `ecPairing` (alt_bn128) | Byzantium |
+| `0x09` | `blake2f` | Istanbul |
+| `0x0b` to `0x11` | BLS12-381 operations ([EIP-2537](https://eips.ethereum.org/EIPS/eip-2537)) | Pectra |
+
+Address `0x0a` (KZG point evaluation) was introduced in Cancun for [EIP-4844](https://eips.ethereum.org/EIPS/eip-4844) blob verification. Hedera does not support blobs ([HIP-866](https://hips.hedera.com/hip/hip-866)).
+
+Hedera also exposes its own system contracts as precompiles: the Hedera Token Service (HTS) at `0x167`, the Exchange Rate system contract at `0x168`, and the Pseudo-Random Number Generator (PRNG) at `0x169`.
+
 #### Supported Ethereum Transaction Types
 
 `EthereumTransaction` accepts RLP-encoded payloads for all of the following types:
@@ -128,8 +149,10 @@ As of the Consensus Node [0.22](/networks/release-notes/services#v0.22) release 
 | `0x00`  | Legacy ([EIP-155](https://eips.ethereum.org/EIPS/eip-155))    | Pre-Berlin legacy transactions.                                                                       |
 | `0x01`  | [EIP-2930](https://eips.ethereum.org/EIPS/eip-2930)   | Optional `access_list` to pre-warm storage slots and addresses.                                              |
 | `0x02`  | [EIP-1559](https://eips.ethereum.org/EIPS/eip-1559)   | `max_fee_per_gas` plus `max_priority_fee_per_gas` (priority fee is ignored on Hedera; fees are fixed by the network). |
+| `0x03`  | [EIP-4844](https://eips.ethereum.org/EIPS/eip-4844)   | Blob transactions. **Not supported** on Hedera; Type 3 is rejected (see [HIP-866](https://hips.hedera.com/hip/hip-866)). |
+| `0x04`  | [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702)   | Set-code / EOA code delegation. **Not supported** on Hedera; EIP-7702 is deactivated (see [HIP-1340](https://hips.hedera.com/hip/hip-1340)). |
 
-Type 3 (blob transactions per EIP-4844) is **not supported** on Hedera (see [HIP-866](https://hips.hedera.com/hip/hip-866)). Type 4 ([EIP-7702](https://eips.ethereum.org/EIPS/eip-7702)) is also **not accepted**: EOA Code Delegation is currently deactivated. For the full type list, access-list usage, and SDK examples, see [Ethereum transaction](/native/smart-contracts/ethereum-transaction#supported-ethereum-transaction-types).
+For access-list usage and SDK examples, see [Ethereum transaction](/native/smart-contracts/ethereum-transaction#supported-ethereum-transaction-types).
 
 <Frame>
   <img src="/images/core-concepts/smart-contracts/deploying-smart-contracts/deploying-smart-contracts-1.jpg" />

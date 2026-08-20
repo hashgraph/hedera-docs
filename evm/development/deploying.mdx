@@ -133,7 +133,7 @@ In Ethereum, these functions act as "catch-all" mechanisms when a contract recei
 #### Impacted Variables
 
 * **`msg.sender`:** The address initiating the contract call.
-* **`msg.value`:** The amount of HBAR sent along with the call.
+* **`msg.value`:** The HBAR sent along with the call, in **tinybar** (8 decimals) — not wei. A 1 HBAR transfer is `msg.value == 1e8`. See [Decimal Handling](/evm/differences/hbar-decimals).
 
 #### Key Points
 

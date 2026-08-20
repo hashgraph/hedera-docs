@@ -36,19 +36,20 @@ Developers can integrate WHBAR into their applications by leveraging the followi
 To convert HBAR into its ERC20 representation (WHBAR), use the `deposit()` function. Keep in mind that:
 
 * **Native HBAR:** Uses **8** decimal places (**tinybars**).
-* **WHBAR (ERC20):** Uses **8** decimal places (**tinybars**)and *ONLY for deposits* (wrapping) uses 18 decimal places (weibars).
+* **WHBAR (ERC20):** Uses **8** decimal places (**tinybars**) throughout — balances, transfers, `deposit()`, and `withdraw()`. `deposit()` simply mints an amount of WHBAR equal to the `msg.value` it receives, and `msg.value` is tinybar during EVM execution. The 18-decimal weibar form is **only** the transaction `value` an *off-chain* caller submits; the relay converts it to tinybar before `deposit()` runs.
 
-The conversion from HBAR to WHBAR involves adjusting for these decimal differences. For example, to wrap native HBAR into WHBAR, call `deposit()` and send your HBAR as `msg.value` in weibars (10¹⁸ per HBAR):
+How you specify the value depends on **who calls `deposit()`**:
+
+* **From off-chain tooling (ethers/viem/wallet):** set the transaction `value` in **weibar** (10¹⁸ per HBAR). The relay converts it to tinybar, so sending `10 * 10**18` weibar wraps 10 HBAR → 10 WHBAR.
+* **From another contract:** the `value` is **tinybar** (no conversion) — use `10 * 10**8` for 10 HBAR. Passing `10 * 10**18` here would send 10¹⁸ tinybar, which exceeds the total HBAR supply and reverts.
 
 ```solidity wrap
 /**
- * @notice Deposits HBAR and mints an equivalent amount of WHBAR
- * @dev This is the only supported method for obtaining WHBAR
+ * @notice Wrap 10 HBAR into WHBAR from within a contract.
+ * @dev Contract-to-contract `value` is TINYBAR (8 decimals): 1 HBAR = 1e8.
  */
-function deposit() public payable {
-    // To wrap 10 HBAR into WHBAR
-    // Note: 1 HBAR = 10^18 weibars; conversion handles the decimal difference.
-    whbarContract.deposit{value: 10 * 10**18}();
+function wrapTenHbar() public {
+    whbarContract.deposit{value: 10 * 10**8}(); // 10 HBAR
 }
 ```
 
@@ -76,10 +77,10 @@ This burns 5 WHBAR and sends back 5 HBAR to the wallet.
 
 When depositing HBAR, remember the conversion nuances between decimal places.
 
-* **Native HBAR & WHBAR Token:** 8 decimals (tinybars).
-* **RPC `msg.value`:** 18 decimals (weibars).
+* **Native HBAR & WHBAR token:** 8 decimals (tinybars) — including `msg.value` inside `deposit()`.
+* **Transaction `value` from an off-chain caller:** 18 decimals (weibars), which the relay converts to tinybar before execution.
 
-Although the `deposit()` function requires input in 18 decimal weibars, WHBAR tokens and all related transfers and balances use 8 decimals, identical to native HBAR in tinybars.
+`deposit()` mints WHBAR equal to `msg.value`, and `msg.value` is **tinybar** during execution — WHBAR is 8-decimal throughout. The 18-decimal weibar form applies only to the `value` an *off-chain* caller puts in the transaction; a **contract** calling `deposit{value: X}` must pass tinybar (1 HBAR = `1e8`).
 </Check>
 
 ***

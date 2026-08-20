@@ -13,13 +13,28 @@ Managing token decimals is critical when working with HBAR, HTS tokens, and ERC 
 
 The table below compares the decimal handling of HBAR, HTS tokens, and ERC tokens on Hedera, incorporating details about their representation across APIs and services. This overview highlights differences in precision and context.
 
-<table><thead><tr><th>API/Service</th><th>Decimals</th><th>Explanation</th></tr></thead><tbody><tr><td><strong>Hedera API (HAPI)</strong></td><td>8 decimals</td><td>HBAR is represented with 8 decimal places, aligning with its native smallest unit tinybar.</td></tr><tr><td><strong>Hedera Smart Contract Service</strong></td><td>8 decimals</td><td>Within the EVM environment, HBAR maintains 8 decimal places, consistent with its native representation.</td></tr><tr><td><strong>JSON-RPC Relay (Arguments)</strong></td><td>8 decimals</td><td>When HBAR values are passed as arguments in JSON-RPC calls, they are represented with 8 decimal places.</td></tr><tr><td><strong>JSON-RPC Relay (<code>msg.value</code>)</strong></td><td>18 decimals</td><td>For compatibility with EVM tooling, <code>msg.value</code> in JSON-RPC Relay represents HBAR with 18 decimal places. Consequently, <code>gasPrice</code> also uses 18 decimal places in this context.</td></tr><tr><td><strong>HTS Tokens</strong></td><td>Configurable (up to 8 decimals)</td><td>HTS tokens allow token creators to define precision at token creation, offering flexibility for various use cases.</td></tr><tr><td><strong>ERC Tokens</strong></td><td>Default 18 decimals</td><td>ERC tokens on Hedera follow Ethereum token standards, with 18 decimals as the default unless specified otherwise.</td></tr></tbody></table>
+<table><thead><tr><th>API/Service</th><th>Decimals</th><th>Explanation</th></tr></thead><tbody><tr><td><strong>Hedera API (HAPI)</strong></td><td>8 decimals</td><td>HBAR is represented with 8 decimal places, aligning with its native smallest unit tinybar.</td></tr><tr><td><strong>Hedera Smart Contract Service (EVM execution)</strong></td><td>8 decimals</td><td>Within the EVM, HBAR is tinybar-scaled: <code>msg.value</code>, <code>address(this).balance</code>, and the <code>value</code> passed to <code>call</code>/<code>send</code>/<code>transfer</code> are all 8 decimals during execution.</td></tr><tr><td><strong>JSON-RPC Relay (Arguments)</strong></td><td>8 decimals</td><td>When HBAR values are passed as arguments in JSON-RPC calls, they are represented with 8 decimal places.</td></tr><tr><td><strong>JSON-RPC Relay (<code>msg.value</code> / <code>gasPrice</code>) — RPC boundary only</strong></td><td>18 decimals</td><td>Ethereum tooling submits and reads the transaction <code>value</code> and <code>gasPrice</code> in 18-decimal weibar at the JSON-RPC boundary. <strong>The relay converts weibar to tinybar (÷10<sup>10</sup>) before the EVM executes</strong>, so the <code>msg.value</code> your contract actually sees is 8-decimal tinybar — not 18-decimal wei. See the warning below.</td></tr><tr><td><strong>HTS Tokens</strong></td><td>Configurable (up to 8 decimals)</td><td>HTS tokens allow token creators to define precision at token creation, offering flexibility for various use cases.</td></tr><tr><td><strong>ERC Tokens</strong></td><td>Default 18 decimals</td><td>ERC tokens on Hedera follow Ethereum token standards, with 18 decimals as the default unless specified otherwise.</td></tr></tbody></table>
 
 **Key Impacts**:
 
 * Account for scaling differences when converting HBAR between APIs, especially when using JSON-RPC.
 * HBAR fees are always calculated in tinybars, regardless of the API or service used.
-* JSON-RPC’s use of 18 decimals ensures smooth integration with EVM tools and libraries.
+* The 18-decimal representation is a **JSON-RPC boundary convention only** — inside the EVM, native value is tinybar (8 decimals). Do not assume `msg.value` is wei-scale (see warning).
+
+<Warning>
+**Inside a contract, native value is tinybar (8 decimals), not wei (18).** `msg.value`, `address(this).balance`, and the `value` you pass to `call`/`send`/`transfer` are all tinybar-denominated during EVM execution. Two cases to design for:
+
+- **Transactions from tooling (relay path).** When you send 1 HBAR as `value: 1 ether` (1e18 weibar), the relay divides by 10<sup>10</sup>, so your contract sees `msg.value == 1e8`. A contract that stores `msg.value` — e.g. a WETH-style wrapper reporting `decimals() = 18` — will record a balance 10<sup>10</sup> smaller than an Ethereum developer would expect.
+- **Contract-to-contract calls (no conversion).** `payable(x).call{value: 1 ether}("")` compiles `1 ether` to `1e18` and sends it **as tinybar** (= 10<sup>10</sup> HBAR), which either reverts (insufficient balance) or over-transfers. Specify the value in tinybar instead.
+
+```solidity
+// ❌ BROKEN — `1 ether` compiles to 1e18 and is treated as tinybar (= 10^10 HBAR)
+(bool ok, ) = payable(vault).call{value: 1 ether}("");
+
+// ✅ CORRECT — specify the value in tinybar (1 HBAR = 100,000,000 tinybar)
+(bool ok, ) = payable(vault).call{value: 100000000}("");
+```
+</Warning>
 
 ***
 

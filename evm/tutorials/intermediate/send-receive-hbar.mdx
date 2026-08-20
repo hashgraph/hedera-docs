@@ -190,6 +190,10 @@ async function contractDeployFcn(bytecode, gasLim) {
 
 ## **Getting HBAR to the Contract**
 
+<Warning>
+Inside the contract, `msg.value` and the `_amount` passed to `transfer`/`send`/`call` are in **tinybar** (8 decimals), not wei — `1 HBAR = 100_000_000`. That's why the `tokenAssociate` guard above uses `require(msg.value > 2000000000, …)` (≈20 HBAR in tinybar). Don't pass `1 ether`/wei-scale values here. See [Decimal Handling](/evm/differences/hbar-decimals).
+</Warning>
+
 ### **The receive/fallback** Functions
 
 In this scenario, you (Operator) transfer 10 HBAR to the contract by triggering either the **_receive_** or **_fallback_** functions of the contract. As described in this [Solidity by Example](https://solidity-by-example.org/sending-ether/) page, the **_receive_** function is called when **_msg.data_** is empty, otherwise the **_fallback_** function is called.

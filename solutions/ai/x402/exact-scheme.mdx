@@ -1,0 +1,85 @@
+---
+title: "Hedera's exact scheme"
+sidebarTitle: "Exact scheme"
+description: "The exact payment scheme for HBAR and HTS tokens, including message shapes and safety checks."
+---
+
+Hedera's contribution to x402 is the **`exact` scheme**, which pays a precise amount of HBAR or an HTS fungible token. It is defined in the official spec and ships with a reference TypeScript implementation.
+
+<CardGroup cols={2}>
+  <Card title="Scheme specification" icon="file-lines" href="https://github.com/x402-foundation/x402/blob/main/specs/schemes/exact/scheme_exact_hedera.md">
+    `scheme_exact_hedera.md` in the x402 specs — the authoritative definition of the Hedera scheme.
+  </Card>
+  <Card title="Reference implementation" icon="github" href="https://github.com/x402-foundation/x402/tree/main/typescript/packages/mechanisms/hedera">
+    The `@x402/hedera` package in the official x402 monorepo.
+  </Card>
+</CardGroup>
+
+## Key properties
+
+| Property | Detail |
+| --- | --- |
+| Protocol version | `x402Version: 2` |
+| Networks | `hedera:mainnet`, `hedera:testnet` (CAIP-2 identifiers) |
+| Assets | Native **HBAR** (entity ID `0.0.0`) or any **HTS fungible token** (by entity ID) |
+| Amounts | HBAR in **tinybars** (1 HBAR = 10⁸ tinybars); HTS tokens in their smallest unit per decimals |
+| Fee model | A **facilitator acts as `feePayer`**, paying network fees and submitting the transaction |
+| Transaction | A direct, partially-signed `TransferTransaction` (no `ScheduleCreate` wrapping) |
+
+## The payment messages
+
+The server advertises `PaymentRequirements`, including the facilitator's `feePayer` in `extra`:
+
+```json PaymentRequirements
+{
+  "scheme": "exact",
+  "network": "hedera:mainnet",
+  "amount": "1000",
+  "asset": "0.0.0",
+  "payTo": "0.0.1234",
+  "maxTimeoutSeconds": 180,
+  "extra": {
+    "feePayer": "0.0.1235"
+  }
+}
+```
+
+The client returns a `PaymentPayload` carrying the Base64-encoded, partially-signed transaction:
+
+```json PaymentPayload
+{
+  "x402Version": 2,
+  "resource": {
+    "url": "https://example.com/weather",
+    "description": "Access to protected content",
+    "mimeType": "application/json"
+  },
+  "accepted": {
+    "scheme": "exact",
+    "network": "hedera:mainnet",
+    "amount": "1000",
+    "asset": "0.0.0",
+    "payTo": "0.0.1234",
+    "maxTimeoutSeconds": 180,
+    "extra": { "feePayer": "0.0.1235" }
+  },
+  "payload": {
+    "transaction": "AAAAAAAAAAAAA...AAAAAAAAAAAAA="
+  }
+}
+```
+
+After submission, the facilitator returns a settlement response:
+
+```json SettlementResponse
+{
+  "success": true,
+  "transactionId": "0.0.1235@1700000000.000000000",
+  "network": "hedera:mainnet",
+  "payer": "0.0.1235"
+}
+```
+
+<Note>
+Because the facilitator pays the fee, the spec requires it to verify that the `feePayer` is never a *net sender* of value, that net HBAR/token transfers balance to zero, that the amount credited to `payTo` matches exactly, and that the transaction has not been submitted before (replay protection). These checks protect the facilitator from being drained while sponsoring fees.
+</Note>

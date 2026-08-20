@@ -1,0 +1,44 @@
+---
+title: "Accept x402 on Hedera"
+sidebarTitle: "Accept x402"
+description: "Gate an HTTP resource and accept HBAR or HTS token payments with the @x402/hedera resource-server middleware."
+---
+
+The [`@x402/hedera`](https://www.npmjs.com/package/@x402/hedera) package implements the scheme for both client and resource server. This page covers the resource-server side: gating an API and settling payments.
+
+## Register the resource server
+
+Register the scheme and declare the asset you accept:
+
+```typescript server.ts
+import { x402ResourceServer } from "@x402/core/server";
+import { ExactHederaScheme } from "@x402/hedera/exact/server";
+
+const server = new x402ResourceServer(facilitatorClient);
+
+server.register(
+  "hedera:*",
+  new ExactHederaScheme({
+    defaultAssets: {
+      "hedera:testnet": { asset: "0.0.6001", decimals: 6 },
+      "hedera:mainnet": { asset: "0.0.9001", decimals: 6 },
+    },
+  })
+);
+```
+
+The `facilitatorClient` points at a facilitator that supports Hedera (see [Facilitators](/solutions/ai/x402/facilitators)). The resource server uses it to `/verify` and `/settle` payments without holding funds or running its own node.
+
+## Further reading
+
+<CardGroup cols={2}>
+  <Card title="Hedera's exact scheme" icon="file-lines" href="/solutions/ai/x402/exact-scheme">
+    Message shapes, assets, and safety checks.
+  </Card>
+  <Card title="Pay with x402 on Hedera" icon="wallet" href="/solutions/ai/x402/pay-with-x402">
+    Client setup for AI agents and other payers.
+  </Card>
+  <Card title="x402 facilitators" icon="server" href="/solutions/ai/x402/facilitators">
+    Hosted options and how to run your own.
+  </Card>
+</CardGroup>

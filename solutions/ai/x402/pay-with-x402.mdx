@@ -1,0 +1,59 @@
+---
+title: "Pay with x402 on Hedera"
+sidebarTitle: "Pay with x402"
+description: "Let AI agents and clients pay for HTTP resources using HBAR or HTS tokens with the @x402/hedera client."
+---
+
+For AI agents, autonomous services, or any client that needs to pay for an API or piece of content, x402 turns a `402 Payment Required` response into a signed Hedera transfer. The client does not need its own fee-paying node: a facilitator covers the network fee and submits the transaction.
+
+## Register the Hedera scheme
+
+Install and import the client packages, then register the `exact` scheme with a signer for your account:
+
+```typescript client.ts
+import { x402Client } from "@x402/core/client";
+import { createClientHederaSigner } from "@x402/hedera";
+import { ExactHederaScheme } from "@x402/hedera/exact/client";
+import { PrivateKey } from "@hiero-ledger/sdk";
+
+const signer = createClientHederaSigner(
+  "0.0.1111",
+  PrivateKey.fromString(process.env.HEDERA_PRIVATE_KEY!),
+  { network: "hedera:testnet" }
+);
+
+// Register the scheme for any Hedera network and let the client
+// auto-handle 402 responses by signing and retrying.
+const client = new x402Client().register(
+  "hedera:*",
+  new ExactHederaScheme(signer)
+);
+```
+
+## Make a paid request
+
+Once the scheme is registered, requests to x402-gated endpoints are handled automatically:
+
+1. The client calls the resource (for example, `GET /weather`) without any extra headers.
+2. The server replies with `402 Payment Required` and the `PaymentRequirements`, including the facilitator `feePayer`.
+3. The client builds, signs, and Base64-encodes a `TransferTransaction` to the `payTo` account.
+4. The client resubmits the request with the `PaymentPayload` in the `X-Payment` header (or equivalent).
+
+You can also use the lower-level `pay` helpers if you want explicit control over signing and retries.
+
+## Requirements
+
+- The client account must hold the asset being paid (HBAR or the relevant HTS token).
+- For HTS tokens, the client account must be **associated** with that token.
+- Use a [facilitator](/solutions/ai/x402/facilitators) that advertises the Hedera network you are paying on.
+
+## Further reading
+
+<CardGroup cols={2}>
+  <Card title="Hedera's exact scheme" icon="file-lines" href="/solutions/ai/x402/exact-scheme">
+    Message shapes, assets, and safety checks.
+  </Card>
+  <Card title="Accept x402 on Hedera" icon="server" href="/solutions/ai/x402/merchant-integration">
+    Add payment gating to a resource server.
+  </Card>
+</CardGroup>

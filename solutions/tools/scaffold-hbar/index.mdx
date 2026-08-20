@@ -37,7 +37,7 @@ Before using Scaffold HBAR, ensure you have:
 
 - **Node.js** ≥ 20.18.3 — [nodejs.org](https://nodejs.org/)
 - **Git** with `user.name` and `user.email` configured — [git-scm.com](https://git-scm.com/)
-- **Yarn** (scaffolded projects use Yarn workspaces):
+- **Package manager** — Yarn is recommended; npm is also supported. Node.js already includes npm. To use Yarn:
   ```bash
   corepack enable && corepack prepare yarn@stable --activate
   ```
@@ -51,11 +51,13 @@ foundryup
 
 ### Create a New Project
 
-Run the CLI with npx:
+Run the CLI with `npm create`:
 
 ```bash
-npx create-scaffold-hbar@latest
+npm create scaffold-hbar@latest
 ```
+
+`npx create-scaffold-hbar@latest` is equivalent.
 
 You'll be prompted to select:
 
@@ -64,6 +66,7 @@ You'll be prompted to select:
 3. **Frontend** — `nextjs-app` or `none` (contracts only)
 4. **Solidity framework** — `foundry`, `hardhat`, or `none`
 5. **Network** — `testnet` or `mainnet`
+6. **Package manager** — `yarn` (recommended) or `npm`
 
 <Accordion title="Non-Interactive Mode">
 
@@ -71,14 +74,15 @@ For CI pipelines or scripting, use flags to skip prompts:
 
 ```bash
 # Accept all defaults (blank template, Foundry, testnet)
-npx create-scaffold-hbar@latest --yes
+npm create scaffold-hbar@latest -- --yes
 
 # Full customization
-npx create-scaffold-hbar@latest my-scheduler-app \
+npm create scaffold-hbar@latest my-scheduler-app -- \
   --template payments-scheduler \
   --frontend nextjs-app \
   --solidity-framework foundry \
-  --network testnet
+  --network testnet \
+  --package-manager yarn
 ```
 
 | Flag | Description |
@@ -88,13 +92,15 @@ npx create-scaffold-hbar@latest my-scheduler-app \
 | `-f, --frontend <fw>` | `nextjs-app` or `none` |
 | `-s, --solidity-framework <fw>` | `foundry`, `hardhat`, or `none` |
 | `--network <network>` | `testnet` or `mainnet` |
-| `--skip-install` | Don't run `yarn install` after scaffolding |
+| `--package-manager <pm>` | `yarn` (recommended) or `npm` |
+| `--skip-install` | Don't install dependencies after scaffolding |
+| `--skip-hedera-skills` | Don't install [Hedera Skills](#hedera-skills-ai-assisted-development) after scaffolding |
 
 </Accordion>
 
 ### Start Development
 
-After scaffolding, start the development servers:
+After scaffolding, start the development servers. Examples use Yarn; if you chose npm, replace `yarn <script>` with `npm run <script>`.
 
 <Tabs>
 <Tab title="Foundry">
@@ -150,17 +156,17 @@ Scaffold HBAR includes starter templates for common Hedera use cases. The CLI fe
 **Template selection:**
 ```bash
 # Interactive mode shows all available templates
-npx create-scaffold-hbar@latest
+npm create scaffold-hbar@latest
 
 # Or specify directly
-npx create-scaffold-hbar@latest --template payments-scheduler
-npx create-scaffold-hbar@latest --template cross-chain-dca
-npx create-scaffold-hbar@latest --template hedera-demo
+npm create scaffold-hbar@latest -- --template payments-scheduler
+npm create scaffold-hbar@latest -- --template cross-chain-dca
+npm create scaffold-hbar@latest -- --template hedera-demo
 ```
 </Tip>
 
 <Note>
-Templates are maintained in the [scaffold-hbar repository](https://github.com/buidler-labs/scaffold-hbar) as separate branches (`templates/*`). The CLI fetches templates at runtime, so you always get the latest version.
+Templates are maintained in the [scaffold-hbar repository](https://github.com/hedera-dev/scaffold-hbar) as separate branches (`templates/*`). The CLI fetches templates at runtime, so you always get the latest version.
 </Note>
 
 ---
@@ -175,10 +181,10 @@ Specify an external template using the `owner/repo` or `owner/repo#branch` forma
 
 ```bash
 # Use the main branch
-npx create-scaffold-hbar@latest --template hedera-dev/template-hedera-lz-app
+npm create scaffold-hbar@latest -- --template hedera-dev/template-hedera-lz-app
 
 # Use a specific branch
-npx create-scaffold-hbar@latest --template hedera-dev/template-hedera-lz-app#main
+npm create scaffold-hbar@latest -- --template hedera-dev/template-hedera-lz-app#main
 ```
 
 The CLI fetches the template via [giget](https://github.com/unjs/giget), so any public GitHub repository can serve as a template.
@@ -188,7 +194,7 @@ The CLI fetches the template via [giget](https://github.com/unjs/giget), so any 
 The [template-hedera-lz-app](https://github.com/hedera-dev/template-hedera-lz-app) is a comprehensive tutorial template for building cross-chain applications using LayerZero V2 on Hedera.
 
 ```bash
-npx create-scaffold-hbar@latest my-lz-app --template hedera-dev/template-hedera-lz-app
+npm create scaffold-hbar@latest my-lz-app -- --template hedera-dev/template-hedera-lz-app
 ```
 
 **What you'll build:**
@@ -236,7 +242,7 @@ Any GitHub repository can be used as an external template. To make your template
 }
 ```
 
-3. **Share** — Users can scaffold with `npx create-scaffold-hbar@latest --template your-org/your-repo`
+3. **Share** — Users can scaffold with `npm create scaffold-hbar@latest -- --template your-org/your-repo`
 
 ---
 
@@ -261,7 +267,7 @@ my-hedera-dapp/
 │       └── services/     # Web3 service utilities
 │
 ├── package.json          # Workspace configuration
-└── yarn.lock
+└── yarn.lock             # or package-lock.json if you chose npm
 ```
 
 ### Key Features
@@ -305,6 +311,8 @@ Projects come pre-configured with:
 ---
 
 ## Common Commands
+
+Examples use Yarn. With npm, run `npm run <script>` instead.
 
 | Command | Description |
 |---------|-------------|
@@ -392,7 +400,7 @@ npx skills add hedera-dev/hedera-skills --all
 <Tip>
 To skip Hedera Skills installation (e.g., for CI pipelines), use:
 ```bash
-npx create-scaffold-hbar@latest --yes --skip-hedera-skills
+npm create scaffold-hbar@latest -- --yes --skip-hedera-skills
 ```
 </Tip>
 

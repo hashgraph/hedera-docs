@@ -2900,6 +2900,12 @@
                   "solutions/tools/scaffold-hbar/scaffold-ui"
                 ]
               },
+              {
+                "group": "Hedera Harness",
+                "pages": [
+                  "solutions/tools/hedera-harness/index"
+                ]
+              },
               "solutions/tools/code-repo",
               "solutions/tools/custodians-library",
               "solutions/tools/custodians-library-usage",

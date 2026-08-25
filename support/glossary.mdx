@@ -5,9 +5,11 @@ description: "Glossary of Hedera and Web3 terms for developers: account ID, alia
 
 This glossary intends to provide a reference for Hedera and general web3 key terms. The purpose is to assist developers, particularly those new to the field or non-specialists, in understanding essential definitions related to various aspects of this technology. It covers basic to complex concepts and essential development tools and is an accessible resource for developers.
 
-## [#](#undefined) [A](#a) [B](#b) [C](#c) [D](#d) [E](#e) [F](#f) [G](#g) [H](#h) [I](#i) [J](#j) [K](#k) [L](#l) [M](#m) [N](#n) [O](#o) [P](#p) [Q](#q) [R](#r) [S](#s) [T](#t) [U](#v) [V](#v) [W](#w) [X](#z) [Y](#z) [Z](#z)
+**Jump to:** [#](#symbols) · [A](#a) · [B](#b) · [C](#c) · [D](#d) · [E](#e) · [F](#f) · [G](#g) · [H](#h) · [I](#i) · [J](#j) · [K](#k) · [L](#l) · [M](#m) · [N](#n) · [O](#o) · [P](#p) · [Q](#q) · [R](#r) · [S](#s) · [T](#t) · [U](#u) · [V](#v) · [W](#w) · X · Y · [Z](#z)
 
 ---
+
+<a id="symbols" />
 
 ## \#
 
@@ -193,8 +195,6 @@ Another term for a [blockchain](#blockchain).
 
 ---
 
----
-
 A unique identifier for a specific chain within a network. In networks that support multiple chains or side chains, the chain ID helps distinguish between different chains.
 
 ### Client
@@ -239,7 +239,7 @@ A type of digital or virtual currency used for payment transactions. Unlike [fia
 
 A platform, application, or website that rewards users in cryptocurrency when they complete certain tasks. Rewards tend to be in tiny increments of cryptocurrency. Rewardable tasks can include browser mining, playing games, watching videos, completing surveys, referring new users, etc.
 
-### Cryptography/Cryptographic
+### Cryptography
 
 ---
 
@@ -681,13 +681,13 @@ This service provides the ability to issue and manage tokens on the Hedera Netwo
 
 ---
 
-A [cryptocurrency wallet](#cryptocurrency-wallet) that is _always_ connected to the internet and can be either a mobile application, web application, or browser extension. As they are always connected to the Internet, hot wallets are not as secure as [cold wallets](#cold-wallet), which are only connected to the Internet during transactions.
+A [cryptocurrency wallet](#crypto-wallet) that is _always_ connected to the internet and can be either a mobile application, web application, or browser extension. As they are always connected to the Internet, hot wallets are not as secure as [cold wallets](#cold-wallet), which are only connected to the Internet during transactions.
 
 ### Hyperledger Besu EVM
 
 ---
 
-An open-source [Ethereum](#ethereum) client developed under the Hyperledger project and a virtual machine that replaced the EthereumJ virtual machine in the [Consensus Node release 0.19](https://github.com/hashgraph/hedera-services/releases/tag/v0.19.1) as a result of [HIP-26](https://hips.hedera.com/hip/hip-26). This migration enables Hedera to maintain parity with Ethereum Mainnet evolutions, such as the EVM container formats, new opcodes, and precompiled contracts. The Besu integration is configured to use the [“London” hard fork](https://ethereum.org/en/history/#london) of Ethereum Mainnet.
+An open-source [Ethereum](#ethereum) client developed under the Hyperledger project and a virtual machine that replaced the EthereumJ virtual machine in the [Consensus Node release 0.19](https://github.com/hashgraph/hedera-services/releases/tag/v0.19.1) as a result of [HIP-26](https://hips.hedera.com/hip/hip-26). This migration enables Hedera to maintain parity with Ethereum Mainnet evolutions, such as the EVM container formats, new opcodes, and precompiled contracts. The Besu integration tracks Ethereum Mainnet hard forks; as of Hedera Mainnet release [0.50.0](/networks/release-notes/services#v0.50), it supports the [Cancun hard fork](https://ethereum.org/en/history/#cancun) of Ethereum Mainnet, with some modifications. For the exact supported hard fork in the current release, see [Deploying](/evm/development/deploying).
 
 ## I
 
@@ -845,7 +845,7 @@ The unique ID of a non-fungible token composed of the token ID and serial number
 
 ---
 
-A [cryptographic](#cryptography) nonce is an arbitrary, single-use, whole, binary number used for communication in security functions. The acronym “nonce” is an abbreviation of "number only used once." A basic nonce in [Bitcoin](#bitcoin) is 32-bit (4-byte). A strong nonce has at least 128 bits of entropy. Solving the hash on a block is how a miner finds the nonce.
+A [cryptographic](#cryptography) nonce is an arbitrary, single-use, whole, binary number used for communication in security functions. The acronym “nonce” is an abbreviation of "number only used once." A basic nonce in [Bitcoin](#bitcoin-btc) is 32-bit (4-byte). A strong nonce has at least 128 bits of entropy. Solving the hash on a block is how a miner finds the nonce.
 
 Uses for a nonce: authentication, initialization vectors, hashing, indexing, smart contracts, and block validation.
 
@@ -1245,6 +1245,8 @@ Trustless is a term associated with distributed ledger technology such as [block
 ### Turing Complete
 
 Turing complete means a system or a language has the ability to simulate any computer algorithm, no matter how complex. It's like saying if you give this system enough time and memory, it can run any program a computer can execute, whether it's a simple calculator or a complex video game. The importance of Turing completeness as it pertains to distributed ledger technology is that it allows for the programmatic development of smart contracts.
+
+## U
 
 ### Universally Unique Identifier (UUID)
 

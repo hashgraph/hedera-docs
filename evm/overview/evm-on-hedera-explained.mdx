@@ -1,0 +1,83 @@
+---
+title: "EVM on Hedera Explained"
+description: "How the EVM runs on Hedera: Besu-based execution, consensus and settlement, the account model, gas, and finality."
+---
+
+Hedera runs the same [Ethereum Virtual Machine](/support/glossary#ethereum-virtual-machine-evm) you already target, so your [Solidity](/support/glossary#solidity) bytecode, ABIs, and tooling work without modification. The difference is what sits underneath the EVM: instead of ordering transactions into blocks chosen by a block producer, Hedera settles them with Hashgraph consensus, a [proof-of-stake](/support/glossary#proof-of-stake-pos) aBFT algorithm. This page explains how execution, consensus, accounts, gas, and finality fit together.
+
+## Besu-based execution
+
+Hedera's smart contract service embeds [Hyperledger Besu](/support/glossary#hyperledger-besu-evm), the same EVM implementation used across the Ethereum ecosystem, as its execution layer. Contracts compile to standard EVM bytecode, and opcodes behave as they do on Ethereum. Hedera tracks Ethereum's hard forks; for the current Besu version and the exact supported hard fork, see [Deploying](/evm/development/deploying), which is the source of truth for that detail.
+
+Because execution is standard Besu:
+
+- Solidity and [Vyper](/support/glossary#vyper) contracts deploy unchanged.
+- Existing ABIs, libraries, and audited contract patterns carry over.
+- EVM tools talk to Hedera through the [JSON-RPC relay](/evm/development/json-rpc/index), which translates standard Ethereum JSON-RPC calls into Hedera transactions and queries.
+
+A small number of behaviors differ from L1 Ethereum. Those are catalogued in [EVM Differences](/evm/differences/index).
+
+## Consensus and settlement
+
+On most EVM chains, one layer both orders transactions and executes them, and a block producer decides ordering. On Hedera these responsibilities are separate:
+
+1. **Consensus** - Consensus nodes run the Hashgraph algorithm to agree on the order and timestamp of every transaction. This is [aBFT](/support/glossary#asynchronous-byzantine-fault-tolerance-abft) (asynchronous Byzantine fault tolerant) and produces a fair, deterministic order with no block producer choosing what goes where.
+2. **Settlement and execution** - Once order is fixed, each node executes the transaction against network state. Smart contract calls run in Besu at this stage, and the resulting state changes are applied identically on every node.
+
+There are no blocks competing to be canonical and no reorganizations. The consensus timestamp assigned to a transaction is final the moment consensus is reached. To learn how Hashgraph reaches agreement, see [Hashgraph Consensus](/learn/core-concepts/hashgraph/index).
+
+## The account model
+
+Every actor on Hedera is a Hedera account with an ID in the form `0.0.<num>` (for example, `0.0.1234`). EVM tooling expects a 20-byte hex address, so each account also has an [EVM address](/support/glossary#evm-address). There are two ways an account gets one:
+
+| EVM address type | How it is derived | When you get it |
+| --- | --- | --- |
+| **EVM Address from Public Key** | Last 20 bytes of the Keccak-256 hash of the account's [ECDSA](/support/glossary#ecdsa-secp256k1) public key | Set at creation for accounts made with an ECDSA key; matches the address MetaMask and other EVM wallets expect |
+| **EVM Address from Account ID** | The account number encoded as a 20-byte value (a "long-zero" address such as `0x00...04d2`) | Available for any account, including those created with an [ED25519](/support/glossary#ed25519) key |
+
+For EVM-oriented applications, create accounts with an ECDSA key and set the **EVM Address from Public Key** at creation. This gives native compatibility with EVM wallets, JSON-RPC tooling, and smart contract interactions.
+
+<Tip>
+  The EVM Address from Public Key is immutable. Rotating keys with `CryptoUpdateTransaction` does not change it; the address stays bound to the original ECDSA public key. If keys are compromised or must be replaced, create a new ECDSA account with a new EVM address and migrate assets and state rather than relying on key rotation to preserve the same EVM identity.
+</Tip>
+
+When a contract or tool references an address that has never transacted, Hedera can create the account automatically the first time value arrives. This table is a summary; for the full account and address model see [Accounts](/evm/development/accounts), and for how it differs from Ethereum see [Accounts and Keys](/evm/differences/accounts-and-keys). The native-account view is in [Auto Account Creation](/learn/core-concepts/accounts/auto-account-creation).
+
+## Gas and fees
+
+Contract execution is metered in [gas](/support/glossary#gas-fee), exactly as on Ethereum, so gas estimation and `gasLimit` work the way your tools expect. Two things differ:
+
+- **Pricing is in USD, paid in [HBAR](/support/glossary#hbar)** - The network prices gas against a USD target and converts to HBAR at the current exchange rate, rather than through a fee market auction. Costs stay predictable under load.
+- **HBAR uses different decimal precision than ETH** - HBAR has 8 decimals natively, but the JSON-RPC relay presents balances and values to EVM tools in 18-decimal `wei`-style units. This conversion is the most common source of surprise when porting scripts. See [HBAR Decimals](/evm/differences/hbar-decimals).
+
+For a full breakdown of contract costs, including gas and state storage, see [Gas and Fees](/evm/development/gas-fees) and [State Rent](/evm/development/rent).
+
+## Finality
+
+Hedera [finality](/support/glossary#finality) is absolute, not probabilistic. Once a transaction receives its consensus timestamp, it is final and cannot be reorganized out of history. There is no confirmation count to wait for.
+
+| | Hedera | L1 Ethereum | Typical optimistic L2 |
+| --- | --- | --- | --- |
+| **Finality type** | Absolute (aBFT) | Probabilistic | Inherits L1, plus challenge window |
+| **Time to finality** | 3 to 5 seconds | ~13 minutes (after enough confirmations) | Minutes for soft confirmation, up to ~7 days for L1 withdrawal finality |
+| **Reorgs** | None | Possible near the head | Depends on sequencer and L1 |
+| **Settlement layer** | Hashgraph consensus | Ethereum L1 | Rollup settling to Ethereum L1 |
+
+Because finality is reached in seconds and never reverses, application logic that would normally wait for N confirmations can act on a transaction as soon as it has a consensus timestamp.
+
+## Where to go next
+
+<CardGroup cols={2}>
+  <Card title="Why Hedera for EVM Developers" icon="star" href="/evm/overview/why-hedera-for-evm">
+    The value proposition compared to other EVM chains.
+  </Card>
+  <Card title="EVM Differences" icon="list-check" href="/evm/differences/index">
+    Every behavior that differs from L1 Ethereum, in detail.
+  </Card>
+  <Card title="Smart Contracts on Hedera" icon="file-contract" href="/learn/core-concepts/services/smart-contracts">
+    The core-concepts view of the smart contract service.
+  </Card>
+  <Card title="Quickstart" icon="rocket" href="/evm/quickstart/setup-metamask">
+    Deploy your first contract on testnet.
+  </Card>
+</CardGroup>

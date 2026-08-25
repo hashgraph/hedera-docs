@@ -1,0 +1,77 @@
+---
+title: "Choose Your Path"
+description: "A short decision guide for building on the EVM on Hedera, by experience level."
+---
+
+Everyone building here uses the same [EVM](/support/glossary#ethereum-virtual-machine-evm) and the same tools. Where you start depends on what you already know. Pick the profile that fits you best.
+
+<CardGroup cols={3}>
+  <Card title="New to EVM development" icon="seedling" href="#new-to-evm-development" />
+  <Card title="Migrating from Ethereum" icon="right-left" href="#migrating-from-ethereum-or-another-evm-chain" />
+  <Card title="Hedera-native developer" icon="cubes" href="#hedera-native-developer-adding-the-evm" />
+</CardGroup>
+
+## New to EVM development
+
+You are new to Solidity and smart contracts, or new to web3 entirely. Start with the tooling and deploy a working contract before going deeper.
+
+<Steps>
+  <Step title="Set up a wallet and testnet account">
+    Add Hedera Testnet to MetaMask and fund an account from the faucet.
+    [Set Up MetaMask](/evm/quickstart/setup-metamask) and [Get Test HBAR](/evm/quickstart/get-test-hbar).
+  </Step>
+  <Step title="Deploy your first contract">
+    Deploy a Solidity contract with Hardhat and the JSON-RPC relay.
+    [Deploy with Hardhat](/evm/quickstart/deploy-with-hardhat).
+  </Step>
+  <Step title="Understand what makes Hedera different">
+    Read how execution, finality, and the account model work.
+    [EVM on Hedera Explained](/evm/overview/evm-on-hedera-explained).
+  </Step>
+</Steps>
+
+## Migrating from Ethereum or another EVM chain
+
+You know [Solidity](/support/glossary#solidity), Hardhat, Foundry, or Remix and want to bring existing contracts to Hedera. Your bytecode and tooling carry over. Focus on the handful of behaviors that differ.
+
+<Steps>
+  <Step title="Review the differences">
+    Start with the differences catalogue, then the two that trip people up most: HBAR decimal precision and the account and key model.
+    [EVM Differences](/evm/differences/index), [HBAR Decimals](/evm/differences/hbar-decimals), and [Accounts and Keys](/evm/differences/accounts-and-keys).
+  </Step>
+  <Step title="Point your tools at Hedera">
+    Configure Hardhat or Foundry against the JSON-RPC relay.
+    [JSON-RPC Relay](/evm/development/json-rpc/index) and [Tools](/evm/tools/index).
+  </Step>
+  <Step title="Deploy and verify">
+    Deploy your contract and verify the source.
+    [Deploying](/evm/development/deploying) and [Verifying](/evm/development/verifying).
+  </Step>
+</Steps>
+
+<Tip>
+  Before porting scripts that move value, read [HBAR Decimals](/evm/differences/hbar-decimals). [HBAR](/support/glossary#hbar) is 8 decimals natively but the relay presents 18-decimal units to EVM tools, which is the most common migration surprise.
+</Tip>
+
+## Hedera-native developer adding the EVM
+
+You already build with the Hiero SDKs and Hedera services, and you want to add Solidity contracts or call your existing HTS tokens from contract code.
+
+<Steps>
+  <Step title="See how native services map into the EVM">
+    Learn how to reach [HTS](/support/glossary#hedera-token-service-hts), [HCS](/support/glossary#hedera-consensus-service-hcs), and other services from Solidity through [system contracts](/support/glossary#system-smart-contracts).
+    [System Contracts](/evm/hedera-services/system-contracts/index) and [HTS from Solidity](/evm/hedera-services/system-contracts/hts).
+  </Step>
+  <Step title="Learn the EVM account model">
+    See how Hedera accounts map to EVM addresses.
+    [EVM on Hedera Explained](/evm/overview/evm-on-hedera-explained) and [Accounts](/evm/development/accounts).
+  </Step>
+  <Step title="Combine ERC and HTS">
+    Use hybrid tokenization to keep ERC compatibility with native controls.
+    [Hybrid Tokenization](/evm/hedera-services/hybrid/index).
+  </Step>
+</Steps>
+
+## Not sure yet?
+
+If you are deciding between the EVM and the native SDKs at the network level, start with [Choose Your Path](/learn/getting-started/choose-your-path) in Getting Started, which compares the EVM and native SDK approaches across all of Hedera.

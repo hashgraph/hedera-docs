@@ -2295,7 +2295,10 @@
           {
             "group": "Overview",
             "pages": [
-              "evm/index"
+              "evm/index",
+              "evm/overview/evm-on-hedera-explained",
+              "evm/overview/why-hedera-for-evm",
+              "evm/overview/choose-your-path"
             ]
           },
           {

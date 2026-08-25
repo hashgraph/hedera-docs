@@ -1,0 +1,63 @@
+---
+title: "Why Hedera for EVM Developers?"
+description: "Fixed low fees, fast absolute finality, predictable gas, and native token and consensus services you can call from Solidity."
+---
+
+If you already build on the [EVM](/support/glossary#ethereum-virtual-machine-evm), Hedera lets you keep your contracts, wallets, and tooling while removing the parts of L1 and L2 development that are hard to plan around: fee spikes, slow [finality](/support/glossary#finality), and [gas](/support/glossary#gas-fee) that swings with demand. You also get direct access to Hedera's native services from [Solidity](/support/glossary#solidity), which is not available on general-purpose EVM chains.
+
+## Fixed, low fees
+
+Hedera prices transactions in USD and charges the equivalent in [HBAR](/support/glossary#hbar) at the current exchange rate. There is no fee market auction, so costs do not climb when the network is busy.
+
+- Simple transactions such as an HBAR transfer cost about $0.0001. Smart contract calls are metered in gas but stay low and predictable (see [Gas and Fees](/evm/development/gas-fees)).
+- Fees are published in the [fee schedule](/networks/fees) and change infrequently.
+- No priority-fee bidding to get included.
+
+This makes high-volume applications, where per-transaction gas would be prohibitive elsewhere, practical to run.
+
+## Fast absolute finality
+
+Hashgraph consensus gives 3 to 5 second absolute finality. Once a transaction has a consensus timestamp it is final and cannot be reorganized. There is no confirmation count to wait for and no reorg risk near the chain head, so your application can act on a result as soon as it settles. See [EVM on Hedera Explained](/evm/overview/evm-on-hedera-explained) for how consensus and settlement produce this.
+
+## Predictable gas
+
+Contract execution is metered in gas just like Ethereum, so `gasLimit`, estimation, and your existing scripts work as expected. Because gas is priced against a USD target rather than an auction, the cost of a given contract call stays stable across network conditions. Details are in [Gas and Fees](/evm/development/gas-fees).
+
+## Native services from Solidity
+
+This is the capability EVM chains do not have. Through [system contracts](/support/glossary#system-smart-contracts) at fixed addresses, your Solidity code can call Hedera's native services directly:
+
+- **[Hedera Token Service (HTS)](/support/glossary#hedera-token-service-hts)** - Create, mint, transfer, burn, and manage tokens with native controls such as [KYC](/support/glossary#know-your-customer-kyc), freeze, pause, and wipe, without writing token accounting yourself. See the [HTS system contract](/evm/hedera-services/system-contracts/hts).
+- **[Hedera Consensus Service (HCS)](/support/glossary#hedera-consensus-service-hcs)** - Publish verifiable, ordered messages for audit trails and event streams.
+- **Schedule and account services** - Coordinate multi-party transactions and query account state from contracts. See [System Contracts](/evm/hedera-services/system-contracts/index).
+
+You can also combine ERC standards with HTS in a single token through [hybrid tokenization](/evm/hedera-services/hybrid/index), keeping ERC-20 or ERC-721 compatibility while gaining native compliance controls.
+
+## How Hedera compares
+
+This is the value-proposition cut for EVM developers weighing chains. For the complete Hedera vs Ethereum comparison, including governance, network state, and key management, see [EVM Differences](/evm/differences/index).
+
+| | Hedera | L1 Ethereum | Typical EVM L2 |
+| --- | --- | --- | --- |
+| **Finality type** | Absolute ([aBFT](/support/glossary#asynchronous-byzantine-fault-tolerance-abft)) | Probabilistic | Inherits L1 |
+| **Fee model** | Fixed in USD, no auction | Gas auction | Variable with L1 and sequencer |
+| **Native token service (HTS)** | Yes, from Solidity | No | No |
+| **Native consensus and messaging (HCS)** | Yes | No | No |
+| **Tooling** | MetaMask, Hardhat, Foundry, Ethers.js | Same | Same |
+
+## Where to go next
+
+<CardGroup cols={2}>
+  <Card title="Choose Your Path" icon="signs-post" href="/evm/overview/choose-your-path">
+    Pick a starting point based on your background.
+  </Card>
+  <Card title="EVM Differences" icon="list-check" href="/evm/differences/index">
+    What changes when you move contracts to Hedera.
+  </Card>
+  <Card title="HTS from Solidity" icon="coins" href="/evm/hedera-services/system-contracts/hts">
+    Call the native token service from your contracts.
+  </Card>
+  <Card title="Quickstart" icon="rocket" href="/evm/quickstart/setup-metamask">
+    Deploy your first contract on testnet.
+  </Card>
+</CardGroup>

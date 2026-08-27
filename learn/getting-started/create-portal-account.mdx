@@ -480,7 +480,7 @@ fmt.Printf("EVM Address: 0x%s\n", newPublicKey.ToEvmAddress())
 # Build & execute the account creation transaction
 transaction = (
     AccountCreateTransaction()
-      .set_key_with_alias(newPublicKey) # set the account key and EVM address alias
+      .set_key_with_alias(newPublicKey) # set the account key and its EVM Address from Public Key
       .set_initial_balance(Hbar(20))    # fund with 20 HBAR
 )
 
@@ -884,7 +884,7 @@ newPublicKey = newPrivateKey.public_key()
 # build & execute the account creation transaction
 transaction = (
     AccountCreateTransaction()
-      .set_key_with_alias(newPublicKey) # set the account key and EVM address alias
+      .set_key_with_alias(newPublicKey) # set the account key and its EVM Address from Public Key
       .set_initial_balance(Hbar(20))    # fund with 20 HBAR
 )
 receipt = transaction.execute(client)

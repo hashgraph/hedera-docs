@@ -20,12 +20,17 @@ For Maven, add to `pom.xml`:
     <dependency>
         <groupId>com.hedera.hashgraph</groupId>
         <artifactId>sdk</artifactId>
-        <version>2.72.0</version>
+        <version>2.77.0</version>
     </dependency>
     <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-netty-shaded</artifactId>
-        <version>1.73.0</version>
+        <version>1.83.1</version>
+    </dependency>
+    <dependency>
+        <groupId>io.github.cdimascio</groupId>
+        <artifactId>dotenv-java</artifactId>
+        <version>3.0.0</version>
     </dependency>
 </dependencies>
 ```
@@ -34,8 +39,9 @@ For Gradle, add to `build.gradle`:
 
 ```groovy
 dependencies {
-    implementation 'com.hedera.hashgraph:sdk:2.72.0'
-    implementation 'io.grpc:grpc-netty-shaded:1.73.0'
+    implementation 'com.hedera.hashgraph:sdk:2.77.0'
+    implementation 'io.grpc:grpc-netty-shaded:1.83.1'
+    implementation 'io.github.cdimascio:dotenv-java:3.0.0'
 }
 ```
 
@@ -47,10 +53,10 @@ Create a `.env` file in your project root (and add it to `.gitignore`):
 
 ```dotenv
 OPERATOR_ID=0.0.1234
-OPERATOR_KEY=302d300706052b8104000a032200033456...
+OPERATOR_KEY=3030020100300706052b8104000a04220420a1b2c...
 ```
 
-`OPERATOR_ID` is your Hedera account ID. `OPERATOR_KEY` is the DER-encoded ECDSA private key; use the **HEX Encoded Private Key** value from the developer portal.
+`OPERATOR_ID` is your Hedera account ID (for example, `0.0.1234`). `OPERATOR_KEY` is your account's **ECDSA private key**: copy the **DER Encoded Private Key** (starts with `303...`) from the developer portal.
 
 ## Step 3: Connect, query, transfer
 
@@ -65,15 +71,15 @@ public class HederaQuickstart {
     public static void main(String[] args) throws Exception {
         Dotenv env = Dotenv.load();
         AccountId operatorId = AccountId.fromString(env.get("OPERATOR_ID"));
-        PrivateKey operatorKey = PrivateKey.fromString(env.get("OPERATOR_KEY"));
+        PrivateKey operatorKey = PrivateKey.fromStringECDSA(env.get("OPERATOR_KEY"));
 
         // Connect to testnet using the operator account as the default payer.
         Client client = Client.forTestnet();
         client.setOperator(operatorId, operatorKey);
 
-        // 1. Query the operator's balance.
-        // AccountBalanceQuery is deprecated, see /native/accounts/get-balance
-        Hbar balance = new AccountBalanceQuery()
+        // 1. Query the operator's balance (free mirror node read).
+        // MirrorNodeAccountBalanceQuery replaces the deprecated AccountBalanceQuery.
+        Hbar balance = new MirrorNodeAccountBalanceQuery()
             .setAccountId(operatorId)
             .execute(client)
             .hbars;
@@ -94,8 +100,6 @@ public class HederaQuickstart {
     }
 }
 ```
-
-Add a `.env` loader to your dependencies if you don't have one. `io.github.cdimascio:dotenv-java:3.0.0` is the common pick.
 
 ## Step 4: Run it
 

@@ -1,14 +1,69 @@
 ---
 title: "Create an Account"
+icon: "user"
 ---
 
-Learn how to create a new Hedera **account** on _testnet_ using the JavaScript, Java, Go, SDK, or Python. A [`Hedera account`](/learn/core-concepts/accounts) is your identity on‑chain. It holds your HBAR (the network’s currency) and lets you sign transactions.
+Learn how to create a new Hedera **account** on _testnet_ using the JavaScript, Java, Go, or Python SDK. A [`Hedera account`](/learn/core-concepts/accounts) is your identity on‑chain. It holds your HBAR (the network’s currency) and lets you sign transactions.
+
+---
+
+## Get a testnet account from the portal
+
+Before writing any code, get a funded testnet account and its keys from the developer portal. You can also submit your first transaction straight from the browser-based playground, with no setup.
+
+<Steps>
+<Step title="Open the playground">
+
+<Card
+  horizontal
+  title="OPEN PLAYGROUND"
+  href="https://portal.hedera.com/playground"
+  icon="rectangle-terminal"
+/>
+</Step>
+
+<Step title="Submit a Transfer HBAR transaction">
+
+Under **Account & HBAR**, select **Transfer HBAR** from the left navigation.
+
+1. Replace `receiverAccount` with account ID `0.0.800`.
+2. Then click **Get Account Balance** under Queries.
+
+Click **Execute** to submit your first transaction.
+
+<Frame>
+  <img src="/images/getting-started-hedera-native-developers/quickstart/quickstart-1.png" />
+</Frame>
+</Step>
+
+<Step title="Create your testnet account">
+
+When you click **Execute**, you are prompted to sign up for a developer portal account. Once logged in, click **CREATE ACCOUNT** to complete the testnet account creation flow. Your new account is automatically funded with **1000 HBAR**.
+
+<div><Frame>
+  <img src="/images/getting-started-hedera-native-developers/quickstart/quickstart-2.png" />
+</Frame> <Frame>
+  <img src="/images/getting-started-hedera-native-developers/quickstart/quickstart-3.png" />
+</Frame> <Frame>
+  <img src="/images/getting-started-hedera-native-developers/quickstart/quickstart-4.png" />
+</Frame></div>
+</Step>
+
+<Step title="Copy your account ID and key">
+
+View your account ID and ECDSA key pair from the portal dashboard. Use the **account ID** as your `OPERATOR_ID` and the **DER Encoded Private Key** (starts with `303...`) as your `OPERATOR_KEY` in the steps below.
+
+<Frame>
+  <img src="/images/getting-started-hedera-native-developers/quickstart/quickstart-5.png" />
+</Frame>
+</Step>
+</Steps>
 
 ---
 
 ## Prerequisites
 
-- A Hedera testnet **operator account ID** and **ECDSA** **DER-encoded private key** (from the [Quickstart](/native/quickstart/javascript)).
+- A Hedera testnet **operator account ID** and **ECDSA** **DER-encoded private key** (from the [portal](#get-a-testnet-account-from-the-portal) above).
 - A small amount of testnet **HBAR (ℏ)** to pay the `$0.05` account‑creation fee.
 
 <Note>
@@ -39,7 +94,7 @@ npm init -y
 Ensure you have [**Node.js**](https://nodejs.org/en/download) `v18` or later installed on your machine. Then, install the[ JavaScript SDK](https://github.com/hiero-ledger/hiero-sdk-js).
 
 ```bash
-npm install --save @hashgraph/sdk
+npm install --save @hiero-ledger/sdk
 ```
 
 Update your `package.json` file to enable ES6 modules and configure the project:
@@ -57,7 +112,7 @@ Update your `package.json` file to enable ES6 modules and configure the project:
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@hashgraph/sdk": "^2.69.0"
+    "@hiero-ledger/sdk": "^2.87.0"
   }
 }
 ```
@@ -70,7 +125,7 @@ import {
   PrivateKey,
   AccountCreateTransaction,
   Hbar,
-} from "@hashgraph/sdk";
+} from "@hiero-ledger/sdk";
 ```
 
 </Tab>
@@ -85,17 +140,17 @@ Create a new **Maven** project and name it `HederaExamples`. Add the following d
     <dependency>
         <groupId>com.hedera.hashgraph</groupId>
         <artifactId>sdk</artifactId>
-        <version>2.61.0</version>
+        <version>2.77.0</version>
     </dependency>
     <dependency>
         <groupId>com.google.code.gson</groupId>
         <artifactId>gson</artifactId>
-        <version>2.10.1</version>
+        <version>2.14.0</version>
     </dependency>
     <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-netty-shaded</artifactId>
-        <version>1.73.0</version>
+        <version>1.83.1</version>
     </dependency>
 </dependencies>
 ```
@@ -113,9 +168,9 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.hedera.hashgraph:sdk:2.60.0'
-    implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'io.grpc:grpc-netty-shaded:1.61.0'
+    implementation 'com.hedera.hashgraph:sdk:2.77.0'
+    implementation 'com.google.code.gson:gson:2.14.0'
+    implementation 'io.grpc:grpc-netty-shaded:1.83.1'
 }
 
 application {
@@ -157,22 +212,17 @@ import (
     "os"
     "time"
 
-    hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
+    hiero "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
 )
 ```
 
 In your project's root directory, initialize modules and pull in the [Go SDK](https://github.com/hiero-ledger/hiero-sdk-go):
-
-```wrap
-
-```
 
 ```go-module
 go mod init create_account_demo
 go get github.com/hiero-ledger/hiero-sdk-go/v2@latest
 go mod tidy
 ```
-
 </Tab>
 
 <Tab title="Python">
@@ -270,7 +320,7 @@ Set your testnet operator credentials as environment variables. Your `OPERATOR_I
 
 ```bash
 export OPERATOR_ID="0.0.1234"
-export OPERATOR_KEY="3030020100300506032b657004220420..."
+export OPERATOR_KEY="3030020100300706052b8104000a04220420..."
 ```
 
 ---
@@ -294,7 +344,7 @@ const client = Client.forTestnet()
 ```java Java
 // Load your operator credentials
 AccountId operatorId = AccountId.fromString(System.getenv("OPERATOR_ID"));
-PrivateKey operatorKey = PrivateKey.fromString(System.getenv("OPERATOR_KEY"));
+PrivateKey operatorKey = PrivateKey.fromStringECDSA(System.getenv("OPERATOR_KEY"));
 
 // Initialize your testnet client and set operator
 Client client = Client.forTestnet().setOperator(operatorId, operatorKey);
@@ -302,11 +352,11 @@ Client client = Client.forTestnet().setOperator(operatorId, operatorKey);
 
 ```go Go highlight={1}
 // load your operator credentials
-operatorId, _ := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
-operatorKey, _ := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
+operatorId, _ := hiero.AccountIDFromString(os.Getenv("OPERATOR_ID"))
+operatorKey, _ := hiero.PrivateKeyFromStringECDSA(os.Getenv("OPERATOR_KEY"))
 
 // initialize the client for testnet
-client := hedera.ClientForTestnet()
+client := hiero.ClientForTestnet()
 client.SetOperator(operatorId, operatorKey)
 
 ```
@@ -314,7 +364,7 @@ client.SetOperator(operatorId, operatorKey)
 ```python Python
 # Load your operator credentials
 operatorId = AccountId.from_string(os.getenv("OPERATOR_ID", ""))
-operatorKey = PrivateKey.from_string(os.getenv("OPERATOR_KEY", ""))
+operatorKey = PrivateKey.from_string_der(os.getenv("OPERATOR_KEY", ""))
 
 # Initialize your testnet client and set operator
 client = Client()
@@ -348,7 +398,7 @@ PublicKey newPublicKey   = newPrivateKey.getPublicKey();
 
 ```go Go
 // generate a new key pair
-newPrivateKey, _ := hedera.PrivateKeyGenerateEcdsa()
+newPrivateKey, _ := hiero.PrivateKeyGenerateEcdsa()
 newPublicKey := newPrivateKey.PublicKey()
 ```
 
@@ -404,9 +454,9 @@ System.out.println("EVM Address: 0x" + newPublicKey.toEvmAddress());
 
 ```go Go
 // build & execute the account creation transaction
-transaction := hedera.NewAccountCreateTransaction().
+transaction := hiero.NewAccountCreateTransaction().
     SetECDSAKeyWithAlias(newPublicKey).     // set the account key
-    SetInitialBalance(hedera.NewHbar(20))   // fund with 20 HBAR
+    SetInitialBalance(hiero.NewHbar(20))   // fund with 20 HBAR
 
 // execute the transaction and get response
 txResponse, err := transaction.Execute(client)
@@ -430,7 +480,7 @@ fmt.Printf("EVM Address: 0x%s\n", newPublicKey.ToEvmAddress())
 # Build & execute the account creation transaction
 transaction = (
     AccountCreateTransaction()
-      .set_key(newPublicKey)            # set the account key
+      .set_key_with_alias(newPublicKey) # set the account key and EVM address alias
       .set_initial_balance(Hbar(20))    # fund with 20 HBAR
 )
 
@@ -607,7 +657,7 @@ import {
   PrivateKey,
   AccountCreateTransaction,
   Hbar
-} from "@hashgraph/sdk";
+} from "@hiero-ledger/sdk";
 
 async function createAccountDemo() {
 // load your operator credentials
@@ -681,7 +731,7 @@ public class CreateAccountDemo {
 
         // initialize the client for testnet
         Client client = Client.forTestnet()
-            .setOperator(AccountId.fromString(operatorId),         PrivateKey.fromString(operatorKey));
+            .setOperator(AccountId.fromString(operatorId),         PrivateKey.fromStringECDSA(operatorKey));
 
         // generate a new key pair
         PrivateKey newPrivateKey = PrivateKey.generateECDSA();
@@ -746,27 +796,27 @@ import (
 	"os"
 	"time"
 
-    hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
+    hiero "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
 
 )
 
 func main() {
 // load your operator credentials
-operatorId, _ := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
-operatorKey, _ := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
+operatorId, _ := hiero.AccountIDFromString(os.Getenv("OPERATOR_ID"))
+operatorKey, _ := hiero.PrivateKeyFromStringECDSA(os.Getenv("OPERATOR_KEY"))
 
     // initialize the client for testnet
-    client := hedera.ClientForTestnet()
+    client := hiero.ClientForTestnet()
     client.SetOperator(operatorId, operatorKey)
 
     // generate a new key pair
-    newPrivateKey, _ := hedera.PrivateKeyGenerateEcdsa()
+    newPrivateKey, _ := hiero.PrivateKeyGenerateEcdsa()
     newPublicKey := newPrivateKey.PublicKey()
 
     // build & execute the account creation transaction
-    transaction := hedera.NewAccountCreateTransaction().
+    transaction := hiero.NewAccountCreateTransaction().
     	SetECDSAKeyWithAlias(newPublicKey).   // set the account key with alias
-    	SetInitialBalance(hedera.NewHbar(20)) // fund with 20 HBAR
+    	SetInitialBalance(hiero.NewHbar(20)) // fund with 20 HBAR
 
     txResponse, _ := transaction.Execute(client)
     receipt, _ := txResponse.GetReceipt(client)
@@ -821,7 +871,7 @@ from hiero_sdk_python.utils.crypto_utils import keccak256
 
 # load your operator credentials
 operatorId = AccountId.from_string(os.getenv("OPERATOR_ID", ""))
-operatorKey = PrivateKey.from_string(os.getenv("OPERATOR_KEY", ""))
+operatorKey = PrivateKey.from_string_der(os.getenv("OPERATOR_KEY", ""))
 
 # initialize the client for testnet
 client = Client()
@@ -834,7 +884,7 @@ newPublicKey = newPrivateKey.public_key()
 # build & execute the account creation transaction
 transaction = (
     AccountCreateTransaction()
-      .set_key(newPublicKey)            # set the account key
+      .set_key_with_alias(newPublicKey) # set the account key and EVM address alias
       .set_initial_balance(Hbar(20))    # fund with 20 HBAR
 )
 receipt = transaction.execute(client)
@@ -876,7 +926,7 @@ Ensure your environment variables are set:
 
 ```bash
 export OPERATOR_ID="0.0.1234"
-export OPERATOR_KEY="3030020100300506032b657004220420..."
+export OPERATOR_KEY="3030020100300706052b8104000a04220420..."
 ```
 
 <Tabs>
@@ -941,75 +991,15 @@ Account balance: 20 ℏ
 ### ‼️ Troubleshooting
 
 <Accordion title="Common ERROR messages and solutions ⬇️">
-  <table>
-    <thead>
-      <tr>
-        <th>Error message</th>
-        <th>Likely cause</th>
-        <th>Fix</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          <code>INSUFFICIENT_PAYER_BALANCE</code>
-        </td>
-        <td>Operator account lacks enough ℏ for the fee.</td>
-        <td>
-          Top‑up your testnet account with the{" "}
-          <a href="https://portal.hedera.com/signup">HBAR faucet</a>.
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <code>INVALID_SIGNATURE</code>
-        </td>
-        <td>Operator key doesn't match operator account</td>
-        <td>Verify OPERATOR_KEY matches your OPERATOR_ID</td>
-      </tr>
-      <tr>
-        <td>
-          <code>INVALID_ACCOUNT_ID</code>
-        </td>
-        <td>Malformed account ID in environment variables</td>
-        <td>
-          Verify OPERATOR_ID format is <code>0.0.1234</code>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <code>INVALID_PRIVATE_KEY</code>
-        </td>
-        <td>Malformed private key in environment variables</td>
-        <td>Verify OPERATOR_KEY is a valid DER-encoded private key string</td>
-      </tr>
-      <tr>
-        <td>
-          <code>KEY_REQUIRED</code>
-        </td>
-        <td>Missing key in AccountCreateTransaction</td>
-        <td>
-          Ensure you call <code>.setECDSAKeyWithAlias(newPublicKey)</code>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <code>OPERATOR_ID and OPERATOR_KEY must be set</code>
-        </td>
-        <td>Environment variables not accessible</td>
-        <td>
-          Check environment variables are set and accessible to your application
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <code>Cannot read properties of undefined</code>
-        </td>
-        <td>Missing imports or undefined variables</td>
-        <td>Verify all imports are included and variables are defined</td>
-      </tr>
-    </tbody>
-  </table>
+| Error message | Likely cause | Fix |
+| --- | --- | --- |
+| `INSUFFICIENT_PAYER_BALANCE` | Operator account lacks enough ℏ for the fee. | Top-up your testnet account with the [HBAR faucet](https://portal.hedera.com/signup). |
+| `INVALID_SIGNATURE` | Operator key doesn't match operator account | Verify OPERATOR_KEY matches your OPERATOR_ID |
+| `INVALID_ACCOUNT_ID` | Malformed account ID in environment variables | Verify OPERATOR_ID format is `0.0.1234` |
+| `INVALID_PRIVATE_KEY` | Malformed private key in environment variables | Verify OPERATOR_KEY is a valid DER-encoded private key string |
+| `KEY_REQUIRED` | Missing key in AccountCreateTransaction | Ensure you set the account key: `setKeyWithAlias` (Java), `setECDSAKeyWithAlias` (JS/Go), `set_key_with_alias` (Python) |
+| `OPERATOR_ID and OPERATOR_KEY must be set` | Environment variables not accessible | Check environment variables are set and accessible to your application |
+| `Cannot read properties of undefined` | Missing imports or undefined variables | Verify all imports are included and variables are defined |
 </Accordion>
 
 ---

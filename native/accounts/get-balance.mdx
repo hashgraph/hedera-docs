@@ -36,6 +36,32 @@ console.log(balance.hbars.toString());
 //v2.87.0
 ```
 
+```java Java
+// MirrorNodeAccountBalanceQuery is free; no operator signing required.
+Hbar balance = new MirrorNodeAccountBalanceQuery()
+    .setAccountId(accountId)
+    .execute(client)
+    .hbars;
+
+System.out.println(balance);
+
+//v2.77.0
+```
+
+```go Go
+// MirrorNodeAccountBalanceQuery is free; no operator signing required.
+balance, err := hiero.NewMirrorNodeAccountBalanceQuery().
+    SetAccountID(accountId).
+    Execute(client)
+if err != nil {
+    panic(err)
+}
+
+fmt.Println(balance.Hbars.String())
+
+//v2.84.0
+```
+
 </CodeGroup>
 
 ### Querying by EVM address or account alias
@@ -58,30 +84,92 @@ const balanceByAlias = await new MirrorNodeAccountBalanceQuery()
 //v2.87.0
 ```
 
+```java Java
+// By EVM address
+Hbar balanceByEvm = new MirrorNodeAccountBalanceQuery()
+    .setAccountId(AccountId.fromString("0x0000000000000000000000000000000000bc614e"))
+    .execute(client)
+    .hbars;
+
+// By account alias
+Hbar balanceByAlias = new MirrorNodeAccountBalanceQuery()
+    .setAccountId(AccountId.fromString("0.0.302a300506032b6570032100e0c8ec2758a5879ffac226a13c0c516b799e72e35141a905d7822d6526b870d"))
+    .execute(client)
+    .hbars;
+
+//v2.77.0
+```
+
+```go Go
+// By EVM address
+byEvm, _ := hiero.AccountIDFromString("0x0000000000000000000000000000000000bc614e")
+balanceByEvm, err := hiero.NewMirrorNodeAccountBalanceQuery().
+    SetAccountID(byEvm).
+    Execute(client)
+
+// By account alias
+byAlias, _ := hiero.AccountIDFromString("0.0.302a300506032b6570032100e0c8ec2758a5879ffac226a13c0c516b799e72e35141a905d7822d6526b870d")
+balanceByAlias, err := hiero.NewMirrorNodeAccountBalanceQuery().
+    SetAccountID(byAlias).
+    Execute(client)
+
+//v2.84.0
+```
+
 </CodeGroup>
 
 ### Behavioral differences from `AccountBalanceQuery`
 
-The HBAR balance result is equivalent, but the behavior in edge cases differs. The first three points are the migration essentials; the last two come from the SDK implementation and matter for high-balance accounts and custom retry logic.
+The HBAR balance result is equivalent, but the behavior in edge cases differs. Eventual consistency and unknown-account handling are the migration essentials; the precision and retry notes come from the SDK implementation and matter for high-balance accounts and custom retry logic.
 
 <Warning>
-* **Eventual consistency.** The mirror node ingests blocks asynchronously a few seconds after consensus, so a balance read immediately after `getReceipt()` may still show the pre-transaction value. Poll until the balance changes, or rely on the transaction receipt for confirmation rather than a balance read. (The SDK source describes the result as not read-after-write consistent.)
-* **Non-existent account returns `hbars = 0`,** not a thrown `INVALID_ACCOUNT_ID` error. The mirror node returns an empty array for unknown accounts rather than a 404. If your code catches that error to detect a missing account, check for a zero balance instead.
-* **No `setContractId`.** Pass contract IDs, EVM addresses, and account aliases through `setAccountId`.
-* **Precision.** In the JavaScript SDK, balances above `Number.MAX_SAFE_INTEGER` lose precision silently. Account for this on very high-balance accounts.
-* **Error handling asymmetry.** 5xx responses and network timeouts are retried with exponential backoff, but 4xx responses throw immediately. If you wrap this query in your own retry logic, do not retry on 4xx.
+* **Eventual consistency:** The mirror node ingests blocks asynchronously a few seconds after consensus, so a balance read immediately after `getReceipt()` may still show the pre-transaction value. Poll until the balance changes, or rely on the transaction receipt for confirmation rather than a balance read.
+* **Unknown-account handling differs by SDK.** The mirror node returns an empty array (HTTP 200) for an account it does not know, and each SDK maps that differently:
+  * **JavaScript** returns `hbars = 0`, which is indistinguishable from a real account that holds zero HBAR. Do not use a zero balance to infer that an account is missing.
+  * **Java** throws `INVALID_ACCOUNT_ID`, matching the deprecated `AccountBalanceQuery`.
+  * **Go** returns an `INVALID_ACCOUNT_ID` error, matching the deprecated `AccountBalanceQuery` (see [detecting a missing account](#detecting-a-missing-account-in-go)).
+* **No `setContractId`:** Pass contract IDs, EVM addresses, and account aliases through `setAccountId`.
+* **Precision (JavaScript only):** In the JavaScript SDK, balances above `Number.MAX_SAFE_INTEGER` lose precision silently. The Java (`Hbar`/`long`) and Go (`Hbar`/`int64`) SDKs are not affected.
+* **Retry behavior:** Transient failures are retried automatically with exponential backoff, so a wrapper retry loop is usually unnecessary. The exact retried set differs by SDK (see [Retry behavior by SDK](#retry-behavior-by-sdk)). In your own retry logic, never retry a 4xx other than 429: a 4xx means the request itself is invalid (for example, a malformed account ID) and will fail again.
 </Warning>
+
+#### Detecting a missing account in Go
+
+The Go error is the same precheck-status error the deprecated `AccountBalanceQuery` returned, so you branch on its status:
+
+```go
+balance, err := hiero.NewMirrorNodeAccountBalanceQuery().
+    SetAccountID(id).
+    Execute(client)
+
+// errors is the standard library package.
+var pre hiero.ErrHederaPreCheckStatus
+if errors.As(err, &pre) && pre.Status == hiero.StatusInvalidAccountID {
+    // No such account on the mirror node.
+}
+```
+
+#### Retry behavior by SDK
+
+Each SDK retries transient failures automatically; the retried set differs. In every SDK, a plain 4xx (other than 429) is treated as a bad request and is not retried.
+
+| Failure | JavaScript | Java | Go |
+| --- | --- | --- | --- |
+| Network timeout, 5xx | Retried | Retried | Retried |
+| 429 (rate limit) | Not retried | Retried | Retried |
+| 408 (request timeout) | Not retried | Retried | Not retried |
+| Other 4xx | Not retried | Not retried | Not retried |
 
 ## SDK Versions
 
 `MirrorNodeAccountBalanceQuery` is available in:
 
 - **JavaScript** ([`@hiero-ledger/sdk`](https://www.npmjs.com/package/@hiero-ledger/sdk)): [v2.87.0+](https://github.com/hiero-ledger/hiero-sdk-js/releases/tag/v2.87.0)
-- **Java**: coming soon
-- **Go**: coming soon
+- **Java** ([`com.hedera.hashgraph:sdk`](https://central.sonatype.com/artifact/com.hedera.hashgraph/sdk/2.77.0)): [v2.77.0+](https://github.com/hiero-ledger/hiero-sdk-java/releases/tag/v2.77.0)
+- **Go** ([`github.com/hiero-ledger/hiero-sdk-go/v2`](https://pkg.go.dev/github.com/hiero-ledger/hiero-sdk-go/v2)): [v2.84.0+](https://github.com/hiero-ledger/hiero-sdk-go/releases/tag/v2.84.0)
 - **Rust**: not available
 
-For Rust, and for Java and Go until those ship, read HBAR balances from the [Mirror Node REST API](/reference/rest-api/balances) directly.
+For Rust, read HBAR balances from the [Mirror Node REST API](/reference/rest-api/balances) directly.
 
 ## Token balances
 
@@ -138,7 +226,7 @@ console.log("The hbar account balance for this account is " +accountBalance.hbar
 
 ```go Go
 //Create the account balance query
-query := hedera.NewAccountBalanceQuery().
+query := hiero.NewAccountBalanceQuery().
      SetAccountID(newAccountId)
 
 //Sign with client operator private key and submit the query to a Hedera network
@@ -154,16 +242,18 @@ fmt.Println("The hbar account balance for this account is ", accountBalance.Hbar
 
 
 ```rust Rust
-// Create the query
-let query = AccountBalanceQuery::new()
-    .account_id(account_id);
+use hiero_sdk::AccountBalanceQuery;
 
-// Sign with client operator private key and submit to a Hedera network
-let account_balance = query.execute(&client).await?;
+// Create and execute the query
+let account_balance = AccountBalanceQuery::new()
+    .account_id(account_id)
+    .execute(&client)
+    .await?;
 
-println!("The account balance is {:?}", account_balance.hbars);
+// Print the balance of hbars
+println!("balance = {}", account_balance.hbars);
 
-// v0.34.0
+// v0.45.0
 ```
 
 </CodeGroup>

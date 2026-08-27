@@ -76,10 +76,13 @@ const balanceByEvm = await new MirrorNodeAccountBalanceQuery()
     .setAccountId("0x0000000000000000000000000000000000bc614e")
     .execute(client);
 
+console.log(balanceByEvm.hbars.toString());
+
 //By account alias
 const balanceByAlias = await new MirrorNodeAccountBalanceQuery()
     .setAccountId("0.0.302a300506032b6570032100e0c8ec2758a5879ffac226a13c0c516b799e72e35141a905d7822d6526b870d")
     .execute(client);
+console.log(balanceByAlias.hbars.toString());
 
 //v2.87.0
 ```
@@ -90,28 +93,44 @@ Hbar balanceByEvm = new MirrorNodeAccountBalanceQuery()
     .setAccountId(AccountId.fromString("0x0000000000000000000000000000000000bc614e"))
     .execute(client)
     .hbars;
+System.out.println(balanceByEvm);
 
 // By account alias
 Hbar balanceByAlias = new MirrorNodeAccountBalanceQuery()
     .setAccountId(AccountId.fromString("0.0.302a300506032b6570032100e0c8ec2758a5879ffac226a13c0c516b799e72e35141a905d7822d6526b870d"))
     .execute(client)
     .hbars;
+System.out.println(balanceByAlias);
 
 //v2.77.0
 ```
 
 ```go Go
 // By EVM address
-byEvm, _ := hiero.AccountIDFromString("0x0000000000000000000000000000000000bc614e")
+byEvm, err := hiero.AccountIDFromString("0x0000000000000000000000000000000000bc614e")
+if err != nil {
+    panic(err)
+}
 balanceByEvm, err := hiero.NewMirrorNodeAccountBalanceQuery().
     SetAccountID(byEvm).
     Execute(client)
+if err != nil {
+    panic(err)
+}
+fmt.Println(balanceByEvm.Hbars.String())
 
 // By account alias
-byAlias, _ := hiero.AccountIDFromString("0.0.302a300506032b6570032100e0c8ec2758a5879ffac226a13c0c516b799e72e35141a905d7822d6526b870d")
+byAlias, err := hiero.AccountIDFromString("0.0.302a300506032b6570032100e0c8ec2758a5879ffac226a13c0c516b799e72e35141a905d7822d6526b870d")
+if err != nil {
+    panic(err)
+}
 balanceByAlias, err := hiero.NewMirrorNodeAccountBalanceQuery().
     SetAccountID(byAlias).
     Execute(client)
+if err != nil {
+    panic(err)
+}
+fmt.Println(balanceByAlias.Hbars.String())
 
 //v2.84.0
 ```

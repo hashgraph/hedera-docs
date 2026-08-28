@@ -39,7 +39,7 @@ npm init -y
 Ensure you have [**Node.js**](https://nodejs.org/en/download) `v18` or later installed on your machine. Then, install the[ JavaScript SDK](https://github.com/hiero-ledger/hiero-sdk-js).
 
 ```bash
-npm install --save @hashgraph/sdk
+npm install --save @hiero-ledger/sdk
 ```
 
 Update your `package.json` file to enable ES6 modules and configure the project:
@@ -57,7 +57,7 @@ Update your `package.json` file to enable ES6 modules and configure the project:
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@hashgraph/sdk": "^2.69.0"
+    "@hiero-ledger/sdk": "^2.87.0"
   }
 }
 ```
@@ -70,7 +70,7 @@ import {
   PrivateKey,
   TokenCreateTransaction,
   TokenSupplyType,
-} from "@hashgraph/sdk";
+} from "@hiero-ledger/sdk";
 ```
 
 </Tab>
@@ -85,17 +85,17 @@ Create a new **Maven** project and name it `HederaExamples`. Add the following d
     <dependency>
         <groupId>com.hedera.hashgraph</groupId>
         <artifactId>sdk</artifactId>
-        <version>2.61.0</version>
+        <version>2.77.0</version>
     </dependency>
     <dependency>
         <groupId>com.google.code.gson</groupId>
         <artifactId>gson</artifactId>
-        <version>2.10.1</version>
+        <version>2.14.0</version>
     </dependency>
     <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-netty-shaded</artifactId>
-        <version>1.73.0</version>
+        <version>1.83.1</version>
     </dependency>
 </dependencies>
 ```
@@ -113,9 +113,9 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.hedera.hashgraph:sdk:2.60.0'
-    implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'io.grpc:grpc-netty-shaded:1.61.0'
+    implementation 'com.hedera.hashgraph:sdk:2.77.0'
+    implementation 'com.google.code.gson:gson:2.14.0'
+    implementation 'io.grpc:grpc-netty-shaded:1.83.1'
 }
 
 application {
@@ -157,7 +157,7 @@ import (
     "os"
     "time"
 
-    hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
+    hiero "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
 )
 ```
 
@@ -264,7 +264,7 @@ Set your operator credentials as environment variables. Your `OPERATOR_ID` is yo
 
 ```bash
 export OPERATOR_ID="0.0.1234"
-export OPERATOR_KEY="3030020100300506032b657004220420..."
+export OPERATOR_KEY="3030020100300706052b8104000a04220420..."
 ```
 
 ---
@@ -287,7 +287,7 @@ const client = Client.forTestnet().setOperator(operatorId, operatorKey);
 ```java Java wrap
 // Load your operator credentials
 AccountId operatorId = AccountId.fromString(System.getenv("OPERATOR_ID"));
-PrivateKey operatorKey = PrivateKey.fromString(System.getenv("OPERATOR_KEY"));
+PrivateKey operatorKey = PrivateKey.fromStringECDSA(System.getenv("OPERATOR_KEY"));
 
 // Initialize your testnet client and set operator
 Client client = Client.forTestnet().setOperator(operatorId, operatorKey);
@@ -295,18 +295,18 @@ Client client = Client.forTestnet().setOperator(operatorId, operatorKey);
 
 ```go Go wrap
 // Load your operator credentials
-operatorId, _ := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
-operatorKey, _ := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
+operatorId, _ := hiero.AccountIDFromString(os.Getenv("OPERATOR_ID"))
+operatorKey, _ := hiero.PrivateKeyFromStringECDSA(os.Getenv("OPERATOR_KEY"))
 
 // Initialize the client for testnet
-client := hedera.ClientForTestnet()
+client := hiero.ClientForTestnet()
 client.SetOperator(operatorId, operatorKey)
 ```
 
 ```python Python wrap
 # Load your operator credentials
 operatorId = AccountId.from_string(os.getenv("OPERATOR_ID", ""))
-operatorKey = PrivateKey.from_string(os.getenv("OPERATOR_KEY", ""))
+operatorKey = PrivateKey.from_string_der(os.getenv("OPERATOR_KEY", ""))
 
 # Initialize your testnet client and set operator
 client = Client()
@@ -339,7 +339,7 @@ PrivateKey adminKey = supplyKey; // can update/delete (reuse for simplicity)
 
 ```go Go
 // Generate keys that control your token
-supplyKey, _ := hedera.PrivateKeyGenerateEcdsa() // can mint/burn
+supplyKey, _ := hiero.PrivateKeyGenerateEcdsa() // can mint/burn
 adminKey := supplyKey // can update/delete (reuse for simplicity)
 ```
 
@@ -411,12 +411,12 @@ System.out.println("\nFungible token created: " + tokenId);
 
 ```go Go
 // Build the transaction
-transaction, _ := hedera.NewTokenCreateTransaction().
+transaction, _ := hiero.NewTokenCreateTransaction().
         SetTokenName("Demo Token").
         SetTokenSymbol("DEMO").
         SetDecimals(2).
         SetInitialSupply(100_000).
-        SetSupplyType(hedera.TokenSupplyTypeFinite).
+        SetSupplyType(hiero.TokenSupplyTypeFinite).
         SetMaxSupply(100_000).
         SetTreasuryAccountID(operatorId).
         SetAdminKey(adminKey.PublicKey()).
@@ -621,7 +621,7 @@ import {
   PrivateKey,
   TokenCreateTransaction,
   TokenSupplyType
-} from "@hashgraph/sdk";
+} from "@hiero-ledger/sdk";
 
 async function createTokenDemo() {
 // load your operator credentials
@@ -697,7 +697,7 @@ public class CreateTokenDemo {
     public static void main(String[] args ) throws Exception {
         // load your operator credentials
         AccountId operatorId = AccountId.fromString(System.getenv("OPERATOR_ID"));
-        PrivateKey operatorKey = PrivateKey.fromString(System.getenv("OPERATOR_KEY"));
+        PrivateKey operatorKey = PrivateKey.fromStringECDSA(System.getenv("OPERATOR_KEY"));
 
         // initialize the client for testnet
         Client client = Client.forTestnet().setOperator(operatorId, operatorKey);
@@ -769,30 +769,30 @@ import (
     "os"
     "time"
 
-    hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
+    hiero "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
 
 )
 
 func main() {
 // load your operator credentials
-operatorId, _ := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
-operatorKey, _ := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
+operatorId, _ := hiero.AccountIDFromString(os.Getenv("OPERATOR_ID"))
+operatorKey, _ := hiero.PrivateKeyFromStringECDSA(os.Getenv("OPERATOR_KEY"))
 
     // initialize the client for testnet
-    client := hedera.ClientForTestnet()
+    client := hiero.ClientForTestnet()
     client.SetOperator(operatorId, operatorKey)
 
     // generate token keys
-    supplyKey, _ := hedera.PrivateKeyGenerateEcdsa()
+    supplyKey, _ := hiero.PrivateKeyGenerateEcdsa()
     adminKey := supplyKey
 
     // build & execute the token creation transaction
-    transaction, _ := hedera.NewTokenCreateTransaction().
+    transaction, _ := hiero.NewTokenCreateTransaction().
     	SetTokenName("Demo Token").
     	SetTokenSymbol("DEMO").
     	SetDecimals(2).
     	SetInitialSupply(100_000).
-    	SetSupplyType(hedera.TokenSupplyTypeFinite).
+    	SetSupplyType(hiero.TokenSupplyTypeFinite).
     	SetMaxSupply(100_000).
     	SetTreasuryAccountID(operatorId).
     	SetAdminKey(adminKey.PublicKey()).
@@ -859,7 +859,7 @@ from hiero_sdk_python import (
 
 # Load your operator credentials
 operatorId = AccountId.from_string(os.getenv("OPERATOR_ID", ""))
-operatorKey = PrivateKey.from_string(os.getenv("OPERATOR_KEY", ""))
+operatorKey = PrivateKey.from_string_der(os.getenv("OPERATOR_KEY", ""))
 
 # Initialize the client for testnet
 client = Client()
@@ -921,7 +921,7 @@ Ensure your environment variables are set:
 
 ```bash
 export OPERATOR_ID="0.0.1234"
-export OPERATOR_KEY="3030020100300506032b657004220420..."
+export OPERATOR_KEY="3030020100300706052b8104000a04220420..."
 ```
 
 <Tabs>
@@ -985,7 +985,13 @@ Treasury holds: 100000 DEMO
 ### ‼️ Troubleshooting
 
 <Accordion title="Common ERROR messages and solutions ⬇️">
-<table><thead><tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr></thead><tbody><tr><td><code>INSUFFICIENT_PAYER_BALANCE</code></td><td>Not enough HBAR for transaction fees</td><td>Top up your operator account on the testnet faucet</td></tr><tr><td><code>INVALID_SIGNATURE</code></td><td>Not signing the transaction with the admin key or treasury account</td><td>Add <code>.sign(privateKey)</code>to the transaction before executing it</td></tr><tr><td><code>TOKEN_ALREADY_ASSOCIATED_TO_ACCOUNT</code></td><td>Account already associated with token</td><td>This is normal for treasury accounts - ignore this error</td></tr><tr><td><code>INVALID_ACCOUNT_ID</code></td><td>Malformed account ID in environment variables</td><td>Verify <code>OPERATOR_ID</code> format is <strong><code>0.0.1234</code></strong></td></tr><tr><td><code>INVALID_PRIVATE_KEY</code></td><td>Malformed private key in environment variables</td><td>Verify OPERATOR_KEY is a valid DER-encoded private key string</td></tr></tbody></table>
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| `INSUFFICIENT_PAYER_BALANCE` | Not enough HBAR for transaction fees | Top up your operator account on the testnet faucet |
+| `INVALID_SIGNATURE` | Not signing the transaction with the admin key or treasury account | Add `.sign(privateKey)` to the transaction before executing it |
+| `TOKEN_ALREADY_ASSOCIATED_TO_ACCOUNT` | Account already associated with token | This is normal for treasury accounts; ignore this error |
+| `INVALID_ACCOUNT_ID` | Malformed account ID in environment variables | Verify `OPERATOR_ID` format is `0.0.1234` |
+| `INVALID_PRIVATE_KEY` | Malformed private key in environment variables | Verify OPERATOR_KEY is a valid DER-encoded private key string |
 
 #### Environment Issues:
 

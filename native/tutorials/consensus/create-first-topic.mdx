@@ -39,7 +39,7 @@ npm init -y
 Ensure you have [**Node.js**](https://nodejs.org/en/download) `v18` or later installed on your machine. Then, install the[ JavaScript SDK](https://github.com/hiero-ledger/hiero-sdk-js).
 
 ```bash
-npm install --save @hashgraph/sdk
+npm install --save @hiero-ledger/sdk
 ```
 
 Update your `package.json` file to enable ES6 modules and configure the project:
@@ -57,7 +57,7 @@ Update your `package.json` file to enable ES6 modules and configure the project:
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@hashgraph/sdk": "^2.69.0"
+    "@hiero-ledger/sdk": "^2.87.0"
   }
 }
 ```
@@ -69,7 +69,7 @@ import {
   Client,
   TopicCreateTransaction,
   TopicMessageSubmitTransaction,
-} from "@hashgraph/sdk";
+} from "@hiero-ledger/sdk";
 ```
 
 </Tab>
@@ -84,17 +84,17 @@ Create a new **Maven** project and name it `HederaExamples`. Add the following d
     <dependency>
         <groupId>com.hedera.hashgraph</groupId>
         <artifactId>sdk</artifactId>
-        <version>2.61.0</version>
+        <version>2.77.0</version>
     </dependency>
     <dependency>
         <groupId>com.google.code.gson</groupId>
         <artifactId>gson</artifactId>
-        <version>2.10.1</version>
+        <version>2.14.0</version>
     </dependency>
     <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-netty-shaded</artifactId>
-        <version>1.73.0</version>
+        <version>1.83.1</version>
     </dependency>
 </dependencies>
 ```
@@ -112,9 +112,9 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.hedera.hashgraph:sdk:2.60.0'
-    implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'io.grpc:grpc-netty-shaded:1.61.0'
+    implementation 'com.hedera.hashgraph:sdk:2.77.0'
+    implementation 'com.google.code.gson:gson:2.14.0'
+    implementation 'io.grpc:grpc-netty-shaded:1.83.1'
 }
 
 application {
@@ -157,7 +157,7 @@ import (
     "os"
     "time"
 
-    hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
+    hiero "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
 )
 ```
 
@@ -258,7 +258,7 @@ Set your operator credentials as environment variables. Your `OPERATOR_ID` is yo
 
 ```bash
 export OPERATOR_ID="0.0.1234"
-export OPERATOR_KEY="3030020100300506032b657004220420..."
+export OPERATOR_KEY="3030020100300706052b8104000a04220420..."
 ```
 
 ---
@@ -282,7 +282,7 @@ const client = Client.forTestnet()
 ```java Java
 // Load your operator credentials
 AccountId operatorId = AccountId.fromString(System.getenv("OPERATOR_ID"));
-PrivateKey operatorKey = PrivateKey.fromString(System.getenv("OPERATOR_KEY"));
+PrivateKey operatorKey = PrivateKey.fromStringECDSA(System.getenv("OPERATOR_KEY"));
 
 // Initialize your testnet client and set operator
 Client client = Client.forTestnet().setOperator(operatorId, operatorKey);
@@ -290,18 +290,18 @@ Client client = Client.forTestnet().setOperator(operatorId, operatorKey);
 
 ```go Go
 // Load your operator credentials
-operatorId, _ := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
-operatorKey, _ := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
+operatorId, _ := hiero.AccountIDFromString(os.Getenv("OPERATOR_ID"))
+operatorKey, _ := hiero.PrivateKeyFromStringECDSA(os.Getenv("OPERATOR_KEY"))
 
 // Initialize the client for testnet
-client := hedera.ClientForTestnet()
+client := hiero.ClientForTestnet()
 client.SetOperator(operatorId, operatorKey)
 ```
 
 ```python Python
 # Load your operator credentials
 operatorId = AccountId.from_string(os.getenv("OPERATOR_ID", ""))
-operatorKey = PrivateKey.from_string(os.getenv("OPERATOR_KEY", ""))
+operatorKey = PrivateKey.from_string_der(os.getenv("OPERATOR_KEY", ""))
 
 # Initialize your testnet client and set operator
 client = Client()
@@ -349,7 +349,7 @@ System.out.println("Topic created: " + topicId);
 
 ```go Go
 // build & execute the topic creation transaction
-transaction := hedera.NewTopicCreateTransaction().
+transaction := hiero.NewTopicCreateTransaction().
     SetTopicMemo("My first HCS topic")
 
 txResponse, err := transaction.Execute(client)
@@ -430,7 +430,7 @@ System.out.println("\nMessage submitted: " + message);
 // build & execute the message submission transaction
 message := "Hello, Hedera!"
 
-messageTransaction := hedera.NewTopicMessageSubmitTransaction().
+messageTransaction := hiero.NewTopicMessageSubmitTransaction().
     SetTopicID(topicID).
     SetMessage([]byte(message))
 
@@ -649,7 +649,7 @@ import {
   Client,
   TopicCreateTransaction,
   TopicMessageSubmitTransaction,
-} from "@hashgraph/sdk";
+} from "@hiero-ledger/sdk";
 
 async function createTopicDemo() {
 // load your operator credentials
@@ -730,7 +730,7 @@ public class CreateTopicDemo {
 
         // initialize the client for testnet
         Client client = Client.forTestnet()
-            .setOperator(AccountId.fromString(operatorId), PrivateKey.fromString(operatorKey));
+            .setOperator(AccountId.fromString(operatorId), PrivateKey.fromStringECDSA(operatorKey));
 
         // build & execute the topic creation transaction
         TopicCreateTransaction transaction = new TopicCreateTransaction()
@@ -802,21 +802,21 @@ import (
 	"strings"
 	"time"
 
-    hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
+    hiero "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
 
 )
 
 func main() {
 // load your operator credentials
-operatorId, _ := hedera.AccountIDFromString(os.Getenv("OPERATOR_ID"))
-operatorKey, _ := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
+operatorId, _ := hiero.AccountIDFromString(os.Getenv("OPERATOR_ID"))
+operatorKey, _ := hiero.PrivateKeyFromStringECDSA(os.Getenv("OPERATOR_KEY"))
 
     // initialize the client for testnet
-    client := hedera.ClientForTestnet()
+    client := hiero.ClientForTestnet()
     client.SetOperator(operatorId, operatorKey)
 
     // build & execute the topic creation transaction
-    transaction := hedera.NewTopicCreateTransaction().
+    transaction := hiero.NewTopicCreateTransaction().
     	SetTopicMemo("My first HCS topic")
 
     txResponse, err := transaction.Execute(client)
@@ -836,7 +836,7 @@ operatorKey, _ := hedera.PrivateKeyFromString(os.Getenv("OPERATOR_KEY"))
     // build & execute the message submission transaction
     message := "Hello, Hedera!"
 
-    messageTransaction := hedera.NewTopicMessageSubmitTransaction().
+    messageTransaction := hiero.NewTopicMessageSubmitTransaction().
     	SetTopicID(topicID).
     	SetMessage([]byte(message))
 
@@ -909,7 +909,7 @@ from hiero_sdk_python import (
 
 # load your operator credentials
 operatorId = AccountId.from_string(os.getenv("OPERATOR_ID", ""))
-operatorKey = PrivateKey.from_string(os.getenv("OPERATOR_KEY", ""))
+operatorKey = PrivateKey.from_string_der(os.getenv("OPERATOR_KEY", ""))
 
 # initialize the client for testnet
 client = Client()
@@ -979,7 +979,7 @@ Ensure your environment variables are set:
 
 ```bash
 export OPERATOR_ID="0.0.1234"
-export OPERATOR_KEY="3030020100300506032b657004220420..."
+export OPERATOR_KEY="3030020100300706052b8104000a04220420..."
 ```
 
 <Tabs>

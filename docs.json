@@ -2167,6 +2167,7 @@
               "learn/getting-started/what-is-hedera",
               "learn/getting-started/why-hedera",
               "learn/getting-started/choose-your-path",
+              "learn/getting-started/create-portal-account",
               "learn/getting-started/testnet-faucet",
               "learn/getting-started/faucet-api",
               "learn/getting-started/portal-playground",
@@ -2529,7 +2530,6 @@
           {
             "group": "Quickstart",
             "pages": [
-              "learn/getting-started/create-portal-account",
               "native/quickstart/javascript",
               "native/quickstart/java",
               "native/quickstart/go"

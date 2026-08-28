@@ -293,8 +293,14 @@ The batch transaction size limits are:
 * **Number of transactions**: The maximum number of transactions in a batch is limited to 50 inner transactions.
 * **Total size**: The maximum size of the batch transaction must not exceed 6KB, including all inner transactions.
 * **Time constraint**: All inner transactions must execute within the standard transaction valid duration (typically 3 minutes).
+* **A batch may contain no more than one smart contract call (`ContractExecuteTransaction`), and it must be the **final** inner transaction in the batch.
+
 
 These limits are designed to ensure that batch transactions can be processed efficiently by the network while still providing enough capacity for complex transaction flows. The 50-transaction limit and 6KB size limit help prevent network congestion, while the time constraint ensures that all operations complete within a reasonable timeframe.
+</Accordion>
+
+<Accordion title="Can I include a smart contract call in a batch transaction?">
+Yes, but with restrictions. A batch may contain no more than one smart contract call (`ContractExecuteTransaction`), and it must be the **last** inner transaction in the batch. This ensures the outcome of any preceding inner transactions (such as token transfers or account updates) is finalized before the contract call executes.
 </Accordion>
 
 <Accordion title="What are batch transactions and why should I use them?">

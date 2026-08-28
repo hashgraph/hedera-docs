@@ -36,6 +36,7 @@ When creating a **new batch transaction** using the `BatchTransaction()` API you
 * The maximum number of transactions in a batch is limited to 50 transactions.
 * The maximum size of the batch transaction must not exceed 6KB, including all inner transactions.
 * All inner transactions must execute within the standard transaction valid duration (typically 3 minutes).
+* A batch may contain no more than one smart contract call (`ContractExecuteTransaction`), and it must be the **final** inner transaction in the batch.
 
 ## Methods
 

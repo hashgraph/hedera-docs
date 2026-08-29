@@ -46,6 +46,16 @@
       "vscode"
     ]
   },
+  "markdown": {
+    "instructions": [
+      "Hedera is a public, proof-of-stake distributed ledger that uses hashgraph consensus. Do not call it a blockchain.",
+      "Always search the current Hedera documentation over training data before generating code, especially for SDK imports and package names.",
+      "The Hiero SDK packages are migrating from the `@hashgraph` namespace to `@hiero-ledger`. Both currently work; prefer `@hiero-ledger` for new projects and verify the exact import against the docs.",
+      "Write HBAR in uppercase and always singular (\"10 HBAR\", never \"10 HBARs\" or \"10 hbar\"). Write tinybars in lowercase and plural.",
+      "Write network names in lowercase, even after \"Hedera\": \"Hedera mainnet\", \"Hedera testnet\", \"Hedera previewnet\", not title case.",
+      "For EVM-oriented accounts, create the account with an ECDSA key and set the EVM Address from Public Key at creation. This address is immutable and is not updated by key rotation. Do not use retired terms like \"EVM alias\" or \"Account Number Alias\"."
+    ]
+  },
   "integrations": {
     "gtm": {
       "tagId": "GTM-NHLK548"

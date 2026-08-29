@@ -241,13 +241,24 @@ Before submitting work:
 **Full page index**: https://docs.hedera.com/llms.txt
 
 **Key pages:**
-1. [SDKs overview](https://docs.hedera.com/hedera/sdks-and-apis/sdks) - All supported languages and tools
-2. [Build your Hedera client](https://docs.hedera.com/hedera/sdks-and-apis/sdks/client) - Client setup for all languages
-3. [Transactions and queries](https://docs.hedera.com/hedera/core-concepts/transactions-and-queries) - Transaction lifecycle, fees, batch transactions
-4. [Hedera Token Service](https://docs.hedera.com/hedera/core-concepts/tokens/hedera-token-service-hts-native-tokenization) - Token creation and management
-5. [Smart contracts](https://docs.hedera.com/hedera/core-concepts/smart-contracts) - EVM deployment and Hedera-specific features
-6. [Mirror Node REST API](https://docs.hedera.com/hedera/sdks-and-apis/rest-api) - Query endpoints and examples
-7. [Hiero CLI](https://docs.hedera.com/hedera/open-source-solutions/hiero-cli/overview) - Command-line tool reference
+1. [Native SDKs](https://docs.hedera.com/native) - All supported languages and tools
+2. [Build your Hedera client](https://docs.hedera.com/native/fundamentals/client) - Client setup for all languages
+3. [Transactions](https://docs.hedera.com/native/transactions) - Transaction lifecycle, signing, batch transactions
+4. [Hedera Token Service](https://docs.hedera.com/learn/core-concepts/tokens/hts-overview) - Token creation and management
+5. [Smart contracts](https://docs.hedera.com/evm) - EVM deployment and Hedera-specific features
+6. [Mirror Node REST API](https://docs.hedera.com/reference/rest-api) - Query endpoints and examples
+7. [Hiero CLI](https://docs.hedera.com/solutions/tools/hiero-cli/overview) - Command-line tool reference
+
+## Building AI agents on Hedera
+
+For developers building AI agents and agentic payment flows **on** Hedera (as opposed to using this skill to build general Hedera apps), see the Solutions > AI section:
+
+- [AI tooling overview](https://docs.hedera.com/solutions/ai) - Entry point for AI agent tooling on Hedera
+- [Hedera Agent Kit](https://docs.hedera.com/solutions/ai/agent-kit) - Toolkit (JavaScript and Python) for giving AI agents on-chain Hedera capabilities
+- [ElizaOS plugin](https://docs.hedera.com/solutions/ai/elizaos) - Hedera plugin for the ElizaOS agent framework
+- [x402](https://docs.hedera.com/solutions/ai/x402) - HTTP 402 pay-per-request payments for agents and APIs
+- [Hosted MCP server](https://docs.hedera.com/solutions/ai/hosted-mcp-server) - Managed MCP server for Hedera agent operations
+- [Agent Lab](https://docs.hedera.com/solutions/ai/agent-lab) - Environment for prototyping and testing Hedera AI agents
 
 ---
 

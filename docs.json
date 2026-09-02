@@ -29,7 +29,12 @@
   },
   "favicon": "/favicon.png",
   "api": {
-    "baseUrl": "https://mainnet.mirrornode.hedera.com"
+    "baseUrl": "https://mainnet.mirrornode.hedera.com",
+    "openapi": [
+      "openapi.yaml",
+      "hedera-status-api.yaml",
+      "smart-contract-verification-api.yaml"
+    ]
   },
   "appearance": {
     "default": "light"

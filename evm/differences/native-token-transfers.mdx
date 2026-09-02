@@ -7,7 +7,7 @@ title: "Handling HBAR Transfers in Contracts"
 
 On Ethereum, sending ETH to a contract address automatically triggers the `receive()` or `fallback()` functions, allowing contracts to process incoming funds. On Hedera, these functions also exist but require HBAR to be explicitly sent via `contractCall` for them to execute. Direct HBAR transfers to a contract’s Hedera account won’t trigger any logic unless additional steps are taken.
 
-Fortunately, the core Solidity patterns—like using `transfer()`, `send()`, or `call()`—work the same way on Hedera, making it easy for developers familiar with EVM. This guide highlights these mechanisms, details the key Hedera-specific considerations, and provides examples to help you handle HBAR transfers in your smart contracts
+The core Solidity patterns—`transfer()`, `send()`, and `call()`—are supported on Hedera, with **one important difference: the `value` (and `msg.value`) is denominated in tinybar (8 decimals) during EVM execution, not wei (18 decimals).** This guide highlights these mechanisms, details the key Hedera-specific considerations, and provides examples to help you handle HBAR transfers in your smart contracts.
 
 ### **Sending to Contract**
 
@@ -24,6 +24,10 @@ These methods are supported on Hedera, ensuring compatibility with existing Soli
 * **Fallback and Receive Functions**: When sending HBAR to a contract address via `contractCall`, Hedera behaves like Ethereum. If `receive()` or `fallback()` functions are defined in the contract, they will be triggered upon receipt of HBAR.
 * **Important Note**: Directly transferring HBAR to a contract’s Hedera account (not via `contractCall`) will not trigger these functions. To execute logic upon receipt, ensure transfers occur within the EVM environment.
 
+<Warning>
+**The `value` in `transfer`/`send`/`call` is tinybar (8 decimals), not wei (18).** In the examples below, `_amount` is a tinybar amount — `1 HBAR = 100_000_000`. Passing an Ethereum-style `1 ether` or a wei-scale number sends that number **as tinybar**, over- or under-transferring by 10<sup>10</sup> (it will revert on insufficient balance, or drain far more than intended). Use tinybar literals, or convert with the helpers in [Decimal Handling](/evm/differences/hbar-decimals).
+</Warning>
+
 ***
 
 ## Example Contract Functions for HBAR Transfers
@@ -37,7 +41,8 @@ receive() external payable {
     emit HbarReceived(msg.sender, msg.value);
 }
 
-// Transfer HBAR using different methods
+// Transfer HBAR using different methods.
+// NOTE: `_amount` is in TINYBAR (8 decimals), not wei — 1 HBAR = 100_000_000.
 function transferHbar(address payable _receiverAddress, uint _amount) public {
     _receiverAddress.transfer(_amount);
 }

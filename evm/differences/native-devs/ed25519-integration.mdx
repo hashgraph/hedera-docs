@@ -45,7 +45,7 @@ function verifyED25519Signature(
     bytes32 messageHash,
     bytes memory signatureBlob
 ) public returns (bool) {
-    (bool success, ) = address(0x167).call(
+    (bool success, ) = address(0x16a).call(
         abi.encodeWithSignature(
             "isAuthorizedRaw(address,bytes32,bytes)",
             accountAlias,
@@ -76,7 +76,7 @@ This example demonstrates requiring multiple valid signatures for critical contr
 
 ```solidity
 function validateMultiSig(address accountAlias, bytes memory proposalData, bytes memory signatureBlob) public returns (bool) {
-    (bool success, ) = address(0x167).call(
+    (bool success, ) = address(0x16a).call(
         abi.encodeWithSignature("isAuthorized(address,bytes,bytes)", accountAlias, proposalData, signatureBlob)
     );
     return success;

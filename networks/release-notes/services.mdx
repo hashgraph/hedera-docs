@@ -7,10 +7,10 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 ## Release v0.77
 <Info>
-  **MAINNET UPDATE: TODO**
+  **MAINNET UPDATE: TBD**
 </Info>
 <Info>
-  **TESTNET UPDATE: SEPTEMBER 10, 2026**
+  **TESTNET UPDATE: TBD**
 </Info>
 
 ### [**Build 0.77.0**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.77.0)
@@ -346,12 +346,50 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 
 ## Release v0.76
-<Info>
-  **MAINNET UPDATE: TBD**
-</Info>
 <Check>
-  **TESTNET UPDATED: AUGUST 6, 2026**
+  **MAINNET UPDATED: AUGUST 28, 2026**
 </Check>
+<Check>
+  **TESTNET UPDATED: SEPTEMBER 1, 2026**
+</Check>
+
+### [**Build 0.76.4**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.76.4)
+
+<Accordion title="What's Changed">
+
+### **Bug Fixes**
+
+  * Block royalty payments even when receiver is exempt from in-scope fallback fee [#27069](https://github.com/hiero-ledger/hiero-consensus-node/pull/27069) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * ContractValidationRule order fix [#27068](https://github.com/hiero-ledger/hiero-consensus-node/pull/27068) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * Modify the language around folding beneficiary mappings into the root builder at staking finalization [#27147](https://github.com/hiero-ledger/hiero-consensus-node/pull/27147) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * don't advance beneficiary stake metadata for rewards redirected from a deleted account [#27113](https://github.com/hiero-ledger/hiero-consensus-node/pull/27113) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * deleting a rewardable stakee no longer freezes its indirect stakers [#27112](https://github.com/hiero-ledger/hiero-consensus-node/pull/27112) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * isolate scheduled-transaction failures in the expiry scan [#27067](https://github.com/hiero-ledger/hiero-consensus-node/pull/27067) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * replay processed inner fees when a later inner exceeds the record limit [#27066](https://github.com/hiero-ledger/hiero-consensus-node/pull/27066) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * enforce file-update authorization at ingest and charge failed attempts [#27063](https://github.com/hiero-ledger/hiero-consensus-node/pull/27063) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * guard exchange-rate fee conversion against non-positive centEquiv and overflow [#27062](https://github.com/hiero-ledger/hiero-consensus-node/pull/27062) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * require a node-controlled payer for NODE-category transactions [#27061](https://github.com/hiero-ledger/hiero-consensus-node/pull/27061) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * enforce contract trace-data limit for batch and scheduled calls [#27102](https://github.com/hiero-ledger/hiero-consensus-node/pull/27102) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * Cherry-pick stale createdContractIds, atomic batch rollback fixes [#27101](https://github.com/hiero-ledger/hiero-consensus-node/pull/27101) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * reject duplicate non-repeated fields when extracting query payment bytes [#27100](https://github.com/hiero-ledger/hiero-consensus-node/pull/27100) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * reject token transfers in query payments [#27099](https://github.com/hiero-ledger/hiero-consensus-node/pull/27099) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * validate migration-root-hash vote bodies and harden vote tallying and storage ordering [#27098](https://github.com/hiero-ledger/hiero-consensus-node/pull/27098) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * fold beneficiary mappings into the root builder at staking finalization [#27097](https://github.com/hiero-ledger/hiero-consensus-node/pull/27097) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * handle two bugs in reclaiming throttle capacity [#27096](https://github.com/hiero-ledger/hiero-consensus-node/pull/27096) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * make prng and exchange rate contracts stateless [#27095](https://github.com/hiero-ledger/hiero-consensus-node/pull/27095) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * optimise pre handle workflow [#27058](https://github.com/hiero-ledger/hiero-consensus-node/pull/27058) by [@joshmarinacci](https://github.com/joshmarinacci)
+
+### **Other Changes**
+
+  * upgrade io.netty:netty-codec-http to 4.2.17.Final [#27070](https://github.com/hiero-ledger/hiero-consensus-node/pull/27070) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * Atomic batch EVM tx restriction [#27114](https://github.com/hiero-ledger/hiero-consensus-node/pull/27114) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * `streamMode=BOTH` block size circuit breaker [#27072](https://github.com/hiero-ledger/hiero-consensus-node/pull/27072) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * broken TCK & JS SDK XTS tests [#27059](https://github.com/hiero-ledger/hiero-consensus-node/pull/27059) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * replace hiero-solo-action [#26749](https://github.com/hiero-ledger/hiero-consensus-node/pull/26749) by [@andrewb1269](https://github.com/andrewb1269)
+
+  **Full Release Notes**: [**v0.76.4**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.76.4)
+
+</Accordion>
 
 ### [**Build 0.76.1**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.76.1)
 

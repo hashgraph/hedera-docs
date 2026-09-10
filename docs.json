@@ -43,12 +43,13 @@
     "options": [
       "copy",
       "view",
-      "chatgpt",
+      "vscode",
       "claude",
+      "chatgpt",
       "perplexity",
       "mcp",
       "cursor",
-      "vscode"
+      "download-spec"
     ]
   },
   "markdown": {

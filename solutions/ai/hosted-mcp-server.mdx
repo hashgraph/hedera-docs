@@ -1,76 +1,79 @@
 ---
 title: "Network MCP Server"
-description: "Connect your MCP-compatible client to the Hedera Network Hosted MCP Server and approve every transaction in your own wallet — no operator keys, no local infrastructure."
+description: "Connect your AI agent to the Hedera Network Hosted MCP Server. Create Hedera transactions and approve them in your own wallet."
 sidebarTitle: "Hedera Network MCP"
 ---
 
-<Warning>
-**This server's signing model has changed.** Transactions are now approved and signed **in your
-own wallet** — the server no longer returns transaction bytes for you to sign yourself. The
-`x-hedera-account-id` header is no longer used and is ignored; your account now comes from a
-wallet sign-in instead. The endpoint URL is unchanged, but existing connections must sign in
-again with a wallet before any tool will work.
-</Warning>
-
-<Note>
-**Network:** The hosted server is connected to **Hedera Testnet only**. For Mainnet integrations, run the [self-hosted MCP server](https://github.com/hashgraph/hedera-agent-kit-js/tree/main/examples/modelcontextprotocol).
-</Note>
 
 ## Overview
 
-The **Hedera Network Hosted MCP Server** provides a managed, remote instance of the Hedera Agent Kit exposing its tools via the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/). Any MCP-compatible client that supports OAuth 2.1 — such as Claude, Cursor, Codex CLI, ChatGPT Desktop, or a custom AI application — can integrate Hedera network capabilities without deploying or maintaining local agent infrastructure.
+The **Hedera Network Hosted MCP Server** provides a managed, remote instance of the Hedera Agent Kit exposing its tools via the [Model Context Protocol (MCP). Any MCP-compatible client that supports OAuth 2.1 — such as Claude, Cursor, Codex CLI, ChatGPT Desktop, or a custom AI application — can now use the Hedera network. 
 
 <Note>
-**Non-custodial by design.** The server holds no Hedera keys of any kind, never submits a transaction, and never sees your signature. It builds and freezes transactions, then delivers them to your wallet — your wallet signs *and* broadcasts. Your wallet approval is the only authorization boundary: nothing moves without you approving what your wallet displays.
+**The Hedera Network MCP is non-custodial and on Testnet only**
+The server holds no Hedera keys of any kind, never submits a transaction, and never sees your signature. It builds and freezes transactions, then delivers them to your wallet. Your wallet signs *and* sends it to the network.
 </Note>
 
-## Before you start
+### Claude CLI Quickstart
+1. Make sure you have a testnet account set up (get one in the [Developer Portal](https://portal.hedera.com/dashboard)), and a Hedera compatible wallet (like [HashPack](https://www.hashpack.app/) or [Kabila](https://kabila.app/docs/kabila-wallet)).
+2. Start your AI agent and add the MCP.
+```bash
+claude mcp add --transport http hedera-testnet-mcp https://agentic-testnet-mcp.hedera.com/mcp
+```
+3. Restart Claude, then use the command `/mcp` to find & authenticate the MCP.
+4. Connect your web3 wallet (get the HashPack or Kabila browser extension or mobile app).
+5. Try your first Hedera transaction within your AI agent.
+6. Sign and send your transaction from your AI agent with your web3 wallet.
 
-- A [Hedera Testnet account](https://portal.hedera.com/dashboard).
-- A [HIP-820](https://hips.hedera.com/hip/hip-820)-compatible wallet — a mobile wallet (like HashPack or Kabila Wallet) for WalletConnect QR pairing, or a browser extension wallet.
+## Setup
 
-## Connect your client
+Adding the Hedera Network MCP works the same way as adding any other remote MCP server to your AI tool. You only need the server URL:
 
-Register the hosted server the same way you'd add any remote MCP server. No account ID or other header goes in the config — the server no longer accepts one, since your account is proven by your wallet during sign-in.
+```
+https://agentic-testnet-mcp.hedera.com/mcp
+```
 
-### Choose your client
+There is no account ID, API key, or header to configure. Your Hedera account is proven by your wallet when you sign in.
+
+**Before you start**, you need:
+
+- A Hedera testnet account. Create one for free in the [Developer Portal](https://portal.hedera.com/dashboard).
+- A Hedera-compatible wallet with that account loaded, such as [HashPack](https://www.hashpack.app/) or [Kabila](https://kabila.app/docs/kabila-wallet), as a browser extension or mobile app.
+
+### Add the MCP to your AI tool
 
 <AccordionGroup>
 
 <Accordion title="Claude Desktop">
 
-Claude Desktop supports MCP servers as custom connectors.
-
-**Steps:**
-
 1. Go to **Settings → Connectors → Add custom connector**.
 2. Enter the details:
-   - **Name:** `Hedera`
+   - **Name:** `Hedera-Testnet`
    - **URL:** `https://agentic-testnet-mcp.hedera.com/mcp`
-3. Under **Authentication**, choose **Required when the server asks** or **Always required** — both work with this server, since it always requires a signed-in wallet before any tool call.
-4. Under **OAuth client**, choose **No client ID — register one automatically**. The server supports Dynamic Client Registration, so there's nothing to set up manually.
-5. Leave **Additional request headers** and **Advanced** untouched, then click **Add**. A browser window opens with the authentication landing page. Follow the guide there to connect the wallet — [Sign in with your wallet](#sign-in-with-your-wallet). Then try the [example prompts](#example-prompts).
+3. Under **Authentication**, choose **Required when the server asks** or **Always required**. Either option works.
+4. Under **OAuth client**, choose **No client ID — register one automatically**.
+5. Leave **Additional request headers** and **Advanced** untouched, then click **Add**.
+6. A browser window opens with the Hedera sign-in page. Follow the steps in [Authenticate your wallet](#authenticate-your-wallet), then try the [example prompts](#example-prompts).
 
 </Accordion>
 
 <Accordion title="Claude (Web & Mobile)">
 
-Claude supports MCP servers as custom connectors on claude.ai and in the Claude mobile apps. Available on free, Pro, Max, Team, and Enterprise plans (free users are limited to one custom connector).
-
-**Steps:**
+Custom connectors are available on free, Pro, Max, Team, and Enterprise plans (free users are limited to one custom connector).
 
 1. Navigate to **Customize → Connectors** (or go directly to [https://claude.ai/new#settings/customize-connectors](https://claude.ai/new#settings/customize-connectors)).
-2. Click the **Add** button in top right corner, then select **"Add custom connector"**.
+2. Click **Add** in the top right corner, then select **Add custom connector**.
 3. Enter the details:
-   - **Name:** `Hedera`
+   - **Name:** `Hedera-Testnet`
    - **URL:** `https://agentic-testnet-mcp.hedera.com/mcp`
-4. Under **Authentication**, choose **Required when the server asks** or **Always required** — both work with this server, since it always requires a signed-in wallet before any tool call.
-5. Under **OAuth client**, choose **No client ID — register one automatically**. The server supports Dynamic Client Registration, so there's nothing to set up manually.
-6. Leave **Additional request headers** and **Advanced** untouched, then click **Add**. A browser window opens with the authentication landing page. Follow the guide there to connect the wallet — [Sign in with your wallet](#sign-in-with-your-wallet). Then try the [example prompts](#example-prompts).
-7. In any chat, click the **"+"** button in the lower left of the chat interface, then hover over **"Connectors"** to enable **Hedera** for that conversation.
+4. Under **Authentication**, choose **Required when the server asks** or **Always required**. Either option works.
+5. Under **OAuth client**, choose **No client ID — register one automatically**.
+6. Leave **Additional request headers** and **Advanced** untouched, then click **Add**.
+7. A browser window opens with the Hedera sign-in page. Follow the steps in [Authenticate your wallet](#authenticate-your-wallet).
+8. In any chat, click the **+** button in the lower left of the chat interface, then hover over **Connectors** to enable **Hedera** for that conversation. Then try the [example prompts](#example-prompts).
 
 <Note>
-Connectors added on claude.ai are also available in Claude Desktop and Claude mobile when signed in with the same account, and vice versa — you don't need to add the server separately in each.
+Connectors added on claude.ai are also available in Claude Desktop and Claude mobile when signed in with the same account, and vice versa. You do not need to add the server separately in each.
 </Note>
 
 </Accordion>
@@ -95,7 +98,8 @@ Cursor supports MCP servers through its `mcp.json` configuration file.
 }
 ```
 
-3. Navigate back to the MCPs list and press Authenticate next to the Hedera MCP entry. Cursor opens a browser with the authentication landing page. Follow the guide there to connect the wallet — [Sign in with your wallet](#sign-in-with-your-wallet). Then try the [example prompts](#example-prompts).
+3. Navigate back to the MCPs list and click **Authenticate** next to the Hedera entry.
+4. Cursor opens a browser with the Hedera sign-in page. Follow the steps in [Authenticate your wallet](#authenticate-your-wallet), then try the [example prompts](#example-prompts).
 
 </Accordion>
 
@@ -107,37 +111,32 @@ VS Code supports MCP servers through the Chat view's MCP settings.
 
 1. Open the **Chat** tab in VS Code.
 2. Click the gear icon in the Chat tab to open chat customization.
-3. Select **MCP Servers**.
-4. Click **Add Server**.
-5. Select **HTTP** from the input modal.
-6. Enter the server URL: `https://agentic-testnet-mcp.hedera.com/mcp`.
-7. Set the name to `hedera` and confirm.
-8. A popup about required authentication appears — press **Allow**. A second popup asks to open an external website — press **Open**.
-9. You're taken to the authentication landing page. Follow the guide there to connect the wallet — [Sign in with your wallet](#sign-in-with-your-wallet). Then try the [example prompts](#example-prompts).
+3. Select **MCP Servers**, then click **Add Server**.
+4. Select **HTTP**.
+5. Enter the server URL: `https://agentic-testnet-mcp.hedera.com/mcp`.
+6. Set the name to `hedera-testnet` and confirm.
+7. A popup about required authentication appears. Click **Allow**. A second popup asks to open an external website. Click **Open**.
+8. You are taken to the Hedera sign-in page. Follow the steps in [Authenticate your wallet](#authenticate-your-wallet), then try the [example prompts](#example-prompts).
 
 </Accordion>
 
 <Accordion title="Claude Code CLI">
 
-Claude Code connects to MCP servers via CLI commands.
-
-**Steps:**
-
-Run the following command in your terminal:
+1. Run the following command in your terminal:
 
 ```bash
 claude mcp add --transport http hedera https://agentic-testnet-mcp.hedera.com/mcp
 ```
 
-Then start the sign-in flow:
+2. Start Claude Code and run:
 
 ```
 /mcp
 ```
 
-Select the `hedera` server and choose **Authenticate**. This opens your browser to the authentication landing page. Follow the guide there to connect the wallet — [Sign in with your wallet](#sign-in-with-your-wallet). Then try the [example prompts](#example-prompts).
+3. Select the `hedera` server and choose **Authenticate**. Your browser opens the Hedera sign-in page. Follow the steps in [Authenticate your wallet](#authenticate-your-wallet), then try the [example prompts](#example-prompts).
 
-**Verify the connection:**
+4. Verify the connection:
 
 ```bash
 claude mcp list
@@ -146,112 +145,185 @@ claude mcp list
 You should see `hedera` listed as `✔ Connected`.
 
 <Note>
-If a wallet session ends outside of Claude Code (for example, you disconnect the dApp session in your wallet), the server starts reporting `needs_reauth`. Run `claude mcp logout hedera` to clear the stored token, then `/mcp` → **Authenticate** again.
+If your wallet session ends (for example, you disconnect the Hedera MCP session in your wallet), run `claude mcp logout hedera`, then `/mcp` → **Authenticate** to sign in again.
 </Note>
 
 </Accordion>
 
 <Accordion title="Codex CLI">
 
-Codex CLI (OpenAI's terminal coding agent) connects to remote MCP servers via CLI commands.
-
-**Steps:**
-
-Run the following command in your terminal:
+1. Run the following command in your terminal:
 
 ```bash
 codex mcp add hedera --url https://agentic-testnet-mcp.hedera.com/mcp
 ```
 
-Codex automatically detects the OAuth server and opens the authentication landing page. Follow the guide there to connect the wallet — [Sign in with your wallet](#sign-in-with-your-wallet). Then try the [example prompts](#example-prompts).
+2. Codex opens the Hedera sign-in page automatically. Follow the steps in [Authenticate your wallet](#authenticate-your-wallet), then try the [example prompts](#example-prompts).
 
-**Verify the connection:**
+3. Verify the connection:
 
 ```bash
 codex mcp list
 ```
 
 <Note>
-If your wallet session ends, re-run `codex mcp login hedera` to sign in again.
+If your wallet session ends, run `codex mcp login hedera` to sign in again.
 </Note>
 
 </Accordion>
 
 <Accordion title="Devin CLI">
 
-Devin CLI connects to remote MCP servers via CLI commands.
-
-**Steps:**
-
-Run the following command in your terminal:
+1. Run the following command in your terminal:
 
 ```bash
 devin mcp add hedera https://agentic-testnet-mcp.hedera.com/mcp
 ```
 
-Then ask Devin to authenticate:
+2. Ask Devin to authenticate:
 
 ```text
 Please authenticate the hedera mcp
 ```
 
-This opens the authentication landing page. Follow the guide there to connect the wallet — [Sign in with your wallet](#sign-in-with-your-wallet). Then try the [example prompts](#example-prompts).
+3. Your browser opens the Hedera sign-in page. Follow the steps in [Authenticate your wallet](#authenticate-your-wallet), then try the [example prompts](#example-prompts).
 
 </Accordion>
 
 <Accordion title="ChatGPT Desktop">
 
-ChatGPT Desktop supports MCP servers as plugins.
-
-**Steps:**
-
-1. Go to **Settings → Plugins**, then navigate to the **MCPs** tab.
+1. Go to **Settings → Plugins**, then open the **MCPs** tab.
 2. Click **Add** in the top right corner and select **Add MCP server**.
 3. Enter the details:
    - **Name:** `hedera`
    - **Type:** streamable HTTP
    - **URL:** `https://agentic-testnet-mcp.hedera.com/mcp`
-4. Leave the rest of the settings as they are, then confirm.
-5. In the **MCPs** tab of the Plugin view, find the new entry and click **Authenticate**. This opens the authentication landing page. Follow the guide there to connect the wallet — [Sign in with your wallet](#sign-in-with-your-wallet). Then try the [example prompts](#example-prompts).
-6. Restart the app and navigate to the chat in the **Work** tab to use the server.
+4. Leave the remaining settings as they are, then confirm.
+5. In the **MCPs** tab, find the new entry and click **Authenticate**. Your browser opens the Hedera sign-in page. Follow the steps in [Authenticate your wallet](#authenticate-your-wallet).
+6. Restart the app and open a chat in the **Work** tab to use the server. Then try the [example prompts](#example-prompts).
 
 <Warning>
-MCP servers are only accessible from the **Work** tab — the normal chat tab cannot reach them.
+MCP servers are only accessible from the **Work** tab. The normal chat tab cannot reach them.
 </Warning>
 
 </Accordion>
 
 </AccordionGroup>
 
-## Sign in with your wallet
+### Authenticate your wallet
 
-The server is an OAuth 2.1 authorization server whose "login form" is a wallet. The first tool call your client makes is rejected with `401`, which triggers this flow automatically:
+Instead of a username and password, you sign in to the Hedera Network MCP with your wallet. This proves you own the Hedera account without sharing any keys with the server.
 
-1. Your client opens a browser to the server's sign-in page.
-2. You may see an interstitial asking you to confirm you started this connection from your MCP client — this is expected, not a phishing attempt. Continue.
-3. Pair your wallet — scan the WalletConnect QR code with a mobile wallet, or use the browser-extension button if you have one installed.
-4. Your wallet prompts you to approve a **sign-in message**. This is a single-use, domain-bound nonce — **approving it moves no funds**. It only proves you control the account.
-5. The server verifies the signature against your account's key on the mirror node and issues an access token. Your client returns to normal use, now scoped to your account.
+1. After adding the MCP, your AI tool opens a Hedera sign-in page in your browser.
+2. You may see a page asking you to confirm that you started this connection from your AI tool. This is expected. Continue.
+3. Connect your wallet: scan the WalletConnect QR code with your mobile wallet, or click the browser extension button if you have one installed.
+4. Your wallet asks you to approve a **sign-in message**. Approving it moves no funds. It only proves you control the account.
+5. Return to your AI tool. It is now connected to your Hedera account and ready to use.
+
+You only need to do this once. The session stays active until it expires or you disconnect it in your wallet. See [Troubleshooting](#troubleshooting) if you need to sign in again.
 
 ## Example prompts
 
-Try these once you're connected — one that triggers your wallet, one that doesn't.
-
-This writes to the network, so it triggers your wallet to approve and sign the transaction:
-
-```text
-Create a topic with memo "test"
-```
-
-This only queries network state, so your wallet is **not** triggered — read-only queries never need a signature:
+Read-only requests return results immediately and do not involve your wallet:
 
 ```text
 What's my HBAR balance?
 ```
 
-## How transactions work
+```text
+Show me the latest messages on topic 0.0.12345
+```
 
-Every transaction tool (transferring HBAR, creating a topic, minting a token, and so on) builds the transaction, freezes it, and **delivers it to your wallet for approval in one call**, returning a `requestId` instead of blocking. Your agent then checks on it:
+Requests that change network state build a transaction and send it to your wallet. Approve it in your wallet to submit it to the network:
+
+```text
+Create a topic with memo "test"
+```
+
+```text
+Send 1 HBAR to 0.0.98765
+```
+
+```text
+Create a fungible token called "Demo Token" with symbol DEMO and 1000 initial supply
+```
+
+## What you can do with Hedera Network MCP
+
+The Hedera Network MCP includes all core Hedera plugins from the Hedera Agent Kit. Through your AI tool you can:
+
+| Area | Capabilities |
+| :--- | :--- |
+| **Accounts** | Create accounts, update keys, transfer HBAR, manage allowances, check balances |
+| **Tokens (HTS)** | Create, mint, transfer, associate, and look up fungible and non-fungible tokens |
+| **Smart Contracts (EVM)** | Deploy, call, and query ERC-20 and ERC-721 contracts |
+| **Consensus (HCS)** | Create topics, submit messages, and read topic info |
+| **Transactions & Network** | Look up transaction records, exchange rates, and node fees |
+
+See the [Plugins](/solutions/ai/agent-kit/plugins) page for the complete list of tools and their parameters.
+
+### Wallet tools
+
+The server also includes tools for managing your wallet connection. Your AI tool uses these automatically, but you can ask about them directly.
+
+| Tool | What it does |
+| :--- | :--- |
+| `wallet_status` | Shows which account and network you are connected to, and when the session expires |
+| `check_signing_status` | Checks whether a transaction you sent to your wallet has been approved, rejected, or confirmed |
+| `sign_with_wallet` | Sends raw transaction bytes to your wallet. Rarely needed, since transaction tools deliver to your wallet automatically |
+
+<Info>
+**Not every transaction type is fully readable in a wallet.** Smart contract calls and file operations cannot be fully decoded by your wallet, so its display is not an independent check of what the transaction does. Review what your AI tool tells you it is building before approving.
+</Info>
+
+## Troubleshooting
+
+**"The connector's server isn't responding" or "Couldn't connect to the server"**
+- This almost always means your **wallet session has ended**, not that the server is down. For example, you removed the session from your wallet, or the session expired.
+- Your AI tool does not prompt you to reconnect on its own, and restarting it does not clear the old session.
+- Fix: open your AI tool's MCP or connector settings, find the Hedera entry, **Disconnect**, then **Connect** again and complete the wallet sign-in.
+
+**Removed the session in your wallet and now nothing works**
+- Disconnecting the session in your wallet (for example, removing the dApp from HashPack) also ends the session on the server. Reconnect the MCP as described above.
+
+**Reconnected but never asked to sign in again**
+- If a valid wallet session still exists, it is reused automatically. This is expected.
+
+**A transaction came back as expired**
+- You have about 180 seconds to approve a transaction in your wallet. If it lapses, ask your AI tool to run the action again.
+
+**Tools not appearing after connecting**
+- Restart your AI tool after adding or reconnecting the server.
+
+## Limitations
+
+- **Testnet only.** The hosted server does not connect to mainnet. Run the self-hosted [Hedera Agent Kit MCP server](/solutions/ai/agent-kit/index) for mainnet.
+- **Single-key accounts only.** Threshold and key-list accounts are not supported for wallet sign-in.
+- **No spend policies.** There are no per-transaction or per-day caps or recipient allowlists. Your wallet approval prompt is the spending control, so review each request.
+
+## Developer Information
+
+This section covers the authentication and transaction model in more detail for developers building MCP clients or integrating the server into custom applications.
+
+<Warning>
+**The signing model has changed.** Transactions are now approved and signed in the user's own wallet. The server no longer returns transaction bytes for the client to sign. The `x-hedera-account-id` header is no longer used and is ignored; the account now comes from the wallet sign-in. The endpoint URL is unchanged, but existing connections must sign in again with a wallet before any tool will work.
+</Warning>
+
+### Authentication
+
+The server is an OAuth 2.1 authorization server whose login form is a wallet. It supports Dynamic Client Registration, so clients do not need a pre-registered client ID.
+
+1. The client's first tool call is rejected with `401`, which triggers the standard OAuth authorization flow.
+2. The client opens a browser to the server's sign-in page. An interstitial may ask the user to confirm they started the connection from their MCP client.
+3. The user pairs a wallet via WalletConnect (QR code or browser extension).
+4. The wallet prompts the user to sign a **sign-in message**: a single-use, domain-bound nonce. No transaction is created.
+5. The server verifies the signature against the account's key on the mirror node and issues an access token scoped to that account.
+
+The server never holds keys, never submits transactions, and never sees a transaction signature.
+
+### Transaction lifecycle
+
+Every transaction tool (transferring HBAR, creating a topic, minting a token, and so on) builds the transaction, freezes it, and delivers it to the user's wallet for approval in one call. It returns a `requestId` instead of blocking. The agent then polls for the outcome:
 
 ```
 transfer_hbar_tool({ to, amount })   ->  { requestId, summary, walletVerifiable, ... }
@@ -260,63 +332,28 @@ check_signing_status({ requestId })  ->  awaiting_approval | confirming | execut
 
 | Status | Meaning |
 | :--- | :--- |
-| `awaiting_approval` | Delivered to your wallet; waiting on your approval |
-| `confirming` | Your wallet broadcast it; the server is checking the mirror node |
+| `awaiting_approval` | Delivered to the wallet; waiting on user approval |
+| `confirming` | The wallet broadcast it; the server is checking the mirror node |
 | `executed` | Confirmed on the mirror node |
-| `rejected` | You declined it in your wallet |
+| `rejected` | The user declined it in the wallet |
 | `failed` | Reached the network but failed on-chain |
-| `expired` | The ~180 second validity window lapsed — ask your agent to try again |
-| `needs_reauth` | Your wallet session ended — reconnect (see [Troubleshooting](#troubleshooting)) |
+| `expired` | The ~180 second validity window lapsed |
+| `needs_reauth` | The wallet session ended; the client must re-authenticate |
 
 <Note>
-`executed` means the mirror node confirmed it, not just that your wallet said it broadcast it — so a stale approval that never lands is reported honestly rather than as a false success. The ~180 second window matches Hedera's transaction validity window, so approve promptly.
+`executed` means the mirror node confirmed the transaction, not just that the wallet reported a broadcast, so a stale approval that never lands is reported honestly rather than as a false success. The ~180 second window matches Hedera's transaction validity window.
 </Note>
 
-### Wallet tools
+### Wallet verifiability
 
-| Tool | Purpose |
-| :--- | :--- |
-| `wallet_status` | Returns your connected `accountId`, `network`, and wallet session expiry |
-| `check_signing_status` | Checks (and waits on) the outcome of a `requestId` from a write tool |
-| `sign_with_wallet` | Raw-bytes escape hatch — normally unnecessary, since write tools deliver to your wallet automatically |
+Each write tool response includes a `walletVerifiable` flag. It is `true` when the wallet can fully decode and display the transaction contents (HBAR transfers, token operations, topic operations). It is `false` for contract calls and file operations, where the wallet's display is not an independent check of what the transaction does. Surface the tool's `summary` to the user in these cases.
 
-<Info>
-**Not every transaction type is fully decodable in a wallet.** Contract calls and file operations come back with `walletVerifiable: false` — for these, your wallet's display isn't an independent check of what the transaction actually does. Review what your agent tells you it's building before approving.
-</Info>
+### Session handling
 
-## Available tools
+- Wallet sessions are established via WalletConnect. If the user removes the dApp session from their wallet, the server-side session ends and tools return `needs_reauth`.
+- Clients do not currently receive a proactive re-authentication prompt. Users must disconnect and reconnect the server (or run the client's logout/login command) to start a new wallet sign-in.
+- If a valid wallet session exists when the client reconnects, it is reused without a new wallet prompt.
 
-The Hedera network server comes pre-configured with all core Hedera plugins. Exposed tool categories include:
+### Self-hosting
 
-- **Accounts:** create accounts, update keys, transfer HBAR, manage allowances, query balances.
-- **Tokens (HTS):** create, mint, transfer, associate, and query fungible and non-fungible tokens.
-- **Smart Contracts (EVM):** deploy, call, and query ERC-20 and ERC-721 contracts.
-- **Consensus (HCS):** create topics, submit messages, and query topic info.
-- **Transactions & Misc:** query transaction records, exchange rates, and node fees.
-
-See the [Plugins](/solutions/ai/agent-kit/plugins) page for the complete list of tools and their parameters.
-
-## Troubleshooting
-
-**"The connector's server isn't responding" / "Couldn't connect to the server"?**
-- This almost always means your **wallet session has ended**, not that the server is down — for example, because you removed the dApp session from your wallet, or the session simply expired.
-- The client does not currently prompt you to reconnect on its own, and restarting it won't clear the stale session.
-- Fix: open **Settings → Connectors**, find the Hedera entry, click it, choose **Disconnect**, then **Connect** again and complete the wallet sign-in.
-
-**Removed the wallet's dApp session and now nothing works?**
-- Disconnecting the session in your wallet (for example, removing the dApp from HashPack) ends the server-side session too. Reconnect the MCP server as above to sign in again.
-
-**Reconnected but never asked to sign in again?**
-- Re-adding or reconnecting the server doesn't always force a new wallet login — if a valid wallet session still exists, it's reused automatically. This is expected.
-
-**A signing request came back `expired`?**
-- You have about 180 seconds to approve a transaction in your wallet. If it lapses, ask your agent to re-run the action.
-
-**Tools not appearing after connecting?**
-- Restart your client after adding or reconnecting the server.
-
-## Limitations
-
-- **Testnet only.** The hosted instance does not connect to Mainnet. Run the self-hosted server for Mainnet usage.
-- **Single-key accounts only.** Threshold and key-list accounts aren't supported for wallet sign-in.
-- **No spend policies.** There are no per-transaction or per-day caps or recipient allowlists — your wallet approval prompt is the spending control, so review each request.
+The hosted server is testnet only. To run against mainnet or customize the toolset, run the [Hedera Agent Kit](/solutions/ai/agent-kit/index) MCP server yourself.

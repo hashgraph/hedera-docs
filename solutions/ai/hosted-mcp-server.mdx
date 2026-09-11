@@ -125,7 +125,7 @@ VS Code supports MCP servers through the Chat view's MCP settings.
 1. Run the following command in your terminal:
 
 ```bash
-claude mcp add --transport http hedera https://agentic-testnet-mcp.hedera.com/mcp
+claude mcp add --transport http hedera-testnet https://agentic-testnet-mcp.hedera.com/mcp
 ```
 
 2. Start Claude Code and run:
@@ -155,7 +155,7 @@ If your wallet session ends (for example, you disconnect the Hedera MCP session 
 1. Run the following command in your terminal:
 
 ```bash
-codex mcp add hedera --url https://agentic-testnet-mcp.hedera.com/mcp
+codex mcp add hedera-testnet --url https://agentic-testnet-mcp.hedera.com/mcp
 ```
 
 2. Codex opens the Hedera sign-in page automatically. Follow the steps in [Authenticate your wallet](#authenticate-your-wallet), then try the [example prompts](#example-prompts).
@@ -177,7 +177,7 @@ If your wallet session ends, run `codex mcp login hedera` to sign in again.
 1. Run the following command in your terminal:
 
 ```bash
-devin mcp add hedera https://agentic-testnet-mcp.hedera.com/mcp
+devin mcp add hedera-testnet https://agentic-testnet-mcp.hedera.com/mcp
 ```
 
 2. Ask Devin to authenticate:
@@ -195,7 +195,7 @@ Please authenticate the hedera mcp
 1. Go to **Settings → Plugins**, then open the **MCPs** tab.
 2. Click **Add** in the top right corner and select **Add MCP server**.
 3. Enter the details:
-   - **Name:** `hedera`
+   - **Name:** `hedera-testnet`
    - **Type:** streamable HTTP
    - **URL:** `https://agentic-testnet-mcp.hedera.com/mcp`
 4. Leave the remaining settings as they are, then confirm.

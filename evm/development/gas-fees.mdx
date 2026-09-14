@@ -45,7 +45,7 @@ Gas fees for EVM transactions consist of:
 
 ### Intrinsic Gas
 
-A transaction submitted to the smart contract service must be sent with enough gas to cover **intrinsic gas**. With the **Cancun fork** of the EVM update, intrinsic gas is calculated as:
+A transaction submitted to the smart contract service must be sent with enough gas to cover **intrinsic gas**. The standard cost is a base fee plus a per-byte charge for calldata:
 
 ```bash
 21000 + 4 × (number of zero bytes) + 16 × (number of non-zero bytes) = intrinsic gas
@@ -56,6 +56,31 @@ A transaction submitted to the smart contract service must be sent with enough g
 - **16 × (non-zero bytes)**: The cost for each non-zero byte in the transaction payload
 
 If insufficient gas is submitted, the transaction will **fail during precheck** and no record will be created.
+
+#### Calldata Floor (EIP-7623)
+
+With the **Pectra** hard fork, [EIP-7623](https://eips.ethereum.org/EIPS/eip-7623) adds a floor so that transactions carrying a large amount of calldata pay at least a minimum, regardless of how little computation they perform. First define the calldata tokens:
+
+```bash
+tokens_in_calldata = (number of zero bytes) + 4 × (number of non-zero bytes)
+```
+
+The gas charged is then the greater of the standard cost and the floor:
+
+```bash
+standard = 21000 + 4 × tokens_in_calldata + execution gas
+floor    = 21000 + 10 × tokens_in_calldata
+gas used = max(standard, floor)
+```
+
+- **4** (`STANDARD_TOKEN_COST`): the standard cost per calldata token (a non-zero byte is 4 tokens = 16 gas; a zero byte is 1 token = 4 gas)
+- **10** (`TOTAL_COST_FLOOR_PER_TOKEN`): the floor cost per calldata token
+
+When a transaction is calldata-heavy relative to its execution, the floor applies and it costs more than under Cancun. The JSON-RPC Relay computes intrinsic gas as well, so its gas estimates reflect the floor.
+
+<Info>
+The EIP-7623 calldata floor is part of Hedera's Pectra hard fork. See [Deploying Smart Contracts](/evm/development/deploying#pectra-hard-fork) for the full Pectra summary.
+</Info>
 
 <Note>
 This applies to both standard transactions and **jumbo EthereumTransactions** introduced by **[HIP-1086](https://hips.hedera.com/hip/hip-1086)**, which allow larger `callData` payloads.
@@ -80,7 +105,7 @@ If `SLOAD` accesses a storage slot twice within the same transaction, the total 
 - **Second Access (Warm)** = `100 + 100 = 200 gas`
 - **Final Gas Cost Total** = `2,400 gas`
 
-📣 *Explore [opcodes in Cancun fork](https://www.evm.codes/).*
+📣 *Explore [opcodes in Prague fork](https://www.evm.codes/?fork=prague).*
 
 
 ### Hedera System Contract Gas
@@ -154,7 +179,7 @@ The **gas limit** is the maximum amount of gas you are willing to pay for an ope
 
 The current opcode gas fees are reflective as of the **[0.22 Hedera Service release](/networks/release-notes/services#v0.22)**.
 
-| Operation                                                                | Cancun Cost (Gas)                           | Current Hedera (Gas)                        |
+| Operation                                                                | Prague Cost (Gas)                           | Current Hedera (Gas)                        |
 | ------------------------------------------------------------------------ | ------------------------------------------- | ------------------------------------------- |
 | Code deposit                                                             | 200 \* bytes                                | 200 \* bytes                                |
 | <p><code>BALANCE</code><br/>(cold account)</p>                           | 2600                                        | 2600                                        |

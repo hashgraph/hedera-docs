@@ -61,6 +61,32 @@ The response lists the supported Hedera network among the `kinds`, along with th
 Point the `facilitatorClient` in your resource server at `https://api.testnet.blocky402.com` (testnet) or `https://api.blocky402.com` (mainnet) to verify and settle Hedera payments through Blocky402.
 </Tip>
 
+## AMNT Facilitator
+
+[**AMNT Facilitator**](https://www.amnt.io/facilitators/hedera-x402-facilitator) is an open-source x402 facilitator ([MIT, on GitHub](https://github.com/BelgacemElbar/amnt-x402-facilitator)) that settles Hedera **mainnet** payments, with a testnet that also covers Base Sepolia and Solana devnet. Open access, no API key. Every settlement is shown on a [public dashboard](https://www.amnt.io/facilitators/hedera-x402-facilitator), and resources that ask to be discoverable are listed at `/discovery/resources`.
+
+| | Testnet | Mainnet |
+| --- | --- | --- |
+| Facilitator base URL | `https://testnet.facilitator.amnt.io` | `https://facilitator.amnt.io` |
+| Hedera network | `hedera:testnet` | `hedera:mainnet` |
+| Advertised fee payer | `0.0.9510357` | `0.0.10774954` |
+
+Both expose the standard endpoints (`GET /supported`, `POST /verify`, and `POST /settle`), plus `GET /health`, `GET /stats`, `GET /transactions` and `GET /discovery/resources`. Docs: [docs.amnt.io/docs/facilitator](https://docs.amnt.io/docs/facilitator) ([quickstart](https://docs.amnt.io/docs/facilitator/quickstart), [API reference](https://docs.amnt.io/docs/facilitator/api), [self-hosting](https://docs.amnt.io/docs/facilitator/self-hosting)).
+
+```bash
+# testnet
+curl https://testnet.facilitator.amnt.io/supported
+
+# mainnet
+curl https://facilitator.amnt.io/supported
+```
+
+The response lists the supported Hedera network among the `kinds`, along with the fee-payer account the facilitator will sponsor.
+
+<Tip>
+Point the `facilitatorClient` in your resource server at `https://testnet.facilitator.amnt.io` (testnet) or `https://facilitator.amnt.io` (mainnet) to verify and settle Hedera payments through AMNT Facilitator.
+</Tip>
+
 ## Run your own Hedera facilitator
 
 x402 is permissionless: any team can operate a facilitator, and the more independent Hedera facilitators there are, the healthier the network. Below are the steps to follow to stand one up for yourself:

@@ -33,6 +33,68 @@ The response lists `hedera:testnet` among the supported `kinds`, along with the 
 Point the `facilitatorClient` in your resource server at `https://x402.org/facilitator` to verify and settle Hedera testnet payments through the official x402 facilitator.
 </Tip>
 
+## Ax402
+
+[**Ax402**](https://ax402.io/) is a monetization gateway for the x402 ecosystem that offers hosted facilitator infrastructure for Hedera on **both testnet and mainnet**. Both facilitators expose the standard endpoints (`GET /supported`, `POST /verify`, and `POST /settle`) and settle payments on-chain after verification.
+
+### Testnet
+
+The testnet facilitator is open to everyone, **no account required**:
+
+| | Value |
+| --- | --- |
+| Facilitator base URL | `https://testnet.facilitator.ax402.io` |
+| Hedera network | `hedera:testnet` |
+| Advertised fee payer | `0.0.9839454` |
+
+You can confirm Hedera support live by querying its capabilities:
+
+```bash
+curl -s https://testnet.facilitator.ax402.io/supported | jq
+```
+
+### Mainnet
+
+For mainnet, after creating a **free account**, you get a **dedicated facilitator URL**, `https://<subdomain>.facilitator.ax402.io`, much like an Alchemy endpoint. The subdomain identifies your requests and feeds your dashboard statistics, so treat it like a credential and do not share it.
+
+| | Value |
+| --- | --- |
+| Facilitator base URL | Dedicated URL from your dashboard:<br />`https://<subdomain>.facilitator.ax402.io` |
+| Hedera network | `hedera:mainnet` |
+| Advertised fee payer | `0.0.10789914` |
+
+Getting your dedicated facilitator URL:
+
+<Steps>
+<Step>
+Sign up at [ax402.io/signup](https://ax402.io/signup) and verify your email.
+</Step>
+<Step>
+Go to the [Facilitator tab](https://ax402.io/dashboard/facilitator) in your dashboard.
+</Step>
+<Step>
+Copy your `https://<subdomain>.facilitator.ax402.io` URL and use in your apps.
+</Step>
+</Steps>
+
+You can query facilitator capabilities (replacing `<subdomain>` with the subdomain from your dashboard):
+
+```bash
+curl -s https://<subdomain>.facilitator.ax402.io/supported | jq
+```
+
+Around the facilitator itself, the Ax402 platform adds:
+
+- **Monetization gateway**: price and publish paid API routes with no upstream code changes, custom domains, and OpenAPI import
+- **Seller dashboard**: usage, traffic, earnings, and conversion analytics, attributed to your dedicated facilitator URL
+- **Developer and agent tooling**: [TypeScript, Go, and Python SDKs](https://docs.ax402.io/guides/sdks), a [CLI](https://docs.ax402.io/api-reference/cli), an [MCP server](https://docs.ax402.io/api-reference/mcp), and a [React paywall](https://docs.ax402.io/guides/react-paywall)
+
+Full setup and integration details are in the [Ax402 documentation](https://docs.ax402.io/), including the [facilitator guide](https://docs.ax402.io/guides/platform/facilitator).
+
+<Tip>
+Point the `facilitatorClient` in your resource server at `https://testnet.facilitator.ax402.io` (testnet) or your dedicated Ax402 facilitator URL (mainnet) to verify and settle Hedera payments through Ax402.
+</Tip>
+
 ## Blocky402
 
 [**Blocky402**](https://blocky402.com/) is an open x402 facilitator that supports Hedera on **both testnet and mainnet**, so you can wire up x402 payments on Hedera without standing up your own infrastructure first. Both facilitators are live with **open access (no API key required)**.

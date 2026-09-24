@@ -217,6 +217,18 @@ Another term for a [blockchain](#blockchain).
 
 A unique identifier for a specific chain within a network. In networks that support multiple chains or side chains, the chain ID helps distinguish between different chains.
 
+### Chain Selector
+
+---
+
+A unique identifier that [Chainlink CCIP](#chainlink-ccip) assigns to each supported chain. It is different from the [chain ID](#chain-id). CCIP messages use the chain selector to name the destination chain. Hedera Mainnet and Hedera Testnet each have their own chain selector, listed on the [Chainlink CCIP](/evm/integrations/cross-chain/chainlink-ccip#network-configuration) page.
+
+### Chainlink CCIP
+
+---
+
+Chainlink's Cross-Chain Interoperability Protocol (CCIP), a protocol for sending messages and transferring tokens between blockchains, secured by Chainlink Decentralized Oracle Networks. CCIP is live on Hedera Mainnet and Hedera Testnet. See [Chainlink CCIP](/evm/integrations/cross-chain/chainlink-ccip).
+
 ### Client
 
 ---
@@ -246,6 +258,12 @@ In the context of distributed ledger technologies (like blockchain and Hedera), 
 ---
 
 Contract accounts are accounts that are controlled by the code of a [smart contract](#smart-contract). They don't have a [private key](#private-key); instead, their behavior is determined by the smart contract's code. They can hold Ether and send transactions, but only in response to a transaction they received (i.e., as part of the execution of a smart contract's code).
+
+### Cross-Chain Token (CCT)
+
+---
+
+A [Chainlink CCIP](#chainlink-ccip) standard that lets token issuers make new or existing tokens transferable across chains, self-serve. Each token is paired with a token pool on every supported chain, and the pool burns and mints, or locks and releases, the token as it moves between chains. See [Chainlink CCIP](/evm/integrations/cross-chain/chainlink-ccip).
 
 ### Cryptocurrency
 

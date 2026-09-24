@@ -1,13 +1,13 @@
 ---
 title: "Chainlink CCIP"
-description: "Learn how Chainlink’s Cross-Chain Interoperability Protocol (CCIP) integrates with Hedera to enable secure cross-chain messaging and token transfers."
+description: "Chainlink's Cross-Chain Interoperability Protocol (CCIP) is live on Hedera Mainnet and Hedera Testnet. Get router addresses, chain selectors, fee tokens, and demos for cross-chain messaging and token transfers."
 ---
 
 ## Chainlink CCIP on Hedera
 
 The **Chainlink Cross-Chain Interoperability Protocol (CCIP)** is a standard for blockchain interoperability that enables developers to build **secure cross-chain applications** capable of transferring tokens, sending messages, and executing actions across multiple blockchains.
 
-Through the **Cross-Chain Token (CCT)** standard, CCIP allows token developers to integrate new or existing tokens in a **self-serve** way—without vendor lock-in or restrictive dependencies.
+Through the **Cross-Chain Token (CCT)** standard, CCIP allows token developers to integrate new or existing tokens in a **self-serve** way, without vendor lock-in or restrictive dependencies.
 
 **CCTs support:**
 
@@ -16,33 +16,48 @@ Through the **Cross-Chain Token (CCT)** standard, CCIP allows token developers t
 - Enhanced programmability via configurable rate limits
 - Smart Execution for reliable cross-chain delivery
 
-CCIP is powered by **Chainlink Decentralized Oracle Networks (DONs)**—infrastructure that has secured **tens of billions of dollars** and enabled **over $21 trillion** in on-chain transaction value.
+CCIP is powered by **Chainlink Decentralized Oracle Networks (DONs)**.
+
+---
+
+## CCIP Availability on Hedera
+
+CCIP is live on both **Hedera Mainnet** and **Hedera Testnet**.
+
+| Network            | Chain ID | CCIP Directory                                                                                   |
+| ------------------ | -------- | ------------------------------------------------------------------------------------------------ |
+| **Hedera Mainnet** | `295`    | [Hedera Mainnet on the CCIP Directory](https://docs.chain.link/ccip/directory/mainnet/chain/hedera-mainnet) |
+| **Hedera Testnet** | `296`    | [Hedera Testnet on the CCIP Directory](https://docs.chain.link/ccip/directory/testnet/chain/hedera-testnet) |
+
+On Hedera Mainnet, CCIP lanes connect Hedera to chains including Ethereum, Arbitrum, Base, Optimism, Avalanche, Polygon, and Solana. On Hedera Testnet, lanes connect to the matching test networks, such as Ethereum Sepolia.
+
+<Info>
+  The Chainlink CCIP Directory is the source of truth for supported lanes, supported tokens, rate limits, and contract addresses. Lanes and tokens are added over time, so check the directory before you deploy.
+</Info>
 
 ---
 
 ## Overview of CCIP and HTS Compatibility
 
-On Hedera, CCIP extends interoperability between **Hedera’s Hashgraph network** and **EVM-compatible blockchains** such as Ethereum.  
-It integrates seamlessly with both the **Hedera Token Service (HTS)** and standard **EVM tokens (ERC-20 and ERC-721)**, enabling developers to bridge tokens, data, and logic across ecosystems.
+On Hedera, CCIP extends interoperability between **Hedera** and other blockchains such as Ethereum.
+It works with both the **Hedera Token Service (HTS)** and standard **EVM tokens (ERC-20 and ERC-721)**, enabling developers to move tokens, data, and logic across ecosystems.
 
 With CCIP, developers can:
 
 - Send and receive arbitrary messages between chains
-- Execute programmable cross-chain logic via Chainlink’s oracle network
-- Use **LINK**, **Wrapped HBAR (WHBAR)**, or **ETH** as fee tokens
-- Prepare for **Cross-Chain Token (CCT)** transfers once fully enabled on Hedera
-
-<Warning>
-  **Note:** Cross-Chain Token (CCT) transfers on Hedera are currently in
-  progress on testnet. Current demos focus on message passing between **Hedera
-  Testnet** and **Ethereum Sepolia**.
-</Warning>
+- Execute programmable cross-chain logic via Chainlink's oracle network
+- Transfer tokens across chains using the **Cross-Chain Token (CCT)** standard
+- Pay fees on Hedera with **LINK** or **Wrapped HBAR (WHBAR)**
 
 ---
 
 ## Getting Started with CCIP on Hedera
 
-To explore CCIP functionality, start with the [**Hedera CCIP Demo Repository**](https://github.com/mgarbs/hedera-ccip-demos), which showcases **bi-directional cross-chain messaging** between the **Hedera Testnet** and **Ethereum Sepolia** using the Chainlink CCIP JavaScript SDK.
+To explore CCIP functionality, start with the [**Hedera CCIP Demo Repository**](https://github.com/mgarbs/hedera-ccip-demos), which showcases **bi-directional cross-chain messaging** between **Hedera Testnet** and **Ethereum Sepolia** using the Chainlink CCIP JavaScript SDK.
+
+<Info>
+  The demos run on testnet so you can try CCIP without spending mainnet funds. To move to production, swap in the Hedera Mainnet router, chain selector, and fee token addresses from the [Network Configuration](#network-configuration) section below.
+</Info>
 
 <Columns cols={3}>
   <Card title="➡ DEMO REPO" href="https://github.com/mgarbs/hedera-ccip-demos" arrow>
@@ -98,30 +113,54 @@ To explore CCIP functionality, start with the [**Hedera CCIP Demo Repository**](
 
 | Direction        | Payment | Command                              | Description                                            |
 | ---------------- | ------- | ------------------------------------ | ------------------------------------------------------ |
-| Read-only        | —       | `pnpm run demo:readonly`             | Query CCIP configuration without sending transactions. |
+| Read-only        | N/A     | `pnpm run demo:readonly`             | Query CCIP configuration without sending transactions. |
 | Hedera → Sepolia | LINK    | `pnpm run demo:hedera-sepolia-link`  | Send a message using LINK for fees.                    |
 | Hedera → Sepolia | WHBAR   | `pnpm run demo:hedera-sepolia-whbar` | Send a message using Wrapped HBAR for fees.            |
 | Sepolia → Hedera | ETH     | `pnpm run demo:sepolia-hedera`       | Send a message using ETH for fees.                     |
 
-<Info>
-  💡 **Tip:** Wrap HBAR before running WHBAR examples: ```bash pnpm run
-  wrap-hbar ``` All demos operate on **testnet** and are for educational
-  purposes only. They are **not audited** and should not be used in production.
-</Info>
+<Tip>
+  Wrap HBAR before running the WHBAR examples:
+
+  ```bash
+  pnpm run wrap-hbar
+  ```
+
+  The demos are for educational purposes only. They are **not audited** and should not be used in production.
+</Tip>
 
 ---
 
 ## Network Configuration
 
+### Hedera Mainnet
+
+| Parameter                 | Value                                        |
+| ------------------------- | -------------------------------------------- |
+| **Network Name**          | Hedera Mainnet                               |
+| **RPC Endpoint**          | `https://mainnet.hashio.io/api`              |
+| **Chain ID**              | `295`                                        |
+| **CCIP Router**           | `0x87b400B4d4F5Fe2Fdb6FBEa66C38003ced565b76` |
+| **Chain Selector**        | `3229138320728879060`                        |
+| **RMN Proxy**             | `0x09d9c9a2Ba147654fB40e217B68f2874775271b9` |
+| **Token Admin Registry**  | `0xC9efBD4f73C37aE1573806030A4146e1E72EADc1` |
+| **Registry Module Owner** | `0x1d952d2f6eE86Ef4940Fa648aA7477c8fF175F09` |
+
+[**Add Hedera Mainnet**](https://chainlist.org/chain/295)
+
+---
+
 ### Hedera Testnet
 
-| Parameter          | Value                                        |
-| ------------------ | -------------------------------------------- |
-| **Network Name**   | Hedera Testnet                               |
-| **RPC Endpoint**   | `https://testnet.hashio.io/api`              |
-| **Chain ID**       | `296`                                        |
-| **CCIP Router**    | `0x802C5F84eAD128Ff36fD6a3f8a418e339f467Ce4` |
-| **Chain Selector** | `222782988166878823`                         |
+| Parameter                 | Value                                        |
+| ------------------------- | -------------------------------------------- |
+| **Network Name**          | Hedera Testnet                               |
+| **RPC Endpoint**          | `https://testnet.hashio.io/api`              |
+| **Chain ID**              | `296`                                        |
+| **CCIP Router**           | `0x802C5F84eAD128Ff36fD6a3f8a418e339f467Ce4` |
+| **Chain Selector**        | `222782988166878823`                         |
+| **RMN Proxy**             | `0x0Df355104424BABfb2404600A4258CfE140a78Cf` |
+| **Token Admin Registry**  | `0xA6643e4f53ceABad16970e8592D4eF7fea49260a` |
+| **Registry Module Owner** | `0xf76cE612250eeEb8889F49FBCB11f1c2705305F6` |
 
 [**Add Hedera Testnet**](https://chainlist.org/chain/296)
 
@@ -140,17 +179,18 @@ To explore CCIP functionality, start with the [**Hedera CCIP Demo Repository**](
 
 ---
 
-## Token Addresses
+## Fee Token Addresses
 
 | Network              | Token | Address                                      |
 | -------------------- | ----- | -------------------------------------------- |
+| **Hedera Mainnet**   | LINK  | `0x7Ce6bb2Cc2D3Fd45a974Da6a0F29236cb9513a98` |
+| **Hedera Mainnet**   | WHBAR | `0xb1F616b8134F602c3Bb465fB5b5e6565cCAd37Ed` |
 | **Hedera Testnet**   | LINK  | `0x90a386d59b9A6a4795a011e8f032Fc21ED6FEFb6` |
 | **Hedera Testnet**   | WHBAR | `0xb1F616b8134F602c3Bb465fB5b5e6565cCAd37Ed` |
 | **Ethereum Sepolia** | LINK  | `0x779877A7B0D9E8603169DdbD7836e478b4624789` |
 
 <Info>
-  ⚠️ **Note:** WHBAR uses **8 decimals**, while most EVM tokens use **18
-  decimals**.
+  The CCIP WHBAR contract has the same EVM address on Hedera Mainnet and Hedera Testnet. WHBAR uses **8 decimals**, while most EVM tokens use **18 decimals**.
 </Info>
 
 ---
@@ -159,17 +199,17 @@ To explore CCIP functionality, start with the [**Hedera CCIP Demo Repository**](
 
 ### Decimal Precision
 
-HBAR’s smallest unit is the **tinybar (8 decimals)**.
+HBAR's smallest unit is the **tinybar (8 decimals)**.
 Since CCIP on EVM networks operates with **18-decimal precision**, conversions between tinybars and wei-based values may be required.
-See [Understanding Hedera’s EVM Differences and Compatibility](/evm/differences).
+See [Understanding Hedera's EVM Differences and Compatibility](/evm/differences).
 
 ### Cross-Chain Fees
 
-Ensure your wallet holds sufficient **LINK**, **WHBAR**, or **ETH** to cover CCIP transaction fees.
+Make sure your wallet holds enough of a supported fee token on the source chain to cover CCIP fees. On Hedera, that is **LINK** or **WHBAR**. The demos pay fees from Ethereum Sepolia in **ETH**.
 
 ### Message Timing
 
-Cross-chain message delivery on testnet may take several minutes while the Chainlink oracle network finalizes execution.
+Cross-chain message delivery can take several minutes while the Chainlink oracle network waits for source-chain finality and executes the message on the destination chain.
 
 ---
 
@@ -186,18 +226,21 @@ Cross-chain message delivery on testnet may take several minutes while the Chain
 ## Additional Resources
 
 - [**CCIP Documentation**](https://docs.chain.link/ccip)
+- [**CCIP Directory: Hedera Mainnet**](https://docs.chain.link/ccip/directory/mainnet/chain/hedera-mainnet)
+- [**CCIP Directory: Hedera Testnet**](https://docs.chain.link/ccip/directory/testnet/chain/hedera-testnet)
 - [**CCIP Token Manager**](https://tokenmanager.chain.link/)
 - [**CCIP SDK (JavaScript)**](https://docs.chain.link/ccip/ccip-javascript-sdk)
 - [**Hedera CCIP Demo Repository**](https://github.com/mgarbs/hedera-ccip-demos)
-- [**HashScan Explorer**](https://hashscan.io/testnet)
+- [**HashScan Explorer (Mainnet)**](https://hashscan.io/mainnet)
+- [**HashScan Explorer (Testnet)**](https://hashscan.io/testnet)
 - [**Chainlink Faucets**](https://faucets.chain.link/)
 
 ---
 
 ## Summary
 
-**Chainlink CCIP** establishes a universal standard for **secure, decentralized cross-chain interoperability**.
-It connects Hedera to a broader multi-chain ecosystem—enabling assets, logic, and state to move across blockchains through a unified protocol.
+**Chainlink CCIP** is a standard for **secure, decentralized cross-chain interoperability**, and it is live on Hedera Mainnet and Hedera Testnet.
+It connects Hedera to a broader multi-chain ecosystem, letting assets, logic, and state move across blockchains through a single protocol.
 
-On Hedera, CCIP provides a **modular, future-ready foundation** for interoperability, supporting **HTS and EVM token compatibility** under the **CCT standard**.
-This complements other interoperability solutions such as [**LayerZero**](/evm/integrations/cross-chain/layerzero) and **Hashport**, positioning Hedera as a key network in the interoperable web3 ecosystem.
+On Hedera, CCIP supports **HTS and EVM tokens** under the **CCT standard**.
+It complements other interoperability solutions such as [**LayerZero**](/evm/integrations/cross-chain/layerzero) and **Hashport**.

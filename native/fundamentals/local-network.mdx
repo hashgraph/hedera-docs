@@ -3,81 +3,85 @@ title: "Local Network"
 description: "Run a Hedera network on your own machine for development without testnet rate limits, resets, or faucet dependencies, and point the SDK at it with Solo."
 ---
 
-import LocalNodeDeprecation from '/snippets/local-node-deprecation.mdx';
-
-<LocalNodeDeprecation />
-
-While you are developing your application, you can use the Hedera-supported networks (previewnet and testnet) to test against. You can also run your own local network — a consensus node and mirror node on your machine — for development without testnet rate limits, resets, or faucet dependencies.
+While you are developing your application, you can use the Hedera-supported networks (previewnet and testnet) to test against. You can also run your own local network, a full Hedera stack on your machine, for development without testnet rate limits, resets, or faucet dependencies.
 
 With a local network set up, you can:
 
 * Create and submit transactions and queries to a consensus node
 * Interact with the mirror node via REST APIs
+* Run integration tests in CI against a network you control
 
-## Recommended: Solo
+[Solo](https://solo.hiero.org/docs/) is the recommended way to run a local Hedera network. It deploys a consensus node, mirror node, block node, JSON-RPC relay, and block explorer, and it works with all Hiero SDKs.
 
-[Solo](https://solo.hiero.org/docs/) is the recommended way to run a local Hedera network. It deploys a full stack — consensus node, mirror node, JSON-RPC relay, and block explorer — and is compatible with all Hiero SDKs.
+## 1. Start a local network
 
-<CardGroup cols={2}>
-  <Card title="Get started with Solo" href="https://solo.hiero.org/docs/simple-solo-setup/quickstart/" arrow>
-    Install Solo and start a local network.
-  </Card>
-  <Card title="Using Solo with Hiero SDKs" href="https://solo.hiero.org/docs/using-solo/using-solo-with-hiero-sdks/" arrow>
-    Point the JavaScript, Java, or Go SDK at your Solo network.
-  </Card>
-</CardGroup>
+Install Solo and deploy a single-node network:
 
-The SDK connection pattern is the same as shown below — `Client.forNetwork()` and `Client.setMirrorNetwork()` — only the endpoint addresses differ. See [Using Solo with Hiero SDKs](https://solo.hiero.org/docs/using-solo/using-solo-with-hiero-sdks/) for the host and port values for your Solo deployment.
+```bash
+npm install -g @hiero-ledger/solo@latest
+solo one-shot single deploy
+```
 
-## Local Node (deprecated)
+See [Local Development](/native/local-dev/index) for prerequisites, verification steps, and troubleshooting.
+
+## 2. Configure your client
+
+Point your client at the local consensus node and mirror node instead of a public network by building the network map explicitly.
 
 <Warning>
-The walkthrough below uses Hiero Local Node, which is in a 6-month deprecation period ending September 2026. The steps remain valid until then, but new projects should use [Solo](#recommended-solo) instead.
+Do not use the built-in local-network presets. `Client.forLocalNode()` in JavaScript and `ClientForName("local")` in Go are hardcoded to `50211` for consensus gRPC and `5600` for the mirror node, which Solo 0.63 and later do not expose. The Java SDK's `Client.forName()` only accepts `mainnet`, `testnet`, and `previewnet`, and throws `IllegalArgumentException` otherwise. Build the map yourself, as shown below.
 </Warning>
 
-### 1. Set Up your local network
-
-Set-up your local network by following the instructions found in the [readme](https://github.com/hiero-ledger/hiero-local-node#docker) of the `hedera-local-node` project. This will create a Hedera network composed of one consensus node and one mirror node. The consensus node will process incoming transactions and queries. The mirror node stores the history of transactions. Both nodes are created at startup.
-
-### 2. Configure your network
-
-Once you have your local network up and running, you will need to configure your Hedera client to point to your local network in your project of choice. Your project should have your language specific Hedera SDK as a dependency and imported into your project. You may reference the environment setup instructions if you don't know how.
-
-Your local network IP address and port will be `127.0.0.1:50211` and your local mirror node IP and port will be `127.0.0.1:5600`. The consensus node account ID is `0.0.3`. This is the node account ID that will receive your transaction and query requests. It is recommended to store these variables in an environment or config file. These values will be hard-coded in the example for demonstration purposes.
-
-Configure your local network by using `Client.forNetwork()`. This allows you to set a custom consensus network by providing the IP address and port. `Client.setMirrorNetwork()` allows you to set a custom mirror node network by providing the IP address and port.
+On Solo 0.63 and later, a single-node deployment exposes the consensus node at `127.0.0.1:35211` with node account ID `0.0.3`, and the mirror node at `127.0.0.1:38081`. Store these in an environment or config file rather than hard-coding them; they are inlined below only for readability.
 
 <CodeGroup>
 
 ```java Java
 //Create your local client
-Client client = Client.forNetwork(Collections.singletonMap("127.0.0.1:50211", AccountId.fromString("0.0.3"))).setMirrorNetwork(List.of("127.0.0.1:5600"));
+Map<String, AccountId> network = new HashMap<>();
+network.put("127.0.0.1:35211", AccountId.fromString("0.0.3"));
+
+Client client = Client.forNetwork(network);
+client.setMirrorNetwork(List.of("127.0.0.1:38081"));
 ```
 
 
 ```javascript JavaScript
 //Create your local client
-const node = {"127.0.0.1:50211": new AccountId(3)};
-const client = Client.forNetwork(node).setMirrorNetwork("127.0.0.1:5600");
+const network = { "127.0.0.1:35211": AccountId.fromString("0.0.3") };
+const mirrorNetwork = "127.0.0.1:38081";
+
+const client = Client.fromConfig({
+    network,
+    mirrorNetwork,
+    // Required: the SDK's address-book refresh otherwise pulls in the
+    // hardcoded 50211/50212 ports, which Solo 0.63+ does not expose.
+    scheduleNetworkUpdate: false,
+});
 ```
 
 
 ```go Go
 //Create your local client
-node := make(map[string]hedera.AccountID, 1)
-node["127.0.0.1:50211"] = hedera.AccountID{Account: 3}
+network := make(map[string]hiero.AccountID, 1)
+network["127.0.0.1:35211"] = hiero.AccountID{Account: 3}
 
-mirrorNode := []string{"127.0.0.1:5600"}
-
-client := hedera.ClientForNetwork(node)
-client.SetMirrorNetwork(mirrorNode)
+client, err := hiero.ClientForNetworkV2(network)
+if err != nil {
+	panic(err)
+}
+client.SetMirrorNetwork([]string{"127.0.0.1:38081"})
 ```
 
 </CodeGroup>
 
-### 3. Set your local node transaction fee paying account
+<Info>
+These ports are Solo's defaults, not guarantees. Solo forwards to the next free port if one is taken, and the values changed in 0.63. Confirm what your deployment exposes with `solo deployment config ports --deployment <deployment-name>`, and see [Using Solo with Hiero SDKs](https://solo.hiero.org/docs/using-solo/using-solo-with-hiero-sdks/) for the full per-SDK walkthrough.
+</Info>
 
-You will need an account ID and key to pay for the [fees](/networks/fees) associated with each transaction and query that is submitted to your local network. You will use the account ID and key provided by the local node on startup to set up your operator account ID and key. The operator is the default account that pays for transaction and query fees.
+## 3. Set your transaction fee paying account
+
+You need an account ID and key to pay the [fees](/networks/fees) for each transaction and query submitted to your local network. Solo provisions a bootstrap operator account, `0.0.2`, at genesis and writes it to `systemAccounts[0]` in `~/.solo/one-shot-<deployment-name>/accounts.json`. Its key is Ed25519 in DER format. Read the `privateKey` value, the longer string beginning with `302e`, not `publicKey`.
 
 | **Account ID**  | `0.0.2`                                                                                            |
 | --------------- | -------------------------------------------------------------------------------------------------- |
@@ -100,8 +104,8 @@ client.setOperator(AccountId.fromString("0.0.2"),PrivateKey.fromString("302e0201
 
 
 ```go Go wrap
-accountId, err := hedera.AccountIDFromString("0.0.2")
-privateKey, err := hedera.PrivateKeyFromString(
+accountId, err := hiero.AccountIDFromString("0.0.2")
+privateKey, err := hiero.PrivateKeyFromStringDer(
 "302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137")
 
 client.SetOperator(accountId, privateKey)
@@ -109,14 +113,14 @@ client.SetOperator(accountId, privateKey)
 
 </CodeGroup>
 
-### 4. Submit your transaction
+## 4. Submit your transaction
 
 Submit a transaction that will create a new account in your local network. The console should print out the new account ID. In this example, we are using the same key as the transaction fee paying account as the key for the new account. You can also create a [new key](/native/keys/generate-key-pair) if you wish.
 
 <CodeGroup>
 
 ```java Java
-//Submit a transaction to your local node
+//Submit a transaction to your local network
 TransactionResponse newAccount = new AccountCreateTransaction()
         .setKeyWithoutAlias(PrivateKey.fromString("302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137"))
         .setInitialBalance(new Hbar(1))
@@ -132,7 +136,7 @@ System.out.println(newAccountId);
 
 
 ```javascript JavaScript
-//Submit a transaction to your local node
+//Submit a transaction to your local network
 const newAccount = await new AccountCreateTransaction()
         .setKeyWithoutAlias(PrivateKey.fromString("302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137"))
         .setInitialBalance(new Hbar(1))
@@ -148,10 +152,10 @@ console.log(newAccountId);
 
 
 ```go Go
-//Submit a transaction to your local node
-newAccount, err := hedera.NewAccountCreateTransaction().
+//Submit a transaction to your local network
+newAccount, err := hiero.NewAccountCreateTransaction().
 	SetKeyWithoutAlias(privateKey).
-    	SetInitialBalance(hedera.NewHbar(1)).
+    	SetInitialBalance(hiero.NewHbar(1)).
 	Execute(client)
 
 if err != nil {
@@ -169,19 +173,19 @@ fmt.Print(newAccountId)
 
 </CodeGroup>
 
-### 5. View your transaction
+## 5. View your transaction
 
 You can view the executed transaction by querying your local mirror node.
 
-The local mirror node endpoint URL is `http://localhost:5551/`.
+The local mirror node REST endpoint is `http://localhost:38081/`.
 
-You can view the transactions that were submitted to your local node by submitting this request:
+You can view the transactions that were submitted to your local network by submitting this request:
 
 ```http
-http://localhost:5551/api/v1/transactions
+http://localhost:38081/api/v1/transactions
 ```
 
-The list of supported mirror node REST APIs can be found [here](/reference/rest-api). You have now set-up your local environment. Check out the following links for more examples.
+The list of supported mirror node REST APIs can be found [here](/reference/rest-api). You can also browse the same data in the Mirror Node Explorer at `http://localhost:38080/localnet/dashboard`. You have now set up your local environment. Check out the following links for more examples.
 
 <Columns cols={2}>
 <Card
@@ -203,20 +207,25 @@ The list of supported mirror node REST APIs can be found [here](/reference/rest-
 ```java Java wrap
 import com.hedera.hashgraph.sdk.*;
 import java.io.IOException;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
-public class LocalNode {
+public class LocalNetwork {
     public static void main(String[] args) throws TimeoutException, PrecheckStatusException, ReceiptStatusException, InterruptedException, IOException {
 
         //Create your local client
-        Client client = Client.forNetwork(Collections.singletonMap("127.0.0.1:50211", AccountId.fromString("0.0.3"))).setMirrorNetwork(List.of("127.0.0.1:5600"));
+        Map<String, AccountId> network = new HashMap<>();
+        network.put("127.0.0.1:35211", AccountId.fromString("0.0.3"));
+
+        Client client = Client.forNetwork(network);
+        client.setMirrorNetwork(List.of("127.0.0.1:38081"));
 
         //Set the transaction fee paying account
         client.setOperator(AccountId.fromString("0.0.2"), PrivateKey.fromString("302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137"));
         
-        //Submit a transaction to your local node
+        //Submit a transaction to your local network
         TransactionResponse newAccount = new AccountCreateTransaction()
                 .setKeyWithoutAlias(PrivateKey.fromString("302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137"))
                 .setInitialBalance(new Hbar(1))
@@ -240,18 +249,21 @@ const {
     Hbar,
     AccountId,
     AccountCreateTransaction,
-} = require("@hashgraph/sdk");
+} = require("@hiero-ledger/sdk");
 
 async function main() {
 
         //Create your local client
-        const node = {"127.0.0.1:50211": new AccountId(3)}
-        const client = Client.forNetwork(node).setMirrorNetwork("127.0.0.1:5600");
+        const client = Client.fromConfig({
+            network: { "127.0.0.1:35211": AccountId.fromString("0.0.3") },
+            mirrorNetwork: "127.0.0.1:38081",
+            scheduleNetworkUpdate: false,
+        });
 
         //Set the transaction fee paying account
         client.setOperator(AccountId.fromString("0.0.2"),PrivateKey.fromString("302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137"));
 
-        //Submit a transaction to your local node
+        //Submit a transaction to your local network
         const newAccount = await new AccountCreateTransaction()
                 .setKeyWithoutAlias(PrivateKey.fromString("302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137"))
                 .setInitialBalance(new Hbar(1))
@@ -274,28 +286,29 @@ package main
 import (
 	"fmt"
 
-	hedera "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
+	hiero "github.com/hiero-ledger/hiero-sdk-go/v2/sdk"
 )
 
 func main() {
-	//Create your local node client
-	node := make(map[string]hedera.AccountID, 1)
-	node["127.0.0.1:50211"] = hedera.AccountID{Account: 3}
+	//Create your local client
+	network := make(map[string]hiero.AccountID, 1)
+	network["127.0.0.1:35211"] = hiero.AccountID{Account: 3}
 
-	mirrorNode := []string{"127.0.0.1:5600"}
-
-	client := hedera.ClientForNetwork(node)
-	client.SetMirrorNetwork(mirrorNode)
+	client, err := hiero.ClientForNetworkV2(network)
+	if err != nil {
+		panic(err)
+	}
+	client.SetMirrorNetwork([]string{"127.0.0.1:38081"})
 
 	//Set the transaction fee paying account
-	accountId, err := hedera.AccountIDFromString("0.0.2")
-	privateKey, err := hedera.PrivateKeyFromString("302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137")
+	accountId, err := hiero.AccountIDFromString("0.0.2")
+	privateKey, err := hiero.PrivateKeyFromStringDer("302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137")
 	client.SetOperator(accountId, privateKey)
 
-	//Submit a transaction to your local node
-	newAccount, err := hedera.NewAccountCreateTransaction().
+	//Submit a transaction to your local network
+	newAccount, err := hiero.NewAccountCreateTransaction().
 		SetKeyWithoutAlias(privateKey).
-    		SetInitialBalance(hedera.NewHbar(1)).
+    		SetInitialBalance(hiero.NewHbar(1)).
 		Execute(client)
 
 	if err != nil {

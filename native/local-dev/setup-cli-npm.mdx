@@ -1,286 +1,173 @@
 ---
-title: "Set Up a Hedera Local Node using the NPM CLI"
-description: "Install and run a Hedera node locally with the @hashgraph/hedera-local NPM CLI and docker compose, from prerequisites through startup."
+title: "Set Up a Local Network Using the Solo CLI"
+description: "Install the Solo CLI with npm, deploy a single-node Hedera network locally, verify it is running, and connect your tooling to the generated endpoints and accounts."
+sidebarTitle: "Solo CLI Setup"
 ---
 
-import LocalNodeDeprecation from '/snippets/local-node-deprecation.mdx';
+[Solo](https://solo.hiero.org/docs/) is a Kubernetes-native tool that runs a full Hedera network on your machine: consensus node, mirror node, block node, JSON-RPC relay, and the Mirror Node Explorer. This page walks through installing the CLI from npm, deploying a single-node network, and confirming that it works.
 
-<LocalNodeDeprecation />
-
-Hedera is an open-source, public, proof-of-stake network. Its network services offer low and fixed fees, 10k TPS, and instant transaction finality. Learn more about the [Hedera platform and how it works](https://hedera.com/how-it-works).
-
-In this tutorial, we will adopt, set up, and run a Hedera node locally using the [@hashgraph/hedera-local](https://www.npmjs.com/package/@hashgraph/hedera-local) NPM Command Line Interface (CLI) tool with `docker compose`.
-
-> This tutorial is based on the [Hedera Local Node README documentation](https://github.com/hiero-ledger/hiero-local-node).
-
-> Already familiar with using a cloud service? Check out the other options for setting up and running the Hedera node locally. See the [Useful resources section](https://docs.google.com/document/d/1gWKWF-fzc0VlKhRhjZhecatHnTXkHy9RQeKfD6Klnak/edit#heading=h.5zlu1j5vb4rk) for more information.
+<Info>
+Solo is maintained by the Hiero project and its documentation is the source of truth for installation details and version-specific behavior. This page covers the setup path most Hedera developers need. See the [Solo quickstart](https://solo.hiero.org/docs/simple-solo-setup/quickstart/) for the complete reference.
+</Info>
 
 ## Prerequisites
 
-To get started with this tutorial, ensure that you have the following software installed:
+Install the following before you begin:
 
-- [Node.js](https://nodejs.org/) >= v14.x (Check version: `node -v`)
-- NPM >= v6.14.17 (Check version: `npm -v`)
-- [Docker](https://www.docker.com/) >= v20.10.x (Check version: `docker -v`)
-- [Docker Compose](https://docs.docker.com/compose/) >= v2.12.3 (Check version: `docker compose version`)
-- Hardware: Minimum 16GB RAM
+| Requirement | Notes |
+| --- | --- |
+| [Node.js](https://nodejs.org/) 22 or later | Check with `node --version`. Solo fails with an `EBADENGINE` warning on Node.js 20.x or earlier |
+| [Docker](https://www.docker.com/) | Must be running before you deploy. On macOS, open Docker Desktop first; the daemon does not start on its own |
+| Hardware | 16 GB RAM and 8 CPU cores allocated to Docker for multi-node deployments |
 
-### Installation
+You do not need to install Kubernetes tooling yourself. Solo provisions `kubectl`, Helm, and `kind` at deploy time.
 
-- Node.js and NPM: Refer to the [official installation guide](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs).
-- Docker: See [Docker Setup Guide](https://github.com/hiero-ledger/hiero-local-node?tab=readme-ov-file#note) to get docker up and running (note: specific instructions may vary based on the OS).
+Work through the [Solo system readiness guide](https://solo.hiero.org/docs/simple-solo-setup/system-readiness/) first if this is your first deployment on this machine.
 
-## Getting Started
-
-Clone the GitHub repo, navigate to the project folder using the commands below;
-
-```js
-git clone https://github.com/hiero-ledger/hiero-local-node.git
-cd hedera-local-node
-```
-
-### Install CLI Tool
-
-The command below can be used to install the official release from the [NPM](https://www.npmjs.com/package/@hashgraph/hedera-local) repository.
-
-```js
-npm install @hashgraph/hedera-local -g
-```
-
-> **Note: This version may not reflect the most recent changes to the main branch of this repository. It also uses a baked in version of the Docker Compose definitions and will not reflect any local changes made to the repository.**
-
-#### Local development Installation
-
-Install the dependencies locally.
-
-```js
-npm install && npm install -g
-```
-
-### Running the Node:
-
-Start the local node (Note: Ensure Docker is running):
-
-```js
-npm run start
-```
-
-**You can pass the following CLI flags, this would be used later in the following sections:**
-
-```js
---d / --detached - Start the local node in detached mode.
---h / --host - Override the default host.
-```
-
-**Other NPM commands:**
-
-- `npm run restart` to restart the network
-- `npm run stop` to stop the network
-- `npm run generate-accounts` to generate new accounts - network must be running first
-
-**You should see the following response in the terminal:**
+## Install the CLI
 
 ```bash
-hedera-local-node % npm run start
-
-> @hashgraph/hedera-local@2.26.2 restart
-> npm run build && node ./build/index.js restart
-
-
-> @hashgraph/hedera-local@2.26.2 build
-> rimraf ./build && tsc
-
-[Hedera-Local-Node] INFO (StateController) [✔︎] Starting restart procedure!
-[Hedera-Local-Node] INFO (CleanUpState) ⏳ Initiating clean up procedure. Trying to revert unneeded changes to files...
-[Hedera-Local-Node] INFO (CleanUpState) [✔︎] Clean up of consensus node properties finished.
-[Hedera-Local-Node] INFO (CleanUpState) [✔︎] Clean up of mirror node properties finished.
-[Hedera-Local-Node] INFO (StopState) ⏳ Initiating stop procedure. Trying to stop docker containers and clean up volumes...
-[Hedera-Local-Node] INFO (StopState) ⏳ Stopping the network...
-[Hedera-Local-Node] INFO (StopState) [✔︎] Hedera Local Node was stopped successfully.
-[Hedera-Local-Node] INFO (InitState) ⏳ Making sure that Docker is started and it is correct version...
-[Hedera-Local-Node] INFO (DockerService) ⏳ Checking docker compose version...
-[Hedera-Local-Node] INFO (DockerService) ⏳ Checking docker resources...
-[Hedera-Local-Node] WARNING (DockerService) [!] Port 3000 is in use.
-[Hedera-Local-Node] INFO (InitState) ⏳ Setting configuration with latest images on host 127.0.0.1 with dev mode turned off using turbo mode in single node configuration...
-[Hedera-Local-Node] INFO (InitState) [✔︎] Local Node Working directory set to /Users/owanate/Library/Application Support/hedera-local.
-[Hedera-Local-Node] INFO (InitState) [✔︎] Hedera JSON-RPC Relay rate limits were disabled.
-[Hedera-Local-Node] INFO (InitState) [✔︎] Needed environment variables were set for this configuration.
-[Hedera-Local-Node] INFO (InitState) [✔︎] Needed bootsrap properties were set for this configuration.
-[Hedera-Local-Node] INFO (InitState) [✔︎] Needed bootsrap properties were set for this configuration.
-[Hedera-Local-Node] INFO (InitState) [✔︎] Needed mirror node properties were set for this configuration.
-[Hedera-Local-Node] INFO (StartState) ⏳ Starting Hedera Local Node...
+npm install -g @hiero-ledger/solo@latest
 ```
 
-To generate default accounts and start the local node in detached mode, use the command below:
-
-```js
-npm run start -- -d
-```
-
-**You should see the following response in the terminal:**
+Confirm the install:
 
 ```bash
-hedera-local-node % npm run start -- -d
-
-> @hashgraph/hedera-local@2.26.2 start
-> npm run build && node ./build/index.js start -d
-
-
-> @hashgraph/hedera-local@2.26.2 build
-> rimraf ./build && tsc
-[Hedera-Local-Node] INFO (StartState) [✔︎] Hedera Local Node successfully started!
-[Hedera-Local-Node] INFO (NetworkPrepState) ⏳ Starting Network Preparation State...
-[Hedera-Local-Node] INFO (NetworkPrepState) [✔︎] Imported fees successfully!
-[Hedera-Local-Node] INFO (NetworkPrepState) [✔︎] Topic was created!
-[Hedera-Local-Node] INFO (AccountCreationState) ⏳ Starting Account Creation state in synchronous mode ...
-[Hedera-Local-Node] INFO (AccountCreationState) |-----------------------------------------------------------------------------------------|
-[Hedera-Local-Node] INFO (AccountCreationState) |-----------------------------| Accounts list (ECDSA keys) |----------------------------|
-[Hedera-Local-Node] INFO (AccountCreationState) |-----------------------------------------------------------------------------------------|
-[Hedera-Local-Node] INFO (AccountCreationState) |    id    |                            private key                            |  balance |
-[Hedera-Local-Node] INFO (AccountCreationState) |-----------------------------------------------------------------------------------------|
-[Hedera-Local-Node] INFO (AccountCreationState) | 0.0.1002 - 0x7f109a9e3b0d8ecfba9cc23a3614433ce0fa7ddcc80f2a8f10b222179a5a80d6 - 10000 ℏ |
-[Hedera-Local-Node] INFO (AccountCreationState) | 0.0.1003 - 0x6ec1f2e7d126a74a1d2ff9e1c5d90b92378c725e506651ff8bb8616a5c724628 - 10000 ℏ |
-[Hedera-Local-Node] INFO (AccountCreationState) | 0.0.1004 - 0xb4d7f7e82f61d81c95985771b8abf518f9328d019c36849d4214b5f995d13814 - 10000 ℏ |
-[Hedera-Local-Node] INFO (AccountCreationState) | 0.0.1005 - 0x941536648ac10d5734973e94df413c17809d6cc5e24cd11e947e685acfbd12ae - 10000 ℏ |
-[Hedera-Local-Node] INFO (AccountCreationState) | 0.0.1006 - 0x5829cf333ef66b6bdd34950f096cb24e06ef041c5f63e577b4f3362309125863 - 10000 ℏ |
-[Hedera-Local-Node] INFO (AccountCreationState) | 0.0.1007 - 0x8fc4bffe2b40b2b7db7fd937736c4575a0925511d7a0a2dfc3274e8c17b41d20 - 10000 ℏ |
-[Hedera-Local-Node] INFO (AccountCreationState) | 0.0.1008 - 0xb6c10e2baaeba1fa4a8b73644db4f28f4bf0912cceb6e8959f73bb423c33bd84 - 10000 ℏ |
-[Hedera-Local-Node] INFO (AccountCreationState) | 0.0.1009 - 0xfe8875acb38f684b2025d5472445b8e4745705a9e7adc9b0485a05df790df700 - 10000 ℏ |
-[Hedera-Local-Node] INFO (AccountCreationState) | 0.0.1010 - 0xbdc6e0a69f2921a78e9af930111334a41d3fab44653c8de0775572c526feea2d - 10000 ℏ |
-[Hedera-Local-Node] INFO (AccountCreationState) | 0.0.1011 - 0x3e215c3d2a59626a669ed04ec1700f36c05c9b216e592f58bbfd3d8aa6ea25f9 - 10000 ℏ |
-[Hedera-Local-Node] INFO (AccountCreationState) |-----------------------------------------------------------------------------------------|
-[Hedera-Local-Node] INFO (AccountCreationState) |--------------------------------------------------------------------------------------------------------------------------------------|
-[Hedera-Local-Node] INFO (AccountCreationState) |------------------------------------------------| Accounts list (Alias ECDSA keys) |--------------------------------------------------|
-[Hedera-Local-Node] INFO (AccountCreationState) |--------------------------------------------------------------------------------------------------------------------------------------|
-[Hedera-Local-Node] INFO (AccountCreationState) |    id    |               public address               |                             private key                            | balance |
-[Hedera-Local-Node] INFO (AccountCreationState) |--------------------------------------------------------------------------------------------------------------------------------------|
-[Hedera-Local-Node] INFO (AccountCreationState) | 0.0.1012 - 0x67d8d32e9bf1a9968a5ff53b87d777aa8ebbee69 - 0x105d050185ccb907fba04dd92d8de9e32c18305e097ab41dadda21489a211524 - 10000 ℏ |
-.....
-[Hedera-Local-Node] INFO (AccountCreationState) |-----------------------------------------------------------------------------------------|
-[Hedera-Local-Node] INFO (AccountCreationState) [✔︎] Accounts created succefully!
-[Hedera-Local-Node] INFO (CleanUpState) ⏳ Initiating clean up procedure. Trying to revert unneeded changes to files...
-[Hedera-Local-Node] INFO (CleanUpState) [✔︎] Clean up of consensus node properties finished.
-[Hedera-Local-Node] INFO (CleanUpState) [✔︎] Clean up of mirror node properties finished.
+solo --version
 ```
 
-<Frame>
-  <img src="/images/tutorials/local-node/setup-hedera-node-cli-npm/setup-hedera-node-cli-npm-1.png" />
-</Frame>
-## Verify Running Node
+## Deploy a network
 
-There are different ways to verify that a node is running;
-
-- Check Block Number using Hashscan Block Explorer
-- Send cURL request to `getBlockNumber`
-
-### Check Block Number using Hashscan Block Explorer
-
-Visit the local mirror node explorer endpoint (http://localhost:8080/devnet/dashboard) in your web browser. Ensure that `LOCALNET` is selected, as this will show you the Hedera network running within your local network.
-
-Select any of the listed blocks to view the details (Consensus, Block, Transaction Hash, etc) for a particular block.
-
-<Frame>
-  <img src="/images/tutorials/local-node/setup-hedera-node-cli-npm/setup-hedera-node-cli-npm-2.png" />
-</Frame>
-
-<Frame>
-  <img src="/images/tutorials/local-node/setup-hedera-node-cli-npm/setup-hedera-node-cli-npm-3.png" />
-</Frame>
-
-### Send cURL request to getBlockNumber
-
-Let's verify that we are able to interact with Hedera Testnet using JSON-RPC by issuing an `eth_getBlockByNumber` JSON-RPC request.
-
-**Enter the curl command below:**
+Start a single-node network. This deploys the consensus node, mirror node, explorer, and JSON-RPC relay, and generates pre-funded accounts:
 
 ```bash
-  curl http://localhost:7546/ \
-  -X POST \
-  -H "Content-Type: application/json" \
-  --data '{"method":"eth_getBlockByNumber","params":["latest",false],"id":1,"jsonrpc":"2.0"}'
+solo one-shot single deploy
 ```
 
-**You should get the following response:**
+For a multi-node deployment, use the `multi` variant and set the node count:
 
 ```bash
-curl http://localhost:7546/ \
-  -X POST \
-  -H "Content-Type: application/json" \
-  --data '{"method":"eth_getBlockByNumber","params":["latest",false],"id":1,"jsonrpc":"2.0"}'
-{"result":{"timestamp":"0x667c000e","difficulty":"0x0","extraData":"0x","gasLimit":"0xe4e1c0","baseFeePerGas":"0xa54f4c3c00","gasUsed":"0x0","logsBloom":"0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000","miner":"0x0000000000000000000000000000000000000000","mixHash":"0x0000000000000000000000000000000000000000000000000000000000000000","nonce":"0x0000000000000000","receiptsRoot":"0x0000000000000000000000000000000000000000000000000000000000000000","sha3Uncles":"0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347","size":"0x93d","stateRoot":"0x0000000000000000000000000000000000000000000000000000000000000000","totalDifficulty":"0x0","transactions":[],"transactionsRoot":"0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421","uncles":[],"withdrawals":[],"withdrawalsRoot":"0x0000000000000000000000000000000000000000000000000000000000000000","number":"0x1604","hash":"0xfef0932ffb429840fe765d6d87c77425e2991326ddae6747dcce5c929c69ef38","parentHash":"0xef1ef331626f4f50ba2541d440b45cac51c5d8d6b4c46407a00c15d593c31e96"},"jsonrpc":"2.0","id":1}%
+solo one-shot multi deploy --num-consensus-nodes 3
 ```
 
-### Troubleshooting
+Look up the deployment name at any time:
 
-Find below some common errors and how to troubleshoot them:
-
-**Error: Node cannot start properly because necessary ports are in use!**
-
-```js
-hedera-local-node % npm run start -- -d
-
-> @hashgraph/hedera-local@2.26.2 start
-> npm run build && node ./build/index.js start -d
-
-
-> @hashgraph/hedera-local@2.26.2 build
-> rimraf ./build && tsc
-
-[Hedera-Local-Node] INFO (StateController) [✔︎] Starting start procedure!
-[Hedera-Local-Node] INFO (InitState) ⏳ Making sure that Docker is started and it is correct version...
-[Hedera-Local-Node] INFO (DockerService) ⏳ Checking docker compose version...
-[Hedera-Local-Node] INFO (DockerService) ⏳ Checking docker resources...
-[Hedera-Local-Node] ERROR (DockerService) [✘] [✘] Port 5551 is in use.
-[Hedera-Local-Node] ERROR (DockerService) [✘] [✘] Port 8545 is in use.
-[Hedera-Local-Node] ERROR (DockerService) [✘] [✘] Port 5600 is in use.
-[Hedera-Local-Node] ERROR (DockerService) [✘] [✘] Port 5433 is in use.
-[Hedera-Local-Node] ERROR (DockerService) [✘] [✘] Port 8082 is in use.
-[Hedera-Local-Node] ERROR (DockerService) [✘] [✘] Port 6379 is in use.
-[Hedera-Local-Node] WARNING (DockerService) [!] Port 7546 is in use.
-[Hedera-Local-Node] WARNING (DockerService) [!] Port 8080 is in use.
-[Hedera-Local-Node] WARNING (DockerService) [!] Port 3000 is in use.
-[Hedera-Local-Node] ERROR (DockerService) [✘] [✘] Node cannot start properly because necessary ports are in use!
+```bash
+solo one-shot show deployment
 ```
 
-**Fix**
+## Endpoints
 
-- **Option 1:** Instead of starting another instance of the network, use the `npm run generate-accounts` to generate new accounts for an already started network.
-- **Option 2:** If you get the above error, ensure that you terminate any existing Docker processes for the local node, and also any other processes that are bound to these port numbers, before running the npm start command. You can run `docker compose down -v`, `git clean -xfd`, `git reset --hard` to fix this.
+On Solo 0.63 and later, `one-shot single deploy` exposes:
 
-## Useful Terms
+| Service | Endpoint |
+| --- | --- |
+| Consensus node gRPC | `localhost:35211` (node account ID `0.0.3`) |
+| Mirror node REST API | `http://localhost:38081` |
+| JSON-RPC relay | `http://localhost:37546` (chain ID `298`) |
+| Mirror Node Explorer | `http://localhost:38080` |
 
-For an in depth explanation of the different terms below, see the [glossary documentation](/support/glossary).
+<Info>
+**These are defaults, not guarantees.** Solo reaches these services through `kubectl port-forward`. If a port is already taken, Solo picks the next free one and logs `Using available port <port>` rather than failing. The actual assignments print at the end of the deploy, and you can look them up later:
 
-- Accounts list (ED25519 keys)
-- Private keys
-- Public address
+```bash
+solo deployment config ports --deployment <deployment-name>
+```
 
-## Next Steps
+Solo 0.62 and earlier use different defaults: `7546` for the relay, `50211` for consensus gRPC, `8081` for the mirror node REST API, and `8080` for the explorer.
+</Info>
 
-Want to learn how to deploy smart contracts on Hedera? Visit the guide on how to [Deploy a Smart Contract Using Hardhat and Hedera JSON-RPC Relay](/evm/development/json-rpc).
+## Accounts and keys
 
-## Summary
+Solo writes the generated accounts to:
 
-In this tutorial, we successfully set up and ran the Hedera local node using the [NPM CLI](https://www.npmjs.com/package/@hashgraph/hedera-local) tool, generated default accounts and solved common errors encountered when running the local node.
+```
+~/.solo/one-shot-<deployment-name>/accounts.json
+```
 
-## Useful Resources
+The default deployment name is `one-shot`, so the default path is `~/.solo/one-shot-one-shot/accounts.json`.
 
-- Set and Run a Hedera Node using the [Local Hedera Package](https://github.com/hiero-ledger/hiero-local-node?tab=readme-ov-file#using-hedera-local).
-- [Setup node using Docker CLI](https://github.com/hiero-ledger/hiero-local-node?tab=readme-ov-file#docker).
-- Use [local network variables](https://github.com/hiero-ledger/hiero-local-node?tab=readme-ov-file#network-variables) to interact with Consensus and Mirror Nodes
-- Using [Grafana and Prometheus Endpoints](https://github.com/hiero-ledger/hiero-local-node?tab=readme-ov-file#grafana--prometheus).
+The file has two parts:
 
-<Columns cols={2}>
-  <Card title="Writer: Owanate, DX Engineer" arrow>
-    [GitHub](https://github.com/owans) |
-    [Medium](https://medium.com/@owanateamachree)
-    [GitHub](https://github.com/owans) |
-    [Medium](https://medium.com/@owanateamachree)
+* `systemAccounts[0]` is the bootstrap operator account, `0.0.2`, with an **Ed25519** key in DER format. Use this as the operator for native SDK work.
+* `createdAccounts` holds pre-funded **ECDSA** accounts. Each entry has a private key (64 hex characters with a `0x` prefix), its public key, and the derived EVM address. Use these for MetaMask, Hardhat, Foundry, and ethers.js. ED25519 accounts do not work over the JSON-RPC relay.
+
+Export an ECDSA key for EVM tooling rather than hardcoding it:
+
+```bash
+export SOLO_EVM_PRIVATE_KEY="0x<your-64-character-ecdsa-private-key>"
+```
+
+<Danger>
+The keys in a Solo deployment are development credentials generated on your machine. They exist only on your local network. Never reuse a key from any tutorial or example on testnet or mainnet.
+</Danger>
+
+## Verify the network
+
+Check that the pods are up:
+
+```bash
+kubectl get pods -A | grep -v kube-system
+```
+
+Confirm the consensus node is accepting connections:
+
+```bash
+nc -zv localhost 35211
+```
+
+Query the mirror node REST API:
+
+```bash
+curl http://localhost:38081/api/v1/transactions
+```
+
+You can also open the Mirror Node Explorer at `http://localhost:38080` and browse blocks, transactions, and accounts on your local network.
+
+## Tear down
+
+```bash
+solo one-shot single destroy
+```
+
+For a multi-node deployment, use `solo one-shot multi destroy`.
+
+## Troubleshooting
+
+**A service is not on the port you expected.** Solo does not fail when a default port is taken; it forwards to the next free port instead. Read the assignments printed at the end of the deploy, or run `solo deployment config ports --deployment <deployment-name>`.
+
+**A deploy fails with `ImagePullBackOff`.** Solo releases earlier than 0.91.0 reference an object-storage image (`minio/minio`) that no longer resolves from `docker.io` or `quay.io`, returning `401 UNAUTHORIZED` instead. Solo deploys that component by default, so affected releases fail on a normal `one-shot` deploy. Solo 0.91.0 replaced the image. Upgrade to a current release, or see the [Solo documentation](https://solo.hiero.org/docs/) for version-specific guidance:
+
+```bash
+npm install -g @hiero-ledger/solo@latest
+solo --version
+```
+
+**Docker is not running.** Solo provisions a `kind` cluster and requires the Docker daemon. On macOS the daemon does not start automatically, so open Docker Desktop and confirm it is running before you deploy.
+
+**`Stopping port-forward for port [N]` appears in yellow during deploy.** This is expected. Solo clears stale forwards and re-establishes them while finalizing port configuration. It does not indicate a failure.
+
+**`nc -zv localhost 35211` prints a connection refused line on macOS.** The first line is a failed IPv6 attempt. If the second line says the connection succeeded, the port is reachable.
+
+**The deployment stalls or pods stay pending.** Multi-node deployments need 16 GB of RAM and 8 CPU cores allocated to Docker. Raise Docker's resource limits, or deploy a single node instead.
+
+**Port-forwards are gone after a restart.** Restore them without redeploying: `solo deployment refresh port-forwards --deployment <deployment-name>`.
+
+For anything beyond these, see [Solo troubleshooting](https://solo.hiero.org/docs/) or open an issue in the [Solo repository](https://github.com/hiero-ledger/solo).
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Point an SDK at your network" href="/native/fundamentals/local-network" icon="code">
+    Configure the JavaScript, Java, or Go SDK against your Solo endpoints.
   </Card>
-  <Card title="Editor: Krystal, Senior DX Engineer" arrow>
-    [GitHub](https://github.com/theekrystallee) |
-    [X](https://X.com/theekrystallee)
-    [GitHub](https://github.com/theekrystallee) |
-    [X](https://X.com/theekrystallee)
+  <Card title="Using Solo with EVM tools" href="https://solo.hiero.org/docs/using-solo/using-solo-with-evm-tools/" icon="ethereum">
+    Connect MetaMask, Hardhat, and Foundry to the local relay.
   </Card>
-</Columns>
+  <Card title="Hardhat configuration" href="/evm/tools/hardhat" icon="hammer">
+    Hedera-specific notes for configuring Hardhat against a relay.
+  </Card>
+  <Card title="Foundry setup" href="/evm/tools/foundry/setup" icon="wrench">
+    Configure `foundry.toml`, deploy with `forge script`, and interact with `cast`.
+  </Card>
+</CardGroup>

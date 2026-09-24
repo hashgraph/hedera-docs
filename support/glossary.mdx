@@ -753,6 +753,12 @@ The ease of buying or selling an asset in the market without impacting its price
 
 A collection of shared cryptocurrency coins/tokens locked under a smart contract, ensuring liquidity that allows participants to trade easily. They are used for trading in [decentralized exchanges (DEX)](#decentralized-exchange-dex), and for providing liquidity to [decentralized finance (DeFi) protocols](#decentralized-finance-defi), which makes them an important part of yield farming.
 
+### Localnet
+
+---
+
+A Hedera network you run on your own machine rather than one of the public networks ([mainnet](#mainnet), [testnet](#testnet), or previewnet). A localnet is ephemeral, auto-funds its own accounts, and has no rate limits or faucet, which makes it suited to fast iteration and CI. [Solo](#solo) is the supported way to run a localnet; the earlier Hiero Local Node tool is deprecated and no longer supported. See [Local Development](/native/local-dev/index) for setup and endpoints.
+
 ## M
 
 ### Mainnet
@@ -1128,7 +1134,7 @@ Solidity is a Turing-complete object-oriented programming language for developin
 
 ---
 
-Solo is a Kubernetes-native tool for running a private Hedera network locally or in CI environments. It deploys the full Hedera stack — consensus node, block node, mirror node, JSON-RPC relay, and mirror node explorer — in a configuration that mirrors production behavior. Solo is the recommended replacement for Hiero Local Node (deprecating September 2026) and supports development workflows for both EVM-based and native SDK applications. See the [Solo documentation](https://solo.hiero.org/docs/) for setup and usage guides.
+Solo is a Kubernetes-native tool for running a private Hedera network locally or in CI environments. It deploys the full Hedera stack (consensus node, block node, mirror node, JSON-RPC relay, and mirror node explorer) in a configuration that mirrors production. Solo is the recommended replacement for Hiero Local Node, which is deprecated and no longer supported, and supports development workflows for both EVM-based and native SDK applications. See the [Solo documentation](https://solo.hiero.org/docs/) for setup and usage guides.
 
 ### Soul-Bound Token (SBT)
 

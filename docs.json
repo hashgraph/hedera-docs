@@ -138,8 +138,28 @@
       "destination": "/native/keys/generate-key-pair"
     },
     {
-      "source": "/native/local-dev",
-      "destination": "/native/local-dev/setup-local-node"
+      "source": "/native/local-dev/setup-local-node",
+      "destination": "/native/local-dev"
+    },
+    {
+      "source": "/native/local-dev/cde",
+      "destination": "/native/local-dev"
+    },
+    {
+      "source": "/native/local-dev/cde/gitpod",
+      "destination": "/native/local-dev"
+    },
+    {
+      "source": "/native/local-dev/cde/codespaces",
+      "destination": "/native/local-dev"
+    },
+    {
+      "source": "/networks/localnet/single-node",
+      "destination": "/networks/localnet"
+    },
+    {
+      "source": "/networks/localnet/multinode",
+      "destination": "/networks/localnet"
     },
     {
       "source": "/hedera",
@@ -846,10 +866,6 @@
       "destination": "/solutions/examples/demos"
     },
     {
-      "source": "/hedera/tutorials/local-node/how-to-set-up-a-hedera-local-node",
-      "destination": "/native/local-dev/setup-local-node"
-    },
-    {
       "source": "/hedera/tutorials/more-tutorials",
       "destination": "/native/tutorials/more"
     },
@@ -952,6 +968,30 @@
     {
       "source": "/native/tutorials",
       "destination": "/native/tutorials/getting-started/create-fund-account"
+    },
+    {
+      "source": "/hedera/tutorials/local-node",
+      "destination": "/native/local-dev"
+    },
+    {
+      "source": "/hedera/tutorials/local-node/how-to-set-up-a-hedera-local-node",
+      "destination": "/native/local-dev"
+    },
+    {
+      "source": "/hedera/tutorials/local-node/how-to-run-hedera-local-node-in-a-cloud-development-environment-cde",
+      "destination": "/native/local-dev"
+    },
+    {
+      "source": "/hedera/tutorials/local-node/how-to-run-hedera-local-node-in-a-cloud-development-environment-cde/codespaces",
+      "destination": "/native/local-dev"
+    },
+    {
+      "source": "/hedera/tutorials/local-node/how-to-run-hedera-local-node-in-a-cloud-development-environment-cde/gitpod",
+      "destination": "/native/local-dev"
+    },
+    {
+      "source": "/hedera/tutorials/local-node/setup-hedera-node-cli-npm",
+      "destination": "/native/local-dev/setup-cli-npm"
     },
     {
       "source": "/hedera/tutorials/:slug*",
@@ -1223,11 +1263,11 @@
     },
     {
       "source": "/hedera/networks/localnet/multinode-configuration",
-      "destination": "/networks/localnet/multinode"
+      "destination": "/networks/localnet"
     },
     {
       "source": "/hedera/networks/localnet/single-node-configuration",
-      "destination": "/networks/localnet/single-node"
+      "destination": "/networks/localnet"
     },
     {
       "source": "/hedera/networks/mainnet/mainnet-access",
@@ -1942,26 +1982,6 @@
       "destination": "/native/tutorials/advanced/hashgraphdev"
     },
     {
-      "source": "/hedera/tutorials/local-node",
-      "destination": "/native/local-dev"
-    },
-    {
-      "source": "/hedera/tutorials/local-node/how-to-run-hedera-local-node-in-a-cloud-development-environment-cde",
-      "destination": "/native/local-dev/cde"
-    },
-    {
-      "source": "/hedera/tutorials/local-node/how-to-run-hedera-local-node-in-a-cloud-development-environment-cde/codespaces",
-      "destination": "/native/local-dev/cde/codespaces"
-    },
-    {
-      "source": "/hedera/tutorials/local-node/how-to-run-hedera-local-node-in-a-cloud-development-environment-cde/gitpod",
-      "destination": "/native/local-dev/cde/gitpod"
-    },
-    {
-      "source": "/hedera/tutorials/local-node/setup-hedera-node-cli-npm",
-      "destination": "/native/local-dev/setup-cli-npm"
-    },
-    {
       "source": "/hedera/tutorials/more-tutorials/HSM-signing",
       "destination": "/native/tutorials/advanced/hsm-signing"
     },
@@ -2281,9 +2301,7 @@
               {
                 "group": "Localnet",
                 "pages": [
-                  "networks/localnet/index",
-                  "networks/localnet/single-node",
-                  "networks/localnet/multinode"
+                  "networks/localnet/index"
                 ]
               },
               "networks/fees",
@@ -2776,16 +2794,8 @@
           {
             "group": "Local Development",
             "pages": [
-              "native/local-dev/setup-local-node",
-              "native/local-dev/setup-cli-npm",
-              {
-                "group": "Cloud Environments",
-                "pages": [
-                  "native/local-dev/cde/index",
-                  "native/local-dev/cde/gitpod",
-                  "native/local-dev/cde/codespaces"
-                ]
-              }
+              "native/local-dev/index",
+              "native/local-dev/setup-cli-npm"
             ]
           }
         ]

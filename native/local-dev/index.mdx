@@ -1,0 +1,106 @@
+---
+title: "Local Development"
+description: "Run a full Hedera network on your own machine with Solo: consensus node, mirror node, JSON-RPC relay, and explorer, with no faucet, rate limits, or network resets."
+sidebarTitle: "Solo Overview"
+---
+
+<Warning>
+**Hiero Local Node is deprecated**
+
+Hiero Local Node reached the end of its deprecation period in September 2026. It is no longer supported and receives no further updates or bug fixes. Existing setups that pinned a consensus node release earlier than Release 74 may still run, but nothing about them is maintained.
+
+[Solo](https://solo.hiero.org/docs/) is the supported replacement for local development and CI. [Read the announcement](https://hedera.com/blog/hiero-local-node-deprecation-6-month-transition-to-solo/) for the full timeline.
+</Warning>
+
+A local network gives you a complete Hedera stack on your own machine. You get instant feedback, no faucet or portal account, no testnet rate limits, and no periodic resets. It is also the fastest way to run integration tests in CI.
+
+<Note>
+If you are testing EVM contracts against state that already exists on testnet or mainnet, [fork testing](/evm/development/forking) may suit you better than a fresh local network. Forking with Hardhat or Foundry lets you run against deployed contracts and Hedera System Contracts without redeploying them locally.
+</Note>
+
+[**Solo**](https://solo.hiero.org/docs/) is the recommended way to run that network. It is a Kubernetes-native tool that deploys the same components you find on mainnet and testnet, so you develop against the same services and APIs you will use in production.
+
+## What Solo runs
+
+| Component | What it does |
+| --- | --- |
+| [Consensus node](/support/glossary#consensus) | Processes transactions and participates in hashgraph consensus |
+| [Mirror node](/support/glossary#mirror-nodes) | Stores transaction history and serves the REST, gRPC, and Web3 APIs |
+| [Block node](/support/glossary#block-node) | Streams block items from the consensus node for downstream consumers |
+| [JSON-RPC relay](/support/glossary#json-rpc-relay) | Translates Ethereum JSON-RPC calls into Hedera transactions for MetaMask, Hardhat, Foundry, and ethers.js |
+| [Mirror Node Explorer](/support/glossary#network-explorer) | Web interface for inspecting local transactions and accounts |
+
+## Start a local network
+
+Solo requires Docker, Node.js 22 or later, and npm 9.8.1 or later. It provisions `kubectl`, Helm, and `kind` for you at deploy time, so you do not need to install those yourself. On macOS, Docker Desktop must be running before you deploy, because the daemon does not start on its own. Review the [Solo system readiness guide](https://solo.hiero.org/docs/simple-solo-setup/system-readiness/) for the full requirements.
+
+```bash
+npm install -g @hiero-ledger/solo@latest
+solo one-shot single deploy
+```
+
+The first deploy is slower while Solo pulls and caches container images. Later deploys reuse the cache.
+
+To run more than one consensus node, for testing consensus scenarios, deploy the multi-node variant instead. This needs 16 GB of memory and 8 CPU cores allocated to Docker:
+
+```bash
+solo one-shot multi deploy --num-consensus-nodes 3
+```
+
+Tear the network down when you are finished:
+
+```bash
+solo one-shot single destroy
+```
+
+Multi-node deployments are removed with `solo one-shot multi destroy`.
+
+## Default endpoints
+
+The `one-shot single deploy` command exposes the following endpoints on Solo 0.63 and later:
+
+| Service | Endpoint |
+| --- | --- |
+| Consensus node gRPC | `localhost:35211` (node account ID `0.0.3`) |
+| Mirror node REST API | `http://localhost:38081` |
+| JSON-RPC relay | `http://localhost:37546` (chain ID `298`) |
+| Mirror Node Explorer | `http://localhost:38080` |
+
+Generated accounts and their keys are written to `~/.solo/one-shot-<deployment-name>/accounts.json`. The default deployment name is `one-shot`, so the default path is `~/.solo/one-shot-one-shot/accounts.json`. Run `solo one-shot show deployment` to look up your deployment name.
+
+<Info>
+**These are defaults, not guarantees.** Solo reaches these services through `kubectl port-forward`. If a port is already taken, Solo picks the next free one and logs `Using available port <port>`. The actual assignments print at the end of `solo one-shot single deploy`, and you can look them up later with:
+
+```bash
+solo deployment config ports --deployment <deployment-name>
+```
+
+Port assignments also changed in Solo 0.63. Deployments on 0.62 or earlier use `7546` for the relay, `50211` for consensus gRPC, `8081` for the mirror node REST API, and `8080` for the explorer.
+</Info>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Set up the Solo CLI" href="/native/local-dev/setup-cli-npm" icon="terminal">
+    Install Solo with npm, start a network, and verify it is running.
+  </Card>
+  <Card title="Point an SDK at your network" href="/native/fundamentals/local-network" icon="code">
+    Configure the JavaScript, Java, or Go SDK against local endpoints.
+  </Card>
+  <Card title="Solo quickstart" href="https://solo.hiero.org/docs/simple-solo-setup/quickstart/" icon="rocket">
+    The full installation and deployment reference maintained by the Solo team.
+  </Card>
+  <Card title="Using Solo with EVM tools" href="https://solo.hiero.org/docs/using-solo/using-solo-with-evm-tools/" icon="ethereum">
+    Connect MetaMask, Hardhat, and Foundry to a local Solo network.
+  </Card>
+  <Card title="Fork testing" href="/evm/development/forking" icon="code-branch">
+    Test EVM contracts against existing testnet or mainnet state instead of a fresh network.
+  </Card>
+</CardGroup>
+
+## Related resources
+
+* [Solo repository](https://github.com/hiero-ledger/solo)
+* [Using Solo with Hiero SDKs](https://solo.hiero.org/docs/using-solo/using-solo-with-hiero-sdks/)
+* [Localnet network reference](/networks/localnet/index)
+* [Hiero CLI on localnet](/solutions/tools/hiero-cli/overview#local-hedera-network-localnet)

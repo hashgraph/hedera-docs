@@ -20,7 +20,7 @@ For a visual map of which Hedera capabilities the CLI covers today (and known ga
 **Prerequisites**:
 
 - Node.js installation: 18.0.0 or higher
-- [Hedera Account](https://portal.hedera.com/) (for mainnet, testnet, or previewnet) or [Hedera Local Node](/native/local-dev/setup-local-node) (for localnet)
+- [Hedera Account](https://portal.hedera.com/) (for mainnet, testnet, or previewnet) or [a local Solo network](/native/local-dev/index) (for localnet)
 
 Install the CLI globally with npm:
 
@@ -62,7 +62,7 @@ When you run any command that requires an operator (like transferring HBAR or cr
     **Prerequisites**
 
     * Node.js installation: 18.0.0 or higher
-    * [Hedera Account](https://portal.hedera.com/) (for mainnet, testnet, or previewnet) or [Hedera Local Node](/native/local-dev/setup-local-node) (for localnet)
+    * [Hedera Account](https://portal.hedera.com/) (for mainnet, testnet, or previewnet) or [a local Solo network](/native/local-dev/index) (for localnet)
     * Git
 
     **Step 1: Clone the repository**
@@ -210,7 +210,16 @@ Override per command with `--key-manager` where the command supports it (for exa
 
 ## Local Hedera Network (Localnet)
 
-To use the CLI against a [local Hedera node](/native/local-dev/setup-local-node), configure an operator for `localnet` and select that network. Default connection settings shipped with the CLI match the usual local node layout (see `src/core/services/network/network.config.ts` in the [Hiero CLI repository](https://github.com/hiero-ledger/hiero-cli)).
+To use the CLI against a [local Solo network](/native/local-dev/index), configure an operator for `localnet` and select that network.
+
+The CLI's shipped `localnet` defaults match Solo's endpoints on version 0.63 and later (see `src/core/services/network/network.config.ts` in the [Hiero CLI repository](https://github.com/hiero-ledger/hiero-cli)):
+
+| Setting | Default |
+| --- | --- |
+| JSON-RPC URL | `http://localhost:37546` |
+| Mirror node REST URL | `http://localhost:38081/api/v1` |
+| Consensus node address | `127.0.0.1:35211` (node account ID `0.0.3`) |
+| Mirror node gRPC address | `127.0.0.1:35600` |
 
 Example:
 
@@ -219,7 +228,7 @@ hcli network set-operator --operator 0.0.2:302e020100300506032b65700123456789132
 hcli network use --global localnet
 ```
 
-Use an operator key and account ID that match **your** local node setup; the values above are only an illustration from the Hiero CLI README.
+Use an operator key and account ID that match **your** local network; the values above are only an illustration from the Hiero CLI README. Solo writes its generated accounts to `~/.solo/one-shot-<deployment-name>/accounts.json`.
 
 ## Plugins Overview
 

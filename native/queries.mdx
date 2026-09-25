@@ -3,6 +3,8 @@ title: "Queries"
 description: "Reference for Hedera network queries that read data without consensus, organized by service, with guidance on when to use the mirror node REST API instead."
 ---
 
+import AccountBalanceQueryDeprecation from '/snippets/account-balance-query-deprecation.mdx';
+
 
 Queries are requests that do not require network consensus. Queries are processed only by the single node the request is sent to. Below is a list of network queries by service.
 
@@ -19,7 +21,7 @@ For obtaining token information and historical data, consider using the Mirror N
 <Warning>
 #### **DEPRECATION NOTICE: `AccountBalanceQuery`**
 
-`AccountBalanceQuery` reads the consensus node's `cryptoGetBalance` query, which is being throttled to zero as part of its deprecation. It has been throttled to zero on **testnet** (August 13, 2026) and is scheduled for **mainnet** on **September 9, 2026** (consensus node release 0.77, an estimate subject to change). After removal, `AccountBalanceQuery` will no longer function.
+<AccountBalanceQueryDeprecation />
 
 **JavaScript/TypeScript developers:** migrate to `MirrorNodeAccountBalanceQuery`, available now in `@hiero-ledger/sdk` v2.87.0+. See [Get account balance](/native/accounts/get-balance). Java and Go implementations are in progress. For Rust, and for Java and Go until those ship, call the [Mirror Node REST API](/reference/rest-api/balances) directly. `MirrorNodeAccountBalanceQuery` returns HBAR balances only; for token balances, use the [Mirror Node REST API token balances endpoint](/reference/rest-api/tokens).
 

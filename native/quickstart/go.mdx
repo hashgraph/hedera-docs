@@ -5,6 +5,10 @@ description: "Connect to Hedera testnet from Go, query your balance, and transfe
 
 This page gets a Go program talking to Hedera testnet: SDK install, operator credentials, balance query, and an HBAR transfer.
 
+<Tip>
+**Prefer a local network?** [Solo](https://solo.hiero.org/docs/) runs a full Hedera stack on your machine, no testnet rate limits, no faucet, no resets. See [Using Solo with Hiero SDKs](https://solo.hiero.org/docs/using-solo/using-solo-with-hiero-sdks/) to point the SDK at a local Solo network instead of testnet.
+</Tip>
+
 ## Prerequisites
 
 - Go 1.21 or later
@@ -114,10 +118,6 @@ Look up the transaction on HashScan:
 ```text
 https://hashscan.io/testnet/transaction/<transactionId>
 ```
-
-<Tip>
-**Prefer a local network?** [Solo](https://solo.hiero.org/docs/) runs a full Hedera stack on your machine, no testnet rate limits, no faucet, no resets. See [Using Solo with Hiero SDKs](https://solo.hiero.org/docs/using-solo/using-solo-with-hiero-sdks/) to point the SDK at a local Solo network instead of testnet.
-</Tip>
 
 ## What's next
 

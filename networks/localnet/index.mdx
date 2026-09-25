@@ -1,28 +1,21 @@
 ---
 title: Localnet
+description: "Run a private Hedera network on your own machine with Solo for local development and CI, with the same components you find on mainnet and testnet."
 ---
-
-import LocalNodeDeprecation from '/snippets/local-node-deprecation.mdx';
-
-<LocalNodeDeprecation />
 
 ## Introduction
 
-The Hedera Localnet provides developers with a comprehensive framework for locally testing and refining Hedera-based applications. By operating outside the public networks, Localnet eliminates network I/O bottlenecks, minimizes shared resource conflicts, and gives you complete control over network configurations. The recommended local development path is:
+A Hedera localnet gives you a network you fully control. Running outside the public networks removes network I/O bottlenecks and shared resource conflicts, and lets you configure the network however your tests need it. The recommended path is:
 
-1. **Solo** *(recommended)*: Start local development and CI workflows on Solo: a Kubernetes-native network that fully mimics a production Hedera environment.
+1. **Solo** *(recommended)*: Start local development and CI workflows on Solo, a Kubernetes-native network that fully mimics a production Hedera environment.
 2. **Previewnet**: Test against Hedera Previewnet for early exposure to upcoming code changes.
 3. **Testnet**: Validate against the stable test network before deploying to Hedera Mainnet.
-
-<Info>
-**Migrating from Local Node?** Hiero Local Node is in a 6-month deprecation period ending September 2026. Solo is the supported replacement. See the [Local Node section below](#local-node-deprecated) for instructions that remain valid through the deprecation window.
-</Info>
 
 ***
 
 ## Solo
 
-Solo is a Kubernetes-native tool for spinning up a private Hedera network that fully mirrors a production environment. It is the recommended local development environment for new projects and the migration target for teams moving off Hiero Local Node.
+Solo is a Kubernetes-native tool for spinning up a private Hedera network that fully mirrors a production environment. It is the recommended local development environment for new projects and the migration target for teams moving off Hiero Local Node, which is deprecated and no longer supported.
 
 ### What Solo runs
 
@@ -34,10 +27,23 @@ A Solo deployment includes the same stack you find on Hedera mainnet and testnet
 * [**JSON-RPC relay**](/support/glossary#json-rpc-relay): translates Ethereum JSON-RPC into Hedera transactions, enabling EVM tooling (MetaMask, Hardhat, Foundry, Ethers.js)
 * [**Mirror Node Explorer**](/support/glossary#network-explorer): web-based block explorer for auditing transactions and accounts locally
 
+### Default endpoints
+
+On Solo 0.63 and later, `solo one-shot single deploy` exposes:
+
+| Service | Endpoint |
+| --- | --- |
+| Consensus node gRPC | `localhost:35211` (node account ID `0.0.3`) |
+| Mirror node REST API | `http://localhost:38081` |
+| JSON-RPC relay | `http://localhost:37546` (chain ID `298`) |
+| Mirror Node Explorer | `http://localhost:38080` |
+
+These are defaults, not guarantees. Solo forwards to the next free port when one is taken, and the assignments changed in 0.63. Confirm what your deployment exposes with `solo deployment config ports --deployment <deployment-name>`.
+
 ### Get started
 
-<Card title="Solo documentation" href="https://solo.hiero.org/docs/" arrow>
-  Quickstart, installation, and configuration guides for Solo.
+<Card title="Local Development" href="/native/local-dev/index" arrow>
+  Install Solo, start a network, and connect your tooling.
 </Card>
 
 <CardGroup cols={2}>
@@ -57,55 +63,9 @@ A Solo deployment includes the same stack you find on Hedera mainnet and testnet
 
 ***
 
-## Local Node (deprecated)
-
-<Warning>
-Hiero Local Node is in a 6-month deprecation period. Support ends September 2026. Migrate local testing and CI workflows to [Solo](#solo) before then.
-</Warning>
-
-The Local Node replicates a Hedera network comprised of a single node (or few if configured) on a developer’s local machine, offering a controlled environment for developing, testing, and experimenting with [decentralized applications (dApps)](/support/glossary#decentralized-application-dapp). This local setup utilizes [Docker Compose](https://docs.docker.com/compose/) to create multiple containers, each with a specific role within the network, including but not limited to:
-
-* **Consensus Node**: Simulates the behavior of Hedera’s consensus mechanism, processing/ordering transactions and participating in the network’s consensus algorithm.
-* [**Mirror Node**](/support/glossary#mirror-nodes)**:** Provides access to the historical data, transaction records, and the current state of the network without participating in consensus. This is useful for querying and analytics.
-* [**JSON-RPC Relay**](/support/glossary#json-rpc-relay): Offers a local JSON-RPC implementation of the [Ethereum](/support/glossary#ethereum) JSON-RPC APIs for Hedera to enable interactions with smart contracts and accounts. This is particularly useful for developers familiar with Ethereum tooling and ecosystem.
-* [**Mirror Node Explorer**](/support/glossary#network-explorer): A web-based interface that allows developers to audit transactions, accounts, and other network activities visually.
-
-### Setup and Configuration
-
-Single-node configuration simulates the network’s functions on a smaller scale (on a single node), ideal for debugging, testing, and prototype development. Multi-node configuration distributes multiple instances of the Hedera network nodes across a single machine using Docker containers, intended for advanced testing and network emulation.
-
-➡ [**Single Node Configuration**](/networks/localnet/single-node)
-
-➡ [**Multinode Configuration**](/networks/localnet/multinode)
-
-### Operational Modes
-
-Local Node offers two modes depending on a developer’s needs:
-
-<Accordion title="Full mode">
-Full mode is activated with the `--full` flag, and the system is designed to capture and store comprehensive data. Here’s how it works:
-
-* **Data Upload**: Each node within the network generates record stream files during operation. Record stream files are a sequence of transaction records grouped together over a specific interval. The Hedera network periodically consolidates these transaction records into stream files, which are then made available to the network nodes and mirror nodes. In full mode, these files are systematically uploaded to their own directory within the `minio` bucket. MinIo is an object storage platform that provides dedicated tools for storing, retrieving, and searching blobs. This process is managed by specific uploader containers assigned to each node, namely:
-  * `record-streams-uploader-N`(contains record streams)
-  * `account-balances-uploader-N` (contains account balances files)
-  * `record-sidecar-uploader-N` (contains a list of `TransactionSidecarRecords` that were all created over a specific interval and related to the same `RecordStreamFile`.
-</Accordion>
-
-<Accordion title="Turbo mode">
-Turbo mode is the default setting when running the local node. This mode prioritizes efficiency and speed, with the following key characteristics:
-
-* **Local Data Access**: Instead of uploading data to the cloud, record stream files are read directly from their corresponding local directories on each node. This method significantly reduces latency and resource consumption, making it ideal for scenarios where immediate data access and high performance are prioritized over long-term storage and external accessibility.
-</Accordion>
-
-With these two options, users can tailor the local node’s operation to suit their needs best, whether ensuring comprehensive data capture and backup or optimizing for performance and speed.
-
-***
-
 ## Additional Resources
 
 * [**Solo Repository**](https://github.com/hiero-ledger/solo)
 * [**Solo Documentation**](https://solo.hiero.org/docs/)
-* [**Hiero Local Node Repo**](https://github.com/hiero-ledger/hiero-local-node) *(deprecating September 2026)*
-* [**Docker Compose Documentation**](https://docs.docker.com/compose/intro/features-uses/)
-* [**Run a Local Node in Gitpod**](/native/local-dev/cde/gitpod) **\[tutorial]**
-* [**Run a Local Node in Codespaces**](/native/local-dev/cde/codespaces) **\[tutorial]**
+* [**Local Development**](/native/local-dev/index): setup, endpoints, and troubleshooting
+* [**Point an SDK at a local network**](/native/fundamentals/local-network)

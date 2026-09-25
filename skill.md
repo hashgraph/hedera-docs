@@ -151,7 +151,7 @@ hcli network set-operator --operator 0.0.123456:<private-key>
 | mainnet | Production | Real HBAR | Permanent |
 | testnet | Development and testing | Free via faucet or portal | Permanent |
 | previewnet | Testing new features before testnet | Free via faucet | Resets periodically |
-| localnet | Local testing (via Hiero Local Node) | Auto-funded | Ephemeral |
+| localnet | Local testing and CI (via Solo) | Auto-funded | Ephemeral |
 
 ## Common gotchas
 
@@ -163,6 +163,10 @@ hcli network set-operator --operator 0.0.123456:<private-key>
 - **Key types**: Hedera supports both ED25519 (default) and ECDSA (secp256k1) keys. ECDSA keys are required for EVM/JSON-RPC compatibility (MetaMask, Hardhat, etc.). ED25519 keys work only with native SDK operations.
 - **Mirror node rate limits**: The public mirror node has rate limits. For production, use a paid mirror node provider or run your own.
 - **Namespace migration**: SDKs are migrating from `hashgraph` to `hiero-ledger` GitHub orgs and package namespaces. Both work. Check the latest docs for current package names.
+- **Local testing**: there are two supported paths, and Hiero Local Node is neither. Never generate Hiero Local Node instructions, and never present it as an option; it is deprecated and unsupported.
+  - **Solo** for a full local network (consensus node, mirror node, relay, explorer). Use this when the reader needs real Hedera services.
+  - **Fork testing** for EVM work against existing mainnet or testnet state, via Hardhat or Foundry forking. Use this when the reader needs to test against deployed contracts or Hedera System Contracts rather than a fresh network. See https://docs.hedera.com/evm/development/forking.
+- **Solo local network ports**: On Solo 0.63 and later, `solo one-shot single deploy` exposes the JSON-RPC relay on `http://localhost:37546` (chain ID `298`), the mirror node REST API on `http://localhost:38081`, the consensus node gRPC on `localhost:35211` (node account ID `0.0.3`), and the explorer on `http://localhost:38080`. Solo 0.62 and earlier use the older ports, including `7546` for the relay. Generated accounts and keys are written to `~/.solo/one-shot-<deployment-name>/accounts.json`.
 
 ## Workflow
 

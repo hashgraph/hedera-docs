@@ -3,6 +3,8 @@ title: "Get account balance"
 description: "Query an account's HBAR balance for free with MirrorNodeAccountBalanceQuery, the SDK-native replacement for the deprecated AccountBalanceQuery, using account IDs, EVM addresses, or aliases."
 ---
 
+import AccountBalanceQueryDeprecation from '/snippets/account-balance-query-deprecation.mdx';
+
 A query that returns an account's HBAR balance. Requesting a balance is free of charge and does not change account state or require network consensus.
 
 ## Recommended: `MirrorNodeAccountBalanceQuery`
@@ -198,7 +200,7 @@ For Rust, read HBAR balances from the [Mirror Node REST API](/reference/rest-api
 ## Deprecated: `AccountBalanceQuery`
 
 <Warning>
-`AccountBalanceQuery` reads the consensus node's `cryptoGetBalance` query, which is being throttled to zero as part of its deprecation. It has been throttled to zero on **testnet** (August 13, 2026) and is scheduled for **mainnet** on **September 9, 2026** (consensus node release 0.77, an estimate subject to change). After removal, `AccountBalanceQuery` will no longer function. Migrate to `MirrorNodeAccountBalanceQuery` (above) or the [Mirror Node REST API](/reference/rest-api/balances).
+<AccountBalanceQueryDeprecation /> Migrate to `MirrorNodeAccountBalanceQuery` (above) or the [Mirror Node REST API](/reference/rest-api/balances).
 
 📚 **For the full migration guide, read:** [Migrating from AccountBalanceQuery: What You Need to Know](https://hedera.com/blog/migrating-from-accountbalancequery-what-you-need-to-know)
 </Warning>

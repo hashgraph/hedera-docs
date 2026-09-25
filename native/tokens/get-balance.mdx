@@ -1,7 +1,9 @@
 ---
 title: "Get account token balance"
-description: "Get an account's token balances on Hedera. AccountBalanceQuery is deprecated and being throttled to zero, so migrate to the Mirror Node REST API balances endpoint."
+description: "Get an account's token balances on Hedera. AccountBalanceQuery is removed in consensus node release v0.77, so migrate to the Mirror Node REST API balances endpoint."
 ---
+
+import AccountBalanceQueryDeprecation from '/snippets/account-balance-query-deprecation.mdx';
 
 
 To get the balance of tokens for an account, you can submit an account balance query. The account balance query will return the tokens the account holds in a list format.
@@ -10,7 +12,7 @@ To get the balance of tokens for an account, you can submit an account balance q
 
 #### **DEPRECATION NOTICE: `AccountBalanceQuery`**
 
-`AccountBalanceQuery` reads the consensus node's `cryptoGetBalance` query, which is being throttled to zero as part of its deprecation. It has been throttled to zero on **testnet** (August 13, 2026) and is scheduled for **mainnet** on **September 9, 2026** (consensus node release 0.77, an estimate subject to change). After removal, `AccountBalanceQuery` will no longer function.
+<AccountBalanceQueryDeprecation />
 
 **For token balances, migrate to the [Mirror Node REST API token balances endpoint](/reference/rest-api/tokens).** `MirrorNodeAccountBalanceQuery`, the SDK-native replacement for HBAR balances, returns only `hbars` and does not return token balances, so it is not a replacement for this page. If you also need an account's HBAR balance, see [Get account balance](/native/accounts/get-balance), which is a separate query for a separate field.
 

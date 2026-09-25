@@ -1,16 +1,15 @@
 ---
 title: "Configuring Foundry with Hedera Localnet/Testnet: A Step-by-Step Guide"
-description: "Configure Foundry to work with the Hiero Local Node and JSON-RPC relay for local deployment, debugging, and testing of Hedera smart contracts without using testnet resources."
+description: "Configure Foundry to work with a local Solo network or Hedera Testnet through the JSON-RPC relay, covering foundry.toml, forge script deployment, cast, and Sourcify verification."
 sidebarTitle: "Foundry Setup"
 ---
 
-Developers building smart contracts on Hedera often use the **Hedera JSON-RPC Relay** to enable EVM tools like **Foundry**. In this post, we'll walk through how to set up Foundry to work with the **Hiero Local Node**, allowing for local deployment, debugging, and testing of smart contracts without using testnet resources.
+Developers building smart contracts on Hedera often use the **Hedera JSON-RPC Relay** to enable EVM tools like **Foundry**. In this post, we'll walk through how to set up Foundry against a local **Solo** network, allowing for local deployment, debugging, and testing of smart contracts without using testnet resources.
 
 <Check>
-  Not sure whether to use the Hiero Local Node, Hashio, or a custom relay setup?
-  Read this [blog
-  post](/native/local-dev/setup-local-node)
-  comparing the different options.
+  Not sure whether to run a local network, use Hashio, or set up a custom relay?
+  Compare the options on the [JSON-RPC relay
+  page](/evm/development/json-rpc#json-rpc-relay-options-for-the-hedera-network).
 </Check>
 
 <Info>
@@ -20,7 +19,7 @@ Developers building smart contracts on Hedera often use the **Hedera JSON-RPC Re
 
 This guide shows you how to configure Foundry to deploy, interact with, and test Solidity smart contracts on:
 
-- Hedera Localnet (via the Hiero Local Node + JSON-RPC Relay)
+- Hedera Localnet (via Solo and its built-in JSON-RPC Relay)
 - Hedera Testnet (via Hashio JSON-RPC Relay)
 
 You’ll set up environment variables, configure `foundry.toml`, write a simple contract and a Foundry deployment script, and learn how to switch between Localnet and Testnet with a single flag.
@@ -44,13 +43,14 @@ If you’re looking for an end-to-end “Hello, ERC-20” tutorial, see: “[Get
   - `foundryup`
 - ECDSA account and private key
   - For Testnet: create/fund an account via the [Hedera Portal](https://portal.hedera.com/)
+  - For Localnet: use one of the pre-funded accounts Solo generates (see Option A below)
 - Basic Solidity / CLI familiarity
 
 ---
 
 ## Table of Contents
 
-1. [Option A: Run Hedera Localnet](#option-a%3A-run-hedera-localnet-hiero-local-node)
+1. [Option A: Run Hedera Localnet](#option-a%3A-run-hedera-localnet-solo)
 2. [Option B: Use Hedera Testnet](#option-b%3A-use-hedera-testnet-hashio)
 3. [Step 1: Initialize a Foundry project](#step-1%3A-initialize-a-foundry-project)
 4. [Step 2: Add environment variables](#step-2%3A-add-environment-variables)
@@ -64,27 +64,40 @@ If you’re looking for an end-to-end “Hello, ERC-20” tutorial, see: “[Get
 
 ---
 
-## Option A: Run Hedera Localnet (Hiero Local Node)
+## Option A: Run Hedera Localnet (Solo)
 
-Hedera provides a local node configuration that includes a mirror node, a consensus node, and the JSON-RPC relay. You can run it via `npm`.
+[Solo](https://solo.hiero.org/docs/) runs a full Hedera network on your machine: consensus node, mirror node, block node, JSON-RPC relay, and the Mirror Node Explorer. It requires Docker and Node.js 22 or later, and provisions `kubectl`, Helm, and `kind` for you at deploy time.
 
-**Clone, install, and run the node:**
+**Install the CLI and deploy a single-node network:**
 
 ```bash
-git clone https://github.com/hiero-ledger/hiero-local-node.git
-cd hiero-local-node
-npm install
-npm run start
+npm install -g @hiero-ledger/solo@latest
+solo one-shot single deploy
 ```
 
-Once all the containers have started, the Hiero Local Node is up and running. This includes a Consensus Node, Mirror Node and explorer, JSON RPC Relay, Block Node, Grafana UI, and Prometheus UI.
+The deploy command starts the whole stack and generates pre-funded ECDSA accounts. On Solo 0.63 and later, the endpoints are:
+
+| Service | Endpoint |
+| --- | --- |
+| JSON-RPC relay | `http://localhost:37546` (chain ID `298`) |
+| Mirror node REST API | `http://localhost:38081` |
+| Mirror Node Explorer | `http://localhost:38080` |
+| Consensus node gRPC | `localhost:35211` |
 
 <Info>
-  * On startup, the Local Node prints funded ECDSA accounts to the console logs.
-  You can use one of these for local development. Make sure to only use accounts
-  listed under "Accounts list (Alias ECDSA keys)" * The JSON-RPC Relay is
-  typically on port 7546. So, the URL would be `http://localhost:7546`
+  * Solo writes the generated accounts to `~/.solo/one-shot-<deployment-name>/accounts.json`. The default deployment name is `one-shot`, so the default path is `~/.solo/one-shot-one-shot/accounts.json`. Run `solo one-shot show deployment` to confirm yours.
+  * Use an ECDSA key from the `createdAccounts` array: a private key of 64 hex characters with a `0x` prefix. Hedera ED25519 accounts do not work over the JSON-RPC relay.
+  * These ports are defaults, not guarantees. If a port is taken, Solo forwards to the next free one and prints the assignments at the end of the deploy. Check them later with `solo deployment config ports --deployment <deployment-name>`.
+  * Solo 0.62 and earlier use different defaults, including `http://localhost:7546` for the relay.
 </Info>
+
+Tear the network down when you are done:
+
+```bash
+solo one-shot single destroy
+```
+
+See [Local Development](/native/local-dev/index) for prerequisites, verification steps, and troubleshooting.
 
 ---
 
@@ -157,12 +170,12 @@ source .env
 Replace the `your-rpc-url` environment variable with:
 
 - For Testnet: `https://testnet.hashio.io/api`, or
-- For Localnet: `http://localhost:7546`
+- For Localnet: `http://localhost:37546` (Solo 0.63 and later)
 
 Replace the `0x-your-private-key` environment variable with:
 
 - For Testnet: the **HEX Encoded Private Key** for your **ECDSA** **account** from the [Hedera Portal](https://portal.hedera.com/), or
-- For Localnet: the ECDSA private key from the terminal where you are running Hiero Local Node(eg. `0x105d050185ccb907fba04dd92d8de9e32c18305e097ab41dadda21489a211524` )
+- For Localnet: an ECDSA private key from the `createdAccounts` array in `~/.solo/one-shot-<deployment-name>/accounts.json`, in the form `0x` followed by 64 hex characters
 
 </Warning>
 

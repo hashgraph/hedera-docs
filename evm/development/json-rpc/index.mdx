@@ -1,6 +1,6 @@
 ---
 title: "JSON-RPC Relay"
-description: "Learn how the Hiero JSON-RPC Relay implements the EVM JSON-RPC standard for Hedera, covering HBAR decimal handling and options from local node to hosted relays."
+description: "Learn how the Hiero JSON-RPC Relay implements the EVM JSON-RPC standard for Hedera, covering HBAR decimal handling and options from a local Solo network to hosted relays."
 ---
 
 The [Hiero JSON-RPC Relay](https://github.com/hiero-ledger/hiero-json-rpc-relay) is an open-source project implementing the EVM JSON-RPC standard. It allows developers to interact with Hedera nodes using familiar EVM tools, allowing developers and users to deploy, query, and execute contracts as they usually would. Check out the interactive[ OpenRPC Specification](https://playground.open-rpc.org/?schemaUrl=https://raw.githubusercontent.com/hashgraph/hedera-json-rpc-relay/main/docs/openrpc.json&uiSchema%5BappBar%5D%5Bui:splitView%5D=false&uiSchema%5BappBar%5D%5Bui:input%5D=false&uiSchema%5BappBar%5D%5Bui:examplesDropdown%5D=false) and a simple [list of endpoints](https://github.com/hiero-ledger/hiero-json-rpc-relay/blob/main/docs/rpc-api.md).
@@ -13,11 +13,11 @@ The Hiero JSON RPC Relay **`msg.value`** uses `18 decimals` when it returns HBAR
 
 When interacting with smart contracts on Hedera, developers have several options for setting up a JSON RPC Relay. Each choice comes with unique advantages and trade-offs based on your project's needs, scalability, and operational preferences.
 
-1. [**Hiero Local Node**](https://github.com/hiero-ledger/hiero-local-node)**:** It provides a built-in JSON RPC Relay and simulates the Hedera network environment locally. This option is ideal for quick prototyping, debugging, and isolated testing without external dependencies. It's ideal if you want to run extensive and repeated tests without having to worry about running out of testnet HBAR.
+1. [**Solo**](https://solo.hiero.org/docs/)**:** Solo deploys a full Hedera network locally, including a built-in JSON RPC Relay. This option is ideal for quick prototyping, debugging, and isolated testing without external dependencies. It's ideal if you want to run extensive and repeated tests without having to worry about running out of testnet HBAR. See [Using Solo with EVM tools](https://solo.hiero.org/docs/using-solo/using-solo-with-evm-tools/) to connect Hardhat, Foundry, or MetaMask, and [Local Development](/native/local-dev/index) for the local relay endpoint.
 2. [**Self-hosted JSON RPC Relay**](https://github.com/hiero-ledger/hiero-json-rpc-relay/tree/main)**:** Running your own JSON RPC Relay offers complete control over configurations and network selection (testnet, previewnet, mainnet). It is best suited for projects requiring flexibility, high reliability, and scalability, especially in production environments.
 3. [**Third-party JSON RPC Relay Services**](#community-hosted-json-rpc-relays)**:** Several third-party providers offer managed JSON RPC Relay services with different levels of reliability, service-level agreements (SLAs), and fee structures. These services remove infrastructure maintenance overhead, allowing teams to focus more on development (*you can find the list of supported services* [*below*](#community-hosted-json-rpc-relays)*).*
 
-| Feature                       |    Hiero Local Node   | Self-hosted RPC Relay |             Third-party RPC Relay            |
+| Feature                       |          Solo         | Self-hosted RPC Relay |             Third-party RPC Relay            |
 | ----------------------------- | :-------------------: | :-------------------: | :------------------------------------------: |
 | **Infrastructure Management** |        Minimal        |        Required       |                     None                     |
 | **Reliability and Stability** |      High (local)     |          High         |                Variable by SLA               |
@@ -35,7 +35,12 @@ Anyone in the community can set up their own JSON RPC relay that applications ca
 
 #### JSON-RPC Relay Endpoints
 
-<table><thead><tr><th>Network</th><th align="center">Chain ID</th><th align="center">Hashio RPC URL</th><th align="center">thirdweb RPC URL</th></tr></thead><tbody><tr><td><strong>Mainnet</strong></td><td align="center"><code>295</code></td><td align="center"><a href="https://mainnet.hashio.io/api">https://mainnet.hashio.io/api</a></td><td align="center"><a href="https://295.rpc.thirdweb.com">https://295.rpc.thirdweb.com</a></td></tr><tr><td><strong>Testnet</strong></td><td align="center"><code>296</code></td><td align="center"><a href="https://testnet.hashio.io/api">https://testnet.hashio.io/api</a></td><td align="center"><a href="https://296.rpc.thirdweb.com">https://296.rpc.thirdweb.com</a></td></tr><tr><td><strong>Previewnet</strong></td><td align="center"><code>297</code></td><td align="center"><a href="https://previewnet.hashio.io/api">https://previewnet.hashio.io/api</a>**</td><td align="center"><a href="https://297.rpc.thirdweb.com">https://297.rpc.thirdweb.com</a></td></tr></tbody></table>
+| Network        | Chain ID |                 Hashio RPC URL                 |             thirdweb RPC URL            |
+| -------------- | :------: | :--------------------------------------------: | :-------------------------------------: |
+| **Mainnet**    | `295`    | https://mainnet.hashio.io/api                  | https://295.rpc.thirdweb.com            |
+| **Testnet**    | `296`    | https://testnet.hashio.io/api                  | https://296.rpc.thirdweb.com            |
+| **Previewnet** | `297`    | https://previewnet.hashio.io/api               | https://297.rpc.thirdweb.com            |
+| **Localnet**   | `298`    | `http://localhost:37546` (Solo relay)          | Not applicable                          |
 
 <Check>
 ### 🚨 **PLEASE NOTE**

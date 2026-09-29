@@ -349,11 +349,11 @@
     },
     {
       "source": "/hedera/tutorials/smart-contracts/deploy-a-smart-contract-using-hardhat",
-      "destination": "/evm/tools/hardhat/setup"
+      "destination": "/evm/tools/hardhat"
     },
     {
       "source": "/hedera/tutorials/smart-contracts/deploy-a-smart-contract-using-hardhat-hedera-json-rpc-relay",
-      "destination": "/evm/tools/hardhat/setup"
+      "destination": "/evm/tools/hardhat"
     },
     {
       "source": "/hedera/tutorials/smart-contracts/deploy-a-smart-contract-using-remix",
@@ -361,11 +361,11 @@
     },
     {
       "source": "/hedera/tutorials/smart-contracts/deploy-a-subgraph-using-the-graph-and-json-rpc-relay",
-      "destination": "/evm/integrations/indexing/the-graph"
+      "destination": "/evm/tools/other/the-graph"
     },
     {
       "source": "/hedera/tutorials/smart-contracts/hscs-workshop/hardhat",
-      "destination": "/evm/tools/hardhat/setup"
+      "destination": "/evm/tools/hardhat"
     },
     {
       "source": "/hedera/tutorials/smart-contracts-service/deploy-a-contract-using-the-hedera-token-service",

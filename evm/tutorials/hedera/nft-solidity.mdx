@@ -24,7 +24,7 @@ We recommend you complete the following introduction to get a basic understandin
 1. Get a [Hedera testnet account](https://portal.hedera.com/register).
 2. Set up your environment [here](/native/quickstart/javascript).
 
-If you are interested in creating, minting, and transferring NFTs using Hedera SDKs you can find the example [here](https://docs.hedera.com/guides/getting-started/try-examples/create-and-transfer-your-first-nft).
+If you are interested in creating, minting, and transferring NFTs using Hedera SDKs you can find the example [here](/native/tutorials/tokens/create-transfer-nft).
 
 <Warning>
 In this example, you will set gas for smart contract transactions multiple times. If you don't have enough gas you will receive an`INSUFFICIENT_GAS` response. If you set the value too high you will be refunded a maximum of 20% of the amount that was set for the transaction.
@@ -123,7 +123,7 @@ contract NFTCreator is ExpiryHelper, KeyHelper, HederaTokenService {
 
 </CodeGroup>
 
-Store your contract on Hedera using `ContractCreateFlow()`. This single call performs `FileCreateTransaction()`,`FileAppendTransaction()`, and `ContractCreateTransaction()` for you. See the difference [here](https://docs.hedera.com/guides/docs/sdks/smart-contracts/create-a-smart-contract).
+Store your contract on Hedera using `ContractCreateFlow()`. This single call performs `FileCreateTransaction()`,`FileAppendTransaction()`, and `ContractCreateTransaction()` for you. See the difference [here](/native/smart-contracts/create).
 
 <CodeGroup>
 

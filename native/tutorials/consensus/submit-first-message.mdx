@@ -35,7 +35,7 @@ We recommend you complete the following introduction to get a basic understandin
 
 To create your first topic, you will use the **_`TopicCreateTransaction()`_**, set its properties, and submit it to the Hedera network. In this tutorial, you will create a **public topic** by not setting any properties on the topic. This means that anyone can send messages to your topic.
 
-If you would like to create a **private topic,** you can optionally set a topic key ([_`setSubmitKey()`_](https://docs.hedera.com/guides/docs/sdks/consensus/create-a-topic#methods)). This means that messages submitted to this topic require the topic key to sign. If the topic key does not sign a message, the message will not be submitted to the topic.
+If you would like to create a **private topic,** you can optionally set a topic key ([_`setSubmitKey()`_](/native/consensus/create-topic#methods)). This means that messages submitted to this topic require the topic key to sign. If the topic key does not sign a message, the message will not be submitted to the topic.
 
 After submitting the transaction to the Hedera network, you can obtain the new topic ID by requesting the receipt. Creating a topic only costs you [**$0.01**](/networks/fees#consensus-service).
 
@@ -110,7 +110,7 @@ After you create the topic, you will want to subscribe to the topic via a Hedera
   mirror node. You can set a custom mirror node by calling
   ***`client.SetMirrorNetwork()`***. Please note that you can subscribe to
   Hedera Consensus Service (HCS) topics via [gRPC
-  API](https://docs.hedera.com/guides/docs/mirror-node-api/hedera-consensus-service-api-1)
+  API](/reference/hcs-api)
   only. Remember to set the mirror node's host and port accordingly when dealing
   with another mirror node provider.
 </Check>

@@ -184,7 +184,7 @@ $ make configtxgen configtxlator cryptogen orderer peer docker
 
 ## 3. Hedera Network & HCS Hyperledger Fabric Orderer Configuration
 
-You will now enter your Hedera testnet account ID and private key information to the relevant configuration files. If you have not previously generated your testnet account, please follow the instructions [here](https://docs.hedera.com/guides/testnet/testnet-access).
+You will now enter your Hedera testnet account ID and private key information to the relevant configuration files. If you have not previously generated your testnet account, please follow the instructions [here](/networks/testnet/access).
 
 * Navigate to the **first-network** directory from your terminal or favorite IDE
 
@@ -277,7 +277,7 @@ Please note it's necessary to set the timeout to 20 seconds since otherwise some
   * One topic will be for the Hyperledger Fabric application channel
   * HCS topics n this example are configured so that anyone can submit messages to them
   * HCS messages can be configured to be private topics where the sender would require the `submitKey` to successfully publish messages to them
-* Transactions submitted to either of these channels will be visible from a mirror node [explorer](https://docs.hedera.com/guides/testnet/mirror-nodes)
+* Transactions submitted to either of these channels will be visible from a mirror node [explorer](/networks/community-mirror-nodes-explorers)
   * Transactions can be fragmented into smaller chunks resulting in multiple HCS messages for a single transaction
 
 The sample is almost identical with the upstream first-network sample as of 2.0.0 release. In summary, the modifications are:
@@ -310,7 +310,7 @@ $ ./byfn.sh down
 `generated HCS topics: 0.0.23419 0.0.23420`\
 `0.0.23419 will be used for the system channel, and 0.0.23420 will be used for the application channel`
 
-* Visit a Hedera [mirror node explorer](https://docs.hedera.com/guides/testnet/mirror-nodes) to verify the topics and messages that were created on testnet by searching the two topic IDs
+* Visit a Hedera [mirror node explorer](/networks/community-mirror-nodes-explorers) to verify the topics and messages that were created on testnet by searching the two topic IDs
 * You will be able to view the application channel and system channel topics and all associated messages from this example
   * A single Fabric transaction sent to an ordering node could result in multiple HCS consensus messages as HCS messages have a 6k message size limit
   * i.e. there may not be a 1:1 correlation between a Fabric transaction and HCS message

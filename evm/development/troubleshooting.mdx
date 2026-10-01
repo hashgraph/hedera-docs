@@ -11,14 +11,19 @@ Hedera is EVM-compatible, but a few things behave differently than Ethereum, and
 
 ### Decimal handling: 8 vs 18
 
-The native Hedera ledger uses 8 decimals for HBAR (1 ℏ = 10⁸ tinybars). The JSON-RPC relay scales values up to 18 decimals so they match Ethereum's `wei` convention. Inside an EVM contract, `msg.value`, `balance`, and `gasPrice` all use 18 decimals; the relay handles the conversion. The trap is when you mix native SDK calls and EVM contract calls in the same flow. You have to do the conversion yourself there, and the off-by-`10**10` bug is easy to write.
+The native Hedera ledger uses 8 decimals for HBAR (1 ℏ = 10⁸ tinybars); Ethereum tooling uses 18-decimal `wei`. The JSON-RPC relay converts a transaction's `value` and `gasPrice` from 18-decimal weibar to 8-decimal tinybar **before** the EVM runs — so **inside a contract, `msg.value`, `address(this).balance`, and the `value` in `call`/`send`/`transfer` are all tinybar (8 decimals), not wei.** Two traps:
+
+* Don't assume `msg.value` is wei — a 1 HBAR transfer arrives as `msg.value == 1e8`, not `1e18`.
+* Contract-to-contract calls are **not** converted: `call{value: 1 ether}` sends `1e18` *as tinybar* (which exceeds the total HBAR supply and reverts). Use tinybar amounts — 1 HBAR = `1e8`.
 
 ```solidity
-// Inside a contract, msg.value is in 18-decimal wei (as on Ethereum).
+// msg.value is TINYBAR inside the contract: 1 HBAR = 1e8, not 1 ether (1e18).
 function deposit() external payable {
-    require(msg.value >= 1 ether, "send at least 1 HBAR");
+    require(msg.value >= 1e8, "send at least 1 HBAR"); // 1e8 tinybar = 1 HBAR
 }
 ```
+
+See [Decimal Handling](/evm/differences/hbar-decimals) for the full explanation.
 
 ### HBAR transfers don't always trigger `receive()`
 

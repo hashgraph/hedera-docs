@@ -13,6 +13,34 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
   **TESTNET UPDATED:  SEPTEMBER 15, 2026**
 </Check>
 
+### Release highlights
+
+Release v0.77 delivers Hedera's support for the Ethereum "Pectra" upgrade ([HIP-1341](https://hips.hedera.com/hip/hip-1341)), completes the rollout of [HIP-1261 Simple Fees](https://hips.hedera.com/hip/hip-1261) to every query and transaction, and removes the legacy `AccountBalanceQuery` from mainnet. Together, these changes keep the Hedera EVM aligned with Ethereum for smart contract developers, make fee calculation fully consistent across the network, and complete the move to mirror nodes as the way to check account balances.
+
+<Accordion title="What's new in Release v0.77?">
+
+  #### Ethereum "Pectra" EVM Compatibility (HIP-1341)
+  Adds support for several Ethereum Pectra upgrades to Hedera's Smart Contract Service: the BLS12-381 precompile (EIP-2537), increased calldata gas costs (EIP-7623), and optional access lists (EIP-2930). It also validates contract creation code size (EIP-3860) and adds a size limit on system contract calls. **Please note that this update does include HIP-1340 (EOA code Delegation deactivated) which will be made available in a future release.**
+
+  **Benefits**
+  - Keeps the Hedera EVM aligned with Ethereum mainnet, reducing friction for contracts, tooling, and the JSON-RPC relay
+  - Rejects oversized contract and system-contract requests deterministically instead of failing unpredictably downstream
+
+  #### Simple Fees: Queries and Transactions Fully Migrated (HIP-1261)
+  Completes the Simple Fees migration started in Release v0.73. Every query and transaction now calculates fees through the Simple Fees engine, and the legacy fee calculation system has been removed.
+
+  **Benefits**
+  - Guarantees uniform, predictable fee calculation across every transaction and query
+  - Simplifies the fee model for integrators now that only one calculation method applies network-wide
+
+  #### AccountBalanceQuery Deprecated
+  Completes the staged phase-out of `AccountBalanceQuery` that began with throttle reductions in Release v0.74. Use `MirrorNodeAccountBalanceQuery` or the Mirror Node REST API instead, which read balances directly from a mirror node. See the [get balance guide](/native/accounts/get-balance) for migration guidance.
+
+  **Benefits**
+  - Moves account-balance lookups to the free, mirror-node-backed path instead of a throttled consensus node query
+  - Matches current SDK guidance, which already treats `AccountBalanceQuery` as deprecated in favor of `MirrorNodeAccountBalanceQuery`
+</Accordion>
+
 ### [**Build 0.77.2**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.77.2)
 
 <Accordion title="What's Changed">
@@ -369,6 +397,11 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 </Accordion>
 
 
+## Performance Results
+<Frame>
+  ![](/images/networks/release-notes/services/0.77_performance_measurement_results_extract.001.png)
+</Frame>
+
 ## Release v0.76
 <Check>
   **MAINNET UPDATED: AUGUST 28, 2026**
@@ -376,6 +409,36 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 <Check>
   **TESTNET UPDATED: SEPTEMBER 1, 2026**
 </Check>
+
+### Release highlights
+
+Release v0.76 delivers bug fixes and reliability improvements, with no new HIPs in this release. It corrects custom fee, NFT royalty, and staking reward issues, and makes query payments and fee calculations more resilient to invalid input.
+
+<Accordion title="What's new in Release v0.76?">
+
+  #### Custom Fee and Royalty Payment Corrections
+  Fixes two fee-charging issues: topics with two identical custom fees were only charging one of them, and NFT transfers could skip a royalty fallback fee when the receiver was exempt from the main fee but not the fallback fee.
+
+  **Benefits**
+  - Topics with multiple identical custom fees now collect every configured fee
+  - NFT royalty fallback fees are charged reliably, closing a fee-avoidance path
+
+  #### Staking Reward Accounting Fixes
+  Resolves several issues around deleting staked accounts, including a bug that could permanently freeze accounts staking indirectly through a deleted account, incorrect reward and stake-period bookkeeping after deletion, and a case where deleting a staked account inside an atomic batch transaction could cause the entire batch to fail with no fee charged.
+
+  **Benefits**
+  - Removes a transaction-freezing bug affecting indirect stakers
+  - Keeps reward and stake-period bookkeeping accurate across account deletion
+  - Prevents atomic batch transactions from failing solely due to staking cleanup
+
+  #### Fee and Query Payment Validation Hardening
+  Query payments can no longer include token transfers, a parsing ambiguity that could let malformed payment data through is now rejected instead of silently resolved, and fee conversion no longer fails when the exchange rate is invalid.
+
+  **Benefits**
+  - Rejects invalid or ambiguous query payments instead of silently accepting them
+  - Prevents fee-calculation errors caused by a malformed or stale exchange rate
+  - SDK developers should confirm query payments carry no token transfers, as these are now rejected
+</Accordion>
 
 ### [**Build 0.76.4**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.76.4)
 
@@ -433,6 +496,11 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 </Accordion>
 
 
+## Performance Results
+<Frame>
+  ![](/images/networks/release-notes/services/0.76_performance_measurement_results_extract.001.png)
+</Frame>
+
 ## Release v0.75
 <Check>
   **MAINNET UPDATED: JULY 22, 2026**
@@ -440,6 +508,28 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 <Check>
   **TESTNET UPDATED: JUNE 25, 2026**
 </Check>
+
+### Release highlights
+
+Release v0.75 delivers bug fixes, ongoing feature development, and continued progress on [HIP-1193 Record Stream to Block Stream Cutover](https://hips.hedera.com/hip/hip-1193), Hedera's migration from the record stream to a unified block stream. This release also strengthens smart contract execution against oversized calls and improves throttle accounting for failed transactions.
+
+<Accordion title="What's new in Release v0.75?">
+
+  #### [HIP-1193 Progress: Record Stream to Block Stream Cutover](https://hips.hedera.com/hip/hip-1193)
+  Continues the migration from the record stream to a unified block stream by adding the logic needed to perform the cutover, sending record data to Block Nodes ahead of the full switch, and tightening the default block-buffer size as networks approach cutover.
+
+  **Benefits**
+  - Lays the groundwork for a smooth, no-downtime migration to a unified block stream
+  - Gives Block Node operators early access to record data ahead of the full cutover
+  - Tunes block-buffer behavior for operators running Block Node connections
+
+  #### Smart Contract Execution Hardening
+  Adds a size limit on system contract calls so oversized requests are rejected before they're processed, and fixes an issue where contract calls that failed from insufficient gas weren't counted against throttle limits.
+
+  **Benefits**
+  - Protects consensus nodes from resource exhaustion caused by oversized contract calls
+  - Ensures failed, underfunded calls are counted correctly against usage limits
+</Accordion>
 
 ### [**Build 0.75.1**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.75.1)
 
@@ -662,6 +752,11 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 </Accordion>
 
+
+## Performance Results
+<Frame>
+  ![](/images/networks/release-notes/services/0.75_performance_measurement_results_extract.001.png)
+</Frame>
 
 ## Release v0.74
 

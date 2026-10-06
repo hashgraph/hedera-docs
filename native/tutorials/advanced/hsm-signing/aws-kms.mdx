@@ -91,7 +91,7 @@ Create a new Node.js project and install the required dependencies.
 
 ```bash
 npm init -y
-npm install @hashgraph/sdk @aws-sdk/client-kms dotenv
+npm install @hiero-ledger/sdk @aws-sdk/client-kms dotenv
 ```
 
 ### 2. Create the `.env` File
@@ -117,7 +117,7 @@ Create a custom signer function that uses AWS KMS to sign transaction bytes.
 
 ```javascript
 const { KMSClient, SignCommand, GetPublicKeyCommand } = require("@aws-sdk/client-kms");
-const { PrivateKey } = require("@hashgraph/sdk");
+const { PrivateKey } = require("@hiero-ledger/sdk");
 
 const kmsClient = new KMSClient({ region: process.env.AWS_REGION });
 
@@ -150,7 +150,7 @@ async function createKmsSigner(keyId) {
 Use the custom signer to create and sign a Hedera transaction.
 
 ```javascript
-const { Client, AccountCreateTransaction, Hbar } = require("@hashgraph/sdk");
+const { Client, AccountCreateTransaction, Hbar } = require("@hiero-ledger/sdk");
 require("dotenv").config();
 
 async function main() {

@@ -351,6 +351,21 @@ Examples: [Stader Labs](https://www.staderlabs.com/hedera/), [hashport](https://
 
 [W3C Decentralized Identifiers (DIDs)](https://www.w3.org/TR/did-core/) are a new type of identifier that enables verifiable, decentralized digital identity. A DID refers to any subject (e.g., a person, organization, thing, data model, abstract entity, etc.) as determined by the controller of the DID. DIDs are URIs that associate a DID subject with a DID document allowing trustable interactions associated with that subject.
 
+### DER-Encoded Key
+
+---
+
+A [private](#private-key) or [public key](#public-key) written in Distinguished Encoding Rules (DER), a binary encoding defined by the ASN.1 standard and shown as a hex string. A DER key carries its own key type, so the prefix tells you what it is:
+
+| Prefix | Key |
+| --- | --- |
+| `3030` | [ECDSA secp256k1](#ecdsa-secp256k1) private key (the format the Hedera developer portal shows as the DER Encoded Private Key) |
+| `302e` | [Ed25519](#ed25519) private key |
+| `302d` | ECDSA secp256k1 public key |
+| `302a` | Ed25519 public key |
+
+Load a DER private key with the SDK's DER parser: `PrivateKey.fromStringDER()` in Java, `PrivateKey.fromStringDer()` in JavaScript, and `PrivateKeyFromStringDer()` in Go. In the Java SDK, `PrivateKey.fromStringECDSA()` is for raw hex keys and does not accept the portal's DER format.
+
 ### Digital Asset
 
 ---

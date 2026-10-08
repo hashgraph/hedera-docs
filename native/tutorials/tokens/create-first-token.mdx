@@ -86,7 +86,7 @@ Create a new **Maven** project and name it `HederaExamples`. Add the following d
     <dependency>
         <groupId>com.hedera.hashgraph</groupId>
         <artifactId>sdk</artifactId>
-        <version>2.77.0</version>
+        <version>2.78.0</version>
     </dependency>
     <dependency>
         <groupId>com.google.code.gson</groupId>
@@ -96,7 +96,7 @@ Create a new **Maven** project and name it `HederaExamples`. Add the following d
     <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-netty-shaded</artifactId>
-        <version>1.83.1</version>
+        <version>1.84.0</version>
     </dependency>
 </dependencies>
 ```
@@ -114,9 +114,9 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.hedera.hashgraph:sdk:2.77.0'
+    implementation 'com.hedera.hashgraph:sdk:2.78.0'
     implementation 'com.google.code.gson:gson:2.14.0'
-    implementation 'io.grpc:grpc-netty-shaded:1.83.1'
+    implementation 'io.grpc:grpc-netty-shaded:1.84.0'
 }
 
 application {
@@ -288,7 +288,7 @@ const client = Client.forTestnet().setOperator(operatorId, operatorKey);
 ```java Java wrap
 // Load your operator credentials
 AccountId operatorId = AccountId.fromString(System.getenv("OPERATOR_ID"));
-PrivateKey operatorKey = PrivateKey.fromStringECDSA(System.getenv("OPERATOR_KEY"));
+PrivateKey operatorKey = PrivateKey.fromStringDER(System.getenv("OPERATOR_KEY"));
 
 // Initialize your testnet client and set operator
 Client client = Client.forTestnet().setOperator(operatorId, operatorKey);
@@ -698,7 +698,7 @@ public class CreateTokenDemo {
     public static void main(String[] args ) throws Exception {
         // load your operator credentials
         AccountId operatorId = AccountId.fromString(System.getenv("OPERATOR_ID"));
-        PrivateKey operatorKey = PrivateKey.fromStringECDSA(System.getenv("OPERATOR_KEY"));
+        PrivateKey operatorKey = PrivateKey.fromStringDER(System.getenv("OPERATOR_KEY"));
 
         // initialize the client for testnet
         Client client = Client.forTestnet().setOperator(operatorId, operatorKey);

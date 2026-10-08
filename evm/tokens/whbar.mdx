@@ -34,23 +34,29 @@ Developers can integrate WHBAR into their applications by leveraging the followi
 
 ### Wrapping HBAR
 
-To convert HBAR into its ERC20 representation (WHBAR), use the `deposit()` function. Keep in mind that:
+To convert HBAR into its ERC20 representation (WHBAR), call the `deposit()` function and send HBAR with the call. `deposit()` mints WHBAR equal to `msg.value`, one WHBAR unit per tinybar:
 
-* **Native HBAR:** Uses **8** decimal places (**tinybars**).
-* **WHBAR (ERC20):** Uses **8** decimal places (**tinybars**)and *ONLY for deposits* (wrapping) uses 18 decimal places (weibars).
+* **Native HBAR:** **8** decimal places (**tinybars**).
+* **WHBAR (ERC20):** **8** decimal places (`decimals = 8`), 1:1 with tinybars.
 
-The conversion from HBAR to WHBAR involves adjusting for these decimal differences. For example, to wrap native HBAR into WHBAR, call `deposit()` and send your HBAR as `msg.value` in weibars (10¹⁸ per HBAR):
+How you express the amount depends on where the call comes from:
+
+* **From Solidity** (another contract calls WHBAR): `msg.value` is in **tinybars**, so 10 HBAR is `10 * 10**8`.
+* **From a client through the JSON-RPC relay** (ethers, viem, a wallet): the transaction `value` is in 18-decimal **weibars**, so 10 HBAR is `parseEther("10")`. The network converts it to tinybars before `deposit()` runs.
 
 ```solidity wrap
 /**
- * @notice Deposits HBAR and mints an equivalent amount of WHBAR
- * @dev This is the only supported method for obtaining WHBAR
+ * @notice Wraps 10 HBAR into WHBAR from another contract
  */
-function deposit() public payable {
-    // To wrap 10 HBAR into WHBAR
-    // Note: 1 HBAR = 10^18 weibars; conversion handles the decimal difference.
-    whbarContract.deposit{value: 10 * 10**18}();
+function wrapTenHbar() public payable {
+    // msg.value is in tinybars inside the EVM: 10 HBAR = 10 * 10^8 tinybars.
+    whbarContract.deposit{value: 10 * 10**8}();
 }
+```
+
+```javascript
+// From a client through the JSON-RPC relay: value is in weibars.
+await whbar.deposit({ value: ethers.parseEther("10") }); // wraps 10 HBAR
 ```
 
 
@@ -75,12 +81,12 @@ This burns 5 WHBAR and sends back 5 HBAR to the wallet.
 <Check>
 #### **Important Note: Decimal Nuance**
 
-When depositing HBAR, remember the conversion nuances between decimal places.
+When depositing HBAR, keep the two scales apart.
 
-* **Native HBAR & WHBAR Token:** 8 decimals (tinybars).
-* **RPC `msg.value`:** 18 decimals (weibars).
+* **Native HBAR, WHBAR, and `msg.value` inside the EVM:** 8 decimals (tinybars).
+* **Transaction `value` sent through the JSON-RPC relay:** 18 decimals (weibars). The network converts it to tinybars before the EVM runs.
 
-Although the `deposit()` function requires input in 18 decimal weibars, WHBAR tokens and all related transfers and balances use 8 decimals, identical to native HBAR in tinybars.
+WHBAR balances, transfers, and `withdraw()` amounts all use 8 decimals, identical to native HBAR in tinybars. See [HBAR decimal places](/evm/differences/hbar-decimals).
 </Check>
 
 ***
@@ -118,8 +124,8 @@ The WHBAR contract implementation is available on GitHub in the [Hedera Smart Co
 
 * **Check allowances**: Before attempting `transferFrom` operations, verify that sufficient allowance has been granted.
 * **Verify contract addresses**: Always double-check you're interacting with the official WHBAR contract addresses listed in the documentation.
-* **Handle decimals properly**: Since both HBAR and WHBAR use 8 decimals, calculations are straightforward. Only for deposits, use 18 decimals to represent weibars.
+* **Handle decimals properly**: HBAR and WHBAR both use 8 decimals, so on-chain calculations are straightforward. Use 18-decimal weibars only for the `value` of a deposit sent from a client through the JSON-RPC relay.
 
 <Danger>
-**Critical**: HBAR sent directly to the contract address through methods other than the **`deposit()`** function will be permanently locked in the contract due to Hedera’s CryptoTransfer mechanics.
+**Critical**: HBAR sent to the contract with a native HAPI `CryptoTransfer` (for example, an SDK or wallet HBAR transfer to the contract's account ID) is permanently locked, because no EVM code runs to credit you WHBAR. EVM value transfers are safe: the contract's `receive()` and `fallback()` both call `deposit()`.
 </Danger>

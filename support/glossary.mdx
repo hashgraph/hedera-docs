@@ -1265,6 +1265,12 @@ In the context of Hedera, the [Hedera Testnet](/networks/testnet) is a network u
 
 A timestamp is a piece of recorded data that verifies the data existed at a specific date and time. In distributed ledger technology, a timestamp reveals when a block has been mined and validated. With the Bitcoin blockchain, timestamps help solve the double spending problem.
 
+### Tinybar
+
+---
+
+The smallest unit of [HBAR](#hbar). One HBAR is 10⁸ tinybars (8 decimal places). The Hedera API, the SDKs, and the EVM all count HBAR in tinybars: inside a smart contract, `msg.value` and `address.balance` are tinybars. Ethereum tooling that talks to Hedera through the JSON-RPC relay uses [weibars](#weibar) instead: the network converts a transaction's weibar `value` to tinybars before the EVM runs, and the relay returns balances and gas prices in weibars. See [Decimal Handling (8 vs. 18 Decimals)](/evm/differences/hbar-decimals).
+
 ### Token
 
 ---
@@ -1383,7 +1389,7 @@ The envisioned next generation of the internet is characterized by decentralizat
 
 ---
 
-The EVM returns gas information in Weibar (introduced in [HIP-410](https://hips.hedera.com/hip/hip-410)). One weibar is 10^-18th HBARs, which translates to 1 tinybar is 10^10 weibars. As noted in HIP-410, this is to maximize compatibility with third-party tools that expect ether units to be operated on in fractions of 10^18, also known as a Wei.
+The 18-decimal unit the JSON-RPC relay uses to present HBAR to Ethereum tooling (introduced in [HIP-410](https://hips.hedera.com/hip/hip-410)). One weibar is 10⁻¹⁸ HBAR, so 1 [tinybar](#tinybar) is 10¹⁰ weibars. Transaction `value`, `eth_getBalance`, and `eth_gasPrice` are in weibars to stay compatible with tools that expect ether units in fractions of 10¹⁸ (wei). Inside the EVM, values are in tinybars: the network divides a transaction's weibar `value` by 10¹⁰ before the contract sees it as `msg.value`.
 
 ### White Paper
 

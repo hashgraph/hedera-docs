@@ -1,0 +1,102 @@
+---
+title: "Writing a spec"
+description: "A Hedera Harness spec is plain markdown, and one rule decides whether a run can pass: every claim in it has to be checkable by someone using the running app."
+---
+
+## The only rule that matters
+
+A spec is markdown. Write it in your own words, at whatever length the feature deserves. One rule carries all the weight:
+
+> **Anything you assert should be checkable by a person using the app.**
+
+That is how it will be judged. The agent that judges your run never sees your code — it opens the app, clicks through it, and reads state back off the network. A claim it cannot settle that way is a claim it cannot pass you on.
+
+| Not checkable from outside | Checkable |
+|---|---|
+| "The hook polls every 10 seconds" | "The number updates without a page reload, roughly every 10 seconds" |
+| "Uses a React context for wallet state" | "The connected account stays shown after navigating to `/settings` and back" |
+| "Handles errors gracefully" | "If the mirror node is unreachable, a readable message appears in `#status-error`" |
+| "Efficiently batches the transfers" | "One transaction appears on the account's history, not three" |
+
+Implementation choices are still worth writing down — put them under **Constraints**, where they read as instructions to the builder rather than as promises the judge has to keep.
+
+---
+
+## A worked example
+
+```markdown
+# Network status page
+
+The page at `/status` shows which Hedera network the app is pointed at.
+
+## What a user sees
+- the network name, in an element with id `network-name`
+- the latest consensus timestamp, fetched live from the mirror node
+
+## Behaviour
+- while the request is in flight the page shows a loading state, not `undefined`
+- if the mirror node is unreachable, a readable error appears in `#status-error`
+
+## Constraints
+- read-only; no transaction, no operator key
+```
+
+Nothing here is ceremony. The headings are yours to choose — the harness reads prose, not a schema. What earns its place is that every line names something a person could stand in front of the app and confirm.
+
+<Tip>
+Do not have a spec yet? `harness wizard status-page` reads your project, interviews you one question at a time about what it could not work out, and drafts `specs/status-page.md` from your answers. Editing its draft is usually faster than starting from an empty file.
+</Tip>
+
+---
+
+## What the harness does with it
+
+Before a single line is written, the derive stage reads your spec — only the spec, never the code — and turns the claims it can pin down into a checklist. The app does not exist yet, so nothing about the implementation can shape the bar it is later measured against.
+
+Each item names what to read and what the reading should say:
+
+```
+  I will also verify, from this spec:
+    http:/status:status:equals=200  — "The page at `/status` must return HTTP 200."
+```
+
+Three kinds of reading can be pinned this way:
+
+| Kind | What it reads |
+|------|---------------|
+| `http` | A response from the running app — status, headers, body |
+| `dom` | What an element on a page actually shows, in a real browser |
+| `chain` | A value from the public mirror node, such as an account balance or a token's supply |
+
+Each is held against one expectation: equals, contains, matches a pattern, or is at least some number.
+
+The checklist is deliberately not the whole judgement. Anything it cannot express — "the error message is readable", "the layout does not break" — stays with the judging agent, which checks it against the running app and cites what it saw. The checklist is the part the harness can keep books on; the judge covers the rest.
+
+Run with `--review` to read the checklist and approve it before anything is built. It is the cheapest moment to discover that a sentence you thought was precise was not.
+
+---
+
+## Writing claims the judge can settle
+
+**Name the things it has to find.** An `id` or a stable selector turns "the balance is shown" into something a browser can read without guessing. The same goes for routes: `/status` beats "the status page".
+
+**Say what should *not* happen.** `undefined`, a blank panel, an unhandled rejection — a judge that knows the failure mode you fear will look for it specifically.
+
+**Describe changes as before and after, not as a delta.** The judge reads network state before it touches the app and again afterwards, so "after the transfer, the recipient's balance is higher than it was" is something it can stand behind. A bare "the balance increases by 2.5" leaves it nothing to compare against.
+
+**Be explicit about read-only versus transactional.** A spec that signs anything needs `HEDERA_OPERATOR_ID` and `HEDERA_OPERATOR_KEY` exported for the run; a read-only one needs neither, and saying so in the spec keeps the builder from reaching for a key it does not need.
+
+**Keep one spec to one feature.** A spec that passes is a foundation: `harness run --spec specs/next.md --continue` starts from the branch the last one produced, which is how a second feature builds on the first instead of re-litigating it.
+
+---
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Run it" icon="rocket" href="/solutions/tools/hedera-harness/index#quick-start">
+    Install, point it at your repo, and go
+  </Card>
+  <Card title="Reference" icon="book" href="/solutions/tools/hedera-harness/reference">
+    Commands, flags, `harness.yaml`, and run artifacts
+  </Card>
+</CardGroup>

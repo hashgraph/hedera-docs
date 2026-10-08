@@ -2929,6 +2929,14 @@
                   "solutions/tools/scaffold-hbar/scaffold-ui"
                 ]
               },
+              {
+                "group": "Hedera Harness",
+                "pages": [
+                  "solutions/tools/hedera-harness/index",
+                  "solutions/tools/hedera-harness/writing-a-spec",
+                  "solutions/tools/hedera-harness/reference"
+                ]
+              },
               "solutions/tools/code-repo",
               "solutions/tools/custodians-library",
               "solutions/tools/custodians-library-usage",

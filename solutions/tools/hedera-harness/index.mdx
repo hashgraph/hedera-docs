@@ -1,0 +1,167 @@
+---
+title: "Build and verify dApp features with an agent"
+description: "Hedera Harness takes a written spec and an existing Hedera dApp repo, then runs the entire loop unattended — implement, build, test, and judge the running app — until the spec is met or it shows you why it was not."
+---
+
+## What is Hedera Harness?
+
+Hedera Harness is a complete agentic loop for Hedera dApps. Give it a written spec and a repo, and it goes the whole way on its own: reads the spec, implements it, installs, builds, runs your tests, drives the running app in a real browser, reads state back off the network, repairs what failed, and tries again. Then it tells you whether the spec was met and hands you the evidence behind that answer.
+
+A spec is the only thing it needs from you. Everything between `harness run` and the verdict happens without you in the loop — walk away, or run it in CI.
+
+**And the harness decides whether a run passed, not the agent.** It runs your install, build, and test commands itself. The running app is judged by a second agent that is never allowed to see the source. Evidence for any claimed failure has to exist on disk before the verdict is accepted. An agent reporting on its own work is the failure mode this exists to remove.
+
+Use it to:
+
+- Ship a feature into a repo you already have, written as a spec instead of a prompt
+- Walk away from the loop — implement, test, judge, and repair all run unattended
+- Get a verdict you can defend, with screenshots, network reads, and command output behind it
+- Run the whole thing in CI with `--json`
+
+<CardGroup cols={2}>
+  <Card title="Quick start" icon="rocket" href="#quick-start">
+    Install, answer four questions, run your first spec
+  </Card>
+  <Card title="How a run works" icon="diagram-project" href="#how-a-run-works">
+    Doctor, derive, generate, test, evaluate — and the repair loop
+  </Card>
+  <Card title="Writing a spec" icon="file-pen" href="/solutions/tools/hedera-harness/writing-a-spec">
+    The one rule that decides whether a run can pass
+  </Card>
+  <Card title="GitHub" icon="github" href="https://github.com/hedera-dev/hedera-harness">
+    Source, issues, and contributing guide
+  </Card>
+</CardGroup>
+
+---
+
+## What you point it at
+
+Any Hedera dApp repo with a `package.json`, a git history, and a clean working tree. The harness reads your own install, build, test, and serve commands out of `harness.yaml` rather than imposing a layout, so it works on a project that already exists and was never built with it in mind.
+
+No project yet? Create one with [Scaffold HBAR](/solutions/tools/scaffold-hbar/index), then hand the harness a spec for the first feature you want on top of it.
+
+---
+
+## Quick start
+
+### Prerequisites
+
+- **Node.js** ≥ 20 — [nodejs.org](https://nodejs.org/)
+- **Git**, and a repo with at least one commit and a clean working tree
+- A **`package.json`** at the repo root
+- **Claude Code credentials** — either a subscription login or `ANTHROPIC_API_KEY` in your environment
+- **Chromium**, for the evaluation stage:
+  ```bash
+  npx playwright install chromium
+  ```
+
+The `doctor` stage checks every one of these before a run starts, and tells you exactly which is missing.
+
+<Info>
+Specs that write to the network need a funded Hedera **testnet** account. Export `HEDERA_OPERATOR_ID` and `HEDERA_OPERATOR_KEY` in the shell that runs the harness; the harness passes the key to the judging agent and scrubs it from every artifact it writes. Read-only specs need neither.
+</Info>
+
+### Install
+
+```bash
+npm install -g hedera-harness
+```
+
+### Set up and run
+
+```bash
+cd your-project
+harness init                              # four questions -> harness.yaml
+$EDITOR specs/feature.md                  # your spec, in your words
+harness run --spec specs/feature.md
+```
+
+`harness init` asks four questions, with defaults read from your `package.json`. Use it when you already know what you want built.
+
+`harness wizard payment-flow` does the same job with an agent: it reads the project, works the answers out itself, then interviews you one question at a time and drafts `specs/payment-flow.md`. Use it when you do not yet have a spec.
+
+```
+-- question 2 of 8
+Which mirror node should it query - the one for whatever network the
+wallet is currently connected to, or a fixed network regardless?
+
+> a fixed network. The page is read-only and must work with nothing connected.
+```
+
+An empty answer ends the interview, and the spec is written with what it has.
+
+Both commands write `harness.yaml` and commit it, because it describes the project rather than any one run. See the [reference](/solutions/tools/hedera-harness/reference) for its fields and for every command flag.
+
+---
+
+## How a run works
+
+```
+DOCTOR -> DERIVE -> GENERATE -> TEST -> EVALUATE -> done
+                       ^          |        |
+                       +----------+--------+   repair, up to --max-attempts (default 3)
+```
+
+| Stage | What happens |
+|-------|--------------|
+| **Doctor** | Deterministic, no agent. Checks git, a clean tree, your browser and wallet, and that `harness.yaml` names commands that exist — then runs install, build, and test on the untouched repo, so a project that was already broken fails here instead of being blamed on the agent. |
+| **Derive** | An agent reads your spec — only the spec, never the code — and writes down the checklist a judge could settle by reading a value. It runs before anything is built, so nothing about the app can shape it. |
+| **Generate** | An agent implements the spec. It decides which files to touch and whether to write tests. |
+| **Test** | Install, build, test, stopping at the first failure. No agent involved. |
+| **Evaluate** | A second agent judges the running app against the spec, driving a real browser and reading chain state from the public mirror node. It cannot see your code. |
+
+Only the first stage can stop to ask you anything, and only with `--review`. Everything after it runs to a verdict on its own.
+
+Each attempt is committed to a `harness/<timestamp>` branch. When the run ends you are back on the branch you started from, and the work is there to inspect, cherry-pick, or throw away.
+
+If a run stops early — you interrupt it, or it hits a budget — every completed attempt is already committed. `harness run --spec <path> --continue` picks up from that branch rather than from yours, starting by repairing what the last attempt failed on. A run that *passed* is continuable in the same way, which is how a second spec builds on the first.
+
+---
+
+## How it decides
+
+A passing run is only worth something if the verdict can be trusted. Five rules make that true:
+
+- **The judge cannot see your code.** The evaluating agent runs in a directory holding only the spec, with the repo denied at the sandbox boundary. An agent that can read the implementation ends up grading the implementation instead of the app.
+- **A verdict must show its work.** Every claimed failure cites evidence, and the harness confirms those files exist on disk before it accepts the verdict.
+- **The checklist is written before anything is built.** Derive reads the spec against an app that does not exist yet, so the app cannot lower the bar it is later measured against.
+- **The harness keeps the books.** The judge reads chain state before it touches the app and again afterwards, and the verdict is not accepted until every checklist item is accounted for: both readings, whether it held, and the evidence that shows it.
+- **A verdict is never re-rolled.** If the judge answers, that answer stands. Only the *absence* of an answer earns a second look.
+
+---
+
+## Reading a finished run
+
+```bash
+harness report
+```
+
+`report` answers what live output cannot: what each attempt did, what the run cost, and why you should believe the verdict.
+
+```
+ATTEMPT 2  failed
+  generate   20.0s  8 turns - 3 tool calls - ~$0.10
+  evaluate   25.0s  verdict: fail - 2 finding(s)
+
+  1 open - 1 fixed - 1 new
+    /status: still shows undefined [c.png]  (still open)
+    test: `yarn test` exited 1
+
+  evidence  attempt-2/evidence/  16 files, 3 screenshots
+```
+
+Add `--full` to include both agents' complete tool feeds, so you can read what the judge actually checked rather than taking its word. Every artifact a run produces is kept under `.harness/runs/<timestamp>/`, which the harness excludes from git for you.
+
+---
+
+## Related tools
+
+<CardGroup cols={2}>
+  <Card title="Scaffold HBAR" icon="layer-group" href="/solutions/tools/scaffold-hbar/index">
+    Bootstrap the Hedera dApp you point the harness at
+  </Card>
+  <Card title="Hedera Skills" icon="book" href="https://github.com/hedera-dev/hedera-skills">
+    The Hedera knowledge the building agent loads during a run
+  </Card>
+</CardGroup>

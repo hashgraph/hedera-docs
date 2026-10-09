@@ -1,0 +1,43 @@
+{
+  "classes": [
+    { "name": "AbstractTokenTransferTransaction", "reason": "Internal base class; its methods are documented on the concrete transactions." },
+    { "name": "AirdropPendingTransaction", "reason": "Internal base class for the airdrop cancel/claim transactions." },
+    { "name": "AnySchedulableTransaction", "reason": "Swift type-erasure wrapper, not a transaction developers build." },
+    { "name": "AnyTransaction", "reason": "Swift type-erasure wrapper, not a transaction developers build." },
+    { "name": "ChunkedTransaction", "reason": "Internal base class for chunked transactions (file append, topic message submit)." },
+    { "name": "CostQuery", "reason": "Internal helper behind Query.getCost()." },
+    { "name": "MirrorNodeContractQuery", "reason": "Base class of MirrorNodeContractCallQuery and MirrorNodeContractEstimateGasQuery." },
+    { "name": "MirrorQuery", "reason": "Swift internal base class for mirror node queries." },
+    { "name": "PaymentTransaction", "reason": "Internal query-payment transaction." },
+    { "name": "WrappedTransaction", "reason": "C++ internal wrapper type." },
+    { "name": "TokenNftsUpdateTransaction", "reason": "JS spelling of TokenUpdateNftsTransaction, which is documented." },
+    { "name": "TokenUpdateNftTransaction", "reason": "Swift spelling of TokenUpdateNftsTransaction, which is documented." },
+    { "name": "TransactionGetReceiptQuery", "reason": "Python spelling of TransactionReceiptQuery, which is documented." },
+    { "name": "LiveHashAddTransaction", "reason": "Live hashes are not supported by the network. Confirm before documenting." },
+    { "name": "LiveHashDeleteTransaction", "reason": "Live hashes are not supported by the network. Confirm before documenting." },
+    { "name": "LiveHashQuery", "reason": "Live hashes are not supported by the network. Confirm before documenting." },
+    { "name": "NodeCreateTransaction", "reason": "Requires governing council or node-operator keys; left out of the SDK docs (decided 2026-10-02)." },
+    { "name": "NodeUpdateTransaction", "reason": "Requires governing council or node-operator keys; left out of the SDK docs (decided 2026-10-02)." },
+    { "name": "NodeDeleteTransaction", "reason": "Requires governing council or node-operator keys; left out of the SDK docs (decided 2026-10-02)." },
+    { "name": "RegisteredNodeCreateTransaction", "reason": "Requires governing council or node-operator keys; left out of the SDK docs (decided 2026-10-02)." },
+    { "name": "RegisteredNodeUpdateTransaction", "reason": "Requires governing council or node-operator keys; left out of the SDK docs (decided 2026-10-02)." },
+    { "name": "RegisteredNodeDeleteTransaction", "reason": "Requires governing council or node-operator keys; left out of the SDK docs (decided 2026-10-02)." },
+    { "name": "FreezeTransaction", "reason": "Network freeze is a privileged council operation." },
+    { "name": "SystemDeleteTransaction", "reason": "Privileged system operation." },
+    { "name": "SystemUndeleteTransaction", "reason": "Privileged system operation." },
+    { "name": "HookStoreTransaction", "reason": "HIP-1195 hook SDK docs were removed on purpose (hashgraph/hedera-docs#516). Only the Hiero Hooks core concepts page stays." },
+    { "name": "EthereumEip7702Transaction", "reason": "HIP-1340 EOA code delegation is out of scope while EIP-7702 is deactivated on Hedera (phase 1 docs only, hashgraph/hedera-docs#701)." },
+    { "name": "PingQuery", "reason": "Not public API: internal in Swift and pub(crate) in Rust; Client.ping() is the public entry point." },
+    { "name": "EthereumEip1559Transaction", "reason": "Go helper for encoding Ethereum transaction data (RLP), not a Hedera transaction; the equivalent helpers in other SDKs aren't documented either." },
+    { "name": "EthereumEip2930Transaction", "reason": "Go helper for encoding Ethereum transaction data (RLP), not a Hedera transaction; the equivalent helpers in other SDKs aren't documented either." },
+    { "name": "EthereumLegacyTransaction", "reason": "Go helper for encoding Ethereum transaction data (RLP), not a Hedera transaction; the equivalent helpers in other SDKs aren't documented either." }
+  ],
+  "methods": [
+    { "name": "setProxyAccountId", "reason": "Deprecated; proxy staking was replaced by HIP-406 staking." },
+    { "contains": "hook", "reason": "HIP-1195 hook SDK docs were removed on purpose (hashgraph/hedera-docs#516). Only the Hiero Hooks core concepts page stays." },
+    { "contains": "delegationaddress", "reason": "HIP-1340 EOA code delegation is out of scope while EIP-7702 is deactivated on Hedera (phase 1 docs only, hashgraph/hedera-docs#701)." },
+    { "class": "ContractDeleteTransaction", "name": "setPermanentRemoval", "reason": "Reserved for system use; the network rejects user transactions that set it (PERMANENT_REMOVAL_REQUIRES_SYSTEM_INITIATION)." },
+    { "class": "TokenUpdateTransaction", "name": "setTokenMetadata", "reason": "Java name for setMetadata, which the page already documents." },
+    { "class": "ContractCallQuery", "name": "setMaxResultSize", "reason": "Deprecated in the Java SDK with no replacement; the JS SDK hasn't marked it yet." }
+  ]
+}

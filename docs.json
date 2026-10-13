@@ -2850,6 +2850,12 @@
             ]
           },
           {
+            "group": "Finance Workflows",
+            "pages": [
+              "solutions/finance/settle-dvp"
+            ]
+          },
+          {
             "group": "AI & Agents",
             "pages": [
               "solutions/ai/index",

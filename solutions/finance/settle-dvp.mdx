@@ -1,0 +1,142 @@
+---
+title: "Settle a trade delivery-versus-payment in one atomic transfer"
+description: "Settle a security against a stablecoin on Hedera in a single native transfer: both legs move together or neither does, with KYC and freeze checks enforced by the network and no escrow contract."
+---
+
+{/* OUTLINE — not final prose. Each section lists what it must cover.
+    Prose and code snippets are written after the `dvp-settlement` template is built,
+    and snippets are copied from the template so the two never drift. */}
+
+Settle a trade between a seller and a buyer where the security leg and the payment leg move in **one** Hedera transaction. If either leg fails a check (missing KYC, frozen account, insufficient balance), nothing moves. No escrow contract, no settlement agent, and settlement is final in seconds.
+
+<Card title="Get the code" icon="github" href="https://github.com/web3buidlerz/hedera-finance-templates/tree/templates/dvp-settlement">
+  `npx create-scaffold-hbar@latest --template web3buidlerz/hedera-finance-templates#templates/dvp-settlement`
+</Card>
+
+## Overview
+
+{/* Cover:
+    - What DvP is, in two sentences: delivery of the security against payment of cash, guaranteed together.
+    - The problem it removes: principal / settlement risk when one leg goes first; today solved by CSDs and clearing houses with T+1/T+2.
+    - Why it is better on Hedera: a native TransferTransaction carries both legs atomically; KYC/freeze keys apply to both legs; scheduled transactions collect the counterparty signature asynchronously.
+    - Contrast in one line with EVM-style DvP (escrow contract, approvals, two steps). */}
+
+The workflow has three actors:
+
+* **Issuer**: creates the security token (with KYC and freeze keys) and the payment token, and grants KYC to investors
+* **Seller**: holds the security, proposes the trade, and signs first
+* **Buyer**: holds the payment token, reviews the proposed trade, and signs second
+
+The trade lifecycle:
+
+1. The Issuer creates the security token and the payment token
+2. The Seller and Buyer associate both tokens; the Issuer grants them KYC on the security
+3. The Seller proposes the trade as a scheduled transfer containing both legs and signs it
+4. The Buyer reviews the scheduled transfer on-chain and signs it
+5. The network executes both legs in one transaction, or rejects both
+
+```text
+Issuer                       Seller                     Hedera network                  Buyer
+  |                            |                              |                           |
+  |-- create SEC + tUSD ------------------------------------->|                           |
+  |-- grant KYC (SEC) --------------------------------------->|                           |
+  |                            |-- ScheduleCreate(           |                           |
+  |                            |     SEC  Seller -> Buyer    |                           |
+  |                            |     tUSD Buyer  -> Seller)  |                           |
+  |                            |   + Seller signature ------>|  scheduleId (pending)     |
+  |                            |                              |<--- ScheduleSign ---------|
+  |                            |                              |  both legs execute,       |
+  |                            |                              |  or neither               |
+```
+
+{/* TODO: replace with the final diagram style used across the Finance Workflows pages. */}
+
+| Component | Technology |
+| - | - |
+| Security token | HTS fungible token with KYC, freeze and admin keys |
+| Payment token | HTS stablecoin: mock `tUSD` on testnet, USDC (`0.0.456858`) on mainnet |
+| Settlement | Native `TransferTransaction` wrapped in a `ScheduleCreateTransaction` |
+| Signing | Seller and Buyer through HashPack (WalletConnect); Issuer server-side via `@hiero-ledger/sdk` |
+| Web UI | Next.js with Issuer, Seller and Buyer views (scaffold-hbar) |
+| Network | Hedera testnet |
+
+## Prerequisites
+
+{/* Cover:
+    - Node.js and npm versions (match scaffold-hbar support matrix)
+    - A testnet account from the portal for the Issuer (operator ID + ECDSA key)
+    - HashPack with two testnet accounts (Seller, Buyer) — MetaMask cannot sign native scheduled transactions; say so up front
+    - Testnet HBAR for fees (faucet link) */}
+
+## Project structure
+
+{/* TODO: paste the template tree once built. Expected shape:
+    packages/nextjs/app/{issuer,seller,buyer}   views
+    packages/nextjs/services/dvp.ts             builds the two-leg transfer and the schedule
+    scripts/setup.ts                            creates tokens, associates, grants KYC, funds accounts */}
+
+## Configuration
+
+{/* Cover: the .env keys (operator ID/key, network, optional USDC token ID override) and what each does. No secrets in examples. */}
+
+## Set up the market
+
+{/* Mirror the template's setup script. Each step: one command or one code block, plus a "You should see" line.
+    The "You should see" lines are the harness acceptance checks. */}
+
+### Step 1: Create the security and payment tokens
+
+{/* Security: decimals 0, KYC + freeze keys held by the Issuer. Payment token: 6 decimals.
+    You should see: two token IDs printed and visible on HashScan. */}
+
+### Step 2: Associate the tokens and grant KYC
+
+{/* Explain association (HTS accounts must opt in to a token) and why the security needs KYC but the payment token does not.
+    You should see: Seller and Buyer KYC-granted on the security. */}
+
+### Step 3: Fund the Seller and the Buyer
+
+{/* Seller receives 200 SEC, Buyer receives 10,000 tUSD.
+    You should see: balances in the Seller and Buyer views. */}
+
+## Settle a trade
+
+### Step 1: The Seller proposes the trade
+
+{/* Build the two-leg TransferTransaction (snippet from services/dvp.ts), wrap it in ScheduleCreateTransaction, Seller signs.
+    Teach: the schedule ID, the scheduled transaction ID, the memo.
+    You should see: a pending schedule on HashScan; balances unchanged (nothing moves on one signature). */}
+
+### Step 2: The Buyer reviews and signs
+
+{/* Buyer loads the schedule by ID, sees both legs (ScheduleGetInfoQuery), signs with ScheduleSignTransaction.
+    You should see: the schedule executes; Seller 100 SEC / 10,000 tUSD, Buyer 100 SEC / 0 tUSD. */}
+
+### Step 3: Verify settlement
+
+{/* Show the single transaction on HashScan with four token transfers and one consensus timestamp. Read it back from the mirror node. */}
+
+## What happens when a leg fails
+
+{/* The compliance story. Walk through a buyer without KYC:
+    both parties sign, the network rejects the transfer with ACCOUNT_KYC_NOT_GRANTED_FOR_TOKEN, and the buyer's tUSD stays put — neither leg moves.
+    Also list (one line each): frozen account, insufficient balance at execution, schedule expiry without the second signature.
+    Make the point explicit: nothing is locked while waiting for the second signature, so a schedule can fail at execution — but it can never half-settle. */}
+
+## Settle on a fixed date (T+1)
+
+{/* Optional section. setExpirationTime + setWaitForExpiry(true): both parties sign at trade time, the transfer executes at the settlement date. Max 62 days.
+    Status: not yet exercised on testnet — verify while building the template, drop the section if it does not hold. */}
+
+## Going to production
+
+{/* Cover briefly: swap tUSD for USDC 0.0.456858; KYC from a real provider; threshold keys for the Issuer (maker-checker); custody (Dfns/Fireblocks); log each settlement to an HCS audit topic (link to the audit-trail workflow page). */}
+
+## Next steps
+
+{/* Cards to the other Finance Workflows pages: tokenized bond (ATS), automated coupons (HIP-1215), permissioned security and court-order freeze, HCS audit trail. Plus links: Scheduled transactions concept page, atomic swaps page, HTS KYC tutorial. */}
+
+{/* OPEN QUESTIONS (resolve before writing prose)
+    1. Does the shared plumbing from §6 (A-1 / S-1) include an HCS audit logger this page should write to?
+    2. HashPack signing of ScheduleCreate / ScheduleSign over WalletConnect: untested.
+    3. Section group name in the nav ("Finance Workflows" is a placeholder). */}

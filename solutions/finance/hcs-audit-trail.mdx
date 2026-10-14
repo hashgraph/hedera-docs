@@ -1,0 +1,128 @@
+---
+title: "Publish a tamper-evident audit trail and regulator feed with HCS"
+description: "Log every lifecycle action on a security token to a Hedera Consensus Service topic that only authorised publishers can write to, and give a regulator a live, self-verifying feed read straight from the mirror node."
+---
+
+{/* OUTLINE — not final prose. Each section lists what it must cover.
+    Prose and code snippets are written after the `hcs-audit-trail` template is built,
+    and snippets are copied from the template so the two never drift. */}
+
+Record every compliance-relevant action on a security token (issuance, KYC, transfers, freezes) in an append-only log that no one can rewrite, reorder or quietly skip, and give a regulator a live feed they can verify themselves with no access to your systems.
+
+<Card title="Get the code" icon="github" href="https://github.com/web3buidlerz/hedera-finance-templates/tree/templates/hcs-audit-trail">
+  `npx create-scaffold-hbar@latest --template web3buidlerz/hedera-finance-templates#templates/hcs-audit-trail`
+</Card>
+
+## Overview
+
+{/* Cover:
+    - The problem: audit logs in a database can be edited, reordered or truncated by whoever runs the database; regulators get exports after the fact and must trust them.
+    - Why HCS: every message gets a consensus timestamp, a sequence number and a running hash from the network; a topic with a submit key accepts messages only from authorised publishers; anyone can read it through the public mirror node.
+    - Differentiator (Luke): a native service at a fixed, low per-message fee; no other network publishes a regulator- or auditor-feed guide.
+    - Shared plumbing: the other Finance Workflows templates (DvP, bond, coupons, court-order freeze) can log their lifecycle events here. */}
+
+The workflow has three actors:
+
+* **Issuer**: the operator account the app runs with. Creates the security token and the audit topic, performs the token actions, and publishes an audit entry for each one
+* **Compliance officer** (optional): a HashPack account the Issuer authorises as a publisher. Signs and submits the audit entries instead of the Issuer
+* **Regulator**: reads the trail through the mirror node. Holds no keys and needs no account
+
+The lifecycle:
+
+1. The Issuer creates the audit topic with a submit key, and a security token with KYC and freeze keys
+2. The Issuer performs token actions: issue, grant KYC, transfer, freeze, unfreeze
+3. Each action is logged as an audit entry carrying the action's transaction id and the hash of the previous entry
+4. The Regulator's feed reads the topic from the mirror node and verifies it: no sequence gaps, an unbroken hash chain, every referenced transaction real and successful
+5. Anyone else who tries to publish is rejected by the network
+
+```text
+Issuer / Compliance officer          Hedera network                     Regulator (mirror node only)
+        |                                  |                                       |
+        |-- TokenGrantKyc ---------------->|  txId                                 |
+        |-- TopicMessageSubmit(            |                                       |
+        |     event, txId, prevHash) ----->|  seq N, consensus time, running hash  |
+        |                                  |<-------- GET /topics/{id}/messages ---|
+        |                                  |          verify: seq, hash chain, txId|
+Outsider -- TopicMessageSubmit ----------->|  INVALID_SIGNATURE (rejected)         |
+```
+
+{/* TODO: final diagram style shared with the other Finance Workflows pages. */}
+
+| Component | Technology |
+| - | - |
+| Audit log | HCS topic with an admin key and a submit key (1-of-n key list: Issuer plus authorised publishers) |
+| Logged actions | HTS token create, KYC grant, transfer, freeze, unfreeze |
+| Entry format | JSON: event, token, account, amount, transaction id, previous entry hash |
+| Regulator feed | Mirror node REST (`/api/v1/topics/{id}/messages`), polled live, verified in the browser |
+| Signing | Issuer server-side via `@hiero-ledger/sdk`; compliance officer via HashPack and `@hashgraph/hedera-wallet-connect` |
+| Network | Hedera testnet |
+
+## Prerequisites
+
+{/* Cover: Node/Yarn; a testnet ECDSA operator (the Issuer) with HBAR, with the measured setup cost (token create dominates);
+    optional HashPack testnet account (not the Issuer) + WalletConnect project id. */}
+
+## Project structure
+
+{/* TODO: paste the template tree once built. Expected: issuer page, /regulator page, server routes for setup, actions and publishing, a shared entry-format module used by both publisher and verifier. */}
+
+## Configuration
+
+{/* .env.local keys: operator id/key, WalletConnect project id (optional). */}
+
+## Set up the audit topic
+
+### Step 1: Create the topic with a submit key
+
+{/* TopicCreateTransaction with adminKey and submitKey; why the submit key is what makes the log trustworthy; memo.
+    You should see: the topic id, linked to HashScan, with a submit key. */}
+
+### Step 2: Create the security token
+
+{/* KYC + freeze keys, so there are compliance actions worth auditing. Its creation is the first audit entry.
+    You should see: the token id, and entry #1 "issue" in the trail. */}
+
+## Log a token action
+
+### Step 1: Perform the action
+
+{/* One of: grant KYC, transfer, freeze, unfreeze; each is a real HTS transaction with its own transaction id. */}
+
+### Step 2: Publish the audit entry
+
+{/* Entry JSON, the previous-entry hash, TopicMessageSubmitTransaction, receipt with topic sequence number and running hash.
+    You should see: the new entry in the trail with its sequence number and consensus timestamp. */}
+
+## Read and verify the regulator feed
+
+{/* The /regulator page: mirror node only, no keys. What it checks and how:
+    - sequence numbers consecutive from 1
+    - each entry's prevHash equals the hash of the entry before it
+    - each referenced transaction exists on the mirror node with result SUCCESS
+    Show the verification snippet. You should see: every entry marked verified, updating live as new entries land. */}
+
+## What the network refuses
+
+{/* "Try to forge an entry": an outsider account submits to the topic → INVALID_SIGNATURE, nothing appears in the trail.
+    Explain what HCS does and does not guarantee: ordering and immutability by the network; content correctness is the publisher's responsibility, which is why entries reference verifiable transaction ids. */}
+
+## Sign entries as a compliance officer with HashPack
+
+{/* Authorise publisher: the Issuer updates the topic's submit key to a 1-of-n key list including the wallet's key.
+    From then on, each action's entry is signed and submitted by HashPack; the feed shows which account published each entry.
+    Wiring: HederaProvider.init → universalProvider; sign on that instance; transactionList base64 (link to the DvP page section). */}
+
+## Going to production
+
+{/* Private payloads (encrypt to the regulator, or publish hashes only and keep documents off-chain);
+    topic admin key in a threshold key; running a mirror node or a subscription via gRPC for low latency;
+    logging from the other Finance Workflows templates; retention and cost at volume. */}
+
+## Next steps
+
+{/* Cards: HCS concepts, create topic, submit message, the DvP settlement page, Scaffold HBAR. */}
+
+{/* OPEN QUESTIONS (resolve before writing prose)
+    1. Is this Luke's "A-1" shared plumbing? If so, should other templates import a shared entry-format module or copy it?
+    2. Mirror REST polling vs gRPC subscription for the live feed (REST is simpler in a browser).
+    3. Per-message fee to quote: Luke's table says $0.0008; confirm against the current fee schedule before publishing. */}

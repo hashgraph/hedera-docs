@@ -63,7 +63,7 @@ By default the template signs for the Seller and the Buyers with demo accounts k
 ## Prerequisites
 
 * Node.js 20.18 or later, and Yarn
-* A Hedera testnet account with an ECDSA key, from the [Hedera Portal](https://portal.hedera.com). It becomes the Issuer.
+* A Hedera testnet account from the [Hedera Portal](https://portal.hedera.com). It becomes the Issuer. Its key can be a raw ECDSA key in hex, or a DER-encoded ECDSA or ED25519 key.
 * Testnet HBAR on that account. Setting up a market costs about **31 HBAR**, mostly the network fee for creating two tokens; each trade costs well under 1 HBAR.
 * Optional, for [Sign with HashPack](#sign-with-hashpack): the HashPack browser extension with a testnet account **other than** the Issuer, and a WalletConnect project id from the [Reown dashboard](https://cloud.reown.com)
 
@@ -95,7 +95,7 @@ Create `packages/nextjs/.env.local`:
 ```bash
 # The Issuer. Server-side only, never sent to the browser.
 HEDERA_OPERATOR_ID=0.0.1234
-HEDERA_OPERATOR_KEY=<ECDSA private key, hex>
+HEDERA_OPERATOR_KEY=<ECDSA hex key, or a DER-encoded ECDSA/ED25519 key>
 
 # Optional: enables Sign with HashPack
 NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=<your Reown project id>
@@ -112,7 +112,7 @@ Without the operator variables the page still loads and tells you which ones to 
 
 ## Set up the market
 
-Press **Set up market**. The server runs three steps as the Issuer.
+Press **Set up market**. The server runs the setup as the Issuer and reports each step as it starts and finishes, so the page shows a checklist: a spinner on the running step, then a check with the ids it created. **What each step does** expands to a one-line explanation per step. When setup finishes, the page scrolls to the market. The steps group into three stages.
 
 ### Step 1: Create the security and the stablecoin
 
@@ -157,7 +157,7 @@ await (
 
 ### Step 3: Fund the parties
 
-The Issuer sends the starting balances: the Seller receives **200** security, and each Buyer receives stablecoin to pay with. The page states the starting position in words, so what is left after a trade is never mistaken for newly created tokens.
+The Issuer sends the starting balances in one transfer: the Seller receives **200** security, and each Buyer receives **10,000** stablecoin. Under the market table the page states this starting position in words, so what is left after a trade is never mistaken for newly created tokens.
 
 **You should see** the balances in the market table, read from the mirror node.
 
@@ -186,6 +186,8 @@ const receipt = await (await (await scheduleTx.sign(sellerKey)).execute(client))
 Give every schedule a unique memo. Hedera refuses a schedule whose body is identical to one that still exists (`IDENTICAL_SCHEDULE_ALREADY_CREATED`), and an executed schedule stays on the network until it expires. Without a unique memo, proposing the same trade twice fails.
 </Tip>
 
+The quantity must be a whole number (the security has 0 decimals) and the price can have at most 6 decimals; anything else is refused before anything is signed, rather than rounded into a different trade than the one on screen.
+
 **You should see** the schedule id, linked to HashScan, with status `PENDING`. **No balance changes**: one signature is not enough to move anything.
 
 ### Step 2: The Buyer signs
@@ -204,7 +206,7 @@ const settlement = await new TransactionReceiptQuery()
 console.log(settlement.status.toString()); // "SUCCESS"
 ```
 
-**You should see** status `SETTLED` with result `SUCCESS`. With the default ticket of 100 security for 10,000 stablecoin, the Seller goes from 200 security to 100 and gains 10,000 stablecoin; the Buyer gains 100 security and pays 10,000 stablecoin. The page lists those changes per party.
+**You should see** status `SETTLED` with result `SUCCESS`. With the default ticket of 100 security for 10,000 stablecoin, the Seller goes from 200 security to 100 and gains 10,000 stablecoin; the Buyer gains 100 security and pays 10,000 stablecoin. Below the status, the page lists those changes per party, for example `Seller: −100 security, +10,000 stablecoin`.
 
 ### Step 3: Verify settlement
 
@@ -220,7 +222,7 @@ curl "https://testnet.mirrornode.hedera.com/api/v1/transactions?timestamp=<execu
 
 Select the **unverified Buyer**, propose a trade, and sign as that Buyer. Both parties sign, the schedule executes, and the network rejects the transfer with `ACCOUNT_KYC_NOT_GRANTED_FOR_TOKEN`.
 
-**You should see** status `REJECTED`, and **no balance changes**. The unverified Buyer still holds all of its stablecoin, even though only the security leg failed the KYC check. That is the guarantee: a DvP transfer can fail, but it can never half-settle.
+**You should see** status `REJECTED`, the page saying that nothing moved, and **no balance changes**. The unverified Buyer still holds all of its stablecoin, even though only the security leg failed the KYC check. That is the guarantee: a DvP transfer can fail, but it can never half-settle.
 
 Other ways a trade fails, with the same outcome:
 
@@ -234,9 +236,16 @@ Nothing is locked while the schedule waits for the Buyer, which is the trade-off
 
 With `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID` set, switch **Signing mode** to **HashPack** and take one side of the trade with your own account. The counterparty stays a demo account.
 
-1. **Connect HashPack.** Use a testnet account that is *not* the Issuer. The Issuer created both tokens and holds their treasury, so it cannot also be a party, and the app refuses it.
+1. **Connect HashPack.** Use your own testnet account. The app refuses the Issuer, which created both tokens and holds their treasury, and the demo accounts.
 2. **Choose a role** (Seller or Buyer) and press **Onboard wallet**. HashPack signs the token association, because only the account owner can opt in to a token. The server then grants KYC and funds your account for its role, minting the tokens it hands you.
 3. **Trade.** As Seller, HashPack signs the schedule creation; as Buyer, it signs the schedule. Everything else behaves exactly as with demo accounts.
+
+A few rules keep the wallet flow honest:
+
+* One wallet can take both roles. Onboarding in the second role funds it for that role without asking HashPack to associate the tokens again; onboarding twice in the same role is refused.
+* Nothing can be onboarded while a trade is pending.
+* Keep HashPack on the account you onboarded. Wallet transactions are built with that account as the payer, so if you switch accounts the trade controls are disabled and the page names the account to switch back to.
+* The server never trusts what the browser sends back after HashPack signs. It records the trade terms it prepared itself, checks the schedule was submitted by the onboarded wallet, and checks the wallet's own transaction succeeded.
 
 The app never holds your key. The server builds each transaction with your account as the payer and freezes it; the browser sends it to HashPack through WalletConnect:
 

@@ -28,6 +28,15 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 
 
+
+## [v0.164.2](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.164.2)
+
+Provides compatibility with v0.78 of the consensus node. This is a recommended upgrade for operators as otherwise the web3 module and `/api/v1/contracts/call` can start failing against 0.78 due to the addition of the new CLPR protobuf transactions.
+
+<Accordion title="Dependency Upgrades">
+  * Update consensus node library to v0.78.1-rc.1 (0.164) [#14437](https://github.com/hiero-ledger/hiero-mirror-node/pull/14437)
+</Accordion>
+
 ## [v0.164.1](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.164.1)
 
 A small release to fix a bug in the native ghcr.io images. If operators are not using the native images, they can safely ignore this release.

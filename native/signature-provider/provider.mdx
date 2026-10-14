@@ -10,11 +10,11 @@ This feature is available in the [Hedera JavaScript SDK](https://github.com/hash
 
 `Provider` provides access to a Hedera network to which requests should be submitted to. The Hedera network can be specified to `previewnet`, `testnet`, or `mainnet`.
 
-The most important method on the provider interface is the `call` method which allows a user to submit *any* request and get the correct response for that request. For instance,Java
+The most important method on the provider interface is the `call` method which allows a user to submit *any* request and get the correct response for that request. For instance:
 
 ```javascript
-// Balance of node account ID 0.0.3 
-const balance = provider.call(new AccountBalanceQuery().setAccountId(AccountId.fromString("0.0.3")));Interface Provider
+// Info for node account ID 0.0.3
+const info = await provider.call(new AccountInfoQuery().setAccountId(AccountId.fromString("0.0.3")));
 ```
 
 ### **Methods**
@@ -27,9 +27,9 @@ Returns the ledger ID of the current network.
 
 Returns the entire network map for the current network.
 
-**`getAccountBalance(accountId: AccountId | string)`->** **`Promise<AccountBalance>`**
+**`getAccountBalance(accountId: AccountId | string, requestTimeout?: number)`->** **`Promise<AccountBalance>`**
 
-Get the balance for the specified account ID.
+Get the balance for the specified account ID. In SDK v2.89.0+, the SDK's `LocalProvider` reads the balance from the mirror node and returns HBAR only: the `tokens` and `tokenDecimals` maps are always empty, and the value can lag consensus by a few seconds. Use [`MirrorNodeTokenBalanceQuery`](/native/tokens/get-balance) for token balances.
 
 **`getAccountInfo(accountId: AccountId | string)`->** **`Promise<AccountInfo>`**
 

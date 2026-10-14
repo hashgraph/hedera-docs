@@ -46,7 +46,7 @@ Sign an arbitrary list of messages.
 
 **`<Wallet>.getAccountBalance()`->** **`Promise<AccountBalance>`**
 
-Returns the account balance.
+Returns the account balance. In SDK v2.89.0+, this reads the balance from the mirror node and returns HBAR only: the `tokens` and `tokenDecimals` maps are always empty, and the value can lag consensus by a few seconds. Use [`MirrorNodeTokenBalanceQuery`](/native/tokens/get-balance) for token balances.
 
 **`<Wallet>.getAccountInfo`()->** **`Promise<AccountInfo>`**
 

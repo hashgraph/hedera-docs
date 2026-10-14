@@ -146,13 +146,13 @@ The HBAR balance result is equivalent, but the behavior in edge cases differs. E
 
 <Warning>
 * **Eventual consistency:** The mirror node ingests blocks asynchronously a few seconds after consensus, so a balance read immediately after `getReceipt()` may still show the pre-transaction value. Poll until the balance changes, or rely on the transaction receipt for confirmation rather than a balance read.
-* **Unknown-account handling differs by SDK.** The mirror node returns an empty array (HTTP 200) for an account it does not know, and each SDK maps that differently:
-  * **JavaScript** returns `hbars = 0`, which is indistinguishable from a real account that holds zero HBAR. Do not use a zero balance to infer that an account is missing.
-  * **Java** throws `INVALID_ACCOUNT_ID`, matching the deprecated `AccountBalanceQuery`.
-  * **Go** returns an `INVALID_ACCOUNT_ID` error, matching the deprecated `AccountBalanceQuery` (see [detecting a missing account](#detecting-a-missing-account-in-go)).
+* **Unknown accounts fail with `INVALID_ACCOUNT_ID`.** The mirror node returns an empty array (HTTP 200) for an account it does not know, and each SDK reports that as `INVALID_ACCOUNT_ID`, matching the old `AccountBalanceQuery`:
+  * **JavaScript** (v2.88.0+) throws a `MirrorNodeStatusError` whose `status` is `INVALID_ACCOUNT_ID`. Match on `error.status`, not on the error class. v2.87.0 returned `hbars = 0` instead, which looks the same as a real account holding zero HBAR, so upgrade if you rely on this check.
+  * **Java** throws a `PrecheckStatusException` with `INVALID_ACCOUNT_ID`.
+  * **Go** returns an `ErrHederaPreCheckStatus` with `INVALID_ACCOUNT_ID` (see [detecting a missing account](#detecting-a-missing-account-in-go)).
 * **No `setContractId`:** Pass contract IDs, EVM addresses, and account aliases through `setAccountId`.
-* **Precision (JavaScript only):** In the JavaScript SDK, balances above `Number.MAX_SAFE_INTEGER` lose precision silently. The Java (`Hbar`/`long`) and Go (`Hbar`/`int64`) SDKs are not affected.
-* **Retry behavior:** Transient failures are retried automatically with exponential backoff, so a wrapper retry loop is usually unnecessary. The exact retried set differs by SDK (see [Retry behavior by SDK](#retry-behavior-by-sdk)). In your own retry logic, never retry a 4xx other than 429: a 4xx means the request itself is invalid (for example, a malformed account ID) and will fail again.
+* **Precision (JavaScript before v2.89.0):** JavaScript SDK v2.87.0 and v2.88.0 rounded balances above `Number.MAX_SAFE_INTEGER` tinybars. v2.89.0 fixed this. The Java (`Hbar`/`long`) and Go (`Hbar`/`int64`) SDKs are not affected.
+* **Retry behavior:** Transient failures are retried automatically with exponential backoff, so a wrapper retry loop is usually unnecessary. The exact retried set differs by SDK (see [Retry behavior by SDK](#retry-behavior-by-sdk)). In your own retry logic, do not retry a 4xx other than 408 and 429: a 4xx means the request itself is invalid (for example, a malformed account ID) and will fail again.
 </Warning>
 
 #### Detecting a missing account in Go
@@ -173,13 +173,14 @@ if errors.As(err, &pre) && pre.Status == hiero.StatusInvalidAccountID {
 
 #### Retry behavior by SDK
 
-Each SDK retries transient failures automatically; the retried set differs. In every SDK, a plain 4xx (other than 429) is treated as a bad request and is not retried.
+Each SDK retries transient failures automatically; the retried set differs slightly. In every SDK, a 4xx other than 408 and 429 is treated as a bad request and is not retried. The table reflects JavaScript v2.89.0+, Java v2.77.0+, and Go v2.85.0+.
 
 | Failure | JavaScript | Java | Go |
 | --- | --- | --- | --- |
-| Network timeout, 5xx | Retried | Retried | Retried |
-| 429 (rate limit) | Not retried | Retried | Retried |
-| 408 (request timeout) | Not retried | Retried | Not retried |
+| Network timeout | Retried | Retried | Retried |
+| 408 (request timeout), 429 (rate limit) | Retried | Retried | Retried |
+| 500, 502, 503, 504 | Retried | Retried | Retried |
+| Other 5xx (for example 501, 505) | Not retried | Retried | Not retried |
 | Other 4xx | Not retried | Not retried | Not retried |
 
 ## SDK Versions

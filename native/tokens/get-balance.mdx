@@ -1,107 +1,178 @@
 ---
 title: "Get account token balance"
-description: "Get an account's token balances on Hedera. AccountBalanceQuery is removed in consensus node release v0.77, so migrate to the Mirror Node REST API balances endpoint."
+description: "Get an account's token balances on Hedera for free with MirrorNodeTokenBalanceQuery or the Mirror Node REST API. AccountBalanceQuery stopped working with consensus node release v0.77."
 ---
 
 import AccountBalanceQueryDeprecation from '/snippets/account-balance-query-deprecation.mdx';
 
+A query that returns the balance an account holds in a token. Token balances are read from a mirror node, either through `MirrorNodeTokenBalanceQuery` in the SDK or directly from the Mirror Node REST API. Both are free and do not need an operator account.
 
-To get the balance of tokens for an account, you can submit an account balance query. The account balance query will return the tokens the account holds in a list format.
+## Recommended: `MirrorNodeTokenBalanceQuery`
 
-<Warning>
+`MirrorNodeTokenBalanceQuery` reads an account's token relationships from the Mirror Node REST API (`GET /api/v1/accounts/{id}/tokens`) through the SDK's query interface. It is the SDK replacement for the token balances that `AccountBalanceQuery` used to return. For HBAR balances, use [`MirrorNodeAccountBalanceQuery`](/native/accounts/get-balance).
 
-#### **DEPRECATION NOTICE: `AccountBalanceQuery`**
+* **Free:** No query payment and no operator key signing.
+* **Smallest unit:** For fungible tokens, `balance` is in the token's smallest denomination. Divide by 10<sup>decimals</sup> to get the display amount: a `balance` of `1234` with `decimals` of `2` is `12.34` tokens. For NFT collections, `balance` is the number of NFTs the account holds.
+* **Flexible account references:** `setAccountId` accepts `0.0.<num>`, an EVM address (`0x...`), or a contract ID. The mirror node resolves all of them.
 
-<AccountBalanceQueryDeprecation />
+| Method | Type | Requirement |
+| --- | --- | --- |
+| `setAccountId(<accountId>)` | AccountId | Required |
+| `setTokenId(<tokenId>)` | TokenId | Required in JavaScript and Java. Optional in Go: leave it unset to list every token the account holds. |
+| `SetNextPage(<next>)` | string | Go only. Optional. The `Next` cursor from the previous page. Cannot be combined with `SetAccountID` or `SetTokenID`. |
 
-**For token balances, migrate to the [Mirror Node REST API token balances endpoint](/reference/rest-api/tokens).** `MirrorNodeAccountBalanceQuery`, the SDK-native replacement for HBAR balances, returns only `hbars` and does not return token balances, so it is not a replacement for this page. If you also need an account's HBAR balance, see [Get account balance](/native/accounts/get-balance), which is a separate query for a separate field.
-
-📚 **For the full migration guide, read:** [Migrating from AccountBalanceQuery: What You Need to Know](https://hedera.com/blog/migrating-from-accountbalancequery-what-you-need-to-know)
-</Warning>
-
-
-<Note>
-
-#### **Recommend Using Mirror Node REST API**
-
-For obtaining token information and historical data, consider using the Mirror Node REST API endpoint [**List Token Balances**](/reference/rest-api/tokens) which offers several advantages:
-
-* **Cost-effective and scalable:** [Mirror node providers](/operators/mirror-node#mainnet) offer paid plans with a large number of queries included. The Hedera-hosted mirror node offers free queries with specific throttles for testing. While some SDK queries are currently free, these are subject to change in the future.
-* **Performance:** Mirror nodes don't burden consensus nodes, allowing them to focus on processing transactions and providing efficient access to historical data without impacting network performance.
-* **Historical data:** Mirror nodes store complete transaction history, records, and events - ideal for analytics, auditing, and monitoring past activity.
-
-📚 **For more details on querying data, read:** [Querying Data on Hedera: SDK vs Mirror Node REST API](https://hedera.com/blog/querying-data-on-hedera-sdk-vs-mirror-node-rest-api/).
-
-</Note>
-
-**Query Fees**
-
-* Please see the transaction and query [fees](/networks/fees#transaction-and-query-fees) table for the base transaction fee
-* Please use the [Hedera fee estimator](https://hedera.com/fees) to estimate your query fee cost
-
-| Method                      | Type      | Requirement |
-| --------------------------- | --------- | ----------- |
-| `setAccountId(<accountId>)` | AccountId | Required    |
+### Basic usage
 
 <CodeGroup>
 
-```java Java
-//Create the query
-AccountBalanceQuery query = new AccountBalanceQuery()
-    .setAccountId(accountId);
-
-//Sign with the operator private key and submit to a Hedera network
-AccountBalance tokenBalance = query.execute(client);
-
-System.out.println("The token balance(s) for this account: " +tokenBalance.tokens);
-
-//v2.0.9
-```
-
-
 ```javascript JavaScript
-//Create the query
-const query = new AccountBalanceQuery()
-    .setAccountId(accountId);
+//Create the mirror node token balance query
+const tokenBalance = await new MirrorNodeTokenBalanceQuery()
+    .setAccountId(accountId)
+    .setTokenId(tokenId)
+    .execute(client);
 
-//Sign with the client operator private key and submit to a Hedera network
-const tokenBalance = await query.execute(client);
+//Print the balance in the token's smallest unit and the token's decimals
+console.log(`${tokenBalance.tokenId}: ${tokenBalance.balance} (decimals: ${tokenBalance.decimals})`);
 
-console.log("The token balance(s) for this account: " +tokenBalance.tokens.toString());
-
-//v2.0.7
+//v2.89.0
 ```
 
+```java Java
+// MirrorNodeTokenBalanceQuery is free; no operator signing required.
+MirrorNodeTokenBalance tokenBalance = new MirrorNodeTokenBalanceQuery()
+    .setAccountId(accountId)
+    .setTokenId(tokenId)
+    .execute(client);
+
+System.out.println(tokenBalance.tokenId + ": " + tokenBalance.balance
+    + " (decimals: " + tokenBalance.decimals + ", associated: " + tokenBalance.isAssociated() + ")");
+
+//v2.78.0
+```
 
 ```go Go
-//Create the query
-query := hedera.NewAccountBalanceQuery().
-	 SetAccountID(accountId)
-	
-//Sign with the client operator private key and submit to a Hedera network
-tokenBalance, err := query.Execute(client)
-
+// MirrorNodeTokenBalanceQuery is free; no operator signing required.
+page, err := hiero.NewMirrorNodeTokenBalanceQuery().
+    SetAccountID(accountId).
+    SetTokenID(tokenId).
+    Execute(client)
 if err != nil {
-		panic(err)
-	}
+    panic(err)
+}
 
-fmt.Printf("The token balance(s) for this account: %v\n", tokenBalance)
+// Tokens is empty when the account is not associated with the token
+for _, token := range page.Tokens {
+    fmt.Printf("%v: %d (decimals: %d)\n", token.TokenID, token.Balance, token.Decimals)
+}
 
-//v2.1.0
-```
-
-
-```rust Rust
-// Create the query
-let query = AccountBalanceQuery::new()
-    .account_id(account_id);
-
-// Sign with the client operator private key and submit to a Hedera network
-let token_balance = query.execute(&client).await?;
-
-println!("The token balance(s) for this account: {:?}", token_balance.tokens);
-
-// v0.34.0
+//v2.85.0
 ```
 
 </CodeGroup>
+
+### List every token an account holds (Go)
+
+In Go, leave `SetTokenID` unset to read all of the account's token relationships, up to 100 per page. Follow the `Next` cursor until it is empty:
+
+```go
+page, err := hiero.NewMirrorNodeTokenBalanceQuery().
+    SetAccountID(accountId).
+    Execute(client)
+for err == nil {
+    for _, token := range page.Tokens {
+        fmt.Printf("%v: %d (decimals: %d, KYC: %s, freeze: %s)\n",
+            token.TokenID, token.Balance, token.Decimals, token.KycStatus, token.FreezeStatus)
+    }
+    if page.Next == "" {
+        break
+    }
+    page, err = hiero.NewMirrorNodeTokenBalanceQuery().
+        SetNextPage(page.Next).
+        Execute(client)
+}
+if err != nil {
+    panic(err)
+}
+
+//v2.85.0
+```
+
+The JavaScript and Java SDKs return one token per query. To list every token an account holds in those SDKs, call the [Mirror Node REST API](#mirror-node-rest-api) directly.
+
+<Info>
+In the JavaScript SDK, `MirrorNodeTokenBalanceQuery` shipped as a single-token query before the cross-SDK design ([sdk-collaboration-hub#281](https://github.com/hiero-ledger/sdk-collaboration-hub/pull/281)) was final. That design is still under review, and the SDK notes that the query's shape may change once it is accepted, so check the release notes when you upgrade.
+</Info>
+
+### Behavior by SDK
+
+The three SDKs report a missing token relationship and an unknown account differently:
+
+| Case | JavaScript | Java | Go |
+| --- | --- | --- | --- |
+| Account holds the token | `balance` and `decimals` | `balance`, `decimals`, and `isAssociated()` returns `true` | One entry in `Tokens` |
+| Account is not associated with the token | `balance` is `0` and `decimals` is `0` | `balance` is `0`, `decimals` is `null`, and `isAssociated()` returns `false` | `Tokens` is empty |
+| Mirror node does not know the account | Throws `MirrorNodeStatusError` with status `INVALID_ACCOUNT_ID` | No error: `balance` is `0` and `isAssociated()` returns `false` | Returns `ErrHederaPreCheckStatus` with status `INVALID_ACCOUNT_ID` |
+
+<Warning>
+* **Eventual consistency:** The mirror node ingests blocks a few seconds after consensus. A balance read right after a transfer, or a query for a newly created account, can return the pre-transaction state. Poll until the balance changes, or rely on the transaction receipt for confirmation.
+* **Java and unknown accounts:** In Java, a mistyped or not-yet-ingested account ID reads as "not associated" instead of failing. Do not treat `isAssociated() == false` as proof that the account exists.
+* **JavaScript decimals:** When the account is not associated, `decimals` is `0` because the mirror node response does not include it. Read decimals from the token itself if you need them in that case.
+</Warning>
+
+## Mirror Node REST API
+
+The SDK query calls this endpoint, and you can call it directly from any language, including Rust. Add `token.id` to return a single token, or leave it out to list every token the account holds:
+
+```bash
+curl "https://testnet.mirrornode.hedera.com/api/v1/accounts/0.0.1234/tokens?token.id=0.0.5678"
+```
+
+```json
+{
+  "tokens": [
+    {
+      "automatic_association": false,
+      "balance": 1250,
+      "created_timestamp": "1791993803.714558718",
+      "decimals": 2,
+      "token_id": "0.0.5678",
+      "freeze_status": "NOT_APPLICABLE",
+      "kyc_status": "NOT_APPLICABLE"
+    }
+  ],
+  "links": {
+    "next": null
+  }
+}
+```
+
+* The response lists only tokens the account is associated with. An unassociated token returns an empty `tokens` array.
+* An unknown account returns HTTP 404.
+* When listing every token, follow `links.next` until it is `null`.
+
+See the [Get token relationships info for an account](/api-reference/accounts/get-token-relationships-info-for-an-account) reference for every parameter.
+
+## SDK versions
+
+`MirrorNodeTokenBalanceQuery` is available in:
+
+- **JavaScript** ([`@hiero-ledger/sdk`](https://www.npmjs.com/package/@hiero-ledger/sdk)): [v2.89.0+](https://github.com/hiero-ledger/hiero-sdk-js/releases/tag/v2.89.0)
+- **Java** ([`com.hedera.hashgraph:sdk`](https://central.sonatype.com/artifact/com.hedera.hashgraph/sdk/2.78.0)): [v2.78.0+](https://github.com/hiero-ledger/hiero-sdk-java/releases/tag/v2.78.0)
+- **Go** ([`github.com/hiero-ledger/hiero-sdk-go/v2`](https://pkg.go.dev/github.com/hiero-ledger/hiero-sdk-go/v2)): [v2.85.0+](https://github.com/hiero-ledger/hiero-sdk-go/releases/tag/v2.85.0)
+- **Rust**: not available. Use the [Mirror Node REST API](#mirror-node-rest-api).
+
+## HBAR balances
+
+`MirrorNodeTokenBalanceQuery` returns token balances only. To read an account's HBAR balance, see [Get account balance](/native/accounts/get-balance).
+
+## Removed: `AccountBalanceQuery`
+
+<Warning>
+
+<AccountBalanceQueryDeprecation />
+
+For token balances, use `MirrorNodeTokenBalanceQuery` (above) or the [Mirror Node REST API](#mirror-node-rest-api).
+
+📚 **For the full migration guide, read:** [Migrating from AccountBalanceQuery: What You Need to Know](https://hedera.com/blog/migrating-from-accountbalancequery-what-you-need-to-know)
+</Warning>

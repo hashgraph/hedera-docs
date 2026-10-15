@@ -1,0 +1,141 @@
+---
+title: "Reference"
+description: "Every Hedera Harness command and flag, the fields of harness.yaml, the environment variables that configure a run, and the artifacts a finished run leaves on disk."
+---
+
+## Commands
+
+```
+harness init [--yes]
+harness wizard [name] [--model NAME] [--yes]
+harness run --spec <path> [--max-attempts N] [--max-spend USD]
+            [--model NAME] [--judge-model NAME] [--review] [--continue] [--yes] [--json]
+harness report [run] [--full]
+```
+
+Run them from inside the target repository.
+
+| Command | What it does |
+|---------|--------------|
+| `init` | Writes `harness.yaml` by asking four questions, with defaults read from your `package.json` |
+| `wizard [name]` | An agent reads the project and works the same answers out itself, then interviews you and drafts `specs/<name>.md` |
+| `run --spec <path>` | Builds the feature described by a spec, and judges the result |
+| `report [run]` | Reads a finished run: what it did, what the judge checked, and whether to believe it. Defaults to the latest run |
+
+### Flags
+
+| Flag | Meaning |
+|------|---------|
+| `--spec <path>` | The feature to build. Required by `run` |
+| `--max-attempts N` | Repair attempts before giving up. Default `3` |
+| `--max-spend USD` | Stop an agent that spends more than this. Unset by default — every stage is already bounded by a clock |
+| `--model NAME` | Agent model: `sonnet` (default), `opus`, `haiku`, or a full model id |
+| `--judge-model NAME` | Model for the evaluate stage only. Defaults to the same as `--model` |
+| `--review` | Stop to confirm the checklist derived from your spec before anything is built |
+| `--continue` | Carry on from the last run — its branch, and what it ended up failing on |
+| `--yes` | Take the defaults without asking (`init`, `wizard`) |
+| `--json` | One JSON object per line instead of the watchable output |
+| `--full` | `report` only: include both agents' complete tool feeds |
+
+<Info>
+The watchable output and `--json` are two renderers over the same event stream, so they cannot drift apart. `--json` carries raw values — `"costUsd": 0.48` rather than `~$0.48 of tokens` — which is the reason the two exist separately.
+</Info>
+
+---
+
+## harness.yaml
+
+Written by `init` or `wizard`, and committed, because it describes the project rather than any one run.
+
+```yaml
+install: yarn install
+# Root next:build delegates to `next build` in @sh/nextjs, the only production
+# build in the repo (hardhat has only compile).
+build: yarn next:build
+test: yarn test
+# next:dev runs `next dev` and keeps running.
+serve: yarn next:dev
+```
+
+| Field | Required | What it is |
+|-------|----------|------------|
+| `install` | yes | Brings dependencies up to date |
+| `build` | yes | Produces the build the run is judged against |
+| `test` | no | Your test command. Omit it, or set it to `null`, when the repo has none |
+| `serve` | yes | Starts the app and keeps running. The judge drives whatever this serves |
+
+Each value is a string, or `{ run, cwd }` when the command must run somewhere other than the repo root:
+
+```yaml
+build:
+  run: yarn build
+  cwd: packages/nextjs
+```
+
+The comments are the agent's reasoning from `wizard`, kept so the next person to read the file knows why this command and not the obvious-looking one. Script names mislead often enough to be worth the sentence: in a Scaffold HBAR project the root has no `build`, `test`, or `dev` at all, and inside `packages/nextjs`, `start` is a dev server while `serve` runs the production build. Edit any line by hand — the harness will not overwrite it.
+
+---
+
+## Environment variables
+
+Machine-level settings are environment variables, deliberately kept out of `harness.yaml`, which is shared with everyone who clones the repo.
+
+| Variable | Effect |
+|----------|--------|
+| `HARNESS_MODEL` | Default agent model. Same as `--model` |
+| `HARNESS_JUDGE_MODEL` | Default model for the evaluate stage. Same as `--judge-model` |
+| `HEDERA_NETWORK` | `testnet` (default), `previewnet`, or `mainnet` |
+| `HEDERA_MIRROR_NODE` | Overrides the mirror node URL derived from the network |
+| `HEDERA_OPERATOR_ID` | A funded account the app can sign with. The doctor stage checks it exists and holds a balance |
+| `HEDERA_OPERATOR_KEY` | Its private key. Passed to the judge to import into the app, and scrubbed from every artifact. The harness never signs with it |
+| `HEDERA_SKILLS_DIR` | Extra skill plugins, for a project that ships none of its own. Unset by default — a scaffolded project carries its skills in `.claude/skills/` and they load automatically |
+| `NO_COLOR` | Turns colour off. Already off when stdout is not a terminal, so piping or redirecting needs nothing |
+
+<Warning>
+`.env` files can never be staged by the harness, so a key cannot reach git history through a run — the enforceable half of secret handling, since the harness owns the commit. Exporting operator credentials in your shell, rather than writing them into the repo, is the other half, and that one is yours.
+</Warning>
+
+---
+
+## What a run leaves behind
+
+```
+.harness/runs/<timestamp>/
+  events.jsonl         every event of the run, one JSON object per line
+  spec.md              what the run was asked to build
+  baseline/            install.txt, build.txt, test.txt, serve.txt — from before
+                       the agent touched anything
+  attempt-N/
+    generate.jsonl     every message from the building agent
+    install.txt        command output, one file per stage that ran
+    build.txt
+    test.txt
+    evaluate.jsonl     every message from the judging agent
+    verdict.json       what the judge answered, with its accounting of the
+                       checklist: both readings and the evidence for each item
+    feedback.json      what this attempt was told went wrong
+    evidence/          screenshots, page snapshots, saved responses
+  result.json          { passed, attempts, branch, timings, skills, history }
+```
+
+`result.json`'s `history` holds one entry per attempt, with the failures it produced and the id each hashes to — which is how the report can tell you a failure is the same one as last time rather than a new one.
+
+`.harness/` is added to `.git/info/exclude`, so run artifacts never appear in your diffs and never need a `.gitignore` entry.
+
+---
+
+## Branches and interrupting
+
+Each attempt is committed to a `harness/<timestamp>` branch, and the run puts you back on the branch you started from when it ends.
+
+If a run stops before it finishes — you interrupt it, or it runs out of budget — every attempt it completed is already committed to that branch. `harness run --spec <path> --continue` picks up from there: it branches from that work rather than from yours, and the first attempt starts by repairing what the last one failed on instead of reading the spec against code that already exists.
+
+A run that *passed* is equally continuable. That is how a second spec builds on the first.
+
+---
+
+## Limits
+
+Every stage is bounded by a clock — generation, evaluation, each command, and the dev server becoming ready. A breach ends that stage with a reason rather than hanging the run, and a run stops starting new attempts after four hours.
+
+There is deliberately **no spend limit by default**. What a run is worth is yours to decide, and a figure chosen here would only ever be wrong for somebody. Pass `--max-spend` when you want one.

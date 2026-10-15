@@ -33,7 +33,7 @@ Instantiates the LocalProvider object. The local provider is built using `HEDERA
 
 #### **`<LocalProvider>.getAccountBalance()`** **-> Promise \<AccountBalance>**
 
-Returns the account balance of the account in the local wallet.
+Returns the account balance of the account in the local wallet. In SDK v2.89.0+, this reads the balance from the mirror node and returns HBAR only: the `tokens` and `tokenDecimals` maps are always empty, and the value can lag consensus by a few seconds. Use [`MirrorNodeTokenBalanceQuery`](/native/tokens/get-balance) for token balances.
 
 #### **`<LocalProvider>.getAccountInfo()`** **-> Promise \<AccountInfo>**
 
@@ -71,7 +71,7 @@ Sign and send a request using the wallet.
 
 ```javascript
 require("dotenv").config();
-import { Wallet, LocalProvider } from "@hashgraph/sdk";
+import { Wallet, LocalProvider } from "@hiero-ledger/sdk";
 
 async function main() {
 
@@ -93,7 +93,7 @@ void main();
 
 ```javascript
 require("dotenv").config();
-const {Wallet, LocalProvider, TransferTransaction} = require("@hashgraph/sdk");
+const {Wallet, LocalProvider, TransferTransaction} = require("@hiero-ledger/sdk");
 
 async function main() {
 

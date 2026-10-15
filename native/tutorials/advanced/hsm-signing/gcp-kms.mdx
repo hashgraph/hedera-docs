@@ -128,7 +128,7 @@ Create a new Node.js project and install the required dependencies.
 
 ```bash
 npm init -y
-npm install @hashgraph/sdk @google-cloud/kms dotenv
+npm install @hiero-ledger/sdk @google-cloud/kms dotenv
 ```
 
 ### 2. Create the `.env` File
@@ -155,7 +155,7 @@ Create a custom signer function that uses Google Cloud KMS to sign transaction b
 
 ```javascript
 const { KeyManagementServiceClient } = require("@google-cloud/kms");
-const { PrivateKey } = require("@hashgraph/sdk");
+const { PrivateKey } = require("@hiero-ledger/sdk");
 
 const client = new KeyManagementServiceClient();
 
@@ -193,7 +193,7 @@ async function createGcpKmsSigner(projectId, location, keyRing, keyName) {
 Use the custom signer to create and sign a Hedera transaction.
 
 ```javascript
-const { Client, AccountCreateTransaction, Hbar } = require("@hashgraph/sdk");
+const { Client, AccountCreateTransaction, Hbar } = require("@hiero-ledger/sdk");
 require("dotenv").config();
 
 async function main() {

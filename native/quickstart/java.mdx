@@ -11,7 +11,7 @@ This page gets a Java application talking to Hedera testnet: SDK install, operat
 
 ## Prerequisites
 
-- JDK 11 or later
+- JDK 17 or later
 - Maven 3.8+ or Gradle 8+
 - A Hedera testnet account with ECDSA keys from the [developer portal](https://portal.hedera.com)
 
@@ -20,16 +20,20 @@ This page gets a Java application talking to Hedera testnet: SDK install, operat
 For Maven, add to `pom.xml`:
 
 ```xml
+<properties>
+    <maven.compiler.release>17</maven.compiler.release>
+</properties>
+
 <dependencies>
     <dependency>
         <groupId>com.hedera.hashgraph</groupId>
         <artifactId>sdk</artifactId>
-        <version>2.77.0</version>
+        <version>2.78.0</version>
     </dependency>
     <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-netty-shaded</artifactId>
-        <version>1.83.1</version>
+        <version>1.84.0</version>
     </dependency>
     <dependency>
         <groupId>io.github.cdimascio</groupId>
@@ -42,10 +46,28 @@ For Maven, add to `pom.xml`:
 For Gradle, add to `build.gradle`:
 
 ```groovy
+plugins {
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
 dependencies {
-    implementation 'com.hedera.hashgraph:sdk:2.77.0'
-    implementation 'io.grpc:grpc-netty-shaded:1.83.1'
+    implementation 'com.hedera.hashgraph:sdk:2.78.0'
+    implementation 'io.grpc:grpc-netty-shaded:1.84.0'
     implementation 'io.github.cdimascio:dotenv-java:3.0.0'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+application {
+    mainClass = 'HederaQuickstart'
 }
 ```
 
@@ -60,7 +82,11 @@ OPERATOR_ID=0.0.1234
 OPERATOR_KEY=3030020100300706052b8104000a04220420a1b2c...
 ```
 
-`OPERATOR_ID` is your Hedera account ID (for example, `0.0.1234`). `OPERATOR_KEY` is your account's **ECDSA private key**: copy the **DER Encoded Private Key** (starts with `303...`) from the developer portal.
+`OPERATOR_ID` is your Hedera account ID (for example, `0.0.1234`). `OPERATOR_KEY` is your account's **ECDSA private key**: copy the **DER Encoded Private Key** (starts with `3030...`) from the developer portal.
+
+<Info>
+Load the DER-encoded key with `PrivateKey.fromStringDER()`. In the Java SDK, `PrivateKey.fromStringECDSA()` is for raw hex keys and throws a `ClassCastException` on the portal's DER format.
+</Info>
 
 ## Step 3: Connect, query, transfer
 
@@ -75,7 +101,7 @@ public class HederaQuickstart {
     public static void main(String[] args) throws Exception {
         Dotenv env = Dotenv.load();
         AccountId operatorId = AccountId.fromString(env.get("OPERATOR_ID"));
-        PrivateKey operatorKey = PrivateKey.fromStringECDSA(env.get("OPERATOR_KEY"));
+        PrivateKey operatorKey = PrivateKey.fromStringDER(env.get("OPERATOR_KEY"));
 
         // Connect to testnet using the operator account as the default payer.
         Client client = Client.forTestnet();
@@ -108,12 +134,11 @@ public class HederaQuickstart {
 ## Step 4: Run it
 
 ```bash
-# Maven (package as a JAR with dependencies, then run it)
-mvn package
-java -cp target/your-artifact-with-dependencies.jar HederaQuickstart
+# Maven
+mvn compile exec:java -Dexec.mainClass=HederaQuickstart
 
 # Gradle
-./gradlew run
+gradle run
 ```
 
 Expected output:

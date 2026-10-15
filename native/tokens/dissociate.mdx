@@ -4,7 +4,7 @@ description: "Remove the association between a Hedera account and one or more to
 ---
 
 
-Dissociates the provided Hedera account from the provided Hedera tokens. This transaction must be signed by the provided account's key. Once the association is removed, no token-related operation can be performed to that account. AccountBalanceQuery and AccountInfoQuery will not return anything related to the dissociated token.
+Dissociates the provided Hedera account from the provided Hedera tokens. This transaction must be signed by the provided account's key. Once the association is removed, no token-related operation can be performed to that account. Mirror node token balance reads, such as [`MirrorNodeTokenBalanceQuery`](/native/tokens/get-balance) and `GET /api/v1/accounts/{id}/tokens`, no longer return the dissociated token.
 
 * If the provided account is not found, the transaction will resolve to `INVALID_ACCOUNT_ID`.
 * If the provided account has been deleted, the transaction will resolve to `ACCOUNT_DELETED`.

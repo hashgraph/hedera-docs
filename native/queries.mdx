@@ -23,7 +23,7 @@ For obtaining token information and historical data, consider using the Mirror N
 
 <AccountBalanceQueryDeprecation />
 
-**JavaScript/TypeScript developers:** migrate to `MirrorNodeAccountBalanceQuery`, available now in `@hiero-ledger/sdk` v2.87.0+. See [Get account balance](/native/accounts/get-balance). Java and Go implementations are in progress. For Rust, and for Java and Go until those ship, call the [Mirror Node REST API](/reference/rest-api/balances) directly. `MirrorNodeAccountBalanceQuery` returns HBAR balances only; for token balances, use the [Mirror Node REST API token balances endpoint](/reference/rest-api/tokens).
+Read HBAR balances with [`MirrorNodeAccountBalanceQuery`](/native/accounts/get-balance) (JavaScript v2.87.0+, Java v2.77.0+, Go v2.84.0+) and token balances with [`MirrorNodeTokenBalanceQuery`](/native/tokens/get-balance) (JavaScript v2.89.0+, Java v2.78.0+, Go v2.85.0+). Both are free mirror node queries. The Rust SDK has neither, so call the [Mirror Node REST API](/reference/rest-api/balances) directly.
 
 📚 **For the full migration guide, read:** [Migrating from AccountBalanceQuery: What You Need to Know](https://hedera.com/blog/migrating-from-accountbalancequery-what-you-need-to-know)
 </Warning>
@@ -32,7 +32,7 @@ For obtaining token information and historical data, consider using the Mirror N
 
 | Cryptocurrency Accounts                                                                                        | Consensus                                                                                                  | Tokens                                                                                                         | File Service                                                                                          | Smart Contracts                                                                                                        | Schedule Service                                                                                              |
 | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| [AccountBalanceQuery](/native/accounts/get-balance)<br/>[MirrorNodeAccountBalanceQuery](/native/accounts/get-balance) | [TopicInfoQuery](/native/consensus/get-info)       | [TokenBalanceQuery](/native/tokens/get-balance) | [FileContentsQuery](/native/files/get-contents) | [ContractCallQuery](/native/smart-contracts/get-function)   | [ScheduleInfoQuery](/native/scheduled/get-info) |
+| [MirrorNodeAccountBalanceQuery](/native/accounts/get-balance) | [TopicInfoQuery](/native/consensus/get-info)       | [MirrorNodeTokenBalanceQuery](/native/tokens/get-balance) | [FileContentsQuery](/native/files/get-contents) | [ContractCallQuery](/native/smart-contracts/get-function)   | [ScheduleInfoQuery](/native/scheduled/get-info) |
 | [AccountInfoQuery](/native/accounts/get-info)       | [TopicMessageQuery](/native/consensus/get-message) | [TokenInfoQuery](/native/tokens/get-info)               | [FileInfoQuery](/native/files/get-info)         | [ContractByteCodeQuery](/native/smart-contracts/get-bytecode) |                                                                                                               |
 
 ## Get Query Cost
@@ -40,22 +40,26 @@ For obtaining token information and historical data, consider using the Mirror N
 A query that returns the cost of a query prior to submitting the query to the network node for processing. If the cost of the query is greater than the default max query payment (1 HBAR) you can use `setMaxQueryPayment(<hbar>)` to change the default.
 
 <Info>
-`MirrorNodeAccountBalanceQuery` has no `getCost()` or query-payment concept. It is a free Mirror Node REST call, not a paid consensus-node query, so the Get Query Cost pattern below does not apply to it. The example below uses `AccountBalanceQuery` because query-cost estimation is inherently a consensus-node-query concept.
+`MirrorNodeAccountBalanceQuery` and `MirrorNodeTokenBalanceQuery` have no `getCost()`. They are free mirror node REST calls, not paid consensus node queries, so this section does not apply to them.
 </Info>
 
-<table><thead><tr><th>Method</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>getCost(&#x3C;client>)</code></td><td>Client</td><td>Get the cost of the query in HBAR</td></tr><tr><td><code>getCost(&#x3C;client, timeout>)</code></td><td>Client, Duration</td><td>The max length of time the SDK will attempt to retry in the event of repeated busy responses from the node(s)</td></tr><tr><td><code>getCostAsync(&#x3C;client>)</code></td><td>Client</td><td>Get the cost of a query asynchronously</td></tr></tbody></table>
+| Method | Type | Description |
+| --- | --- | --- |
+| `getCost(<client>)` | Client | Get the cost of the query in HBAR |
+| `getCost(<client, timeout>)` | Client, Duration | The max length of time the SDK will attempt to retry in the event of repeated busy responses from the node(s) |
+| `getCostAsync(<client>)` | Client | Get the cost of a query asynchronously |
 
 <CodeGroup>
 
 ```java Java
 //Create the query request
-AccountBalanceQuery query = new AccountBalanceQuery()
+AccountInfoQuery query = new AccountInfoQuery()
      .setAccountId(accountId);
 
 //Get the cost of the query
 Hbar queryCost = query.getCost(client);
 
-System.out.println("The account balance query cost is " +queryCost);
+System.out.println("The account info query cost is " +queryCost);
 
 //v2.0.0
 ```
@@ -63,13 +67,13 @@ System.out.println("The account balance query cost is " +queryCost);
 
 ```javascript JavaScript
 //Create the query request
-const query = new AccountBalanceQuery()
+const query = new AccountInfoQuery()
      .setAccountId(accountId);
 
 //Get the cost of the query
 const queryCost = await query.getCost(client);
 
-console.log("The account balance query cost is " +queryCost);
+console.log("The account info query cost is " +queryCost);
 
 //v2.0.0
 ```
@@ -77,8 +81,8 @@ console.log("The account balance query cost is " +queryCost);
 
 ```go Go
 //Create the query request
-query := hedera.NewAccountBalanceQuery().
-     SetAccountID(newAccountId)
+query := hiero.NewAccountInfoQuery().
+     SetAccountID(accountId)
 
 //Get the cost of the query
 cost, err := query.GetCost(client)
@@ -87,7 +91,7 @@ if err != nil {
 		panic(err)
 }
 
-fmt.Printf("The account balance query cost is: %v\n ", cost.String())
+fmt.Printf("The account info query cost is: %v\n ", cost.String())
 
 //v2.0.0
 ```
@@ -95,13 +99,13 @@ fmt.Printf("The account balance query cost is: %v\n ", cost.String())
 
 ```rust Rust
 // Create the query request
-let query = AccountBalanceQuery::new()
+let query = AccountInfoQuery::new()
     .account_id(account_id);
 
 // Get the cost of the query
 let query_cost = query.get_cost(&client).await?;
 
-println!("The account balance query cost is {:?}", query_cost);
+println!("The account info query cost is {:?}", query_cost);
 
 // v0.34.0
 ```

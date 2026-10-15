@@ -1,0 +1,88 @@
+---
+title: "Pay bond coupons automatically with the Hedera Schedule Service"
+description: "A bond contract that pays its own coupons in a stablecoin and schedules the next payment itself through HIP-1215, then repays principal at maturity, with no keepers, bots or off-chain automation."
+---
+
+{/* OUTLINE — not final prose. Each section lists what it must cover.
+    Prose and code snippets are written after the `bond-coupons` template is built,
+    and snippets are copied from the template so the two never drift. */}
+
+Issue a bond whose contract pays every coupon on time by itself. Each payment schedules the next one through the Hedera Schedule Service, and the last one repays principal. No keeper, bot, cron job or third-party automation network is involved.
+
+<Card title="Get the code" icon="github" href="https://github.com/web3buidlerz/hedera-finance-templates/tree/templates/bond-coupons">
+  `npx create-scaffold-hbar@latest --template web3buidlerz/hedera-finance-templates#templates/bond-coupons`
+</Card>
+
+## Overview
+
+{/* Cover:
+    - Coupons: periodic interest on a bond; today paid by a paying agent, on EVM chains by a keeper network (e.g. Chainlink Automation) or a bot that must be run and funded.
+    - HIP-1215: a contract calls the Hedera Schedule Service system contract (0x16b) with scheduleCall(to, expirySecond, gasLimit, value, callData); the network itself calls back at that time. The contract reschedules itself each time: a self-perpetuating schedule.
+    - "Only on Hedera": no keeper; the calling contract pays for the scheduled execution from its own HBAR.
+    - What this template builds: a CouponBond (positions, coupon rate, period, number of coupons, maturity), deployed through a factory; coupons paid in an HTS stablecoin. */}
+
+Actors:
+
+* **Issuer**: deploys the factory once, issues coupon bonds, allocates positions to investors, funds the bond with stablecoin for coupons and principal, and with HBAR for its schedules
+* **Investors**: demo investors, or your MetaMask account, who receive coupons and principal without doing anything
+* **Hedera Schedule Service**: calls the bond at each coupon date
+
+The lifecycle:
+
+1. The Issuer issues a bond through the factory: face value, coupon rate per period, period length, number of coupons
+2. The Issuer allocates positions and funds the bond
+3. The Issuer starts the schedule: the bond schedules its first coupon with `scheduleCall`
+4. At each coupon date the network calls the bond, which pays every holder and schedules the next coupon
+5. At the last date it pays the final coupon and the principal, and schedules nothing more
+
+{/* TODO: sequence diagram. */}
+
+## Prerequisites
+
+{/* Node/Yarn, Foundry; ECDSA operator; costs (factory deploy once, bond, schedules); optional MetaMask with Hedera testnet. */}
+
+## Project structure
+
+{/* TODO: tree once built: packages/foundry (CouponBond, CouponBondFactory, IHederaScheduleService), packages/nextjs. */}
+
+## Deploy the factory
+
+{/* `yarn coupons:deploy`: non-interactive, with the operator key; writes deployedContracts.ts; skipped if already deployed. */}
+
+## Issue and fund a coupon bond
+
+{/* createBond through the factory; association of the bond with the stablecoin (HIP-719 associate); allocating positions; funding with stablecoin and HBAR. */}
+
+## Schedule the coupons
+
+### Step 1: The first schedule
+
+{/* hasScheduleCapacity, scheduleCall(address(this), next, gasLimit, 0, abi.encodeCall(this.payCoupon, ())). You should see: the schedule address and the next coupon date. */}
+
+### Step 2: The bond pays and reschedules itself
+
+{/* payCoupon: pay each holder units * face * rate, emit CouponPaid, schedule the next. You should see: balances rise at each date without any action. */}
+
+### Step 3: Maturity
+
+{/* Last coupon plus principal; no further schedule; status Matured. */}
+
+## When a coupon cannot be paid
+
+{/* Underfunded bond: coupon marked missed, retried next period; no capacity at a second: try the next slots; stopping the schedule with deleteSchedule. */}
+
+## Receive coupons with MetaMask
+
+{/* Register your wallet, associate the stablecoin (HIP-719 associate() from MetaMask), receive coupons. */}
+
+## Going to production
+
+{/* Day-scale periods; accrual conventions (30/360, ACT/365); holder enumeration at scale (batches, pull-based claims); real stablecoin; record dates; funding monitoring; combining with an ATS bond. */}
+
+## Next steps
+
+{/* Cards: Schedule service system contract, HSS EVM tutorial, scheduled transactions, Scaffold HBAR. */}
+
+{/* OPEN QUESTIONS
+    1. Coupon pull vs push at scale (the template pushes to a bounded number of holders).
+    2. Whether to pay coupons on an ATS bond in a later iteration. */}

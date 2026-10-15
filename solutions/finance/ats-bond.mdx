@@ -1,0 +1,277 @@
+---
+title: "Issue a tokenised bond with Asset Tokenization Studio"
+description: "Issue an ERC-1400 bond through the Asset Tokenization Studio factory on Hedera testnet, restrict who may hold it with an allowlist, and distribute it to investors, without deploying a single contract yourself."
+---
+
+Issue a bond with an ISIN, a face value and a maturity date through Hedera's [Asset Tokenization Studio](/solutions/tokenization/ats/index) (ATS), approve the investors allowed to hold it, and distribute it to them. ATS deploys the bond for you from audited, upgradeable contracts already on testnet: you deploy nothing.
+
+<Card title="Get the code" icon="github" href="https://github.com/web3buidlerz/hedera-finance-templates/tree/templates/ats-bond">
+  `npx create-scaffold-hbar@latest --template web3buidlerz/hedera-finance-templates#templates/ats-bond`
+</Card>
+
+## Overview
+
+A **tokenised bond** is a debt security recorded as a token: it has an ISIN, a face (nominal) value in a currency, a start date and a maturity date, and only investors who are allowed to hold it can receive it.
+
+**Asset Tokenization Studio** is Hedera's open-source platform for digital securities. Its contracts are already deployed on testnet:
+
+* A **factory** creates each bond as a new [Diamond (EIP-2535)](https://eips.ethereum.org/EIPS/eip-2535) proxy. One call to `deployBond` gives you a complete security: roles, control lists, maturity, nominal value, corporate-action support.
+* A **Business Logic Resolver** holds the shared, audited logic every bond points to, by configuration and version. Bonds get upgrades without being redeployed.
+* Each bond implements **ERC-1400**, the security-token standard: ERC-20 compatible, with issuance controlled by roles and transfers checked against compliance rules.
+
+You deploy no contracts of your own. The learner's only on-chain step is the factory call, and everything after it is a call on the bond.
+
+The workflow has three actors:
+
+* **Issuer**: the operator account the app runs with. Issues the bond through the factory and holds its admin, issuer and control-list roles
+* **Investors**: two demo investors the app creates, one you approve and one you leave unapproved
+* **Wallet investor** (optional): your own MetaMask account on Hedera testnet
+
+The lifecycle:
+
+1. The Issuer asks the resolver for the bond configuration's latest version
+2. The Issuer calls the factory's `deployBond` with the terms, the allowlist switched on, and its own roles
+3. The Issuer approves investors by adding them to the bond's control list
+4. The Issuer issues bonds to approved investors; issuing to an unapproved one is refused
+5. A wallet investor can hold bonds and transfer them, under the same allowlist
+
+```text
+Issuer                         ATS resolver / factory           Bond (new Diamond proxy)        Investor
+  |                                     |                                  |                        |
+  |-- getLatestVersionByConfiguration ->|  version                         |                        |
+  |-- deployBond(terms, roles, ------- >|-- deploys ---------------------->|                        |
+  |     allowlist on, REG_S)            |                                  |                        |
+  |-- addToControlList(investor) ---------------------------------------->|  approved              |
+  |-- issue(investor, 100, 0x) ------------------------------------------->|-- 100 bonds ---------->|
+  |-- issue(unapproved, 100) --------------------------------------------->|  AccountIsBlocked      |
+```
+
+The app explains each step as it goes, shows what the network holds in a second column, and logs every action with its transaction hash.
+
+| Component | Technology |
+| - | - |
+| Bond | ATS v8 bond (ERC-1400), deployed by the testnet factory as a Diamond proxy |
+| Issuance | Factory `deployBond`, signed by the Issuer over Hedera's JSON-RPC relay (Hashio) with `viem` |
+| Allowlist | The bond's control list in allowlist mode (`addToControlList`, `removeFromControlList`) |
+| Distribution | `issue(holder, amount, data)`, guarded by the issuer role and the allowlist |
+| Wallet investor | MetaMask through RainbowKit and wagmi; ATS bonds are EVM contracts |
+| Network | Hedera testnet |
+
+<Info>
+The ATS SDK signs only through wallets (MetaMask, WalletConnect) or custody providers (Dfns, Fireblocks, AWS KMS). A server holding a plain key, as this template's Issuer does, calls the ATS contracts directly over JSON-RPC instead.
+</Info>
+
+## Prerequisites
+
+* Node.js 20.18 or later, and Yarn
+* A Hedera testnet account from the [Hedera Portal](https://portal.hedera.com) with an **ECDSA** key. It becomes the Issuer. JSON-RPC transactions are signed with ECDSA, so an ED25519 key cannot be used; the app says so at start.
+* Testnet HBAR on that account. Each **Issue bond** costs about **9.7 HBAR**: about 7.4 for the bond deployment and about 1.1 for each of the two demo investors. Approving and issuing cost a fraction of an HBAR each.
+* Optional, for [Hold and transfer with MetaMask](#hold-and-transfer-with-metamask): MetaMask with Hedera testnet (chain id 296) and an ECDSA testnet account holding a little HBAR for gas
+
+## Project structure
+
+```text
+packages/nextjs/
+  app/page.tsx                                  the bond issuance desk
+  app/_components/bond/                         IssueBondForm, IssueProgress, BondCard, InvestorsCard,
+                                                WalletInvestorCard, ActivityLog
+  app/api/hedera/bond/
+    issue/route.ts                              issue a bond (streams progress)
+    investors/[address]/approve|revoke|issue/   allowlist and distribution
+    investors/wallet/route.ts                   add the connected wallet as an investor
+    status/route.ts, activity/route.ts          the desk's state and its log
+  services/ats/
+    constants.ts                                factory and resolver ids, config id, roles, gas limits
+    abi.ts                                      hand-written ATS ABI fragments
+    deploy.ts                                   resolve the version, deploy, read back
+    investors.ts                                demo investors, approve, revoke, issue
+    errors.ts                                   decode ATS custom errors by name
+```
+
+## Configuration
+
+Create `packages/nextjs/.env.local`:
+
+```bash
+# The Issuer. Server-side only, never sent to the browser.
+HEDERA_OPERATOR_ID=0.0.1234
+HEDERA_OPERATOR_KEY=<ECDSA key: raw hex, or DER-encoded ECDSA>
+```
+
+Then start the app:
+
+```bash
+yarn install
+yarn next:dev   # http://localhost:3000
+```
+
+The ATS addresses live in `services/ats/constants.ts`: factory `0.0.9213391` and resolver `0.0.9212226`, the v8 deployment on testnet. The app reads their EVM addresses from the mirror node at runtime.
+
+## Issue the bond
+
+Fill in the issue form (name, symbol, ISIN, face value in USD, months to maturity, maximum supply) and press **Issue bond**. Every field starts with a value that works. The ISIN's check digit is validated before anything is signed. The page shows each step as it runs: a spinner on the running step, then a check with what it produced.
+
+### Step 1: Resolve the bond configuration version
+
+Every bond points to a configuration on the resolver, by id and version. The bond configuration's id is `0x00…02`. Its version must be looked up: passing `0` reverts with `VersionZero`.
+
+```typescript
+const version = await publicClient.readContract({
+  address: resolverAddress,
+  abi: resolverAbi,
+  functionName: "getLatestVersionByConfiguration",
+  args: [BOND_CONFIG_ID], // 0x0000…0002
+});
+```
+
+### Step 2: Call the factory
+
+`deployBond` takes the security's configuration and the bond's terms. The Issuer grants itself three roles at deployment, so no extra transactions are needed later, and switches the control list to **allowlist** mode:
+
+```typescript
+const bondData = {
+  security: {
+    resolver: resolverAddress,
+    maxSupply: BigInt(input.maxSupply),
+    resolverProxyConfiguration: { key: BOND_CONFIG_ID, version },
+    erc20MetadataInfo: { name: input.name, symbol: input.symbol, isin: input.isin, decimals: 0 },
+    rbacs: [
+      { role: DEFAULT_ADMIN_ROLE, members: [issuer] },
+      { role: ROLE_ISSUER, members: [issuer] },        // may call issue()
+      { role: ROLE_CONTROL_LIST, members: [issuer] },  // may approve and revoke investors
+    ],
+    isWhiteList: true,          // the control list is an allowlist: only listed accounts may hold
+    isControllable: true,
+    externalPauses: [], externalControlLists: [], externalKycLists: [],
+    compliance: zeroAddress, identityRegistry: zeroAddress,
+    arePartitionsProtected: false, isMultiPartition: false,
+    clearingActive: false, internalKycActivated: false, erc20VotesActivated: false,
+  },
+  bondDetails: {
+    currency: stringToHex("USD", { size: 3 }),
+    nominalValue: BigInt(input.faceValue * 100),   // 1000.00 stored as 100000
+    nominalValueDecimals: 2,
+    startingDate,                                   // a few minutes from now
+    maturityDate,
+  },
+  proceedRecipients: [],
+  proceedRecipientsData: [],
+};
+const regulation = {
+  regulationType: 1,      // REG_S
+  regulationSubType: 0,
+  additionalSecurityData: { countriesControlListType: false, listOfCountries: "", info: "" },
+};
+
+// Simulate first: no signature, no HBAR, and the new bond's address as the result
+const { result: bondAddress } = await publicClient.simulateContract({
+  address: factoryAddress, abi: factoryAbi, functionName: "deployBond",
+  args: [bondData, regulation], account: issuer, gas: 8_000_000n,
+});
+const hash = await walletClient.writeContract({
+  address: factoryAddress, abi: factoryAbi, functionName: "deployBond",
+  args: [bondData, regulation], account: issuer, chain: hederaTestnet, gas: 8_000_000n,
+});
+```
+
+The factory's `BondDeployed` event only indexes the deployer, so the app takes the address from the simulation and confirms the real transaction emitted logs from it. The deployment uses about 7.2 million gas. Hedera charges for at least 80% of a transaction's gas limit, so keep limits close to what a call needs.
+
+<Tip>
+The published `@hashgraph/asset-tokenization-contracts` package does not include the factory's ABI. The template writes the `deployBond` fragment by hand from the ATS Solidity source, in `services/ats/abi.ts`.
+</Tip>
+
+**You should see** the bond's EVM address and contract id, both linked to HashScan.
+
+### Step 3: Read the bond back
+
+The bond card shows the terms as **read from the bond contract**, not echoed from the form: `name`, `symbol`, `getERC20Metadata()` for the ISIN, `getNominalValueCurrency()`, `getNominalValue()` with `getNominalValueDecimals()`, and `getMaturityDate()`. Total supply and maximum supply are read the same way.
+
+**You should see** the terms you entered, with the face value and maturity as stored on chain.
+
+The same step creates the two demo investors. Each is a fresh ECDSA key whose EVM address receives 0.5 HBAR from the Issuer. That transfer makes Hedera **auto-create** the account: it stays a hollow account until it first signs, which a demo investor never does.
+
+## Approve investors and distribute
+
+Every write is simulated first: a plain `eth_call` with no signature and no HBAR spent. A refusal is caught and decoded to its ATS error name before a transaction is ever sent.
+
+### Step 1: Approve an investor
+
+Press **Approve** on **Investor A**. The Issuer adds the investor's EVM address to the bond's control list. Because the list is in allowlist mode, being listed means being allowed to hold.
+
+```typescript
+await walletClient.writeContract({
+  address: bondAddress, abi: bondAbi, functionName: "addToControlList",
+  args: [investorAddress], account: issuer, chain: hederaTestnet, gas: 400_000n,
+});
+```
+
+**Revoke** calls `removeFromControlList` the same way.
+
+**You should see** the investor marked **Approved**, and the action in the activity log with its transaction hash.
+
+### Step 2: Issue bonds
+
+Enter an amount and press **Issue**. The Issuer mints that many bonds to the investor, up to the bond's maximum supply:
+
+```typescript
+await walletClient.writeContract({
+  address: bondAddress, abi: bondAbi, functionName: "issue",
+  args: [investorAddress, 100n, "0x"], account: issuer, chain: hederaTestnet, gas: 1_500_000n,
+});
+```
+
+**You should see** the investor's balance and the bond's total supply both rise by the amount, read from the contract.
+
+### Step 3: Try an unapproved investor
+
+Issue to **Investor B** without approving it. The bond refuses with `AccountIsBlocked(<address>)`. The app decodes the custom error from the revert and shows it by name:
+
+```typescript
+const reverted = error.walk(e => e instanceof ContractFunctionRevertedError);
+const name = reverted.data?.errorName; // "AccountIsBlocked"
+```
+
+**You should see** the refusal on the page and in the activity log, Investor B's balance still 0, and the total supply unchanged. Approve Investor B and the same issue succeeds; revoke it and it is refused again.
+
+## Hold and transfer with MetaMask
+
+ATS bonds are EVM contracts, so any EVM wallet can hold and transfer them. The header's **Connect Wallet** offers MetaMask through RainbowKit (and WalletConnect).
+
+1. Connect MetaMask and switch it to Hedera testnet. The page says what to do next at every point.
+2. Press **Add my wallet as an investor**. Your wallet appears in the investors list as **Your wallet**.
+3. Approve it and issue bonds to it from its row, as for the demo investors.
+4. Transfer: enter a recipient EVM address and an amount. MetaMask signs the bond's `transfer` call:
+
+   ```typescript
+   const hash = await writeContractAsync({
+     address: bondAddress, abi: clientBondAbi, functionName: "transfer",
+     args: [recipient, BigInt(amount)], chain: hederaTestnet, account: address,
+   });
+   ```
+
+The allowlist applies to transfers too: to an approved recipient the transfer succeeds, and to an unapproved one the bond refuses it and the page says why.
+
+## Going to production
+
+* **Real terms**: a real ISIN, legal documentation, and a starting date that matches the offering.
+* **KYC instead of a bare allowlist**: ATS supports internal KYC with verifiable credentials, external KYC lists, and ERC-3643 identity, where investors carry reusable on-chain identities with claims from trusted issuers.
+* **Custody for the Issuer's roles**: the ATS SDK signs through Dfns, Fireblocks or AWS KMS; hold the admin, issuer and control-list roles there rather than in an environment variable.
+* **Separate roles**: give issuing and approving to different accounts, so no single key both approves and mints.
+* **Coupons and maturity**: pay interest over the bond's life and redeem it at maturity. Coupons are the next Finance Workflows template.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Asset Tokenization Studio" icon="building-columns" href="/solutions/tokenization/ats/index">
+    What ATS is and what it supports.
+  </Card>
+  <Card title="ATS web UI" icon="window-maximize" href="/solutions/tokenization/ats/web-ui">
+    Issue and manage securities without code.
+  </Card>
+  <Card title="ATS FAQ" icon="circle-question" href="/solutions/tokenization/ats/faq">
+    Standards, compliance and deployment questions.
+  </Card>
+  <Card title="Scaffold HBAR" icon="layer-group" href="/solutions/tools/scaffold-hbar/index">
+    The CLI and the other templates.
+  </Card>
+</CardGroup>

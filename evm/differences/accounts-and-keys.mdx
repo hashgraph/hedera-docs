@@ -6,13 +6,13 @@ description: "Compare Hedera and Ethereum account models, ECDSA vs ED25519 keys,
 
 ## Overview
 
-Migrating to Hedera’s EVM implementation involves understanding key differences in account models, signature verification, and key types. On Ethereum, addresses are derived from ECDSA public keys, and `ECRECOVER` is commonly used to validate signatures. Hedera, however, supports both ECDSA and ED25519 (Hedera-native account) keys, with dynamic key rotation and aliases that may not directly align with Ethereum’s static address model.
+Migrating to Hedera’s EVM implementation involves understanding key differences in account models, signature verification, and key types. On Ethereum, addresses are derived from ECDSA public keys, and `ECRECOVER` is commonly used to validate signatures. Hedera, however, supports both ECDSA and ED25519 (Hedera-native account) keys, key lists, and threshold keys, and every account has a native account ID (`0.0.<num>`) alongside its EVM address.
 
 This section helps you navigate ECDSA and ED25519 signature workflows, introduces the `isAuthorized` function from the system contract from [HIP-632](https://hips.hedera.com/hip/hip-632), and clarify how different account key scenarios map onto Hedera’s environment.
 
 ## Understanding Account Models and Aliases
 
-Hedera’s account model supports both ED25519 and ECDSA keys by identifying accounts by aliases instead of static addresses. This allows dynamic key rotation without changing an account’s ID, unlike EVM's static ECDSA-only approach. Signature validation varies accordingly: ED25519 keys use `isAuthorized` or `isAuthorizedRaw`, while Hedera's ECDSA accounts with aliases can still rely on `ECRECOVER`.
+Hedera’s account model supports both ED25519 and ECDSA keys. Every account is identified by its account ID (`0.0.<num>`), and an account's keys can be updated without changing that ID. Signature validation varies by key type: ED25519 keys use `isAuthorized` or `isAuthorizedRaw`, while ECDSA accounts with an EVM Address from Public Key can also use `ECRECOVER`.
 
 ### **Clarifying Account ID vs. EVM Address**
 
@@ -66,25 +66,44 @@ function verifyECDSASignature(bytes32 messageHash, uint8 v, bytes32 r, bytes32 s
 
 Hedera’s native key type is ED25519, which is not compatible with `ECRECOVER`. To accommodate ED25519 (Hedera-native) accounts and more complex configurations, HIP-632 introduces Hedera Account Service system contract functions:
 
-* [**isAuthorized**](/evm/hedera-services/system-contracts/account-service#isauthorized-address-message-signatureblob)**:** Validates multiple signatures, supporting threshold or multi-key accounts.
-* [**isAuthorizedRaw**](/evm/hedera-services/system-contracts/account-service#isauthorizedraw-address-messagehash-signatureblob)**:** Validates a single raw ED25519 signature, analogous to `ECRECOVER` but for ED25519 keys.
+* [**isAuthorized**](/evm/hedera-services/system-contracts/account-service#isauthorized)**:** Validates a protobuf `SignatureMap` against the account's full key, supporting threshold or multi-key accounts.
+* [**isAuthorizedRaw**](/evm/hedera-services/system-contracts/account-service#isauthorizedraw)**:** Validates a single ED25519 or ECDSA signature over a 32-byte hash, analogous to `ECRECOVER` but also for ED25519 keys.
 
 **Example: Validating ED25519 Signatures**
 
-```solidity highlight={4}
-function verifyED25519Signature(address accountAlias, bytes32 messageHash, bytes memory signatureBlob) public returns (bool) {
-    (bool success, ) = address(0x167).call(
-        abi.encodeWithSignature(
-            "isAuthorizedRaw(address,bytes32,bytes)",
-            accountAlias,
-            messageHash,
-            signatureBlob
-        )
-    );
-    return success;
+Call the Hedera Account Service system contract at `0x16a` through a typed interface and return its result:
+
+```solidity
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.24;
+
+interface IHederaAccountService {
+    function isAuthorizedRaw(address account, bytes memory messageHash, bytes memory signature)
+        external
+        returns (bool authorized);
+
+    function isAuthorized(address account, bytes memory message, bytes memory signature)
+        external
+        returns (int64 responseCode, bool authorized);
 }
 
+contract SignatureVerifier {
+    IHederaAccountService internal constant HAS = IHederaAccountService(address(0x16a));
+    int64 internal constant SUCCESS = 22;
+
+    // Returns true only if the signature over messageHash is valid for the account's key
+    function verifyED25519Signature(address account, bytes32 messageHash, bytes calldata signature)
+        public
+        returns (bool)
+    {
+        return HAS.isAuthorizedRaw(account, abi.encodePacked(messageHash), signature);
+    }
+}
 ```
+
+<Tip>
+Check the values these functions return. An invalid signature returns `false` from a successful call, so a low-level `call` that only checks the call's `success` flag accepts forged signatures.
+</Tip>
 
 **Why This Matters for EVM Developers:**
 
@@ -105,39 +124,46 @@ Hedera supports advanced account configurations like multi-sig and threshold acc
 
 **Example: DAO Governance Using Multi-Sig**
 
-```solidity highlight={3}
-function validateDAOProposal(address accountAlias, bytes memory proposalData, bytes memory signatureBlob) public returns (bool) {
-    (bool success, ) = address(0x167).call(
-        abi.encodeWithSignature("isAuthorized(address,bytes,bytes)", accountAlias, proposalData, signatureBlob)
-    );
-    return success;
+```solidity
+// Add to the SignatureVerifier contract above.
+// signatureMap is a serialized protobuf SignatureMap with one signature per key.
+function validateDAOProposal(address account, bytes memory proposalData, bytes memory signatureMap)
+    public
+    returns (bool)
+{
+    (int64 responseCode, bool authorized) = HAS.isAuthorized(account, proposalData, signatureMap);
+    return responseCode == SUCCESS && authorized;
 }
-
 ```
 
 This example demonstrates how you might require multiple signatures to approve a DAO proposal, enhancing the security and trustworthiness of your governance mechanisms.
 
 ***
 
-## Key Rotation: Adapting to Hedera’s Dynamic Model
+## Key Updates and EVM Addresses
 
-Standard EVM addresses are static since they are derived from a public key hash. Hedera, by contrast, supports dynamic key rotation, letting you update the keys controlling an account without changing the account’s address.
+For EVM-oriented applications, create accounts with an ECDSA key and set the **EVM Address from Public Key** at creation. That gives the account native compatibility with EVM wallets, JSON-RPC tooling, `ECRECOVER`, and smart contract interactions.
 
 **Why This Matters for EVM Developers:**
 
-* Your applications must dynamically validate the current set of keys each time rather than relying on a static key-to-address mapping.
-* By rotating keys, you can enhance security without migrating to a new address.
+* **The EVM Address from Public Key is immutable.** Updating an account's keys with `CryptoUpdateTransaction` does not change it; the address stays bound to the original ECDSA public key. `ECRECOVER` and EVM tooling keep resolving to that original key.
+* **Recover by migrating, not by rotating.** If an ECDSA key is compromised or must be replaced, create a new ECDSA account with a new EVM address and migrate assets and state to it. Do not rely on key rotation to keep the same EVM identity.
+* **`isAuthorized` follows the account's current key.** Contracts that verify an account through `isAuthorized` check whatever key the account holds at call time, so they accept the new key after an update.
+* **If you expect to rotate keys soon after creation,** consider not setting the EVM Address from Public Key at creation. This is a trade-off: the account then uses its EVM Address from Account ID (the long-zero form), which does not work with `ECRECOVER`.
 
-**Example: Key Rotation in Smart Contracts**
+**Example: Replacing a Trusted Signer in a Contract**
+
+Contracts that store a trusted signer's EVM address need a way to point at the new account after a migration:
 
 ```solidity
-contract KeyRotationHandler {
+contract TrustedSignerRegistry {
     address public trustedSigner;
 
     constructor(address initialSigner) {
         trustedSigner = initialSigner;
     }
 
+    // Called by the current signer to hand control to a newly created account
     function updateTrustedSigner(address newSigner) public {
         require(msg.sender == trustedSigner, "Not authorized");
         trustedSigner = newSigner;
@@ -145,7 +171,7 @@ contract KeyRotationHandler {
 }
 ```
 
-This simple pattern allows you to change the trusted signer as needed, reflecting real-world operational needs such as periodic key rotation to mitigate security risks.
+If the current signer's key is compromised, the attacker can also call `updateTrustedSigner`. Production contracts usually add a separate recovery role, a timelock, or a multi-key account checked with `isAuthorized`.
 
 ***
 

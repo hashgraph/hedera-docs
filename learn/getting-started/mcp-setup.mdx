@@ -1,11 +1,11 @@
 ---
 title: Hedera Docs MCP Server Setup Guide
-description: "Connect your AI tools to the official Hedera documentation MCP server for real-time, accurate answers using the SearchHedera tool across the full knowledge base."
+description: "Connect your AI tools to the official Hedera documentation MCP server for real-time, accurate answers. Covers the search, filesystem, and feedback tools the server exposes and setup for Claude, Cursor, VS Code, Windsurf, ChatGPT, Codex, and Gemini CLI."
 sidebarTitle: "MCP Server Setup"
 icon: "robot"
 ---
 
-Connect your AI tools to the official Hedera documentation for real-time, accurate answers to your Hedera-related questions — directly from the source.
+Connect your AI tools to the official Hedera documentation for real-time, accurate answers to your Hedera-related questions directly from the source.
 
 ---
 
@@ -13,12 +13,43 @@ Connect your AI tools to the official Hedera documentation for real-time, accura
 
 The [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) is an open standard that creates direct connections between AI applications and external data sources. Instead of relying on general web search results, MCP lets AI tools search your documentation directly for more accurate, up-to-date information.
 
-Hedera's MCP server exposes a **`SearchHedera`** tool that gives any MCP-compatible AI application the ability to search across the entire Hedera knowledge base, including:
+Hedera's MCP server gives any MCP-compatible AI application access to every page in the Hedera docs navigation, including:
 
 - API references and SDK documentation
 - Code examples and tutorials
 - How-to guides and quickstarts
 - Network concepts and architecture docs
+- The OpenAPI specs for the mirror node REST API, the smart contract verification API, and the Hedera status API
+
+### Available Tools
+
+The server exposes three tools:
+
+| Tool | What it does | Read-only |
+| :--- | :--- | :--- |
+| `search_hedera` | Searches the documentation and returns matching snippets with page titles and links. Use it for broad or conceptual questions. | Yes |
+| `query_docs_filesystem_hedera` | Runs read-only shell-style commands (`rg`, `grep`, `find`, `tree`, `ls`, `cat`, `head`, `jq`, and more) against a sandboxed, in-memory copy of the docs pages and the OpenAPI specs. Use it to read a full page, read several pages in one call, run exact keyword or regex searches, or explore the docs structure. | Yes |
+| `submit_feedback` | Sends a report about an incorrect, outdated, confusing, or incomplete page to the Hedera docs team. Takes the page path and a description of the problem. | No |
+
+The filesystem tool is how an AI tool reads a complete page. Every page at the URL path `/some/page` is available at `/some/page.mdx`, and the OpenAPI specs are mounted under `/openapi/`. For example, an agent can call it with:
+
+```bash
+head -200 /learn/getting-started/mcp-setup.mdx
+rg -il "MirrorNodeTokenBalanceQuery" /native
+head -100 /openapi/openapi.yaml
+```
+
+Each filesystem call is stateless: the working directory resets to `/` and nothing carries over between calls. Output is truncated to 30 KB per call.
+
+`search_hedera` and `query_docs_filesystem_hedera` only read published documentation. Both carry the MCP annotations `readOnlyHint: true` and `destructiveHint: false`, which some AI tools use to run them without asking for approval. `submit_feedback` is the one tool that sends data: when an AI tool calls it, the page path and feedback text are recorded as page feedback in the Hedera docs team's Mintlify analytics dashboard.
+
+The server also publishes a `hedera` skill as an MCP resource. MCP gives an agent access to the docs content, and the skill tells it how to use that content, so connecting the server gives agents both.
+
+Search and the filesystem cover the pages in the docs navigation. Pages hidden from the navigation are not included.
+
+<Info>
+Tool names are specific to each Mintlify-hosted server. Use the names your AI tool reports from the server rather than hardcoding them.
+</Info>
 
 ### MCP Server URL
 
@@ -32,18 +63,28 @@ Use this URL to connect any supported AI tool to the Hedera documentation.
 
 | Feature | Web Search | MCP |
 | :--- | :--- | :--- |
-| **Source** | Search engine index (may be stale) | Live documentation content |
+| **Source** | Search engine index (may be stale or incomplete) | The current indexed Hedera docs, searched directly |
 | **Noise** | Affected by SEO and ranking algorithms | Goes straight to official docs |
 | **Integration** | Separate step from response generation | Searches during response generation |
-| **Accuracy** | May surface outdated or third-party content | Always returns the most up to date Hedera documentation. No stale indexes or outdated training data training |
+| **Accuracy** | May surface outdated or third-party content | Answers come from the official docs rather than training data or third-party pages |
 
 ---
 
 ## Installation
 
-The Hedera MCP server is a remote `HTTP` server hosted by Mintlify. No code is downloaded or executed on your machine. Your AI tool connects directly to https://docs.hedera.com/mcp over `HTTPS` and queries the documentation through the `SearchHedera` tool.
+The Hedera MCP server is a remote `HTTP` server hosted by Mintlify. No code is downloaded or executed on your machine. Your AI tool connects directly to https://docs.hedera.com/mcp over `HTTPS` and reads the documentation through the [tools listed above](#available-tools). The server requires no authentication, wallet, or keys.
 
 To connect, you manually add the server URL to your AI tool's configuration using the setup instructions below. This is the recommended approach because it gives you full visibility into what's being configured, and no third-party packages are installed or executed on your system.
+
+### Quick Connect From Any Docs Page
+
+The contextual menu at the top of every page on docs.hedera.com includes these options:
+
+| Option | What it does |
+| :--- | :--- |
+| **Copy MCP server URL** | Copies `https://docs.hedera.com/mcp` to your clipboard. |
+| **Connect to Cursor** | Installs the Hedera MCP server in Cursor. |
+| **Connect to VS Code** | Installs the Hedera MCP server in VS Code. |
 
 ---
 
@@ -70,7 +111,7 @@ Claude supports MCP servers as custom connectors. Available on free, Pro, Max, T
 4. Click **Add**.
 5. In any chat, click the **"+"** button in the lower left of the chat interface, then hover over **"Connectors"** to enable **Hedera Docs** for that conversation.
 
-Claude will automatically use the `SearchHedera` tool when your questions relate to Hedera development.
+Claude will automatically use the Hedera Docs tools when your questions relate to Hedera development.
 
 ---
 
@@ -210,21 +251,40 @@ Windsurf supports MCP servers through its Cascade AI agent. It supports `stdio`,
 
 ### ChatGPT
 
-ChatGPT supports remote MCP servers through its Apps feature (formerly called "Connectors"). Developer Mode is required for full MCP tool support and is available for Plus, Pro, Business, Enterprise, and Edu plans.
+ChatGPT connects to remote MCP servers through plugins. Account and workspace policies apply to adding and using custom MCP servers; on Enterprise workspaces, an admin controls these permissions.
+
+**Steps (ChatGPT web):**
+
+1. Go to [ChatGPT Plugins](https://chatgpt.com/plugins).
+2. Select the **"+"** button, then **Add custom MCP server**.
+3. Enter the details:
+   - **Name:** `Hedera Docs`
+   - **Description:** `Search the official Hedera documentation.`
+4. Under **Connection**, enter the URL `https://docs.hedera.com/mcp`.
+5. The Hedera docs server is public and needs no authentication. Review the risk warning and select **I understand and want to continue**.
+6. Select **Create as a plugin**, then review the discovered tools. You should see `search_hedera`, `query_docs_filesystem_hedera`, and `submit_feedback`.
+7. Install the plugin, start a new conversation, type `@` in the prompt box, and select **Hedera Docs**.
+
+**ChatGPT desktop app:** open **Settings → MCP servers**, select **Add server**, enter `Hedera Docs` as the name, choose **Streamable HTTP**, and enter `https://docs.hedera.com/mcp`. Save the server, then select **Restart**.
+
+> **Note:** ChatGPT deep research and company knowledge expect an MCP server with tools named exactly `search` and `fetch`. The Hedera docs server uses different tool names, so use it in regular conversations through the plugin. See [Connect and test your plugin](https://developers.openai.com/plugins/deploy/connect-chatgpt) for OpenAI's current instructions.
+
+---
+
+### Codex
+
+Codex CLI, the Codex IDE extension, and the ChatGPT desktop app share MCP configuration in `~/.codex/config.toml`. You can also scope the server to one project with `.codex/config.toml`.
 
 **Steps:**
 
-1. Open **Settings → Apps** (or **Settings → Connectors** in some UI versions).
-2. Navigate to **Advanced settings** and toggle on **Developer Mode**.
-3. Click **Create** to add a new app/connector.
-4. Enter the details:
-   - **Name:** `Hedera Docs`
-   - **Description:** `Search the official Hedera documentation.`
-   - **URL:** `https://docs.hedera.com/mcp`
-5. Click **Create**.
-6. In a new chat, click the **"+"** button in the composer area, enable Developer Mode for the session, and select **Hedera Docs**.
+1. Add the Hedera MCP server to `~/.codex/config.toml`:
 
-> **Important:** Developer Mode is required because without it, ChatGPT only accepts MCP servers that implement a specific `search` + `fetch` tool pattern. The Hedera MCP server exposes a `SearchHedera` tool, which requires Developer Mode to be accessible in chat. See the [ChatGPT Developer Mode guide](https://platform.openai.com/docs/guides/developer-mode) for details.
+```toml
+[mcp_servers.hedera-docs]
+url = "https://docs.hedera.com/mcp"
+```
+
+2. Start a Codex session and ask *"What tools do you have available?"* Codex should list the Hedera Docs tools.
 
 ---
 
@@ -283,11 +343,12 @@ You can connect the Hedera MCP server alongside other documentation MCP servers.
 }
 ```
 
+Connected MCP servers do not add documentation content to the conversation until the AI calls a tool. The AI decides when to search based on query relevance, so it doesn't search every connected server for every question. When it does search, each query returns multiple results, so searching several servers for one question can make the conversation much longer and leave less room for the response.
+
 **Best practices for multiple servers:**
 
-- Connect only the servers relevant to your current work to keep context focused.
+- Connect only the servers relevant to your current work.
 - Be specific in your prompts so the AI searches the most relevant server.
-- MCP servers don't consume context until the AI actively calls a search tool.
 - Disconnect servers you're not actively using to reduce context usage.
 
 ---
@@ -305,8 +366,10 @@ A quick-reference table of config file paths and JSON formats for each tool:
 | **Claude (Web)** | Customize → Connectors | UI-based | URL field |
 | **Claude Desktop** | Settings → Developer → Connectors | UI-based | URL field |
 | **Claude Code** | CLI: `claude mcp add` | — | — |
+| **Codex** | `~/.codex/config.toml` | `mcp_servers.<name>` | `url` |
 | **Gemini CLI** | `~/.gemini/settings.json` | `mcpServers` | `url` |
-| **ChatGPT** | Settings → Apps → Create (Developer Mode required) | UI-based | URL field |
+| **ChatGPT** (web) | [chatgpt.com/plugins](https://chatgpt.com/plugins) → + → Add custom MCP server | UI-based | URL field |
+| **ChatGPT** (desktop) | Settings → MCP servers → Add server | UI-based | URL field |
 
 ---
 
@@ -318,6 +381,7 @@ A quick-reference table of config file paths and JSON formats for each tool:
 - Restart your AI tool after adding the configuration.
 
 **Tools not appearing?**
+- The server exposes three tools: `search_hedera`, `query_docs_filesystem_hedera`, and `submit_feedback`. If none appear, the connection failed.
 - In Cursor/VS Code, click the refresh button next to the server entry.
 - In Claude Code, run `claude mcp list` to verify the server is registered.
 - In Windsurf, check the MCPs icon for server status — a red indicator means the connection failed.
@@ -327,7 +391,15 @@ A quick-reference table of config file paths and JSON formats for each tool:
 - Ensure the MCP server is enabled/active for your current chat session.
 
 **Rate limits:**
-Mintlify-hosted MCP servers enforce rate limits to protect availability: 200 requests/hour per user (IP) and 1,000 requests/hour per documentation site.
+Mintlify, which hosts the server, applies rate limits to protect availability:
+
+| Scope | Limit |
+| :--- | :--- |
+| Per user (IP address) | 5,000 requests per hour |
+| `search_hedera` calls across all users of docs.hedera.com | 10,000 requests per hour |
+| `query_docs_filesystem_hedera` calls across all users of docs.hedera.com | 10,000 requests per hour |
+
+If a limit is exceeded, the server returns HTTP `429 Too Many Requests`. Back off and retry after a short delay. Limits reset on a rolling hourly window. Mintlify sets these limits and can change them; see [Mintlify's rate limits](https://www.mintlify.com/docs/ai/model-context-protocol#rate-limits) for the current values.
 
 ---
 
@@ -339,9 +411,10 @@ Mintlify-hosted MCP servers enforce rate limits to protect availability: 200 req
 - [Cursor MCP Docs](https://docs.cursor.com/en/context/mcp)
 - [VS Code MCP Servers](https://code.visualstudio.com/docs/copilot/chat/mcp-servers)
 - [Windsurf MCP Integration](https://docs.windsurf.com/windsurf/cascade/mcp)
-- [ChatGPT Developer Mode](https://platform.openai.com/docs/guides/developer-mode)
+- [ChatGPT: Connect a custom MCP server](https://developers.openai.com/plugins/deploy/connect-chatgpt)
 - [Gemini CLI MCP Setup](https://google-gemini.github.io/gemini-cli/docs/tools/mcp-server.html)
 - [Claude Code MCP Docs](https://docs.anthropic.com/en/docs/claude-code/mcp)
+- [Codex MCP Docs](https://developers.openai.com/codex/mcp)
 
 ---
 

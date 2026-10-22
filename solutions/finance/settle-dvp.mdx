@@ -3,7 +3,7 @@ title: "Settle a trade delivery-versus-payment in one atomic transfer"
 description: "Settle a security against a stablecoin on Hedera in a single native transfer: both legs move together or neither does, now or at a set time, with KYC enforced by the network, no escrow contract, and every trade event logged to HCS."
 ---
 
-Settle a trade between a seller and a buyer where the security leg and the payment leg move in **one** Hedera transaction. If either leg fails a check, such as a buyer without KYC, nothing moves. Settle the moment the buyer signs or at a set time, cancel before settlement, and log every event in the trade's life to an audit topic anyone can verify. There is no escrow contract and no settlement agent.
+The page runs that trade on testnet. Propose it, have the buyer sign, and both balances move together. One buyer has no KYC, so you can also watch the network reject the trade and leave every balance where it was.
 
 <Card title="Get the code" icon="github" href="https://github.com/web3buidlerz/hedera-finance-templates/tree/templates/dvp-settlement">
   `npx create-scaffold-hbar@latest --template web3buidlerz/hedera-finance-templates#templates/dvp-settlement`
@@ -11,7 +11,7 @@ Settle a trade between a seller and a buyer where the security leg and the payme
 
 ## Overview
 
-In a securities trade, the seller **delivers** the security and the buyer **pays** for it. Whichever side moves first is exposed: if the seller delivers and the buyer never pays, the seller has lost the asset. Traditional markets remove this settlement risk with central securities depositories and clearing houses, and settle a day or two after the trade (T+1 or T+2).
+In a securities trade, the seller **delivers** the security and the buyer **pays** for it. Whichever side moves first is exposed: if the seller delivers and the buyer never pays, the seller has lost the asset.
 
 **Delivery versus payment (DvP)** guarantees that both legs settle together or not at all. On Hedera this needs no smart contract:
 
@@ -27,15 +27,6 @@ The workflow has three actors:
 * **Issuer**: the operator account the app runs with. Creates the security and the stablecoin, grants KYC, funds the other parties, and publishes the audit log. It pays every transaction fee.
 * **Seller**: holds the security, proposes trades, signs first, and can cancel a trade before it settles.
 * **Buyer**: holds the stablecoin and signs second. The template creates two buyers: one with KYC on the security and one without, so you can watch a trade fail safely.
-
-The trade lifecycle:
-
-1. The Issuer creates the security token (with KYC and freeze keys), the stablecoin and the audit topic
-2. The Seller and Buyers associate both tokens; the Issuer grants KYC to the Seller and the Buyer
-3. The Seller proposes a trade as a scheduled transfer containing both legs, with a deadline, and signs it
-4. The Buyer signs it
-5. The network executes both legs in one transaction, immediately or at the set time, or rejects both
-6. Each step is published to the audit topic
 
 ```text
 Issuer                       Seller                     Hedera network                  Buyer
@@ -54,7 +45,7 @@ Issuer                       Seller                     Hedera network          
   |-- TopicMessageSubmit (proposed, signed, settled, ...) --->|  audit log                |
 ```
 
-By default the template signs for the Seller and the Buyers with demo accounts kept on the server, so the whole flow runs from one browser tab. You can also connect **HashPack** and take the Seller's or the Buyer's place with your own testnet account, or trade between two wallets in two browsers. See [Trade with HashPack](#trade-with-hashpack).
+By default the template signs for the Seller and the Buyers with demo accounts kept on the server, so the whole flow runs from one browser tab. Connect **HashPack** to add your own testnet account beside them, as Seller, Buyer, or both, including a trade between two wallets in two browsers. See [Trade with HashPack](#trade-with-hashpack).
 
 | Component | Technology |
 | - | - |
@@ -265,7 +256,7 @@ The trade becomes `CANCELLED`, can no longer be signed, nothing moves, and a `ca
 **Expiry.** A trade the Buyer never signs becomes `EXPIRED` at its deadline: after 30 minutes for a trade on signature, or at the set time. Nothing moves, and an `expired` entry is logged.
 
 <Info>
-At the expiration of a `waitForExpiry` schedule, the network attempts it even if signatures are missing, and that attempt fails with `INVALID_SIGNATURE`. The template reports such a trade as `EXPIRED`, not `REJECTED`: it never reached agreement, so the failure is a property of the scheduling mechanism rather than a refused settlement.
+A `waitForExpiry` trade that expires unsigned is `EXPIRED`. The network tries the transfer and it fails with `INVALID_SIGNATURE`, but the Buyer never agreed, so this is an expiry, not a rejected trade.
 </Info>
 
 ## What happens when a leg fails
@@ -298,11 +289,11 @@ Entries are published one at a time, in order, so a signature racing the settlem
 
 ## Trade with HashPack
 
-With `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID` set, switch **Sign with** to **HashPack** and take one side of a trade with your own account.
+With `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID` set, switch **Sign with** to **HashPack** to connect and onboard. Demo accounts stay available.
 
 1. **Connect HashPack.** Use your own testnet account. The app refuses the Issuer, which created both tokens and holds their treasury, and the demo accounts.
 2. **Choose a role** (Seller or Buyer) and press **Onboard wallet**. HashPack signs the token association, because only the account owner can opt in to a token. The server then grants KYC and funds your account for its role, minting the tokens it hands you.
-3. **Trade.** As Seller, HashPack signs the schedule creation and any cancellation; as Buyer, it signs the schedule. Everything else behaves exactly as with demo accounts, including settling at a set time.
+3. **Trade.** **Buyer** in the ticket is always the demo buyer. After a buyer wallet is onboarded, the dropdown adds **My wallet (0.0.xxx)**. **Unverified Buyer** stays the buyer without KYC. **Propose as demo Seller** is always there. Once a seller wallet is onboarded, **Propose as my wallet** sits beside it, and HashPack signs that proposal and any cancellation of a trade that wallet proposed. When the trade's buyer is your wallet, HashPack signs the schedule. Settling at a set time works the same way.
 
 **Two wallets, two browsers.** The market lives on the server, so two browsers on the same app see the same market. Onboard one HashPack account as Seller in one browser and another as Buyer in a second browser, and they trade with each other. Every page refreshes the market, the trades and the audit log on its own every few seconds, so each side sees the other's proposal, signature, cancellation or settlement without reloading. When a trade waits for a signature you can give, a **your turn** line names it next to its **Sign as Buyer** button.
 
@@ -310,7 +301,7 @@ A few rules keep the wallet flow honest:
 
 * One wallet can take both roles. Onboarding in the second role funds it for that role without asking HashPack to associate the tokens again; onboarding twice in the same role is refused.
 * Nothing can be onboarded while a trade is pending or scheduled.
-* Keep HashPack on the account you onboarded. Wallet transactions are built with that account as the payer, so if you switch accounts the trade controls are disabled and the page names the account to switch back to.
+* Keep HashPack on the account you onboarded. Wallet transactions are built with that account as the payer. If you switch accounts, **Propose as my wallet** and signing or cancelling a wallet trade stay disabled until you switch back. The page names the account. Proposing and signing as a demo party stay available.
 * The server never trusts what the browser sends back after HashPack signs. It records the trade terms it prepared itself, checks the transaction was submitted by the onboarded wallet, and checks the wallet's own transaction succeeded.
 
 The app never holds your key. The server builds each transaction with your account as the payer and freezes it; the browser sends it to HashPack through WalletConnect:

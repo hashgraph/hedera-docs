@@ -353,12 +353,14 @@ The following ports must be configured for **public internet access** unless oth
 
 **📡 Port Configuration**
 
-| Port    | Protocol | Direction      | Purpose                         |
-| ------- | -------- | -------------- | ------------------------------- |
-| `50211` | TCP      | Ingress/Egress | gRPC (public) API access (HAPI) |
-| `50212` | TCP      | Ingress/Egress | TLS-encrypted gRPC              |
-| `80`    | TCP      | Egress only    | OS package repository           |
-| `443`   | TCP      | Egress only    | Secure updates                  |
+| Port    | Protocol | Direction      | Purpose                                            |
+| ------- | -------- | -------------- | -------------------------------------------------- |
+| `50211` | TCP      | Ingress/Egress | gRPC (public) API access (HAPI)                    |
+| `50212` | TCP      | Ingress/Egress | TLS-encrypted gRPC                                 |
+| `80`    | TCP      | Ingress/Egress | gRPC-web (ingress); OS package repository (egress) |
+| `443`   | TCP      | Egress only    | Secure updates                                     |
+
+> 📁 **Note:** Inbound `80` must be open to all sources (`0.0.0.0/0`) on the proxy that serves the node's gRPC-web endpoint. Envoy listens on port 80 on that proxy.
 
 </Accordion>
 

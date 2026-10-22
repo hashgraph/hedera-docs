@@ -81,6 +81,56 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 
 
+
+### [**Build 0.78.1**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.78.1)
+
+<Accordion title="What's Changed">
+
+### **Features**
+
+  * increase max number of topics from 1,000,000 to 2,000,000 [#26956](https://github.com/hiero-ledger/hiero-consensus-node/pull/26956) ([`0182cb2`](https://github.com/hiero-ledger/hiero-consensus-node/commit/0182cb2c1c)) by [@akdev](https://github.com/akdev)
+  * Implement CLPR feature [#27029](https://github.com/hiero-ledger/hiero-consensus-node/pull/27029) ([`5b5ee3c`](https://github.com/hiero-ledger/hiero-consensus-node/commit/5b5ee3c73c)) by [@Neeharika-Sompalli](https://github.com/Neeharika-Sompalli)
+
+### **Bug Fixes**
+
+  * Upgrade PBJ to v0.15.11 ([`e3e1c08`](https://github.com/hiero-ledger/hiero-consensus-node/commit/e3e1c08110)) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * Resolve accounts by full id in `CryptoTransfer` handle to match preHandle ([`82e5538`](https://github.com/hiero-ledger/hiero-consensus-node/commit/82e5538bd0)) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * truncate `wrapped-record-hashes.pb` on upgrade without jumpstart ([`25fe567`](https://github.com/hiero-ledger/hiero-consensus-node/commit/25fe56714a)) by [@petreze](https://github.com/petreze)
+  * ContractCallLocal queries bypass throttle ([`a658e51`](https://github.com/hiero-ledger/hiero-consensus-node/commit/a658e51f29)) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * bump Besu EVM version and remove Native Libs patch ([`2ae5f0b`](https://github.com/hiero-ledger/hiero-consensus-node/commit/2ae5f0bd65), [`b1adf47`](https://github.com/hiero-ledger/hiero-consensus-node/commit/b1adf47a88)) by @joshmarinacci @stoyanov-st
+  * Ops Duration Throttle optimisation [#26806](https://github.com/hiero-ledger/hiero-consensus-node/pull/26806) ([`41b1149`](https://github.com/hiero-ledger/hiero-consensus-node/commit/41b1149564)) by [@stoyanov-st](https://github.com/stoyanov-st)
+  * Disable Ops Duration bursting ([`6c34b2e`](https://github.com/hiero-ledger/hiero-consensus-node/commit/6c34b2e8ff)) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * Optimise OpsDuration Op Code config ([`eba1ec0`](https://github.com/hiero-ledger/hiero-consensus-node/commit/eba1ec01e1)) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * don't forfeit an untouched beneficiary's staking rewards on an atomic-batch drain-then-delete ([`2c4a4c3`](https://github.com/hiero-ledger/hiero-consensus-node/commit/2c4a4c3fa9)) by [@AlexKehayov](https://github.com/AlexKehayov)
+  * staking rewards follow-up - no-credit shortcut and refactoring ([`0031060`](https://github.com/hiero-ledger/hiero-consensus-node/commit/0031060cf8)) by [@AlexKehayov](https://github.com/AlexKehayov)
+  * stop a scheduled delete from paying a staking reward twice ([`bc4db64`](https://github.com/hiero-ledger/hiero-consensus-node/commit/bc4db649ca)) by [@ibankov](https://github.com/ibankov)
+  * cap proto-nesting depth at ingest and enforce uniform key-depth limit ([`596cab7`](https://github.com/hiero-ledger/hiero-consensus-node/commit/596cab7698)) by [@AlexKehayov](https://github.com/AlexKehayov)
+  * Bound transaction size checks by retained wire length ([`164e45e`](https://github.com/hiero-ledger/hiero-consensus-node/commit/164e45eace)) by [@petreze](https://github.com/petreze)
+  * fail closed on structurally invalid keys ([`a633017`](https://github.com/hiero-ledger/hiero-consensus-node/commit/a63301759e)) by [@ibankov](https://github.com/ibankov)
+  * meter auto associations independently of implicit creations ([`1fbb8ff`](https://github.com/hiero-ledger/hiero-consensus-node/commit/1fbb8ff3f9)) by [@aderevets](https://github.com/aderevets)
+  * Refactor Ethereum transaction Call data length validation ([`3e68ad6`](https://github.com/hiero-ledger/hiero-consensus-node/commit/3e68ad6acf)) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * Validate Ethereum Transaction Call Data if present ([`0200bb8`](https://github.com/hiero-ledger/hiero-consensus-node/commit/0200bb8f86)) by [@stoyanov-st](https://github.com/stoyanov-st)
+  * Resolve Alias to AccountID when revoking allowances ([`fa3d58f`](https://github.com/hiero-ledger/hiero-consensus-node/commit/fa3d58fff7)) by [@stoyanov-st](https://github.com/stoyanov-st)
+  * reject allowance when spender is provided by alias ([`7eba6d3`](https://github.com/hiero-ledger/hiero-consensus-node/commit/7eba6d3888)) by [@petreze](https://github.com/petreze)
+  * Apply fee exemptions consistently when assessing fractional fees ([`f05902d`](https://github.com/hiero-ledger/hiero-consensus-node/commit/f05902d565)) by [@petreze](https://github.com/petreze)
+  * reject royalty fees whose fractions sum above one ([`eb1f077`](https://github.com/hiero-ledger/hiero-consensus-node/commit/eb1f0773e3)) by [@ibankov](https://github.com/ibankov)
+  * imply a real token expiry when TokenCreate omits one ([`a873e3f`](https://github.com/hiero-ledger/hiero-consensus-node/commit/a873e3f3a3)) by [@aderevets](https://github.com/aderevets)
+  * net NFT supply changes in record token transfer lists ([`09afcfe`](https://github.com/hiero-ledger/hiero-consensus-node/commit/09afcfe241)) by [@petreze](https://github.com/petreze)
+  * align parent record NFT transfers with child records ([`0ec84f8`](https://github.com/hiero-ledger/hiero-consensus-node/commit/0ec84f82bb)) by [@petreze](https://github.com/petreze)
+
+### **Other Changes**
+
+  * Disable TSS ([`d638baf`](https://github.com/hiero-ledger/hiero-consensus-node/commit/d638baff60)) by [@derektriley](https://github.com/derektriley)
+  * Fix BN Comms tests ([`b1f2404`](https://github.com/hiero-ledger/hiero-consensus-node/commit/b1f2404593)) by [@derektriley](https://github.com/derektriley)
+  * bump TCK and JS SDK versions ([`336b251`](https://github.com/hiero-ledger/hiero-consensus-node/commit/336b251b39)) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * bump mirror node version ([`ba7a27b`](https://github.com/hiero-ledger/hiero-consensus-node/commit/ba7a27b6fb)) by [@joshmarinacci](https://github.com/joshmarinacci)
+  * only publish to artifacts when publishing from a public repo [#27598](https://github.com/hiero-ledger/hiero-consensus-node/pull/27598) by [@andrewb1269](https://github.com/andrewb1269)
+  * Backport CI changes for Chewie and CITR into release/0.78 [#27602](https://github.com/hiero-ledger/hiero-consensus-node/pull/27602) by [@rbarker-dev](https://github.com/rbarker-dev)
+
+  **Full Release Notes**: [**v0.78.1**](https://github.com/hiero-ledger/hiero-consensus-node/releases/tag/v0.78.1)
+
+</Accordion>
+
 ## Release v0.77
 <Check>
   **MAINNET UPDATED: SEPTEMBER 29, 2026**

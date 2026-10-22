@@ -130,11 +130,13 @@ Creating the token is the first audit entry: an `issue` entry whose `prev` is 64
 
 ### Step 1: Perform the action
 
-Choose a **target account**: the demo holder by default, or any testnet account. Then press **Grant KYC**, **Freeze**, **Unfreeze** or **Transfer**. Each is a real HTS transaction with its own transaction id and result.
+Choose a **target account**: the demo holder by default, or any testnet account. Then press **Grant KYC**, **Freeze holder**, **Unfreeze holder** or **Transfer**. Each is a real HTS transaction with its own transaction id and result.
 
 A refused action is still logged with the network's result code. A transfer before KYC is granted returns `ACCOUNT_KYC_NOT_GRANTED_FOR_TOKEN`; a transfer to a frozen account returns `ACCOUNT_FROZEN_FOR_TOKEN`; any action on an account that has not associated the token returns `TOKEN_NOT_ASSOCIATED_TO_ACCOUNT`. The Issuer cannot target itself.
 
-### Step 2: Publish the audit entry
+### Step 2: Queue and publish the audit entry
+
+The entry records the action, so it cannot be written first: it carries that action's transaction id and result, and neither exists until the action has run. Which leaves exactly one gap to close — an action that succeeded while its entry did not. So the entry is queued the moment the action returns, and publishing is a separate, serialized step.
 
 The entry is JSON with a fixed key order, so the bytes published are exactly the bytes the next entry hashes:
 
@@ -147,13 +149,25 @@ export function serializeEntry(entry: AuditEntry): Uint8Array {
   return new TextEncoder().encode(JSON.stringify(ordered));
 }
 
-const bytes = serializeEntry({ v: 1, event: "grant_kyc", token, account, amount: null, tx, result, prev: lastHash });
-const response = await new TopicMessageSubmitTransaction().setTopicId(topicId).setMessage(bytes).execute(client);
-const receipt = await response.getReceipt(client); // receipt.topicSequenceNumber
-lastHash = await sha256Hex(bytes);                  // the next entry's prev
+// The action has run; its entry joins the queue and the chain has not moved yet.
+queueEntry(desk, { event: "grant_kyc", token, account, amount: null, tx, result });
+
+// One flush at a time, oldest entry first.
+while (desk.entries.length > 0) {
+  const queued = desk.entries[0];
+  const bytes = serializeEntry({ v: 1, prev: desk.lastHash, ...queued.fields }); // prev read here, not earlier
+  queued.transactionId ??= TransactionId.generate(operatorId).toString();        // same id on every retry
+  await submit(bytes, queued.transactionId);
+  desk.lastHash = await sha256Hex(bytes);                                        // only after it landed
+  desk.entries.shift();
+}
 ```
 
-The chain only advances once an entry has actually landed on the topic, so a failed or cancelled publish never leaves a gap.
+Three properties follow from that, and together they are what lets the trail claim nothing is skipped:
+
+* **`prev` is read when an entry is published, not when it is built.** Two actions in flight therefore cannot be chained onto the same `prev` — which would land two messages claiming the same position and show `BROKEN`.
+* **A submission keeps one transaction id across retries.** A response lost after the network accepted it would otherwise publish the entry twice; the resubmission is refused as a duplicate instead, and the receipt is queried to find out what happened.
+* **Nothing discards a queued entry.** A failed submission, a declined signature or an unreachable mirror node are retried until the entry is on the topic.
 
 **You should see** the new entry at the top of the trail: sequence number, consensus time, event, target account, result, transaction and publisher.
 
@@ -163,7 +177,7 @@ Open **Open regulator feed**, or `/regulator?topic=<topic id>`. The page reads t
 
 * **Sequence**: sequence numbers run 1, 2, 3… with no gap, so nothing was deleted
 * **Chain**: the entry's `prev` equals the SHA-256 of the previous message's exact bytes, so nothing was edited or reordered
-* **Transaction**: the referenced transaction exists on the mirror node with the result the entry claims, so nothing was made up
+* **Transaction**: the referenced transaction exists on the mirror node with the result the entry claims, **and** is the kind of transaction the event implies, against the entry's own token and account — a `freeze` entry must point at a `TOKENFREEZE` of that token, a successful `transfer` at a `CRYPTOTRANSFER` whose legs credit that amount of that token to that account. Checking the result code alone would let an authorised publisher log `freeze` / `SUCCESS` against any successful transaction on the network
 
 ```typescript
 for (let i = 0; i < messages.length; i++) {
@@ -172,7 +186,7 @@ for (let i = 0; i < messages.length; i++) {
   const sequenceOk = messages[i].sequence_number === i + 1;
   const chainOk = entry !== null && entry.prev === (prevBytes ? await sha256Hex(prevBytes) : ZERO_HASH);
   const mirrorTx = entry && (await fetchMirrorTransaction(entry.tx));
-  const txOk = mirrorTx !== null && mirrorTx.result === entry.result;
+  const txOk = entry !== null && transactionMismatch(entry, mirrorTx) === null; // result, kind, token, account
   prevBytes = bytes;
 }
 ```
@@ -184,7 +198,7 @@ for (let i = 0; i < messages.length; i++) {
 Press **Try to forge an entry**. An account that is not an authorised publisher submits a message to the topic, and the network rejects it with `INVALID_SIGNATURE`. Nothing is added to the trail, and the topic's message count does not change.
 
 <Info>
-HCS guarantees order, timestamps and immutability; it cannot stop an authorised publisher from writing an inaccurate entry. That is why every entry references a transaction the regulator checks independently: an entry claiming a freeze is only `VERIFIED` if that freeze transaction exists with that result.
+HCS guarantees order, timestamps and immutability; it cannot stop an authorised publisher from writing an inaccurate entry. That is why every entry references a transaction the regulator checks independently: an entry claiming a freeze is only `VERIFIED` if a freeze of that token, for that account, exists on the network with that result. What an authorised publisher can still do is write a well-formed entry at the wrong position — and that is what `BROKEN` is for.
 </Info>
 
 ## Sign entries as a compliance officer with HashPack
@@ -194,12 +208,18 @@ With `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID` set, switch **Signing mode** to **H
 1. **Authorise as publisher.** The Issuer reads the wallet's public key from the mirror node and changes the topic's submit key to a key list that accepts either key, signing with the topic's admin key:
 
    ```typescript
-   const submitKey = new KeyList([operatorKey.publicKey, walletPublicKey], 1); // threshold 1: either may publish
+   // Cumulative: every wallet authorised so far, so the list on the page and the key on
+   // the topic cannot disagree about who may publish.
+   const submitKey = new KeyList([operatorKey.publicKey, ...walletKeys], 1); // threshold 1: any one of them
    await (await new TopicUpdateTransaction().setTopicId(topicId).setSubmitKey(submitKey).execute(client)).getReceipt(client);
    ```
 
 2. **Perform an action.** The Issuer still performs the token action on the server and builds the entry with the correct `prev`. HashPack signs and submits the topic message as the payer.
-3. **Confirmation.** The server checks on the mirror node that the submission landed on the audit topic, was paid by the authorised wallet, and succeeded. Only then does the chain advance.
+3. **Confirmation.** The prepared entry is bound to the exact transaction id frozen into the transaction the wallet was handed, and only that id can confirm it. The server then checks, from the mirror node, that the transaction was a message submit to this topic, paid by that wallet, and succeeded — **and** that the bytes now on the topic are the bytes it prepared. Only then does the chain advance.
+
+   A successful transaction from that account is not enough on its own. An older or different message from the same wallet would otherwise advance the chain to the hash of bytes that are not on the topic at all, and every entry after it would fail its `prev` check.
+
+4. **If the wallet does not publish it, the Issuer does.** A declined signature, a submission the network refuses, a mirror node that never shows the transaction: the entry stays queued and the Issuer — always an authorised publisher — publishes it instead. The action happened, so its entry is not optional. Before taking an entry back, the server checks the topic for the prepared bytes, because a confirmation that failed on a slow mirror node must not become a second copy of an entry that did land.
 
 The trail and the regulator feed show the wallet as the publisher of those entries.
 
@@ -207,6 +227,7 @@ The wallet connection follows `@hashgraph/hedera-wallet-connect`: create the pro
 
 ## Going to production
 
+* **The queue lives in memory**: a server restart with entries still queued loses them, though everything that reached the topic stays verifiable. A real desk persists the queue, or derives what is missing by comparing the chain against its own records.
 * **Private payloads**: the topic is public. For sensitive data, publish only a hash of each record and keep the record off-chain, or encrypt entries to the regulator's key.
 * **Admin key**: hold the topic's admin key in a threshold key, so no single person can change who may publish.
 * **Lower latency**: subscribe to the topic over gRPC, or run your own mirror node, instead of polling the REST API.

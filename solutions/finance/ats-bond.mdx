@@ -188,9 +188,7 @@ for (const log of receipt.logs) {
 The deployment uses about 7.2 million gas. Hedera charges for at least 80% of a transaction's gas limit, so keep limits close to what a call needs.
 
 <Warning>
-`simulateContract` returns the new bond's address, and it is tempting to keep it — but a `CREATE` address is computed against the state at simulation time, and this factory is shared by everyone on testnet. Another deployment landing in between changes it, and an app that trusted the prediction then rejected its own successful deployment and abandoned a bond it had already paid 7.4 HBAR for.
-
-`BondDeployed` indexes only the `deployer`, which means you cannot *filter* logs by the bond's address — but `bondAddress` is still there in the event's data, and decoding it is what the receipt is for. The same event carries the `bondData` the bond was created with, so the starting date on the page comes from the chain rather than from the form.
+Do not keep the address `simulateContract` returns. A `CREATE` address is computed against the state at simulation time, and this factory is shared: another deployment landing in between changes it, and an app that trusts the prediction rejects its own successful deployment — abandoning a bond it has already paid 7.4 HBAR for. `BondDeployed` indexes only the `deployer`, so you cannot *filter* logs by the bond's address, but `bondAddress` is in the event's data, along with the `bondData` the bond was built with.
 </Warning>
 
 <Tip>
@@ -201,15 +199,25 @@ The published `@hashgraph/asset-tokenization-contracts` package does not include
 
 ### Step 3: Read the bond back
 
-The bond card shows the terms as **read from the bond contract**, not echoed from the form: `name`, `symbol`, `getERC20Metadata()` for the ISIN, `getNominalValueCurrency()`, `getNominalValue()` with `getNominalValueDecimals()`, and `getMaturityDate()`. Total supply and maximum supply are read the same way.
+Every term on the bond card is read from the contract, never echoed from the form:
+
+| Shown | Read with |
+| - | - |
+| Name, symbol | `name()`, `symbol()` |
+| ISIN | `getERC20Metadata()` |
+| Face value, currency | `getNominalValue()` with `getNominalValueDecimals()`, `getNominalValueCurrency()` |
+| Maturity | `getMaturityDate()` |
+| Issued, maximum | `totalSupply()`, `getMaxSupply()` |
 
 **You should see** the terms you entered, with the face value and maturity as stored on chain.
 
-A read that fails is worth a word, because the obvious fallback is a lie. If the network cannot be reached, the desk shows an investor's approval as `Unknown` and its balance as `unavailable`, and the bond keeps the terms read from it at issue while saying its live values are missing. It never falls back to `Not approved` and `0`: on a compliance desk those are claims about the chain that a failed read has not made, and an approved holder of 100 bonds reading as neither is worse than an error message. While approval is unknown both **Approve** and **Revoke** stay enabled, because the contract decides which one applies.
+The same step creates the two demo investors: a fresh ECDSA key each, receiving 0.5 HBAR from the Issuer, which makes Hedera **auto-create** the account. It stays hollow until it first signs, which a demo investor never does.
 
-The same step creates the two demo investors. Each is a fresh ECDSA key whose EVM address receives 0.5 HBAR from the Issuer. That transfer makes Hedera **auto-create** the account: it stays a hollow account until it first signs, which a demo investor never does.
+Auto-creation is most of what an issue costs after the deployment itself: 607,858 gas against a plain transfer's 21,000. Hence the template's funding limit of 1,000,000, and about 1.1 HBAR per investor.
 
-Auto-creation is most of what an **Issue bond** costs after the deployment itself. A plain value transfer is 21,000 gas; these measure **607,858**, because the account is created inside the transaction. That is why the template's funding gas limit is 1,000,000 rather than something that looks tidier — and with Hedera charging at least 80% of the limit, it is also why each demo investor costs about 1.1 HBAR.
+<Note>
+**A failed read is shown as a failed read.** Approval reads `Unknown`, balances and the issued total `unavailable`, and the bond keeps the terms read at issue. Never `Not approved` or `0`: those are claims about the chain that a failed read has not made. Both **Approve** and **Revoke** stay enabled while approval is unknown, because the contract decides which applies.
+</Note>
 
 ## Approve investors and distribute
 

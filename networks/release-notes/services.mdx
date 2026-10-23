@@ -6,12 +6,48 @@ description: "Release notes for Hedera consensus node (services) versions, cover
 Visit the [Hedera status page](https://status.hedera.com/) for the latest versions supported on each network.
 
 ## Release v0.78
-<Info>
-  **MAINNET UPDATE: TBA**
-</Info>
+
 <Check>
-  **TESTNET UPDATED:  OCOTBER 8, 2026**
+**MAINNET UPDATED: OCTOBER 16, 2026**
 </Check>
+
+<Check>
+**TESTNET UPDATED: OCTOBER 8, 2026**
+</Check>
+
+### Release highlights
+
+Release `v0.78` shipped to mainnet as `v0.78.1`, improving [Block Node](https://github.com/hiero-ledger/hiero-block-node) connection reliability, closing a broad set of security and correctness issues across key validation, throttling, allowances, fees, and staking rewards, and landing initial, disabled-by-default groundwork for [Cross-Ledger Proof Relay (CLPR)](https://hashgraph.com/clpr/). Together, these changes make the consensus node more resilient to Block Node buffering pressure and make fee, throttle, and reward accounting harder to circumvent.
+
+<Accordion title="What's new in Release v0.78?">
+
+#### Block Node Connection Reliability
+
+Scales request timeouts to block size instead of using a fixed timeout, and caps the block buffer by total bytes consumed in addition to the existing block-count limit.
+
+**Benefits**
+
+- Reduces unnecessary Block Node disconnects caused by large blocks needing more time to send
+- Protects consensus node memory from block-buffer growth regardless of block size
+
+#### Cross-Ledger Proof Relay (CLPR) Groundwork
+
+Adds the initial CLPR implementation for authenticated cross-ledger messaging, shipped disabled by default behind the `clpr.enabled` configuration flag.
+
+**Benefits**
+
+- Lays the groundwork for a future cross-ledger messaging capability with no impact on current network behavior while the flag stays off
+
+#### Security and Correctness Hardening
+
+Closes a broad set of validation and accounting gaps: malformed or overly deep keys and transactions are now rejected at ingest, allowance, fee, and royalty calculations are more consistent, and several staking-reward and NFT transfer-list accounting bugs are fixed.
+
+**Benefits**
+
+- Rejects malformed or deeply nested keys, oversized transactions, and throttle-bypassing queries deterministically
+- Keeps allowance, fractional-fee, and royalty-fee calculations consistent
+- Fixes staking-reward double-payment and NFT transfer-list accounting bugs
+</Accordion>
 
 ### **Build 0.78.0**
 

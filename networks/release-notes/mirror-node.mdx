@@ -30,6 +30,15 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 
 
+
+## [v0.165.1](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.165.1)
+
+This is an urgent security release that fixes the [node2shell](https://www.aikido.dev/blog/node2shell-nodejs-brotli-rce-cve-2026-111497) vulnerability. Operators should plan on upgrading as soon as possible.
+
+<Accordion title="Dependency Upgrades">
+  * Bump Node.js from 24.21.0 to 24.22.1 (0.165) [#14518](https://github.com/hiero-ledger/hiero-mirror-node/pull/14518)
+</Accordion>
+
 ## [v0.165.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.165.0)
 
 The Block Node effort saw major breaking changes this release. The new TSS 3.22.0 library was incorporated with the switch to Nova. The block proof was switched from a SHA-384 to a SHA-256 based proof. The Mirror Node was updated to support both block sizes for a period of time to allow operators to roll it out ahead of any Consensus Node release.

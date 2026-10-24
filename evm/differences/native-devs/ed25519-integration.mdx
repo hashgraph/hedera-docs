@@ -1,6 +1,6 @@
 ---
 title: "Integrating ED25519 Accounts Into Smart Contracts"
-description: "Verify ED25519 signatures, multi-sig, and threshold keys in Solidity with the HIP-632 isAuthorizedRaw and isAuthorized functions, and support key rotation."
+description: "Verify ED25519 signatures, multi-sig, and threshold keys in Solidity with the HIP-632 isAuthorizedRaw and isAuthorized functions, and keep checks valid across key updates."
 ---
 ## Overview
 
@@ -33,27 +33,37 @@ These functions allow you to enforce the same account security models on-chain w
 
 **Basic Example: Validating a Single ED25519 Signature**
 
-Here’s a Solidity example for validating ED25519 signatures using the isAuthorizedRaw function. The function calls
-the system contract function (`isAuthorizedRaw`)
-to verify a raw signature on-chain.
+Here’s a Solidity example for validating ED25519 signatures with `isAuthorizedRaw`. It calls the Hedera Account Service system contract at `0x16a` through a typed interface and returns the function's result.
 
-
+<Tip>
+`isAuthorizedRaw` and `isAuthorized` report an invalid signature through their return values, not by reverting. Always check the returned values. A low-level `call` that only checks the call's `success` flag accepts forged signatures.
+</Tip>
 
 ```solidity
-function verifyED25519Signature(
-    address accountAlias,
-    bytes32 messageHash,
-    bytes memory signatureBlob
-) public returns (bool) {
-    (bool success, ) = address(0x16a).call(
-        abi.encodeWithSignature(
-            "isAuthorizedRaw(address,bytes32,bytes)",
-            accountAlias,
-            messageHash,
-            signatureBlob
-        )
-    );
-    return success;
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.24;
+
+interface IHederaAccountService {
+    function isAuthorizedRaw(address account, bytes memory messageHash, bytes memory signature)
+        external
+        returns (bool authorized);
+
+    function isAuthorized(address account, bytes memory message, bytes memory signature)
+        external
+        returns (int64 responseCode, bool authorized);
+}
+
+contract ED25519Verifier {
+    IHederaAccountService internal constant HAS = IHederaAccountService(address(0x16a));
+    int64 internal constant SUCCESS = 22;
+
+    // Returns true only if the 64-byte ED25519 signature over messageHash is valid for the account's key
+    function verifyED25519Signature(address account, bytes32 messageHash, bytes calldata signature)
+        public
+        returns (bool)
+    {
+        return HAS.isAuthorizedRaw(account, abi.encodePacked(messageHash), signature);
+    }
 }
 ```
 
@@ -75,11 +85,14 @@ This example demonstrates requiring multiple valid signatures for critical contr
 
 
 ```solidity
-function validateMultiSig(address accountAlias, bytes memory proposalData, bytes memory signatureBlob) public returns (bool) {
-    (bool success, ) = address(0x16a).call(
-        abi.encodeWithSignature("isAuthorized(address,bytes,bytes)", accountAlias, proposalData, signatureBlob)
-    );
-    return success;
+// Add to the ED25519Verifier contract above.
+// signatureMap is a serialized protobuf SignatureMap with one signature per key.
+function validateMultiSig(address account, bytes memory proposalData, bytes memory signatureMap)
+    public
+    returns (bool)
+{
+    (int64 responseCode, bool authorized) = HAS.isAuthorized(account, proposalData, signatureMap);
+    return responseCode == SUCCESS && authorized;
 }
 ```
 
@@ -105,14 +118,11 @@ threshold-based governance processes.
 
 ---
 
-### Supporting Dynamic Key Rotation
+### Key Updates and `isAuthorized`
 
-Hedera’s dynamic key rotation allows you to update an account’s keys without changing its alias. By integrating
-`isAuthorized`
-checks into your contracts, your on-chain logic automatically remains in sync with the current authorized keys.
-Even as keys change over time to improve security or operational flexibility, your contracts don’t need to be
-redeployed or modified—`isAuthorized`
-will always reflect the latest configuration.
+`isAuthorized` checks the account's key at the time of the call. If an ED25519 account's keys are updated with `CryptoUpdateTransaction`, contracts that verify the account through `isAuthorized` accept signatures from the new keys without being redeployed.
+
+This applies to checks against the account's Hedera key. It does not change the account's EVM Address from Public Key: that address is immutable and stays bound to the original ECDSA public key. If your contracts or tools identify an ECDSA account by that address (for example with `ecrecover`), plan to replace a compromised key by creating a new ECDSA account and migrating assets and state. See [Accounts, Signature Verification & Keys](/evm/differences/accounts-and-keys#key-updates-and-evm-addresses).
 
 ---
 

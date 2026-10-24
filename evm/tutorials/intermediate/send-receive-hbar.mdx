@@ -42,7 +42,7 @@ This example involves 3 Hedera accounts, 1 contract, and 1 Hedera Token Service 
 
 A portion of the application file (**_index.js_**) and the entire Solidity contract (**_hbarToAndFromContract.sol_**) are shown in the tabs below.
 
-The Solidity file has functions for getting HBAR to the contract (**_receive_**, **_fallback_**, **_tokenAssociate_**), getting HBAR from the contract (**_transferHbar_**, **_sendHbar_**, **_callHbar_**), and checking the HBAR balance of the contract (**_getBalance_**).
+The Solidity file has functions for getting HBAR to the contract (**_receive_**, **_fallback_**, **_tokenAssociate_**), getting HBAR from the contract (**_transferHbar_**, **_sendHbar_**, **_callHbar_**), and checking the HBAR balance of the contract (**_getBalance_**). The withdrawal functions use an `onlyOwner` modifier, so only the account that deployed the contract (the Operator in this tutorial) can move HBAR out of it. Without that check, any account could drain the contract.
 
 This portion of **_index.js_** configures and creates the accounts, deploys the contract, and stores the HTS token ID. The functions **_accountCreatorFcn_** and **_contractDeployFcn_** create new accounts and deploy the contract to the network, respectively. These functions simplify the account creation and contract deployment process and are reusable in case you need them in the future. This modular approach is used throughout the tutorial.
 
@@ -105,6 +105,18 @@ import "https://github.com/hiero-ledger/hiero-contracts/blob/main/contracts/toke
 import "https://github.com/hiero-ledger/hiero-contracts/blob/main/contracts/common/HederaResponseCodes.sol";
 
 contract hbarToAndFromContract is HederaTokenService{
+    // The account that deployed the contract. Only it can withdraw HBAR.
+    address public immutable owner;
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not owner");
+        _;
+    }
+
     //============================================
     // GETTING HBAR TO THE CONTRACT
     //============================================
@@ -124,15 +136,15 @@ contract hbarToAndFromContract is HederaTokenService{
     //============================================
     // GETTING HBAR FROM THE CONTRACT
     //============================================
-    function transferHbar(address payable _receiverAddress, uint _amount) public {
+    function transferHbar(address payable _receiverAddress, uint _amount) public onlyOwner {
         _receiverAddress.transfer(_amount);
     }
 
-    function sendHbar(address payable _receiverAddress, uint _amount) public {
+    function sendHbar(address payable _receiverAddress, uint _amount) public onlyOwner {
         require(_receiverAddress.send(_amount), "Failed to send Hbar");
     }
 
-    function callHbar(address payable _receiverAddress, uint _amount) public {
+    function callHbar(address payable _receiverAddress, uint _amount) public onlyOwner {
         (bool sent, ) = _receiverAddress.call{value:_amount}("");
         require(sent, "Failed to send Hbar");
     }

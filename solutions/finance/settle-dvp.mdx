@@ -1,0 +1,351 @@
+---
+title: "Settle a trade delivery-versus-payment in one atomic transfer"
+description: "Settle a security against a stablecoin on Hedera in a single native transfer: both legs move together or neither does, now or at a set time, with KYC enforced by the network, no escrow contract, and every trade event logged to HCS."
+---
+
+The page runs that trade on testnet. Propose it, have the buyer sign, and both balances move together. One buyer has no KYC, so you can also watch the network reject the trade and leave every balance where it was.
+
+<Card title="Get the code" icon="github" href="https://github.com/hedera-dev/hedera-fInance-templates/tree/templates/dvp-settlement">
+  `npx create-scaffold-hbar@latest --template hedera-dev/hedera-fInance-templates#templates/dvp-settlement`
+</Card>
+
+## Overview
+
+In a securities trade, the seller **delivers** the security and the buyer **pays** for it. Whichever side moves first is exposed: if the seller delivers and the buyer never pays, the seller has lost the asset.
+
+**Delivery versus payment (DvP)** guarantees that both legs settle together or not at all. On Hedera this needs no smart contract:
+
+* A single native `TransferTransaction` can carry the security leg and the payment leg. The network executes it atomically.
+* Token-level compliance applies to both legs. If the security has a KYC key and the buyer is not granted KYC, the whole transfer fails.
+* A **scheduled transaction** lets the two parties sign at different times, and can hold a fully signed trade until a settlement time.
+* A **Hedera Consensus Service (HCS)** topic records every event in a trade's life, in order and tamper-evident.
+
+On an EVM chain the same trade needs an escrow contract, token approvals and at least two transactions.
+
+The workflow has three actors:
+
+* **Issuer**: the operator account the app runs with. Creates the security and the stablecoin, grants KYC, funds the other parties, and publishes the audit log. It pays every transaction fee.
+* **Seller**: holds the security, proposes trades, signs first, and can cancel a trade before it settles.
+* **Buyer**: holds the stablecoin and signs second. The template creates two buyers: one with KYC on the security and one without, so you can watch a trade fail safely.
+
+```text
+Issuer                       Seller                     Hedera network                  Buyer
+  |                            |                              |                           |
+  |-- create SEC, stablecoin, audit topic ------------------->|                           |
+  |-- grant KYC (SEC) --------------------------------------->|                           |
+  |                            |-- ScheduleCreate(            |                           |
+  |                            |     SEC        Seller->Buyer|                           |
+  |                            |     stablecoin Buyer->Seller|                           |
+  |                            |     expiry, admin key)      |                           |
+  |                            |   + Seller signature ------>|  PENDING                  |
+  |                            |                              |<--- ScheduleSign ---------|
+  |                            |                              |  both legs execute (now   |
+  |                            |                              |  or at the set time),     |
+  |                            |                              |  or neither               |
+  |-- TopicMessageSubmit (proposed, signed, settled, ...) --->|  audit log                |
+```
+
+By default the template signs for the Seller and the Buyers with demo accounts kept on the server, so the whole flow runs from one browser tab. Connect **HashPack** to add your own testnet account beside them, as Seller, Buyer, or both, including a trade between two wallets in two browsers. See [Trade with HashPack](#trade-with-hashpack).
+
+| Component | Technology |
+| - | - |
+| Security token | HTS fungible token, 0 decimals, with KYC, freeze, supply and admin keys |
+| Payment token | HTS stablecoin created by the app (6 decimals); USDC `0.0.456858` on mainnet |
+| Settlement | Native `TransferTransaction` wrapped in a `ScheduleCreateTransaction` with an expiration time, an admin key and, for set-time trades, `waitForExpiry` |
+| Audit log | HCS topic with the Issuer's submit key; one hash-chained JSON entry per trade event |
+| Signing | Demo accounts on the server via `@hiero-ledger/sdk`; optionally HashPack via `@hashgraph/hedera-wallet-connect` |
+| Web UI | Next.js (scaffold-hbar): controls on the left, the market, trades and audit log on the right |
+| Network | Hedera testnet |
+
+## Prerequisites
+
+* Node.js 20.18 or later, and Yarn
+* A Hedera testnet account from the [Hedera Portal](https://portal.hedera.com). It becomes the Issuer. Its key can be a raw ECDSA key in hex, or a DER-encoded ECDSA or ED25519 key.
+* Testnet HBAR on that account. Setting up a market costs about **31 HBAR**, mostly the network fee for creating two tokens; each trade and its audit entries cost well under 1 HBAR.
+* Optional, for [Trade with HashPack](#trade-with-hashpack): the HashPack browser extension with a testnet account **other than** the Issuer (two accounts to trade wallet to wallet), and a WalletConnect project id from the [Reown dashboard](https://cloud.reown.com)
+
+<Info>
+Scheduled transactions are native Hedera transactions, so they must be signed by a Hedera wallet such as HashPack. MetaMask cannot sign them.
+</Info>
+
+## Project structure
+
+```text
+packages/nextjs/
+  app/page.tsx                            the settlement desk
+  app/_components/dvp/                    SetupPanel, TradesList, TradeChanges, AuditLog
+  app/api/hedera/dvp/                     server routes; all Issuer and demo-account signing happens here
+    market/route.ts                       set up a market (streams progress), read it back
+    trade/route.ts                        propose a trade (Seller signs)
+    trade/sign/route.ts                   sign as Buyer
+    trade/cancel/route.ts                 cancel as Seller
+    trade/wallet-seller*/, wallet-buyer/  the same steps signed by HashPack
+    wallet/onboard/route.ts               onboard a HashPack account
+    audit/route.ts                        the audit log, read from the mirror node
+  services/hedera/dvp.ts                  tokens, accounts, the two-leg transfer, schedules, settlement watcher
+  services/hedera/audit.ts                the audit topic and its hash-chained entries
+  services/walletconnect/hederaWallet.ts  HashPack connection and signing
+```
+
+## Configuration
+
+Create `packages/nextjs/.env.local`:
+
+```bash
+# The Issuer. Server-side only, never sent to the browser.
+HEDERA_OPERATOR_ID=0.0.1234
+HEDERA_OPERATOR_KEY=<ECDSA hex key, or a DER-encoded ECDSA/ED25519 key>
+
+# Optional: enables Trade with HashPack
+NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=<your Reown project id>
+```
+
+Then start the app:
+
+```bash
+yarn install
+yarn next:dev   # http://localhost:3000
+```
+
+Without the operator variables the page still loads and tells you which ones to set. The page has two columns: what you **do** on the left (signing mode, setup, the trade ticket) and what the **network shows** on the right (balances, trades, audit log).
+
+## Set up the market
+
+Press **Set up market**. The server runs seven steps as the Issuer and reports each as it starts and finishes, so the page shows a checklist: a spinner on the running step, then a check with the ids it created. **What each step does** expands to a one-line explanation per step.
+
+### Step 1: Create the security and the stablecoin
+
+The security has 0 decimals and a **KYC key**, so the network refuses to move it into or out of any account the Issuer has not approved. It also has a freeze key, which a regulator-driven workflow could use to halt an account. The stablecoin has 6 decimals and no KYC key, like USDC.
+
+```typescript
+const receipt = await (
+  await new TokenCreateTransaction()
+    .setTokenName("DvP Security")
+    .setTokenSymbol("DVPS")
+    .setDecimals(0)
+    .setInitialSupply(200)
+    .setTreasuryAccountId(treasury)
+    .setAdminKey(operatorKey)
+    .setSupplyKey(operatorKey)
+    .setKycKey(operatorKey)
+    .setFreezeKey(operatorKey)
+    .execute(client)
+).getReceipt(client);
+```
+
+**You should see** both token ids on the page, each linked to HashScan.
+
+### Step 2: Associate the tokens and grant KYC
+
+A Hedera account must opt in to a token before it can hold it ([token association](/native/tokens/associate)). Each demo account associates both tokens, signing with its own key while the Issuer pays the fee. The Issuer then grants KYC on the security to the Seller and the Buyer, but **not** to the unverified Buyer.
+
+```typescript
+const tx = new TokenAssociateTransaction()
+  .setAccountId(party.accountId)
+  .setTokenIds([securityTokenId, paymentTokenId])
+  .freezeWith(client);           // client = the Issuer, who pays
+const signed = await tx.sign(partyKey);
+await (await signed.execute(client)).getReceipt(client);
+
+await (
+  await new TokenGrantKycTransaction().setTokenId(securityTokenId).setAccountId(sellerId).execute(client)
+).getReceipt(client);
+```
+
+### Step 3: Fund the parties and create the audit topic
+
+One transfer gives the Seller **200** security, the Buyer **20,000** stablecoin and the unverified Buyer **10,000** stablecoin. Under the market table the page states this starting position in words, so what is left after a trade is never mistaken for newly created tokens.
+
+The last step creates the audit topic. Its submit key is the Issuer's, so only the Issuer can write to it; anyone can read it. See [The audit log](#the-audit-log).
+
+**You should see** the balances in the market table, read from the mirror node, and the audit topic id.
+
+## Settle a trade
+
+### Step 1: The Seller proposes the trade
+
+Fill in the ticket: quantity, price and buyer, and leave **Settlement** on **On the Buyer's signature**. Both legs go into one `TransferTransaction`. Calling `.schedule()` wraps it in a `ScheduleCreateTransaction`, which the Seller signs. Every schedule also gets:
+
+* an **admin key**: the Seller's, so only the Seller can cancel it;
+* an **expiration time**: 30 minutes for a trade that settles on signature. Unsigned by then, it expires and nothing moves.
+
+```typescript
+const transfer = new TransferTransaction()
+  .addTokenTransfer(securityTokenId, sellerId, -quantity)   // security leg
+  .addTokenTransfer(securityTokenId, buyerId, quantity)
+  .addTokenTransfer(paymentTokenId, buyerId, -price)        // payment leg
+  .addTokenTransfer(paymentTokenId, sellerId, price);
+
+const scheduleTx = transfer
+  .schedule()
+  .setScheduleMemo(`DvP trade ${Date.now()}`)
+  .setAdminKey(sellerPublicKey)
+  .setExpirationTime(Timestamp.fromDate(expiresAt))
+  .setWaitForExpiry(false)         // settle as soon as the Buyer signs
+  .freezeWith(client);
+const receipt = await (await (await scheduleTx.sign(sellerKey)).execute(client)).getReceipt(client);
+// receipt.scheduleId and receipt.scheduledTransactionId identify the trade
+```
+
+<Tip>
+Give every schedule a unique memo. Hedera refuses a schedule whose body is identical to one that still exists (`IDENTICAL_SCHEDULE_ALREADY_CREATED`), and an executed schedule stays on the network until it expires. Without a unique memo, proposing the same trade twice fails.
+</Tip>
+
+The quantity must be a whole number (the security has 0 decimals) and the price can have at most 6 decimals; anything else is refused before anything is signed, rather than rounded into a different trade than the one on screen.
+
+**You should see** a new row in **Trades** with status `PENDING`, its schedule id linked to HashScan, and when it expires. **No balance changes**: one signature is not enough to move anything. The audit log gains a `proposed` entry.
+
+### Step 2: The Buyer signs
+
+Press the row's **Sign as Buyer**. The Buyer adds its signature with a `ScheduleSignTransaction`; as soon as the schedule has every signature it needs, the network executes the transfer.
+
+```typescript
+const signTx = new ScheduleSignTransaction().setScheduleId(scheduleId).freezeWith(client);
+await (await (await signTx.sign(buyerKey)).execute(client)).getReceipt(client);
+
+// The settlement's own result lives on the scheduled transaction's receipt
+const settlement = await new TransactionReceiptQuery()
+  .setTransactionId(scheduledTransactionId)
+  .setValidateStatus(false)
+  .execute(client);
+console.log(settlement.status.toString()); // "SUCCESS"
+```
+
+**You should see** the row turn `SETTLED` with result `SUCCESS`, and the changes per party: with the default ticket of 100 security for 10,000 stablecoin, `Seller: −100 security, +10,000 stablecoin` and `Buyer: +100 security, −10,000 stablecoin`. The audit log gains `signed` and `settled` entries.
+
+### Step 3: Verify settlement
+
+Open the schedule on HashScan and follow it to its executed transaction. It is **one** transaction with **one** consensus timestamp, carrying four token transfers: both sides of the security leg and both sides of the payment leg. You can read the same thing from the mirror node:
+
+```bash
+curl https://testnet.mirrornode.hedera.com/api/v1/schedules/<scheduleId>
+# executed_timestamp -> look up that transaction:
+curl "https://testnet.mirrornode.hedera.com/api/v1/transactions?timestamp=<executed_timestamp>"
+```
+
+## Settle at a set time
+
+Real markets settle on a date, such as T+1: the trade is agreed today and settles tomorrow. Choose **At a set time** in the ticket and a delay in minutes (1 to 60, default 2). The template uses minutes so you can watch it happen; the mechanism is the same for a day.
+
+The schedule's expiration time becomes the settlement time, and `waitForExpiry` tells the network to hold the transfer until then even once every signature is in:
+
+```typescript
+const settlesAt = new Date(Date.now() + delayMinutes * 60_000);
+transfer
+  .schedule()
+  .setAdminKey(sellerPublicKey)
+  .setExpirationTime(Timestamp.fromDate(settlesAt))
+  .setWaitForExpiry(true);          // execute at settlesAt, not on the last signature
+```
+
+When the Buyer signs, the trade becomes `SCHEDULED` and **nothing moves yet**. At the set time the network executes it by itself. No one presses anything, so the server watches the schedule on the mirror node (`executed_timestamp`, `deleted`, `expiration_time`) every few seconds and updates the trade, the balances and the audit log when the execution appears.
+
+**You should see** `SCHEDULED` after the Buyer signs, then, shortly after the set time and without touching the page, `SETTLED` with the new balances and a `settled` entry.
+
+## Cancel or let a trade expire
+
+**Cancel.** Until a trade executes, the Seller can press its **Cancel**. Because the schedule's admin key is the Seller's, the Seller signs a `ScheduleDeleteTransaction`:
+
+```typescript
+const tx = new ScheduleDeleteTransaction().setScheduleId(scheduleId).freezeWith(client);
+await (await (await tx.sign(sellerKey)).execute(client)).getReceipt(client);
+```
+
+The trade becomes `CANCELLED`, can no longer be signed, nothing moves, and a `cancelled` entry is logged.
+
+**Expiry.** A trade the Buyer never signs becomes `EXPIRED` at its deadline: after 30 minutes for a trade on signature, or at the set time. Nothing moves, and an `expired` entry is logged.
+
+<Info>
+A `waitForExpiry` trade that expires unsigned is `EXPIRED`. The network tries the transfer and it fails with `INVALID_SIGNATURE`, but the Buyer never agreed, so this is an expiry, not a rejected trade.
+</Info>
+
+## What happens when a leg fails
+
+Select the **unverified Buyer**, propose a trade, and sign as that Buyer. Both parties sign, the schedule executes, and the network rejects the transfer with `ACCOUNT_KYC_NOT_GRANTED_FOR_TOKEN`.
+
+**You should see** status `REJECTED`, the row saying that nothing moved, **no balance changes**, and a `rejected` entry. The unverified Buyer still holds all of its stablecoin, even though only the security leg failed the KYC check. That is the guarantee: a DvP transfer can fail, but it can never half-settle.
+
+Other ways a trade fails, with the same outcome:
+
+* **Frozen account**: the Issuer froze either party on the security.
+* **Insufficient balance**: the Seller spent the security, or the Buyer the stablecoin, between proposing and settling.
+
+Nothing is locked while the schedule waits, which is the trade-off of having no escrow. A schedule can therefore fail when it executes, but no one ever loses one leg without receiving the other.
+
+## The audit log
+
+Every event in a trade's life is published to the market's HCS topic: `proposed`, `signed`, `settled`, `rejected`, `cancelled` and `expired`. Each entry is JSON with the schedule, the terms, the two parties, the transaction it is about and its result, and `prev`: the SHA-256 of the previous entry's exact bytes (64 zeros for the first). Change or remove any entry and every later `prev` stops matching.
+
+```typescript
+const message = { v: 1, event, schedule, quantity, price, seller, buyer, tx, result, prev: lastHash };
+const bytes = Buffer.from(JSON.stringify(message), "utf8");
+await (
+  await new TopicMessageSubmitTransaction().setTopicId(auditTopicId).setMessage(bytes).execute(client)
+).getReceipt(client);
+lastHash = createHash("sha256").update(bytes).digest("hex");
+```
+
+Entries are published one at a time, in order, so a signature racing the settlement watcher never puts two events out of sequence. The **Audit log** panel reads the entries back from the mirror node, with their sequence numbers and consensus times. Because the topic is public, a regulator or auditor can verify the whole history without access to the app: the HCS audit-trail workflow in this section builds exactly that reader.
+
+## Trade with HashPack
+
+With `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID` set, switch **Sign with** to **HashPack** to connect and onboard. Demo accounts stay available.
+
+1. **Connect HashPack.** Use your own testnet account. The app refuses the Issuer, which created both tokens and holds their treasury, and the demo accounts.
+2. **Choose a role** (Seller or Buyer) and press **Onboard wallet**. HashPack signs the token association, because only the account owner can opt in to a token. The server then grants KYC and funds your account for its role, minting the tokens it hands you.
+3. **Trade.** **Buyer** in the ticket is always the demo buyer. After a buyer wallet is onboarded, the dropdown adds **My wallet (0.0.xxx)**. **Unverified Buyer** stays the buyer without KYC. **Propose as demo Seller** is always there. Once a seller wallet is onboarded, **Propose as my wallet** sits beside it, and HashPack signs that proposal and any cancellation of a trade that wallet proposed. When the trade's buyer is your wallet, HashPack signs the schedule. Settling at a set time works the same way.
+
+**Two wallets, two browsers.** The market lives on the server, so two browsers on the same app see the same market. Onboard one HashPack account as Seller in one browser and another as Buyer in a second browser, and they trade with each other. Every page refreshes the market, the trades and the audit log on its own every few seconds, so each side sees the other's proposal, signature, cancellation or settlement without reloading. When a trade waits for a signature you can give, a **your turn** line names it next to its **Sign as Buyer** button.
+
+A few rules keep the wallet flow honest:
+
+* One wallet can take both roles. Onboarding in the second role funds it for that role without asking HashPack to associate the tokens again; onboarding twice in the same role is refused.
+* Nothing can be onboarded while a trade is pending or scheduled.
+* Keep HashPack on the account you onboarded. Wallet transactions are built with that account as the payer. If you switch accounts, **Propose as my wallet** and signing or cancelling a wallet trade stay disabled until you switch back. The page names the account. Proposing and signing as a demo party stay available.
+* The server never trusts what the browser sends back after HashPack signs. It records the trade terms it prepared itself, checks the transaction was submitted by the onboarded wallet, and checks the wallet's own transaction succeeded.
+
+The app never holds your key. The server builds each transaction with your account as the payer and freezes it; the browser sends it to HashPack through WalletConnect:
+
+```typescript
+const provider = await HederaProvider.init({ projectId, metadata });
+const appKit = createAppKit({
+  adapters: [new HederaAdapter({ projectId, networks: [HederaChainDefinition.Native.Testnet], namespace: hederaNamespace })],
+  universalProvider: provider,
+  networks: [HederaChainDefinition.Native.Testnet],
+  projectId,
+  metadata,
+});
+
+// Sign with the HederaProvider instance, not appKit.getProvider()
+const result = await provider.hedera_signAndExecuteTransaction({
+  signerAccountId: `hedera:testnet:${accountId}`,
+  transactionList: transactionBase64, // one base64-encoded transaction
+});
+```
+
+## Going to production
+
+* **Real stablecoin**: replace the app's stablecoin with USDC (`0.0.456858` on mainnet).
+* **Real KYC**: grant KYC from your identity provider's decision rather than at setup.
+* **Maker-checker for the Issuer**: hold the KYC, freeze and supply keys in a threshold key, so admin actions need more than one approver.
+* **Custody**: sign with a custody provider or HSM rather than a key in an environment variable.
+* **No demo accounts**: in production, every party signs with its own wallet or custody; the server never holds a party's key.
+* **Durable state**: the template keeps the market in server memory. Persist trades, or rebuild them from the schedules and the audit log on the mirror node, so a restart loses nothing.
+* **Real settlement dates**: use a day-scale delay (up to 62 days) for T+1 or T+2, and a mirror node subscription rather than polling to notice settlements.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Scheduled transactions" icon="clock" href="/learn/core-concepts/transactions/scheduled">
+    How schedules collect signatures, wait for expiry, and execute.
+  </Card>
+  <Card title="Atomic swaps" icon="arrows-rotate" href="/native/tokens/atomic-swaps">
+    Several transfers in one transaction, the core of DvP.
+  </Card>
+  <Card title="KYC on HTS tokens" icon="id-card" href="/native/tutorials/tokens/hts-part2-kyc">
+    Granting and revoking KYC on a token.
+  </Card>
+  <Card title="Scaffold HBAR" icon="layer-group" href="/solutions/tools/scaffold-hbar/index">
+    The CLI and the other templates.
+  </Card>
+</CardGroup>

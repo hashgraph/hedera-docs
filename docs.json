@@ -2850,6 +2850,12 @@
             ]
           },
           {
+            "group": "Finance Workflows",
+            "pages": [
+              "solutions/finance/permissioned-security"
+            ]
+          },
+          {
             "group": "AI & Agents",
             "pages": [
               "solutions/ai/index",

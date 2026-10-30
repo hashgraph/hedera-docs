@@ -119,27 +119,32 @@ function createNft(
 
 ## Paying for it
 
-Token creation costs HBAR. The caller has to forward enough `msg.value` to cover the `TokenCreate` transaction fee, which buys the token its initial auto-renew period (~92 days). The current base fee is around $1 USD worth of HBAR for both fungible and non-fungible tokens.
+Token creation costs HBAR. The caller has to forward enough `msg.value` to cover the `TokenCreate` transaction fee, which buys the token its initial auto-renew period (90 days, the `defaultAutoRenewPeriod` of 7,776,000 seconds in `HederaTokenService.sol`). The current base fee is around $1 USD worth of HBAR for both fungible and non-fungible tokens.
 
-Two important things to know about how Hedera handles the money:
+Three important things to know about how Hedera handles the money:
 
+- **`msg.value` must cover the create price, in tinybars.** `HederaTokenService.createFungibleToken` and `createNonFungibleToken` forward `msg.value` to the HTS system contract. It requires at least the HAPI `TokenCreate` price plus a 20% surcharge, minus the fixed gas portion it already charged. Inside the EVM, `msg.value` is in tinybars (8 decimals), so don't scale it by `10**10`.
 - **Gas is charged on consumption.** Per HIP-1249, Hedera refunds 100% of unused gas, and the per-transaction limit is 15M (HIP-185). Set a generous gas limit; you only pay for what you actually use.
-- **Excess `msg.value` is not refunded.** Anything you forward beyond what the precompile consumes for the `TokenCreate` fee stays in the calling contract's balance. There is no automatic refund to the EOA.
+- **Excess `msg.value` is not refunded.** Anything you forward beyond what the system contract consumes for the `TokenCreate` fee stays in the calling contract's balance. There is no automatic refund to the EOA.
 
-The practical pattern: compute the exact tinybars via the [Exchange Rate system contract](/evm/hedera-services/system-contracts/exchange-rate) just before the call, or build a refund step into your contract that returns leftover HBAR to `msg.sender` after the precompile call.
+The practical pattern: compute the tinybars via the [Exchange Rate system contract](/evm/hedera-services/system-contracts/exchange-rate) just before the call, or build a refund step into your contract that returns leftover HBAR to `msg.sender` after the create call.
 
 ```solidity
-// Compute the exact value just before the call, then forward only that amount.
-// 1.5 USD in tinycents = 1.5 * 10^8 tinycents. Gives a small safety margin
-// over the ~$1 base fee.
-uint256 tinybars = IExchangeRate(0x168).tinycentsToTinybars(15 * 10**7);
-uint256 wei_ = tinybars * 10**10;   // tinybars (8 decimals) -> wei (18 decimals)
-TokenFactory(factory).createFungible{value: wei_}("MyToken", "MTK", 1_000_000, 2);
+// Compute the value just before the call, then forward that amount.
+// 1 USD = 10^10 tinycents, so 1.5 USD = 15 * 10^9 tinycents. The margin
+// covers the ~$1 base fee plus the 20% surcharge.
+uint256 tinybars = IExchangeRate(0x168).tinycentsToTinybars(15 * 10**9);
+// msg.value is in tinybars inside the EVM: forward the result as is.
+TokenFactory(factory).createFungible{value: tinybars}("MyToken", "MTK", 1_000_000, 2);
 ```
 
 <Warning>
-  Token creation fails with `INSUFFICIENT_PAYER_BALANCE` if `msg.value` doesn't cover the fee. If you can't compute the exact amount, pass extra and refund the leftover from inside your contract. Don't expect Hedera to do it for you.
+  If `msg.value` doesn't cover the fee, the create call returns `INSUFFICIENT_TX_FEE` and a zero token address instead of reverting, so always check the response code (the examples above `require` `SUCCESS`). If you can't compute the exact amount, pass extra and refund the leftover from inside your contract. Don't expect Hedera to do it for you.
 </Warning>
+
+<Info>
+  Calling `createFungible` from a client through the JSON-RPC relay (ethers, viem, a wallet) is different: there, `value` is in 18-decimal weibars, so pass the tinybar amount times `10**10` (in ethers, `parseEther("2")` sends 2 HBAR). The network converts it to tinybars before the contract sees it. See [HBAR decimal places](/evm/differences/hbar-decimals).
+</Info>
 
 ## Token keys
 

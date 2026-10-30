@@ -12,21 +12,29 @@ Managing token decimals is critical when working with HBAR, HTS tokens, and ERC 
 
 ## Token Decimal Comparison and API Context
 
-The table below compares the decimal handling of HBAR, HTS tokens, and ERC tokens on Hedera, incorporating details about their representation across APIs and services. This overview highlights differences in precision and context.
+HBAR has two scales on Hedera. Inside the network, including inside the EVM, HBAR is counted in **tinybars** (8 decimals, 1 ℏ = 10⁸ tinybars). The JSON-RPC relay presents HBAR to Ethereum tooling in **weibars** (18 decimals, 1 tinybar = 10¹⁰ weibars) so that wallets and libraries such as ethers and viem work unchanged. When an Ethereum transaction executes, the network divides its `value` by 10¹⁰ to get tinybars before the EVM runs; the relay multiplies tinybar amounts by 10¹⁰ when it returns balances and gas prices.
 
-<table><thead><tr><th>API/Service</th><th>Decimals</th><th>Explanation</th></tr></thead><tbody><tr><td><strong>Hedera API (HAPI)</strong></td><td>8 decimals</td><td>HBAR is represented with 8 decimal places, aligning with its native smallest unit tinybar.</td></tr><tr><td><strong>Hedera Smart Contract Service</strong></td><td>8 decimals</td><td>Within the EVM environment, HBAR maintains 8 decimal places, consistent with its native representation.</td></tr><tr><td><strong>JSON-RPC Relay (Arguments)</strong></td><td>8 decimals</td><td>When HBAR values are passed as arguments in JSON-RPC calls, they are represented with 8 decimal places.</td></tr><tr><td><strong>JSON-RPC Relay (<code>msg.value</code>)</strong></td><td>18 decimals</td><td>For compatibility with EVM tooling, <code>msg.value</code> in JSON-RPC Relay represents HBAR with 18 decimal places. Consequently, <code>gasPrice</code> also uses 18 decimal places in this context.</td></tr><tr><td><strong>HTS Tokens</strong></td><td>Configurable (up to 8 decimals)</td><td>HTS tokens allow token creators to define precision at token creation, offering flexibility for various use cases.</td></tr><tr><td><strong>ERC Tokens</strong></td><td>Default 18 decimals</td><td>ERC tokens on Hedera follow Ethereum token standards, with 18 decimals as the default unless specified otherwise.</td></tr></tbody></table>
+| Where the value appears | Decimals | Notes |
+|---|---|---|
+| Hedera API (HAPI) and SDKs | 8 (tinybars) | Native representation of HBAR. |
+| Inside Solidity: `msg.value`, `address.balance`, `call{value: ...}` | 8 (tinybars) | The network converts the transaction `value` from weibars to tinybars before the EVM runs. Ethereum literals such as `1 ether` are 10¹⁸ tinybars here, which is 10¹⁰ HBAR. |
+| JSON-RPC wire: transaction `value`, `eth_getBalance`, `eth_gasPrice` | 18 (weibars) | What wallets, ethers, and viem send and receive. In ethers, `parseEther("1")` is 1 HBAR. |
+| Function arguments that carry HBAR amounts | Whatever the contract expects | Raw ABI values; nothing converts them. A contract that compares an argument with `msg.value` should take tinybars. |
+| HTS tokens | Set by the token creator | Chosen at token creation; not limited to 8. |
+| ERC tokens | 18 by default | Standard ERC-20 default unless the contract overrides `decimals()`. |
 
-**Key Impacts**:
+**Key impacts**:
 
-* Account for scaling differences when converting HBAR between APIs, especially when using JSON-RPC.
+* Inside a contract, never scale `msg.value` by `10**10`. Compare it with tinybar amounts directly, such as the result of the [Exchange Rate system contract](/evm/hedera-services/system-contracts/exchange-rate).
+* Multiply by `10**10` only when you hand a tinybar amount to JSON-RPC tooling as a transaction `value`.
+* The relay rejects a nonzero `value` smaller than one tinybar (10¹⁰ weibars) with `VALUE_TOO_LOW`. Any precision finer than a tinybar is dropped when the network converts the value.
 * HBAR fees are always calculated in tinybars, regardless of the API or service used.
-* JSON-RPC’s use of 18 decimals ensures smooth integration with EVM tools and libraries.
 
 ***
 
 ## Conversion Helpers
 
-Utility functions are essential for managing discrepancies between HBAR (measured in tinybars, 8 decimals), HTS tokens (which can have configurable decimal places), and ERC tokens (measured in wei, 18 decimals). These conversions ensure consistency across your smart contracts, front-end applications, and APIs.
+Use these helpers when you move an HBAR amount between the two scales, for example when a contract receives a weibar amount as a function argument from a front end. Don't apply them to `msg.value` or `address.balance` inside a contract: those are already in tinybars.
 
 **Code Example: Decimal Conversion Helpers**
 

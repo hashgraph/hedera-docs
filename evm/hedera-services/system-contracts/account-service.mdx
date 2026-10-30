@@ -1,54 +1,118 @@
 ---
 title: "Hedera Account Service"
 sidebarTitle: "Account Service"
-description: "Use the HIP-632 Hedera Account Service system contract, including isAuthorized and isAuthorizedRaw, to verify ECDSA and ED25519 signatures from Solidity."
+description: "Use the Hedera Account Service system contract at 0x16a to verify ECDSA and ED25519 signatures from Solidity with HIP-632 isAuthorized and isAuthorizedRaw, and to manage HBAR allowances."
 ---
 
+The Hedera Account Service (HAS) system contract gives smart contracts access to Hedera account features: signature verification against an account's keys ([HIP-632](https://hips.hedera.com/hip/hip-632)), HBAR allowances ([HIP-906](https://hips.hedera.com/hip/hip-906)), and conversion between an account's EVM addresses.
 
-## 📣 ECRECOVER Support for ECDSA Hedera Accounts
+| | |
+| --- | --- |
+| **Address** | `0x000000000000000000000000000000000000016a` (`address(0x16a)`) |
+| **Interface** | [`IHederaAccountService.sol`](https://github.com/hiero-ledger/hiero-contracts/blob/main/contracts/account-service/IHederaAccountService.sol) in hiero-contracts |
 
-EVM developers should note that `ECRECOVER` natively supports ECDSA accounts on Hedera. Aliases for these accounts, derived using Keccak-256(publicKey), are fully compatible with Ethereum's `ECRECOVER` logic. This enables seamless interaction with ECDSA accounts on Hedera using `ECRECOVER`, just like standard Ethereum accounts.
+## Functions
 
-To verify an ECDSA signature, developers can call `ECRECOVER(messageHash, r, s, v)` in Ethereum smart contracts. If the recovered address matches the alias of a Hedera account, the signer is confirmed to control the account. No special integration is needed—`ECRECOVER` functions as a standard EVM precompiled contract on Hedera
+| Function | Returns | Selector | Description |
+| --- | --- | --- | --- |
+| `isAuthorizedRaw(address,bytes,bytes)` | `bool authorized` | `0xb2a31da4` | Verifies one ECDSA or ED25519 signature over a 32-byte Keccak-256 hash against the account's key. |
+| `isAuthorized(address,bytes,bytes)` | `(int64 responseCode, bool authorized)` | `0xb2526367` | Verifies a protobuf `SignatureMap` over a message against the account's full key, including key lists and threshold keys. |
+| `hbarAllowance(address,address)` | `(int64 responseCode, int256 amount)` | `0xfec46666` | Returns the HBAR allowance, in tinybars, that `owner` granted to `spender`. |
+| `hbarApprove(address,address,int256)` | `int64 responseCode` | `0xa0918464` | Sets the HBAR allowance, in tinybars, that `owner` grants to `spender`. Calling it again overwrites the previous amount. |
+| `getEvmAddressAlias(address)` | `(int64 responseCode, address)` | `0xdea3d081` | Returns the EVM Address from Public Key for an account referenced by its EVM Address from Account ID. |
+| `getHederaAccountNumAlias(address)` | `(int64 responseCode, address)` | `0xbbf12d2e` | Returns the EVM Address from Account ID for an account referenced by its EVM Address from Public Key. |
+| `isValidAlias(address)` | `bool` | `0x308ef301` | Returns `true` if the address is an EVM Address from Account ID or an EVM Address from Public Key of an existing account. |
 
-<Info>
-**Note**: This functionality is specific to ECDSA accounts with Keccak-256(publicKey) aliases. For ED25519 accounts, Hedera offers alternative authorization methods, such as `isAuthorized()` or `isAuthorizedRaw()`, to verify control of an account. For details, refer to the [Hedera Account Service System Contract](https://github.com/hiero-ledger/hiero-contracts/tree/main/contracts/account-service). See below for details on these two precompile functions.
-</Info>
+A `responseCode` of `22` means `SUCCESS`. See [`HederaResponseCodes.sol`](https://github.com/hiero-ledger/hiero-contracts/blob/main/contracts/common/HederaResponseCodes.sol) for the other values.
+
+<Warning>
+On the network, `isValidAlias` returns a single `bool`. The `IHederaAccountService.sol` interface in hiero-contracts declares it as returning `(int64, bool)`, so a call made through that interface fails to decode. Declare `isValidAlias(address) returns (bool)` in your own interface instead.
+</Warning>
+
+An account can also call `hbarAllowance(address spender)` and `hbarApprove(address spender, int256 amount)` on its own address to manage its own allowances ([`IHRC906AccountFacade.sol`](https://github.com/hiero-ledger/hiero-contracts/blob/main/contracts/account-service/IHRC906AccountFacade.sol)).
 
 ***
 
-## Signature Validation Precompiles (HIP-632)
+## Verify signatures from Solidity
 
-To extend Hedera’s compatibility with Ethereum’s EVM, [HIP-632](https://hips.hedera.com/hip/hip-632) introduced two new precompile functions for signature validation: `isAuthorizedRaw` and `isAuthorized`. These precompiles enable smart contracts on Hedera to validate both ED25519 and ECDSA (secp256k1) Hedera account signatures, making it easier for developers to build applications that operate across Hedera-native and EVM-based ecosystems.
+### ECDSA accounts: `ecrecover`
 
-Additionally, these functions allow developers to verify account authorization directly within smart contracts. This extends the capabilities of Ethereum’s `ECRECOVER` by supporting:
+`ecrecover` works on Hedera as it does on Ethereum. For an account whose EVM address is its **EVM Address from Public Key** (`Keccak-256` of its ECDSA public key), call `ecrecover(hash, v, r, s)`. If the recovered address equals the account's EVM address, the signer controls the account. No Hedera-specific integration is needed.
 
-* Simple raw signature verification for both ED25519 and ECDSA keys, similar to how Ethereum's `ECRECOVER` checks the signature against the provided message hash.
-* Account authorization verification for ECDSA accounts, confirming that the account associated with the signature is authorized to execute transactions without being restricted to `ECRECOVER`.
-* Comprehensive account authorization using protobuf signature maps, which allows for a more complex and flexible account validation process, ensuring compatibility with Hedera's advanced account model. May include multi-sig or threshold key structure.
+`ecrecover` cannot verify ED25519 signatures, accounts with key lists or threshold keys, or accounts referenced only by their EVM Address from Account ID (the long-zero form). Use the HIP-632 functions below for those.
 
-By addressing these use cases, HIP-632 provides a seamless way for developers to handle authorization and signature validation across both Hedera and EVM-compatible environments.
+### `isAuthorizedRaw`
 
-#### **isAuthorizedRaw(address, messageHash, signatureBlob)**
+`isAuthorizedRaw(address account, bytes messageHash, bytes signature) returns (bool)` checks one signature against an account with a single key. It works like `ecrecover`, but supports both ECDSA (secp256k1) and ED25519 keys.
 
-* Validates whether a given ED25519 or ECDSA signature is valid for a message against the public key associated with the specified account alias.
-* Operates similarly to Ethereum's `ECRECOVER` for single key structure but supports both secp256k1 (Ethereum) and ED25519 (Hedera) cryptography.
-* Returns `true` if the signature is valid and linked to the account, otherwise `false`.
+| Parameter | Description |
+| --- | --- |
+| `account` | The account to check. For an ECDSA signature, this must be the account's EVM Address from Public Key; an EVM Address from Account ID (long-zero) reverts with `INVALID_ACCOUNT_ID`. |
+| `messageHash` | The 32-byte Keccak-256 hash that was signed. For ED25519 keys, the signature must be over these 32 bytes. |
+| `signature` | The raw signature. The length selects the key type: 64 bytes is ED25519; 65 to 72 bytes (`r`, `s`, then a 1 to 8 byte `v`) is ECDSA. |
 
-#### **isAuthorized(address, message, signatureBlob)**
+* Returns `true` only if the signature is valid for the account's key. A well-formed signature from the wrong key returns `false`; the call itself still succeeds.
+* Reverts if the signature length matches neither key type, if an ECDSA `messageHash` is not 32 bytes, if the account does not exist, or if an ED25519 account's key is not a single ED25519 key.
 
-* Extends **isAuthorizedRaw** by validating that the specific Hedera account (referenced by either its EVM Address from Account ID or EVM Address from Public Key) is authorized to execute the transaction.
-* Supports Hedera’s complex account key structures, including multi-sig and threshold key requirements.
-* Provides a way to confirm authorization based on Hedera’s advanced account-based key management.
-* Returns `true` if the signature is valid and linked to the account, otherwise `false`.
+### `isAuthorized`
 
-<table><thead><tr><th>Parameter</th><th>Description</th></tr></thead><tbody><tr><td><strong>address</strong></td><td>A 20-byte identifier used to represent an account on the Hedera network or an EVM-compatible account.</td></tr><tr><td><strong>message</strong></td><td>The original plaintext data or payload that the signature is derived from. This is the information that was signed to produce the signature.</td></tr><tr><td><strong>messaHash</strong></td><td>A cryptographic hash of the <code>message</code>, calculated using an algorithm like SHA-256 or Keccak-256. This is typically what is signed instead of the raw message.</td></tr><tr><td><strong>signatureBlob</strong></td><td>A concatenation of the digital signature components, typically including <code>r</code>, <code>s</code>, and <code>v</code> values for ECDSA, or the equivalent data for ED25519 signatures.</td></tr></tbody></table>
+`isAuthorized(address account, bytes message, bytes signatureMap) returns (int64, bool)` checks signatures against the account's full key, so it supports key lists, threshold keys, and mixed ECDSA and ED25519 keys.
 
-#### Behavior and Cost
+| Parameter | Description |
+| --- | --- |
+| `account` | The account to check, referenced by its EVM Address from Account ID or its EVM Address from Public Key. |
+| `message` | The message bytes. The network hashes the message with Keccak-256 before checking ECDSA signatures; ED25519 signatures must be over the message bytes as given. |
+| `signatureMap` | A serialized protobuf [`SignatureMap`](/reference/protobuf/basic-types/signaturemap) with one signature pair per key. |
 
-* Both functions return a boolean indicating whether the signature is valid and is authorized for the account.
-* These methods incur gas costs proportional to the computational resources required for signature validation, including cryptographic hashing of the message and verifying the signature against the public key.
-* The additional gas charge varies depending on the type of cryptographic operation (ED25519 vs. ECDSA) and the size of the associated key structures.
+* Returns `(responseCode, authorized)`. `authorized` is `true` only if the signatures satisfy the account's key.
+* Does not revert for a missing account, an account without a key, or a malformed `SignatureMap`. It returns a non-`SUCCESS` response code with `authorized` set to `false`.
+
+### Check the result, not the call
+
+Both functions report an invalid signature through their return values. If you call them with a low-level `call` and only check the call's `success` flag, every well-formed signature passes, including forged ones. Call them through a typed interface and check the returned values:
+
+<Tip>
+```solidity
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.24;
+
+interface IHederaAccountService {
+    function isAuthorizedRaw(address account, bytes memory messageHash, bytes memory signature)
+        external
+        returns (bool authorized);
+
+    function isAuthorized(address account, bytes memory message, bytes memory signature)
+        external
+        returns (int64 responseCode, bool authorized);
+}
+
+contract SignatureChecks {
+    IHederaAccountService internal constant HAS = IHederaAccountService(address(0x16a));
+    int64 internal constant SUCCESS = 22;
+
+    // Verifies one ECDSA or ED25519 signature over a 32-byte Keccak-256 hash
+    function verifySignature(address account, bytes32 messageHash, bytes calldata signature)
+        external
+        returns (bool)
+    {
+        return HAS.isAuthorizedRaw(account, abi.encodePacked(messageHash), signature);
+    }
+
+    // Verifies a protobuf SignatureMap against the account's full key (key lists and threshold keys included)
+    function verifyAccount(address account, bytes calldata message, bytes calldata signatureMap)
+        external
+        returns (bool)
+    {
+        (int64 responseCode, bool authorized) = HAS.isAuthorized(account, message, signatureMap);
+        return responseCode == SUCCESS && authorized;
+    }
+}
+```
+</Tip>
+
+### Gas
+
+`isAuthorizedRaw` charges the `ecrecover` gas cost for an ECDSA signature and a fixed ED25519 verification cost for an ED25519 signature. `isAuthorized` charges based on the keys in the account's key structure, with the ED25519 verification cost for each ED25519 key, so accounts with larger key lists cost more to check.
 
 <Card
   title="Gas and Fees | Hedera"
@@ -57,4 +121,4 @@ By addressing these use cases, HIP-632 provides a seamless way for developers to
 Gas fee schedule and calculation
 </Card>
 
-**Reference**: [HIP-632](https://hips.hedera.com/hip/hip-632)
+**References**: [HIP-632](https://hips.hedera.com/hip/hip-632), [HIP-906](https://hips.hedera.com/hip/hip-906), [hiero-contracts `account-service`](https://github.com/hiero-ledger/hiero-contracts/tree/main/contracts/account-service)

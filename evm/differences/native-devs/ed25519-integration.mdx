@@ -122,7 +122,7 @@ threshold-based governance processes.
 
 `isAuthorized` checks the account's key at the time of the call. If an ED25519 account's keys are updated with `CryptoUpdateTransaction`, contracts that verify the account through `isAuthorized` accept signatures from the new keys without being redeployed.
 
-This applies to checks against the account's Hedera key. It does not change the account's EVM Address from Public Key: that address is immutable and stays bound to the original ECDSA public key. If your contracts or tools identify an ECDSA account by that address (for example with `ecrecover`), plan to replace a compromised key by creating a new ECDSA account and migrating assets and state. See [Accounts, Signature Verification & Keys](/evm/differences/accounts-and-keys#key-updates-and-evm-addresses).
+ECDSA accounts are different. A key update does not change an ECDSA account's EVM Address from Public Key: that address is immutable and stays bound to the original ECDSA public key. After the update, the account cannot send JSON-RPC transactions with either key, and `ecrecover` checks against the address still accept the old key. To replace a compromised ECDSA key, create a new ECDSA account and migrate assets and state. See [Accounts, Signature Verification & Keys](/evm/differences/accounts-and-keys#key-updates-and-evm-addresses).
 
 ---
 

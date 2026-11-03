@@ -146,10 +146,10 @@ For EVM-oriented applications, create accounts with an ECDSA key and set the **E
 
 **Why This Matters for EVM Developers:**
 
-* **The EVM Address from Public Key is immutable.** Updating an account's keys with `CryptoUpdateTransaction` does not change it; the address stays bound to the original ECDSA public key. `ECRECOVER` and EVM tooling keep resolving to that original key.
+* **The EVM Address from Public Key is immutable.** Updating an account's keys with `CryptoUpdateTransaction` does not change it; the address stays bound to the original ECDSA public key. After a key update, the account can no longer send EVM transactions: the network rejects a JSON-RPC transaction signed with the old key (`INVALID_SIGNATURE`, because it no longer matches the account's key), and a signature from the new key recovers to a different address that does not belong to the account. `ECRECOVER` checks against the address still accept the old key.
 * **Recover by migrating, not by rotating.** If an ECDSA key is compromised or must be replaced, create a new ECDSA account with a new EVM address and migrate assets and state to it. Do not rely on key rotation to keep the same EVM identity.
 * **`isAuthorized` follows the account's current key.** Contracts that verify an account through `isAuthorized` check whatever key the account holds at call time, so they accept the new key after an update.
-* **If you expect to rotate keys soon after creation,** consider not setting the EVM Address from Public Key at creation. This is a trade-off: the account then uses its EVM Address from Account ID (the long-zero form), which does not work with `ECRECOVER`.
+* **If you expect to rotate keys soon after creation,** consider not setting the EVM Address from Public Key at creation. This is a trade-off: the account then uses its EVM Address from Account ID (the long-zero form), and it cannot send transactions from EVM wallets or through JSON-RPC at all, because the network finds the sender of an EVM transaction by the address its signature recovers to. It also does not work with `ECRECOVER`. Native SDK transactions and `isAuthorized` checks keep working.
 
 **Example: Replacing a Trusted Signer in a Contract**
 

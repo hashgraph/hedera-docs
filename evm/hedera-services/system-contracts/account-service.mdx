@@ -18,7 +18,7 @@ The Hedera Account Service (HAS) system contract gives smart contracts access to
 | `isAuthorizedRaw(address,bytes,bytes)` | `bool authorized` | `0xb2a31da4` | Verifies one ECDSA or ED25519 signature over a 32-byte Keccak-256 hash against the account's key. |
 | `isAuthorized(address,bytes,bytes)` | `(int64 responseCode, bool authorized)` | `0xb2526367` | Verifies a protobuf `SignatureMap` over a message against the account's full key, including key lists and threshold keys. |
 | `hbarAllowance(address,address)` | `(int64 responseCode, int256 amount)` | `0xfec46666` | Returns the HBAR allowance, in tinybars, that `owner` granted to `spender`. |
-| `hbarApprove(address,address,int256)` | `int64 responseCode` | `0xa0918464` | Sets the HBAR allowance, in tinybars, that `owner` grants to `spender`. Calling it again overwrites the previous amount. |
+| `hbarApprove(address,address,int256)` | `int64 responseCode` | `0xa0918464` | Sets the HBAR allowance, in tinybars, that `owner` grants to `spender`. Calling it again overwrites the previous amount. Succeeds only if `owner` is the caller (`msg.sender`), or the owner's key is satisfied by the calling contract (for example, a contract ID key for that contract). Otherwise the owner's signature is required, and a contract call cannot provide it. |
 | `getEvmAddressAlias(address)` | `(int64 responseCode, address)` | `0xdea3d081` | Returns the EVM Address from Public Key for an account referenced by its EVM Address from Account ID. |
 | `getHederaAccountNumAlias(address)` | `(int64 responseCode, address)` | `0xbbf12d2e` | Returns the EVM Address from Account ID for an account referenced by its EVM Address from Public Key. |
 | `isValidAlias(address)` | `bool` | `0x308ef301` | Returns `true` if the address is an EVM Address from Account ID or an EVM Address from Public Key of an existing account. |
@@ -29,7 +29,13 @@ A `responseCode` of `22` means `SUCCESS`. See [`HederaResponseCodes.sol`](https:
 On the network, `isValidAlias` returns a single `bool`. The `IHederaAccountService.sol` interface in hiero-contracts declares it as returning `(int64, bool)`, so a call made through that interface fails to decode. Declare `isValidAlias(address) returns (bool)` in your own interface instead.
 </Warning>
 
-An account can also call `hbarAllowance(address spender)` and `hbarApprove(address spender, int256 amount)` on its own address to manage its own allowances ([`IHRC906AccountFacade.sol`](https://github.com/hiero-ledger/hiero-contracts/blob/main/contracts/account-service/IHRC906AccountFacade.sol)).
+An account can also call these functions on its own address, and the Hedera Account Service handles them for that account:
+
+| Function | Returns | Selector | Description |
+| --- | --- | --- | --- |
+| `hbarAllowance(address spender)` | `(int64 responseCode, int256 amount)` | `0xbbee989e` | Returns the HBAR allowance the account granted to `spender` ([HIP-906](https://hips.hedera.com/hip/hip-906), [`IHRC906AccountFacade.sol`](https://github.com/hiero-ledger/hiero-contracts/blob/main/contracts/account-service/IHRC906AccountFacade.sol)). |
+| `hbarApprove(address spender, int256 amount)` | `int64 responseCode` | `0x86aff07c` | Sets the account's HBAR allowance for `spender`, in tinybars. |
+| `setUnlimitedAutomaticAssociations(bool enableAutoAssociations)` | `int64 responseCode` | `0xf5677e99` | `true` sets the account's maximum automatic token associations to unlimited (`-1`); `false` sets it to `0`, which turns automatic associations off ([HIP-904](https://hips.hedera.com/hip/hip-904), [`IHRC904AccountFacade.sol`](https://github.com/hiero-ledger/hiero-contracts/blob/main/contracts/account-service/IHRC904AccountFacade.sol)). |
 
 ***
 
@@ -37,17 +43,19 @@ An account can also call `hbarAllowance(address spender)` and `hbarApprove(addre
 
 ### ECDSA accounts: `ecrecover`
 
-`ecrecover` works on Hedera as it does on Ethereum. For an account whose EVM address is its **EVM Address from Public Key** (`Keccak-256` of its ECDSA public key), call `ecrecover(hash, v, r, s)`. If the recovered address equals the account's EVM address, the signer controls the account. No Hedera-specific integration is needed.
+`ecrecover` works on Hedera as it does on Ethereum. For an account whose EVM address is its **EVM Address from Public Key** (`Keccak-256` of its ECDSA public key), call `ecrecover(hash, v, r, s)`. If the recovered address equals the account's EVM Address from Public Key, the signature was made with the ECDSA key that address was derived from. No Hedera-specific integration is needed.
+
+`ecrecover` does not know about key updates. If the account's key was later changed with `CryptoUpdateTransaction`, the original key, which may be compromised, still passes an `ecrecover` check against that address. To check the account's current key, use `isAuthorizedRaw` or `isAuthorized`.
 
 `ecrecover` cannot verify ED25519 signatures, accounts with key lists or threshold keys, or accounts referenced only by their EVM Address from Account ID (the long-zero form). Use the HIP-632 functions below for those.
 
 ### `isAuthorizedRaw`
 
-`isAuthorizedRaw(address account, bytes messageHash, bytes signature) returns (bool)` checks one signature against an account with a single key. It works like `ecrecover`, but supports both ECDSA (secp256k1) and ED25519 keys.
+`isAuthorizedRaw(address account, bytes messageHash, bytes signature) returns (bool)` checks one signature against an account with a single key. It supports both ECDSA (secp256k1) and ED25519 keys. Unlike `ecrecover`, it checks the account's current key: after a key update it accepts signatures from the new key and rejects the old one.
 
 | Parameter | Description |
 | --- | --- |
-| `account` | The account to check. For an ECDSA signature, this must be the account's EVM Address from Public Key; an EVM Address from Account ID (long-zero) reverts with `INVALID_ACCOUNT_ID`. |
+| `account` | The account's main EVM address: its EVM Address from Public Key if it has one, otherwise its EVM Address from Account ID. Any other address for the same account reverts with `INVALID_ACCOUNT_ID`. ECDSA signatures need the EVM Address from Public Key; the long-zero form reverts. |
 | `messageHash` | The 32-byte Keccak-256 hash that was signed. For ED25519 keys, the signature must be over these 32 bytes. |
 | `signature` | The raw signature. The length selects the key type: 64 bytes is ED25519; 65 to 72 bytes (`r`, `s`, then a 1 to 8 byte `v`) is ECDSA. |
 
@@ -60,7 +68,7 @@ An account can also call `hbarAllowance(address spender)` and `hbarApprove(addre
 
 | Parameter | Description |
 | --- | --- |
-| `account` | The account to check, referenced by its EVM Address from Account ID or its EVM Address from Public Key. |
+| `account` | The account's main EVM address: its EVM Address from Public Key if it has one, otherwise its EVM Address from Account ID. Passing the long-zero address of an account that has an EVM Address from Public Key returns `(INVALID_ACCOUNT_ID, false)`. |
 | `message` | The message bytes. The network hashes the message with Keccak-256 before checking ECDSA signatures; ED25519 signatures must be over the message bytes as given. |
 | `signatureMap` | A serialized protobuf [`SignatureMap`](/reference/protobuf/basic-types/signaturemap) with one signature pair per key. |
 
@@ -113,6 +121,21 @@ contract SignatureChecks {
 ### Gas
 
 `isAuthorizedRaw` charges the `ecrecover` gas cost for an ECDSA signature and a fixed ED25519 verification cost for an ED25519 signature. `isAuthorized` charges based on the keys in the account's key structure, with the ED25519 verification cost for each ED25519 key, so accounts with larger key lists cost more to check.
+
+Those amounts apply when the check runs. When `isAuthorized` returns an error code, or `isAuthorizedRaw` reverts, the call consumes all the gas forwarded to it. A Solidity call forwards nearly all remaining gas by default, so cap it:
+
+```solidity
+// Add to the SignatureChecks contract above. Size the cap for the account's key
+// structure and test it on testnet; a cap that is too low makes the call fail.
+function verifyAccountCapped(address account, bytes calldata message, bytes calldata signatureMap)
+    external
+    returns (bool)
+{
+    (int64 responseCode, bool authorized) =
+        HAS.isAuthorized{gas: 100_000}(account, message, signatureMap);
+    return responseCode == SUCCESS && authorized;
+}
+```
 
 <Card
   title="Gas and Fees | Hedera"

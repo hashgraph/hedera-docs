@@ -159,7 +159,7 @@ contract hbarToAndFromContract is HederaTokenService{
 ```
 
 </CodeGroup>
-These helper functions in ***index.js*** use the [**AccountCreateTransaction()**](/native/accounts/create#create-an-account-via-an-account-alias) and [**ContractCreateFlow()**](/native/smart-contracts/create#contractcreateflow) classes of the Hedera SDK. [**ContractCreateFlow()**](/native/smart-contracts/create#contractcreateflow) stores the bytecode and deploys the contract on Hedera. This single call handles for you the operations [**FileCreateTransaction()**](/native/files/create), [**FileAppendTransaction()**](/native/files/append), and [**ContractCreateTransaction()**](/native/smart-contracts/create#contractcreatetransaction).
+These helper functions in ***index.js*** use the [**AccountCreateTransaction()**](/native/accounts/create) and [**ContractCreateFlow()**](/native/smart-contracts/create#contractcreateflow) classes of the Hedera SDK. [**ContractCreateFlow()**](/native/smart-contracts/create#contractcreateflow) stores the bytecode and deploys the contract on Hedera. This single call handles for you the operations [**FileCreateTransaction()**](/native/files/create), [**FileAppendTransaction()**](/native/files/append), and [**ContractCreateTransaction()**](/native/smart-contracts/create#contractcreatetransaction).
 
 **Helper Functions:**
 
@@ -516,6 +516,10 @@ This tutorial used the Hedera JavaScript SDK. However, you can try this with the
 ## Additional Resources
 
 **➡** [**Project Repository**](https://github.com/ed-marquez/hedera-smart-contracts/tree/examples/examples/transfer-hbar2contracts-solidity)
+
+<Warning>
+The repository's `hbarToAndFromContract.sol` predates the `onlyOwner` check on this page, and its `index.js` deploys the precompiled `hbarToAndFromContract.bin`. Compile the contract shown on this page and use that bytecode instead.
+</Warning>
 
 <Columns cols={2}>
   <Card title="Writer: Ed, DevRel Engineer" arrow>

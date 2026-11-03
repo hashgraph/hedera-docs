@@ -132,11 +132,13 @@ The practical pattern: compute the tinybars via the [Exchange Rate system contra
 ```solidity
 // Compute the value just before the call, then forward that amount.
 // 1 USD = 10^10 tinycents, so 1.5 USD = 15 * 10^9 tinycents. The margin
-// covers the ~$1 base fee plus the 20% surcharge.
-uint256 tinybars = IExchangeRate(0x168).tinycentsToTinybars(15 * 10**9);
+// covers the ~$1 base fee plus the 20% surcharge (no custom fees).
+uint256 tinybars = IExchangeRate(address(0x168)).tinycentsToTinybars(15 * 10**9);
 // msg.value is in tinybars inside the EVM: forward the result as is.
 TokenFactory(factory).createFungible{value: tinybars}("MyToken", "MTK", 1_000_000, 2);
 ```
+
+A token created with custom fees costs more: the [fee schedule](/networks/fees) lists `TokenCreate` with custom fees at $2.00, so with the 20% surcharge forward about $2.40 worth of tinybars (for example `24 * 10**9` tinycents) instead of the $1.50 above.
 
 <Warning>
   If `msg.value` doesn't cover the fee, the create call returns `INSUFFICIENT_TX_FEE` and a zero token address instead of reverting, so always check the response code (the examples above `require` `SUCCESS`). If you can't compute the exact amount, pass extra and refund the leftover from inside your contract. Don't expect Hedera to do it for you.

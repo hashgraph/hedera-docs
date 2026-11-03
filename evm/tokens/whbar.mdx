@@ -44,13 +44,19 @@ How you express the amount depends on where the call comes from:
 * **From Solidity** (another contract calls WHBAR): `msg.value` is in **tinybars**, so 10 HBAR is `10 * 10**8`.
 * **From a client through the JSON-RPC relay** (ethers, viem, a wallet): the transaction `value` is in 18-decimal **weibars**, so 10 HBAR is `parseEther("10")`. The network converts it to tinybars before `deposit()` runs.
 
+`deposit()` credits `msg.sender`. When another contract calls it, that contract receives the WHBAR, not the user who sent the HBAR, so pass the WHBAR on:
+
 ```solidity wrap
 /**
- * @notice Wraps 10 HBAR into WHBAR from another contract
+ * @notice Wraps the 10 HBAR sent with this call and gives the WHBAR to the caller
  */
 function wrapTenHbar() public payable {
-    // msg.value is in tinybars inside the EVM: 10 HBAR = 10 * 10^8 tinybars.
-    whbarContract.deposit{value: 10 * 10**8}();
+    // msg.value is in tinybars inside the EVM: 10 HBAR = 10 * 10**8 tinybars.
+    require(msg.value == 10 * 10**8, "Send exactly 10 HBAR");
+    // deposit() credits msg.sender, which is this contract.
+    whbarContract.deposit{value: msg.value}();
+    // Pass the WHBAR on to the user who sent the HBAR.
+    require(whbarContract.transfer(msg.sender, msg.value), "WHBAR transfer failed");
 }
 ```
 
@@ -62,21 +68,14 @@ await whbar.deposit({ value: ethers.parseEther("10") }); // wraps 10 HBAR
 
 ### Unwrapping WHBAR
 
-When you want to convert back to redeem WHBAR for native HBAR, call the `withdraw()` function with `amount` in **tinybars** (10⁸ per HBAR). The value in WHBAR is directly mapped back to HBAR with the same 8 decimal places:
+When you want to convert back to redeem WHBAR for native HBAR, the WHBAR holder calls the `withdraw()` function with `amount` in **tinybars** (10⁸ per HBAR). The value in WHBAR is directly mapped back to HBAR with the same 8 decimal places. `amount` is a function argument, not a transaction `value`, so the relay does not convert it, even when you call from ethers:
 
-```solidity wrap
-/**
- * @notice Burns WHBAR tokens and returns the equivalent HBAR
- * @param amount The amount of WHBAR to burn
- */
-function withdraw(uint256 amount) public {
-    // To unwrap 5 WHBAR back to HBAR
-    whbarContract.withdraw(5 * 10**8);
-}
+```javascript
+// The WHBAR holder calls withdraw() directly: 5 WHBAR = 5 * 10^8 tinybars.
+await whbar.withdraw(5n * 10n ** 8n);
 ```
 
-
-This burns 5 WHBAR and sends back 5 HBAR to the wallet.
+This burns 5 WHBAR from the caller's balance and sends 5 HBAR to the caller. `withdraw()` always pays `msg.sender`: if a contract calls it, the HBAR goes to that contract, which needs a payable `receive()` function to accept it.
 
 <Check>
 #### **Important Note: Decimal Nuance**
@@ -101,11 +100,11 @@ WHBAR supports all standard ERC20 operations:
 
 ## Contract Deployments
 
-The WHBAR contract implementation is available on GitHub in the [Hedera Smart Contracts repository](https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/wrapped-tokens/WHBAR.sol).
+The WHBAR contract implementation is available on GitHub in the [Hedera Smart Contracts repository](https://github.com/hashgraph/hedera-smart-contracts/blob/main/examples/tokens/whbar/contracts/WHBAR.sol).
 
 <table><thead><tr><th>Network</th><th>Contract ID</th><th>EVM Address</th></tr></thead><tbody><tr><td><strong>✅ Hedera Mainnet</strong></td><td><a href="https://hashscan.io/mainnet/contract/0.0.8840785">0.0.8840785</a></td><td>0xb1F616b8134F602c3Bb465fB5b5e6565cCAd37Ed</td></tr><tr><td><strong>✅ Hedera Testnet</strong></td><td><a href="https://hashscan.io/testnet/contract/0.0.5816542?pa=1&#x26;pr=1&#x26;ps=1&#x26;pf=1">0.0.5816542</a></td><td>0xb1F616b8134F602c3Bb465fB5b5e6565cCAd37Ed</td></tr><tr><td>🔜 <strong>Other Networks</strong></td><td>Coming soon</td><td>Coming soon</td></tr></tbody></table>
 
-***Source Code:*** [*WHBAR.sol*](https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/wrapped-tokens/WHBAR.sol)
+***Source Code:*** [*WHBAR.sol*](https://github.com/hashgraph/hedera-smart-contracts/blob/main/examples/tokens/whbar/contracts/WHBAR.sol)
 
 ***
 

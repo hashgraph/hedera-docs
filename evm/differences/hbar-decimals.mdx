@@ -27,7 +27,7 @@ HBAR has two scales on Hedera. Inside the network, including inside the EVM, HBA
 
 * Inside a contract, never scale `msg.value` by `10**10`. Compare it with tinybar amounts directly, such as the result of the [Exchange Rate system contract](/evm/hedera-services/system-contracts/exchange-rate).
 * Multiply by `10**10` only when you hand a tinybar amount to JSON-RPC tooling as a transaction `value`.
-* The relay rejects a nonzero `value` smaller than one tinybar (10¹⁰ weibars) with `VALUE_TOO_LOW`. Any precision finer than a tinybar is dropped when the network converts the value.
+* The relay rejects a nonzero `value` smaller than one tinybar (10¹⁰ weibars) with JSON-RPC error `-32602`: `Value can't be non-zero and less than 10_000_000_000 wei which is 1 tinybar`. Any precision finer than a tinybar is dropped when the network converts the value.
 * HBAR fees are always calculated in tinybars, regardless of the API or service used.
 
 ***

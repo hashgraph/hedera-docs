@@ -1,6 +1,6 @@
 ---
 title: Hedera Docs MCP Server Setup Guide
-description: "Connect your AI tools to the official Hedera documentation MCP server for real-time, accurate answers. Covers the search, filesystem, and feedback tools the server exposes and setup for Claude, Cursor, VS Code, Windsurf, ChatGPT, Codex, and Gemini CLI."
+description: "Connect your AI tools to the official Hedera documentation MCP server for real-time, accurate answers. Covers the search, filesystem, and feedback tools the server exposes and setup for Claude, Cursor, VS Code, Devin Desktop, ChatGPT, Codex, and Gemini CLI."
 sidebarTitle: "MCP Server Setup"
 icon: "robot"
 ---
@@ -31,12 +31,12 @@ The server exposes three tools:
 | `query_docs_filesystem_hedera` | Runs read-only shell-style commands (`rg`, `grep`, `find`, `tree`, `ls`, `cat`, `head`, `jq`, and more) against a sandboxed, in-memory copy of the docs pages and the OpenAPI specs. Use it to read a full page, read several pages in one call, run exact keyword or regex searches, or explore the docs structure. | Yes |
 | `submit_feedback` | Sends a report about an incorrect, outdated, confusing, or incomplete page to the Hedera docs team. Takes the page path and a description of the problem. | No |
 
-The filesystem tool is how an AI tool reads a complete page. Every page at the URL path `/some/page` is available at `/some/page.mdx`, and the OpenAPI specs are mounted under `/openapi/`. For example, an agent can call it with:
+The filesystem tool is how an AI tool reads a complete page. Every page at the URL path `/some/page` is available at `/some/page.mdx`, and the OpenAPI specs are mounted under `/openapi/` (`openapi.yaml`, `hedera-status-api.yaml`, and `smart-contract-verification-api.yaml`). The specs are stored as single-line JSON despite the `.yaml` name, so query them with `jq` rather than `head`. For example, an agent can call it with:
 
 ```bash
 head -200 /learn/getting-started/mcp-setup.mdx
 rg -il "MirrorNodeTokenBalanceQuery" /native
-head -100 /openapi/openapi.yaml
+jq -r '.info.title, (.paths | keys[])' /openapi/openapi.yaml
 ```
 
 Each filesystem call is stateless: the working directory resets to `/` and nothing carries over between calls. Output is truncated to 30 KB per call.
@@ -214,38 +214,35 @@ VS Code supports MCP servers via the `.vscode/mcp.json` file, available when usi
 
 ---
 
-### Windsurf IDE
+### Devin Desktop
 
-Windsurf supports MCP servers through its Cascade AI agent. It supports `stdio`, `Streamable HTTP`, and `SSE` transport types.
+Devin Desktop, formerly Windsurf, connects to MCP servers through its Devin Local agent. Devin Local supports the `stdio`, `Streamable HTTP`, and `SSE` transport types.
 
-**Option A: MCP Marketplace**
-
-1. Click the **MCPs icon** in the Cascade panel (top-right).
-2. Browse or search for the Hedera MCP server and click **Install**.
-
-**Option B: Manual Configuration**
-
-1. Press `Cmd + Shift + P` (macOS) or `Ctrl + Shift + P` (Windows/Linux).
-2. Search for **"Open Windsurf Settings"**.
-3. Navigate to **Cascade → MCP Servers** or directly edit:
-
-```
-~/.codeium/windsurf/mcp_config.json
-```
-
-4. Add the following:
+1. Open or create the MCP config file for the scope you want:
+   - **User** (all your projects): `~/.config/devin/mcp_config.json` (`%APPDATA%\devin\mcp_config.json` on Windows)
+   - **Project** (shared through version control): `.devin/mcp_config.json`
+2. Add the following:
 
 ```json
 {
   "mcpServers": {
     "hedera-docs": {
-      "serverUrl": "https://docs.hedera.com/mcp"
+      "url": "https://docs.hedera.com/mcp",
+      "transport": "http"
     }
   }
 }
 ```
 
-> **Note:** Windsurf has a limit of **100 total tools** across all connected MCP servers. You can toggle individual tools on/off per server.
+3. In the Agents window, click **Customize** in the agent sidebar, then click **MCPs**. `hedera-docs` appears in the **This computer** list. Refresh the list if it doesn't.
+
+If you also use Devin CLI, this command adds the server to the same user config file:
+
+```bash
+devin mcp add -s user hedera-docs https://docs.hedera.com/mcp
+```
+
+> **Note:** The **Available** list on the **MCPs** tab shows servers from your MCP registries. Add the Hedera docs server through the config file rather than installing a similarly named third-party server from that list.
 
 ---
 
@@ -273,7 +270,7 @@ ChatGPT connects to remote MCP servers through plugins. Account and workspace po
 
 ### Codex
 
-Codex CLI, the Codex IDE extension, and the ChatGPT desktop app share MCP configuration in `~/.codex/config.toml`. You can also scope the server to one project with `.codex/config.toml`.
+Codex CLI, the Codex IDE extension, and the ChatGPT desktop app share MCP configuration in `~/.codex/config.toml`. You can also scope the server to one project with `.codex/config.toml`, which Codex only reads for trusted projects.
 
 **Steps:**
 
@@ -306,11 +303,20 @@ Google's Gemini CLI supports MCP servers through a `settings.json` configuration
 {
   "mcpServers": {
     "hedera-docs": {
-      "url": "https://docs.hedera.com/mcp"
+      "url": "https://docs.hedera.com/mcp",
+      "type": "http"
     }
   }
 }
 ```
+
+Or add it from the command line, which writes the same entry:
+
+```bash
+gemini mcp add --scope user --transport http hedera-docs https://docs.hedera.com/mcp
+```
+
+`"type": "http"` selects the Streamable HTTP transport, which the Hedera docs server uses; it does not accept SSE connections. These settings need Gemini CLI v0.21.0 or later. Earlier versions treat `url` as an SSE endpoint and cannot connect, so use `"httpUrl": "https://docs.hedera.com/mcp"` instead (current versions still accept `httpUrl` but mark it deprecated).
 
 3. Launch Gemini CLI and verify with:
 
@@ -362,12 +368,13 @@ A quick-reference table of config file paths and JSON formats for each tool:
 | **Cursor** (global) | `~/.cursor/mcp.json` | `mcpServers` | `url` |
 | **Cursor** (project) | `.cursor/mcp.json` | `mcpServers` | `url` |
 | **VS Code** | `.vscode/mcp.json` | `servers` | `url` (+ `type: "http"`) |
-| **Windsurf** | `~/.codeium/windsurf/mcp_config.json` | `mcpServers` | `serverUrl` |
+| **Devin Desktop** (user) | `~/.config/devin/mcp_config.json` | `mcpServers` | `url` (+ `transport: "http"`) |
+| **Devin Desktop** (project) | `.devin/mcp_config.json` | `mcpServers` | `url` (+ `transport: "http"`) |
 | **Claude (Web)** | Customize → Connectors | UI-based | URL field |
 | **Claude Desktop** | Settings → Developer → Connectors | UI-based | URL field |
 | **Claude Code** | CLI: `claude mcp add` | — | — |
 | **Codex** | `~/.codex/config.toml` | `mcp_servers.<name>` | `url` |
-| **Gemini CLI** | `~/.gemini/settings.json` | `mcpServers` | `url` |
+| **Gemini CLI** | `~/.gemini/settings.json` | `mcpServers` | `url` (+ `type: "http"`) |
 | **ChatGPT** (web) | [chatgpt.com/plugins](https://chatgpt.com/plugins) → + → Add custom MCP server | UI-based | URL field |
 | **ChatGPT** (desktop) | Settings → MCP servers → Add server | UI-based | URL field |
 
@@ -384,7 +391,7 @@ A quick-reference table of config file paths and JSON formats for each tool:
 - The server exposes three tools: `search_hedera`, `query_docs_filesystem_hedera`, and `submit_feedback`. If none appear, the connection failed.
 - In Cursor/VS Code, click the refresh button next to the server entry.
 - In Claude Code, run `claude mcp list` to verify the server is registered.
-- In Windsurf, check the MCPs icon for server status — a red indicator means the connection failed.
+- In Devin Desktop, open **Customize** → **MCPs** and check that `hedera-docs` is in the **This computer** list.
 
 **Search returning no results?**
 - Try rephrasing your query with more specific Hedera terminology.
@@ -410,11 +417,11 @@ If a limit is exceeded, the server returns HTTP `429 Too Many Requests`. Back of
 - [Claude MCP Connectors](https://claude.ai/settings/connectors)
 - [Cursor MCP Docs](https://docs.cursor.com/en/context/mcp)
 - [VS Code MCP Servers](https://code.visualstudio.com/docs/copilot/chat/mcp-servers)
-- [Windsurf MCP Integration](https://docs.windsurf.com/windsurf/cascade/mcp)
+- [Devin Desktop MCP Servers](https://docs.devin.ai/desktop/devin-local/customizations#mcp-servers)
 - [ChatGPT: Connect a custom MCP server](https://developers.openai.com/plugins/deploy/connect-chatgpt)
 - [Gemini CLI MCP Setup](https://google-gemini.github.io/gemini-cli/docs/tools/mcp-server.html)
 - [Claude Code MCP Docs](https://docs.anthropic.com/en/docs/claude-code/mcp)
-- [Codex MCP Docs](https://developers.openai.com/codex/mcp)
+- [Codex MCP Docs](https://learn.chatgpt.com/docs/extend/mcp)
 
 ---
 

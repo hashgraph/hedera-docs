@@ -33,9 +33,9 @@ The response lists `hedera:testnet` among the supported `kinds`, along with the 
 Point the `facilitatorClient` in your resource server at `https://x402.org/facilitator` to verify and settle Hedera testnet payments through the official x402 facilitator.
 </Tip>
 
-## Ax402
+## Launa
 
-[**Ax402**](https://ax402.io/) is a monetization gateway for the x402 ecosystem that offers hosted facilitator infrastructure for Hedera on **both testnet and mainnet**. Both facilitators expose the standard endpoints (`GET /supported`, `POST /verify`, and `POST /settle`) and settle payments on-chain after verification.
+[**Launa**](https://launa.io/) makes a business ready for the agentic internet, from discovery to settlement. It offers hosted x402 facilitator infrastructure for Hedera on **both testnet and mainnet**. Both facilitators expose the standard endpoints (`GET /supported`, `POST /verify`, and `POST /settle`) and settle payments on-chain after verification.
 
 ### Testnet
 
@@ -43,23 +43,23 @@ The testnet facilitator is open to everyone, **no account required**:
 
 | | Value |
 | --- | --- |
-| Facilitator base URL | `https://testnet.facilitator.ax402.io` |
+| Facilitator base URL | `https://testnet.facilitator.launa.dev` |
 | Hedera network | `hedera:testnet` |
 | Advertised fee payer | `0.0.9839454` |
 
 You can confirm Hedera support live by querying its capabilities:
 
 ```bash
-curl -s https://testnet.facilitator.ax402.io/supported | jq
+curl -s https://testnet.facilitator.launa.dev/supported | jq
 ```
 
 ### Mainnet
 
-For mainnet, after creating a **free account**, you get a **dedicated facilitator URL**, `https://<subdomain>.facilitator.ax402.io`, much like an Alchemy endpoint. The subdomain identifies your requests and feeds your dashboard statistics, so treat it like a credential and do not share it.
+For mainnet, after creating a **free account**, you get a **dedicated facilitator URL**, `https://<subdomain>.facilitator.launa.dev`, much like an Alchemy endpoint. The subdomain identifies your requests and feeds your dashboard statistics, so treat it like a credential and do not share it.
 
 | | Value |
 | --- | --- |
-| Facilitator base URL | Dedicated URL from your dashboard:<br />`https://<subdomain>.facilitator.ax402.io` |
+| Facilitator base URL | Dedicated URL from your dashboard:<br />`https://<subdomain>.facilitator.launa.dev` |
 | Hedera network | `hedera:mainnet` |
 | Advertised fee payer | `0.0.10789914` |
 
@@ -67,32 +67,32 @@ Getting your dedicated facilitator URL:
 
 <Steps>
 <Step>
-Sign up at [ax402.io/signup](https://ax402.io/signup) and verify your email.
+Sign up at [launa.io/signup](https://launa.io/signup) and verify your email.
 </Step>
 <Step>
-Go to the [Facilitator tab](https://ax402.io/dashboard/facilitator) in your dashboard.
+Go to the [Facilitator tab](https://launa.io/dashboard/facilitator) in your dashboard.
 </Step>
 <Step>
-Copy your `https://<subdomain>.facilitator.ax402.io` URL and use in your apps.
+Copy your `https://<subdomain>.facilitator.launa.dev` URL and use in your apps.
 </Step>
 </Steps>
 
 You can query facilitator capabilities (replacing `<subdomain>` with the subdomain from your dashboard):
 
 ```bash
-curl -s https://<subdomain>.facilitator.ax402.io/supported | jq
+curl -s https://<subdomain>.facilitator.launa.dev/supported | jq
 ```
 
-Around the facilitator itself, the Ax402 platform adds:
+Around the facilitator itself, the Launa platform adds:
 
 - **Monetization gateway**: price and publish paid API routes with no upstream code changes, custom domains, and OpenAPI import
 - **Seller dashboard**: usage, traffic, earnings, and conversion analytics, attributed to your dedicated facilitator URL
-- **Developer and agent tooling**: [TypeScript, Go, and Python SDKs](https://docs.ax402.io/guides/sdks), a [CLI](https://docs.ax402.io/api-reference/cli), an [MCP server](https://docs.ax402.io/api-reference/mcp), and a [React paywall](https://docs.ax402.io/guides/react-paywall)
+- **Developer and agent tooling**: [TypeScript, Go, and Python SDKs](https://docs.launa.io/guides/sdks), a [CLI](https://docs.launa.io/api-reference/cli), an [MCP server](https://docs.launa.io/api-reference/mcp), and a [React paywall](https://docs.launa.io/guides/react-paywall)
 
-Full setup and integration details are in the [Ax402 documentation](https://docs.ax402.io/), including the [facilitator guide](https://docs.ax402.io/guides/platform/facilitator).
+Full setup and integration details are in the [Launa documentation](https://docs.launa.io/), including the [facilitator guide](https://docs.launa.io/guides/platform/facilitator).
 
 <Tip>
-Point the `facilitatorClient` in your resource server at `https://testnet.facilitator.ax402.io` (testnet) or your dedicated Ax402 facilitator URL (mainnet) to verify and settle Hedera payments through Ax402.
+Point the `facilitatorClient` in your resource server at `https://testnet.facilitator.launa.dev` (testnet) or your dedicated Launa facilitator URL (mainnet) to verify and settle Hedera payments through Launa.
 </Tip>
 
 ## Blocky402

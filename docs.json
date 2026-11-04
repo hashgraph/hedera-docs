@@ -2853,6 +2853,7 @@
             "group": "Finance Workflows",
             "pages": [
               "solutions/finance/settle-dvp",
+              "solutions/finance/hcs-audit-trail",
               "solutions/finance/permissioned-security"
             ]
           },

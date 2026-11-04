@@ -1,0 +1,252 @@
+---
+title: "HCS Audit Trail"
+description: "Log every lifecycle action on a security token to a Hedera Consensus Service topic that only authorised publishers can write to, and give a regulator a live, self-verifying feed read straight from the mirror node."
+---
+
+Record every compliance-relevant action on a security token (issuance, KYC, transfers, freezes) in an append-only log that no one can rewrite, reorder or quietly skip. Then give a regulator a live feed they verify themselves, with no access to your systems.
+
+<Card title="Get the code" icon="github" href="https://github.com/hedera-dev/hedera-finance-templates/tree/templates/hcs-audit-trail">
+  `npx create-scaffold-hbar@latest --template hedera-dev/hedera-finance-templates#templates/hcs-audit-trail`
+</Card>
+
+## Overview
+
+An audit log kept in your own database can be edited, reordered or truncated by whoever runs the database. Regulators receive an export after the fact and have to trust it.
+
+The **Hedera Consensus Service (HCS)** removes that trust. A topic is an append-only log run by the network:
+
+* Every message gets a **sequence number**, a **consensus timestamp** and a **running hash** from the network. A missing message shows up as a gap; an edited one cannot exist.
+* A topic created with a **submit key** accepts messages only from the holders of that key. Anyone else is rejected by the network.
+* Anyone can read the topic through the public **mirror node**, with no account and no access to your systems.
+
+Each message costs a fixed $0.0008 ([fees](/networks/fees)), so logging every action is affordable at volume. The same topic can carry the lifecycle events of the other Finance Workflows: settlements, bond issuance, coupon payments.
+
+The workflow has three actors:
+
+* **Issuer**: the operator account the app runs with. Creates the audit topic and a security token, performs token actions, and publishes an audit entry for each one
+* **Compliance officer** (optional): a HashPack account the Issuer authorises as a publisher. Signs and submits the audit entries instead of the Issuer
+* **Regulator**: reads the trail from the mirror node. Holds no keys and needs no account
+
+The lifecycle:
+
+1. The Issuer creates the audit topic with a submit key, and a security token with KYC and freeze keys
+2. The Issuer performs token actions on a target account: grant KYC, transfer, freeze, unfreeze
+3. Each action is logged as an audit entry carrying the action's transaction id, its result, and the hash of the previous entry
+4. The Regulator's feed reads the topic from the mirror node and verifies it: no sequence gaps, an unbroken hash chain, every referenced transaction real with the logged result
+5. Anyone else who tries to publish is rejected by the network
+
+```text
+Issuer / Compliance officer          Hedera network                     Regulator (mirror node only)
+        |                                  |                                       |
+        |-- TokenGrantKyc ---------------->|  txId, result                         |
+        |-- TopicMessageSubmit(            |                                       |
+        |     event, txId, result, prev) ->|  seq N, consensus time, running hash  |
+        |                                  |<-------- GET /topics/{id}/messages ---|
+        |                                  |   verify: sequence, hash chain, txId  |
+Outsider -- TopicMessageSubmit ----------->|  INVALID_SIGNATURE (rejected)         |
+```
+
+| Component | Technology |
+| - | - |
+| Audit log | HCS topic with an admin key and a submit key (the Issuer, plus any authorised publishers) |
+| Logged actions | HTS token create, KYC grant, transfer, freeze, unfreeze |
+| Entry format | JSON: event, token, account, amount, transaction id, result, previous entry hash |
+| Regulator feed | Mirror node REST (`/api/v1/topics/{id}/messages`), polled live and verified in the browser |
+| Signing | Issuer server-side via `@hiero-ledger/sdk`; compliance officer via HashPack and `@hashgraph/hedera-wallet-connect` |
+| Network | Hedera testnet |
+
+## Prerequisites
+
+* Node.js 20.18 or later, and Yarn
+* A Hedera testnet account from the [Hedera Portal](https://portal.hedera.com). It becomes the Issuer. Its key can be a raw ECDSA key in hex, or a DER-encoded ECDSA or ED25519 key.
+* Testnet HBAR on that account. Setting up an audit trail costs about **14 HBAR**, almost all of it the network fee for creating the token; each action and its entry cost a fraction of an HBAR.
+* Optional, for [Sign entries with HashPack](#sign-entries-as-a-compliance-officer-with-hashpack): the HashPack browser extension with a testnet account **other than** the Issuer, and a WalletConnect project id from the [Reown dashboard](https://cloud.reown.com)
+
+## Project structure
+
+```text
+packages/nextjs/
+  app/page.tsx                            the issuer's desk: setup, actions, forgery attempt, trail
+  app/regulator/page.tsx                  the regulator's feed; reads only the mirror node
+  app/api/hedera/audit/                   server routes; all Issuer signing happens here
+    setup/route.ts                        topic, token, holder account, first entry
+    action/route.ts                       perform an action and publish its entry
+    action/prepare/route.ts               build an entry for HashPack to sign
+    action/confirm/route.ts               confirm HashPack's submission, then advance the chain
+    authorize/route.ts                    add a wallet to the topic's submit key
+    forge/route.ts                        an outsider's submission, to show the rejection
+  services/hcsAudit/entry.ts              entry format and hashing, shared by publisher and verifier
+  services/hcsAudit/verify.ts             the regulator's checks
+```
+
+## Configuration
+
+Create `packages/nextjs/.env.local`:
+
+```bash
+# The Issuer. Server-side only, never sent to the browser.
+HEDERA_OPERATOR_ID=0.0.1234
+HEDERA_OPERATOR_KEY=<ECDSA hex key, or a DER-encoded ECDSA/ED25519 key>
+
+# Optional: enables Sign entries with HashPack
+NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=<your Reown project id>
+```
+
+Then start the app:
+
+```bash
+yarn install
+yarn next:dev   # http://localhost:3000
+```
+
+## Set up the audit topic
+
+Press **Set up audit trail**. The page shows each step as it runs: a spinner on the running step, then a check with the id it created.
+
+### Step 1: Create the topic with a submit key
+
+The submit key is what makes the log trustworthy: only messages signed by it are accepted. The admin key lets the Issuer change the submit key later, which is how a compliance officer gets authorised.
+
+```typescript
+const response = await new TopicCreateTransaction()
+  .setAdminKey(operatorKey.publicKey)
+  .setSubmitKey(operatorKey.publicKey)
+  .setTopicMemo("HCS audit trail")
+  .execute(client);
+const topicId = (await response.getReceipt(client)).topicId;
+```
+
+**You should see** the topic id, linked to HashScan.
+
+### Step 2: Create the security token and a holder
+
+The token has 0 decimals, an initial supply of 1,000 held by the Issuer, and a **KYC key** and a **freeze key**, so there are compliance actions worth auditing. Setup also creates a demo holder account and associates it with the token, without KYC.
+
+Creating the token is the first audit entry: an `issue` entry whose `prev` is 64 zeros.
+
+**You should see** the token id, the holder account id, a link to the regulator feed, and entry #1, `issue`, in the trail.
+
+## Log a token action
+
+### Step 1: Perform the action
+
+Choose a **target account**: the demo holder by default, or any testnet account. Then press **Grant KYC**, **Freeze holder**, **Unfreeze holder** or **Transfer**. Each is a real HTS transaction with its own transaction id and result.
+
+A refused action is still logged with the network's result code. A transfer before KYC is granted returns `ACCOUNT_KYC_NOT_GRANTED_FOR_TOKEN`; a transfer to a frozen account returns `ACCOUNT_FROZEN_FOR_TOKEN`; any action on an account that has not associated the token returns `TOKEN_NOT_ASSOCIATED_TO_ACCOUNT`. The Issuer cannot target itself.
+
+### Step 2: Queue and publish the audit entry
+
+The entry records the action, so it cannot be written first: it carries that action's transaction id and result, and neither exists until the action has run. Which leaves exactly one gap to close — an action that succeeded while its entry did not. So the entry is queued the moment the action returns, and publishing is a separate, serialized step.
+
+The entry is JSON with a fixed key order, so the bytes published are exactly the bytes the next entry hashes:
+
+```typescript
+export function serializeEntry(entry: AuditEntry): Uint8Array {
+  const ordered = {
+    v: entry.v, event: entry.event, token: entry.token, account: entry.account,
+    amount: entry.amount, tx: entry.tx, result: entry.result, prev: entry.prev,
+  };
+  return new TextEncoder().encode(JSON.stringify(ordered));
+}
+
+// The action has run; its entry joins the queue and the chain has not moved yet.
+queueEntry(desk, { event: "grant_kyc", token, account, amount: null, tx, result });
+
+// One flush at a time, oldest entry first.
+while (desk.entries.length > 0) {
+  const queued = desk.entries[0];
+  const bytes = serializeEntry({ v: 1, prev: desk.lastHash, ...queued.fields }); // prev read here, not earlier
+  queued.transactionId ??= TransactionId.generate(operatorId).toString();        // same id on every retry
+  await submit(bytes, queued.transactionId);
+  desk.lastHash = await sha256Hex(bytes);                                        // only after it landed
+  desk.entries.shift();
+}
+```
+
+Three properties follow from that, and together they are what lets the trail claim nothing is skipped:
+
+* **`prev` is read when an entry is published, not when it is built.** Two actions in flight therefore cannot be chained onto the same `prev` — which would land two messages claiming the same position and show `BROKEN`.
+* **A submission keeps one transaction id across retries.** A response lost after the network accepted it would otherwise publish the entry twice; the resubmission is refused as a duplicate instead, and the receipt is queried to find out what happened.
+* **Nothing discards a queued entry.** A failed submission, a declined signature or an unreachable mirror node are retried until the entry is on the topic.
+
+**You should see** the new entry at the top of the trail: sequence number, consensus time, event, target account, result, transaction and publisher.
+
+## Read and verify the regulator feed
+
+Open **Open regulator feed**, or `/regulator?topic=<topic id>`. The page reads the topic from the mirror node directly in the browser. It works with the app's server stopped, because it trusts nothing but the network. For every message it checks:
+
+* **Sequence**: sequence numbers run 1, 2, 3… with no gap, so nothing was deleted
+* **Chain**: the entry's `prev` equals the SHA-256 of the previous message's exact bytes, so nothing was edited or reordered
+* **Transaction**: the referenced transaction exists on the mirror node with the result the entry claims, **and** is the kind of transaction the event implies, against the entry's own token and account — a `freeze` entry must point at a `TOKENFREEZE` of that token, a successful `transfer` at a `CRYPTOTRANSFER` whose legs credit that amount of that token to that account. Checking the result code alone would let an authorised publisher log `freeze` / `SUCCESS` against any successful transaction on the network
+
+```typescript
+for (let i = 0; i < messages.length; i++) {
+  const bytes = base64ToBytes(messages[i].message);
+  const entry = parseEntryBytes(bytes);
+  const sequenceOk = messages[i].sequence_number === i + 1;
+  const chainOk = entry !== null && entry.prev === (prevBytes ? await sha256Hex(prevBytes) : ZERO_HASH);
+  const mirrorTx = entry && (await fetchMirrorTransaction(entry.tx));
+  const txOk = entry !== null && transactionMismatch(entry, mirrorTx) === null; // result, kind, token, account
+  prevBytes = bytes;
+}
+```
+
+**You should see** `VERIFIED` with the entry count, and every row passing all three checks. New entries appear within a few seconds, without a reload. A topic whose messages fail a check shows `BROKEN` and the first entry that failed, with the reason.
+
+## What the network refuses
+
+Press **Try to forge an entry**. An account that is not an authorised publisher submits a message to the topic, and the network rejects it with `INVALID_SIGNATURE`. Nothing is added to the trail, and the topic's message count does not change.
+
+<Info>
+HCS guarantees order, timestamps and immutability; it cannot stop an authorised publisher from writing an inaccurate entry. That is why every entry references a transaction the regulator checks independently: an entry claiming a freeze is only `VERIFIED` if a freeze of that token, for that account, exists on the network with that result. What an authorised publisher can still do is write a well-formed entry at the wrong position — and that is what `BROKEN` is for.
+</Info>
+
+## Sign entries as a compliance officer with HashPack
+
+With `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID` set, switch **Signing mode** to **HashPack** and connect a testnet account that is not the Issuer.
+
+1. **Authorise as publisher.** The Issuer reads the wallet's public key from the mirror node and changes the topic's submit key to a key list that accepts either key, signing with the topic's admin key:
+
+   ```typescript
+   // Cumulative: every wallet authorised so far, so the list on the page and the key on
+   // the topic cannot disagree about who may publish.
+   const submitKey = new KeyList([operatorKey.publicKey, ...walletKeys], 1); // threshold 1: any one of them
+   await (await new TopicUpdateTransaction().setTopicId(topicId).setSubmitKey(submitKey).execute(client)).getReceipt(client);
+   ```
+
+2. **Perform an action.** The Issuer still performs the token action on the server and builds the entry with the correct `prev`. HashPack signs and submits the topic message as the payer.
+3. **Confirmation.** The prepared entry is bound to the exact transaction id frozen into the transaction the wallet was handed, and only that id can confirm it. The server then checks, from the mirror node, that the transaction was a message submit to this topic, paid by that wallet, and succeeded — **and** that the bytes now on the topic are the bytes it prepared. Only then does the chain advance.
+
+   A successful transaction from that account is not enough on its own. An older or different message from the same wallet would otherwise advance the chain to the hash of bytes that are not on the topic at all, and every entry after it would fail its `prev` check.
+
+4. **If the wallet does not publish it, the Issuer does.** A declined signature, a submission the network refuses, a mirror node that never shows the transaction: the entry stays queued and the Issuer — always an authorised publisher — publishes it instead. The action happened, so its entry is not optional. Before taking an entry back, the server checks the topic for the prepared bytes, because a confirmation that failed on a slow mirror node must not become a second copy of an entry that did land.
+
+The trail and the regulator feed show the wallet as the publisher of those entries.
+
+The wallet connection follows `@hashgraph/hedera-wallet-connect`: create the provider with `HederaProvider.init({ projectId, metadata })`, pass it to `createAppKit` as `universalProvider` alongside a `HederaAdapter`, and sign by calling `hedera_signAndExecuteTransaction` on that provider with `{ signerAccountId: "hedera:testnet:<accountId>", transactionList: <base64 transaction> }`. The server builds and freezes each transaction with the wallet as payer; the app never holds the wallet's key.
+
+## Going to production
+
+* **The queue lives in memory**: a server restart with entries still queued loses them, though everything that reached the topic stays verifiable. A real desk persists the queue, or derives what is missing by comparing the chain against its own records.
+* **Private payloads**: the topic is public. For sensitive data, publish only a hash of each record and keep the record off-chain, or encrypt entries to the regulator's key.
+* **Admin key**: hold the topic's admin key in a threshold key, so no single person can change who may publish.
+* **Lower latency**: subscribe to the topic over gRPC, or run your own mirror node, instead of polling the REST API.
+* **Shared plumbing**: log the other Finance Workflows to the same topic, such as each DvP settlement or coupon payment.
+* **Custody**: sign with a custody provider or HSM rather than a key in an environment variable.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Create a topic" icon="square-plus" href="/native/consensus/create-topic">
+    Topic keys, memos and options.
+  </Card>
+  <Card title="Submit a message" icon="paper-plane" href="/native/consensus/submit-message">
+    Message size, chunking and receipts.
+  </Card>
+  <Card title="Query the mirror node" icon="magnifying-glass" href="/native/tutorials/consensus/query-mirror-node">
+    Reading topic messages the way the regulator feed does.
+  </Card>
+  <Card title="Scaffold HBAR" icon="layer-group" href="/solutions/tools/scaffold-hbar/index">
+    The CLI and the other templates.
+  </Card>
+</CardGroup>

@@ -2852,7 +2852,8 @@
           {
             "group": "Finance Workflows",
             "pages": [
-              "solutions/finance/settle-dvp"
+              "solutions/finance/settle-dvp",
+              "solutions/finance/permissioned-security"
             ]
           },
           {

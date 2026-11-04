@@ -1,0 +1,160 @@
+---
+title: "Permissioned Security"
+description: "A security token whose compliance rules are keys on the token, enforced by the network, where freezing or wiping a holder takes two officers because every admin key is a 2-of-3 threshold key."
+---
+
+Issue a security token that only approved holders can receive, then freeze one of them under a court order — an action no single officer can carry out, because each of the token's keys is a 2-of-3 threshold key. The rules live on the token and the network applies them. You deploy no contracts.
+
+<Card title="Get the code" icon="github" href="https://github.com/hedera-dev/hedera-finance-templates/tree/templates/permissioned-security">
+  `npx create-scaffold-hbar@latest --template hedera-dev/hedera-finance-templates#templates/permissioned-security`
+</Card>
+
+## Overview
+
+A **permissioned security** is a token with rules about who may hold it. On most chains those rules are contract code you write, deploy and audit. On Hedera they are **keys on the token**:
+
+| Key | What it allows |
+| - | - |
+| KYC | Grant or revoke a holder's permission to receive the token |
+| Freeze | Stop a holder moving it, in either direction |
+| Wipe | Remove a holding |
+| Pause | Stop every transfer of the token |
+| Admin | Change the token's own settings |
+
+The network checks them on every transfer. A holder without KYC cannot receive the token, and no contract has to be asked.
+
+A key does not have to be one key. Hedera's `KeyList` with a threshold is a key made of several keys, any *n* of which satisfy it — so making each of the five a **2-of-3 threshold key** means every admin action needs two officers. That is maker-checker, built from the same primitive as a single key, with no multisig contract.
+
+The desk has three actors:
+
+* **Compliance officers** — three key holders. Officers 1 and 2 are demo keys the server holds; the third is your connected wallet if one is connected before setup, and another demo key otherwise
+* **Holders** — two demo accounts: one granted KYC and sent tokens, one left without it
+* **The court** — you. Choosing an order is what starts the two-officer flow
+
+```text
+Officer 1                     Hedera                        Officer 2
+  |                             |                              |
+  |-- propose freeze ---------->|  schedule created            |
+  |                             |  NOT executed                |
+  |                             |  holder NOT frozen           |
+  |                             |<-- approve ------------------|
+  |                             |  two of three keys: executed |
+  |                             |  holder frozen               |
+```
+
+| Component | Technology |
+| - | - |
+| Token | HTS token with KYC, freeze, wipe, pause and admin keys |
+| Maker-checker | One `KeyList` with threshold 2 over three officer keys |
+| Second signature | `ScheduleCreateTransaction` and `ScheduleSignTransaction` |
+| Reads | Mirror node, for every balance, key and schedule the page shows |
+| Wallet officer | MetaMask through RainbowKit, signing as the third officer |
+| Network | Hedera testnet |
+
+## Prerequisites
+
+* Node.js 20.18.3 or later, and Yarn
+* A Hedera testnet account from the [Hedera Portal](https://portal.hedera.com) with an **ECDSA** key, which becomes the operator
+* A few testnet HBAR. Setup creates a token, three officer keys, two holder accounts funded with 1 HBAR each, and one more account described below
+
+## Configuration
+
+Create `packages/nextjs/.env.local`:
+
+```bash
+HEDERA_OPERATOR_ID=0.0.1234
+HEDERA_OPERATOR_KEY=<ECDSA key: raw hex, or DER-encoded>
+```
+
+```bash
+yarn install
+yarn next:dev   # http://localhost:3000
+```
+
+## Set up the desk
+
+Press **Set up desk**. Four steps run, each reporting as it goes:
+
+1. **Officers** — three keys, and the 2-of-3 `KeyList` built from them
+2. **Token** — `PSEC`, 0 decimals, 10,000 units, with that one key as all five of its keys
+3. **Holders** — two accounts, associated with the token
+4. **Distribute** — grant KYC to Holder A and send it 100
+
+```typescript
+const thresholdKey = new KeyList([officer1.publicKey, officer2.publicKey, officer3.publicKey], 2);
+
+await new TokenCreateTransaction()
+  .setTokenName("Permissioned Security").setTokenSymbol("PSEC")
+  .setDecimals(0).setInitialSupply(10_000)
+  .setKycKey(thresholdKey).setFreezeKey(thresholdKey).setWipeKey(thresholdKey)
+  .setPauseKey(thresholdKey).setAdminKey(thresholdKey)
+  .execute(client);
+```
+
+**You should see** the token id, and five rows under **Keys** each reading `2-of-3 threshold`. The page reads that from the mirror node and decodes the key structure rather than assuming it — the mirror node returns a threshold key as `"_type": "ProtobufEncoded"` with the raw `Key` bytes.
+
+<Note>
+The keys are fixed when the token is created. A token made with a plain key cannot be given a threshold key later without the admin key, which is the point: the control is designed in, not bolted on.
+</Note>
+
+## Send to a holder without KYC
+
+Press **Send 10** on Holder B, which was never granted KYC.
+
+**You should see** `ACCOUNT_KYC_NOT_GRANTED_FOR_TOKEN`, Holder B's balance still `0`, and the refusal in the history. No code in the app checked anything; the transfer was simply refused.
+
+## Run a court order
+
+Choose **Freeze holder** for Holder A, leave the case reference, and press **Propose as Officer 1**.
+
+**You should see** a row under **Pending approvals** with a schedule id — and Holder A **not** frozen. Open the schedule on HashScan: it exists and has not executed. One officer has signed, and one is not enough.
+
+Press **Approve as Officer 2**.
+
+**You should see** Holder A turn `FROZEN`, the row leave the list, and the history name the officer who approved. A **Send 10** to Holder A now returns `ACCOUNT_FROZEN_FOR_TOKEN`.
+
+The same two steps carry **Unfreeze holder**, **Wipe holding** (the balance goes to zero and the supply falls with it), **Pause token** (every transfer returns `TOKEN_IS_PAUSED`) and **Unpause token**. A proposed order can be withdrawn with **Delete**, or left to expire after five minutes.
+
+### Why there is a record account
+
+`CryptoUpdateTransaction` is what the schedule actually carries, not the freeze. Hedera's scheduling whitelist does not include `TokenFreezeAccount`, `TokenUnfreezeAccount`, `TokenPause`, `TokenUnpause` or `TokenAccountWipe`: scheduling any of them fails with `SCHEDULED_TRANSACTION_NOT_IN_WHITELIST` and creates no schedule at all.
+
+So setup creates one more account — the **record account** — whose key is the same 2-of-3 `KeyList` as the token's. An order is proposed by scheduling a memo update on that account. Its key gates that update exactly as the token's key gates a freeze, so the schedule is a genuine two-signature gate with a real id the mirror node can be asked about. The moment it executes, the server builds the real admin transaction, signs it with Officer 1 plus whoever approved, and sends it.
+
+<Warning>
+Build the admin transaction **after** the schedule executes, not before. A Hedera transaction is valid for about three minutes; a real gap between two officers is longer than that, so a transaction frozen at proposal time would expire while it waited.
+</Warning>
+
+## Approve with your wallet
+
+Connect a wallet **before** setup and it becomes Officer 3 — its public key is read from the mirror node and goes into the key list, which cannot change afterwards. Pending orders then offer **Approve as wallet**, and the wallet's own signature is the second of the two.
+
+The server never sees that key. It builds the admin transaction, signs as Officer 1, hands over the bytes to sign, and attaches the signature that comes back. The record schedule is still carried by Officers 1 and 2, because the desk holds those keys and cannot ask a wallet for a second signature mid-flow; the wallet's signature is on the admin transaction, which is the id the history links.
+
+<Note>
+Hedera signs with an ECDSA key over `keccak256(bodyBytes)` and nothing else, which is what the old `eth_sign` method does. Most wallets now refuse `eth_sign`, so this path may not work in yours.
+</Note>
+
+## Going to production
+
+* **Keys with different people.** The network enforces two signatures, but this desk holds Officers 1 and 2, so it can produce both. The separation is what makes it a control, and that means different people or different custody — Dfns, Fireblocks, AWS KMS.
+* **A real reason.** The case reference here is free text. In production an order has a document behind it, and the audit trail workflow in this section is where the record belongs.
+* **KYC from somewhere.** Granting the KYC key's permission says this holder passed; it does not say who decided, or when it expires.
+* **Keep the admin key safe.** It can change the other four. Treat it as the key that owns the token, because it does.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Define a token" icon="key" href="/native/tokens/define">
+    Every key an HTS token can carry, and what each one allows.
+  </Card>
+  <Card title="Scheduled transactions" icon="calendar" href="/learn/core-concepts/transactions/scheduled">
+    Collecting signatures over time, and what can be scheduled.
+  </Card>
+  <Card title="Hedera Token Service" icon="coins" href="/learn/core-concepts/tokens/hts-overview">
+    What HTS is, and what it does without contracts.
+  </Card>
+  <Card title="Scaffold HBAR" icon="layer-group" href="/solutions/tools/scaffold-hbar/index">
+    The CLI and the other templates.
+  </Card>
+</CardGroup>

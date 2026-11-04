@@ -1,0 +1,305 @@
+---
+title: "Bond Coupons"
+description: "A bond contract that pays its own coupons in a stablecoin and schedules the next payment itself through HIP-1215, then repays principal at maturity, with no keepers, bots or off-chain automation."
+---
+
+Issue a bond whose contract pays every coupon on time by itself. Each payment schedules the next one through the [Hedera Schedule Service](/evm/hedera-services/system-contracts/schedule-service), and the last one repays principal. No keeper, bot, cron job or third-party automation network is involved.
+
+<Card title="Get the code" icon="github" href="https://github.com/hedera-dev/hedera-finance-templates/tree/templates/bond-coupons">
+  `npx create-scaffold-hbar@latest --template hedera-dev/hedera-finance-templates#templates/bond-coupons`
+</Card>
+
+## Overview
+
+A **coupon** is the periodic interest a bond pays its holders: a percentage of face value, on a fixed schedule, until maturity, when the final coupon is paid together with the principal. Someone has to make those payments happen on the day. In traditional finance that is a paying agent. On most EVM chains it is a keeper network such as Chainlink Automation, or a bot you run yourself — infrastructure that has to be deployed, funded and monitored, and that pays the coupons *to* the contract's instructions rather than at the contract's own initiative.
+
+On Hedera the contract can schedule itself. The **Hedera Schedule Service** system contract at `0x16b` ([HIP-1215](https://hips.hedera.com/hip/hip-1215)) lets a contract ask the network to call it later:
+
+```solidity
+function scheduleCall(address to, uint256 expirySecond, uint256 gasLimit, uint64 value, bytes memory callData)
+    external returns (int64 responseCode, address scheduleAddress);
+```
+
+The network itself makes that call at the requested consensus second. Nothing off-chain is involved, and **the calling contract is the payer** of its own scheduled executions — so a bond funded with HBAR can keep paying coupons with no outside help. Each payment schedules the next, which makes the schedule self-perpetuating: the only manual step in the bond's whole life is pressing **Start** once.
+
+This template builds a `CouponBond`, deployed through a factory, that pays its coupons in an HTS stablecoin.
+
+The workflow has three actors:
+
+* **Issuer**: the operator account the app runs with. Deploys the factory once, issues bonds, allocates positions, and funds each bond with stablecoin for its coupons and HBAR for its schedules
+* **Investors**: two demo investors the app creates, and optionally your own MetaMask account. They receive coupons and principal without doing anything
+* **Hedera Schedule Service**: calls the bond at each coupon date
+
+The lifecycle:
+
+1. The Issuer issues a bond through the factory: face value, coupon rate per period, period length, number of coupons
+2. The Issuer allocates positions to investors and funds the bond
+3. The Issuer calls `start()`, and the bond schedules coupon 1 for one period from now
+4. At each coupon date the network calls `payCoupon()`, which pays every holder and schedules the next coupon
+5. At the last date the bond pays the final coupon and the principal, and schedules nothing further
+
+```text
+Issuer                    Factory        Bond (CouponBond)       HSS (0x16b)        Investors
+  |                          |                   |                    |                  |
+  |-- createBond(terms) ---->|-- deploys ------->|                    |                  |
+  |                          |                   |-- associate() ---->| (HIP-719)        |
+  |-- allocate(investor, 10) -------------------->|                    |                  |
+  |-- fund: stablecoin + HBAR ------------------->|                    |                  |
+  |-- start() ----------------------------------->|-- scheduleCall --->|  schedule address|
+  |                          |                   |                    |                  |
+  |     (nobody presses anything from here on)   |<-- payCoupon() ----|  at due second   |
+  |                          |                   |-- transfer ----------------------------->|
+  |                          |                   |-- scheduleCall --->|  next coupon     |
+  |                          |                   |<-- payCoupon() ----|  at maturity     |
+  |                          |                   |-- coupon + principal ------------------>|
+```
+
+| Component | Technology |
+| - | - |
+| Bond | `CouponBond`, a Solidity contract holding positions, terms and its own schedule state |
+| Issuance | `CouponBondFactory.createBond`, signed by the Issuer over Hedera's JSON-RPC relay (Hashio) with `viem` |
+| Automation | Hedera Schedule Service system contract at `0x16b`: `hasScheduleCapacity`, `scheduleCall`, `deleteSchedule` |
+| Coupon currency | An HTS fungible token the app creates (`mUSD`, 6 decimals), paid with the ERC-20 interface |
+| Association | The bond associates itself with the stablecoin in its constructor, through [HIP-719](https://hips.hedera.com/hip/hip-719)'s `IHRC719.associate()` |
+| Coupon history | The bond's own events, read from the mirror node |
+| Wallet investor | MetaMask through RainbowKit and wagmi |
+| Network | Hedera testnet |
+
+<Info>
+Coupon periods are set in **minutes** here, from 1 to 60, so a bond's whole life — several coupons and maturity — plays out while you watch. A real bond's periods are months; nothing else about the mechanism changes.
+</Info>
+
+## Prerequisites
+
+* Node.js 20.18.3 or later, and Yarn
+* [Foundry](https://book.getfoundry.sh/getting-started/installation), to compile and deploy the contracts
+* A Hedera testnet account from the [Hedera Portal](https://portal.hedera.com) with an **ECDSA** key. It becomes the Issuer. JSON-RPC transactions are signed with ECDSA, so an ED25519 key cannot be used; the app says so at start.
+* Testnet HBAR on that account. The factory is deployed once; each bond reserves **3 HBAR per coupon** for its scheduled calls, and the desk's setup creates a stablecoin and funds two demo accounts with 1 HBAR each.
+* Optional, for [Receive coupons with MetaMask](#receive-coupons-with-metamask): MetaMask with Hedera testnet (chain id 296) and an ECDSA testnet account holding a little HBAR for gas
+
+## Project structure
+
+```text
+packages/foundry/
+  contracts/CouponBond.sol                      positions, terms, payCoupon, and its own scheduling
+  contracts/CouponBondFactory.sol               createBond, owned by the caller
+  contracts/interfaces/IHederaScheduleService.sol   the 0x16b system contract
+  test/CouponBond.t.sol                         the lifecycle against a mocked schedule service
+  script/DeployCouponFactory.s.sol              deploys the factory
+  scripts-js/deployCouponFactory.mjs            `yarn coupons:deploy`, non-interactive and idempotent
+
+packages/nextjs/
+  app/page.tsx                                  the coupon desk
+  components/coupons/                           SetupCard, IssueBondForm, BondOverviewCard,
+                                                PositionsFundingCard, ScheduleControlsCard,
+                                                CouponHistoryCard, WalletInvestorCard
+  app/api/hedera/coupons/
+    setup/stablecoin|investors/route.ts         create the HTS stablecoin and the demo investors
+    bonds/route.ts                              issue a bond through the factory
+    bonds/[address]/allocate|fund/route.ts      allocate positions, send stablecoin and HBAR
+    bonds/[address]/start|stop|pay-now/route.ts the schedule controls
+    state/route.ts                              the desk's state
+  hooks/coupons/                                useBond, useCouponHistory, useDeskState
+  utils/coupons/constants.ts                    HBAR reserved per coupon, stablecoin decimals
+```
+
+## Configuration
+
+Create `packages/nextjs/.env.local`:
+
+```bash
+# The Issuer. Server-side only, never sent to the browser.
+HEDERA_OPERATOR_ID=0.0.1234
+HEDERA_OPERATOR_KEY=<ECDSA key: raw hex, or DER-encoded ECDSA>
+```
+
+Then install, deploy the factory, and start the app:
+
+```bash
+yarn install
+yarn coupons:deploy   # deploys CouponBondFactory to testnet, once
+yarn next:dev         # http://localhost:3000
+```
+
+`yarn coupons:deploy` signs with `HEDERA_OPERATOR_KEY` rather than the scaffold's encrypted keystore, which would ask for a password no script can answer, and regenerates `packages/nextjs/contracts/deployedContracts.ts` so the app finds the factory. It is idempotent: run again and it reports the factory is already deployed and exits.
+
+**You should see** the factory's address at `#factory-address` on the page, linked to HashScan.
+
+## Set up the desk
+
+Press **Set up desk**. Two idempotent steps run:
+
+1. **The stablecoin.** An HTS fungible token — `Coupon Desk Stablecoin` (`mUSD`), 6 decimals, 10,000,000 minted to the Issuer as treasury.
+2. **Two demo investors.** Each is a fresh ECDSA key turned into an account with `setECDSAKeyWithAlias`, 1 HBAR, and `setMaxAutomaticTokenAssociations(-1)` — unlimited automatic associations, so a coupon can reach them without their ever signing anything.
+
+**You should see** both steps checked at `#setup-step-stablecoin` and `#setup-step-investors`, the token id, and the two investors listed at `#investors` with their default allocations of 10 and 5 units.
+
+## Issue and fund a coupon bond
+
+Fill in the form and press **Issue bond**. Every field starts with a value that works: face value in whole stablecoin, coupon rate between 0.01% and 20% of face value per period, a period of 1 to 60 minutes, and 1 to 12 coupons.
+
+```typescript
+const hash = await walletClient.writeContract({
+  address: factoryEntry.address,
+  abi: factoryEntry.abi,
+  functionName: "createBond",
+  args: [
+    name.trim(),
+    stablecoin.evmAddress,
+    BigInt(faceValue),
+    BigInt(couponRateBps),        // 1% = 100
+    BigInt(periodMinutes * 60),
+    BigInt(couponCount),
+  ],
+  value: 0n,
+  account: walletClient.account!,
+  chain: hederaTestnet,
+});
+```
+
+The factory deploys the bond with the caller as its owner and emits `BondCreated(issuer, bond)`, which the route reads for the new address.
+
+A contract cannot hold an HTS token it has not associated, so the bond associates itself in its constructor and refuses to exist if that fails:
+
+```solidity
+uint256 rc = IHRC719(stablecoin_).associate();
+if (rc != 22) revert AssociateFailed(rc);
+```
+
+**You should see** the bond's EVM address at `#bond-address` and its contract id at `#bond-contract-id`, both linked to HashScan, with status `CREATED` at `#bond-status`.
+
+Then allocate and fund:
+
+* **Allocate** sets each investor's units with `allocate(holder, units)`, which only the Issuer may call and only while the bond is `CREATED`. Positions are read back from the contract, not echoed from the form.
+* **Fund** sends the stablecoin you ask for, and separately whatever HBAR the bond is still missing. The stablecoin figure the card suggests comes from the bond's own `stablecoinNeeded()`: every remaining coupon for every holder, plus principal. The HBAR figure is not a choice — the route computes the shortfall against 3 HBAR per remaining coupon and sends exactly that.
+
+```typescript
+const remainingCoupons = status === 0 ? couponCount : status === 1 ? couponCount - currentCoupon + 1n : 0n;
+const hbarNeeded = parseEther((Number(remainingCoupons) * HBAR_RESERVE_PER_COUPON).toString());
+const hbarShortfall = hbarNeeded > nativeBalance ? hbarNeeded - nativeBalance : 0n;
+```
+
+**You should see** the funding card at `#funding` showing the bond's stablecoin and HBAR balances against what it still needs, and **Start** staying disabled until both the positions and the full HBAR reserve are in place.
+
+## Schedule the coupons
+
+### Step 1: The first schedule
+
+Press **Start**. `start()` moves the bond to `RUNNING`, sets coupon 1 due one period from now, and asks the schedule service for that second:
+
+```solidity
+function _schedule(uint256 at) internal {
+    dueTime = at;
+    uint256 expiry = at + SCHEDULE_FIRING_MARGIN;
+    uint256 gasLimit = COUPON_GAS_BASE + holders.length * COUPON_GAS_PER_HOLDER;
+    for (uint256 i = 0; i < MAX_SCHEDULE_ATTEMPTS; i++) {
+        if (HSS.hasScheduleCapacity(expiry, gasLimit)) {
+            (int64 rc, address scheduleAddress) = HSS.scheduleCall(
+                address(this), expiry, gasLimit, 0, abi.encodeWithSelector(this.payCoupon.selector)
+            );
+            if (rc == HSS_SUCCESS && scheduleAddress != address(0)) {
+                currentSchedule = scheduleAddress;
+                emit CouponScheduled(currentCoupon, scheduleAddress, expiry);
+                return;
+            }
+        }
+        unchecked { expiry++; }
+    }
+    currentSchedule = address(0);
+    emit SchedulingFailed(currentCoupon, at);
+}
+```
+
+Three details of this are worth keeping if you write your own:
+
+* **Capacity is per second.** A given consensus second can only hold so much scheduled gas, so `hasScheduleCapacity` is checked first and the contract walks forward a second at a time, up to `MAX_SCHEDULE_ATTEMPTS`, rather than giving up on a full second.
+* **Gas is sized, not guessed.** `COUPON_GAS_BASE` is 2,000,000 and each holder adds `COUPON_GAS_PER_HOLDER` of 150,000. The `hasScheduleCapacity` and `scheduleCall` pair alone measures about 1.4M gas on testnet: system-contract calls are far pricier than ordinary EVM gas.
+* **The schedule fires a few seconds late on purpose.** `SCHEDULE_FIRING_MARGIN` is 3 seconds, because a transaction's `block.timestamp` reads slightly behind its own consensus time. Asking the network to fire exactly at the due second makes `payCoupon`'s own `block.timestamp < dueTime` guard revert on the first attempt. The margin delays only *when* the call executes; `dueTime`, which the guard checks and the page shows, stays the clean period boundary.
+
+**You should see** status `RUNNING` at `#bond-status`, the pending schedule's address at `#schedule-address`, and the next coupon's due time counting down at `#next-coupon`.
+
+### Step 2: The bond pays and reschedules itself
+
+At the due second the network calls `payCoupon()`. Nobody presses anything. It computes what each holder is owed, pays them in the stablecoin, and schedules the next coupon:
+
+```solidity
+uint256 nextDue = dueTime + periodSeconds;   // captured before _schedule overwrites dueTime
+uint256 totalPaid;
+for (uint256 i = 0; i < n; i++) {
+    if (amounts[i] == 0) continue;
+    if (!stablecoin.transfer(holders[i], amounts[i])) revert TransferFailed();
+    totalPaid += amounts[i];
+}
+
+if (isLast) {
+    status = Status.MATURED;
+    currentSchedule = address(0);
+    emit PrincipalRepaid(coupon, totalPaid);
+} else {
+    currentCoupon = coupon + 1;
+    emit CouponPaid(coupon, totalPaid);
+    _schedule(nextDue);
+}
+```
+
+A coupon is `units * faceValue * couponRateBps / 10_000`, scaled by the stablecoin's decimals. `payCoupon` is deliberately callable by anyone once the coupon is due — the schedule service is the expected caller, but the **Pay now** button at `#pay-now` calls the same function, which is how you catch up a coupon whose scheduling failed.
+
+**You should see** investor balances rise at each coupon date without any action, and each payment appear in the history at `#coupons`. That history is read from the bond's `CouponPaid`, `CouponMissed` and `PrincipalRepaid` events on the mirror node (`/api/v1/contracts/{address}/results/logs`), so it shows what the network recorded rather than what the app remembers.
+
+### Step 3: Maturity
+
+The last coupon pays interest **and** principal in the same call, sets the status to `MATURED`, clears the pending schedule and schedules nothing further. `stablecoinNeeded()` then returns 0, because nothing more will ever be paid.
+
+**You should see** status `MATURED`, no next coupon, and each investor holding their coupons plus `units * faceValue`.
+
+## When a coupon cannot be paid
+
+The interesting cases are the ones where the bond is not in a position to pay, and none of them lose a coupon:
+
+* **Underfunded.** If the bond's stablecoin balance is below what the coupon needs, it emits `CouponMissed`, schedules the same coupon one period later, and leaves the coupon index where it is. Fund it and the retry pays. Nothing is skipped or silently dropped.
+* **No capacity.** If ten consecutive seconds are all full, `_schedule` gives up and emits `SchedulingFailed` with the intended due time — but `dueTime` is still set, so the coupon is due and **Pay now** pays it and schedules the next one.
+* **Stopping.** The Issuer can call `stop()`, which deletes the pending schedule through `deleteSchedule(currentSchedule)` and moves the bond to `STOPPED`. A schedule that cannot be deleted reverts with `DeleteScheduleFailed(responseCode)` rather than leaving the bond in a state its status does not describe.
+
+The contract's own test suite drives each of these against a mocked schedule service, including a missed coupon retried a period later and capacity being restored:
+
+```bash
+yarn foundry:test
+```
+
+## Receive coupons with MetaMask
+
+The demo investors are accounts with unlimited automatic associations, which is convenient and not how a real holder's account usually looks. Your own wallet shows the honest path.
+
+1. Connect MetaMask and switch it to Hedera testnet. The page says what to do next at `#wallet-state`.
+2. Press **Add my wallet as an investor** at `#add-wallet-investor`. Your address joins the holders list and can be allocated units like any other.
+3. Because your account does not associate tokens automatically, press **Associate stablecoin** at `#associate-stablecoin`. MetaMask signs an `associate()` call on the token's own HIP-719 interface — the token address *is* the contract.
+4. Allocate units to your wallet before the bond starts, and the coupons arrive in it on their own.
+
+<Warning>
+Allocations can only be set while the bond is `CREATED`. Add your wallet and allocate it units before pressing **Start**, or issue a second bond for it.
+</Warning>
+
+## Going to production
+
+* **Real periods and conventions.** Months rather than minutes, and a day-count convention (30/360, ACT/365) instead of a flat rate per period. Interest between coupon dates needs accrual, and a record date decides who is paid when positions move.
+* **Holders at scale.** This bond pushes payments to at most `MAX_HOLDERS` (10) holders in one call, because every transfer happens inside a single scheduled execution with a gas limit. Beyond a handful, make coupons pull-based — the bond records what each holder is owed and holders claim it — or pay in batches across several schedules.
+* **A real stablecoin.** The desk mints its own `mUSD`. In production the coupon currency is an issued stablecoin with its own treasury, and the bond holds no minting power over it.
+* **Funding monitoring.** The bond pays its own schedules from its HBAR balance and its coupons from its stablecoin balance. Both need watching: `CouponMissed` and `SchedulingFailed` are the events to alert on.
+* **Transferable positions.** Positions here are a mapping the Issuer sets. A bond whose holders trade needs the position to be a token — see the tokenised bond template for an ERC-1400 security with an allowlist, and give its holders coupons the same way.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Hedera Schedule Service" icon="clock" href="/evm/hedera-services/system-contracts/schedule-service">
+    The system contract this bond calls, with every function and its costs.
+  </Card>
+  <Card title="Schedule contract calls" icon="graduation-cap" href="/evm/tutorials/hedera/hss-evm/part1-schedule-calls">
+    A tutorial that builds up to a self-scheduling contract from scratch.
+  </Card>
+  <Card title="Scheduled transactions" icon="calendar" href="/learn/core-concepts/transactions/scheduled">
+    What a schedule is natively, beneath the system contract.
+  </Card>
+  <Card title="Scaffold HBAR" icon="layer-group" href="/solutions/tools/scaffold-hbar/index">
+    The CLI and the other templates.
+  </Card>
+</CardGroup>

@@ -2854,6 +2854,7 @@
             "pages": [
               "solutions/finance/settle-dvp",
               "solutions/finance/hcs-audit-trail",
+              "solutions/finance/ats-bond",
               "solutions/finance/permissioned-security"
             ]
           },

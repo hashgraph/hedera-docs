@@ -270,7 +270,7 @@ Now, you (Operator) transfer 21 HBAR to the contract by calling a specific contr
 
 In this scenario, **_contractParamsBuilderFcn_** is used to build the parameters that will be passed to the contract function – that is, the contract and token IDs which are then converted to Solidity addresses.
 
-From the Solidity code, note that the **_tokenAssociate_** function associates the contract to the HTS token from the first step, and requires more than 20 HBAR to execute (just for fun).
+From the Solidity code, note that the **_tokenAssociate_** function associates the contract to the HTS token from the first step, and requires more than 20 HBAR to execute (just for fun). Inside the contract, `msg.value` is in tinybars, so the `2000000000` in the check is 20 HBAR (1 HBAR = 10⁸ tinybars). The SDK's `.setPayableAmount()` takes HBAR, so the `payableAmt` of 21 arrives in the contract as 2,100,000,000 tinybars.
 
 ```javascript
 // Transfer HBAR to the contract using .setPayableAmount SPECIFYING a contract function (tokenAssociate)
@@ -375,7 +375,7 @@ async function hbar2ContractSdkFcn(sender, receiver, amount, pKey) {
 
 ## **Getting HBAR from the Contract**
 
-In this section the contract transfers HBAR to Alice using three different methods: **_transfer_**, **_send_**, **_call_**. Each transfer is of 20 HBAR, so by the end the contract should have 1 HBAR left in its balance.
+In this section the contract transfers HBAR to Alice using three different methods: **_transfer_**, **_send_**, **_call_**. Each transfer is of 20 HBAR, so by the end the contract should have 1 HBAR left in its balance. The contract functions take `_amount` in tinybars, so **_contractParamsBuilderFcn_** passes `amountHbar * 1e8`.
 
 This tutorial focuses on implementation. For additional background and details of these Solidity methods, check out [Solidity by Example](https://solidity-by-example.org/sending-ether/) and [this external article](https://medium.com/daox/three-methods-to-transfer-funds-in-ethereum-by-means-of-solidity-5719944ed6e9) – just remember that on Hedera, the native cryptocurrency transacted is HBAR, not ETH. One thing worth noting from those resources is that **_call_** is currently the recommended method to use.
 

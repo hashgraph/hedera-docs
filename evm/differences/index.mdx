@@ -41,9 +41,9 @@ The following topics cover the most common differences when coming from Ethereum
 
 | **Topic** | **Description** |
 |---|---|
-| [Hedera Account Model & Aliases](/evm/differences/accounts-and-keys#understanding-account-models-and-aliases) | How Hedera's account structure differs from Ethereum's: ED25519 vs. ECDSA keys, dynamic key rotation, and aliases for EVM compatibility. |
+| [Hedera Account Model & Aliases](/evm/differences/accounts-and-keys#understanding-account-models-and-aliases) | How Hedera's account structure differs from Ethereum's: ED25519 vs. ECDSA keys, account IDs, and EVM addresses. |
 | [Decimal Handling](/evm/differences/hbar-decimals) | How to handle the difference between EVM's 18-decimal standard and Hedera's 8 decimals for accurate token calculations and conversions. |
-| [Key Rotation](/evm/differences/accounts-and-keys#key-rotation-adapting-to-hederas-dynamic-model) | Strategies for designing smart contracts that work with Hedera's dynamic key rotation model. |
+| [Key Updates and EVM Addresses](/evm/differences/accounts-and-keys#key-updates-and-evm-addresses) | Why the EVM Address from Public Key does not change when keys are updated, and how to recover by migrating to a new account. |
 | [HBAR Transfers](/evm/differences/native-token-transfers) | Explicit handling of HBAR in Solidity contracts for native token flows. |
 | [JSON-RPC Relay](/evm/differences/json-rpc-differences) | How Hedera's JSON-RPC relay differs from standard EVM RPC APIs. |
 

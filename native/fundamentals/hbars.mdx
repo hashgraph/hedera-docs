@@ -266,10 +266,12 @@ hedera.HbarFrom(100, hedera.HbarUnits.Tinybar)
 
 ## HBAR decimal places
 
-The decimal precision of ***HBAR*** varies across the different Hedera APIs. While HAPI, JSON-RPC Relay, and Hedera Smart Contract Service (EVM) provide 8 decimal places, the **`msg.value`** in JSON-RPC Relay provides 18 decimal places.
+HBAR is counted in tinybars (8 decimals) everywhere inside the network, including inside the EVM. Only the JSON-RPC relay uses 18 decimals, so that Ethereum wallets and libraries work unchanged.
 
-<table><thead><tr><th>API</th><th>Decimal</th></tr></thead><tbody><tr><td>Hedera API (HAPI) (Crypto + SCS Service (<code>msg.value</code>))</td><td>8</td></tr><tr><td>Hedera Smart Contract Service (EVM)</td><td>8</td></tr><tr><td>JSON RPC Relay (passed as arguments)</td><td>8</td></tr><tr><td>JSON RPC Relay (<code>msg.value</code>)</td><td>18</td></tr></tbody></table>
+| Where the value appears | Decimals |
+| --- | --- |
+| Hedera API (HAPI) and SDKs | 8 (tinybars) |
+| Inside Solidity: `msg.value`, `address.balance` | 8 (tinybars) |
+| JSON-RPC wire: transaction `value`, `eth_getBalance`, `eth_gasPrice` | 18 (weibars, 1 tinybar = 10¹⁰ weibars) |
 
-<Warning>
-***Note:** The JSON-RPC Relay **`msg.value`** uses 18 decimals when it returns HBAR. As a result, the **`gasPrice`** also uses 18 decimal places since it is only utilized from the JSON-RPC Relay.*
-</Warning>
+When an Ethereum transaction executes, the network divides its `value` by 10¹⁰ before the EVM runs, so a contract never sees the 18-decimal value. See [HBAR decimal places](/evm/differences/hbar-decimals) for the full rules.

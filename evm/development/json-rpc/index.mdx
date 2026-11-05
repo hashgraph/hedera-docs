@@ -7,7 +7,7 @@ The [Hiero JSON-RPC Relay](https://github.com/hiero-ledger/hiero-json-rpc-relay)
 
 ## HBAR decimal places
 
-The Hiero JSON RPC Relay **`msg.value`** uses `18 decimals` when it returns HBAR. As a result, the **`gasPrice`** value returns 18 decimal places since it is only utilized from the JSON RPC Relay. Refer to the [HBAR page](/native/fundamentals/hbars) for a list of Hiero APIs and the decimal places they return.
+The Hiero JSON RPC Relay uses 18 decimals (weibars) for HBAR on the wire: a transaction's `value`, `eth_getBalance`, and `eth_gasPrice`. Inside the EVM, `msg.value` and `address.balance` are in tinybars (8 decimals), because the network divides the transaction `value` by 10¹⁰ before the contract runs. See [HBAR decimal places](/evm/differences/hbar-decimals).
 
 ## JSON RPC Relay Options for the Hedera Network
 
@@ -137,7 +137,7 @@ The endpoints for previewnet, testnet, and mainnet can be found on [Hashio](http
 </Accordion>
 
 <Accordion title="How does Hedera handle decimals in HBAR and gas prices?">
-The JSON-RPC Relay `msg.value` uses 18 decimals when it returns HBAR. The `gasPrice` value also returns 18 decimal places. *Check out the* [*HBAR page*](/native/fundamentals/hbars) *for the full list of Hedera APIs and their decimal representation.*
+The JSON-RPC Relay uses 18 decimals (weibars) for a transaction's `value`, `eth_getBalance`, and `eth_gasPrice`. Inside a contract, `msg.value` is in tinybars (8 decimals). See [HBAR decimal places](/evm/differences/hbar-decimals) for the full list.
 </Accordion>
 
 <Accordion title="How can I contribute or log errors?">

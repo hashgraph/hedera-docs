@@ -222,7 +222,7 @@ In Ethereum, these functions act as "catch-all" mechanisms when a contract recei
 #### Impacted Variables
 
 * **`msg.sender`:** The address initiating the contract call.
-* **`msg.value`:** The amount of HBAR sent along with the call.
+* **`msg.value`:** The amount of HBAR sent along with the call, in tinybars (1 HBAR = 10⁸ tinybars), not wei. See [Decimal Handling](/evm/differences/hbar-decimals).
 
 #### Key Points
 

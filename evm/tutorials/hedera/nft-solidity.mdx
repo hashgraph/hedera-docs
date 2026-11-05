@@ -42,7 +42,7 @@ The following contract is composed of three functions:
 * `mintNft`
 * `transferNft`
 
-The important thing to know is that the NFT created in this example will have the contract itself as **Treasury Account, Supply Key,** and **Auto-renew account**. There’s **NO** admin key for the NFT or the contract.
+The important thing to know is that the NFT created in this example will have the contract itself as **Treasury Account, Supply Key,** and **Auto-renew account**. There’s **NO** admin key for the NFT or the contract. Because the contract holds the supply key and the treasury, the three functions use an `onlyOwner` modifier: only the account that deployed the contract (your operator account) can create, mint, or transfer. Without that check, any account could mint new NFTs or move NFTs out of the treasury.
 
 <CodeGroup>
 
@@ -58,13 +58,25 @@ import "./KeyHelper.sol";
 
 contract NFTCreator is ExpiryHelper, KeyHelper, HederaTokenService {
 
+    // The account that deployed the contract. Only it can create, mint, and transfer.
+    address public owner;
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not owner");
+        _;
+    }
+
     function createNft(
             string memory name, 
             string memory symbol, 
             string memory memo, 
             int64 maxSupply,  
             int64 autoRenewPeriod
-        ) external payable returns (address){
+        ) external payable onlyOwner returns (address){
 
         IHederaTokenService.TokenKey[] memory keys = new IHederaTokenService.TokenKey[](1);
         // Set this contract as supply for the token
@@ -92,7 +104,7 @@ contract NFTCreator is ExpiryHelper, KeyHelper, HederaTokenService {
     function mintNft(
         address token,
         bytes[] memory metadata
-    ) external returns(int64){
+    ) external onlyOwner returns(int64){
 
         (int response, , int64[] memory serial) = HederaTokenService.mintToken(token, 0, metadata);
 
@@ -107,7 +119,7 @@ contract NFTCreator is ExpiryHelper, KeyHelper, HederaTokenService {
         address token,
         address receiver, 
         int64 serial
-    ) external returns(int){
+    ) external onlyOwner returns(int){
 
         int response = HederaTokenService.transferNFT(token, address(this), receiver, serial);
 

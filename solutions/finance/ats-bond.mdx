@@ -17,7 +17,7 @@ A **tokenised bond** is a debt security recorded as a token: it has an ISIN, a f
 
 * A **factory** creates each bond as a new [Diamond (EIP-2535)](https://eips.ethereum.org/EIPS/eip-2535) proxy. One call to `deployBond` gives you a complete security: roles, control lists, maturity, nominal value, corporate-action support.
 * A **Business Logic Resolver** holds the shared, audited logic every bond points to, by configuration and version. Bonds get upgrades without being redeployed.
-* Each bond implements **ERC-1400**, the security-token standard: ERC-20 compatible, with issuance controlled by roles and transfers checked against compliance rules.
+* Each bond implements **ERC-1400**, the security-token standard: ERC-20 compatible, with issuance controlled by roles and transfers checked against compliance rules. ATS also carries partial [ERC-3643](/support/glossary#erc-3643) support by default, and full ERC-3643 integration is available by naming a compliance contract and an identity registry when the bond is created. This template leaves both unset and gates holders with the bond's own allowlist instead, so there is no identity infrastructure to deploy first; see the [ATS FAQ](/solutions/tokenization/ats/faq) for what full integration adds.
 
 You deploy no contracts of your own. The learner's only on-chain step is the factory call, and everything after it is a call on the bond.
 
@@ -143,7 +143,7 @@ const bondData = {
     isWhiteList: true,          // the control list is an allowlist: only listed accounts may hold
     isControllable: true,
     externalPauses: [], externalControlLists: [], externalKycLists: [],
-    compliance: zeroAddress, identityRegistry: zeroAddress,
+    compliance: zeroAddress, identityRegistry: zeroAddress,  // the ERC-3643 hooks, unused here
     arePartitionsProtected: false, isMultiPartition: false,
     clearingActive: false, internalKycActivated: false, erc20VotesActivated: false,
   },

@@ -3,11 +3,15 @@ title: "Permissioned Security"
 description: "A security token whose compliance rules are keys on the token, enforced by the network, where freezing or wiping a holder takes two officers because every admin key is a 2-of-3 threshold key."
 ---
 
+import FinanceTemplateDisclaimer from '/snippets/finance-template-disclaimer.mdx';
+
 Issue a security token that only approved holders can receive, then freeze one of them under a court order — an action no single officer can carry out, because each of the token's keys is a 2-of-3 threshold key. The rules live on the token and the network applies them. You deploy no contracts.
 
 <Card title="Get the code" icon="github" href="https://github.com/hedera-dev/hedera-finance-templates/tree/templates/permissioned-security">
   `npx create-scaffold-hbar@latest --template hedera-dev/hedera-finance-templates#templates/permissioned-security`
 </Card>
+
+<FinanceTemplateDisclaimer />
 
 ## Overview
 
@@ -135,7 +139,7 @@ The server never sees that key. It builds the admin transaction, signs as Office
 Hedera signs with an ECDSA key over `keccak256(bodyBytes)` and nothing else, which is what the old `eth_sign` method does. Most wallets now refuse `eth_sign`, so this path may not work in yours.
 </Note>
 
-## Going to production
+## What this template simplifies
 
 * **Keys with different people.** The network enforces two signatures, but this desk holds Officers 1 and 2, so it can produce both. The separation is what makes it a control, and that means different people or different custody — Dfns, Fireblocks, AWS KMS.
 * **A real reason.** The case reference here is free text. In production an order has a document behind it, and the audit trail workflow in this section is where the record belongs.

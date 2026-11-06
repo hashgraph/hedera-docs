@@ -3,11 +3,15 @@ title: "HCS Audit Trail"
 description: "Log every lifecycle action on a security token to a Hedera Consensus Service topic that only authorised publishers can write to, and give a regulator a live, self-verifying feed read straight from the mirror node."
 ---
 
+import FinanceTemplateDisclaimer from '/snippets/finance-template-disclaimer.mdx';
+
 Record every compliance-relevant action on a security token (issuance, KYC, transfers, freezes) in an append-only log that no one can rewrite, reorder or quietly skip. Then give a regulator a live feed they verify themselves, with no access to your systems.
 
 <Card title="Get the code" icon="github" href="https://github.com/hedera-dev/hedera-finance-templates/tree/templates/hcs-audit-trail">
   `npx create-scaffold-hbar@latest --template hedera-dev/hedera-finance-templates#templates/hcs-audit-trail`
 </Card>
+
+<FinanceTemplateDisclaimer />
 
 ## Overview
 
@@ -225,7 +229,7 @@ The trail and the regulator feed show the wallet as the publisher of those entri
 
 The wallet connection follows `@hashgraph/hedera-wallet-connect`: create the provider with `HederaProvider.init({ projectId, metadata })`, pass it to `createAppKit` as `universalProvider` alongside a `HederaAdapter`, and sign by calling `hedera_signAndExecuteTransaction` on that provider with `{ signerAccountId: "hedera:testnet:<accountId>", transactionList: <base64 transaction> }`. The server builds and freezes each transaction with the wallet as payer; the app never holds the wallet's key.
 
-## Going to production
+## What this template simplifies
 
 * **The queue lives in memory**: a server restart with entries still queued loses them, though everything that reached the topic stays verifiable. A real desk persists the queue, or derives what is missing by comparing the chain against its own records.
 * **Private payloads**: the topic is public. For sensitive data, publish only a hash of each record and keep the record off-chain, or encrypt entries to the regulator's key.

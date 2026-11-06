@@ -3,11 +3,15 @@ title: "DvP Settlement"
 description: "Settle a security against a stablecoin on Hedera in a single native transfer: both legs move together or neither does, now or at a set time, with KYC enforced by the network, no escrow contract, and every trade event logged to HCS."
 ---
 
+import FinanceTemplateDisclaimer from '/snippets/finance-template-disclaimer.mdx';
+
 The page runs that trade on testnet. Propose it, have the buyer sign, and both balances move together. One buyer has no KYC, so you can also watch the network reject the trade and leave every balance where it was.
 
 <Card title="Get the code" icon="github" href="https://github.com/hedera-dev/hedera-finance-templates/tree/templates/dvp-settlement">
   `npx create-scaffold-hbar@latest --template hedera-dev/hedera-finance-templates#templates/dvp-settlement`
 </Card>
+
+<FinanceTemplateDisclaimer />
 
 ## Overview
 
@@ -323,7 +327,7 @@ const result = await provider.hedera_signAndExecuteTransaction({
 });
 ```
 
-## Going to production
+## What this template simplifies
 
 * **Real stablecoin**: replace the app's stablecoin with USDC (`0.0.456858` on mainnet).
 * **Real KYC**: grant KYC from your identity provider's decision rather than at setup.

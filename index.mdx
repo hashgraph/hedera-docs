@@ -84,57 +84,36 @@ import { PlaygroundShowcase } from '/snippets/showcases/playground-showcase.jsx'
 </div>
 
 
-{/* ── AI STUDIO SPOTLIGHT ─────────────────────────────────────────────── */}
-<a href="/solutions/ai/index" className="ai-spotlight" aria-label="Hedera AI Studio: open-source toolkit bridging artificial intelligence and Hedera">
+{/* ── AI PATHS ─────────────────────────────────────────────────────────── */}
+{/* Two cards, one per audience. Each card has one stretched link
+    (.ai-path-link) that makes the whole card clickable; the AI Studio pill,
+    Copy button, and Docs MCP link sit above it. Only Build AI agents carries
+    the AI Studio pill: Scaffold HBAR, Hedera Skills, and the Docs MCP Server
+    are not part of AI Studio. */}
+<div className="ai-paths">
 
-  {/* Left: round H badge + title, subtitle below */}
-  <div className="ai-spotlight-head">
-    <div className="ai-spotlight-titlerow">
-      <img className="ai-spotlight-badge ai-spotlight-badge--white" src="/images/logos/hedera-con-white.svg" alt="Hedera" />
-      <img className="ai-spotlight-badge ai-spotlight-badge--dark" src="/images/logos/hedera-con-dark.svg" alt="Hedera" />
-      <div className="ai-spotlight-title">Hedera AI Studio</div>
-    </div>
-    <div className="ai-spotlight-subtitle">Open-source toolkit bridging artificial intelligence and Hedera</div>
+  <div className="ai-path ai-path--agents">
+    <span className="ai-path-head">
+      <span className="ai-path-title">Build AI agents</span>
+      <a href="/solutions/ai/index" className="ai-path-pill">
+        <svg viewBox="0 0 1200 1200" aria-hidden="true" focusable="false"><path fill="currentColor" d="M431.22,556.89h337.64v86.23h-337.64v-86.23ZM1200,600c0,331.37-268.63,600-600,600S0,931.37,0,600,268.63,0,600,0s600,268.63,600,600ZM847.9,330.54h-79.04v168.86h-337.64l-.09.09v-168.95h-79.04v538.92h79.04v-169l.09.14h337.64v168.86h79.04V330.54Z"/></svg>
+        Hedera AI Studio
+      </a>
+    </span>
+    <span className="ai-path-desc">Open source tools for AI agents and agentic commerce.</span>
+    <a href="/solutions/ai/agent-kit/index" className="ai-path-btn ai-path-link">Build your first agent →</a>
   </div>
 
-  {/* 5 icons — inline SVG (recolored via currentColor) so they render in the
-      Mintlify production build; CSS mask-image was stripped on deploy */}
-  <div className="ai-spotlight-features">
+  <div className="ai-path ai-path--code">
+    <span className="ai-path-head">
+      <a href="/learn/getting-started/mcp-setup" className="ai-path-title ai-path-link">Develop with AI</a>
+    </span>
+    <span className="ai-path-desc">Connect your AI coding assistant to the Docs MCP Server.</span>
 
-    <div className="ai-spotlight-feature">
-      <svg className="ai-spotlight-ico" viewBox="8 8 32 32" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect x="13" y="13" width="22" height="22" rx="3"/><path d="M19 13V8 M29 13V8 M19 35v5 M29 35v5 M13 19H8 M13 29H8 M35 19h5 M35 29h5"/><path d="M16 30 L19.5 18 L23 30 M17 26.5 H22"/><path d="M27 18 V30"/></svg>
-      <span className="ai-spotlight-caption">Modular tools to build AI agents</span>
-    </div>
-
-    <div className="ai-spotlight-feature">
-    <svg className="ai-spotlight-ico" viewBox="120 120 202 202" fill="currentColor"><path d="m220.2 139.3 70.2 40.5v81.1l-70.2 40.5-70.2-40.5v-81.1l70.2-40.5m0-19.6L133 170.1v100.7l87.2 50.4 87.2-50.4V170.1l-87.2-50.3Z"/><path d="M273.6 220h-17v-15.5l-37.7-24.3-29.1 15.8-8.1-15 37.9-20.5 54 34.7V220z"/></svg>
-    <span className="ai-spotlight-caption">Connect AI agents seamlessly</span>
-    </div>
-
-    <div className="ai-spotlight-feature">
-      <svg className="ai-spotlight-ico" viewBox="99 99 242 242" fill="currentColor"><path d="M324,134.4v170.6H116.3v-170.6h207.7M341,117.3H99.3v204.7h241.7V117.3h0Z"/><polygon points="177.6 263.6 133.7 222.2 179 176.9 191.1 188.9 158.1 221.8 189.3 251.2 177.6 263.6"/><polygon points="263.5 263 250.7 251.8 279.6 218.7 249.8 188.9 261.8 176.9 302.9 218 263.5 263"/><rect x="193.8" y="210.4" width="54.9" height="17" transform="translate(-90 215.1) rotate(-44)"/></svg>
-      <span className="ai-spotlight-caption">Build with LangChain, Vercel AI SDK, and Google ADK</span>
-    </div>
-
-    <div className="ai-spotlight-feature">
-      <svg className="ai-spotlight-ico" viewBox="83 83 274 274" fill="currentColor"><polygon points="213.14 226.67 196.2 209.73 184.17 221.75 213.14 250.72 256.18 207.68 244.16 195.65 213.14 226.67"/><path d="M296.72,211.67c-3.95-35.76-32.47-64.22-68.26-68.07v-60.57h-17.01v60.62c-35.59,4.03-63.89,32.4-67.82,68.01h-60.81v17.01h60.81c3.94,35.69,32.35,64.1,68.04,68.04v60.6h17.01v-60.6c35.69-3.94,64.1-32.35,68.04-68.04h60.37v-17.01h-60.37ZM220.18,280.2c-33.09,0-60.02-26.92-60.02-60.02s26.92-60.02,60.02-60.02,60.02,26.92,60.02,60.02-26.92,60.02-60.02,60.02Z"/><path d="M175.77,136.36l-39.23-39.23-39.23,39.23,39.23,39.23,39.23-39.23ZM136.54,121.17l15.18,15.18-15.18,15.18-15.18-15.18,15.18-15.18Z"/><path d="M264.95,304l39.23,39.23,39.23-39.23-39.23-39.23-39.23,39.23ZM304.19,319.18l-15.18-15.18,15.18-15.18,15.18,15.18-15.18,15.18Z"/><path d="M342.61,136.36l-39.23-39.23-39.23,39.23,39.23,39.23,39.23-39.23ZM303.38,121.17l15.18,15.18-15.18,15.18-15.18-15.18,15.18-15.18Z"/><path d="M97.31,304l39.23,39.23,39.23-39.23-39.23-39.23-39.23,39.23ZM136.54,319.18l-15.18-15.18,15.18-15.18,15.18,15.18-15.18,15.18Z"/></svg>
-      <span className="ai-spotlight-caption">Modular plugin system</span>
-    </div>
-
-    <div className="ai-spotlight-feature">
-      <svg className="ai-spotlight-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2l8.66 5v10L12 22 3.34 17V7L12 2z"/>
-        <circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/>
-        <path d="M12 12V2M12 12l8.66-5M12 12l8.66 5M12 12V22M12 12l-8.66 5M12 12L3.34 7"/>
-      </svg>
-      <span className="ai-spotlight-caption">Hedera Network MCP and x402 payments</span>
-    </div>
-
+    <a href="/learn/getting-started/mcp-setup" className="ai-path-btn ai-path-link">Connect to the docs MCP →</a>
+  
   </div>
-
-  <span className="ai-spotlight-footer">Explore AI Studio →</span>
-</a>
-
+</div>
 
 {/* ── EXPLORE THE DOCS ─────────────────────────────────────────────────── */}
 <div className="landing-section">
@@ -323,8 +302,8 @@ import { PlaygroundShowcase } from '/snippets/showcases/playground-showcase.jsx'
         <img src="/images/brand-icons/icon-white-ai-studio.svg" alt="" aria-hidden="true" />
       </div>
       <div>
-        <div className="landing-card-title">MCP Server</div>
-        <div className="landing-card-desc">Connect AI assistants like Claude and Cursor to Hedera with the Model Context Protocol server.</div>
+        <div className="landing-card-title">Docs MCP Server</div>
+        <div className="landing-card-desc">Search the Hedera docs from Claude, Cursor, and other AI tools.</div>
       </div>
     </a>
 

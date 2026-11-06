@@ -1,72 +1,67 @@
 ---
 title: "AI Studio on Hedera"
 sidebarTitle: AI Studio
-description: "Hedera AI Studio is an open-source toolkit for building verifiable, transparent AI agents that transact on Hedera using natural language and HCS."
+description: "Hedera AI Studio provides open source tools for AI agents and agentic commerce: build agents with the Agent Kit, connect AI clients through the Network MCP Server, and send or accept agent payments with x402."
 ---
 
 
 <div className="not-prose">
-  <a href="https://ai-bounties.hedera.com/" target="_blank" rel="noopener noreferrer" className="ai-bounty-bar">
+  <a href="https://hedera.com/agentic-payments-partner-program/" target="_blank" rel="noopener noreferrer" className="ai-bounty-bar">
     <span className="ai-bounty-bar-dot"></span>
-    <span className="ai-bounty-bar-text"><strong>AI Studio Bounty</strong> has wrapped up. See ai-bounties.hedera.com for entries and winners.</span>
-    <span className="ai-bounty-bar-cta">Enter →</span>
+    <span className="ai-bounty-bar-text"><strong>Agentic Payments Partner Program:</strong> Build proof-of-concept payment-enabled agents with the AI Studio team and get early access to agent-building tools.</span>
+    <span className="ai-bounty-bar-cta">Sign up →</span>
   </a>
 </div>
 
-[Hedera AI Studio](https://hedera.com/ai-studio) is a set of open-source tools built to enable developers to  create and deploy of verifiable AI agents on the Hedera network. Theis studio provides developers with intuitive tools  to build intelligent, transparent, and automated AI workflows with minimal effort.
+[Hedera AI Studio](https://hedera.com/ai-studio) provides open source tools for AI agents and agentic commerce. It includes the [Hedera Agent Kit](/solutions/ai/agent-kit/index), [Agent Lab](/solutions/ai/agent-lab), [Agent Builder](https://portal.hedera.com/agent-lab#build), the [Network MCP Server](/solutions/ai/hosted-mcp-server), and support for [x402](/solutions/ai/x402/index) payments on Hedera. Build AI agents that run transparently and verifiably on the Hedera network, use Hedera Consensus Service (HCS), Hedera Token Service (HTS), and other network services, and transact through natural language.
 
-<Frame>
-  <img src="/images/open-source-solutions/ai-studio-on-hedera/ai-studio-on-hedera-1.webp" />
-</Frame>
 
-AI Studio enables developers build AI agents that run transparently and verifiably on the Hedera network. Using Hedera Consensus Service (HCS), Hedera Token Service (HTS), Hedera network functions, and more. AI Studio enables developers and user to build agents that transact on the Hedera network with natural language.
+## What you can do with AI Studio
 
-## Key Components
-
-<Columns cols={2}>
+<Columns cols={1}>
   <Card
-    title="Hedera Agent Kit"
-    href="/solutions/ai/agent-kit"
+    title="Build an agent"
+    icon="robot"
+    href="/solutions/ai/agent-kit/index"
     arrow
-  >  </Card>
-   <Card
-    title="Agent Lab"
-    href="https://portal.hedera.com/agent-lab#code"
-    arrow
-  >  </Card>
+  >
+    Open source Agent Kit for JavaScript and Python, with hooks and policies, plus Agent Lab and no-code Agent Builder.
+  </Card>
   <Card
-    title="Agent Builder"
-    href="https://portal.hedera.com/agent-lab#build"
-    arrow
-  > </Card>
-  <Card
-    title="Hosted Network MCP"
+    title="Connect an AI client"
+    icon="plug"
     href="/solutions/ai/hosted-mcp-server"
     arrow
-  >  </Card>
+  >
+    Connect MCP clients with OAuth 2.1 to Hedera tools on testnet through the Network MCP Server. Non-custodial: your wallet signs each transaction.
+  </Card>
   <Card
-    title="x402 Payment Standard"
-    href="/solutions/ai/x402"
+    title="Send or accept agent payments"
+    icon="credit-card"
+    href="/solutions/ai/x402/index"
     arrow
-  >  </Card>
+  >
+    Settle per-request HTTP payments in HBAR or HTS tokens with x402, through Hedera's `exact` scheme.
+  </Card>
 </Columns>
 
-## Getting Started
 
-With the AI Studio, developers can use the SDK to build agents that can interact with the Hedera network, query Hedera mirror nodes, and use native Hedera services to build agents that can use natural laguage to query and carry out actions on Hedera.
+## Get started
 
-* [**Try the 60-second quickstart**](https://github.com/hashgraph/hedera-agent-kit/blob/main/docs/DEVEXAMPLES.md). Use npm to install the latest version of the agent kit and create a simple "Hello Hedera Agent Kit"
-* Clone and [**try out different examples**](https://github.com/hashgraph/hedera-agent-kit/blob/main/docs/DEVEXAMPLES.md) in the toolkit:
-  * The **example tool calling agent** can carry out simple tasks with hedera tools in 'autonomous mode'
-  * The **structured chat agent** can string together and complete more complex tasks, autonomously on Hedera
-  * The **human in the loop agent** shows you how you can create a more controlled workflow
-  * **Try out the local MCP server** to enable interaction with Hedera in your favorite application such as Claude Desktop or an IDE like Cursor.
-  * Create **hooks and policies** to put guardrails on agent behavior
+Use the Agent Kit to build agents that interact with the Hedera network, query Hedera mirror nodes, and use native Hedera services.
 
-## Explore More
+* [**Try the 60-second quickstart**](/solutions/ai/agent-kit/js/quickstart). Use `npm` to install the latest version of the Agent Kit and create a simple "Hello Hedera Agent Kit" agent, or follow the [Python quickstart](/solutions/ai/agent-kit/python/quickstart).
+* Clone the Agent Kit repository and [**try different examples**](https://github.com/hashgraph/hedera-agent-kit/blob/main/docs/DEVEXAMPLES.md):
+  * The **example tool-calling agent** carries out simple tasks with Hedera tools in autonomous mode.
+  * The **structured chat agent** works like the tool-calling agent, with prebuilt LangChain Hub prompts (LangChain v0.3 only).
+  * The **human-in-the-loop agent** shows how to create a more controlled workflow.
+  * **Try the local MCP server** to interact with Hedera from an application such as Claude Desktop or an IDE such as Cursor.
+  * Create **hooks and policies** to put guardrails on agent behavior.
 
-* Visit the [**Hedera AI Studio**](https://github.com/hedera-dev/hedera-agent-kit) Github repo for more details
-* Create a Hedera account on the [**Hedera Developer Portal**](https://portal.hedera.com/)**,** and play around with Hedera services and tools
-* Learn about the studio in the blog: [**Whats New in AI Studio**](https://hedera.com/blog/whats-new-in-ai-studio)
+To connect an AI client instead, follow the [Network MCP Server quickstart](/solutions/ai/hosted-mcp-server#claude-cli-quickstart). For agent payments, see [Pay with x402](/solutions/ai/x402/pay-with-x402) and [Accept x402](/solutions/ai/x402/merchant-integration).
 
-[**Sign up**](https://hedera.com/ai-studio) to our newsletter to learn more about the next generation of trusted intelligent systems with AI Studio.
+## Resources
+
+* Visit the [**Hedera AI Studio**](https://github.com/hedera-dev/hedera-agent-kit) GitHub repo for more details.
+* Create a Hedera account on the [**Hedera Developer Portal**](https://portal.hedera.com/) and try Hedera services and tools.
+* Read about AI Studio on the blog: [**What's New in AI Studio**](https://hedera.com/blog/whats-new-in-ai-studio).

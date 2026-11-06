@@ -87,7 +87,7 @@ b,
   --landing-pill-border: rgba(130, 89, 239, 0.40) !important;
 }
 
-/* Footer pill buttons — shape and behavior matches navbar (Join Hackathon / Dev Portal) buttons */
+/* Footer pill buttons — shape and behavior matches navbar (Docs MCP Server / Dev Portal) buttons */
 .landing-pill {
   display: inline-flex !important;
   align-items: center !important;
@@ -184,238 +184,6 @@ html:not(.dark):not([data-theme='dark']) .hero-panel {
   border: none;
 }
 
-/* =========================
-   AI Studio spotlight
-   ========================= */
-.ai-spotlight {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  position: relative;
-  overflow: hidden;
-  margin: 0 0 28px;
-  padding: 14px 28px;
-  border-radius: 14px;
-  text-align: left;
-  text-decoration: none;
-  /* glass panel — per-mode, like the original spotlight (base = dark mode) */
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
-}
-
-.ai-spotlight:hover {
-  transform: translateY(-2px);
-}
-
-/* pink-tipped gradient accent line on the top edge — both modes */
-.ai-spotlight::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  border-radius: 14px 14px 0 0;
-  background: linear-gradient(to right, #E0249D 0%, #8259EF 52%, #5C7BFF 100%);
-}
-
-.dark .ai-spotlight::before,
-[data-theme='dark'] .ai-spotlight::before {
-  background: linear-gradient(to right, #FF2E9A 0%, #8259EF 50%, #5C7BFF 100%);
-}
-
-/* Left head block: brand + title + subtitle, stacked tight */
-.ai-spotlight-head {
-  flex-shrink: 0;
-  width: 220px;
-}
-
-/* Light mode — transparent with violet rim + soft halo */
-html:not(.dark):not([data-theme='dark']) .ai-spotlight {
-  background: transparent;
-  border-color: rgba(130, 89, 239, 0.22);
-  box-shadow: 0 2px 16px rgba(130, 89, 239, 0.10), 0 1px 4px rgba(130, 89, 239, 0.06);
-}
-
-html:not(.dark):not([data-theme='dark']) .ai-spotlight:hover {
-  box-shadow: 0 6px 24px rgba(130, 89, 239, 0.18), 0 2px 8px rgba(130, 89, 239, 0.10);
-}
-
-/* Dark mode — translucent white fill */
-.dark .ai-spotlight,
-[data-theme='dark'] .ai-spotlight {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.10);
-}
-
-/* Round H badge + title, on one row */
-.ai-spotlight-titlerow {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  margin-bottom: 5px;
-}
-
-.ai-spotlight-badge {
-  width: 23px;
-  height: 23px;
-  flex-shrink: 0;
-  display: block;
-}
-
-/* badge swaps per mode: white mark on the dark panel, dark mark on the light panel */
-.ai-spotlight-badge--dark {
-  display: none;
-}
-
-.ai-spotlight-badge--white {
-  display: block;
-}
-
-html:not(.dark):not([data-theme='dark']) .ai-spotlight-badge--white {
-  display: none;
-}
-
-html:not(.dark):not([data-theme='dark']) .ai-spotlight-badge--dark {
-  display: block;
-}
-
-.ai-spotlight-title {
-  font-family: "Styrene Regular", sans-serif;
-  font-size: 1.0625rem;
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  line-height: 1.1;
-  margin: 0;
-  color: var(--landing-fg-primary);
-}
-
-.ai-spotlight-subtitle {
-  font-size: 0.5625rem;
-  font-weight: 600;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: var(--landing-fg-tertiary);
-  margin: 0;
-  max-width: none;
-  line-height: 1.4;
-}
-
-/* 5-across feature row — fills the remaining width */
-.ai-spotlight-features {
-  flex: 1;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: nowrap;
-  gap: 16px;
-  margin: 0;
-}
-
-.ai-spotlight-feature {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 6px;
-  flex: 1 1 0;
-  min-width: 0;
-}
-
-/* Exact brand icons, recolored per mode via CSS mask (each icon includes its
-   own circular frame, so it IS the circle — no separate ring container). */
-/* inline SVG icon — fill/stroke follow currentColor so it themes; inline
-   (not CSS mask) so it survives the Mintlify production build */
-.ai-spotlight-ico {
-  width: 22px;
-  height: 22px;
-  flex-shrink: 0;
-  display: block;
-  color: #ffffff; /* white on the dark panel (base) */
-  transition: color 0.15s ease, transform 0.15s ease;
-}
-
-/* black on the light panel */
-html:not(.dark):not([data-theme='dark']) .ai-spotlight-ico {
-  color: #000000;
-}
-
-.ai-spotlight-caption {
-  font-size: 0.625rem;
-  line-height: 1.25;
-  color: var(--landing-fg-secondary);
-  max-width: 150px;
-}
-
-.ai-spotlight-footer {
-  flex-shrink: 0;
-  align-self: center;
-  margin-left: 4px;
-  white-space: nowrap;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  font-family: "Styrene Bold", sans-serif;
-  color: rgba(214, 199, 255, 1);
-  transition: transform 0.15s ease;
-}
-
-html:not(.dark):not([data-theme='dark']) .ai-spotlight-footer {
-  color: #6B42CC;
-}
-
-.ai-spotlight:hover .ai-spotlight-footer {
-  transform: translateX(3px);
-}
-
-/* Tablet/mobile — stack the band: head on top, features wrap, footer below */
-@media (max-width: 900px) {
-  .ai-spotlight {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 18px;
-    padding: 22px 24px;
-  }
-
-  .ai-spotlight-head {
-    width: auto;
-  }
-
-  .ai-spotlight-features {
-    width: 100%;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 18px 12px;
-  }
-
-  .ai-spotlight-feature {
-    flex: 1 1 30%;
-    min-width: 110px;
-  }
-
-  .ai-spotlight-footer {
-    align-self: flex-start;
-    margin-left: 0;
-  }
-}
-
-/* Phone — features become left-aligned icon+caption rows */
-@media (max-width: 520px) {
-  .ai-spotlight-feature {
-    flex-direction: row;
-    flex-basis: 100%;
-    align-items: center;
-    text-align: left;
-    gap: 12px;
-  }
-
-  .ai-spotlight-caption {
-    max-width: none;
-  }
-}
-
 /* Hero "Get started" CTA */
 .hero-cta {
   display: inline-flex;
@@ -456,8 +224,8 @@ html:not(.dark):not([data-theme='dark']) .ai-spotlight-footer {
   border-color: rgba(255, 255, 255, 0.65);
 }
 
-/* AI Bounty top announcement bar — inverted per mode (dark bar on light page,
-   light bar on dark page) with a pink-tipped gradient accent line, like the spotlight */
+/* AI Studio top announcement bar — inverted per mode (dark bar on light page,
+   light bar on dark page) */
 .ai-bounty-bar {
   position: relative;
   overflow: hidden;
@@ -482,14 +250,13 @@ html:not(.dark):not([data-theme='dark']) .ai-spotlight-footer {
   border-color: rgba(255, 255, 255, 0.20);
 }
 
-/* pink-tipped gradient accent line on top edge */
-/* dark page → light bar (inverted) */
+/* status dot — brand Cobalt (#2D84EB), legible on both the dark and light bar */
 .ai-bounty-bar-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #FF2E9A;
-  box-shadow: 0 0 7px rgba(255, 46, 154, 0.85);
+  background: #2D84EB;
+  box-shadow: 0 0 7px rgba(45, 132, 235, 0.85);
   flex-shrink: 0;
 }
 
@@ -1102,7 +869,7 @@ nav.text-sm ul>* {
 
 
 /* shared button styling */
-nav.text-sm a[href*="hackathon"],
+nav.text-sm a[href*="mcp-setup"],
 nav.text-sm a[href*="portal"] {
   display: inline-flex !important;
   align-items: center;
@@ -1119,10 +886,10 @@ nav.text-sm a[href*="portal"] {
 }
 
 
-/* hackathon — solid inverted (light mode = muted black bg, white text) */
-nav.text-sm a[href*="hackathon"],
-nav.text-sm li a[href*="hackathon"],
-nav.text-sm ul li a[href*="hackathon"] {
+/* Docs MCP Server — solid inverted (light mode = muted black bg, white text) */
+nav.text-sm a[href*="mcp-setup"],
+nav.text-sm li a[href*="mcp-setup"],
+nav.text-sm ul li a[href*="mcp-setup"] {
   background-color: #1f1f1f !important;
   color: #ffffff !important;
   border: 1px solid #1f1f1f !important;
@@ -1144,9 +911,9 @@ nav.text-sm a[href*="portal.hedera.com"]:hover {
   color: #ffffff !important;
 }
 
-nav.text-sm a[href*="hackathon"]:hover,
-nav.text-sm li a[href*="hackathon"]:hover,
-nav.text-sm ul li a[href*="hackathon"]:hover {
+nav.text-sm a[href*="mcp-setup"]:hover,
+nav.text-sm li a[href*="mcp-setup"]:hover,
+nav.text-sm ul li a[href*="mcp-setup"]:hover {
   background-color: #8259EF !important;
   border: 1px solid #8259EF !important;
   color: #ffffff !important;
@@ -1157,16 +924,16 @@ nav.text-sm ul li a[href*="hackathon"]:hover {
    DARK MODE — transparent buttons
    =============================== */
 
-/* hackathon (dark mode) — solid inverted: muted white bg, black text */
-.dark nav.text-sm a[href*="hackathon"],
-[data-theme='dark'] nav.text-sm a[href*="hackathon"] {
+/* Docs MCP Server (dark mode) — solid inverted: muted white bg, black text */
+.dark nav.text-sm a[href*="mcp-setup"],
+[data-theme='dark'] nav.text-sm a[href*="mcp-setup"] {
   background-color: #e8e8e8 !important;
   color: #000000 !important;
   border: 1px solid #e8e8e8 !important;
 }
 
-.dark nav.text-sm a[href*="hackathon"]:hover,
-[data-theme='dark'] nav.text-sm a[href*="hackathon"]:hover {
+.dark nav.text-sm a[href*="mcp-setup"]:hover,
+[data-theme='dark'] nav.text-sm a[href*="mcp-setup"]:hover {
   background-color: #8259EF !important;
   border: 1px solid #8259EF !important;
   color: #ffffff !important;
@@ -1179,28 +946,28 @@ nav.text-sm ul li a[href*="hackathon"]:hover {
   opacity: 1 !important;
 }
 
-/* hackathon icon — white in light mode (on black button), black in dark mode (on white button) */
-nav.text-sm a[href*="hackathon"] img,
-nav.text-sm a[href*="hackathon"] svg {
+/* Docs MCP Server icon — white in light mode (on black button), black in dark mode (on white button) */
+nav.text-sm a[href*="mcp-setup"] img,
+nav.text-sm a[href*="mcp-setup"] svg {
   filter: brightness(0) invert(1) !important;
   /* white icon on black button */
   opacity: 1 !important;
 }
 
-.dark nav.text-sm a[href*="hackathon"] img,
-.dark nav.text-sm a[href*="hackathon"] svg,
-[data-theme='dark'] nav.text-sm a[href*="hackathon"] img,
-[data-theme='dark'] nav.text-sm a[href*="hackathon"] svg {
+.dark nav.text-sm a[href*="mcp-setup"] img,
+.dark nav.text-sm a[href*="mcp-setup"] svg,
+[data-theme='dark'] nav.text-sm a[href*="mcp-setup"] img,
+[data-theme='dark'] nav.text-sm a[href*="mcp-setup"] svg {
   filter: brightness(0) !important;
   /* black icon on white button */
   opacity: 1 !important;
 }
 
 /* Flip the dark-mode icon back to white when the button turns purple on hover */
-.dark nav.text-sm a[href*="hackathon"]:hover img,
-.dark nav.text-sm a[href*="hackathon"]:hover svg,
-[data-theme='dark'] nav.text-sm a[href*="hackathon"]:hover img,
-[data-theme='dark'] nav.text-sm a[href*="hackathon"]:hover svg {
+.dark nav.text-sm a[href*="mcp-setup"]:hover img,
+.dark nav.text-sm a[href*="mcp-setup"]:hover svg,
+[data-theme='dark'] nav.text-sm a[href*="mcp-setup"]:hover img,
+[data-theme='dark'] nav.text-sm a[href*="mcp-setup"]:hover svg {
   filter: brightness(0) invert(1) !important;
 }
 
@@ -1331,4 +1098,328 @@ nav.text-sm a[href*="hackathon"] svg {
 footer [class*="social"],
 footer [class*="Social"] {
   display: none !important;
+}
+/* =========================
+   AI paths (home): two cards, one per audience. Same surface, accent line,
+   and hover lift as the AI Studio spotlight on main. Each card has one
+   stretched link (.ai-path-link) that makes the whole card clickable; the
+   AI Studio pill, Copy button, and secondary link sit above it.
+   Only the Build AI agents card carries the AI Studio pill: Scaffold HBAR,
+   Hedera Skills, and the Docs MCP Server are not part of AI Studio.
+   ========================= */
+.ai-paths {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 16px;
+  row-gap: 0;
+  margin: 0 0 28px;
+}
+
+.ai-path {
+  position: relative;
+  min-width: 0;
+  /* subgrid: title, line, and action rows line up across both cards */
+  display: grid;
+  grid-row: span 4;
+  grid-template-rows: subgrid;
+  row-gap: 0;
+  align-content: start;
+  padding: 24px 28px;
+  border-radius: 14px;
+  overflow: hidden;
+  color: var(--landing-fg-primary);
+  /* dark (base): same surface as the AI Studio spotlight */
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.ai-path > * {
+  display: block;
+  min-width: 0;
+}
+
+/* light: transparent with a violet rim and soft halo */
+html:not(.dark):not([data-theme='dark']) .ai-path {
+  background: transparent;
+  border-color: rgba(130, 89, 239, 0.22);
+  box-shadow: 0 2px 16px rgba(130, 89, 239, 0.10), 0 1px 4px rgba(130, 89, 239, 0.06);
+}
+
+html:not(.dark):not([data-theme='dark']) .ai-path:hover {
+  box-shadow: 0 6px 24px rgba(130, 89, 239, 0.18), 0 2px 8px rgba(130, 89, 239, 0.10);
+}
+
+/* top accent */
+.ai-path::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(to right, #8259EF 0%, #5C7BFF 100%);
+}
+
+/* hover: lift only, no color change */
+.ai-path:hover {
+  transform: translateY(-2px);
+}
+
+/* the stretched link covers the whole card. Mintlify adds a .link class
+   with position: relative and z-index: 10 to MDX links. The first would
+   confine ::after to the link; the second (grid and flex items honor
+   z-index) would lift the overlay above the pill, Copy button, and Docs MCP
+   link. Reset both. */
+.ai-path a.ai-path-link {
+  position: static;
+  z-index: auto;
+  text-decoration: none;
+}
+
+.ai-path-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 14px;
+}
+
+.ai-path-link:focus-visible {
+  outline: none;
+}
+
+.ai-path-link:focus-visible::after {
+  outline: 2px solid #2D84EB;
+  outline-offset: -2px;
+}
+
+/* row 1: title (+ AI Studio pill on the agents card) */
+.ai-path > .ai-path-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+}
+
+.ai-path-title {
+  font-family: "Styrene Regular", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: var(--landing-fg-primary);
+  text-decoration: none;
+}
+
+/* same colors as .landing-pill via the --landing-pill-* tokens */
+.ai-path-pill {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 30px;
+  padding: 0 14px 0 9px;
+  border-radius: 20px;
+  border: 1px solid var(--landing-pill-border);
+  background: var(--landing-pill-bg);
+  color: var(--landing-pill-fg);
+  font-family: "Styrene A Medium", sans-serif;
+  font-size: 13px;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.ai-path-pill svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+/* row 2: the one line */
+.ai-path > .ai-path-desc {
+  margin: 8px 0 20px;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--landing-fg-secondary);
+}
+
+/* row 3: primary action. On the agents card this is the stretched link. */
+.ai-path > .ai-path-btn {
+  justify-self: start;
+  align-self: start;
+  display: inline-flex;
+  align-items: center;
+  height: 42px;
+  padding: 0 20px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #8259EF, #0031FF);
+  color: #FFFFFF;
+  font-family: "Styrene Bold", sans-serif;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+/* CopyCommand (snippets/copy-command.jsx) */
+.ai-path > .ai-cmd {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  max-width: 100%;
+  padding: 5px 5px 5px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+html:not(.dark):not([data-theme='dark']) .ai-path > .ai-cmd {
+  border-color: rgba(17, 21, 29, 0.12);
+  background: rgba(17, 21, 29, 0.04);
+}
+
+.ai-cmd-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap; /* never cut the command off: the button wraps instead */
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+  color: var(--landing-fg-primary);
+}
+
+/* prompt variant: plain text, no $. The Copy button stays beside the text;
+   the text wraps between words only, so the URL moves to its own line
+   instead of breaking in the middle. */
+.ai-path > .ai-cmd--prompt {
+  flex-wrap: nowrap;
+}
+
+.ai-cmd--prompt .ai-cmd-text {
+  white-space: normal;
+  overflow-wrap: break-word;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+/* keep URLs in a prompt on one line (no break at "agent-setup") */
+.ai-cmd-url {
+  white-space: nowrap;
+}
+
+.ai-cmd-prompt {
+  margin-right: 8px;
+  color: #AE93F5;
+}
+
+html:not(.dark):not([data-theme='dark']) .ai-cmd-prompt {
+  color: #6B42CC;
+}
+
+.ai-cmd-copy {
+  flex: none;
+  margin-left: auto;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 7px;
+  background: linear-gradient(90deg, #8259EF, #0031FF);
+  color: #FFFFFF;
+  font-family: "Styrene Bold", sans-serif;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.ai-cmd-copy:focus-visible,
+.ai-path-pill:focus-visible,
+.ai-path-more a:focus-visible {
+  outline: 2px solid #2D84EB;
+  outline-offset: 2px;
+}
+
+/* row 4: optional secondary link (develop card only) */
+.ai-path > .ai-path-more {
+  position: relative;
+  z-index: 2;
+  justify-self: start;
+  margin-top: 10px;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--landing-fg-secondary);
+}
+
+.ai-path-more a {
+  color: var(--landing-fg-primary);
+  text-decoration: underline;
+  text-decoration-color: #8259EF;
+  text-underline-offset: 3px;
+}
+
+html:not(.dark):not([data-theme='dark']) .ai-path-more a {
+  color: #6B42CC;
+  text-decoration-color: rgba(107, 66, 204, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-path {
+    transition: none;
+  }
+
+  .ai-path:hover {
+    transform: none;
+  }
+}
+
+/* stacked */
+@media (max-width: 900px) {
+  .ai-paths {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ai-path + .ai-path {
+    margin-top: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ai-path {
+    padding: 22px 20px 20px;
+  }
+
+  .ai-path-title {
+    font-size: 1.375rem;
+  }
+
+  .ai-path > .ai-cmd {
+    gap: 8px 10px;
+    padding-left: 12px;
+  }
+
+  .ai-cmd-prompt {
+    margin-right: 6px;
+  }
+
+  .ai-cmd-text {
+    font-size: 0.75rem;
+  }
+
+  .ai-cmd--prompt .ai-cmd-text {
+    font-size: 0.8125rem;
+  }
+
+  /* the URL does not fit beside the button at this width */
+  .ai-path > .ai-cmd--prompt {
+    flex-wrap: wrap;
+  }
 }

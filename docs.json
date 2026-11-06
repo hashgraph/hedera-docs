@@ -75,10 +75,9 @@
   "navbar": {
     "links": [
       {
-        "label": "Join Hackathon",
-        "href": "https://hedera.com/hackathon",
-        "target": "_blank",
-        "icon": "code"
+        "label": "Docs MCP",
+        "href": "/learn/getting-started/mcp-setup",
+        "icon": "robot"
       }
     ],
     "primary": {

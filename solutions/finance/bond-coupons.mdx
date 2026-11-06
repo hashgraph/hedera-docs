@@ -72,7 +72,7 @@ Coupon periods are set in **minutes** here, from 1 to 60, so a bond's whole life
 ## Prerequisites
 
 * Node.js 20.18.3 or later, and Yarn
-* [Foundry](https://book.getfoundry.sh/getting-started/installation), to compile and deploy the contracts
+* [Foundry](https://book.getfoundry.sh/getting-started/installation) compiles and deploys the contracts, and `create-scaffold-hbar` installs it for you when `forge` is missing or older than 1.4.0. On Windows it prints the install command to run first instead.
 * A Hedera testnet account from the [Hedera Portal](https://portal.hedera.com) with an **ECDSA** key. It becomes the Issuer. JSON-RPC transactions are signed with ECDSA, so an ED25519 key cannot be used; the app says so at start.
 * Testnet HBAR on that account. The factory is deployed once; each bond reserves **3 HBAR per coupon** for its scheduled calls, and the desk's setup creates a stablecoin and funds two demo accounts with 1 HBAR each.
 * Optional, for [Receive coupons with MetaMask](#receive-coupons-with-metamask): MetaMask with Hedera testnet (chain id 296) and an ECDSA testnet account holding a little HBAR for gas

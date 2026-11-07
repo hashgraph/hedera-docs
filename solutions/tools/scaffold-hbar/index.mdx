@@ -54,13 +54,15 @@ foundryup
 
 ### Create a New Project
 
-Run the CLI with `npm create`:
+Run the CLI with `npx`:
 
 ```bash
-npm create scaffold-hbar@latest
+npx scaffold-hbar@latest
 ```
 
-`npx create-scaffold-hbar@latest` is equivalent.
+`npm create scaffold-hbar@latest` also works and runs the same CLI: `npm create <x>` resolves to
+`create-<x>`, and `create-scaffold-hbar` is published as a thin alias of `scaffold-hbar` for exactly
+that reason. Prefer `npx` — it needs no `--` before flags.
 
 You'll be prompted to select:
 
@@ -77,10 +79,10 @@ For CI pipelines or scripting, use flags to skip prompts:
 
 ```bash
 # Accept all defaults (blank template, Foundry, testnet)
-npm create scaffold-hbar@latest -- --yes
+npx scaffold-hbar@latest --yes
 
 # Full customization
-npm create scaffold-hbar@latest my-scheduler-app -- \
+npx scaffold-hbar@latest my-scheduler-app \
   --template payments-scheduler \
   --frontend nextjs-app \
   --solidity-framework foundry \
@@ -152,19 +154,19 @@ Scaffold HBAR includes starter templates for common Hedera use cases. The CLI fe
 | **Cross-chain DCA** | `cross-chain-dca` | Hedera-orchestrated recurring DCA: `DcaOrchestrator` uses Schedule Service to trigger cross-chain swaps on Sepolia via Axelar GMP and Uniswap v3 | Hardhat |
 | **Bridge** | `bridge` | Cross-chain bridge connecting Ethereum Sepolia and Hedera Testnet with Axelar, CCIP, or LayerZero providers | Foundry |
 | **Oracles** | `oracles` | Provider-agnostic oracle pattern with adapters for Chainlink, Supra, and Pyth price feeds | Foundry |
-| **Tokenize Subscriptions** | `tokenise-subscriptions` | SubRent NFT marketplace—tokenize subscriptions (gym, WiFi, streaming) as HTS NFTs with rental and sales | Hardhat |
+| **Tokenize Subscriptions** | `tokenize-subscriptions` | SubRent NFT marketplace—tokenize subscriptions (gym, WiFi, streaming) as HTS NFTs with rental and sales | Hardhat |
 | **x402 Pay-Per-Use** | `x402-pay-per-use` | Pay-per-download file marketplace using the x402 protocol with HashPack payments and MinIO storage | Hardhat |
 
 <Tip>
 **Template selection:**
 ```bash
 # Interactive mode shows all available templates
-npm create scaffold-hbar@latest
+npx scaffold-hbar@latest
 
 # Or specify directly
-npm create scaffold-hbar@latest -- --template payments-scheduler
-npm create scaffold-hbar@latest -- --template cross-chain-dca
-npm create scaffold-hbar@latest -- --template hedera-demo
+npx scaffold-hbar@latest --template payments-scheduler
+npx scaffold-hbar@latest --template cross-chain-dca
+npx scaffold-hbar@latest --template hedera-demo
 ```
 </Tip>
 
@@ -184,10 +186,10 @@ Specify an external template using the `owner/repo` or `owner/repo#branch` forma
 
 ```bash
 # Use the main branch
-npm create scaffold-hbar@latest -- --template hedera-dev/template-hedera-lz-app
+npx scaffold-hbar@latest --template hedera-dev/template-hedera-lz-app
 
 # Use a specific branch
-npm create scaffold-hbar@latest -- --template hedera-dev/template-hedera-lz-app#main
+npx scaffold-hbar@latest --template hedera-dev/template-hedera-lz-app#main
 ```
 
 The CLI fetches the template via [giget](https://github.com/unjs/giget), so any public GitHub repository can serve as a template.
@@ -197,7 +199,7 @@ The CLI fetches the template via [giget](https://github.com/unjs/giget), so any 
 The [template-hedera-lz-app](https://github.com/hedera-dev/template-hedera-lz-app) is a comprehensive tutorial template for building cross-chain applications using LayerZero V2 on Hedera.
 
 ```bash
-npm create scaffold-hbar@latest my-lz-app -- --template hedera-dev/template-hedera-lz-app
+npx scaffold-hbar@latest my-lz-app --template hedera-dev/template-hedera-lz-app
 ```
 
 **What you'll build:**
@@ -231,7 +233,7 @@ Any GitHub repository can be used as an external template. To make your template
 
 ```json
 {
-  "create-scaffold-hbar": {
+  "scaffold-hbar": {
     "capabilities": {
       "frontend": ["nextjs-app"],
       "solidityFramework": ["hardhat"],
@@ -245,7 +247,12 @@ Any GitHub repository can be used as an external template. To make your template
 }
 ```
 
-3. **Share** — Users can scaffold with `npm create scaffold-hbar@latest -- --template your-org/your-repo`
+<Note>
+The former block key `create-scaffold-hbar` is still read and treated as `scaffold-hbar`, so
+templates written against the old name keep working. New templates should use `scaffold-hbar`.
+</Note>
+
+3. **Share** — Users can scaffold with `npx scaffold-hbar@latest --template your-org/your-repo`
 
 ---
 
@@ -403,7 +410,7 @@ npx skills add hedera-dev/hedera-skills --all
 <Tip>
 To skip Hedera Skills installation (e.g., for CI pipelines), use:
 ```bash
-npm create scaffold-hbar@latest -- --yes --skip-hedera-skills
+npx scaffold-hbar@latest --yes --skip-hedera-skills
 ```
 </Tip>
 
@@ -427,7 +434,7 @@ npm create scaffold-hbar@latest -- --yes --skip-hedera-skills
 
 ## Resources
 
-- [GitHub: create-scaffold-hbar](https://github.com/hedera-dev/create-scaffold-hbar) — CLI source and issues
-- [GitHub: scaffold-hbar](https://github.com/hedera-dev/scaffold-hbar) — Templates repository
+- [GitHub: Scaffold HBAR CLI](https://github.com/hedera-dev/create-scaffold-hbar) — CLI source and issues
+- [GitHub: Scaffold HBAR templates](https://github.com/hedera-dev/scaffold-hbar) — Templates repository
 - [Hedera Portal](https://portal.hedera.com/) — Account creation and testnet faucet
 - [HashScan](https://hashscan.io/) — Block explorer for Hedera

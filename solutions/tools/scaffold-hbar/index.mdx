@@ -222,6 +222,18 @@ BASE (Spoke)                           HEDERA (Hub)
 This template uses **pnpm** (not Yarn) and requires testnet funds on both Base Sepolia and Hedera Testnet. See the [template README](https://github.com/hedera-dev/template-hedera-lz-app) for complete setup instructions.
 </Note>
 
+### Community Templates
+
+Developers outside the Hedera team built these templates. Each one lives in its author's repository and its author maintains it, so read its README before you build on it.
+
+| Template | Author | CLI Value | Description | Framework |
+|----------|--------|-----------|-------------|-----------|
+| [SaucerSwap V2](https://github.com/frytegg/scaffold-hbar-saucerswap-v2) | [Alexandre Lemiere](https://github.com/frytegg) | `frytegg/scaffold-hbar-saucerswap-v2` | SaucerSwap V2 swaps and liquidity positions from wagmi and viem and from Solidity, with checks that refuse before the wallet opens what the network would refuse after taking the gas. Testnet only, not audited. | Hardhat |
+
+```bash
+npm create scaffold-hbar@latest my-app -- --template frytegg/scaffold-hbar-saucerswap-v2 -s hardhat
+```
+
 ### Creating Your Own Template
 
 Any GitHub repository can be used as an external template. To make your template compatible:

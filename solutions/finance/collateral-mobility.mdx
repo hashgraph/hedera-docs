@@ -1,0 +1,239 @@
+---
+title: "Collateral Mobility"
+description: "Borrow stablecoin against a tokenised Treasury bill that never leaves the borrower's account, using an Asset Tokenization Studio hold as the encumbrance and a computed price feed to mark it."
+---
+
+Pledge a tokenised Treasury bill, borrow a stablecoin against it for a fixed term, then repay and get the pledge released — or miss the term and watch the lender take the collateral. The pledged bills never move: an [Asset Tokenization Studio](/solutions/tokenization/ats/index) hold encumbers them **in the borrower's own account**, and the loan contract is only the escrow that can release or execute it.
+
+<Card title="Get the code" icon="github" href="https://github.com/hedera-dev/hedera-finance-templates/tree/templates/collateral-mobility">
+  `npx create-scaffold-hbar@latest --template hedera-dev/hedera-finance-templates#templates/collateral-mobility`
+</Card>
+
+## Overview
+
+A **repo** (sale and repurchase agreement) is how institutions borrow cash short-term against securities. The borrower pledges a bond, receives cash, and pays it back with interest at the end of the term. If they do not, the lender keeps the bond.
+
+Collateral mobility is the problem of moving that pledge around without moving the asset. The usual answer is a custodian: the security is transferred to them and they hold it for the lender. This template uses an ATS **hold** instead:
+
+* The bills stay in the borrower's account the whole time. `balanceOf` excludes them, so they are visibly encumbered but not gone.
+* The hold names the loan contract as **escrow** and the lender as **destination**, both fixed when the pledge is created. The escrow cannot redirect them.
+* The loan contract holds no role on the bill and is not on its control list. It can only release the hold back to the borrower, or execute it to the one destination the borrower already chose.
+
+The loan contract reads the hold back from the bill before it lends anything, so the pledge is verified on-chain rather than taken on trust from the page.
+
+The desk has two actors:
+
+* **Lender** — the operator account the app runs with. Funds the loan and is the hold's destination
+* **Borrower** — a demo account the app creates, holding the bills and the loan's cash. Your own wallet can be added as a second borrower
+
+```text
+Borrower                    The bill (ATS)                 Loan contract
+  |                              |                              |
+  |-- createHoldByPartition ---->|  10 bills encumbered         |
+  |                              |  escrow = loan contract      |
+  |                              |  destination = lender        |
+  |                              |                              |
+  |-- openLoan ---------------------------------------------->  |
+  |                              |<-- getHoldForByPartition ----|  verify escrow,
+  |                              |                              |  destination, amount, expiry
+  |<------------------------------- $9,600 stablecoin ----------|
+  |                              |                              |
+  |-- repay ------------------------------------------------->  |  releaseHoldByPartition
+  |   or: term ends, anyone liquidates                          |  executeHoldByPartition
+```
+
+| Component | Technology |
+| - | - |
+| Collateral | ERC-1400 zero-coupon bill from the ATS factory, 0 decimals |
+| Encumbrance | ATS hold on the default partition, escrow-only execution |
+| Cash | [Stablecoin Studio](/solutions/tokenization/stablecoin/core-concepts) stablecoin: a diamond proxy over an HTS token, with a reserve |
+| Price | `BillPriceFeed.sol`, a contract you deploy, behind Chainlink's `AggregatorV3Interface` |
+| Loan | `BillRepo.sol`, a contract you deploy |
+| Reads | Mirror node and JSON-RPC, for every value the page shows |
+| Network | Hedera testnet |
+
+### The bill and the loan
+
+The worked example is one bill and one loan, and every number on the page comes from it:
+
+| | |
+| - | - |
+| Bill | $1,000 face, 91 days, zero coupon, discount rate 5.00% |
+| Price | `1000 × (1 − 0.05 × 91/360)` = **$987.36** |
+| Pledge | 10 bills = $9,873.61 of collateral |
+| Haircut | 2% → borrowing capacity $9,676.14 |
+| Borrow | $9,600.00 → LTV 97.23% |
+| Term | 30 days at a 4.80% repo rate → interest **$38.40**, debt **$9,638.40** |
+| Liquidation | at 99% LTV, which at term is a bill price of **$973.58** |
+
+The price is not typed in. The feed computes it from the published discount rate and the days remaining, so the pull to par is arithmetic rather than an assertion, and a real Chainlink feed is a drop-in replacement.
+
+### The demo clock
+
+One compression, applied in one place: **ten seconds of real time is one day** of the bill's life. The 30-day term runs in five minutes and the 91-day bill matures in about fifteen.
+
+Both contracts take the same `secondsPerDay`, which is `10` here and `86400` in production. Nothing else in the app has a clock of its own. The bill's own `getMaturityDate()` is still set 91 **real** days out, because that is what the instrument is, and the page shows both dates side by side.
+
+Without the compression the interest on a five-minute loan at 4.8% is less than half a cent and every figure on the page would read `$0.00`.
+
+<Note>
+The staleness window, the grace period and the hold's expiry margin are in **real** seconds and do not scale with `secondsPerDay`. If you change the clock, change them too, or they will dwarf the loan they govern.
+</Note>
+
+## Prerequisites
+
+* Node.js 20.18.3 or later, and Yarn
+* A Hedera testnet account from the [Hedera Portal](https://portal.hedera.com) with an **ECDSA** key, which becomes the lender. JSON-RPC transactions are ECDSA-signed, so an ED25519 key cannot be used; the app says so at start
+* Testnet HBAR on that account. Setting up a desk costs roughly **15–25 HBAR** in all: the bill, the stablecoin with its token and reserve, two contract deployments, and funding the demo borrower
+* Optional: MetaMask on Hedera testnet (chain id 296) to borrow from your own account
+
+## Project structure
+
+```text
+packages/foundry/contracts/
+  BillPriceFeed.sol                   the computed price, behind AggregatorV3Interface
+  BillRepo.sol                        the loan: pledge verification, LTV, both liquidation paths
+  interfaces/IAtsHold.sol             the ATS hold functions this template calls
+packages/foundry/test/
+  BillRepo.t.sol                      47 tests: LTV boundaries, hold checks, both liquidations
+  BillPriceFeed.t.sol                 9 tests: the discount curve and the pull to par
+
+packages/nextjs/
+  app/page.tsx                        the repo desk
+  app/_desk/                          SetupCard, DeskCards, ControlCards, useDesk, wallet
+  app/api/desk/
+    setup/route.ts                    the seven setup steps, streaming progress
+    action/route.ts                   every action that signs
+    state/route.ts, preview/route.ts  the desk snapshot and the borrow preview
+  middleware.ts                       same-origin guard on every mutating route
+  services/repo/
+    constants.ts                      the demo clock, rates, haircut, thresholds, factory ids
+    setup.ts                          deploy the bill, the stablecoin, the feed and the loan
+    actions.ts                        pledge, borrow, repay, top up, liquidate, shock, freeze
+    math.ts                           price, capacity, LTV and interest, in one scale
+    errors.ts                         decode contract and relay failures into readable text
+```
+
+## Configuration
+
+Create `packages/nextjs/.env.local`:
+
+```bash
+HEDERA_OPERATOR_ID=0.0.1234
+HEDERA_OPERATOR_KEY=<ECDSA key: raw hex, or DER-encoded>
+```
+
+```bash
+yarn install
+yarn next:dev   # http://localhost:3000
+```
+
+## Set up the desk
+
+Press **Set up desk**. Seven steps run, each reporting as it goes:
+
+1. **Resolve** the latest version of the ATS bond configuration and the Stablecoin Studio stablecoin configuration
+2. **Deploy the bill** through the ATS factory, with an allowlist as its control list
+3. **Deploy the stablecoin**, its HTS token and its reserve through the Stablecoin Studio factory
+4. **Deploy the price feed**, anchored to a maturity 91 demo-days out
+5. **Deploy the loan contract**, which reads the cash and feed decimals from the chain rather than assuming them
+6. **Allowlist** the borrower and the lender, grant the cash-in role, associate the stablecoin
+7. **Issue** 10 bills to the borrower and mint the lender's stablecoin
+
+Both studios are already on testnet, so steps 2 and 3 deploy nothing of your own:
+
+| | Factory | Resolver |
+| - | - | - |
+| Asset Tokenization Studio | `0.0.9213391` | `0.0.9212226` |
+| Stablecoin Studio | `0.0.6349500` | `0.0.6349477` |
+
+Running setup again starts a fresh desk and leaves the old one on the network.
+
+## Pledge and borrow
+
+**Pledge** creates the hold on the bill. The amount is in whole bills, and the hold's destination is fixed to the lender at this moment — not at liquidation.
+
+```solidity
+bill.createHoldByPartition(PARTITION, Hold({
+    amount: 10,
+    expirationTimestamp: block.timestamp + term + grace + margin,
+    escrow: address(repo),      // only this contract can release or execute
+    to: lender,                 // fixed now, and cannot be changed later
+    data: ""
+}));
+```
+
+**Borrow** calls `openLoan`, which reads the hold back before it moves any cash:
+
+```solidity
+(uint256 amount, uint256 expiry, address escrow, address destination,,,) =
+    bill.getHoldForByPartition(HoldIdentifier(PARTITION, borrower, holdId));
+
+if (escrow != address(this))   revert HoldEscrowMismatch(address(this), escrow);
+if (destination != lender)     revert HoldDestinationMismatch(lender, destination);
+if (amount < collateral)       revert HoldTooSmall(amount, collateral);
+if (expiry < required)         revert HoldExpiresTooSoon(expiry, required);
+```
+
+Only then does it pull the lender's stablecoin and push it to the borrower. The borrowing limit is the pledge's value less the haircut, and the page previews the LTV before you commit.
+
+<Note>
+`getHoldForByPartition` returns **seven** values, not the five the struct suggests — the last is a `ThirdPartyType`. Decoding it wrongly is the easiest way to get this integration subtly wrong.
+</Note>
+
+## Repay, or default
+
+**Repay** pulls principal plus accrued interest from the borrower, sends it to the lender, and calls `releaseHoldByPartition`. The bills were never anywhere else, so releasing the hold is the whole of giving them back.
+
+**Top up** repays part of the principal, crystallising the interest earned so far, and lowers the LTV without closing the loan.
+
+Interest accrues over whole demo days and stops at the end of the term, so a defaulted loan does not keep growing.
+
+## Two ways a loan is liquidated
+
+**By term.** Once the term has elapsed, anyone may call `liquidate`. This path reads **no price at all**, which is the point: it still works when the feed is stale, broken or gone. It is the primary path.
+
+**By price.** While the loan is live, a bill price low enough to push the LTV past the 99% threshold also permits liquidation — but only on a positive, non-stale price.
+
+Either way the contract calls `executeHoldByPartition`, which delivers the bills to the destination fixed at pledge time. The lender cannot be changed at the moment of seizure, because there is nothing to change.
+
+The asymmetry is deliberate: a stale feed blocks new borrowing and blocks price liquidation, but never blocks term liquidation. **Freeze the feed** on the page and try both to see it.
+
+<Note>
+The 700 basis point move needed to liquidate this bill on price alone is far beyond anything observed in three-month bills. It is on the page so the mechanism is visible, not because it is a realistic shock.
+</Note>
+
+## What the contract refuses
+
+Each of these is a button on the page, because a refusal you can trigger is worth more than one described in prose:
+
+* **Pledge with the wrong escrow** — a hold naming the lender as escrow instead of the loan contract. It looks identical on screen; `openLoan` refuses it. This is the only evidence from outside the code that the contract really reads the hold
+* **Send the pledge elsewhere** — the escrow asks ATS to execute to a different address, and ATS refuses
+* **Reclaim the pledge** — `reclaimHoldByPartition` is callable by the holder once a hold expires, so `openLoan` refuses any hold that does not outlast the term plus a grace period. Otherwise a borrower could wait for expiry, take the collateral back and keep the cash
+* **Borrow past capacity**, **top up more than the principal**, and **liquidate a healthy loan** are all refused with named errors
+
+## Going to production
+
+* **The clock.** `secondsPerDay` is 10 here. In production it is 86400, and the real-second constants beside it have to be re-scaled to match.
+* **A real price.** The feed computes a bank-discount price from one published rate. A real desk marks against observed quotes, and `AggregatorV3Interface` means a Chainlink feed drops straight in.
+* **Who may liquidate.** `liquidate` is permissionless on purpose, so a default is not at the lender's discretion. That is a design choice, not the only one.
+* **The haircut is static.** 2% here, fixed. Real haircuts move with volatility, and moving them is procyclical: they rise exactly when borrowers can least afford them.
+* **One lender, one bill.** The contract is scoped to a single lender and a single collateral asset, set at deployment. A real tri-party arrangement is neither.
+* **Custody.** The borrower's key lives on the server so the demo can drive both sides. Nothing about the hold mechanism requires that, and in production it must not be true.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="ATS Bond Issuance" icon="building-columns" href="/solutions/finance/ats-bond">
+    Issuing the security this template pledges, with its allowlist and roles.
+  </Card>
+  <Card title="DvP Settlement" icon="arrow-right-arrow-left" href="/solutions/finance/settle-dvp">
+    Atomic delivery versus payment, where both legs actually move.
+  </Card>
+  <Card title="Asset Tokenization Studio" icon="layer-group" href="/solutions/tokenization/ats/index">
+    The factory, the resolver and the ERC-1400 securities they deploy.
+  </Card>
+  <Card title="Stablecoin Studio" icon="coins" href="/solutions/tokenization/stablecoin/core-concepts">
+    The cash leg: proxies, reserves and the roles that govern them.
+  </Card>
+</CardGroup>

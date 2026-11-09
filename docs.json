@@ -2855,7 +2855,8 @@
               "solutions/finance/hcs-audit-trail",
               "solutions/finance/ats-bond",
               "solutions/finance/bond-coupons",
-              "solutions/finance/permissioned-security"
+              "solutions/finance/permissioned-security",
+              "solutions/finance/collateral-mobility"
             ]
           },
           {

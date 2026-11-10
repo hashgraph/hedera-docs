@@ -138,7 +138,7 @@ Hedera signs with an ECDSA key over `keccak256(bodyBytes)` and nothing else, whi
 ## Going to production
 
 * **Keys with different people.** The network enforces two signatures, but this desk holds Officers 1 and 2, so it can produce both. The separation is what makes it a control, and that means different people or different custody — Dfns, Fireblocks, AWS KMS.
-* **A real reason.** The case reference here is free text. In production an order has a document behind it, and the audit trail workflow in this section is where the record belongs.
+* **A real reason.** The case reference here is free text. In production an order has a document behind it, and [HCS Audit Trail](/solutions/finance/hcs-audit-trail) is where the record belongs.
 * **KYC from somewhere.** Granting the KYC key's permission says this holder passed; it does not say who decided, or when it expires.
 * **Keep the admin key safe.** It can change the other four. Treat it as the key that owns the token, because it does.
 

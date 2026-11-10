@@ -31,6 +31,88 @@ Visit the [Hedera status page](https://status.hedera.com/) for the latest versio
 
 
 
+
+
+## [v0.166.1](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.166.1)
+
+<Accordion title="Bug Fixes">
+  * Reduce BackfillContractChildMigration load (0.166) [#14643](https://github.com/hiero-ledger/hiero-mirror-node/pull/14643)
+</Accordion>
+
+## [v0.166.0](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.166.0)
+
+The `x-cluster-id` header added in the prior release is now added to the rest-java and web3 APIs. A new `child` field was added to all contract result REST APIs. This field makes it for clients to easily determine whether the underlying transaction has a parent transaction. Gas estimation accuracy via the `/api/v1/contracts/call` API continues to improve going from 2.5% variance when compared to consensus nodes to less than 1%.
+
+The bulk of the remaining changes were related to security and bug fixes. Operators should consider upgrading as soon as they can.
+
+<Accordion title="Enhancements">
+  * Enable web3 prestate endpoint on staging and integration envs [#14587](https://github.com/hiero-ledger/hiero-mirror-node/pull/14587)
+  * Add k6 tests for prestateTracer [#14560](https://github.com/hiero-ledger/hiero-mirror-node/pull/14560)
+  * Remove Snyk from CI and the build [#14544](https://github.com/hiero-ledger/hiero-mirror-node/pull/14544)
+  * Expose only application defined validation error messages in graphql [#14511](https://github.com/hiero-ledger/hiero-mirror-node/pull/14511)
+  * Add `x-cluster-id` header in common module [#14508](https://github.com/hiero-ledger/hiero-mirror-node/pull/14508)
+  * Add k6 tests for estimate fees [#14506](https://github.com/hiero-ledger/hiero-mirror-node/pull/14506)
+  * Improve gas estimate accuracy workflow [#14500](https://github.com/hiero-ledger/hiero-mirror-node/pull/14500)
+  * Add tests for unknown and malformed txns in fee estimation [#14495](https://github.com/hiero-ledger/hiero-mirror-node/pull/14495)
+  * Run workflows when relevant files change [#14487](https://github.com/hiero-ledger/hiero-mirror-node/pull/14487)
+  * Reject any protobuf field outside the allowlist in `TransferTransaction` in Rosetta [#14486](https://github.com/hiero-ledger/hiero-mirror-node/pull/14486)
+  * Preserve block item bytes for consistent hashing [#14472](https://github.com/hiero-ledger/hiero-mirror-node/pull/14472)
+  * Enhance limit logic in gRPC [#14457](https://github.com/hiero-ledger/hiero-mirror-node/pull/14457)
+  * Add child indicator to contract results and logs [#14415](https://github.com/hiero-ledger/hiero-mirror-node/pull/14415)
+  * Integrate tss wraps library 3.22.0 [#14399](https://github.com/hiero-ledger/hiero-mirror-node/pull/14399)
+</Accordion>
+
+<Accordion title="Bug Fixes">
+  * Optimize BackfillContractChildMigration for Citus (0.166) [#14615](https://github.com/hiero-ledger/hiero-mirror-node/pull/14615)
+  * Fix failing non-zero realm tests [#14566](https://github.com/hiero-ledger/hiero-mirror-node/pull/14566)
+  * Convert gas_price to weibars if hbar=false and we read a HAPI contract result from REST API [#14565](https://github.com/hiero-ledger/hiero-mirror-node/pull/14565)
+  * Fix monitor node refresh only running at startup [#14564](https://github.com/hiero-ledger/hiero-mirror-node/pull/14564)
+  * Fix treasury change migration exceeding the JDBC parameter limit [#14553](https://github.com/hiero-ledger/hiero-mirror-node/pull/14553)
+  * Record metrics when the response did not finish in REST [#14552](https://github.com/hiero-ledger/hiero-mirror-node/pull/14552)
+  * Treat only gas_consumed > 0 as executed when resolving a contract transaction hash [#14549](https://github.com/hiero-ledger/hiero-mirror-node/pull/14549)
+  * Fix missing tss wraps resource in importer native image [#14535](https://github.com/hiero-ledger/hiero-mirror-node/pull/14535)
+  * Ignore approvedForAll nft allowance revocation with delegating spender [#14514](https://github.com/hiero-ledger/hiero-mirror-node/pull/14514)
+  * fix(rest): include authenticated user limit in response cache key [#14503](https://github.com/hiero-ledger/hiero-mirror-node/pull/14503)
+  * fix(importer): count distinct serials for block stream burn and wipe [#14499](https://github.com/hiero-ledger/hiero-mirror-node/pull/14499)
+  * fix(rest-java): reject wrap-around slot range bounds [#14498](https://github.com/hiero-ledger/hiero-mirror-node/pull/14498)
+  * fix: skip out-of-range entity IDs in protobuf balance files [#14494](https://github.com/hiero-ledger/hiero-mirror-node/pull/14494)
+  * Clamp negative gRPC topic query timestamps [#14492](https://github.com/hiero-ledger/hiero-mirror-node/pull/14492)
+  * Authenticate consensus node endpoints in the monitor [#14485](https://github.com/hiero-ledger/hiero-mirror-node/pull/14485)
+  * fix: parse balance-line account as long and skip out-of-range entity IDs [#14475](https://github.com/hiero-ledger/hiero-mirror-node/pull/14475)
+  * Improve token update memo [#14467](https://github.com/hiero-ledger/hiero-mirror-node/pull/14467)
+  * Change query to go in batches [#14465](https://github.com/hiero-ledger/hiero-mirror-node/pull/14465)
+  * Fix syft native image error on arm64 [#14459](https://github.com/hiero-ledger/hiero-mirror-node/pull/14459)
+  * Fix new treasury freeze and KYC status when TokenUpdate changes the treasury [#14450](https://github.com/hiero-ledger/hiero-mirror-node/pull/14450)
+  * Fix contract action to the zero address missing 'to' [#14448](https://github.com/hiero-ledger/hiero-mirror-node/pull/14448)
+</Accordion>
+
+<Accordion title="Dependency Upgrades">
+  * Bump Node and Java versions [#14567](https://github.com/hiero-ledger/hiero-mirror-node/pull/14567)
+  * Bump the java group across 1 directory with 4 updates [#14540](https://github.com/hiero-ledger/hiero-mirror-node/pull/14540)
+  * Bump the actions group with 2 updates [#14539](https://github.com/hiero-ledger/hiero-mirror-node/pull/14539)
+  * Bump golang from 1.27.2-alpine3.24 to 1.27.3-alpine3.24 in /pinger in the docker group across 1 directory [#14536](https://github.com/hiero-ledger/hiero-mirror-node/pull/14536)
+  * Bump undici from 8.12.1 to 8.12.3 in /rest [#14530](https://github.com/hiero-ledger/hiero-mirror-node/pull/14530)
+  * Bump body-parser from 2.3.0 to 2.4.0 in /rest/monitoring [#14529](https://github.com/hiero-ledger/hiero-mirror-node/pull/14529)
+  * Bump the dependencies group across 8 directories with 3 updates [#14528](https://github.com/hiero-ledger/hiero-mirror-node/pull/14528)
+  * Bump the dependencies group with 2 updates [#14527](https://github.com/hiero-ledger/hiero-mirror-node/pull/14527)
+  * Bump github.com/klauspost/pgzip from 1.2.7 to 1.3.0 in /tools/bootstrap in the dependencies group [#14526](https://github.com/hiero-ledger/hiero-mirror-node/pull/14526)
+  * Bump `@bufbuild`/buf from 1.74.0 to 1.75.0 in /rest in the dependencies group [#14525](https://github.com/hiero-ledger/hiero-mirror-node/pull/14525)
+  * Bump the java group with 14 updates [#14524](https://github.com/hiero-ledger/hiero-mirror-node/pull/14524)
+  * Bump the hedera group with 3 updates [#14523](https://github.com/hiero-ledger/hiero-mirror-node/pull/14523)
+  * Bump node from 24.22.0 to 24.22.1 [#14510](https://github.com/hiero-ledger/hiero-mirror-node/pull/14510)
+  * Bump the dependencies group in /rest with 2 updates [#14489](https://github.com/hiero-ledger/hiero-mirror-node/pull/14489)
+  * Bump the dependencies group across 2 directories with 1 update [#14483](https://github.com/hiero-ledger/hiero-mirror-node/pull/14483)
+  * Bump the dependencies group with 2 updates [#14482](https://github.com/hiero-ledger/hiero-mirror-node/pull/14482)
+  * Bump golang.org/x/text from 0.42.0 to 0.43.0 in /tools/bootstrap in the dependencies group [#14481](https://github.com/hiero-ledger/hiero-mirror-node/pull/14481)
+  * Bump `@google-cloud`/logging from 12.2.0 to 12.3.0 in /tools/log-downloader in the dependencies group [#14480](https://github.com/hiero-ledger/hiero-mirror-node/pull/14480)
+  * Bump the dependencies group in /rest with 4 updates [#14479](https://github.com/hiero-ledger/hiero-mirror-node/pull/14479)
+  * Bump github.com/prometheus/client_golang from 1.24.1 to 1.25.0 in /rosetta in the dependencies group [#14478](https://github.com/hiero-ledger/hiero-mirror-node/pull/14478)
+  * Bump the dependencies group in /rest/monitoring with 2 updates [#14477](https://github.com/hiero-ledger/hiero-mirror-node/pull/14477)
+  * Bump the dependencies group with 13 updates [#14476](https://github.com/hiero-ledger/hiero-mirror-node/pull/14476)
+  * Bump hedera-protobuf-java-api to 0.80.0-alpha.2 [#14461](https://github.com/hiero-ledger/hiero-mirror-node/pull/14461)
+  * Bump versions for v0.166.0-SNAPSHOT [#14458](https://github.com/hiero-ledger/hiero-mirror-node/pull/14458)
+</Accordion>
+
 ## [v0.165.1](https://github.com/hiero-ledger/hiero-mirror-node/releases/tag/v0.165.1)
 
 This is an urgent security release that fixes the [node2shell](https://www.aikido.dev/blog/node2shell-nodejs-brotli-rce-cve-2026-111497) vulnerability. Operators should plan on upgrading as soon as possible.

@@ -83,8 +83,8 @@ The contextual menu at the top of every page on docs.hedera.com includes these o
 | Option | What it does |
 | :--- | :--- |
 | **Copy MCP server URL** | Copies `https://docs.hedera.com/mcp` to your clipboard. |
-| **Connect to Cursor** | Installs the Hedera MCP server in Cursor. |
-| **Connect to VS Code** | Installs the Hedera MCP server in VS Code. |
+| **Connect to Cursor** | Installs the Hedera Docs MCP server in Cursor. |
+| **Connect to VS Code** | Installs the Hedera Docs MCP server in VS Code. |
 
 ---
 
@@ -190,16 +190,22 @@ Create or edit the `mcp.json` file at one of these locations:
 
 ### VS Code (GitHub Copilot)
 
-VS Code supports MCP servers via the `.vscode/mcp.json` file, available when using GitHub Copilot in Agent mode.
+VS Code connects to MCP servers through GitHub Copilot. Add the Hedera server to your Copilot Global configuration so it's available in every workspace.
 
-**Steps:**
+**Option A: Command Palette (Recommended)**
 
-1. Create the file `.vscode/mcp.json` in your project root.
-2. Add the following configuration:
+1. Press `Cmd + Shift + P` (macOS) or `Ctrl + Shift + P` (Windows/Linux) and run **MCP: Add Server**.
+2. Select **HTTP (HTTP or Server-Sent Events)** and enter `https://docs.hedera.com/mcp`.
+3. When prompted for a server ID, enter `hedera-docs`.
+4. When prompted for a destination, select **Global**, then **Copilot Global**.
+
+**Option B: Manual Configuration**
+
+Create or edit `~/.copilot/mcp-config.json` (or `$COPILOT_HOME/mcp-config.json` if you set `COPILOT_HOME`) and add the following:
 
 ```json
 {
-  "servers": {
+  "mcpServers": {
     "hedera-docs": {
       "type": "http",
       "url": "https://docs.hedera.com/mcp"
@@ -208,9 +214,9 @@ VS Code supports MCP servers via the `.vscode/mcp.json` file, available when usi
 }
 ```
 
-3. In the Copilot chat panel, switch to **Agent mode** and restart the MCP server if prompted.
+**Verify the connection:** In the Chat view, send a prompt that names the server, such as *"Use the hedera-docs MCP server to find how to create a topic on Hedera."* Expand the tool call in the response and confirm it came from `hedera-docs`. See VS Code's [Verify the first tool call](https://code.visualstudio.com/docs/agent-customization/mcp-servers#_verify-the-first-tool-call) for the full checks.
 
-> **Note:** VS Code uses a `"servers"` key (not `"mcpServers"`) and requires a `"type"` field.
+> **Note:** Earlier versions of this guide used `.vscode/mcp.json` with a `"servers"` key. VS Code still reads that file for compatibility but labels it deprecated, and it only applies to one project. To move an existing entry, copy it into `mcp-config.json` under `"mcpServers"`.
 
 ---
 
@@ -367,7 +373,7 @@ A quick-reference table of config file paths and JSON formats for each tool:
 | :--- | :--- | :--- | :--- |
 | **Cursor** (global) | `~/.cursor/mcp.json` | `mcpServers` | `url` |
 | **Cursor** (project) | `.cursor/mcp.json` | `mcpServers` | `url` |
-| **VS Code** | `.vscode/mcp.json` | `servers` | `url` (+ `type: "http"`) |
+| **VS Code** | `~/.copilot/mcp-config.json` | `mcpServers` | `url` (+ `type: "http"`) |
 | **Devin Desktop** (user) | `~/.config/devin/mcp_config.json` | `mcpServers` | `url` (+ `transport: "http"`) |
 | **Devin Desktop** (project) | `.devin/mcp_config.json` | `mcpServers` | `url` (+ `transport: "http"`) |
 | **Claude (Web)** | Customize → Connectors | UI-based | URL field |
@@ -389,7 +395,8 @@ A quick-reference table of config file paths and JSON formats for each tool:
 
 **Tools not appearing?**
 - The server exposes three tools: `search_hedera`, `query_docs_filesystem_hedera`, and `submit_feedback`. If none appear, the connection failed.
-- In Cursor/VS Code, click the refresh button next to the server entry.
+- In Cursor, click the refresh button next to the server entry.
+- In VS Code, run **MCP: List Servers** from the Command Palette, select `hedera-docs`, and choose **Restart Server**. If that action isn't offered, choose **Stop Server**, then **Start Server**.
 - In Claude Code, run `claude mcp list` to verify the server is registered.
 - In Devin Desktop, open **Customize** → **MCPs** and check that `hedera-docs` is in the **This computer** list.
 
@@ -416,7 +423,7 @@ If a limit is exceeded, the server returns HTTP `429 Too Many Requests`. Back of
 - [Mintlify MCP Documentation](https://www.mintlify.com/docs/ai/model-context-protocol)
 - [Claude MCP Connectors](https://claude.ai/settings/connectors)
 - [Cursor MCP Docs](https://docs.cursor.com/en/context/mcp)
-- [VS Code MCP Servers](https://code.visualstudio.com/docs/copilot/chat/mcp-servers)
+- [VS Code MCP Servers](https://code.visualstudio.com/docs/agent-customization/mcp-servers)
 - [Devin Desktop MCP Servers](https://docs.devin.ai/desktop/devin-local/customizations#mcp-servers)
 - [ChatGPT: Connect a custom MCP server](https://developers.openai.com/plugins/deploy/connect-chatgpt)
 - [Gemini CLI MCP Setup](https://google-gemini.github.io/gemini-cli/docs/tools/mcp-server.html)

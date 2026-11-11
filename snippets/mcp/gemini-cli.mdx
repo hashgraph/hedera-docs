@@ -1,0 +1,5 @@
+```bash
+gemini mcp add --scope user --transport http hedera-docs https://docs.hedera.com/mcp
+```
+
+**Verify:** Launch Gemini CLI, run `/mcp`, and confirm `hedera-docs` is listed with the [Hedera Docs tools](/learn/getting-started/mcp-setup#available-tools). Gemini CLI disables MCP servers, including user-level ones, in folders you haven't trusted. If `hedera-docs` shows as disabled, trust the folder when Gemini CLI asks *"Do you trust the files in this folder?"*

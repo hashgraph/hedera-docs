@@ -714,6 +714,19 @@ html:not(.dark):not([data-theme='dark']) .landing-prose-link:hover {
 }
 
 /* =========================
+   Wrapping tab bar
+   Opt-in with <Tabs className="tabs-wrap">. Mintlify's tab bar scrolls
+   horizontally when tabs overflow; this wraps them onto extra rows so
+   every tab stays visible. Used by the MCP setup quickstart.
+   ========================= */
+ul.tabs-wrap[role="tablist"] {
+  flex-wrap: wrap;
+  overflow: visible;
+  column-gap: 1rem;
+  row-gap: 0.25rem;
+}
+
+/* =========================
    Site-wide gradient background
    ========================= */
 html,

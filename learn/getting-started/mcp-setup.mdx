@@ -76,7 +76,7 @@ See [ChatGPT](#chatgpt) for more setup options and notes.
 
 ---
 
-## What Is the Hedera MCP Server?
+## What Is the Hedera Docs MCP Server?
 
 The [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) is an open standard that creates direct connections between AI applications and external data sources. Instead of relying on general web search results, MCP lets AI tools search your documentation directly for more accurate, up-to-date information.
 
@@ -139,7 +139,7 @@ Use this URL to connect any supported AI tool to the Hedera documentation.
 
 ## Installation
 
-The Hedera MCP server is a remote `HTTP` server hosted by Mintlify. No code is downloaded or executed on your machine. Your AI tool connects directly to https://docs.hedera.com/mcp over `HTTPS` and reads the documentation through the [tools listed above](#available-tools). The server requires no authentication, wallet, or keys.
+The Hedera Docs MCP server is a remote `HTTP` server hosted by Mintlify. No code is downloaded or executed on your machine. Your AI tool connects directly to https://docs.hedera.com/mcp over `HTTPS` and reads the documentation through the [tools listed above](#available-tools). The server requires no authentication, wallet, or keys.
 
 To connect, you manually add the server URL to your AI tool's configuration using the setup instructions below. This is the recommended approach because it gives you full visibility into what's being configured, and no third-party packages are installed or executed on your system.
 
@@ -164,19 +164,11 @@ If you run into issues, refer to the [Additional Resources](/learn/getting-start
 
 </Note>
 
-### Claude (Web & Mobile)
+### Claude (Web)
 
-Claude supports MCP servers as custom connectors. Available on free, Pro, Max, Team, and Enterprise plans (free users are limited to one custom connector).
+Claude supports MCP servers as custom connectors on Free, Pro, Max, Ultra, Team, and Enterprise plans. On the Free plan, you can add one custom connector.
 
-**Steps:**
-
-1. Navigate to **Customize → Connectors** (or go directly to [claude.ai/settings/connectors](https://claude.ai/settings/connectors)).
-2. Click the **"+"** button next to Connectors, then select **"Add custom connector"**.
-3. Enter the details:
-   - **Name:** `Hedera Docs`
-   - **URL:** `https://docs.hedera.com/mcp`
-4. Click **Add**.
-5. In any chat, click the **"+"** button in the lower left of the chat interface, then hover over **"Connectors"** to enable **Hedera Docs** for that conversation.
+<ClaudeDesktopSetup />
 
 Claude will automatically use the Hedera Docs tools when your questions relate to Hedera development.
 
@@ -188,13 +180,13 @@ Claude Desktop supports remote MCP servers through custom connectors and local s
 
 <ClaudeDesktopSetup />
 
-> **Note:** Remote connectors are configured through your Claude account, so a connector added on claude.ai is also available in Claude Desktop and the Claude mobile apps. On Team and Enterprise plans, an owner first adds the connector in **Organization settings → Connectors**, and members then connect to it from **Customize → Connectors**.
+> **Note:** Remote connectors are configured through your Claude account, so a connector added on claude.ai is also available in Claude Desktop. On Team and Enterprise plans, an owner first adds the connector in **Organization settings → Connectors**, and members then connect to it from **Customize → Connectors**.
 
 ---
 
 ### Claude Code
 
-Claude Code connects to MCP servers via CLI commands. Run the following command in your terminal:
+Claude Code connects to MCP servers via CLI commands. Run the following command in your terminal. `--scope user` makes the server available in every project; without it, Claude Code adds the server to the current project only.
 
 <ClaudeCodeSetup />
 
@@ -214,16 +206,24 @@ VS Code connects to MCP servers through GitHub Copilot. Add the Hedera server to
 
 **Option A: Command Palette (Recommended)**
 
-1. Press `Cmd + Shift + P` (macOS) or `Ctrl + Shift + P` (Windows/Linux) and run **MCP: Add Server**.
-2. Select **HTTP (HTTP or Server-Sent Events)** and enter `https://docs.hedera.com/mcp`.
-3. When prompted for a server ID, enter `hedera-docs`.
-4. When prompted for a destination, select **Global**, then **Copilot Global**.
+<VSCodeSetup />
 
 **Option B: Manual Configuration**
 
-<VSCodeSetup />
+Create or edit `~/.copilot/mcp-config.json` (or `$COPILOT_HOME/mcp-config.json` if you set `COPILOT_HOME`) and add the following, then run the verify step above:
 
-> **Note:** Earlier versions of this guide used `.vscode/mcp.json` with a `"servers"` key. VS Code still reads that file for compatibility but labels it deprecated, and it only applies to one project. To move an existing entry, copy it into `mcp-config.json` under `"mcpServers"`.
+```json
+{
+  "mcpServers": {
+    "hedera-docs": {
+      "type": "http",
+      "url": "https://docs.hedera.com/mcp"
+    }
+  }
+}
+```
+
+> **Note:** Earlier versions of this guide used `.vscode/mcp.json` with a `"servers"` key. VS Code still reads that file for compatibility but labels it deprecated, and it only applies to one project. To move an existing entry, copy it into `mcp-config.json` under `"mcpServers"`, then remove it from `.vscode/mcp.json`.
 
 ---
 
@@ -315,12 +315,12 @@ To edit the settings file directly instead, add the following to `~/.gemini/sett
 
 ## Agent Instructions
 
-Connecting the server makes the Hedera Docs tools available. Project instructions tell your agent when to use them, so Hedera questions go to the docs instead of the model's memory. Add the instructions to the file your AI tool reads at the start of every session.
+Connecting the server makes the Hedera Docs tools available. Project instructions tell your agent when to use them, so Hedera questions go to the docs instead of the model's memory. Add the instructions to the file your AI tool reads at the start of every session. _Some tools read more than one of these files, so add the instructions to only one of them._
 
 <Tabs>
 <Tab title="AGENTS.md" id="instructions-agents-md">
 
-Add the following to `AGENTS.md` in your project root. Codex and Cursor read this file.
+Add the following to `AGENTS.md` in your project root. Codex, Cursor, and VS Code (GitHub Copilot) read this file.
 
 <AgentInstructions />
 
@@ -334,7 +334,7 @@ Add the following to `CLAUDE.md` in your project root. Claude Code reads this fi
 </Tab>
 <Tab title="Cursor rules" id="instructions-cursor-rules">
 
-Create `.cursor/rules/hedera-docs.mdc` and start it with this frontmatter. `alwaysApply: true` applies the rule to every chat session.
+Cursor also reads `AGENTS.md`, so use either `AGENTS.md` or a Cursor rule, not both. To use a rule, create `.cursor/rules/hedera-docs.mdc` and start it with this frontmatter. `alwaysApply: true` applies the rule to every chat session.
 
 ```markdown
 ---
@@ -358,15 +358,15 @@ After you connect the server, try these requests. Each one uses a different [Hed
 
 | Try asking | Tool it uses | What it shows |
 | :--- | :--- | :--- |
-| *"What replaced `AccountBalanceQuery`? Check the Hedera docs before answering."* | `search_hedera` | An agent answering from memory may still suggest the removed query. The docs name its replacement, `MirrorNodeAccountBalanceQuery`. |
+| *"What replaced `AccountBalanceQuery`? Check the Hedera docs before answering."* | `search_hedera` | An agent answering from memory may still suggest `AccountBalanceQuery`, which no longer works. The docs name its replacement, `MirrorNodeAccountBalanceQuery`. |
 | *"Read the Hedera mirror node OpenAPI spec and find the endpoint that lists the tokens an account holds."* | `query_docs_filesystem_hedera` | The agent reads the spec with `jq` instead of guessing the path. It should find `/api/v1/accounts/{idOrAliasOrEvmAddress}/tokens`. |
-| *"The example on this Hedera docs page doesn't work with the current SDK: [page URL]. Check the page, and if it's wrong, report it to the docs team."* | `submit_feedback` | The agent sends the page path and a description of the problem to the Hedera docs team. |
+| *"The example on this Hedera docs page doesn't work with the current SDK: [page URL]. Check the page, and if it's wrong, draft a report for the docs team and show it to me before sending."* | `submit_feedback` | The agent drafts a report with the page path and the problem. After you approve it, the agent sends it to the Hedera docs team. |
 
 ---
 
 ## Using Multiple MCP Servers
 
-You can connect the Hedera MCP server alongside other documentation MCP servers. Here's an example Cursor configuration with multiple servers:
+You can connect the Hedera Docs MCP server alongside other documentation MCP servers. Here's an example Cursor configuration with multiple servers:
 
 ```json
 {
@@ -403,8 +403,7 @@ A quick-reference table of config file paths and JSON formats for each tool:
 | **Devin Desktop** (user) | `~/.config/devin/mcp_config.json` | `mcpServers` | `url` (+ `transport: "http"`) |
 | **Devin Desktop** (project) | `.devin/mcp_config.json` | `mcpServers` | `url` (+ `transport: "http"`) |
 | **Claude (Web)** | Customize → Connectors | UI-based | URL field |
-| **Claude Desktop** | Settings → Developer → Connectors | UI-based | URL field |
-| **Claude Code** | CLI: `claude mcp add` | — | — |
+| **Claude Code** | CLI: `claude mcp add --scope user` | — | — |
 | **Codex** | `~/.codex/config.toml` | `mcp_servers.<name>` | `url` |
 | **Gemini CLI** | `~/.gemini/settings.json` | `mcpServers` | `url` (+ `type: "http"`) |
 | **ChatGPT** (web) | [chatgpt.com/plugins](https://chatgpt.com/plugins) → + → Add custom MCP server | UI-based | URL field |
@@ -447,7 +446,7 @@ If a limit is exceeded, the server returns HTTP `429 Too Many Requests`. Back of
 
 - [Model Context Protocol Specification](https://modelcontextprotocol.io/)
 - [Mintlify MCP Documentation](https://www.mintlify.com/docs/ai/model-context-protocol)
-- [Claude MCP Connectors](https://claude.ai/settings/connectors)
+- [Claude MCP Connectors](https://claude.ai/customize/connectors)
 - [Cursor MCP Docs](https://docs.cursor.com/en/context/mcp)
 - [VS Code MCP Servers](https://code.visualstudio.com/docs/agent-customization/mcp-servers)
 - [Devin Desktop MCP Servers](https://docs.devin.ai/desktop/devin-local/customizations#mcp-servers)

@@ -48,7 +48,7 @@ When a contract or tool references an address that has never transacted, Hedera 
 Contract execution is metered in [gas](/support/glossary#gas-fee), exactly as on Ethereum, so gas estimation and `gasLimit` work the way your tools expect. Two things differ:
 
 - **Pricing is in USD, paid in [HBAR](/support/glossary#hbar)** - The network prices gas against a USD target and converts to HBAR at the current exchange rate, rather than through a fee market auction. Costs stay predictable under load.
-- **HBAR uses different decimal precision than ETH** - HBAR has 8 decimals natively, but the JSON-RPC relay presents balances and values to EVM tools in 18-decimal `wei`-style units. This conversion is the most common source of surprise when porting scripts. See [HBAR Decimals](/evm/differences/hbar-decimals).
+- **HBAR uses different decimal precision than ETH** - HBAR has 8 decimals natively, but the JSON-RPC relay presents balances and values to EVM tools in 18-decimal `wei`-style units. Inside contracts, `msg.value` and balances stay in 8-decimal tinybars. This conversion is the most common source of surprise when porting scripts. See [HBAR Decimals](/evm/differences/hbar-decimals).
 
 For a full breakdown of contract costs, including gas and state storage, see [Gas and Fees](/evm/development/gas-fees) and [State Rent](/evm/development/rent).
 

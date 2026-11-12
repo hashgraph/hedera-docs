@@ -19,6 +19,8 @@ Gas information for EVM operations is returned in **weibar** (introduced in [HIP
 - `1 weibar = 10^-18 HBAR`
 - `1 tinybar = 10^10 weibar`
 
+Inside a contract, `tx.gasprice` is in tinybars per gas, not weibars, the same scale as `msg.value`. The network derives it from the fee schedule's gas price and the current exchange rate, so it doesn't reflect the gas price offered in the transaction.
+
 As noted in [HIP-410](https://hips.hedera.com/hip/hip-410), this maximizes compatibility with third-party tools that expect ether units to be operated on in fractions of `10^18`, also known as a **Wei**.
 
 ## Gas Schedule and Fee Calculation

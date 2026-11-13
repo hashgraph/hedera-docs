@@ -22,6 +22,8 @@ In this tutorial, you'll build a simple **AlarmClock** contract that demonstrate
   You can take a look at the **complete code** in the [**hss-schedule-sc-calls
   demo
   repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hss-schedule-sc-calls).
+
+  The repository's `package.json` installs `@hashgraph/smart-contracts` from the `hedera-smart-contracts` GitHub repository, which no longer contains the system contracts, so a fresh clone doesn't build. Use the contract and setup on this page, which install `@hiero-ledger/hiero-contracts@0.2.0`.
 </Note>
 
 ---
@@ -110,10 +112,10 @@ rm -rf ignition
 Next, install the required dependencies:
 
 ```bash
-npm install @hiero-ledger/hiero-contracts
+npm install @hiero-ledger/hiero-contracts@0.2.0
 ```
 
-Note that we are installing the latest code from the main branch when we install `@hiero-ledger/hiero-contracts`. This also gets installed at `@hashgraph/smart-contracts` so we can easily call these contracts from our own contract.
+This pins `@hiero-ledger/hiero-contracts` to 0.2.0, the version these imports are tested against. Import its contracts from the package root, for example `@hiero-ledger/hiero-contracts/token-service/HederaTokenService.sol`. The upstream repository shows a `/contracts/` prefix that the npm package doesn't have.
 
 ---
 
@@ -169,10 +171,10 @@ pragma solidity ^0.8.31;
 
 import {
     HederaScheduleService
-} from "@hashgraph/smart-contracts/contracts/system-contracts/hedera-schedule-service/HederaScheduleService.sol";
+} from "@hiero-ledger/hiero-contracts/schedule-service/HederaScheduleService.sol";
 import {
     HederaResponseCodes
-} from "@hashgraph/smart-contracts/contracts/system-contracts/HederaResponseCodes.sol";
+} from "@hiero-ledger/hiero-contracts/common/HederaResponseCodes.sol";
 
 /// Very simple "alarm clock" demo:
 /// - User calls setAlarm()

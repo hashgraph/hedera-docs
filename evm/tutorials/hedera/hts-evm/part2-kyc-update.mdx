@@ -273,6 +273,7 @@ contract MyHTSTokenKYC is HederaTokenService, KeyHelper, Ownable {
     event KYCGranted(address account);
     event KYCRevoked(address account);
     event KYCKeyUpdated(bytes newKey);
+    // HBAR amounts in these events are in tinybars (msg.value, address(this).balance)
     event HBARReceived(address indexed from, uint256 amount);
     event HBARFallback(address sender, uint256 amount, bytes data);
     event HBARWithdrawn(address indexed to, uint256 amount);
@@ -529,7 +530,7 @@ async function main() {
   );
   const tx = await contract.createNFTCollection(NAME, SYMBOL, {
     gasLimit: 350_000,
-    value: ethers.parseEther(HBAR_TO_SEND),
+    value: ethers.parseEther(HBAR_TO_SEND), // weibars over JSON-RPC; msg.value in the contract is tinybars
   });
   await tx.wait();
   console.log("createNFTCollection() tx hash:", tx.hash);

@@ -200,7 +200,7 @@ To explore CCIP functionality, start with the [**Hedera CCIP Demo Repository**](
 ### Decimal Precision
 
 HBAR's smallest unit is the **tinybar (8 decimals)**.
-Since CCIP on EVM networks operates with **18-decimal precision**, conversions between tinybars and wei-based values may be required.
+Inside a contract on Hedera, `msg.value` and `address(this).balance` are in tinybars, not wei. Only the transaction `value` that a client sends through the JSON-RPC relay uses 18-decimal weibars, so convert at the client, not in Solidity. See [Decimal Handling](/evm/differences/hbar-decimals).
 See [Understanding Hedera's EVM Differences and Compatibility](/evm/differences).
 
 ### Cross-Chain Fees

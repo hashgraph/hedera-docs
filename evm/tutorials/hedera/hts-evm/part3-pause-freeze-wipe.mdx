@@ -48,7 +48,7 @@ The previous tutorials covered creating NFT collection. Everything remains large
 - Add one additional line for managing the PAUSE key that can be used to prevent the token from being involved in any kind of operation.
 - Add one additional line for managing the FREEZE key that can be used to freeze transfers of the specified token for the account.
 - Add one additional line for managing the WIPE key that can be used to wipe the provided amount of fungible or non-fungible tokens from the specified Hedera account. This transaction does not delete tokens from the treasury account. Wiping an account's tokens burns the tokens and decreases the total supply.
-- Add one additional line for managing the DELETE key that can be used to mark a token as deleted, though it will remain in the ledger. Once deleted update, mint, burn, wipe, freeze, unfreeze, grant KYC, revoke KYC and token transfer transactions will resolve to TOKEN_WAS_DELETED. You cannot delete a specific NFT. You can delete the class of the NFT specified by the token ID after you have burned all associated NFTs associated with the token class
+- Deleting the token needs no extra key: the ADMIN key authorizes it. A deleted token is marked as deleted, though it will remain in the ledger. Once deleted update, mint, burn, wipe, freeze, unfreeze, grant KYC, revoke KYC and token transfer transactions will resolve to TOKEN_WAS_DELETED. You cannot delete a specific NFT. You can delete the class of the NFT specified by the token ID after you have burned all associated NFTs associated with the token class
 
 #### **Key Code Snippet:**
 
@@ -71,9 +71,9 @@ contract MyHTSTokenPFWD is HederaTokenService, KeyHelper, Ownable {
         token.treasury = address(this);
         token.memo = "";
 
-        // Keys: SUPPLY + ADMIN + PAUSE + FREEZE + WIPE + DELETE -> contractId
+        // Keys: SUPPLY + ADMIN/DELETE + PAUSE + FREEZE + WIPE -> contractId
         IHederaTokenService.TokenKey[]
-            memory keys = new IHederaTokenService.TokenKey[](6);
+            memory keys = new IHederaTokenService.TokenKey[](5);
         keys[0] = getSingleKey(
             KeyType.SUPPLY,
             KeyValueType.CONTRACT_ID,
@@ -96,11 +96,6 @@ contract MyHTSTokenPFWD is HederaTokenService, KeyHelper, Ownable {
         );
         keys[4] = getSingleKey(
             KeyType.WIPE,
-            KeyValueType.CONTRACT_ID,
-            address(this)
-        );
-        keys[5] = getSingleKey(
-            KeyType.DELETE,
             KeyValueType.CONTRACT_ID,
             address(this)
         );
@@ -210,14 +205,14 @@ contract MyHTSTokenPFWD is HederaTokenService, KeyHelper, Ownable {
 Let's update our contract by:
 
 - Adding a new function `unfreezeAccount` to unfreeze the token for a specific account.
-- We will also define a new event `AccountUnFrozen`.
+- We will also define a new event `AccountUnfrozen`.
 
 #### **Key Code Snippet:**
 
 ```solidity contracts/MyHTSTokenPFWD.sol wrap
 contract MyHTSTokenPFWD is HederaTokenService, KeyHelper, Ownable {
     ...
-    event AccountUnFrozen(address indexed account);
+    event AccountUnfrozen(address indexed account);
     ...
     function unfreezeAccount(address account) external onlyOwner {
         require(tokenAddress != address(0), "HTS: not created");
@@ -318,10 +313,10 @@ import {IERC721} from "@openzeppelin/contracts/interfaces/IERC721.sol";
 
 // Hedera HTS system contracts (as in your setup)
 // Hedera HTS system contracts (v1, NOT v2)
-import {HederaTokenService} from "@hashgraph/smart-contracts/contracts/system-contracts/hedera-token-service/HederaTokenService.sol";
-import {IHederaTokenService} from "@hashgraph/smart-contracts/contracts/system-contracts/hedera-token-service/IHederaTokenService.sol";
-import {HederaResponseCodes} from "@hashgraph/smart-contracts/contracts/system-contracts/HederaResponseCodes.sol";
-import {KeyHelper} from "@hashgraph/smart-contracts/contracts/system-contracts/hedera-token-service/KeyHelper.sol";
+import {HederaTokenService} from "@hiero-ledger/hiero-contracts/token-service/HederaTokenService.sol";
+import {IHederaTokenService} from "@hiero-ledger/hiero-contracts/token-service/IHederaTokenService.sol";
+import {HederaResponseCodes} from "@hiero-ledger/hiero-contracts/common/HederaResponseCodes.sol";
+import {KeyHelper} from "@hiero-ledger/hiero-contracts/token-service/KeyHelper.sol";
 
 /**
  * HTS-backed ERC721-like collection:
@@ -910,7 +905,13 @@ Balance after burn: 0 NFTs
 
 ## Step 11: Run tests(Optional)
 
-You can find both types of tests in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hts-evm-mint-nfts). You will find the following files:
+You can find both types of tests in the [**Hedera-Code-Snippets repository**](https://github.com/hedera-dev/hedera-code-snippets/tree/main/hts-evm-mint-nfts).
+
+<Info>
+  The repository's `package.json` installs `@hashgraph/smart-contracts` from the `hedera-smart-contracts` GitHub repository, which no longer contains the system contracts, so a fresh clone doesn't build. Use the contract and setup on this page, which install `@hiero-ledger/hiero-contracts@0.2.0`.
+</Info>
+
+You will find the following files:
 
 - `contracts/MyHTSTokenPFWD.t.sol`
 

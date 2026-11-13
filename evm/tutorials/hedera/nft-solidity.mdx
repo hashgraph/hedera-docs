@@ -6,14 +6,13 @@ description: "Create, mint, and transfer an NFT on Hedera by calling the Hedera 
 
 ## Summary
 
-Besides creating NFTs using Hedera SDK, you can use a Solidity Contract to create, mint, and transfer NFTs by calling contract functions directly. These are the contracts you will need to import into your working directory provided by Hedera that you can find in the **contracts** folder [here](https://github.com/hiero-ledger/hiero-contracts):
+Besides creating NFTs using Hedera SDK, you can use a Solidity Contract to create, mint, and transfer NFTs by calling contract functions directly. The contract imports these helper contracts from the [`@hiero-ledger/hiero-contracts`](https://github.com/hiero-ledger/hiero-contracts) npm package:
 
-* HederaTokenService.sol
-* HederaResponseCodes.sol
-* IHederaTokenService.sol
-* ExpiryHelper.sol
-* FeeHelper.sol
-* KeyHelper.sol
+* `common/HederaResponseCodes.sol`
+* `token-service/HederaTokenService.sol`
+* `token-service/IHederaTokenService.sol`
+* `token-service/ExpiryHelper.sol`
+* `token-service/KeyHelper.sol`
 
 ***
 
@@ -34,7 +33,14 @@ In this example, you will set gas for smart contract transactions multiple times
 
 ## 1. Create an “NFT Creator” Smart Contract
 
-You can find an NFTCreator Solidity contract sample below with the contract bytecode obtained by compiling the solidity contract using [Remix IDE](https://remix.ethereum.org/). If you are not familiar with Solidity, you can take a look at the docs [here](https://docs.soliditylang.org/en/v0.8.14/).
+Save the `NFTCreator` contract below as `NFTCreator.sol`, then install the helper contracts and the Solidity compiler and compile it:
+
+```bash
+npm install @hiero-ledger/hiero-contracts@0.2.0 solc@0.8.28
+npx solcjs --bin --include-path node_modules/ --base-path . NFTCreator.sol
+```
+
+This writes the bytecode to `NFTCreator_sol_NFTCreator.bin` in the current directory, where the complete examples in Code Check read it. If you are not familiar with Solidity, you can take a look at the docs [here](https://docs.soliditylang.org/en/v0.8.14/).
 
 The following contract is composed of three functions:
 
@@ -50,11 +56,11 @@ The important thing to know is that the NFT created in this example will have th
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.5.0 <0.9.0;
 
-import "./HederaResponseCodes.sol";
-import "./IHederaTokenService.sol";
-import "./HederaTokenService.sol";
-import "./ExpiryHelper.sol";
-import "./KeyHelper.sol";
+import "@hiero-ledger/hiero-contracts/common/HederaResponseCodes.sol";
+import "@hiero-ledger/hiero-contracts/token-service/IHederaTokenService.sol";
+import "@hiero-ledger/hiero-contracts/token-service/HederaTokenService.sol";
+import "@hiero-ledger/hiero-contracts/token-service/ExpiryHelper.sol";
+import "@hiero-ledger/hiero-contracts/token-service/KeyHelper.sol";
 
 contract NFTCreator is ExpiryHelper, KeyHelper, HederaTokenService {
 
@@ -675,7 +681,7 @@ const main = async () => {
   const aliceKey = PrivateKey.generateECDSA();
   const aliceId = await accountCreator(aliceKey, 100);
 
-  const bytecode = fs.readFileSync("./binaries/NFTCreator_sol_NFTCreator.bin");
+  const bytecode = fs.readFileSync("./NFTCreator_sol_NFTCreator.bin");
 
   // Create contract
   const createContract = new ContractCreateFlow()

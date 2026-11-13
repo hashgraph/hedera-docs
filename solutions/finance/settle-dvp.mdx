@@ -274,7 +274,16 @@ Nothing is locked while the schedule waits, which is the trade-off of having no 
 
 ## The audit log
 
-Every event in a trade's life is published to the market's HCS topic: `proposed`, `signed`, `settled`, `rejected`, `cancelled` and `expired`. Each entry is JSON with the schedule, the terms, the two parties, the transaction it is about and its result, and `prev`: the SHA-256 of the previous entry's exact bytes (64 zeros for the first). Change or remove any entry and every later `prev` stops matching.
+Every event in a trade's life is published to the market's HCS topic: `proposed`, `signed`, `settled`, `rejected`, `cancelled` and `expired`. Each entry is JSON with the schedule, the terms, the two parties, the transaction it is about and its result, and `prev`: the SHA-256 of the previous entry's exact bytes (64 zeros for the first).
+
+Most of what an entry says, the ledger already proves. A settled trade is a transfer, a signature is a `ScheduleSign`, a failed execution has its own record and result, and HCS stamps every message with a sequence number, a consensus timestamp and a running hash besides. The topic is not what makes any of that true. What it holds that the ledger does not is the market itself:
+
+* **The trade, not just the transactions.** On chain there is a `ScheduleCreate`, a `ScheduleSign` and a transfer. There is no trade: nothing on the ledger says that 100 security against 10,000 stablecoin was proposed by the Seller for the Buyer, and nothing ties the transfer back to the proposal it answered. Those are the app's own facts, and the topic is where they are written down.
+* **The events that leave nothing behind.** A schedule nobody signs in time simply lapses. Nothing executes, so there is nothing on chain to look up, and `expired` entries carry no transaction id for that reason. The topic is the only record that the trade existed and how it ended.
+* **What a durable market would replay.** The template keeps the market in server memory, so a restart loses it. The entries hold what rebuilding it would need: every trade, its terms, its parties and its last status, in order, from a public topic and with no database of your own. This template does not do that rebuild; the topic is what makes it possible.
+* **A trail that still verifies off the mirror node.** Change or remove an entry in an exported copy of the trail and every later `prev` stops matching. The topic's own running hash proves as much while you are reading from the network; the chain is what survives the export.
+
+What an entry does *not* carry is why a trade was proposed or rejected, or who inside a firm approved it. For a trail built around that, see [HCS Audit Trail](/solutions/finance/hcs-audit-trail).
 
 ```typescript
 const message = { v: 1, event, schedule, quantity, price, seller, buyer, tx, result, prev: lastHash };

@@ -1,17 +1,17 @@
 ---
-title: "Permissioned Security"
-description: "A security token whose compliance rules are keys on the token, enforced by the network, where freezing or wiping a holder takes two officers because every admin key is a 2-of-3 threshold key."
+title: "Regulated Token"
+description: "A token whose compliance rules are keys on the token, enforced by the network, where freezing or wiping a holder takes two officers because every admin key is a 2-of-3 threshold key."
 ---
 
-Issue a security token that only approved holders can receive, then freeze one of them under a court order — an action no single officer can carry out, because each of the token's keys is a 2-of-3 threshold key. The rules live on the token and the network applies them. You deploy no contracts.
+Issue a regulated token that only approved holders can receive, then freeze one of them under a court order — an action no single officer can carry out, because each of the token's keys is a 2-of-3 threshold key. The rules live on the token and the network applies them. You deploy no contracts.
 
-<Card title="Get the code" icon="github" href="https://github.com/hedera-dev/hedera-finance-templates/tree/templates/permissioned-security">
-  `npx create-scaffold-hbar@latest --template hedera-dev/hedera-finance-templates#templates/permissioned-security`
+<Card title="Get the code" icon="github" href="https://github.com/hedera-dev/hedera-finance-templates/tree/templates/regulated-token">
+  `npx create-scaffold-hbar@latest --template hedera-dev/hedera-finance-templates#templates/regulated-token`
 </Card>
 
 ## Overview
 
-A **permissioned security** is a token with rules about who may hold it. On most chains those rules are contract code you write, deploy and audit. On Hedera they are **keys on the token**:
+A **regulated token** is a token with rules about who may hold it — a share, a bond, a fund unit, anything whose issuer is required to know and approve every holder. On most chains those rules are contract code you write, deploy and audit. On Hedera they are **keys on the token**:
 
 | Key | What it allows |
 | - | - |
@@ -76,7 +76,7 @@ yarn next:dev   # http://localhost:3000
 Press **Set up desk**. Four steps run, each reporting as it goes:
 
 1. **Officers** — three keys, and the 2-of-3 `KeyList` built from them
-2. **Token** — `PSEC`, 0 decimals, 10,000 units, with that one key as all five of its keys
+2. **Token** — `RTKN`, 0 decimals, 10,000 units, with that one key as all five of its keys
 3. **Holders** — two accounts, associated with the token
 4. **Distribute** — grant KYC to Holder A and send it 100
 
@@ -84,7 +84,7 @@ Press **Set up desk**. Four steps run, each reporting as it goes:
 const thresholdKey = new KeyList([officer1.publicKey, officer2.publicKey, officer3.publicKey], 2);
 
 await new TokenCreateTransaction()
-  .setTokenName("Permissioned Security").setTokenSymbol("PSEC")
+  .setTokenName("Regulated Token").setTokenSymbol("RTKN")
   .setDecimals(0).setInitialSupply(10_000)
   .setKycKey(thresholdKey).setFreezeKey(thresholdKey).setWipeKey(thresholdKey)
   .setPauseKey(thresholdKey).setAdminKey(thresholdKey)

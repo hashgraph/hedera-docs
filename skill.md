@@ -159,7 +159,7 @@ For `token associate -a` and `token transfer-ft --from`, pass an account the CLI
 
 - **Token association required**: Before transferring HTS tokens to an account, that account must associate with the token via `TokenAssociateTransaction`. Without this, the transfer fails.
 - **NFT initial supply must be 0**: When creating an NFT token type, set `initialSupply` to 0. Mint individual NFTs separately with `TokenMintTransaction`.
-- **HBAR value required for HTS token creation via system contracts**: When creating tokens from a Solidity contract using the HTS precompile, you must send HBAR via `msg.value`, not just gas. Without this, the transaction fails with `INSUFFICIENT_TX_FEE`.
+- **HBAR value required for HTS token creation via system contracts**: When creating tokens from a Solidity contract using the HTS precompile, you must send HBAR via `msg.value`, not just gas. `msg.value` is in tinybars and must cover the `TokenCreate` price plus a 20% surcharge, minus the fixed gas portion already charged. If it falls short, the create call does not revert: it returns `INSUFFICIENT_TX_FEE` and a zero token address, so check the response code. See [Create tokens](/evm/hedera-services/hts-solidity/create-tokens).
 - **Transaction expiration**: The SDKs default to a 120-second valid duration, and the network accepts 15 to 180 seconds (values outside that range fail with `INVALID_TRANSACTION_DURATION`). A transaction that does not reach consensus within its window fails with `TRANSACTION_EXPIRED`. Regenerate the transaction ID and resubmit, or set a longer valid duration, up to 180 seconds.
 - **Missing operator**: SDK queries and transactions require an operator. Always call `client.setOperator()` before executing.
 - **Key types**: For EVM-oriented applications, create accounts with an ECDSA (secp256k1) key. ECDSA is required for EVM wallets and JSON-RPC tooling (MetaMask, Hardhat, Foundry); ED25519 keys work only with native SDK operations. Generate keys with `PrivateKey.generateECDSA()` or `PrivateKey.generateED25519()`. Avoid `PrivateKey.generate()`: it is deprecated and returns an ED25519 key. The Hiero CLI defaults to ECDSA.
@@ -234,7 +234,7 @@ Before submitting work:
 - [ ] Transaction signed by all required keys
 - [ ] Receipt obtained confirming transaction success
 - [ ] Token associations completed before any HTS token transfers
-- [ ] HBAR sent via `msg.value` for any HTS system contract calls from Solidity
+- [ ] HBAR sent via `msg.value` (in tinybars) for HTS token creation from Solidity
 - [ ] Private keys stored in `.env` or secure vault, not hardcoded
 - [ ] Tested on testnet before deploying to mainnet
 - [ ] HBAR is singular ("10 HBAR"), tinybars is plural ("1,000 tinybars")

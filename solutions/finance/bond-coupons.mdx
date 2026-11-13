@@ -3,11 +3,15 @@ title: "Bond Coupons"
 description: "A bond contract that pays its own coupons in a stablecoin and schedules the next payment itself through HIP-1215, then repays principal at maturity, with no keepers, bots or off-chain automation."
 ---
 
+import FinanceTemplateDisclaimer from '/snippets/finance-template-disclaimer.mdx';
+
 Issue a bond whose contract pays every coupon on time by itself. Each payment schedules the next one through the [Hedera Schedule Service](/evm/hedera-services/system-contracts/schedule-service), and the last one repays principal. No keeper, bot, cron job or third-party automation network is involved.
 
 <Card title="Get the code" icon="github" href="https://github.com/hedera-dev/hedera-finance-templates/tree/templates/bond-coupons">
   `npx create-scaffold-hbar@latest --template hedera-dev/hedera-finance-templates#templates/bond-coupons`
 </Card>
+
+<FinanceTemplateDisclaimer />
 
 ## Overview
 
@@ -279,7 +283,7 @@ The demo investors are accounts with unlimited automatic associations, which is 
 Allocations can only be set while the bond is `CREATED`. Add your wallet and allocate it units before pressing **Start**, or issue a second bond for it.
 </Warning>
 
-## Going to production
+## What this template simplifies
 
 * **Real periods and conventions.** Months rather than minutes, and a day-count convention (30/360, ACT/365) instead of a flat rate per period. Interest between coupon dates needs accrual, and a record date decides who is paid when positions move.
 * **Holders at scale.** This bond pushes payments to at most `MAX_HOLDERS` (10) holders in one call, because every transfer happens inside a single scheduled execution with a gas limit. Beyond a handful, make coupons pull-based — the bond records what each holder is owed and holders claim it — or pay in batches across several schedules.

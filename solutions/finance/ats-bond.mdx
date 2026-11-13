@@ -3,11 +3,15 @@ title: "ATS Bond Issuance"
 description: "Issue an ERC-1400 bond through the Asset Tokenization Studio factory on Hedera testnet, restrict who may hold it with an allowlist, and distribute it to investors, without deploying a single contract yourself."
 ---
 
+import FinanceTemplateDisclaimer from '/snippets/finance-template-disclaimer.mdx';
+
 Issue a bond with an ISIN, a face value and a maturity date through Hedera's [Asset Tokenization Studio](/solutions/tokenization/ats/index) (ATS), approve the investors allowed to hold it, and distribute it to them. ATS deploys the bond for you from audited, upgradeable contracts already on testnet: you deploy nothing.
 
 <Card title="Get the code" icon="github" href="https://github.com/hedera-dev/hedera-finance-templates/tree/templates/ats-bond">
   `npx create-scaffold-hbar@latest --template hedera-dev/hedera-finance-templates#templates/ats-bond`
 </Card>
+
+<FinanceTemplateDisclaimer />
 
 ## Overview
 
@@ -280,7 +284,7 @@ ATS bonds are EVM contracts, so any EVM wallet can hold and transfer them. The h
 
 The allowlist applies to transfers too: to an approved recipient the transfer succeeds, and to an unapproved one the bond refuses it and the page says why.
 
-## Going to production
+## What this template simplifies
 
 * **Real terms**: a real ISIN, legal documentation, and a starting date that matches the offering.
 * **KYC instead of a bare allowlist**: ATS supports internal KYC with verifiable credentials, external KYC lists, and ERC-3643 identity, where investors carry reusable on-chain identities with claims from trusted issuers.

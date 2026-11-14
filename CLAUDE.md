@@ -21,6 +21,7 @@ This is the Hedera documentation portal, built with [Mintlify](https://mintlify.
 ### Important Files
 
 - `docs.json` — Mintlify navigation, site configuration, and redirects.
+- `.github/sdk-sync/<sdk>.json` — the SDK version each language's docs were last reviewed against; advanced by merging the automated **SDK Docs Sync** PRs (see `.github/sdk-sync/README.md`). SDK install pins are bumped by that workflow; don't hand-edit "vX.Y.Z+" feature minimums to match.
 - The `redirects` block in `docs.json` maps legacy `/hedera/*` URLs to their new locations. These exist for external inbound traffic and SEO after the docs revamp — **do not remove them**, and when you move or rename a page, add/update its redirect (and confirm the destination actually resolves — `mint broken-links` does NOT check redirect destinations).
 
 ## Commit Rules

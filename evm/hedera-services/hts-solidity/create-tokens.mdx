@@ -26,17 +26,24 @@ If you don't need any of that, a plain ERC-20 is simpler and works fine. The cho
 
 ## Required imports
 
-The helper library is `HederaTokenService.sol`, in the [hiero-contracts repository](https://github.com/hiero-ledger/hiero-contracts). Copy these files into your `contracts/` directory:
+The helper library is `HederaTokenService.sol`, published with its companion contracts in the [`@hiero-ledger/hiero-contracts`](https://github.com/hiero-ledger/hiero-contracts) npm package. Install it in your project:
 
-```text
-contracts/
-├── HederaTokenService.sol      # Wrapper that handles call/response codes
-├── IHederaTokenService.sol     # Raw interface (function signatures, structs)
-├── HederaResponseCodes.sol     # Numeric response codes (SUCCESS, INVALID_TOKEN_ID, ...) — from contracts/common/
-├── ExpiryHelper.sol            # Builds the Expiry struct
-├── FeeHelper.sol               # Builds FixedFee, FractionalFee, RoyaltyFee structs
-└── KeyHelper.sol               # Builds HederaToken.TokenKey entries
+```bash
+npm install @hiero-ledger/hiero-contracts@0.2.0
 ```
+
+Import the contracts from the package root:
+
+| Import path | What it does |
+|---|---|
+| `@hiero-ledger/hiero-contracts/token-service/HederaTokenService.sol` | Wrapper that handles call/response codes |
+| `@hiero-ledger/hiero-contracts/token-service/IHederaTokenService.sol` | Raw interface (function signatures, structs) |
+| `@hiero-ledger/hiero-contracts/common/HederaResponseCodes.sol` | Numeric response codes (`SUCCESS`, `INVALID_TOKEN_ID`, ...) |
+| `@hiero-ledger/hiero-contracts/token-service/ExpiryHelper.sol` | Builds the `Expiry` struct |
+| `@hiero-ledger/hiero-contracts/token-service/FeeHelper.sol` | Builds `FixedFee`, `FractionalFee`, `RoyaltyFee` structs |
+| `@hiero-ledger/hiero-contracts/token-service/KeyHelper.sol` | Builds `HederaToken.TokenKey` entries |
+
+Keep the package layout. `HederaTokenService.sol` imports `../common/HederaResponseCodes.sol`, so copying the files into one flat folder breaks the build.
 
 ## Example: fungible token
 
@@ -44,11 +51,11 @@ contracts/
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.22;
 
-import "./HederaTokenService.sol";
-import "./IHederaTokenService.sol";
-import "./HederaResponseCodes.sol";
-import "./KeyHelper.sol";
-import "./ExpiryHelper.sol";
+import "@hiero-ledger/hiero-contracts/token-service/HederaTokenService.sol";
+import "@hiero-ledger/hiero-contracts/token-service/IHederaTokenService.sol";
+import "@hiero-ledger/hiero-contracts/common/HederaResponseCodes.sol";
+import "@hiero-ledger/hiero-contracts/token-service/KeyHelper.sol";
+import "@hiero-ledger/hiero-contracts/token-service/ExpiryHelper.sol";
 
 contract TokenFactory is HederaTokenService, KeyHelper, ExpiryHelper {
 
@@ -119,27 +126,34 @@ function createNft(
 
 ## Paying for it
 
-Token creation costs HBAR. The caller has to forward enough `msg.value` to cover the `TokenCreate` transaction fee, which buys the token its initial auto-renew period (~92 days). The current base fee is around $1 USD worth of HBAR for both fungible and non-fungible tokens.
+Token creation costs HBAR. The caller has to forward enough `msg.value` to cover the `TokenCreate` transaction fee, which buys the token its initial auto-renew period (90 days, the `defaultAutoRenewPeriod` of 7,776,000 seconds in `HederaTokenService.sol`). The current base fee is around $1 USD worth of HBAR for both fungible and non-fungible tokens.
 
-Two important things to know about how Hedera handles the money:
+Three important things to know about how Hedera handles the money:
 
+- **`msg.value` must cover the create price, in tinybars.** `HederaTokenService.createFungibleToken` and `createNonFungibleToken` forward `msg.value` to the HTS system contract. It requires at least the HAPI `TokenCreate` price plus a 20% surcharge, minus the fixed gas portion it already charged. Inside the EVM, `msg.value` is in tinybars (8 decimals), so don't scale it by `10**10`.
 - **Gas is charged on consumption.** Per HIP-1249, Hedera refunds 100% of unused gas, and the per-transaction limit is 15M (HIP-185). Set a generous gas limit; you only pay for what you actually use.
-- **Excess `msg.value` is not refunded.** Anything you forward beyond what the precompile consumes for the `TokenCreate` fee stays in the calling contract's balance. There is no automatic refund to the EOA.
+- **Excess `msg.value` is not refunded.** Anything you forward beyond what the system contract consumes for the `TokenCreate` fee stays in the calling contract's balance. There is no automatic refund to the EOA.
 
-The practical pattern: compute the exact tinybars via the [Exchange Rate system contract](/evm/hedera-services/system-contracts/exchange-rate) just before the call, or build a refund step into your contract that returns leftover HBAR to `msg.sender` after the precompile call.
+The practical pattern: compute the tinybars via the [Exchange Rate system contract](/evm/hedera-services/system-contracts/exchange-rate) just before the call, or build a refund step into your contract that returns leftover HBAR to `msg.sender` after the create call.
 
 ```solidity
-// Compute the exact value just before the call, then forward only that amount.
-// 1.5 USD in tinycents = 1.5 * 10^8 tinycents. Gives a small safety margin
-// over the ~$1 base fee.
-uint256 tinybars = IExchangeRate(0x168).tinycentsToTinybars(15 * 10**7);
-uint256 wei_ = tinybars * 10**10;   // tinybars (8 decimals) -> wei (18 decimals)
-TokenFactory(factory).createFungible{value: wei_}("MyToken", "MTK", 1_000_000, 2);
+// Compute the value just before the call, then forward that amount.
+// 1 USD = 10^10 tinycents, so 1.5 USD = 15 * 10^9 tinycents. The margin
+// covers the ~$1 base fee plus the 20% surcharge (no custom fees).
+uint256 tinybars = IExchangeRate(address(0x168)).tinycentsToTinybars(15 * 10**9);
+// msg.value is in tinybars inside the EVM: forward the result as is.
+TokenFactory(factory).createFungible{value: tinybars}("MyToken", "MTK", 1_000_000, 2);
 ```
 
+A token created with custom fees costs more: the [fee schedule](/networks/fees) lists `TokenCreate` with custom fees at $2.00, so with the 20% surcharge forward about $2.40 worth of tinybars (for example `24 * 10**9` tinycents) instead of the $1.50 above.
+
 <Warning>
-  Token creation fails with `INSUFFICIENT_PAYER_BALANCE` if `msg.value` doesn't cover the fee. If you can't compute the exact amount, pass extra and refund the leftover from inside your contract. Don't expect Hedera to do it for you.
+  If `msg.value` doesn't cover the fee, the create call returns `INSUFFICIENT_TX_FEE` and a zero token address instead of reverting, so always check the response code (the examples above `require` `SUCCESS`). If you can't compute the exact amount, pass extra and refund the leftover from inside your contract. Don't expect Hedera to do it for you.
 </Warning>
+
+<Info>
+  Calling `createFungible` from a client through the JSON-RPC relay (ethers, viem, a wallet) is different: there, `value` is in 18-decimal weibars, so pass the tinybar amount times `10**10` (in ethers, `parseEther("2")` sends 2 HBAR). The network converts it to tinybars before the contract sees it. See [HBAR decimal places](/evm/differences/hbar-decimals).
+</Info>
 
 ## Token keys
 
@@ -153,10 +167,11 @@ The `HederaToken.tokenKeys` array decides who can do what to the token. Each ent
 | `WIPE` | Wiping tokens from accounts |
 | `KYC` | Granting and revoking KYC status |
 | `PAUSE` | Pausing all token operations |
-| `FEE_SCHEDULE` | Updating the custom-fee schedule |
-| `METADATA` | Updating NFT serial-number metadata (HIP-657) |
+| `FEE` | Updating the custom-fee schedule |
 
-Build each entry with `KeyHelper.getSingleKey(KeyType.X, KeyValueType.Y, address)`. Common `KeyValueType` values: `CONTRACT_ID` (the contract signs implicitly), `INHERIT_ACCOUNT_KEY` (use the caller's key), `ED25519` / `ECDSA` (provide a raw public key).
+Build each entry with `KeyHelper.getSingleKey(KeyType.X, KeyValueType.Y, address)`. Common `KeyValueType` values: `CONTRACT_ID` (the contract signs implicitly), `INHERIT_ACCOUNT_KEY` (use the caller's key), `ED25519` / `SECP256K1` (provide a raw public key).
+
+`token-service/KeyHelper.sol` has no `METADATA` key type, so `getSingleKey` can't build the metadata key from [HIP-657](https://hips.hedera.com/hip/hip-657).
 
 ## See also
 

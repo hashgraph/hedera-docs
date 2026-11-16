@@ -75,10 +75,9 @@
   "navbar": {
     "links": [
       {
-        "label": "Join Hackathon",
-        "href": "https://hedera.com/hackathon",
-        "target": "_blank",
-        "icon": "code"
+        "label": "Docs MCP",
+        "href": "/learn/getting-started/mcp-setup",
+        "icon": "robot"
       }
     ],
     "primary": {
@@ -102,6 +101,10 @@
     {
       "source": "/evm/development/index",
       "destination": "/evm/development/creating"
+    },
+    {
+      "source": "/solutions/finance/permissioned-security",
+      "destination": "/solutions/finance/regulated-token"
     },
     {
       "source": "/solutions/tokenization/stablecoin",
@@ -2856,7 +2859,7 @@
               "solutions/finance/hcs-audit-trail",
               "solutions/finance/ats-bond",
               "solutions/finance/bond-coupons",
-              "solutions/finance/permissioned-security"
+              "solutions/finance/regulated-token"
             ]
           },
           {

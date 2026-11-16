@@ -8,7 +8,7 @@ description: "Send HBAR to and from contracts with transfer(), send(), and call(
 
 On Ethereum, sending ETH to a contract address automatically triggers the `receive()` or `fallback()` functions, allowing contracts to process incoming funds. On Hedera, these functions also exist but require HBAR to be explicitly sent via `contractCall` for them to execute. Direct HBAR transfers to a contract’s Hedera account won’t trigger any logic unless additional steps are taken.
 
-Fortunately, the core Solidity patterns—like using `transfer()`, `send()`, or `call()`—work the same way on Hedera, making it easy for developers familiar with EVM. This guide highlights these mechanisms, details the key Hedera-specific considerations, and provides examples to help you handle HBAR transfers in your smart contracts
+The core Solidity patterns, `transfer()`, `send()`, and `call()`, work on Hedera as they do on Ethereum, with one difference: amounts are in tinybars (8 decimals), not wei (18 decimals). This guide highlights these mechanisms, details the key Hedera-specific considerations, and provides examples to help you handle HBAR transfers in your smart contracts
 
 ### **Sending to Contract**
 
@@ -24,12 +24,13 @@ These methods are supported on Hedera, ensuring compatibility with existing Soli
 
 * **Fallback and Receive Functions**: When sending HBAR to a contract address via `contractCall`, Hedera behaves like Ethereum. If `receive()` or `fallback()` functions are defined in the contract, they will be triggered upon receipt of HBAR.
 * **Important Note**: Directly transferring HBAR to a contract’s Hedera account (not via `contractCall`) will not trigger these functions. To execute logic upon receipt, ensure transfers occur within the EVM environment.
+* **Amounts Are in Tinybars**: Inside a contract, `msg.value`, `address(this).balance`, and the amount passed to `transfer()`, `send()`, or `call{value: ...}` are in tinybars (1 HBAR = 100,000,000 tinybars). An Ethereum literal such as `1 ether` (10¹⁸) is 10¹⁰ HBAR on Hedera. See [Decimal Handling](/evm/differences/hbar-decimals).
 
 ***
 
 ## Example Contract Functions for HBAR Transfers
 
-Below is an example of contract functions and how HBAR transfers are handled using Solidity. These patterns are identical to those used for ETH on the EVM:
+Below is an example of contract functions and how HBAR transfers are handled using Solidity. These patterns are the same as those used for ETH on the EVM, with amounts in tinybars:
 
 ```solidity
 // Handle incoming HBAR transfers
@@ -38,7 +39,7 @@ receive() external payable {
     emit HbarReceived(msg.sender, msg.value);
 }
 
-// Transfer HBAR using different methods
+// Transfer HBAR using different methods. _amount is in tinybars (1 HBAR = 100_000_000).
 function transferHbar(address payable _receiverAddress, uint _amount) public {
     _receiverAddress.transfer(_amount);
 }

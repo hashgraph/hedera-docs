@@ -50,7 +50,7 @@ You know [Solidity](/support/glossary#solidity), Hardhat, Foundry, or Remix and 
 </Steps>
 
 <Tip>
-  Before porting scripts that move value, read [HBAR Decimals](/evm/differences/hbar-decimals). [HBAR](/support/glossary#hbar) is 8 decimals natively but the relay presents 18-decimal units to EVM tools, which is the most common migration surprise.
+  Before porting scripts that move value, read [HBAR Decimals](/evm/differences/hbar-decimals). [HBAR](/support/glossary#hbar) is 8 decimals natively but the relay presents 18-decimal units to EVM tools, while `msg.value` inside contracts stays in 8-decimal tinybars. This is the most common migration surprise.
 </Tip>
 
 ## Hedera-native developer adding the EVM

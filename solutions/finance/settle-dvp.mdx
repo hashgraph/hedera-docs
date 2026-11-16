@@ -115,7 +115,7 @@ Press **Set up market**. The server runs seven steps as the Issuer and reports e
 
 ### Step 1: Create the security and the stablecoin
 
-The security has 0 decimals and a **KYC key**, so the network refuses to move it into or out of any account the Issuer has not approved. It also has a freeze key, which a regulator-driven workflow could use to halt an account. [Permissioned Security](/solutions/finance/permissioned-security) covers that key model on its own: every compliance rule as a key the network enforces, each one a 2-of-3 threshold so no single officer can freeze or wipe a holder. The stablecoin has 6 decimals and no KYC key, like USDC.
+The security has 0 decimals and a **KYC key**, so the network refuses to move it into or out of any account the Issuer has not approved. It also has a freeze key, which a regulator-driven workflow could use to halt an account. [Regulated Token](/solutions/finance/regulated-token) covers that key model on its own: every compliance rule as a key the network enforces, each one a 2-of-3 threshold so no single officer can freeze or wipe a holder. The stablecoin has 6 decimals and no KYC key, like USDC.
 
 ```typescript
 const receipt = await (
@@ -345,7 +345,7 @@ const result = await provider.hedera_signAndExecuteTransaction({
   <Card title="KYC on HTS tokens" icon="id-card" href="/native/tutorials/tokens/hts-part2-kyc">
     Granting and revoking KYC on a token.
   </Card>
-  <Card title="Permissioned Security" icon="key" href="/solutions/finance/permissioned-security">
+  <Card title="Regulated Token" icon="key" href="/solutions/finance/regulated-token">
     The same KYC and freeze keys, with every admin key a 2-of-3 threshold.
   </Card>
   <Card title="HCS Audit Trail" icon="list-check" href="/solutions/finance/hcs-audit-trail">

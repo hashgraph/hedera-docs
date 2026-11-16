@@ -26,17 +26,24 @@ If you don't need any of that, a plain ERC-20 is simpler and works fine. The cho
 
 ## Required imports
 
-The helper library is `HederaTokenService.sol`, in the [hiero-contracts repository](https://github.com/hiero-ledger/hiero-contracts). Copy these files into your `contracts/` directory:
+The helper library is `HederaTokenService.sol`, published with its companion contracts in the [`@hiero-ledger/hiero-contracts`](https://github.com/hiero-ledger/hiero-contracts) npm package. Install it in your project:
 
-```text
-contracts/
-├── HederaTokenService.sol      # Wrapper that handles call/response codes
-├── IHederaTokenService.sol     # Raw interface (function signatures, structs)
-├── HederaResponseCodes.sol     # Numeric response codes (SUCCESS, INVALID_TOKEN_ID, ...) — from contracts/common/
-├── ExpiryHelper.sol            # Builds the Expiry struct
-├── FeeHelper.sol               # Builds FixedFee, FractionalFee, RoyaltyFee structs
-└── KeyHelper.sol               # Builds HederaToken.TokenKey entries
+```bash
+npm install @hiero-ledger/hiero-contracts@0.2.0
 ```
+
+Import the contracts from the package root:
+
+| Import path | What it does |
+|---|---|
+| `@hiero-ledger/hiero-contracts/token-service/HederaTokenService.sol` | Wrapper that handles call/response codes |
+| `@hiero-ledger/hiero-contracts/token-service/IHederaTokenService.sol` | Raw interface (function signatures, structs) |
+| `@hiero-ledger/hiero-contracts/common/HederaResponseCodes.sol` | Numeric response codes (`SUCCESS`, `INVALID_TOKEN_ID`, ...) |
+| `@hiero-ledger/hiero-contracts/token-service/ExpiryHelper.sol` | Builds the `Expiry` struct |
+| `@hiero-ledger/hiero-contracts/token-service/FeeHelper.sol` | Builds `FixedFee`, `FractionalFee`, `RoyaltyFee` structs |
+| `@hiero-ledger/hiero-contracts/token-service/KeyHelper.sol` | Builds `HederaToken.TokenKey` entries |
+
+Keep the package layout. `HederaTokenService.sol` imports `../common/HederaResponseCodes.sol`, so copying the files into one flat folder breaks the build.
 
 ## Example: fungible token
 
@@ -44,11 +51,11 @@ contracts/
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.22;
 
-import "./HederaTokenService.sol";
-import "./IHederaTokenService.sol";
-import "./HederaResponseCodes.sol";
-import "./KeyHelper.sol";
-import "./ExpiryHelper.sol";
+import "@hiero-ledger/hiero-contracts/token-service/HederaTokenService.sol";
+import "@hiero-ledger/hiero-contracts/token-service/IHederaTokenService.sol";
+import "@hiero-ledger/hiero-contracts/common/HederaResponseCodes.sol";
+import "@hiero-ledger/hiero-contracts/token-service/KeyHelper.sol";
+import "@hiero-ledger/hiero-contracts/token-service/ExpiryHelper.sol";
 
 contract TokenFactory is HederaTokenService, KeyHelper, ExpiryHelper {
 
@@ -160,10 +167,11 @@ The `HederaToken.tokenKeys` array decides who can do what to the token. Each ent
 | `WIPE` | Wiping tokens from accounts |
 | `KYC` | Granting and revoking KYC status |
 | `PAUSE` | Pausing all token operations |
-| `FEE_SCHEDULE` | Updating the custom-fee schedule |
-| `METADATA` | Updating NFT serial-number metadata (HIP-657) |
+| `FEE` | Updating the custom-fee schedule |
 
-Build each entry with `KeyHelper.getSingleKey(KeyType.X, KeyValueType.Y, address)`. Common `KeyValueType` values: `CONTRACT_ID` (the contract signs implicitly), `INHERIT_ACCOUNT_KEY` (use the caller's key), `ED25519` / `ECDSA` (provide a raw public key).
+Build each entry with `KeyHelper.getSingleKey(KeyType.X, KeyValueType.Y, address)`. Common `KeyValueType` values: `CONTRACT_ID` (the contract signs implicitly), `INHERIT_ACCOUNT_KEY` (use the caller's key), `ED25519` / `SECP256K1` (provide a raw public key).
+
+`token-service/KeyHelper.sol` has no `METADATA` key type, so `getSingleKey` can't build the metadata key from [HIP-657](https://hips.hedera.com/hip/hip-657).
 
 ## See also
 

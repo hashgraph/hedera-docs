@@ -694,6 +694,18 @@ A metric of cryptocurrency computing power determined by measuring how many hash
 
 The [native cryptocurrency](#native-cryptocurrency) of the Hedera Network.
 
+### Hedera Agent Kit
+
+---
+
+An open source framework for building AI-powered applications that interact with the Hedera network. The Agent Kit is available in JavaScript and Python, and it includes hooks and policies that enforce business logic and security rules. It is part of [Hedera AI Studio](#hedera-ai-studio). See [Hedera AI Agent Kit](/solutions/ai/agent-kit/index).
+
+### Hedera AI Studio
+
+---
+
+Hedera AI Studio provides open source tools for AI agents and agentic commerce on the Hedera network. It includes the [Hedera Agent Kit](#hedera-agent-kit), Agent Lab, Agent Builder, the Hedera Network MCP Server, and support for [x402](#x402) payments on Hedera. See [AI Studio on Hedera](/solutions/ai/index).
+
 ### Hedera Consensus Service (HCS)
 
 ---
@@ -855,6 +867,12 @@ The creation of a token on a distributed network. Most often used in the context
 ---
 
 A mirror node is used to store and cost-effectively query historical data from the public ledger while minimizing the use of Hedera Network resources. Mirror nodes support the Hedera Network services currently available and can be used to retrieve [transactions](#transaction) and records, [event files](#event-files), and [balance files](#balance-files). Mirror nodes are also where applications read current HBAR and token balances (see [Get account balance](/native/accounts/get-balance) and [Get account token balance](/native/tokens/get-balance)).
+
+### Model Context Protocol (MCP)
+
+---
+
+An open standard that lets AI applications connect to external tools and data sources. The Hedera documentation MCP server at `https://docs.hedera.com/mcp` gives AI tools a search tool, a read-only filesystem tool for reading full pages and OpenAPI specs, and a feedback tool for reporting documentation problems. See [MCP Server Setup](/learn/getting-started/mcp-setup).
 
 ### Multisig
 
@@ -1265,6 +1283,12 @@ In the context of Hedera, the [Hedera Testnet](/networks/testnet) is a network u
 
 A timestamp is a piece of recorded data that verifies the data existed at a specific date and time. In distributed ledger technology, a timestamp reveals when a block has been mined and validated. With the Bitcoin blockchain, timestamps help solve the double spending problem.
 
+### Tinybar
+
+---
+
+The smallest unit of [HBAR](#hbar). One HBAR is 10⁸ tinybars (8 decimal places). The Hedera API, the SDKs, and the EVM all count HBAR in tinybars: inside a smart contract, `msg.value` and `address.balance` are tinybars. Ethereum tooling that talks to Hedera through the JSON-RPC relay uses [weibars](#weibar) instead: the network converts a transaction's weibar `value` to tinybars before the EVM runs, and the relay returns balances and gas prices in weibars. See [Decimal Handling (8 vs. 18 Decimals)](/evm/differences/hbar-decimals).
+
 ### Token
 
 ---
@@ -1383,13 +1407,21 @@ The envisioned next generation of the internet is characterized by decentralizat
 
 ---
 
-The EVM returns gas information in Weibar (introduced in [HIP-410](https://hips.hedera.com/hip/hip-410)). One weibar is 10^-18th HBARs, which translates to 1 tinybar is 10^10 weibars. As noted in HIP-410, this is to maximize compatibility with third-party tools that expect ether units to be operated on in fractions of 10^18, also known as a Wei.
+The 18-decimal unit the JSON-RPC relay uses to present HBAR to Ethereum tooling (introduced in [HIP-410](https://hips.hedera.com/hip/hip-410)). One weibar is 10⁻¹⁸ HBAR, so 1 [tinybar](#tinybar) is 10¹⁰ weibars. Transaction `value`, `eth_getBalance`, and `eth_gasPrice` are in weibars to stay compatible with tools that expect ether units in fractions of 10¹⁸ (wei). Inside the EVM, values are in tinybars: the network divides a transaction's weibar `value` by 10¹⁰ before the contract sees it as `msg.value`.
 
 ### White Paper
 
 ---
 
 In the DLT world, a white paper is a document containing technical information about a proposed project, such as an [Initial Coin Offering (ICO)](#initial-coin-offering-ico). A white paper typically aims at potential investors and provides background information about the project, how the technology will work, what problems it may solve, and who would benefit from the solution. _Bitcoin: A Peer-to-Peer Electronic Cash System_, published by Satoshi Nakamoto in 2008, is a famous White Paper that "propose(d) a solution to the double-spending problem using a [peer-to-peer](#peer-to-peer-p2p) network.”
+
+## X
+
+### x402
+
+---
+
+An open payment standard that uses the HTTP `402 Payment Required` status code so a server can request payment and a client can pay within an ordinary HTTP request and response. On Hedera, x402 uses Hedera's `exact` payment scheme to settle payments in HBAR or [Hedera Token Service (HTS)](#hedera-token-service-hts) tokens. [Hedera AI Studio](#hedera-ai-studio) supports x402 for agent payments on Hedera. See [About x402 on Hedera](/solutions/ai/x402/index).
 
 ## Z
 

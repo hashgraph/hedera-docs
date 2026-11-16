@@ -84,7 +84,7 @@ See the [Hardhat documentation](https://hardhat.org/docs/getting-started) for th
 
 ## Hedera-specific gotchas
 
-- **Gas price units.** The relay returns `msg.value` and `gasPrice` with 18 decimals, while native Hedera APIs use 8 decimals for HBAR. See [HBAR decimal places](/evm/development/json-rpc#hbar-decimal-places).
+- **HBAR units.** Transaction `value`, balances, and `gasPrice` from the relay use 18 decimals (weibars), while `msg.value` inside a contract and native Hedera APIs use 8 decimals (tinybars). See [HBAR decimal places](/evm/differences/hbar-decimals).
 - **Foundry and Hardhat print "ETH".** Tooling hardcodes the label. The currency being spent is HBAR.
 - **Contract verification.** Sourcify supports mainnet (`295`) and testnet (`296`). It does not support a local network, so verification has to wait until you deploy to a public network.
 - **Token association.** Transferring an HTS token to an account requires that account to be associated with the token first. See [token association](/native/tokens/associate).

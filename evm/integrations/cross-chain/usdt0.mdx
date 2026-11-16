@@ -81,7 +81,7 @@ Cross-chain transfers go through the OFT contract, not a plain ERC-20 `transfer`
 <Info>
 The code below **illustrates the standard LayerZero OFT pattern** so you can see the shape of the flow. It is not a Hedera-tested recipe. Treat the [**USDT0 Developer Guide**](https://docs.usdt0.to/technical-documentation/developer/) as the source of truth for working integration code — it ships maintained TypeScript/ethers.js examples — and verify the Hedera-specific behavior noted below before moving real value.
 
-In particular, mind the **tinybar/weibar unit difference**: `quoteSend` returns the fee in tinybars (8 decimals), but the JSON-RPC relay expects `msg.value` in weibars (18 decimals), so the fee must be converted before it is attached to `send`. See [Developer Considerations on the LayerZero page](/evm/integrations/cross-chain/layerzero#developer-considerations-to-note-evm-differences) for more on this.
+In particular, mind the **tinybar/weibar unit difference**: `quoteSend` returns the fee in tinybars (8 decimals), but the JSON-RPC relay expects the transaction `value` in weibars (18 decimals), so the fee must be converted before it is attached to `send`. See [Developer Considerations on the LayerZero page](/evm/integrations/cross-chain/layerzero#developer-considerations-to-note-evm-differences) for more on this.
 </Info>
 
 The `send` function takes a `SendParam` struct and a `MessagingFee`:
@@ -155,7 +155,7 @@ async function sendUsdt0({ provider, signer, dstEid, recipient, amount }) {
 
   // 3. Send, attaching the native fee as msg.value.
   //    Hedera gotcha: quoteSend returns nativeFee in tinybars (8 decimals), but the
-  //    JSON-RPC relay expects msg.value in weibars (18 decimals). Convert before sending.
+  //    JSON-RPC relay expects the transaction value in weibars (18 decimals). Convert before sending.
   const nativeFeeWeibars = fee.nativeFee * 10n ** 10n;
   const tx = await oft.send(sendParam, fee, owner, { value: nativeFeeWeibars });
   return tx.wait();

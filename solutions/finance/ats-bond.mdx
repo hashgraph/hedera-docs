@@ -8,7 +8,7 @@ import FinanceTemplateDisclaimer from '/snippets/finance-template-disclaimer.mdx
 Issue a bond with an ISIN, a face value and a maturity date through Hedera's [Asset Tokenization Studio](/solutions/tokenization/ats/index) (ATS), approve the investors allowed to hold it, and distribute it to them. ATS deploys the bond for you from audited, upgradeable contracts already on testnet: you deploy nothing.
 
 <Card title="Get the code" icon="github" href="https://github.com/hedera-dev/hedera-finance-templates/tree/templates/ats-bond">
-  `npx create-scaffold-hbar@latest --template hedera-dev/hedera-finance-templates#templates/ats-bond`
+  `npx scaffold-hbar@latest --template hedera-dev/hedera-finance-templates#templates/ats-bond`
 </Card>
 
 <FinanceTemplateDisclaimer />
@@ -67,7 +67,7 @@ The ATS SDK signs only through wallets (MetaMask, WalletConnect) or custody prov
 
 ## Prerequisites
 
-* Node.js 20.18 or later, and Yarn
+* Node.js 22.23.4 or later on the 22.x line, and Yarn
 * A Hedera testnet account from the [Hedera Portal](https://portal.hedera.com) with an **ECDSA** key. It becomes the Issuer. JSON-RPC transactions are signed with ECDSA, so an ED25519 key cannot be used; the app says so at start.
 * Testnet HBAR on that account. Each **Issue bond** costs about **9.7 HBAR**: about 7.4 for the bond deployment and about 1.1 for each of the two demo investors. Approving and issuing cost a fraction of an HBAR each.
 * Optional, for [Hold and transfer with MetaMask](#hold-and-transfer-with-metamask): MetaMask with Hedera testnet (chain id 296) and an ECDSA testnet account holding a little HBAR for gas

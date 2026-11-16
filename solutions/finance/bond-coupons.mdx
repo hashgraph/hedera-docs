@@ -8,7 +8,7 @@ import FinanceTemplateDisclaimer from '/snippets/finance-template-disclaimer.mdx
 Issue a bond whose contract pays every coupon on time by itself. Each payment schedules the next one through the [Hedera Schedule Service](/evm/hedera-services/system-contracts/schedule-service), and the last one repays principal. No keeper, bot, cron job or third-party automation network is involved.
 
 <Card title="Get the code" icon="github" href="https://github.com/hedera-dev/hedera-finance-templates/tree/templates/bond-coupons">
-  `npx create-scaffold-hbar@latest --template hedera-dev/hedera-finance-templates#templates/bond-coupons`
+  `npx scaffold-hbar@latest --template hedera-dev/hedera-finance-templates#templates/bond-coupons`
 </Card>
 
 <FinanceTemplateDisclaimer />
@@ -75,7 +75,7 @@ Coupon periods are set in **minutes** here, from 1 to 60, so a bond's whole life
 
 ## Prerequisites
 
-* Node.js 20.18.3 or later, and Yarn
+* Node.js 22.23.4 or later on the 22.x line, and Yarn
 * [Foundry](https://book.getfoundry.sh/getting-started/installation), to compile and deploy the contracts
 * A Hedera testnet account from the [Hedera Portal](https://portal.hedera.com) with an **ECDSA** key. It becomes the Issuer. JSON-RPC transactions are signed with ECDSA, so an ED25519 key cannot be used; the app says so at start.
 * Testnet HBAR on that account. The factory is deployed once; each bond reserves **3 HBAR per coupon** for its scheduled calls, and the desk's setup creates a stablecoin and funds two demo accounts with 1 HBAR each.

@@ -200,7 +200,7 @@ The table below defines the mapping of Solidity variables and operation codes to
 | `msg.sender` |  | The address of the Hedera contract ID or account ID in Solidity format that called this contract. For the root level or for delegate chains that go to the root, it is the account ID paying for the transaction. |
 | `msg.value` |  | The value associated to the transaction associated in tinybar. |
 | `tx.origin` |  | The account ID paying for the transaction, regardless of depth. |
-| `tx.gasprice` |  | Fixed (varies with the global fee schedule and exchange rate). |
+| `tx.gasprice` |  | Fixed (varies with the global fee schedule and exchange rate). In tinybars per gas, not weibars. |
 | `selfdestruct`<br/>`(address payable recipient)` | `SELFDESTRUCT` | Address will not be reusable due to Hedera's account numbering policies. On `SELFDESTRUCT` the contracts HBAR and HTS tokens are transferred to the recipients. If the recipient does not exist or does not have an allowance for any of the HTS tokens, this opcode will fail. |
 | `<address>.code` |  | Precompile and system-contract addresses (including the HTS system contract at `0x167`) report no code. Externally owned accounts report empty code (EOA Code Delegation is currently deactivated). |
 | `<address>.codehash` |  | Precompile contract addresses will report the empty code hash. |

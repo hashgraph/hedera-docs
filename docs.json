@@ -103,6 +103,10 @@
       "destination": "/evm/development/creating"
     },
     {
+      "source": "/solutions/finance/permissioned-security",
+      "destination": "/solutions/finance/regulated-token"
+    },
+    {
       "source": "/solutions/tokenization/stablecoin",
       "destination": "/solutions/tokenization/stablecoin/core-concepts"
     },
@@ -2855,7 +2859,7 @@
               "solutions/finance/hcs-audit-trail",
               "solutions/finance/ats-bond",
               "solutions/finance/bond-coupons",
-              "solutions/finance/permissioned-security"
+              "solutions/finance/regulated-token"
             ]
           },
           {

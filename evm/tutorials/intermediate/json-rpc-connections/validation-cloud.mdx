@@ -1,6 +1,6 @@
 ---
 title: "Configuring Validation Cloud RPC endpoints"
-description: "Configure Validation Cloud's managed JSON-RPC endpoint to connect EVM tools to Hedera, with a free tier and no rate limits for higher-volume apps."
+description: "Configure Validation Cloud's managed JSON-RPC endpoint to connect EVM tools to Hedera, with a free tier of 50 million compute units a month and paid tiers for higher-volume apps."
 ---
 
 [Validation Cloud](https://www.validationcloud.io/node)
@@ -8,9 +8,9 @@ is a third-party organization that runs a JSON-RPC and Mirror Node managed servi
 popular blockchain networks. It is a "freemium" offering, meaning it has a free tier and a paid offering. As a
 managed service, it:
 
-* Is free to use up to a point, with a free usage allowance that resets every month
-* Does not require a credit card to sign up, only an email address
-* Does not apply specific rate limits and can scale to be used by high volume apps
+* Is free to use up to a point: the free plan includes 50 million compute units a month
+* Does not require a credit card for the free plan
+* Offers paid tiers for apps that need more than the free allowance
 
 This combination makes it fairly straightforward to use and more reliable than the public RPC endpoint.
 
@@ -43,7 +43,7 @@ The corresponding chain IDs are:
 You will need to replace `<YOUR_API_KEY>`
 with a Validation Cloud API Endpoint Key, and that requires the following prerequisite steps:
 
-* (1) Sign up for an account at [`app.validationcloud.io/api/auth/signup`](https://app.validationcloud.io/api/auth/signup)
+* (1) Sign up for an account at [`app.validationcloud.io`](https://app.validationcloud.io/)
 * (2) Accept the terms of use and then verify your email address
 * (3) Click the "Create endpoint" button at the top of the Validation Cloud Node API dashboard:
 
@@ -66,9 +66,9 @@ Now you're ready to connect to an RPC endpoint or query a Mirror Node via Valida
 
 ## Additional resources
 
-* [Validation Cloud documentation](https://docs.validationcloud.io/v1)
-* [Hedera JSON-RPC Relay API reference](https://docs.validationcloud.io/v1/hedera/json-rpc-relay-api)
-* [Hedera REST Mirror Node API reference](https://docs.validationcloud.io/v1/hedera/rest-mirror-node-api)
+* [Validation Cloud documentation](https://docs.validationcloud.io/nodeapi/hedera/overview)
+* [Hedera JSON-RPC Relay API reference](https://docs.validationcloud.io/nodeapi/hedera/json-rpc-relay-api)
+* [Hedera REST Mirror Node API reference](https://docs.validationcloud.io/nodeapi/hedera/rest-mirror-node-api/accounts)
 * [Validation Cloud Node API dashboard](https://app.validationcloud.io/)
 
 ---
@@ -77,7 +77,7 @@ Now you're ready to connect to an RPC endpoint or query a Mirror Node via Valida
   <Card title="Editor: Krystal, Senior DX Engineer">
     [GitHub](https://github.com/theekrystallee) | [X](https://X.com/theekrystallee) | [LinkedIn](https://linkedin.com/in/theekrystallee)
   </Card>
-  <Card title="Editor: Logan, Senior Software EngineerI" arrow>
+  <Card title="Editor: Logan, Senior Software Engineer" arrow>
     [GitHub](https://github.com/quiet-node) | [LinkedIn](https://www.linkedin.com/in/logann131/)
   </Card>
 </Columns>

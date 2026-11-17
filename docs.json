@@ -99,6 +99,38 @@
   },
   "redirects": [
     {
+      "source": "/support/meetups",
+      "destination": "/support"
+    },
+    {
+      "source": "/support/forms",
+      "destination": "/support"
+    },
+    {
+      "source": "/support/hedera-com-discord",
+      "destination": "https://hedera.com/discord"
+    },
+    {
+      "source": "/support/hedera-com-blog-tagged-technical",
+      "destination": "https://hedera.com/blog/tagged/technical"
+    },
+    {
+      "source": "/support/github-com-hashgraph",
+      "destination": "https://github.com/hashgraph"
+    },
+    {
+      "source": "/support/help-hedera-com-hc-en-us",
+      "destination": "https://help.hedera.com/hc/en-us"
+    },
+    {
+      "source": "/support/status-hedera-com",
+      "destination": "https://status.hedera.com"
+    },
+    {
+      "source": "/support/contributing/style-guide/gitbook-markdown-syntax",
+      "destination": "/support/contributing/style-guide"
+    },
+    {
       "source": "/evm/development/index",
       "destination": "/evm/development/creating"
     },
@@ -1940,7 +1972,7 @@
     },
     {
       "source": "/hedera/support-and-community/contributing-guide/style-guide/gitbook-markdown-syntax",
-      "destination": "/support/contributing/style-guide/gitbook-markdown-syntax"
+      "destination": "/support/contributing/style-guide"
     },
     {
       "source": "/hedera/support-and-community/contributing-guide/style-guide/language-and-grammar",
@@ -3449,8 +3481,7 @@
                   "support/contributing/style-guide/punctuation",
                   "support/contributing/style-guide/use-of-hbar-and-tinybars",
                   "support/contributing/style-guide/use-of-mainnet-testnet-and-previewnet",
-                  "support/contributing/style-guide/use-of-web2-and-web3",
-                  "support/contributing/style-guide/gitbook-markdown-syntax"
+                  "support/contributing/style-guide/use-of-web2-and-web3"
                 ]
               }
             ]
@@ -3470,14 +3501,8 @@
           {
             "group": "Community & Resources",
             "pages": [
-              "support/hedera-com-discord",
-              "support/github-com-hashgraph",
-              "support/help-hedera-com-hc-en-us",
-              "support/hedera-com-blog-tagged-technical",
               "support/hedera-com-bounty",
-              "support/status-hedera-com",
-              "support/forms",
-              "support/meetups"
+              "support/hedera-com-hackathon"
             ]
           }
         ]

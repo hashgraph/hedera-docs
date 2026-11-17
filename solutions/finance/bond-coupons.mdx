@@ -285,7 +285,7 @@ Allocations can only be set while the bond is `CREATED`. Add your wallet and all
 * **Holders at scale.** This bond pushes payments to at most `MAX_HOLDERS` (10) holders in one call, because every transfer happens inside a single scheduled execution with a gas limit. Beyond a handful, make coupons pull-based — the bond records what each holder is owed and holders claim it — or pay in batches across several schedules.
 * **A real stablecoin.** The desk mints its own `mUSD`. In production the coupon currency is an issued stablecoin with its own treasury, and the bond holds no minting power over it.
 * **Funding monitoring.** The bond pays its own schedules from its HBAR balance and its coupons from its stablecoin balance. Both need watching: `CouponMissed` and `SchedulingFailed` are the events to alert on.
-* **Transferable positions.** Positions here are a mapping the Issuer sets. A bond whose holders trade needs the position to be a token — see the tokenised bond template for an ERC-1400 security with an allowlist, and give its holders coupons the same way.
+* **Transferable positions.** Positions here are a mapping the Issuer sets. A bond whose holders trade needs the position to be a token — see [ATS Bond Issuance](/solutions/finance/ats-bond) for an ERC-1400 security with an allowlist, and give its holders coupons the same way.
 
 ## Next steps
 

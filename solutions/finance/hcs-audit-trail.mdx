@@ -36,7 +36,7 @@ So the entries carry what the ledger has no field for:
 * **The evidence.** The SHA-256 of the document behind the action — the order, the instruction, the signed minute. The hash commits to that exact file at that exact position in the chain, so a document produced afterwards cannot match an entry already on the topic.
 * **The decisions that never reach the ledger.** A KYC review, a sanctions screening, a board approval. Nothing executes, so there is no transaction, no receipt, nothing for a mirror node to show. These entries exist nowhere else, and they are the ones a compliance examination usually asks about first.
 
-That last point is the clearest case. A sanctions screening that returned a hit, and the decision not to proceed, leaves no on-chain trace whatsoever: the thing that *did not happen* is exactly what has to be evidenced. The topic is the only place that record can live and still be ordered, timestamped and tamper-evident.
+That last point is the clearest case: when a screening returns a hit and the decision is not to proceed, the thing that *did not happen* is exactly what has to be evidenced, and the topic is the only place that record can live and still be ordered and timestamped.
 
 The workflow has three actors:
 
@@ -156,9 +156,9 @@ Creating the token is the first audit entry: an `issue` entry whose `prev` is 64
 
 Choose a **target account**: the demo holder by default, or any testnet account. Fill in the **reason** and the **authority** if you have them, and attach a **supporting document** if there is one. Then press **Grant KYC**, **Freeze holder**, **Unfreeze holder** or **Transfer**. Each is a real HTS transaction with its own transaction id and result.
 
-The three context fields are optional for a token action and required for a decision. The reasoning is the same either way: a freeze is already on the ledger, so the entry only has to add what the ledger is missing.
+The three fields are what the entry adds to an action the ledger already has. They are optional here so the buttons stay one click away while you are trying the template; a real desk would require them. For a decision, which has nothing on the ledger behind it, they are required.
 
-A refused action is still logged with the network's result code. A transfer before KYC is granted returns `ACCOUNT_KYC_NOT_GRANTED_FOR_TOKEN`; a transfer to a frozen account returns `ACCOUNT_FROZEN_FOR_TOKEN`; any action on an account that has not associated the token returns `TOKEN_NOT_ASSOCIATED_TO_ACCOUNT`. The Issuer cannot target itself.
+The fields empty themselves once the entry is on the topic, so a court order attached to a freeze is not published again with the unfreeze that follows it. A refused action is still logged with the network's result code. A transfer before KYC is granted returns `ACCOUNT_KYC_NOT_GRANTED_FOR_TOKEN`; a transfer to a frozen account returns `ACCOUNT_FROZEN_FOR_TOKEN`; any action on an account that has not associated the token returns `TOKEN_NOT_ASSOCIATED_TO_ACCOUNT`. The Issuer cannot target itself.
 
 ### Step 2: Queue and publish the audit entry
 
@@ -219,7 +219,7 @@ const bytes = new Uint8Array(await file.arrayBuffer());
 const evidence = await sha256Hex(bytes);   // the only thing that is published
 ```
 
-This matters more than it looks. A KYC file or a board minute cannot go on a public topic, and a hash of it reveals nothing about its contents — but it does commit to that exact file, at that exact position in the chain, at a consensus timestamp nobody can move. Whoever holds the document can prove later that it is the one the entry refers to. Nobody else learns anything.
+A KYC file or a board minute cannot go on a public topic, and a hash of it reveals nothing about its contents — but it does commit to that exact file, at that exact position in the chain, at a consensus timestamp nobody can move. Whoever holds the document can prove later that it is the one the entry refers to. Nobody else learns anything.
 
 The regulator's side of that is **Check a document against this trail** on the feed: choose a file, it is hashed in that browser too, and the page names the entries carrying that hash — or says that none do.
 
@@ -227,7 +227,7 @@ The regulator's side of that is **Check a document against this trail** on the f
 const matches = rows.filter(row => row.entry?.evidence === hash);
 ```
 
-**You should see** the decision at the top of the trail with `off chain` where the transaction link usually is, and the document's hash in its own column.
+**You should see** the decision at the top of the trail with `off chain` where the transaction link usually is, and the document's hash in its own column. `off chain` is only ever a decision: a message the feed cannot read at all shows a dash there, so a broken entry is never dressed up as one the desk meant to record.
 
 ## Read and verify the regulator feed
 
@@ -238,7 +238,7 @@ Open **Open regulator feed**, or `/regulator?topic=<topic id>`. The page reads t
 * **Claim**: the entry's own fields agree with the kind of event it says it is. A ledger event has to cite a transaction; a decision has to cite none, and has to carry its authority, its evidence hash and a `PASSED` or `REFUSED` outcome. This closes the two ways the kinds could be mixed up — a decision citing a real transaction to borrow its credibility, and an action with no transaction to be checked against
 * **Transaction**: for a ledger event, the referenced transaction exists on the mirror node with the result the entry claims, **and** is the kind of transaction the event implies, against the entry's own token and account — a `freeze` entry must point at a `TOKENFREEZE` of that token, a successful `transfer` at a `CRYPTOTRANSFER` whose legs credit that amount of that token to that account. Checking the result code alone would let an authorised publisher log `freeze` / `SUCCESS` against any successful transaction on the network
 
-For a decision there is nothing to look up, so the transaction check is reported as **not applicable** — a dash, not a tick. A tick there would claim a verification nobody performed, which is the kind of detail that decides whether an auditor trusts the rest of the column.
+For a decision there is nothing to look up, so the transaction check is reported as **not applicable** — a dash, not a tick. A tick there would claim a verification nobody performed.
 
 ```typescript
 for (let i = 0; i < messages.length; i++) {
@@ -264,9 +264,7 @@ Press **Try to forge an entry**. An account that is not an authorised publisher 
 <Info>
 HCS guarantees order, timestamps and immutability; it cannot stop an authorised publisher from writing an inaccurate entry. That is why every ledger entry references a transaction the regulator checks independently: an entry claiming a freeze is only `VERIFIED` if a freeze of that token, for that account, exists on the network with that result. What an authorised publisher can still do is write a well-formed entry at the wrong position — and that is what `BROKEN` is for.
 
-The fields the ledger cannot check are a different matter, and worth being exact about. **`authority` is the publisher's claim, not a proof.** The topic's submit key establishes who *wrote* the entry; it does not establish that the account named as the authority agreed to anything. Making that provable needs that account's own signature on the action — the 2-of-3 threshold-key approach in [Regulated Token](/solutions/finance/regulated-token). What the topic does give you, even for an unprovable claim, is that the claim was made at a consensus timestamp, in a position nobody can change, by a publisher the network identifies. An authority named after the fact cannot be slipped into an entry that is already on the topic.
-
-`evidence` is stronger, because the hash is self-checking: anyone holding the document can confirm it is the one the entry committed to.
+The fields the ledger cannot check need one more distinction. **`authority` is the publisher's claim, not a proof**: the submit key establishes who *wrote* the entry, not that the account it names agreed to anything. What the topic still gives you is that the claim was made at a consensus timestamp nobody can move — an authority cannot be named into an entry after the fact. **`evidence` is stronger**, because the hash is self-checking: anyone holding the document can confirm it is the one the entry committed to.
 </Info>
 
 ## Sign entries as a compliance officer with HashPack
@@ -297,7 +295,7 @@ The wallet connection follows `@hashgraph/hedera-wallet-connect`: create the pro
 
 * **The queue lives in memory**: a server restart with entries still queued loses them, though everything that reached the topic stays verifiable. A real desk persists the queue, or derives what is missing by comparing the chain against its own records.
 * **Private payloads**: the topic is public, and so is `reason`. The template keeps documents off chain by publishing only their hash; apply the same discipline to the reason text, which can easily name a person, or encrypt entries to the regulator's key.
-* **Provable authority**: `authority` is a claim by the publisher. To make it evidence, require the authorising account to sign — a threshold key on the action itself, so the entry records a signature rather than a name.
+* **Provable authority**: to turn the `authority` claim into evidence, require the authorising account to sign — the 2-of-3 threshold key in [Regulated Token](/solutions/finance/regulated-token), so the entry records a signature rather than a name.
 * **A document store that outlives the trail**: an evidence hash is worth nothing if the document is lost. Pair the topic with retention on the document store, and record the storage reference alongside the hash.
 * **Admin key**: hold the topic's admin key in a threshold key, so no single person can change who may publish.
 * **Lower latency**: subscribe to the topic over gRPC, or run your own mirror node, instead of polling the REST API.

@@ -50,7 +50,7 @@ The lifecycle:
 2. The Issuer performs token actions on a target account: grant KYC, transfer, freeze, unfreeze
 3. Each action is logged as an audit entry carrying its transaction id and result, the reason and authority behind it, the hash of any supporting document, and the hash of the previous entry
 4. Decisions taken off chain — a KYC review, a sanctions screening, an approval — are recorded as entries with no transaction at all
-5. The Regulator's feed reads the topic from the mirror node and verifies it: no sequence gaps, an unbroken hash chain, every referenced transaction real with the logged result, and every off-chain decision carrying its authority and evidence
+5. The Regulator's feed reads the topic from the mirror node and verifies it: no sequence gaps, an unbroken hash chain, every referenced transaction real with the logged result, and every off-chain decision carrying its authority and evidence. It also says which authorities signed their own entries and which were only named
 6. Anyone else who tries to publish is rejected by the network
 
 ```text
@@ -240,6 +240,14 @@ Open **Open regulator feed**, or `/regulator?topic=<topic id>`. The page reads t
 
 For a decision there is nothing to look up, so the transaction check is reported as **not applicable** — a dash, not a tick. A tick there would claim a verification nobody performed.
 
+The feed derives one more thing, which is deliberately *not* a check. Under the authority it shows `signed by this account` when the entry was paid for by the account it names, and `publisher's claim` when it was not:
+
+```typescript
+const authorityProof = entry.authority === message.payer_account_id ? "proved" : "claimed";
+```
+
+A desk publishing on an officer's behalf is how most of them work, so a claim is not a failure and never makes a trail `BROKEN`. It is the difference between a field that looks like evidence and a field that tells you when it is.
+
 ```typescript
 for (let i = 0; i < messages.length; i++) {
   const bytes = base64ToBytes(messages[i].message);
@@ -264,7 +272,7 @@ Press **Try to forge an entry**. An account that is not an authorised publisher 
 <Info>
 HCS guarantees order, timestamps and immutability; it cannot stop an authorised publisher from writing an inaccurate entry. That is why every ledger entry references a transaction the regulator checks independently: an entry claiming a freeze is only `VERIFIED` if a freeze of that token, for that account, exists on the network with that result. What an authorised publisher can still do is write a well-formed entry at the wrong position — and that is what `BROKEN` is for.
 
-The fields the ledger cannot check need one more distinction. **`authority` is the publisher's claim, not a proof**: the submit key establishes who *wrote* the entry, not that the account it names agreed to anything. What the topic still gives you is that the claim was made at a consensus timestamp nobody can move — an authority cannot be named into an entry after the fact. **`evidence` is stronger**, because the hash is self-checking: anyone holding the document can confirm it is the one the entry committed to.
+The fields the ledger cannot check need one more distinction. **`authority` is usually the publisher's claim, not a proof**: the submit key establishes who *wrote* the entry, not that the account it names agreed to anything. The exception is an entry published by the officer it names — their wallet signed and paid for that submission, and the mirror node says so, which is why the feed marks those `signed by this account`. Even then it is endorsement of the *record*, not authorisation of the action: the officer signed the entry, not the freeze. **`evidence` is stronger still**, because the hash is self-checking: anyone holding the document can confirm it is the one the entry committed to.
 </Info>
 
 ## Sign entries as a compliance officer with HashPack
@@ -295,7 +303,7 @@ The wallet connection follows `@hashgraph/hedera-wallet-connect`: create the pro
 
 * **The queue lives in memory**: a server restart with entries still queued loses them, though everything that reached the topic stays verifiable. A real desk persists the queue, or derives what is missing by comparing the chain against its own records.
 * **Private payloads**: the topic is public, and so is `reason`. The template keeps documents off chain by publishing only their hash; apply the same discipline to the reason text, which can easily name a person, or encrypt entries to the regulator's key.
-* **Provable authority**: to turn the `authority` claim into evidence, require the authorising account to sign — the 2-of-3 threshold key in [Regulated Token](/solutions/finance/regulated-token), so the entry records a signature rather than a name.
+* **Provable authority**: having the authority publish its own entries proves it endorsed the record. Proving it authorised the *action* needs its signature on the action itself — the 2-of-3 threshold key in [Regulated Token](/solutions/finance/regulated-token), so the token refuses the freeze without it.
 * **A document store that outlives the trail**: an evidence hash is worth nothing if the document is lost. Pair the topic with retention on the document store, and record the storage reference alongside the hash.
 * **Admin key**: hold the topic's admin key in a threshold key, so no single person can change who may publish.
 * **Lower latency**: subscribe to the topic over gRPC, or run your own mirror node, instead of polling the REST API.

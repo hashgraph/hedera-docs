@@ -208,14 +208,14 @@ Liquidating on price alone takes a rise of about 700 basis points in the discoun
 
 ## What the contract refuses
 
-**Break it** runs four attacks. Each is checked with an `eth_call` against the live contracts before anything is sent, and a refused attack is never sent:
+**Break it** runs four attacks against the live contracts. Three are sent as real transactions, so each refusal is a reverted transaction on HashScan. Only the escrow could sign the fourth, and the loan contract has no function for it, so it is asked with an `eth_call`:
 
 | Button | What it tries | Refused by |
 | - | - | - |
 | Fake a pledge | A hold naming the lender as escrow instead of the loan contract. It looks identical on screen. The hold is real and is released afterwards | `openLoan`: `HoldEscrowMismatch` |
 | Move the locked bills | The borrower transfers more than their free balance | ATS: `InvalidPartition` |
 | Take the pledge back early | The borrower calls `reclaimHoldByPartition` before the hold expires | ATS: `HoldExpirationNotReached` |
-| Send the bills somewhere else | The escrow executes the hold to an address other than the lender | ATS: `InvalidDestinationAddress` |
+| Send the bills somewhere else | The escrow executes the hold to an address other than the lender. Not sent | ATS: `InvalidDestinationAddress` |
 
 The fake pledge is the only evidence from outside the code that the contract reads the hold. The reclaim attack is why `openLoan` refuses a hold that does not outlast the term plus a grace period: otherwise a borrower could wait for expiry, take the bills back and keep the cash.
 

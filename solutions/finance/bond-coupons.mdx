@@ -3,11 +3,15 @@ title: "Bond Coupons"
 description: "A bond contract that pays its own coupons in a stablecoin and schedules the next payment itself through HIP-1215, then repays principal at maturity, with no keepers, bots or off-chain automation."
 ---
 
+import FinanceTemplateDisclaimer from '/snippets/finance-template-disclaimer.mdx';
+
 Issue a bond whose contract pays every coupon on time by itself. Each payment schedules the next one through the [Hedera Schedule Service](/evm/hedera-services/system-contracts/schedule-service), and the last one repays principal. No keeper, bot, cron job or third-party automation network is involved.
 
 <Card title="Get the code" icon="github" href="https://github.com/hedera-dev/hedera-finance-templates/tree/templates/bond-coupons">
   `npx scaffold-hbar@latest --template hedera-dev/hedera-finance-templates#templates/bond-coupons`
 </Card>
+
+<FinanceTemplateDisclaimer />
 
 ## Overview
 
@@ -72,7 +76,7 @@ Coupon periods are set in **minutes** here, from 1 to 60, so a bond's whole life
 ## Prerequisites
 
 * Node.js 22.23.4 or later on the 22.x line, and Yarn
-* [Foundry](https://book.getfoundry.sh/getting-started/installation), to compile and deploy the contracts
+* [Foundry](https://book.getfoundry.sh/getting-started/installation) compiles and deploys the contracts, and `scaffold-hbar` installs it for you when `forge` is missing or older than 1.4.0. On Windows it prints the install command to run first instead.
 * A Hedera testnet account from the [Hedera Portal](https://portal.hedera.com) with an **ECDSA** key. It becomes the Issuer. JSON-RPC transactions are signed with ECDSA, so an ED25519 key cannot be used; the app says so at start.
 * Testnet HBAR on that account. The factory is deployed once; each bond reserves **3 HBAR per coupon** for its scheduled calls, and the desk's setup creates a stablecoin and funds two demo accounts with 1 HBAR each.
 * Optional, for [Receive coupons with MetaMask](#receive-coupons-with-metamask): MetaMask with Hedera testnet (chain id 296) and an ECDSA testnet account holding a little HBAR for gas
@@ -279,13 +283,13 @@ The demo investors are accounts with unlimited automatic associations, which is 
 Allocations can only be set while the bond is `CREATED`. Add your wallet and allocate it units before pressing **Start**, or issue a second bond for it.
 </Warning>
 
-## Going to production
+## What this template simplifies
 
 * **Real periods and conventions.** Months rather than minutes, and a day-count convention (30/360, ACT/365) instead of a flat rate per period. Interest between coupon dates needs accrual, and a record date decides who is paid when positions move.
 * **Holders at scale.** This bond pushes payments to at most `MAX_HOLDERS` (10) holders in one call, because every transfer happens inside a single scheduled execution with a gas limit. Beyond a handful, make coupons pull-based — the bond records what each holder is owed and holders claim it — or pay in batches across several schedules.
 * **A real stablecoin.** The desk mints its own `mUSD`. In production the coupon currency is an issued stablecoin with its own treasury, and the bond holds no minting power over it.
 * **Funding monitoring.** The bond pays its own schedules from its HBAR balance and its coupons from its stablecoin balance. Both need watching: `CouponMissed` and `SchedulingFailed` are the events to alert on.
-* **Transferable positions.** Positions here are a mapping the Issuer sets. A bond whose holders trade needs the position to be a token — see the tokenised bond template for an ERC-1400 security with an allowlist, and give its holders coupons the same way.
+* **Transferable positions.** Positions here are a mapping the Issuer sets. A bond whose holders trade needs the position to be a token — see [ATS Bond Issuance](/solutions/finance/ats-bond) for an ERC-1400 security with an allowlist, and give its holders coupons the same way.
 
 ## Next steps
 

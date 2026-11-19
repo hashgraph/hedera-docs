@@ -75,8 +75,8 @@ Create or update your `package.json` with all required dependencies:
   },
   "license": "MIT",
   "devDependencies": {
-    "@hashgraph/smart-contracts": "github:hashgraph/hedera-smart-contracts",
     "@hashgraph/system-contracts-forking": "0.1.2",
+    "@hiero-ledger/hiero-contracts": "0.2.0",
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
     "@nomicfoundation/hardhat-ethers": "^3.0.0",
     "@nomicfoundation/hardhat-ignition": "^0.15.16",
@@ -102,7 +102,7 @@ Create or update your `package.json` with all required dependencies:
 }
 ```
 
-Note the addition of `@hashgraph/smart-contracts` which provides the HTS System Contracts interfaces and helper contracts.
+Note the addition of `@hiero-ledger/hiero-contracts`, which provides the HTS System Contracts interfaces and helper contracts.
 
 Then install all dependencies:
 
@@ -119,7 +119,7 @@ The `@hashgraph/system-contracts-forking` plugin requires **Hardhat 2.22.x**. Ne
 - **`hardhat@2.22.19`** - Last compatible version before breaking changes
 - **`@nomicfoundation/hardhat-toolbox@5.0.0`** - Compatible with Hardhat 2.22.x
 - **`@hashgraph/system-contracts-forking@0.1.2`** - The Hedera forking plugin
-- **`@hashgraph/smart-contracts`** - HTS System Contracts interfaces
+- **`@hiero-ledger/hiero-contracts@0.2.0`** - HTS System Contracts interfaces and helpers
 - **`--legacy-peer-deps`** - Required to resolve dependency conflicts between these versions
 
 </Warning>
@@ -255,12 +255,12 @@ Create a new file `contracts/HTSTokenManager.sol`:
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.33;
 
-import "@hashgraph/smart-contracts/contracts/system-contracts/hedera-token-service/HederaTokenService.sol";
-import "@hashgraph/smart-contracts/contracts/system-contracts/hedera-token-service/ExpiryHelper.sol";
-import "@hashgraph/smart-contracts/contracts/system-contracts/hedera-token-service/KeyHelper.sol";
-import "@hashgraph/smart-contracts/contracts/system-contracts/HederaResponseCodes.sol";
-import "@hashgraph/smart-contracts/contracts/system-contracts/hedera-token-service/IHederaTokenService.sol";
-import "@hashgraph/smart-contracts/contracts/system-contracts/hedera-token-service/FeeHelper.sol";
+import "@hiero-ledger/hiero-contracts/token-service/HederaTokenService.sol";
+import "@hiero-ledger/hiero-contracts/token-service/ExpiryHelper.sol";
+import "@hiero-ledger/hiero-contracts/token-service/KeyHelper.sol";
+import "@hiero-ledger/hiero-contracts/common/HederaResponseCodes.sol";
+import "@hiero-ledger/hiero-contracts/token-service/IHederaTokenService.sol";
+import "@hiero-ledger/hiero-contracts/token-service/FeeHelper.sol";
 
 contract HTSTokenManager is
     HederaTokenService,

@@ -1,42 +1,36 @@
 ---
 title: "Network Explorers and Tools"
-description: "Network explorers hosted by the community"
+description: "Find the official Hedera network explorer, HashScan, and community-hosted explorers for searching transactions, accounts, tokens, and contracts."
 ---
 
 
 Hedera network explorers are tools for tracking activity on the Hedera network. Mirror nodes provide real-time data on transactions, while network explorers offer a user-friendly interface for viewing and searching those transactions.
 
-Check out some of the community-hosted network explorer services listed below. Each community-hosted network explorer may have their own unique features and experience.
+## Official explorer
+
+HashScan is hosted by Hashgraph and built on the open-source [Hiero Mirror Node Explorer](https://github.com/hiero-ledger/hiero-mirror-node-explorer). It supports mainnet, testnet, and previewnet.
 
 <Columns cols={2}>
   <Card
-    title="NETWORK EXPLORER"
-    href="https://explorer.arkhia.io/#/mainnet/dashboard"
-    arrow
-    img="/images/networks/community-mirror-nodes/community-mirror-nodes-1.png"
-  />
-    
-  <Card
-    title="NETWORK EXPLORER"
-    href="https://app.dragonglass.me/hedera/home"
-    arrow
-    img="/images/networks/community-mirror-nodes/community-mirror-nodes-2.png"
-  />
-    
-  <Card
-    title="NETWORK EXPLORER"
+    title="HashScan"
     href="https://hashscan.io/"
     arrow
     img="/images/networks/community-mirror-nodes/community-mirror-nodes-3.png"
   />
-    
+</Columns>
+
+## Community explorers
+
+These explorers are built and hosted by independent members of the Hedera community. Each one may offer its own features and experience.
+
+<Columns cols={2}>
   <Card
-    title="NETWORK EXPLORER"
-    href="https://hederaexplorer.io/"
+    title="Arkhia Explorer"
+    href="https://explorer.arkhia.io/#/mainnet/dashboard"
     arrow
-    img="/images/networks/community-mirror-nodes/community-mirror-nodes-4.png"
+    img="/images/networks/community-mirror-nodes/community-mirror-nodes-1.png"
   />
-    
+
 </Columns>
 
 ## FAQ
@@ -65,7 +59,7 @@ For example, if you create a new account using the `AccountCreateTransaction` in
 </Accordion>
 
 <Accordion title="Can I host my own Hedera network explorer?">
-Yes, you can! You can create your own custom Hedera network explorer using the [Mirror Node REST APIs](/reference/rest-api) or take a look at the [Hedera Mirror Node Explorer](https://github.com/hashgraph/hedera-mirror-node-explorer) open-source project.
+Yes, you can! You can create your own custom Hedera network explorer using the [Mirror Node REST APIs](/reference/rest-api) or take a look at the [Hiero Mirror Node Explorer](https://github.com/hiero-ledger/hiero-mirror-node-explorer) open-source project, which powers HashScan.
 </Accordion>
 
 <Accordion title="How can I add a network explorer to this page?">

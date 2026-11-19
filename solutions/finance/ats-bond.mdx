@@ -3,11 +3,15 @@ title: "ATS Bond Issuance"
 description: "Issue an ERC-1400 bond through the Asset Tokenization Studio factory on Hedera testnet, restrict who may hold it with an allowlist, and distribute it to investors, without deploying a single contract yourself."
 ---
 
+import FinanceTemplateDisclaimer from '/snippets/finance-template-disclaimer.mdx';
+
 Issue a bond with an ISIN, a face value and a maturity date through Hedera's [Asset Tokenization Studio](/solutions/tokenization/ats/index) (ATS), approve the investors allowed to hold it, and distribute it to them. ATS deploys the bond for you from audited, upgradeable contracts already on testnet: you deploy nothing.
 
 <Card title="Get the code" icon="github" href="https://github.com/hedera-dev/hedera-finance-templates/tree/templates/ats-bond">
-  `npx create-scaffold-hbar@latest --template hedera-dev/hedera-finance-templates#templates/ats-bond`
+  `npx scaffold-hbar@latest --template hedera-dev/hedera-finance-templates#templates/ats-bond`
 </Card>
+
+<FinanceTemplateDisclaimer />
 
 ## Overview
 
@@ -17,7 +21,7 @@ A **tokenised bond** is a debt security recorded as a token: it has an ISIN, a f
 
 * A **factory** creates each bond as a new [Diamond (EIP-2535)](https://eips.ethereum.org/EIPS/eip-2535) proxy. One call to `deployBond` gives you a complete security: roles, control lists, maturity, nominal value, corporate-action support.
 * A **Business Logic Resolver** holds the shared, audited logic every bond points to, by configuration and version. Bonds get upgrades without being redeployed.
-* Each bond implements **ERC-1400**, the security-token standard: ERC-20 compatible, with issuance controlled by roles and transfers checked against compliance rules.
+* Each bond implements **ERC-1400**, the security-token standard: ERC-20 compatible, with issuance controlled by roles and transfers checked against compliance rules. ATS also carries partial [ERC-3643](/support/glossary#erc-3643) support by default, and full ERC-3643 integration is available by naming a compliance contract and an identity registry when the bond is created. This template leaves both unset and gates holders with the bond's own allowlist instead, so there is no identity infrastructure to deploy first; see the [ATS FAQ](/solutions/tokenization/ats/faq) for what full integration adds.
 
 You deploy no contracts of your own. The learner's only on-chain step is the factory call, and everything after it is a call on the bond.
 
@@ -63,7 +67,7 @@ The ATS SDK signs only through wallets (MetaMask, WalletConnect) or custody prov
 
 ## Prerequisites
 
-* Node.js 20.18 or later, and Yarn
+* Node.js 22.23.4 or later on the 22.x line, and Yarn
 * A Hedera testnet account from the [Hedera Portal](https://portal.hedera.com) with an **ECDSA** key. It becomes the Issuer. JSON-RPC transactions are signed with ECDSA, so an ED25519 key cannot be used; the app says so at start.
 * Testnet HBAR on that account. Each **Issue bond** costs about **9.7 HBAR**: about 7.4 for the bond deployment and about 1.1 for each of the two demo investors. Approving and issuing cost a fraction of an HBAR each.
 * Optional, for [Hold and transfer with MetaMask](#hold-and-transfer-with-metamask): MetaMask with Hedera testnet (chain id 296) and an ECDSA testnet account holding a little HBAR for gas
@@ -143,7 +147,7 @@ const bondData = {
     isWhiteList: true,          // the control list is an allowlist: only listed accounts may hold
     isControllable: true,
     externalPauses: [], externalControlLists: [], externalKycLists: [],
-    compliance: zeroAddress, identityRegistry: zeroAddress,
+    compliance: zeroAddress, identityRegistry: zeroAddress,  // the ERC-3643 hooks, unused here
     arePartitionsProtected: false, isMultiPartition: false,
     clearingActive: false, internalKycActivated: false, erc20VotesActivated: false,
   },
@@ -280,13 +284,13 @@ ATS bonds are EVM contracts, so any EVM wallet can hold and transfer them. The h
 
 The allowlist applies to transfers too: to an approved recipient the transfer succeeds, and to an unapproved one the bond refuses it and the page says why.
 
-## Going to production
+## What this template simplifies
 
 * **Real terms**: a real ISIN, legal documentation, and a starting date that matches the offering.
 * **KYC instead of a bare allowlist**: ATS supports internal KYC with verifiable credentials, external KYC lists, and ERC-3643 identity, where investors carry reusable on-chain identities with claims from trusted issuers.
 * **Custody for the Issuer's roles**: the ATS SDK signs through Dfns, Fireblocks or AWS KMS; hold the admin, issuer and control-list roles there rather than in an environment variable.
 * **Separate roles**: give issuing and approving to different accounts, so no single key both approves and mints.
-* **Coupons and maturity**: pay interest over the bond's life and redeem it at maturity. Coupons are the next Finance Workflows template.
+* **Coupons and maturity**: pay interest over the bond's life and redeem it at maturity. Coupons and maturity are the next Finance Workflows template: [Bond Coupons](/solutions/finance/bond-coupons).
 
 ## Next steps
 

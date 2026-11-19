@@ -283,7 +283,7 @@ Most of what an entry says, the ledger already proves. A settled trade is a tran
 * **What a durable market would replay.** The template keeps the market in server memory, so a restart loses it. The entries hold what rebuilding it would need: every trade, its terms, its parties and its last status, in order, from a public topic and with no database of your own. This template does not do that rebuild; the topic is what makes it possible.
 * **A trail that still verifies off the mirror node.** Change or remove an entry in an exported copy of the trail and every later `prev` stops matching. The topic's own running hash proves as much while you are reading from the network; the chain is what survives the export.
 
-What an entry does *not* carry is why a trade was proposed or rejected, or who inside a firm approved it. For a trail built around that, see [HCS Audit Trail](/solutions/finance/hcs-audit-trail).
+What an entry does *not* carry is why a trade was proposed or rejected, or who inside a firm approved it.
 
 ```typescript
 const message = { v: 1, event, schedule, quantity, price, seller, buyer, tx, result, prev: lastHash };

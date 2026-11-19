@@ -1,17 +1,22 @@
 ---
 title: "Support & Community"
-description: "FAQs, contributing guides, glossary, brand guidelines, and links to the Hedera developer community."
+description: "Get help from FAQs and the Hedera Discord, look up terms in the glossary, contribute to the docs, and connect with the Hedera developer community."
 mode: wide
 ---
 
 
 <div className="not-prose landing-container">
 
-{/* ── POPULAR FAQS ──────────────────────────────────────── */}
+{/* ── GET HELP ──────────────────────────────────────── */}
 <div className="landing-section">
-  <h2 id="popular-faqs" className="landing-section-heading" style={{ marginBottom: '24px' }}>
-    <a href="#popular-faqs">Popular FAQs</a>
+  <h2 id="get-help" className="landing-section-heading">
+    <a href="#get-help">Get help</a>
   </h2>
+  <p className="landing-section-description">
+    Start with the FAQs for quick answers. Still stuck?{' '}
+    <a href="https://hedera.com/discord" target="_blank" rel="noopener noreferrer" className="landing-prose-link">Ask on Discord</a>{' '}
+    to get support from the Hedera team and the developer community.
+  </p>
 
   <div className="landing-grid landing-grid--wide">
 
@@ -21,7 +26,17 @@ mode: wide
       </div>
       <div>
         <div className="landing-card-title">Getting Started</div>
-        <div className="landing-card-desc">First-time setup, accounts, wallets, and the developer portal.</div>
+        <div className="landing-card-desc">Developer portal access and creating accounts on mainnet, testnet, and previewnet.</div>
+      </div>
+    </a>
+
+    <a href="/support/faq/governance" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18 M5 21V10 M19 21V10 M2 10h20 L12 3 z M9 14v3 M12 14v3 M15 14v3"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Network Governance</div>
+        <div className="landing-card-desc">The Hedera Council, nodes, open source, and how transaction fees work.</div>
       </div>
     </a>
 
@@ -31,17 +46,7 @@ mode: wide
       </div>
       <div>
         <div className="landing-card-title">HBAR</div>
-        <div className="landing-card-desc">Supply, fees, transfers, and where to buy HBAR.</div>
-      </div>
-    </a>
-
-    <a href="/support/faq/governance" className="landing-card">
-      <div className="landing-card-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18 M5 21V10 M19 21V10 M2 10h20 L12 3 z M9 14v3 M12 14v3 M15 14v3"/></svg>
-      </div>
-      <div>
-        <div className="landing-card-title">Governance</div>
-        <div className="landing-card-desc">The Hedera Council, governance model, and how decisions are made.</div>
+        <div className="landing-card-desc">Official HBAR denominations, from tinybars to HBAR.</div>
       </div>
     </a>
 
@@ -51,7 +56,38 @@ mode: wide
       </div>
       <div>
         <div className="landing-card-title">Community</div>
-        <div className="landing-card-desc">How to get involved with the developer community and events.</div>
+        <div className="landing-card-desc">Funding programs, grants, and where to connect with other developers.</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{/* ── REFERENCE ──────────────────────────────────────── */}
+<div className="landing-section">
+  <h2 id="reference" className="landing-section-heading" style={{ marginBottom: '24px' }}>
+    <a href="#reference">Reference</a>
+  </h2>
+
+  <div className="landing-grid landing-grid--wide">
+
+    <a href="/support/glossary" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Glossary</div>
+        <div className="landing-card-desc">Definitions for Hedera and web3 terms, from account IDs to consensus.</div>
+      </div>
+    </a>
+
+    <a href="/support/brand-guidelines" className="landing-card">
+      <div className="landing-card-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+      </div>
+      <div>
+        <div className="landing-card-title">Brand Guidelines</div>
+        <div className="landing-card-desc">Official Hedera logos and the Decentralized on Hedera stamp.</div>
       </div>
     </a>
 
@@ -67,7 +103,7 @@ mode: wide
     <a href="/support/contributing/index" className="landing-see-all">See all →</a>
   </div>
   <p className="landing-section-description">
-    Help improve the docs by filing issues, opening PRs, proposing Hedera Improvement Proposals, or submitting demos.
+    Help improve the docs by filing issues, opening PRs, proposing Hiero Improvement Proposals (HIPs), or submitting demos.
   </p>
 
   <div className="landing-grid">
@@ -77,7 +113,7 @@ mode: wide
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4 M12 16h.01"/></svg>
       </div>
       <div className="landing-card-title">Creating Issues</div>
-      <div className="landing-card-desc">Report bugs and request features: what to include and where to file.</div>
+      <div className="landing-card-desc">Report docs problems or suggest new content in the hedera-docs repo.</div>
       <div className="landing-tag-group">
         <span className="landing-tag">Bugs</span>
       </div>
@@ -99,7 +135,7 @@ mode: wide
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M16 13H8 M16 17H8 M10 9H8"/></svg>
       </div>
       <div className="landing-card-title">HIPs</div>
-      <div className="landing-card-desc">Hedera Improvement Proposals: propose changes to the protocol.</div>
+      <div className="landing-card-desc">Hiero Improvement Proposals: propose changes to the protocol.</div>
       <div className="landing-tag-group">
         <span className="landing-tag">Protocol</span>
       </div>
@@ -127,25 +163,17 @@ mode: wide
       </div>
     </a>
 
-    <a href="https://hedera.com/bounty" target="_blank" rel="noopener noreferrer" className="landing-card-stacked">
-      <div className="landing-card-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="7"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg>
-      </div>
-      <div className="landing-card-title">Bug Bounty</div>
-      <div className="landing-card-desc">Report security vulnerabilities and earn rewards through the bounty program.</div>
-      <div className="landing-tag-group">
-        <span className="landing-tag">Security</span>
-      </div>
-    </a>
-
   </div>
 </div>
 
 {/* ── COMMUNITY ──────────────────────────────────────── */}
 <div className="landing-section">
-  <h2 id="community-resources" className="landing-section-heading" style={{ marginBottom: '24px' }}>
-    <a href="#community-resources">Community &amp; resources</a>
+  <h2 id="community" className="landing-section-heading">
+    <a href="#community">Community</a>
   </h2>
+  <p className="landing-section-description">
+    Connect with other builders, explore the open-source code, and see results from the Hedera AI Agent Bounty.
+  </p>
 
   <div className="landing-grid">
 
@@ -155,7 +183,7 @@ mode: wide
       </div>
       <div>
         <div className="landing-card-title">Discord</div>
-        <div className="landing-card-desc">Real-time chat with Hedera developers and engineers.</div>
+        <div className="landing-card-desc">Ask questions and get support from Hedera engineers and the developer community.</div>
       </div>
     </a>
 
@@ -165,37 +193,17 @@ mode: wide
       </div>
       <div>
         <div className="landing-card-title">GitHub</div>
-        <div className="landing-card-desc">Hashgraph and Hiero open-source organizations.</div>
+        <div className="landing-card-desc">Hedera's open-source repositories, starter templates, and tools.</div>
       </div>
     </a>
 
-    <a href="https://help.hedera.com/hc/en-us" target="_blank" rel="noopener noreferrer" className="landing-card">
+    <a href="https://ai-bounties.hedera.com/" target="_blank" rel="noopener noreferrer" className="landing-card">
       <div className="landing-card-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 18v-7a9 9 0 0 1 18 0v7 M21 19a2 2 0 0 1-2 2h-1v-7h3z M3 19a2 2 0 0 0 2 2h1v-7H3z"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6 M18 9h1.5a2.5 2.5 0 0 0 0-5H18 M4 22h16 M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22 M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22 M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
       </div>
       <div>
-        <div className="landing-card-title">Hedera Help</div>
-        <div className="landing-card-desc">Help center for account, wallet, and product-level support tickets.</div>
-      </div>
-    </a>
-
-    <a href="https://hedera.com/blog/tagged/technical" target="_blank" rel="noopener noreferrer" className="landing-card">
-      <div className="landing-card-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9h4 M18 14H10 M15 18H10 M10 6h8v4h-8z"/></svg>
-      </div>
-      <div>
-        <div className="landing-card-title">Technical Blog</div>
-        <div className="landing-card-desc">Engineering deep-dives and release announcements.</div>
-      </div>
-    </a>
-
-    <a href="/support/meetups" className="landing-card">
-      <div className="landing-card-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75"/><circle cx="9" cy="7" r="4"/></svg>
-      </div>
-      <div>
-        <div className="landing-card-title">Meetups</div>
-        <div className="landing-card-desc">Local Hedera developer meetups and events around the world.</div>
+        <div className="landing-card-title">AI Agent Bounty</div>
+        <div className="landing-card-desc">Results from the five-week Hedera AI Agent Bounty for agents built with the Hedera Agent Kit.</div>
       </div>
     </a>
 

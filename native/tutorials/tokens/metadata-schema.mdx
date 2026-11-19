@@ -7,7 +7,7 @@ description: "Structure token metadata with the HIP-412 Token Metadata JSON Sche
 
 When you create a new fungible or non-fungible token, you have the ability to add metadata. It's common to add metadata for NFTs, but also fungible tokens. The biggest problem with metadata is that it's often unstructured or doesn't follow a set of guidelines.
 
-Therefore, Hedera has developed the ["Token Metadata JSON Schema V2](https://github.com/hashgraph/hedera-improvement-proposal/blob/main/HIP/hip-412.md#reference-implementation)" for developers and creators who want to structure their metadata in an organized way. The biggest benefit of using this community-accepted standard is that most of the tooling on the Hedera network can scrape and interpret your metadata, like NFT explorers listing rarity attributes based on your metadata.
+Therefore, Hedera has developed the ["Token Metadata JSON Schema V2](https://github.com/hiero-ledger/hiero-improvement-proposals/blob/main/HIP/hip-412.md#reference-implementation)" for developers and creators who want to structure their metadata in an organized way. The biggest benefit of using this community-accepted standard is that most of the tooling on the Hedera network can scrape and interpret your metadata, like NFT explorers listing rarity attributes based on your metadata.
 
 ---
 
@@ -89,7 +89,7 @@ mintTx, err := hedera.NewTokenMintTransaction().
 
 First of all, you can find the full reference implementation of this JSON schema here:
 
-- Hedera Improvement Proposals [GitHub Repository](https://github.com/hashgraph/hedera-improvement-proposal/blob/main/HIP/hip-412.md#default-schema-collectibe-hedera-nfts-format-hip412100)
+- Hiero Improvement Proposals [GitHub Repository](https://github.com/hiero-ledger/hiero-improvement-proposals/blob/main/HIP/hip-412.md#default-schema-collectibe-hedera-nfts-format-hip412200)
 - [NFT.Storage (gateway link)](https://nftstorage.link/ipfs/bafkreidcsqzr5su356thecwuyzrhsgekfdsqzuyuqxtsu4vh7oc34iv5oy)
 - IPFS: ipfs\://bafkreidcsqzr5su356thecwuyzrhsgekfdsqzuyuqxtsu4vh7oc34iv5oy
 
@@ -102,7 +102,7 @@ Let's take a look at the different fields you can specify.
 The schema defines three required fields:
 
 - **name**: Full name of the NFT
-- **type**: [MIME type](https://github.com/hashgraph/hedera-improvement-proposal/blob/main/HIP/hip-412.md#mime-formatting) for the image
+- **type**: [MIME type](https://github.com/hiero-ledger/hiero-improvement-proposals/blob/main/HIP/hip-412.md#mime-formatting) for the image
 - **image**: A URI pointing to an image (decentralized or centralized storage).
 
 The `image` field can both serve as a preview or full-resolution image for your NFT to ensure cross-platform compatibility. The image field will be displayed in wallets and marketplaces by default.
@@ -230,7 +230,7 @@ The `attributes` field consists of an array of `attribute` objects. This is the 
 }
 ```
 
-**Extra resources:** You can find all information about the `attributes` field in the detailed [schema specification](https://github.com/hashgraph/hedera-improvement-proposal/blob/main/HIP/hip-412.md#attributestrait_type).
+**Extra resources:** You can find all information about the `attributes` field in the detailed [schema specification](https://github.com/hiero-ledger/hiero-improvement-proposals/blob/main/HIP/hip-412.md#attributestrait_type).
 
 </Tab>
 
@@ -279,7 +279,7 @@ Here's a list of optional fields you can define according to the Token Metadata 
 - **creator**: Identifies the artist name(s).
 - **creatorDID**: Points to a decentralized identifier to identify the creator.
 - **checksum:** Cryptographic SHA-256 hash of the representation of the `image` resource or resources in the `files` array. It allows browsers or other tooling to verify the integrity of any file you list.
-- **format:** Indicates the implemented metadata schema specification. Currently, the default version (Token Metadata JSON Schema V2) is represented by `HIP412@2.0.0`. If you wonder why, each update to the JSON Schema requires a new Hedera Improvement Proposal (HIP). Therefore, the `format` field lists the HIP number and the associated version of the Token Metadata JSON Schema.
+- **format:** Indicates the implemented metadata schema specification. Currently, the default version (Token Metadata JSON Schema V2) is represented by `HIP412@2.0.0`. If you wonder why, each update to the JSON Schema requires a new Hiero Improvement Proposal (HIP). Therefore, the `format` field lists the HIP number and the associated version of the Token Metadata JSON Schema.
 
 </Tab>
 
@@ -403,7 +403,7 @@ Here's a video about how crucial structuring your token metadata is and how to d
 
 You can find **examples** in this [blog post](https://hedera.com/blog/hedera-nft-metadata-hip412) in the section "Token Metadata V2 NFT Examples". If you still have questions, reach out on [Discord](https://hedera.com/discord).
 
-Besides that, you can **read up on the full implementation** of token metadata in the Hedera Improvement Proposals [GitHub Repository under HIP-412](https://github.com/hashgraph/hedera-improvement-proposal/blob/main/HIP/hip-412.md).
+Besides that, you can **read up on the full implementation** of token metadata in the Hiero Improvement Proposals [GitHub Repository under HIP-412](https://github.com/hiero-ledger/hiero-improvement-proposals/blob/main/HIP/hip-412.md).
 
 <Columns cols={2}>
   <Card title="Writer: Michiel, Developer Advocate" arrow>

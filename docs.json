@@ -2891,7 +2891,8 @@
               "solutions/finance/hcs-audit-trail",
               "solutions/finance/ats-bond",
               "solutions/finance/bond-coupons",
-              "solutions/finance/regulated-token"
+              "solutions/finance/regulated-token",
+              "solutions/finance/collateral-mobility"
             ]
           },
           {

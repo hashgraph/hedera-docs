@@ -24,7 +24,7 @@ In a securities trade, the seller **delivers** the security and the buyer **pays
 * A **scheduled transaction** lets the two parties sign at different times, and can hold a fully signed trade until a settlement time.
 * A **Hedera Consensus Service (HCS)** topic records every event in a trade's life, in order and tamper-evident.
 
-On an EVM chain the same trade needs an escrow contract, token approvals and at least two transactions.
+On most EVM chains the same trade needs an escrow contract that takes custody of both legs, token approvals, and at least two transactions. Hedera can also settle it with a contract that takes no custody at all — see [The same trade, settled by a contract](#the-same-trade-settled-by-a-contract).
 
 The workflow has three actors:
 
@@ -335,6 +335,49 @@ const result = await provider.hedera_signAndExecuteTransaction({
   transactionList: transactionBase64, // one base64-encoded transaction
 });
 ```
+
+## The same trade, settled by a contract
+
+Everything above settles without a contract. The trade-off, noted in [What happens when a leg fails](#what-happens-when-a-leg-fails), is that **nothing is locked while the schedule waits**: a seller can spend the security between proposing and settling, and the schedule then fails at execution.
+
+A second template settles the same trade the other way. Each side encumbers its own leg first, so the units cannot go anywhere else, and one contract executes both encumbrances together.
+
+<Card title="Get the code" icon="github" href="https://github.com/hedera-dev/hedera-finance-templates/tree/templates/dvp-settlement-evm">
+  `npx scaffold-hbar@latest --template hedera-dev/hedera-finance-templates#templates/dvp-settlement-evm`
+</Card>
+
+The security is an [Asset Tokenization Studio](/solutions/tokenization/ats/index) equity and the cash a [Stablecoin Studio](/solutions/tokenization/stablecoin/core-concepts) stablecoin, both deployed from factories already on testnet. The only contract the template owns is `DvpSettlement`, and it takes no custody, holds no role on either token, and keeps no balances.
+
+### A pledge is a hold, not a transfer
+
+Both studios support **holds**: the token itself records that a given amount may be moved only by a named escrow, and only to a named destination. Pledging a leg creates one naming the settlement contract as escrow and the counterparty as destination.
+
+Before it accepts a pledge, the contract reads the hold back from the token and checks the amount, that it is the escrow, that the destination is the right counterparty, and that the hold outlasts the trade's settlement time. A party cannot pledge a hold pointing somewhere else, and cannot reuse one.
+
+`settle()` then executes both holds in one transaction. Either leg failing reverts the whole call, so the outcome is the same guarantee as the native version: both legs or neither.
+
+The two tokens encumber differently, and it is worth knowing which:
+
+* The **ATS security** is encumbered in place. The units stay in the seller's own account, excluded from `balanceOf` and reported by `getHeldAmountForByPartition`.
+* **HTS has no in-place encumbrance**, so the stablecoin's hold moves the units into the stablecoin's own custody and records them against the holder. The buyer's free balance falls by the price.
+
+Neither has delivered anything. If a trade is cancelled or its holds expire, each party's units come back without the settlement contract and without the app.
+
+### Which to choose
+
+| | Native, with a scheduled transfer | With a settlement contract |
+| - | - | - |
+| Atomicity | One `TransferTransaction` the network executes | One `settle()` call executing two holds |
+| Before settlement | A signature. Nothing is locked, so either side can still spend | A hold. The units are encumbered and only the contract can move them, only to the counterparty |
+| Compliance | Keys on the HTS token, checked by the network | ATS roles and KYC, checked by the token's own contracts |
+| Settle at a set time | The schedule's expiry, with `waitForExpiry` | A `notBefore` the contract enforces |
+| If a trade is abandoned | The schedule expires | The holds expire and each party reclaims its own units |
+| Contracts you deploy | None | One, about 250 lines |
+| Setup cost on testnet | About 31 HBAR | About 76 HBAR, of which 30 is float for the demo accounts |
+
+Pick the native version when the parties can sign close together and you would rather deploy nothing. Pick the contract when a commitment has to be visible and binding on the ledger before settlement — which is what a hold is, and what a signature on a pending schedule is not.
+
+Both are refused for the same reasons, and the contract-based template sends each refusal as a real transaction so you can read the network's record of it: settling with one leg pledged, settling to a buyer without KYC, a seller trying to take back a pledged hold, and settling a trade twice.
 
 ## What this template simplifies
 

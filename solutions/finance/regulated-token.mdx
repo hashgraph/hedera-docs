@@ -139,6 +139,44 @@ The server never sees that key. It builds the admin transaction, signs as Office
 Hedera signs with an ECDSA key over `keccak256(bodyBytes)` and nothing else, which is what the old `eth_sign` method does. Most wallets now refuse `eth_sign`, so this path may not work in yours.
 </Note>
 
+## The same rules, enforced by a contract
+
+Everything above is keys on an HTS token, and no contract anywhere. A second template tells the same story through contracts: the token is an [Asset Tokenization Studio](/solutions/tokenization/ats/index) equity, its compliance powers are **roles** rather than keys, and the roles belong to a 2-of-3 `OfficerBoard` contract instead of to a threshold key.
+
+<Card title="Get the code" icon="github" href="https://github.com/hedera-dev/hedera-finance-templates/tree/templates/regulated-token-evm">
+  `npx scaffold-hbar@latest --template hedera-dev/hedera-finance-templates#templates/regulated-token-evm`
+</Card>
+
+The control is the same one, built from a different primitive. A threshold key is satisfied by any two of three signatures; the board is satisfied by any two of three officers calling it.
+
+| This page's token | The contract version |
+| - | - |
+| KYC key | `ROLE_KYC`, held by the board |
+| Freeze key | `ROLE_FREEZE_MANAGER`, held by the board |
+| Wipe key | `ROLE_CONTROLLER`, held by the board |
+| Pause key | `ROLE_PAUSER`, held by the board |
+| Admin key, also 2-of-3 | `DEFAULT_ADMIN_ROLE`, kept by the issuer — the one power the board does not hold |
+| 2-of-3 `KeyList` | `OfficerBoard.propose()` and `approve()`, executing on the second approval |
+| `ScheduleCreate` + `ScheduleSign` | The board's own proposal list |
+
+No officer holds a compliance role. The board does, and it acts only on a second approval — which is the same separation the threshold keys give, enforced by a contract the issuer deploys rather than by the network.
+
+### No workaround for the whitelist
+
+The native version needs the [record account](#why-there-is-a-record-account) because Hedera's scheduling whitelist does not include the token admin transactions, so a freeze cannot be scheduled directly.
+
+A contract has no such list. `OfficerBoard.propose()` takes the target and the calldata of any call, so a freeze, a wipe, a pause and a KYC grant are all proposed the same way, and the pending order is the call itself rather than a stand-in for it. The board executes with `target.call(data)` and bubbles the revert, so a refusal from the token — a holder who was never granted KYC, an account already frozen — reaches the page verbatim instead of arriving as a generic failure.
+
+A wallet connected before setup becomes Officer 3 here too, and approves by signing an ordinary contract call rather than a scheduled transaction.
+
+### Which to choose
+
+Keys are less to run: nothing to deploy, nothing to audit, nothing to upgrade, and the network applies them whether or not your app is up. Choose them when the rules are the four or five HTS already has.
+
+Choose the contract when the rules are not. A contract can require a reason, enforce a timelock, ask an identity registry, or need different approvers for different actions — none of which a threshold key can express, because a key only ever answers whether enough signatures are present. The contract version also fits an issuer already on ERC-3643 or ERC-1400, since an ATS security is both.
+
+Setting up the contract version costs about 31 testnet HBAR, 10 of it float moved into the demo officer and holder accounts; each order afterwards is about 1.2 HBAR across its proposal and approval.
+
 ## What this template simplifies
 
 * **Keys with different people.** The network enforces two signatures, but this desk holds Officers 1 and 2, so it can produce both. The separation is what makes it a control, and that means different people or different custody — Dfns, Fireblocks, AWS KMS.

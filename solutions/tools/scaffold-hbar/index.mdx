@@ -38,14 +38,20 @@ Scaffold HBAR is an interactive CLI tool (similar to `create-next-app` or `creat
 
 Before using Scaffold HBAR, ensure you have:
 
-- **Node.js** ≥ 20.18.3 — [nodejs.org](https://nodejs.org/)
+- **Node.js** ≥ 22.23.4, on the 22.x line — [nodejs.org](https://nodejs.org/). Node 20 has no vendor fix for the 2026-10-21 runtime advisories, and the templates target 22.x, so they pin `>=22.23.4 <23`.
 - **Git** with `user.name` and `user.email` configured — [git-scm.com](https://git-scm.com/)
 - **Package manager** — Yarn is recommended; npm is also supported. Node.js already includes npm. To use Yarn:
   ```bash
   corepack enable && corepack prepare yarn@stable --activate
   ```
 
-If you choose **Foundry** as the Solidity framework:
+If you choose **Foundry** as the Solidity framework, you do not need to install it yourself — the
+CLI installs the latest Foundry automatically when `forge` is missing or older than 1.4.0, using the
+official installer plus `foundryup`. This writes to `~/.foundry` and updates your shell profile.
+
+Two cases the CLI leaves alone: **Windows**, where the installer is a shell script, and a
+**Homebrew**-managed `forge` that is too old, which it asks you to update with `brew upgrade foundry`
+rather than shadowing it with a second toolchain. To set Foundry up yourself beforehand:
 
 ```bash
 curl -L https://foundry.paradigm.xyz | bash

@@ -1,11 +1,11 @@
 ---
 title: "HCS Audit Trail"
-description: "Log every lifecycle action on a security token to a Hedera Consensus Service topic that only authorised publishers can write to, and give a regulator a live, self-verifying feed read straight from the mirror node."
+description: "Log the reason, authority and supporting documents behind every action on a security token to a Hedera Consensus Service topic, including the decisions that never reach the ledger, and give a regulator a live, self-verifying feed."
 ---
 
 import FinanceTemplateDisclaimer from '/snippets/finance-template-disclaimer.mdx';
 
-Record every compliance-relevant action on a security token (issuance, KYC, transfers, freezes) in an append-only log that no one can rewrite, reorder or quietly skip. Then give a regulator a live feed they verify themselves, with no access to your systems.
+Record the *why* behind every compliance-relevant action on a security token — the case reference, the authority that approved it, the document that supports it — in an append-only log no one can rewrite, reorder or quietly skip. Record the decisions that never reach the ledger at all, like a KYC review or a board approval. Then give a regulator a live feed they verify themselves, with no access to your systems.
 
 <Card title="Get the code" icon="github" href="https://github.com/hedera-dev/hedera-finance-templates/tree/templates/hcs-audit-trail">
   `npx scaffold-hbar@latest --template hedera-dev/hedera-finance-templates#templates/hcs-audit-trail`
@@ -25,9 +25,22 @@ The **Hedera Consensus Service (HCS)** removes that trust. A topic is an append-
 
 Each message costs a fixed $0.0008 ([fees](/networks/fees)), so logging every action is affordable at volume. The same topic can carry the lifecycle events of the other Finance Workflows: [settlements](/solutions/finance/settle-dvp), [bond issuance](/solutions/finance/ats-bond), [coupon payments](/solutions/finance/bond-coupons).
 
+### What the topic holds that the ledger does not
+
+A fair question to ask first: if a freeze is already a `TokenFreeze` transaction on a public ledger, what is the topic for? Logging the transaction id and its result again would make the topic a copy of the ledger with a hash chain on top, and the ledger would still be the source of truth.
+
+So the entries carry what the ledger has no field for:
+
+* **The reason.** The network records that a holder was frozen. It has no idea that it happened under case `CMP-2026-114`, on a court order received that morning. An auditor asking *why* has nothing on chain to read.
+* **The authority.** Which officer or committee authorised it. The ledger records the key that signed, which in most operating models is a service account, not a person.
+* **The evidence.** The SHA-256 of the document behind the action — the order, the instruction, the signed minute. The hash commits to that exact file at that exact position in the chain, so a document produced afterwards cannot match an entry already on the topic.
+* **The decisions that never reach the ledger.** A KYC review, a sanctions screening, a board approval. Nothing executes, so there is no transaction, no receipt, nothing for a mirror node to show. These entries exist nowhere else, and they are the ones a compliance examination usually asks about first.
+
+That last point is the clearest case: when a screening returns a hit and the decision is not to proceed, the thing that *did not happen* is exactly what has to be evidenced, and the topic is the only place that record can live and still be ordered and timestamped.
+
 The workflow has three actors:
 
-* **Issuer**: the operator account the app runs with. Creates the audit topic and a security token, performs token actions, and publishes an audit entry for each one
+* **Issuer**: the operator account the app runs with. Creates the audit topic and a security token, performs token actions, records off-chain decisions, and publishes an audit entry for each one
 * **Compliance officer** (optional): a HashPack account the Issuer authorises as a publisher. Signs and submits the audit entries instead of the Issuer
 * **Regulator**: reads the trail from the mirror node. Holds no keys and needs no account
 
@@ -35,9 +48,10 @@ The lifecycle:
 
 1. The Issuer creates the audit topic with a submit key, and a security token with KYC and freeze keys
 2. The Issuer performs token actions on a target account: grant KYC, transfer, freeze, unfreeze
-3. Each action is logged as an audit entry carrying the action's transaction id, its result, and the hash of the previous entry
-4. The Regulator's feed reads the topic from the mirror node and verifies it: no sequence gaps, an unbroken hash chain, every referenced transaction real with the logged result
-5. Anyone else who tries to publish is rejected by the network
+3. Each action is logged as an audit entry carrying its transaction id and result, the reason and authority behind it, the hash of any supporting document, and the hash of the previous entry
+4. Decisions taken off chain — a KYC review, a sanctions screening, an approval — are recorded as entries with no transaction at all
+5. The Regulator's feed reads the topic from the mirror node and verifies it: no sequence gaps, an unbroken hash chain, every referenced transaction real with the logged result, and every off-chain decision carrying its authority and evidence. It also says which authorities signed their own entries and which were only named
+6. Anyone else who tries to publish is rejected by the network
 
 ```text
 Issuer / Compliance officer          Hedera network                     Regulator (mirror node only)
@@ -54,7 +68,8 @@ Outsider -- TopicMessageSubmit ----------->|  INVALID_SIGNATURE (rejected)      
 | - | - |
 | Audit log | HCS topic with an admin key and a submit key (the Issuer, plus any authorised publishers) |
 | Logged actions | HTS token create, KYC grant, transfer, freeze, unfreeze |
-| Entry format | JSON: event, token, account, amount, transaction id, result, previous entry hash |
+| Entry format | JSON: event, token, account, amount, transaction id (null for a decision), result, reason, authority, evidence hash, previous entry hash |
+| Document hashing | `crypto.subtle` in the browser; only the digest is sent, never the file |
 | Regulator feed | Mirror node REST (`/api/v1/topics/{id}/messages`), polled live and verified in the browser |
 | Signing | Issuer server-side via `@hiero-ledger/sdk`; compliance officer via HashPack and `@hashgraph/hedera-wallet-connect` |
 | Network | Hedera testnet |
@@ -71,7 +86,12 @@ Outsider -- TopicMessageSubmit ----------->|  INVALID_SIGNATURE (rejected)      
 ```text
 packages/nextjs/
   app/page.tsx                            the issuer's desk: setup, actions, forgery attempt, trail
+  app/_components/audit/                  the desk's cards
+    DecisionPanel.tsx                     record a decision that never touches the network
+    DocumentHashField.tsx                 hash a file in the browser; only the hash leaves it
   app/regulator/page.tsx                  the regulator's feed; reads only the mirror node
+  app/regulator/_components/              the feed's own controls
+    DocumentCheck.tsx                     check a document you hold against the trail
   app/api/hedera/audit/                   server routes; all Issuer signing happens here
     setup/route.ts                        topic, token, holder account, first entry
     action/route.ts                       perform an action and publish its entry
@@ -134,13 +154,15 @@ Creating the token is the first audit entry: an `issue` entry whose `prev` is 64
 
 ### Step 1: Perform the action
 
-Choose a **target account**: the demo holder by default, or any testnet account. Then press **Grant KYC**, **Freeze holder**, **Unfreeze holder** or **Transfer**. Each is a real HTS transaction with its own transaction id and result.
+Choose a **target account**: the demo holder by default, or any testnet account. Fill in the **reason** and the **authority** if you have them, and attach a **supporting document** if there is one. Then press **Grant KYC**, **Freeze holder**, **Unfreeze holder** or **Transfer**. Each is a real HTS transaction with its own transaction id and result.
 
-A refused action is still logged with the network's result code. A transfer before KYC is granted returns `ACCOUNT_KYC_NOT_GRANTED_FOR_TOKEN`; a transfer to a frozen account returns `ACCOUNT_FROZEN_FOR_TOKEN`; any action on an account that has not associated the token returns `TOKEN_NOT_ASSOCIATED_TO_ACCOUNT`. The Issuer cannot target itself.
+The three fields are what the entry adds to an action the ledger already has. They are optional here so the buttons stay one click away while you are trying the template; a real desk would require them. For a decision, which has nothing on the ledger behind it, they are required.
+
+The fields empty themselves once the entry is on the topic, so a court order attached to a freeze is not published again with the unfreeze that follows it. A refused action is still logged with the network's result code. A transfer before KYC is granted returns `ACCOUNT_KYC_NOT_GRANTED_FOR_TOKEN`; a transfer to a frozen account returns `ACCOUNT_FROZEN_FOR_TOKEN`; any action on an account that has not associated the token returns `TOKEN_NOT_ASSOCIATED_TO_ACCOUNT`. The Issuer cannot target itself.
 
 ### Step 2: Queue and publish the audit entry
 
-The entry records the action, so it cannot be written first: it carries that action's transaction id and result, and neither exists until the action has run. Which leaves exactly one gap to close — an action that succeeded while its entry did not. So the entry is queued the moment the action returns, and publishing is a separate, serialized step.
+The entry records the action, so it cannot be written first: it carries that action's transaction id and result, and neither exists until the action has run. Which leaves exactly one gap to close — an action that succeeded while its entry did not. So the entry is queued the moment the action returns, and publishing is a separate, serialized step. A decision has no transaction to wait for, but it goes through the same queue, so both kinds share one `prev` chain and one ordering.
 
 The entry is JSON with a fixed key order, so the bytes published are exactly the bytes the next entry hashes:
 
@@ -148,18 +170,25 @@ The entry is JSON with a fixed key order, so the bytes published are exactly the
 export function serializeEntry(entry: AuditEntry): Uint8Array {
   const ordered = {
     v: entry.v, event: entry.event, token: entry.token, account: entry.account,
-    amount: entry.amount, tx: entry.tx, result: entry.result, prev: entry.prev,
+    amount: entry.amount, tx: entry.tx, result: entry.result,
+    reason: entry.reason, authority: entry.authority, evidence: entry.evidence,
+    prev: entry.prev,
   };
   return new TextEncoder().encode(JSON.stringify(ordered));
 }
 
 // The action has run; its entry joins the queue and the chain has not moved yet.
-queueEntry(desk, { event: "grant_kyc", token, account, amount: null, tx, result });
+queueEntry(desk, {
+  event: "freeze", token, account, amount: null, tx, result,
+  reason: "Case CMP-2026-114: court order received",
+  authority: "0.0.4812",            // the officer who authorised it
+  evidence: documentHash,           // SHA-256 of the order, hashed in the browser
+});
 
 // One flush at a time, oldest entry first.
 while (desk.entries.length > 0) {
   const queued = desk.entries[0];
-  const bytes = serializeEntry({ v: 1, prev: desk.lastHash, ...queued.fields }); // prev read here, not earlier
+  const bytes = serializeEntry({ v: 2, prev: desk.lastHash, ...queued.fields }); // prev read here, not earlier
   queued.transactionId ??= TransactionId.generate(operatorId).toString();        // same id on every retry
   await submit(bytes, queued.transactionId);
   desk.lastHash = await sha256Hex(bytes);                                        // only after it landed
@@ -173,7 +202,32 @@ Three properties follow from that, and together they are what lets the trail cla
 * **A submission keeps one transaction id across retries.** A response lost after the network accepted it would otherwise publish the entry twice; the resubmission is refused as a duplicate instead, and the receipt is queried to find out what happened.
 * **Nothing discards a queued entry.** A failed submission, a declined signature or an unreachable mirror node are retried until the entry is on the topic.
 
-**You should see** the new entry at the top of the trail: sequence number, consensus time, event, target account, result, transaction and publisher.
+**You should see** the new entry at the top of the trail: sequence number, consensus time, event, target account, result, reason, authority, document hash, transaction and publisher.
+
+## Record a decision the ledger never sees
+
+The **Off-chain decisions** card records a `kyc_review`, a `sanctions_check` or an `approval`. Nothing here touches the network: there is no transaction to perform, so the entry is the record, and `tx` is `null`.
+
+Pick the decision and its outcome (`PASSED` or `REFUSED`), name the subject account, write the reason, name the **authority**, and attach the **document**. The last two are required — the button stays disabled without them — because an entry with neither says only that something happened, which is the part the ledger already does better.
+
+### The document never leaves your browser
+
+The file is hashed in the page, with the Web Crypto API, and only the digest is sent:
+
+```typescript
+const bytes = new Uint8Array(await file.arrayBuffer());
+const evidence = await sha256Hex(bytes);   // the only thing that is published
+```
+
+A KYC file or a board minute cannot go on a public topic, and a hash of it reveals nothing about its contents — but it does commit to that exact file, at that exact position in the chain, at a consensus timestamp nobody can move. Whoever holds the document can prove later that it is the one the entry refers to. Nobody else learns anything.
+
+The regulator's side of that is **Check a document against this trail** on the feed: choose a file, it is hashed in that browser too, and the page names the entries carrying that hash — or says that none do.
+
+```typescript
+const matches = rows.filter(row => row.entry?.evidence === hash);
+```
+
+**You should see** the decision at the top of the trail with `off chain` where the transaction link usually is, and the document's hash in its own column. `off chain` is only ever a decision: a message the feed cannot read at all shows a dash there, so a broken entry is never dressed up as one the desk meant to record.
 
 ## Read and verify the regulator feed
 
@@ -181,7 +235,20 @@ Open **Open regulator feed**, or `/regulator?topic=<topic id>`. The page reads t
 
 * **Sequence**: sequence numbers run 1, 2, 3… with no gap, so nothing was deleted
 * **Chain**: the entry's `prev` equals the SHA-256 of the previous message's exact bytes, so nothing was edited or reordered
-* **Transaction**: the referenced transaction exists on the mirror node with the result the entry claims, **and** is the kind of transaction the event implies, against the entry's own token and account — a `freeze` entry must point at a `TOKENFREEZE` of that token, a successful `transfer` at a `CRYPTOTRANSFER` whose legs credit that amount of that token to that account. Checking the result code alone would let an authorised publisher log `freeze` / `SUCCESS` against any successful transaction on the network
+* **Claim**: the entry's own fields agree with the kind of event it says it is. A ledger event has to cite a transaction; a decision has to cite none, and has to carry its authority, its evidence hash and a `PASSED` or `REFUSED` outcome. This closes the two ways the kinds could be mixed up — a decision citing a real transaction to borrow its credibility, and an action with no transaction to be checked against
+* **Transaction**: for a ledger event, the referenced transaction exists on the mirror node with the result the entry claims, **and** is the kind of transaction the event implies, acting on what the entry says it acted on — a `freeze` entry must point at a `TOKENFREEZE` of that account, a successful `transfer` at a `CRYPTOTRANSFER` whose legs credit that amount of that token to that account. Checking the result code alone would let an authorised publisher log `freeze` / `SUCCESS` against any successful transaction on the network
+
+  Which id gets checked is whichever one the mirror node reports, and it is not always the token: a `TOKENCREATION` names the token, but a `TOKENFREEZE` or `TOKENGRANTKYC` names the account and carries no token on the transaction at all. A transfer names neither, which is why its legs are checked instead — the strongest of the three, since they carry token, account and amount together.
+
+For a decision there is nothing to look up, so the transaction check is reported as **not applicable** — a dash, not a tick. A tick there would claim a verification nobody performed.
+
+The feed derives one more thing, which is deliberately *not* a check. Under the authority it shows `signed by this account` when the entry was paid for by the account it names, and `publisher's claim` when it was not:
+
+```typescript
+const authorityProof = entry.authority === message.payer_account_id ? "proved" : "claimed";
+```
+
+A desk publishing on an officer's behalf is how most of them work, so a claim is not a failure and never makes a trail `BROKEN`. It is the difference between a field that looks like evidence and a field that tells you when it is.
 
 ```typescript
 for (let i = 0; i < messages.length; i++) {
@@ -189,20 +256,25 @@ for (let i = 0; i < messages.length; i++) {
   const entry = parseEntryBytes(bytes);
   const sequenceOk = messages[i].sequence_number === i + 1;
   const chainOk = entry !== null && entry.prev === (prevBytes ? await sha256Hex(prevBytes) : ZERO_HASH);
-  const mirrorTx = entry && (await fetchMirrorTransaction(entry.tx));
-  const txOk = entry !== null && transactionMismatch(entry, mirrorTx) === null; // result, kind, token, account
+  // null = not applicable: a decision has no transaction to verify.
+  let txOk: boolean | null = false;
+  if (entry && claimMismatch(entry) === null) {
+    txOk = entry.tx === null ? null : transactionMismatch(entry, await fetchMirrorTransaction(entry.tx)) === null;
+  }
   prevBytes = bytes;
 }
 ```
 
-**You should see** `VERIFIED` with the entry count, and every row passing all three checks. New entries appear within a few seconds, without a reload. A topic whose messages fail a check shows `BROKEN` and the first entry that failed, with the reason.
+**You should see** `VERIFIED` with the entry count, every row passing the checks that apply to it, and a dash in the transaction column for each decision. New entries appear within a few seconds, without a reload. A topic whose messages fail a check shows `BROKEN` and the first entry that failed, with the reason.
 
 ## What the network refuses
 
 Press **Try to forge an entry**. An account that is not an authorised publisher submits a message to the topic, and the network rejects it with `INVALID_SIGNATURE`. Nothing is added to the trail, and the topic's message count does not change.
 
 <Info>
-HCS guarantees order, timestamps and immutability; it cannot stop an authorised publisher from writing an inaccurate entry. That is why every entry references a transaction the regulator checks independently: an entry claiming a freeze is only `VERIFIED` if a freeze of that token, for that account, exists on the network with that result. What an authorised publisher can still do is write a well-formed entry at the wrong position — and that is what `BROKEN` is for.
+HCS guarantees order, timestamps and immutability; it cannot stop an authorised publisher from writing an inaccurate entry. That is why every ledger entry references a transaction the regulator checks independently: an entry claiming a freeze is only `VERIFIED` if a freeze of that account exists on the network with that result. What an authorised publisher can still do is write a well-formed entry at the wrong position — and that is what `BROKEN` is for.
+
+The fields the ledger cannot check need one more distinction. **`authority` is usually the publisher's claim, not a proof**: the submit key establishes who *wrote* the entry, not that the account it names agreed to anything. The exception is an entry published by the officer it names — their wallet signed and paid for that submission, and the mirror node says so, which is why the feed marks those `signed by this account`. Even then it is endorsement of the *record*, not authorisation of the action: the officer signed the entry, not the freeze. **`evidence` is stronger still**, because the hash is self-checking: anyone holding the document can confirm it is the one the entry committed to.
 </Info>
 
 ## Sign entries as a compliance officer with HashPack
@@ -232,7 +304,9 @@ The wallet connection follows `@hashgraph/hedera-wallet-connect`: create the pro
 ## What this template simplifies
 
 * **The queue lives in memory**: a server restart with entries still queued loses them, though everything that reached the topic stays verifiable. A real desk persists the queue, or derives what is missing by comparing the chain against its own records.
-* **Private payloads**: the topic is public. For sensitive data, publish only a hash of each record and keep the record off-chain, or encrypt entries to the regulator's key.
+* **Private payloads**: the topic is public, and so is `reason`. The template keeps documents off chain by publishing only their hash; apply the same discipline to the reason text, which can easily name a person, or encrypt entries to the regulator's key.
+* **Provable authority**: having the authority publish its own entries proves it endorsed the record. Proving it authorised the *action* needs its signature on the action itself — the 2-of-3 threshold key in [Regulated Token](/solutions/finance/regulated-token), so the token refuses the freeze without it.
+* **A document store that outlives the trail**: an evidence hash is worth nothing if the document is lost. Pair the topic with retention on the document store, and record the storage reference alongside the hash.
 * **Admin key**: hold the topic's admin key in a threshold key, so no single person can change who may publish.
 * **Lower latency**: subscribe to the topic over gRPC, or run your own mirror node, instead of polling the REST API.
 * **Shared plumbing**: log the other Finance Workflows to the same topic, such as each DvP settlement or coupon payment.

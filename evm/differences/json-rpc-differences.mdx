@@ -84,8 +84,8 @@ These methods track the head of the chain. This is how transactions make their w
 
 | Method | Static Response Value |
 | --- | ----------------------- |
-| [`eth_blockNumber`](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_blocknumber) | N/A |
-| [`eth_sendRawTransaction`](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_sendrawtransaction) | N/A |
+| [`eth_blockNumber`](https://ethereum.org/developers/docs/apis/json-rpc/#eth-blocknumber) | N/A |
+| [`eth_sendRawTransaction`](https://ethereum.org/developers/docs/apis/json-rpc/#eth-sendrawtransaction) | N/A |
 
 
 #### **State Methods**
@@ -94,12 +94,12 @@ Methods that report the current state of all the data stored. The “state” is
 
 | Method | Static Response Value |
 | --- | --- |
-| [eth_getBalance](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getbalance) | n/a |
-| [eth_getStorageAt](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getstorageat) | n/a |
-| [eth_getTransactionCount](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_gettransactioncount) | n/a |
-| [eth_getCode](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getcode) | n/a |
-| [eth_call](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_call) | n/a |
-| [eth_estimateGas](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_estimategas) | generates and returns an estimate of the gas required for the transaction to complete |
+| [eth_getBalance](https://ethereum.org/developers/docs/apis/json-rpc/#eth-getbalance) | n/a |
+| [eth_getStorageAt](https://ethereum.org/developers/docs/apis/json-rpc/#eth-getstorageat) | n/a |
+| [eth_getTransactionCount](https://ethereum.org/developers/docs/apis/json-rpc/#eth-gettransactioncount) | n/a |
+| [eth_getCode](https://ethereum.org/developers/docs/apis/json-rpc/#eth-getcode) | n/a |
+| [eth_call](https://ethereum.org/developers/docs/apis/json-rpc/#eth-call) | n/a |
+| [eth_estimateGas](https://ethereum.org/developers/docs/apis/json-rpc/#eth-estimategas) | generates and returns an estimate of the gas required for the transaction to complete |
 
 #### **History Methods**
 
@@ -107,18 +107,18 @@ Fetches historical records of every block back to genesis. This is like one larg
 
 | Method | Static Response Value |
 |------|-----------------------|
-| [eth_getBlockTransactionCountByHash](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getblocktransactioncountbyhash) | n/a |
-| [eth_getBlockTransactionCountByNumber](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getblocktransactioncountbynumber) | n/a |
-| [eth_getUncleCountByBlockHash](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getunclecountbyblockhash) | `null` |
-| [eth_getUncleCountByBlockNumber](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getunclecountbyblocknumber) | `0x0` |
-| [eth_getBlockByHash](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getblockbyhash) | `stateRoot` is always zero |
-| [eth_getBlockByNumber](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getblockbynumber) | `stateRoot` is always zero |
-| [eth_getTransactionByHash](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_gettransactionbyhash) | n/a |
-| [eth_getTransactionByBlockHashAndIndex](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_gettransactionbyblockhashandindex) | n/a |
-| [eth_getTransactionByBlockNumberAndIndex](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_gettransactionbyblocknumberandindex) | n/a |
-| [eth_getTransactionReceipt](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_gettransactionreceipt) | n/a |
-| [eth_getUncleByBlockHashAndIndex](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getunclebyblockhashandindex) | `null` |
-| [eth_getUncleByBlockNumberAndIndex](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getunclebyblocknumberandindex) | `null` |
+| [eth_getBlockTransactionCountByHash](https://ethereum.org/developers/docs/apis/json-rpc/#eth-getblocktransactioncountbyhash) | n/a |
+| [eth_getBlockTransactionCountByNumber](https://ethereum.org/developers/docs/apis/json-rpc/#eth-getblocktransactioncountbynumber) | n/a |
+| [eth_getUncleCountByBlockHash](https://ethereum.org/developers/docs/apis/json-rpc/#eth-getunclecountbyblockhash) | `null` |
+| [eth_getUncleCountByBlockNumber](https://ethereum.org/developers/docs/apis/json-rpc/#eth-getunclecountbyblocknumber) | `0x0` |
+| [eth_getBlockByHash](https://ethereum.org/developers/docs/apis/json-rpc/#eth-getblockbyhash) | `stateRoot` is always zero |
+| [eth_getBlockByNumber](https://ethereum.org/developers/docs/apis/json-rpc/#eth-getblockbynumber) | `stateRoot` is always zero |
+| [eth_getTransactionByHash](https://ethereum.org/developers/docs/apis/json-rpc/#eth-gettransactionbyhash) | n/a |
+| [eth_getTransactionByBlockHashAndIndex](https://ethereum.org/developers/docs/apis/json-rpc/#eth-gettransactionbyblockhashandindex) | n/a |
+| [eth_getTransactionByBlockNumberAndIndex](https://ethereum.org/developers/docs/apis/json-rpc/#eth-gettransactionbyblocknumberandindex) | n/a |
+| [eth_getTransactionReceipt](https://ethereum.org/developers/docs/apis/json-rpc/#eth-gettransactionreceipt) | n/a |
+| [eth_getUncleByBlockHashAndIndex](https://ethereum.org/developers/docs/apis/json-rpc/#eth-getunclebyblockhashandindex) | `null` |
+| [eth_getUncleByBlockNumberAndIndex](https://ethereum.org/developers/docs/apis/json-rpc/#eth-getunclebyblocknumberandindex) | `null` |
 
 **💡**_**See the full list of methods**_ [_**here**_](https://github.com/hiero-ledger/hiero-json-rpc-relay/blob/main/docs/rpc-api.md)_**.**_
 
@@ -141,6 +141,5 @@ Fetches historical records of every block back to genesis. This is like one larg
 
 ## Additional Resources
 
-- [**Supported EVM Tooling**](https://github.com/hiero-ledger/hiero-json-rpc-relay/tree/main/tools)
 - [**JSON-RPC Relay Docs**](/evm/development/json-rpc)
 - [**Hiero JSON-RPC Relay Repo**](https://github.com/hiero-ledger/hiero-json-rpc-relay)

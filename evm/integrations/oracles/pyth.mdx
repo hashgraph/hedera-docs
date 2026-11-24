@@ -15,11 +15,11 @@ The Pyth Price Feeds uses a "pull" price update model, where users are responsib
 1. On-chain programs should read prices from the Pyth program deployed on the same chain
 2. Off-chain frontends and jobs should include Pyth price updates alongside (or within) their application-specific transactions.
 
-Please note that it is possible to replicate the legacy Oracle design with the Pyth scheduler (previously known as "price pusher"). It is an off-chain application that regularly pulls price updates on to a blockchain you can [find here](https://docs.pyth.network/price-feeds/schedule-price-updates/using-scheduler).
+Please note that it is possible to replicate the legacy Oracle design with the Pyth scheduler (previously known as "price pusher"). It is an off-chain application that regularly pulls price updates on to a blockchain you can [find here](https://docs.pyth.network/pro/sponsored-feeds#run-price-pusher).
 
 ## Demonstration: How to integrate with the Pyth Network on Hedera?
 
-This demo is a simple example of using Pyth prices in Hedera and is based on the [tutorial here](https://docs.pyth.network/price-feeds/create-your-first-pyth-app/evm/part-1). Follow the instructions in the tutorial to build, deploy, and use this demo.
+This demo is a simple example of using Pyth prices in Hedera and is based on the [tutorial here](https://github.com/pyth-network/documentation/blob/main/pages/price-feeds/core/create-your-first-pyth-app/evm/part-1.mdx). Follow the instructions in the tutorial to build, deploy, and use this demo.
 
 This demo is similar to the contract written in the tutorial. The only difference is that it uses a different math to calculate the price of 1$ in HBAR because, In the Hedera EVM layer, the native token has only 8 decimal places, while Ethereum has 18 decimal places. This means that the smallest unit of HBAR, the tinybar, is 0.00000001 HBAR, while the smallest unit of ETH, the wei, is 0.000000000000000001 ETH. Inside a contract, `msg.value` and balances are in tinybars. See [HBAR decimal places](/evm/differences/hbar-decimals). You can see the change in the code in the [MyFirstPythContract.sol](https://github.com/hedera-dev/tutorial-js-pyth-oracle-contract-pull/blob/main/contracts/src/MyFirstPythContract.sol).
 
@@ -27,7 +27,7 @@ This demo is similar to the contract written in the tutorial. The only differenc
 
 For more details, please visit this [GitHub repository](https://github.com/hedera-dev/tutorial-js-pyth-oracle-contract-pull/).
 
-If you have any questions, please refer to the Pyth Network [documentation](https://docs.pyth.network/home) or join [Discord](https://discord.gg/invite/PythNetwork).
+If you have any questions, please refer to the Pyth Network [documentation](https://docs.pyth.network/) or join [Discord](https://discord.com/invite/PythNetwork).
 
 ***
 

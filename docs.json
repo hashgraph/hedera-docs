@@ -112,7 +112,7 @@
     },
     {
       "source": "/support/hedera-com-blog-tagged-technical",
-      "destination": "https://hedera.com/blog/tagged/technical"
+      "destination": "https://hedera.com/blog/tag/technical/"
     },
     {
       "source": "/support/github-com-hashgraph",
@@ -120,7 +120,7 @@
     },
     {
       "source": "/support/help-hedera-com-hc-en-us",
-      "destination": "https://help.hedera.com/hc/en-us"
+      "destination": "https://hedera.com/faq/"
     },
     {
       "source": "/support/status-hedera-com",
@@ -2808,7 +2808,6 @@
                 "pages": [
                   "native/tutorials/advanced/random-number",
                   "native/tutorials/advanced/configure-mirror-node",
-                  "native/tutorials/advanced/javascript-testing",
                   "native/tutorials/advanced/walletconnect-dapp",
                   "native/tutorials/advanced/hashgraphdev",
                   {

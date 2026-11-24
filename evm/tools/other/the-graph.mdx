@@ -181,7 +181,7 @@ export function handleGreetingSet(event: GreetingSet): void {
 
 #### Graph Node Configuration
 
-To connect a local graph node to a remote network, such as testnet, mainnet, or previewnet, use a [docker-compose](https://github.com/graphprotocol/graph-node/tree/master/docker#docker-compose) setup. The API endpoint that connects the graph node to the network is specified within the `environment` object of the `docker-compose.yaml` file [here](https://github.com/hashgraph/hedera-subgraph-example/blob/main/graph-node/docker-compose.yaml). Add the API endpoint URL in the `ethereum` field in the `environment` object. For this tutorial, we will use the [Hashio Testnet ](https://www.hashgraph.com/hashio/)instance of the Hedera JSON-RPC relay, but _any_ [JSON-RPC provider](/evm/development/json-rpc) supported by the community can be used.
+To connect a local graph node to a remote network, such as testnet, mainnet, or previewnet, use a [docker-compose](https://github.com/graphprotocol/graph-node/tree/master/docker#docker-compose) setup. The API endpoint that connects the graph node to the network is specified within the `environment` object of the `docker-compose.yaml` file [here](https://github.com/hashgraph/hedera-subgraph-example/blob/main/graph-node/docker-compose.yaml). Add the API endpoint URL in the `ethereum` field in the `environment` object. For this tutorial, we will use the [Hashio Testnet ](/evm/tutorials/intermediate/json-rpc-connections/hashio)instance of the Hedera JSON-RPC relay, but _any_ [JSON-RPC provider](/evm/development/json-rpc) supported by the community can be used.
 
 This is what the `ethereum` field should look like after you enter your API endpoint URL:
 
@@ -189,7 +189,7 @@ This is what the `ethereum` field should look like after you enter your API endp
 ethereum: 'testnet:https://testnet.hashio.io/api
 ```
 
-**\*Note:** For more info on how to set up an indexer, check out* T_he Graph\_ [*docs*](https://thegraph.com/docs/en/) *and the* [*official graph-node GitHub repository*](https://github.com/graphprotocol/graph-node)*. For a full subgraph project example, check out* [*this*](https://github.com/hashgraph/hedera-json-rpc-relay/tree/main/tools/subgraph-example) *repo.\*
+**\*Note:** For more info on how to set up an indexer, check out* T_he Graph\_ [*docs*](https://thegraph.com/docs/en/) *and the* [*official graph-node GitHub repository*](https://github.com/graphprotocol/graph-node)*.\*
 
 ---
 
@@ -472,8 +472,6 @@ Follow the steps below to execute the query and fetch the indexed data from the 
 ## Additional Resources
 
 **➡** [**Project Repository**](https://github.com/hashgraph/hedera-subgraph-example)
-
-**➡** [**Subgraph Example**](https://github.com/hashgraph/hedera-json-rpc-relay/tree/main/tools/subgraph-example)
 
 <Columns cols={2}>
   <Card title="Writer: Krystal, Senior DX Engineer" arrow>

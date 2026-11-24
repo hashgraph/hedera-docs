@@ -101,7 +101,7 @@ Here's a breakdown of what each section of the configuration file does:
 - **`importer`**: This sub-section defines settings for the Mirror node's importer, which is responsible for retrieving transaction data from the network and storing it in a local database for querying.
 - **`importer.network: DEMO`**: This specifies that the importer should connect to a bucket with demo data. It's the easiest way to experiment with the mirror node and importer. If you want to connect to the `TESTNET`, `MAINNET`, or `PREVIEWNET`, you need to follow this [tutorial](/operators/mirror-node/run-your-own).
 - **`importer.retention`**: This sub-section specifies the retention period and frequency for importing data. In this case, the importer will clean data that is older than 90 days every 60 seconds. If you omit the `frequency` key, the default behavior for cleaning data is once a day.
-- **`importer.retention.include`**: This specifies the database tables that should be included in the imported data. The tables specified are **`transaction`** and **`crypto_transfer`**. You can find all tables in the [GitHub repository](https://github.com/hashgraph/hedera-mirror-node/blob/main/hedera-mirror-importer/src/main/resources/db/migration/v2/V2.0.0__create_tables.sql) for the mirror node.
+- **`importer.retention.include`**: This specifies the database tables that should be included in the imported data. The tables specified are **`transaction`** and **`crypto_transfer`**. You can find all tables in the [GitHub repository](https://github.com/hiero-ledger/hiero-mirror-node/blob/main/importer/src/main/resources/db/migration/v2/V2.0.0__create_tables.sql) for the mirror node.
 - **`parser`**: This sub-section defines settings for the data parser, which determines the data that gets stored in the database or the data that should be filtered.
 - **`parser.exclude`**: This specifies the entities or transaction types that should be excluded from the imported data. In this case, the **`parser.exclude.entity`** with ID **`0.0.111478`** is excluded.
 - **`parser.include`**: This specifies the entities or transaction types that should be included from the imported data. In this case, the **`parser.include.entity`** with ID **`0.0.111478`** is included, and two specific transaction types (**`CRYPTOTRANSFER`** and **`CRYPTOCREATEACCOUNT`**) are included via **`parser.include.transaction`**.\
@@ -114,7 +114,7 @@ Here's a breakdown of what each section of the configuration file does:
 
 In addition, the various boolean `hedera.mirror.importer.record.entity.persist` properties may be specified to control which additional fields get stored (which additional tables get recorded).
 
-_See the `hedera.mirror.importer.parser.include._`and`hedera.mirror.importer.parser.exclude._` properties listed in_ [_this table_](https://github.com/hashgraph/hedera-mirror-node/blob/main/docs/configuration.md#importer)_._
+_See the `hedera.mirror.importer.parser.include._`and`hedera.mirror.importer.parser.exclude._` properties listed in_ [_this table_](https://github.com/hiero-ledger/hiero-mirror-node/blob/main/docs/configuration.md#importer)_._
 
 </Info>
 
@@ -155,7 +155,7 @@ HEDERA_MIRROR_IMPORTER_RECORD_ENTITY_PERSIST_TOPICS=false
 
 </Accordion>
 
-More details about retention [here](https://github.com/hashgraph/hedera-mirror-node/blob/main/docs/database.md#retention) and transaction and entity filtering [here](https://github.com/hashgraph/hedera-mirror-node/blob/main/docs/configuration.md#transaction-and-entity-filtering).
+More details about retention [here](https://github.com/hiero-ledger/hiero-mirror-node/blob/main/docs/database/README.md#retention) and transaction and entity filtering [here](https://github.com/hiero-ledger/hiero-mirror-node/blob/main/docs/configuration.md#transaction-and-entity-filtering).
 
 ---
 
@@ -239,7 +239,7 @@ Most queries include the field **`type`** which refers to a transaction type, e.
 - Type 37: `TOKENMINT`
 - Type 40: `TOKENASSOCIATE`
 
-Check out the complete list of transaction types in the [`TransactionTypes.java` file](https://github.com/hashgraph/hedera-mirror-node/blob/main/hedera-mirror-common/src/main/java/com/hedera/mirror/common/domain/transaction/TransactionType.java).
+Check out the complete list of transaction types in the [`TransactionTypes.java` file](https://github.com/hiero-ledger/hiero-mirror-node/blob/main/common/src/main/java/org/hiero/mirror/common/domain/transaction/TransactionType.java).
 
 </Info>
 
@@ -337,7 +337,7 @@ Note that your output might differ depending on how much data you have imported 
   The PostgreSQL database is not an end product; the Hedera Mirror Node REST API
   is. Hence, SQL queries might fail when the engineering team updates the
   underlying database model in new releases. This tutorial has been tested with
-  [release v0.79.1](https://github.com/hashgraph/hedera-mirror-node/releases).
+  [release v0.79.1](https://github.com/hiero-ledger/hiero-mirror-node/releases).
 </Danger>
 
 To exit the `psql` console, run the quit command:
@@ -358,7 +358,7 @@ docker compose down
 
 ## Additional Resources
 
-**➡** [**Mirror Node Repository**](https://github.com/hashgraph/hedera-mirror-node)
+**➡** [**Mirror Node Repository**](https://github.com/hiero-ledger/hiero-mirror-node)
 
 <Columns cols={2}>
   <Card title="Writer: Krystal, Senior DX Engineer" arrow>

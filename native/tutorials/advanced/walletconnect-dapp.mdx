@@ -4,13 +4,13 @@ description: "In the dynamic world of decentralized applications (DApps), cateri
 ---
 
 
-Explore DApp development using the Mirror Node API and Hedera Token Service (HTS). Discover how to integrate HTS functionality into your DApp for seamless token management and transactions. This guide uses React, Material UI, Ethers, and TypeScript with the [Create React App (CRA) Hedera DApp template](https://github.com/hedera-dev/cra-hedera-dapp-template) integrated with WalletConnect, streamlining your development process.
+Explore DApp development using the Mirror Node API and Hedera Token Service (HTS). Discover how to integrate HTS functionality into your DApp for seamless token management and transactions. This guide uses React, Material UI, Ethers, and TypeScript with the [Create React App (CRA) Hedera DApp template](https://github.com/hedera-dev/template-ts-hedera-cra-dapp) integrated with WalletConnect, streamlining your development process.
 
 ## What you will accomplish
 
 * [ ] Query the mirror node for account token balance, token information, and Non-fungible information.
 * [ ] Query the mirror node to check if the receiver has associated with a token ID
-* [ ] Associate an HTS token with [HashPack](https://www.hashpack.app/), [Kabila](https://www.kabila.app/wallet), or [MetaMask](https://metamask.io/) through a UI
+* [ ] Associate an HTS token with [HashPack](https://www.hashpack.app/), [Kabila](https://kabila.app/docs/kabila-wallet), or [MetaMask](https://metamask.com/) through a UI
 * [ ] Transfer an HTS token through a UI
 
 <Frame>
@@ -24,19 +24,19 @@ Before you begin, you should be familiar with the following:
 * [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 * [TypeScript](https://www.typescriptlang.org/)
 * [React](https://react.dev/)
-* [REST API](https://www.geeksforgeeks.org/rest-api-introduction/)
+* [REST API](https://www.geeksforgeeks.org/node-js/rest-api-introduction/)
 
 <Accordion title="Also, you should have the following set up on your computer ⬇">
 * [x] `git` installed
   * Minimum version: 2.37
   * Recommended: [Install Git (Github)](https://github.com/git-guides/install-git)
 * [x] A code editor or IDE
-  * Recommended: [VS Code. Install VS Code (Visual Studio)](https://code.visualstudio.com/docs/setup/setup-overview)
+  * Recommended: [VS Code. Install VS Code (Visual Studio)](https://code.visualstudio.com/docs/getstarted/overview)
 * [x] NodeJs + npm installed
   * Minimum version of NodeJs: 18
   * Minimum version of npm: 9.5
   * Recommended for Linux & Mac: [nvm](https://github.com/nvm-sh/nvm)
-  * Recommended for Windows: [nvm-windows](https://github.com/coreybutler/nvm-windows)
+  * Recommended for Windows: [nvm-windows](https://github.com/nvm-windows/nvm)
 </Accordion>
 
 <Accordion title="Check your prerequisites set up ⬇">
@@ -72,7 +72,7 @@ If the output contains text similar to `command not found`, please install that 
 
 ## Get Started
 
-We choose to scaffold our project by using the [CRA Hedera DApp template](https://github.com/hedera-dev/cra-hedera-dapp-template), as it offers:
+We choose to scaffold our project by using the [CRA Hedera DApp template](https://github.com/hedera-dev/template-ts-hedera-cra-dapp), as it offers:
 
 * [x] Multi-wallet integration via walletconnect supporting MetaMask and Hedera native wallets
 * [x] Mirror Node Client
@@ -808,7 +808,7 @@ Keep this terminal open for the remainder of the tutorial, as you will refer bac
 
 #### 4.2 Import Sender and Receiver accounts
 
-  Import the sender and receiver accounts that were just outputted into your preferred wallet application. ([MetaMask](https://metamask.io/download/), [HashPack](https://www.hashpack.app/get-started), or [Kabila](https://www.kabila.app/wallet))
+  Import the sender and receiver accounts that were just outputted into your preferred wallet application. ([MetaMask](https://metamask.com/download), [HashPack](https://www.hashpack.app/download), or [Kabila](https://kabila.app/docs/kabila-wallet))
 
 For assistance on how to import a Hedera account into MetaMask refer to our documentation [here](/evm/tutorials#import-heder#import-hedera-account-into-metamask).
 

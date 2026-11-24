@@ -17,3 +17,10 @@
 # Hedera's own Discord short link. It redirects to the current invite on
 # purpose, so Hedera can repoint it without a docs change.
 ^https?://(www\.)?hedera\.com/discord/?$
+
+# The HIP site is a single-page app on GitHub Pages. /hip/hip-NNN paths are
+# served by its 404.html fallback (HTTP 404), and the app then routes to the
+# HIP in the browser. See site/src/main.js in hiero-ledger/hiero-improvement-proposals:
+# "Support old /hip/hip-NNN paths — GitHub Pages serves 404.html (= index.html)
+# for unknown paths". Status codes can't tell a real HIP from a missing one.
+^https?://hips\.hedera\.com/hip/

@@ -13,3 +13,4 @@ EVM alias===EVM Address
 Account Number Alias===EVM Address from Account ID
 Public Key Account Alias===remove the concept (public-key alias is retired)
 public key alias===remove or rephrase (public-key alias is retired)
+Hedera[ -]Improvement[ -]Proposal===Hiero Improvement Proposal (HIP)

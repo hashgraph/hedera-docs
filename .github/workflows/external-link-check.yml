@@ -1,0 +1,48 @@
+name: "External Link Check"
+
+# `mint broken-links` only covers internal links. This weekly run checks every
+# external link in the docs (and external redirect destinations in docs.json)
+# and fails when any are broken. Redirected and unverified links are listed in
+# the job summary but do not fail the run.
+on:
+  schedule:
+    - cron: "0 15 * * 1" # Mondays 15:00 UTC
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/scripts/check-external-links.js"
+      - ".github/link-check-ignore.txt"
+      - ".github/workflows/external-link-check.yml"
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: read
+
+concurrency:
+  group: external-link-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  external-links:
+    name: External Link Check
+    runs-on: hashgraph-docs-linux-medium
+    timeout-minutes: 30
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup Node
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: "22"
+
+      - name: Check external links
+        run: node --max-http-header-size=81920 .github/scripts/check-external-links.js --fail-on=broken

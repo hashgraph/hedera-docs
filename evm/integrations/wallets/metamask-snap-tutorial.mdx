@@ -23,9 +23,9 @@ This tutorial will demonstrate how dApp builders and developers can seamlessly i
 **Tools You Will Use**
 
 - React JS ([Documentation](https://react.dev/))
-- MetaMask ([Documentation](https://docs.metamask.io/wallet/))
-- Hedera Wallet Snap for MetaMask ([Documentation](https://docs.tuum.tech/hedera-wallet-snap/basics/introduction))
-- Hedera JSON-RPC Relay ([Hashio](https://www.hashgraph.com/hashio/))
+- MetaMask ([Documentation](https://docs.metamask.io/metamask-connect/))
+- Hedera Wallet Snap for MetaMask ([Documentation](https://docs.tuum.tech/hedera-wallet-snap))
+- Hedera JSON-RPC Relay ([Hashio](/evm/tutorials/intermediate/json-rpc-connections/hashio))
 - Ethers JS ([Documentation](https://docs.ethers.org/v6/))
 - Mirror Node REST API ([Learn More](https://hedera.com/blog/how-to-look-up-transaction-history-on-hedera-using-mirror-nodes-back-to-the-basics))
 - Mirror Node Explorer ([HashScan](https://hashscan.io/))
@@ -38,7 +38,7 @@ This tutorial will demonstrate how dApp builders and developers can seamlessly i
 - TypeScript >= 4.7 ([Download](https://www.npmjs.com/package/typescript))
 - Git Command Line ([Download](https://git-scm.com/downloads))
 - Hedera Testnet Account ([Create](https://portal.hedera.com/))
-- MetaMask Wallet Extension ([Download](https://metamask.io/download/))
+- MetaMask Wallet Extension ([Download](https://metamask.com/download))
 
 ---
 
@@ -360,7 +360,7 @@ When the **Connect Wallet** button is pressed in the dApp, the **connectWallet()
 The **walletConnectFcn()** function performs the following steps:
 
 1. **Creates an ethers provider**: It initializes an ethers provider using the **Web3Provider** from the [**ethers**](https://docs.ethers.org/v6/) library, which connects to MetaMask. An Ethers provider serves as a bridge between your application and the Hedera network. It allows you to perform actions like sending transactions and querying data.
-2. **Switches to Hedera Testnet**: It determines the **chainId** based on the chosen Hedera network (testnet, previewnet, or mainnet) and sends a **wallet_addEthereumChain** request to MetaMask to add the corresponding Hedera network. A chain ID is a unique identifier that represents a blockchain network. This is an important step that includes setting the native currency (HBAR) and providing the JSON-RPC and network explorer URLs. For the JSON-RPC provider, this example uses [Hashio](https://www.hashgraph.com/hashio/), a community-hosted [JSON-RPC relay](https://github.com/hashgraph/hedera-json-rpc-relay) provided by [Hashgraph](https://www.hashgraph.com/) (note that anyone can host their own relay and/or use other [commercial providers](/evm/development/json-rpc#community-hosted-json-rpc-relays)). For network explorer, [HashScan](https://hashscan.io/) is used. (Keep in mind that HashScan supports [EIP-3091](https://eips.ethereum.org/EIPS/eip-3091), which makes it easy to explore historical data like blocks, transactions, accounts, contracts, and tokens from wallets like MetaMask).
+2. **Switches to Hedera Testnet**: It determines the **chainId** based on the chosen Hedera network (testnet, previewnet, or mainnet) and sends a **wallet_addEthereumChain** request to MetaMask to add the corresponding Hedera network. A chain ID is a unique identifier that represents a blockchain network. This is an important step that includes setting the native currency (HBAR) and providing the JSON-RPC and network explorer URLs. For the JSON-RPC provider, this example uses [Hashio](/evm/tutorials/intermediate/json-rpc-connections/hashio), a community-hosted [JSON-RPC relay](https://github.com/hiero-ledger/hiero-json-rpc-relay) provided by [Hashgraph](https://www.hashgraph.com/) (note that anyone can host their own relay and/or use other [commercial providers](/evm/development/json-rpc#community-hosted-json-rpc-relays)). For network explorer, [HashScan](https://hashscan.io/) is used. (Keep in mind that HashScan supports [EIP-3091](https://eips.ethereum.org/EIPS/eip-3091), which makes it easy to explore historical data like blocks, transactions, accounts, contracts, and tokens from wallets like MetaMask).
 3. **Connects and Pairs Account**: The function sends an **eth_requestAccounts** request to MetaMask to access the user's Hedera account. Upon successful connection, the selected account is returned.
 
 Finally, the **connectWallet()** function in **App.jsx** updates the React state with the connected testnet account and provider information, allowing the dApp to display the connected testnet account information.
@@ -474,7 +474,7 @@ This is what you see when clicking the **Install Snap** button for the first tim
 
 Before we can start using the functionality of the Hedera Wallet Snap, this step obtains the Snap EVM address. In the next step, we send HBAR to that Snap EVM address to create the corresponding Snap account.
 
-These steps are necessary because Snaps provide a way to create a secure and unique wallet associated with a user's MetaMask account without directly accessing the private key of the account. This separate Snap account is unique to the user's MetaMask account and remains accessible across different browsers or devices as long as the secret recovery phrase remains the same. For more information, read [this section of the Hedera Wallet Snap documentation](https://docs.tuum.tech/hedera-wallet-snap/hedera-wallet-snap/snap-account).
+These steps are necessary because Snaps provide a way to create a secure and unique wallet associated with a user's MetaMask account without directly accessing the private key of the account. This separate Snap account is unique to the user's MetaMask account and remains accessible across different browsers or devices as long as the secret recovery phrase remains the same. For more information, read [this section of the Hedera Wallet Snap documentation](https://github.com/tuum-tech/hedera-wallet-snap-documentation/blob/main/hedera-wallet-snap/snap-account.md).
 
 The **snapGetAccountInfo()** function (code tab 1) in **App.jsx** calls the **snapGetAccountInfoFcn()** function (code tab 2). The latter is imported from the file **src/components/hedera/ snapGetAccountInfo.js**.
 
@@ -536,7 +536,7 @@ export default snapGetAccountInfoFcn;
 
 The **snapGetAccountInfoFcn()** function performs the following steps:
 
-1. **Requests Account Information**: The function makes a request to MetaMask using the **wallet_invokeSnap** method. It sends the **snapId** and a request for the **getAccountInfo** method, along with the network details and the URL of the Hedera mirror node. For more details on this method, read [this section of the Hedera Wallet Snap documentation](https://docs.tuum.tech/hedera-wallet-snap/hedera-wallet-snap/snap-rpc-apis/account-apis/getaccountinfo).
+1. **Requests Account Information**: The function makes a request to MetaMask using the **wallet_invokeSnap** method. It sends the **snapId** and a request for the **getAccountInfo** method, along with the network details and the URL of the Hedera mirror node. For more details on this method, read [this section of the Hedera Wallet Snap documentation](https://github.com/tuum-tech/hedera-wallet-snap-documentation/blob/main/hedera-wallet-snap/snap-rpc-apis/account-apis/getaccountinfo.md).
 2. **Processes the Response**: If the request is successful, the function extracts the EVM address of the Snap account and its balance in HBAR from the response. It then constructs a message stating the account's EVM address and balance.
 3. **Handles Errors**: If there's an error (like the account not being created yet), the function extracts the EVM address from the error message. It then creates a message instructing the user to transfer HBAR to this address to create the Snap account.
 4. **Returns Results**: The function logs the outcome message (either the account details or the activation instruction). It then returns the EVM address of the Snap account and the outcome message.
@@ -701,13 +701,13 @@ This tutorial provides a comprehensive guide on how to use MetaMask Snaps, focus
 
 ## Additional Resources
 
-**➡** [**Project Repository**](https://github.com/hedera-dev/hedera-example-metamask-snap)
+**➡** [**Project Repository**](https://github.com/hedera-dev/tutorial-js-metamask-snap)
 
 **➡** [**Hedera Wallet Snap**](https://snaps.metamask.io/snap/npm/hashgraph/hedera-wallet-snap/)
 
 **➡** [**MetaMask Snap Guide**](https://docs.metamask.io/snaps/)
 
-**➡** [**Hedera JSON-RPC Relay Repository**](https://github.com/hashgraph/hedera-json-rpc-relay)
+**➡** [**Hedera JSON-RPC Relay Repository**](https://github.com/hiero-ledger/hiero-json-rpc-relay)
 
 <Columns cols={2}>
   <Card title="Writer: Ed, Head of Developer Relations" arrow>

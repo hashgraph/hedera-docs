@@ -16,12 +16,12 @@ sidebarTitle: "Amazon S3 (AWS)"
 
 This step will teach you how to create a new IAM (*Identity and Access Management)* user and generate new access keys in your AWS account. The **access key,** **secret** and **project ID** will be used to access S3 from the Hedera Mirror Node.
 
-* Create an [IAM (Identity and Access Management) user](https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-set-up.html#create-an-admin) with either an administrator or custom policy. If you're unfamiliar with using AWS, go with the administrator policy:
+* Create an [IAM (Identity and Access Management) user](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html) with either an administrator or custom policy. If you're unfamiliar with using AWS, go with the administrator policy:
 
 <Tabs>
 <Tab title="Administrator Policy">
 
-* Refer to AWS documentation to create an IAM user with an administrator policy [here](https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-started_create-admin-group.html)
+* Refer to AWS documentation to create an IAM user with an administrator policy [here](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html)
   * This sets up an IAM user with Administrator Access Policy
   * This user has full access and can delegate permissions to every service and resource in AWS.
 * Once that is complete, select **Users** from the left IAM navigation bar
@@ -34,7 +34,7 @@ This step will teach you how to create a new IAM (*Identity and Access Managemen
 <Tab title="Custom Policy">
 
 * Enable access to billing data
-  * Follow step 2 [here](https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-started_create-admin-group.html)
+  * Follow the steps in [Grant access to the billing console](https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-started-account-iam.html#billing-access)
 * From the IAM left navigation bar select **Polices**
 * Click on **Create policy**
   * Service

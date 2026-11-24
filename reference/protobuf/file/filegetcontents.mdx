@@ -9,8 +9,8 @@ Get the contents of a file. The content field is empty (no bytes) if the file is
 
 | Field    | Type                                                                                                                                          | Description                                                                                                                                         |
 | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `header` | [QueryHeader](https://github.com/theekrystallee/hedera-style-guide/blob/sdk-v1/deprecated/hedera-api/file-service/broken-reference/README.md) | Standard info sent from client to node, including the signed payment, and what kind of response is requested (cost, state proof, both, or neither). |
-| `fileID` | [FileID](https://github.com/theekrystallee/hedera-style-guide/blob/sdk-v1/deprecated/hedera-api/file-service/broken-reference/README.md)      | The file ID of the file whose contents are requested                                                                                                |
+| `header` | [QueryHeader](/reference/protobuf/miscellaneous/queryheader) | Standard info sent from client to node, including the signed payment, and what kind of response is requested (cost, state proof, both, or neither). |
+| `fileID` | [FileID](/reference/protobuf/basic-types/fileid)      | The file ID of the file whose contents are requested                                                                                                |
 
 ## FileGetContentsResponse
 

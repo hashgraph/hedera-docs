@@ -390,7 +390,7 @@ async function main() {
 main().catch(console.error);
 ```
 
-This script will first unpause your contract and then transfer the token to a random address `0x5FbDB2315678afecb367f032d93F642f64180aa3` using the [`transferFrom` function](https://docs.openzeppelin.com/contracts/2.x/api/token/erc721#ERC721-transferFrom-address-address-uint256-) on your contract. This function accepts the sender address, receiver address, and the token ID you want to transfer. Next, we check if the account has actually received the token by verifying its balance.
+This script will first unpause your contract and then transfer the token to a random address `0x5FbDB2315678afecb367f032d93F642f64180aa3` using the [`transferFrom` function](https://docs.openzeppelin.com/contracts/5.x/api/token/erc721#ERC721-transferFrom-address-address-uint256-) on your contract. This function accepts the sender address, receiver address, and the token ID you want to transfer. Next, we check if the account has actually received the token by verifying its balance.
 
 Execute the script to transfer the token:
 

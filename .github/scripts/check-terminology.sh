@@ -14,10 +14,13 @@ BANNED_FILE="$(cd "$(dirname "$0")/.." && pwd)/terminology-banned.txt"
 #  - reference/      : protobuf / REST API pages where `alias` is the real field
 #  - release-notes   : historical records, left as published
 #  - the terminology page and the word list themselves
+#  - random-number.mdx : credits a proposal by its original "Hedera Improvement
+#                        Proposal" name, kept on purpose as a historical record
 is_exempt() {
   case "$1" in
     reference/*) return 0 ;;
     *release-notes*) return 0 ;;
+    native/tutorials/advanced/random-number.mdx) return 0 ;;
     support/contributing/style-guide/terminology.mdx) return 0 ;;
     .github/terminology-banned.txt) return 0 ;;
     *) return 1 ;;

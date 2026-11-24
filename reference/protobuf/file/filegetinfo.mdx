@@ -9,8 +9,8 @@ Get all of the information about a file, except for its contents. When a file ex
 
 | Field    | Type                                                                                                                                          | Description                                                                                                                                         |
 | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `header` | [QueryHeader](https://github.com/theekrystallee/hedera-style-guide/blob/sdk-v1/deprecated/hedera-api/file-service/broken-reference/README.md) | Standard info sent from client to node, including the signed payment, and what kind of response is requested (cost, state proof, both, or neither). |
-| `fileID` | [FileID](https://github.com/theekrystallee/hedera-style-guide/blob/sdk-v1/deprecated/hedera-api/file-service/broken-reference/README.md)      | The file ID of the file for which information is requested                                                                                          |
+| `header` | [QueryHeader](/reference/protobuf/miscellaneous/queryheader) | Standard info sent from client to node, including the signed payment, and what kind of response is requested (cost, state proof, both, or neither). |
+| `fileID` | [FileID](/reference/protobuf/basic-types/fileid)      | The file ID of the file for which information is requested                                                                                          |
 
 ## FileGetInfoResponse
 
@@ -18,7 +18,7 @@ Response when the client sends the node FileGetInfoQuery
 
 | Field      | Type                                                                                                                                             | Description                                                                                                      |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| `header`   | [ResponseHeader](https://github.com/theekrystallee/hedera-style-guide/blob/sdk-v1/deprecated/hedera-api/file-service/broken-reference/README.md) | Standard response from node to client, including the requested fields: cost, or state proof, or both, or neither |
+| `header`   | [ResponseHeader](/reference/protobuf/miscellaneous/responseheader) | Standard response from node to client, including the requested fields: cost, or state proof, or both, or neither |
 | `fileInfo` | [FileGetInfoResponse.FileInfo](#filegetinforesponse-fileinfo)                                                                                    | The information about the file (a state proof can be generated for this)                                         |
 
 ## FileGetInfoResponse

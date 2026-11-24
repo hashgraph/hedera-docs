@@ -1,0 +1,26 @@
+# URLs the weekly external link check (.github/scripts/check-external-links.js)
+# should skip. One case-insensitive JavaScript regex per line, matched against
+# the full URL. Lines starting with '#' and blank lines are ignored.
+#
+# Only add a pattern when a site can never be checked automatically. A site
+# that is merely slow or blocks bots shows up as "unverified" and does not
+# fail the run, so it does not need an entry here.
+
+# Social profiles: these always block or rate-limit automated requests.
+^https?://(www\.)?(linkedin\.com|x\.com|twitter\.com)/
+
+# HashScan is a single-page app: every deep link (account, token, transaction)
+# returns HTTP 404 with the app shell, then renders in the browser. Status codes
+# can't tell a real page from a missing one, so these can't be checked here.
+^https?://(www\.)?hashscan\.io/
+
+# Hedera's own Discord short link. It redirects to the current invite on
+# purpose, so Hedera can repoint it without a docs change.
+^https?://(www\.)?hedera\.com/discord/?$
+
+# The HIP site is a single-page app on GitHub Pages. /hip/hip-NNN paths are
+# served by its 404.html fallback (HTTP 404), and the app then routes to the
+# HIP in the browser. See site/src/main.js in hiero-ledger/hiero-improvement-proposals:
+# "Support old /hip/hip-NNN paths — GitHub Pages serves 404.html (= index.html)
+# for unknown paths". Status codes can't tell a real HIP from a missing one.
+^https?://hips\.hedera\.com/hip/

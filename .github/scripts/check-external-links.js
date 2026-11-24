@@ -275,7 +275,7 @@ function formatWhere(set, max = 5) {
 }
 
 function escapeCell(s) {
-  return String(s).replace(/\|/g, '\\|');
+  return String(s).replace(/\\/g, '\\\\').replace(/\|/g, '\\|');
 }
 
 async function main() {

@@ -1,0 +1,275 @@
+name: SDK Docs Sync
+
+# Keeps the native SDK docs in step with the hiero-ledger SDK repos (the source of
+# truth).
+#  - sync (one job per SDK): when a newer stable release exists than the version
+#    recorded in .github/sdk-sync/<sdk>.json, bump the install pins in the docs and
+#    open (or refresh) a PR whose body lists every API and breaking change the docs
+#    still need to reflect. Logic: .github/scripts/sdk-sync.js.
+#  - draft-docs: find SDK APIs the docs don't cover yet (.github/scripts/sdk-coverage.js),
+#    draft reference docs for them (.github/scripts/sdk-draft-docs.js), and open (or
+#    refresh) one PR for review. Needs the SDK_DRAFTS_API_KEY secret; without it the
+#    job only reports the gaps.
+
+on:
+  workflow_dispatch:
+    inputs:
+      sdk:
+        description: 'SDK to sync ("none" runs only the drafting job)'
+        required: false
+        default: all
+        type: choice
+        options: [all, none, js, java, go, python, swift, rust, cpp]
+      from:
+        description: 'Override the baseline version (e.g. 2.76.0) to re-report older changes. Requires a single SDK.'
+        required: false
+        type: string
+      drafts:
+        description: 'Draft docs for SDK APIs missing from the docs'
+        required: false
+        default: true
+        type: boolean
+      draft_limit:
+        description: 'Maximum number of gaps to draft in this run'
+        required: false
+        default: '8'
+        type: string
+  schedule:
+    # Daily at 08:00 UTC, after the node table (06:00) and mirror node (07:00) jobs.
+    - cron: '0 8 * * *'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: sync (${{ matrix.sdk }})
+    if: inputs.sdk != 'none'
+    runs-on: hashgraph-docs-linux-medium
+    strategy:
+      fail-fast: false
+      matrix:
+        sdk: ${{ fromJSON(inputs.sdk && inputs.sdk != 'all' && format('["{0}"]', inputs.sdk) || '["js","java","go","python","swift","rust","cpp"]') }}
+    env:
+      BRANCH: automation/sdk-sync-${{ matrix.sdk }}
+
+    steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout docs repo
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: '22'
+
+      - name: Check for reviewer commits on the sync branch
+        id: guard
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bash .github/scripts/check-reviewer-commits.sh "${BRANCH}"
+
+      - name: Sync docs with the latest release
+        id: sync
+        if: steps.guard.outputs.skip != 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SDK: ${{ matrix.sdk }}
+          FROM: ${{ inputs.from }}
+          ALL: ${{ inputs.sdk == '' || inputs.sdk == 'all' }}
+        run: |
+          set -euo pipefail
+          args=(--sdk "${SDK}" --report "${RUNNER_TEMP}/sdk-sync-${SDK}.md")
+          if [[ -n "${FROM}" ]]; then
+            if [[ "${ALL}" == 'true' ]]; then
+              echo "The 'from' input requires a single SDK to be selected." >&2
+              exit 1
+            fi
+            args+=(--from "${FROM}")
+          fi
+          node .github/scripts/sdk-sync.js "${args[@]}"
+
+      - name: Validate MDX compiles
+        if: steps.sync.outputs.changed == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(git diff --name-only -- '*.mdx')
+          if [[ ${#files[@]} -eq 0 ]]; then
+            echo "No MDX files changed."
+            exit 0
+          fi
+          npm install --no-save @mdx-js/mdx@3.1.1
+          node .github/scripts/check-mdx-compiles.js "${files[@]}"
+
+      - name: Publish report to the job summary
+        if: steps.sync.outputs.changed == 'true'
+        run: cat "${{ steps.sync.outputs.body }}" >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Upload full report
+        if: steps.sync.outputs.changed == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: sdk-sync-report-${{ matrix.sdk }}
+          path: ${{ steps.sync.outputs.report }}
+
+      - name: Open pull request
+        if: steps.sync.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          add-paths: |
+            .github/sdk-sync/${{ matrix.sdk }}.json
+            .github/scripts/java-gradle-bootstrap.sh
+            *.mdx
+          commit-message: "docs: sync ${{ steps.sync.outputs.name }} docs to v${{ steps.sync.outputs.to }}"
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          signoff: true
+          sign-commits: true
+          branch: ${{ env.BRANCH }}
+          title: "docs: sync ${{ steps.sync.outputs.name }} docs to v${{ steps.sync.outputs.to }}"
+          body-path: ${{ steps.sync.outputs.body }}
+          labels: automated-pr
+          delete-branch: true
+
+  draft-docs:
+    name: draft missing docs
+    # Scheduled runs always draft; manual runs draft unless the input turns it off.
+    if: github.event_name == 'schedule' || inputs.drafts
+    runs-on: hashgraph-docs-linux-medium
+    timeout-minutes: 120
+    env:
+      BRANCH: automation/sdk-docs-drafts
+
+    steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout docs repo
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+        with:
+          # Full history, to rebase earlier drafts onto the current branch.
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: '22'
+
+      - name: Check for reviewer commits on the drafts branch
+        id: guard
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bash .github/scripts/check-reviewer-commits.sh "${BRANCH}"
+
+      # Re-apply the open drafts PR on top of the current branch so earlier drafts
+      # are kept (not redrafted) and only gaps that are still open get drafted.
+      - name: Carry over earlier drafts
+        id: carry
+        if: steps.guard.outputs.skip != 'true' && steps.guard.outputs.exists == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git fetch --quiet origin "${BRANCH}"
+          base="$(git merge-base HEAD FETCH_HEAD)"
+          if git diff --binary "${base}" FETCH_HEAD | git apply --3way --whitespace=nowarn; then
+            git reset --quiet
+            gh pr view "${BRANCH}" --repo "${GITHUB_REPOSITORY}" --json body -q .body \
+              > "${RUNNER_TEMP}/drafts-state.md" || true
+            echo "state=${RUNNER_TEMP}/drafts-state.md" >> "${GITHUB_OUTPUT}"
+          else
+            git reset --quiet --hard
+            git clean -fdq
+            echo "::warning::Earlier drafts no longer apply cleanly to ${GITHUB_REF_NAME}; drafting from scratch."
+          fi
+
+      - name: Install dependencies
+        if: steps.guard.outputs.skip != 'true'
+        run: npm install --no-save --no-audit --no-fund @anthropic-ai/sdk@0.131.0 zod@4.6.5 @mdx-js/mdx@3.1.1
+
+      - name: Find SDK APIs missing from the docs
+        id: coverage
+        if: steps.guard.outputs.skip != 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          node .github/scripts/sdk-coverage.js --out "${RUNNER_TEMP}/gaps.json" --summary "${RUNNER_TEMP}/gaps.md"
+          cat "${RUNNER_TEMP}/gaps.md" >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Draft docs
+        id: draft
+        if: steps.guard.outputs.skip != 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SDK_DRAFTS_API_KEY: ${{ secrets.SDK_DRAFTS_API_KEY }}
+          STATE: ${{ steps.carry.outputs.state }}
+          LIMIT: ${{ inputs.draft_limit || '8' }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${SDK_DRAFTS_API_KEY}" ]]; then
+            echo "::notice::SDK_DRAFTS_API_KEY is not set, so no docs were drafted. The gaps are listed in the job summary."
+            exit 0
+          fi
+          args=(--gaps "${RUNNER_TEMP}/gaps.json" --report "${RUNNER_TEMP}/drafts.md" --limit "${LIMIT}")
+          if [[ -n "${STATE}" ]]; then args+=(--state "${STATE}"); fi
+          node .github/scripts/sdk-draft-docs.js "${args[@]}"
+          echo "report=${RUNNER_TEMP}/drafts.md" >> "${GITHUB_OUTPUT}"
+
+      # The drafting tools already reject invalid pages; re-check the whole result,
+      # including pages carried over from earlier runs.
+      - name: Validate changed pages
+        if: steps.draft.outputs.report != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          node -e 'JSON.parse(require("fs").readFileSync("docs.json", "utf8"))'
+          mapfile -t files < <(git ls-files --modified --others --exclude-standard -- '*.mdx')
+          if [[ ${#files[@]} -eq 0 ]]; then
+            echo "No pages changed."
+            exit 0
+          fi
+          node .github/scripts/check-mdx-compiles.js "${files[@]}"
+          bash .github/scripts/check-terminology.sh "${files[@]}"
+
+      - name: Publish report to the job summary
+        if: steps.draft.outputs.report != ''
+        run: cat "${{ steps.draft.outputs.report }}" >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Open pull request
+        if: steps.draft.outputs.report != ''
+        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          add-paths: |
+            *.mdx
+            docs.json
+          commit-message: "docs: draft reference docs for SDK APIs missing from the docs"
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          signoff: true
+          sign-commits: true
+          branch: ${{ env.BRANCH }}
+          title: "docs: draft reference docs for SDK APIs missing from the docs"
+          body-path: ${{ steps.draft.outputs.report }}
+          labels: automated-pr
+          delete-branch: true
